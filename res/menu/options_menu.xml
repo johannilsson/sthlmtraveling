@@ -1,0 +1,7 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+	<item 
+		android:id="@+id/new_search"
+		android:title="@string/new_search"
+		android:icon="@drawable/ic_search_category_default"
+		/>
+</menu>
