@@ -71,6 +71,8 @@ public class Search extends Activity {
                 showDialog(DIALOG_END_POINT);
             }
         });
+        
+        // bla bla
     }
 
     View.OnClickListener onSearchHandler = new View.OnClickListener() {
