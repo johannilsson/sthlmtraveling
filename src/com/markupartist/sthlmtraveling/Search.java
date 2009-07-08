@@ -85,6 +85,8 @@ public class Search extends Activity {
                  * next intent. Think that will be a better ux. Then we can also 
                  * suggest alternatives if no route was found.  
                  */
+            	
+            	// TODO: Send it as JSON
                 Intent i = new Intent(Search.this, Routes.class);
                 i.putExtra("from", mFromAutoComplete.getText().toString());
                 i.putExtra("to", mToAutoComplete.getText().toString());

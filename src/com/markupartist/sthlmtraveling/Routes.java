@@ -1,5 +1,6 @@
 package com.markupartist.sthlmtraveling;
 
+import android.app.Dialog;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -17,8 +18,8 @@ import android.widget.TextView;
 public class Routes extends ListActivity {
     private final String TAG = "Routes";
     private ArrayAdapter<Route> mRouteAdapter;
-    private String mFrom;
-    private String mTo;
+    private TextView mFromView;
+    private TextView mToView;
     final Handler mHandler = new Handler();
     final RouteFinder mRouteFinder = new RouteFinder();
     final Runnable updateRoutes = new Runnable() {
@@ -31,29 +32,29 @@ public class Routes extends ListActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.routes_list);
 
+        mFromView = (TextView) findViewById(R.id.route_from);
+        mToView = (TextView) findViewById(R.id.route_to);
+
         Bundle extras = getIntent().getExtras();
-        mFrom = extras.getString("from");
-        mTo = extras.getString("to");
+        String from = extras.getString("from");
+        String to = extras.getString("to");
 
-        TextView fromView = (TextView) findViewById(R.id.route_from);
-        fromView.setText(mFrom);
-        TextView toView = (TextView) findViewById(R.id.route_to);
-        toView.setText(mTo);
-
-        findRoutes();
+        findRoutes(from, to);
     }
 
     /**
      * Fires off a thread to do the query. Will call updateRoutesInUi when done.
+     * @param from TODO
+     * @param to TODO
      */
-    private void findRoutes() {
+    private void findRoutes(final String from, final String to) {
         final ProgressDialog progressDialog = 
             ProgressDialog.show(this, "", getText(R.string.loading), true);
         Thread t = new Thread() {
             public void run() {
                 try {
                     mRouteAdapter = new ArrayAdapter<Route>(Routes.this, 
-                            R.layout.routes_row, mRouteFinder.findRoutes(mFrom, mTo));
+                            R.layout.routes_row, mRouteFinder.findRoutes(from, to));
                     mHandler.post(updateRoutes);
                     progressDialog.dismiss();
                 } catch (Exception e) {
@@ -65,7 +66,14 @@ public class Routes extends ListActivity {
     }
 
     private void updateRoutesInUi() {
-        setListAdapter(mRouteAdapter);
+    	if (!mRouteAdapter.isEmpty()) {
+        	Route route = mRouteAdapter.getItem(0);
+        	mFromView.setText(route.from);
+        	mToView.setText(route.to);
+            setListAdapter(mRouteAdapter);    		
+    	} else {
+    		// TODO: Add dialog with error...
+    	}
     }
 
     @Override
@@ -73,8 +81,8 @@ public class Routes extends ListActivity {
         super.onListItemClick(l, v, position, id);
         Route route = mRouteAdapter.getItem(position);
         Intent i = new Intent(this, RouteDetail.class);
-        i.putExtra("from", mFrom);
-        i.putExtra("to", mTo);
+        i.putExtra("from", route.from);
+        i.putExtra("to", route.to);
         i.putExtra("ident", route.ident);
         i.putExtra("routeId", route.routeId);
         startActivity(i);
