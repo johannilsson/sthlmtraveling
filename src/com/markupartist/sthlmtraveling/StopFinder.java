@@ -26,20 +26,16 @@ public class StopFinder extends DefaultHandler {
     private boolean mInKey = false;
     private ArrayList<String> mStops = new ArrayList<String>();
 
-    public ArrayList<String> findStops(String name) {
+    public ArrayList<String> parseStops(InputSource input) {
         mStops.clear();
         try {
-            URL endpoint = new URL(STHLM_TRAVELING_API_ENDPOINT +"?method=findStop&name=" + URLEncoder.encode(name));
             SAXParserFactory spf = SAXParserFactory.newInstance();
             SAXParser sp = spf.newSAXParser();
             XMLReader xr = sp.getXMLReader();
             xr.setContentHandler(this);
-            InputSource input = new InputSource(endpoint.openStream());
             input.setEncoding("UTF-8");
             xr.parse(input);
             // TODO: Not ok to kill all exceptions like this!!!
-        } catch (MalformedURLException e) {
-            Log.e(TAG, e.toString());
         } catch (IOException e) {
             Log.e(TAG, e.toString());
         } catch (SAXException e) {

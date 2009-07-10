@@ -1,6 +1,7 @@
 package com.markupartist.sthlmtraveling;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -29,24 +30,16 @@ public class RouteFinder extends DefaultHandler {
     private boolean mInBy = false;
     private Route mCurrentRoute = null;
 
-    public ArrayList<Route> findRoutes(String from, String to) {
+    public ArrayList<Route> parseRoutes(InputSource input) {
         mRoutes.clear();
-        Log.d(TAG, "Searching for from=" + from + ",to=" + to);
         try {
-            String fromEncoded = URLEncoder.encode(from);
-            String toEncoded = URLEncoder.encode(to);
-            URL endpoint = new URL(STHLM_TRAVELING_API_ENDPOINT + "?method=findRoutes&from=" + fromEncoded + "&to=" + toEncoded);
             SAXParserFactory spf = SAXParserFactory.newInstance();
             SAXParser sp = spf.newSAXParser();
             XMLReader xr = sp.getXMLReader();
             xr.setContentHandler(this);
-            InputSource input = new InputSource(endpoint.openStream());
             input.setEncoding("UTF-8");
             xr.parse(input);
-            //xr.parse(new InputSource(new StringReader(xmlString)));
             // TODO: Not ok to kill all exceptions like this!!!
-        } catch (MalformedURLException e) {
-            Log.e(TAG, e.toString());
         } catch (IOException e) {
             Log.e(TAG, e.toString());
         } catch (SAXException e) {
