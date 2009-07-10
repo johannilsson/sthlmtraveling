@@ -1,12 +1,10 @@
 package com.markupartist.sthlmtraveling;
 
-import android.app.Dialog;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -32,14 +30,29 @@ public class Routes extends ListActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.routes_list);
 
+        // TODO: Verify that we have data in lastFoundRoutes redirect back?
+        
+        mRouteAdapter = new ArrayAdapter<Route>(this, 
+                R.layout.routes_row, Planner.getInstance().lastFoundRoutes());
+        setListAdapter(mRouteAdapter);
+
         mFromView = (TextView) findViewById(R.id.route_from);
         mToView = (TextView) findViewById(R.id.route_to);
 
+        // TODO: Not working..
+        if (mRouteAdapter.isEmpty() != false) {            
+            Route route = mRouteAdapter.getItem(0);
+            mFromView.setText(route.from);
+            mToView.setText(route.to);
+        }
+
+        /*
         Bundle extras = getIntent().getExtras();
         String from = extras.getString("from");
         String to = extras.getString("to");
 
         findRoutes(from, to);
+        */
     }
 
     /**
@@ -54,7 +67,7 @@ public class Routes extends ListActivity {
             public void run() {
                 try {
                     mRouteAdapter = new ArrayAdapter<Route>(Routes.this, 
-                            R.layout.routes_row, mRouteFinder.findRoutes(from, to));
+                            R.layout.routes_row, Planner.getInstance().findRoutes(from, to));
                     mHandler.post(updateRoutes);
                     progressDialog.dismiss();
                 } catch (Exception e) {
