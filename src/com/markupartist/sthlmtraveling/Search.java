@@ -2,12 +2,14 @@ package com.markupartist.sthlmtraveling;
 
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -19,11 +21,13 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -36,12 +40,19 @@ public class Search extends Activity {
 
     private AutoCompleteTextView mFromAutoComplete;
     private AutoCompleteTextView mToAutoComplete;
+    private final Handler mHandler = new Handler();
+
+    final Runnable mSearchRoutes = new Runnable() {
+        public void run() {
+            onSearchResult();
+        }
+    };
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.search);
 
-        StopFinder planner = new StopFinder();
+        Planner planner = Planner.getInstance();
         mFromAutoComplete = (AutoCompleteTextView) findViewById(R.id.from);
         StopSimpleAdapter stopAdapter = new StopSimpleAdapter(this, 
                 android.R.layout.simple_dropdown_item_1line, planner);
@@ -54,7 +65,7 @@ public class Search extends Activity {
 
         final Button search = (Button) findViewById(R.id.search_route);
 
-        search.setOnClickListener(onSearchHandler);
+        search.setOnClickListener(mGetSearchListener);
 
         final ImageButton fromDialog = (ImageButton) findViewById(R.id.from_menu);
         fromDialog.setOnClickListener(new View.OnClickListener() {
@@ -73,7 +84,7 @@ public class Search extends Activity {
         });
     }
 
-    View.OnClickListener onSearchHandler = new View.OnClickListener() {
+    View.OnClickListener mGetSearchListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             if (mFromAutoComplete.getText().length() <= 0) {
@@ -85,15 +96,46 @@ public class Search extends Activity {
                  * next intent. Think that will be a better ux. Then we can also 
                  * suggest alternatives if no route was found.  
                  */
-            	
-            	// TODO: Send it as JSON
+                searchRoutes(mFromAutoComplete.getText().toString(), 
+                        mToAutoComplete.getText().toString());
+                /*
                 Intent i = new Intent(Search.this, Routes.class);
                 i.putExtra("from", mFromAutoComplete.getText().toString());
                 i.putExtra("to", mToAutoComplete.getText().toString());
                 startActivity(i);
+                */
             }
         }
     };
+
+    /**
+     * Fires off a thread to do the query. Will call updateRoutesInUi when done.
+     * @param from TODO
+     * @param to TODO
+     */
+    private void searchRoutes(final String from, final String to) {
+        final ProgressDialog progressDialog = 
+            ProgressDialog.show(this, "", getText(R.string.loading), true);
+        Thread t = new Thread() {
+            public void run() {
+                try {
+                    Planner.getInstance().findRoutes(from, to);
+                    mHandler.post(mSearchRoutes);
+                    progressDialog.dismiss();
+                } catch (Exception e) {
+                    progressDialog.dismiss();
+                }
+            }
+        };
+        t.start();
+    }
+
+    private void onSearchResult() {
+        if (Planner.getInstance().lastFoundRoutes() != null) {
+            Intent i = new Intent(Search.this, Routes.class);
+            startActivity(i);
+        }
+    }
     
     @Override
     protected Dialog onCreateDialog(int id) {
