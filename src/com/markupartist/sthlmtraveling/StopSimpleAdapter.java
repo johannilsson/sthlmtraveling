@@ -12,9 +12,9 @@ import android.widget.Filterable;
 
 public class StopSimpleAdapter extends ArrayAdapter<String> implements Filterable {
     private static String TAG = "StopSimpleAdapter";
-    private StopFinder mPlanner;
+    private Planner mPlanner;
 
-    public StopSimpleAdapter(Context context, int textViewResourceId, StopFinder planner) {
+    public StopSimpleAdapter(Context context, int textViewResourceId, Planner planner) {
         super(context, textViewResourceId);
         this.mPlanner = planner;
     }
@@ -26,7 +26,8 @@ public class StopSimpleAdapter extends ArrayAdapter<String> implements Filterabl
             protected FilterResults performFiltering(CharSequence constraint) {
                 if (constraint != null) {
                     //Log.d(TAG, "Searching for " + constraint);
-                    ArrayList<String> list = mPlanner.findStops(constraint.toString());
+                    ArrayList<String> list = 
+                        mPlanner.findStop(constraint.toString());
 
                     FilterResults filterResults = new FilterResults();
                     filterResults.values = list;
