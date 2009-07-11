@@ -1,6 +1,7 @@
 package com.markupartist.sthlmtraveling;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -15,14 +16,14 @@ import org.xml.sax.helpers.DefaultHandler;
 
 import android.util.Log;
 
-public class StopFinder extends DefaultHandler {
+public class RouteDetailParser extends DefaultHandler {
     private static final String TAG = "StopFinder";
 
     private boolean mInKey = false;
-    private ArrayList<String> mStops = new ArrayList<String>();
+    private ArrayList<String> mDetails = new ArrayList<String>();
 
-    public ArrayList<String> parseStops(InputSource input) {
-        mStops.clear();
+    public ArrayList<String> parseDetail(InputSource input) {
+        mDetails.clear();
         try {
             SAXParserFactory spf = SAXParserFactory.newInstance();
             SAXParser sp = spf.newSAXParser();
@@ -31,6 +32,8 @@ public class StopFinder extends DefaultHandler {
             input.setEncoding("UTF-8");
             xr.parse(input);
             // TODO: Not ok to kill all exceptions like this!!!
+        } catch (MalformedURLException e) {
+            Log.e(TAG, e.toString());
         } catch (IOException e) {
             Log.e(TAG, e.toString());
         } catch (SAXException e) {
@@ -39,18 +42,18 @@ public class StopFinder extends DefaultHandler {
             Log.e(TAG, e.toString());
         }
 
-        return mStops;
+        return mDetails;
     }
 
     public void startElement(String uri, String name, String qName, Attributes atts) {
         if (name.trim().startsWith("key_"))
             mInKey = true;
     }
-    
+
     public void characters(char ch[], int start, int length) {
         if (mInKey) {
             String chars = (new String(ch).substring(start, start + length));
-            mStops.add(chars.trim());
+            mDetails.add(chars.trim());
         }
     }
 

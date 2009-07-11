@@ -15,8 +15,7 @@ import org.xml.sax.helpers.DefaultHandler;
 
 import android.util.Log;
 
-public class RouteFinder extends DefaultHandler {
-    //private static final String ENDPOINT = "http://markupartist.com/api/sl/";
+public class RouteParser extends DefaultHandler {
     private static final String TAG = "RouteFinder";
     private ArrayList<Route> mRoutes = new ArrayList<Route>();
     private String mIdent;

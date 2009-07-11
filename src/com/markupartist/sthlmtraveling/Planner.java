@@ -15,16 +15,16 @@ import android.util.Log;
 public class Planner {
     private static final String TAG = "Planner";
     private static Planner instance = null;
-    private StopFinder mStopFinder;
-    private RouteFinder mRouteFinder;
-    private RouteDetailFinder mRouteDetailFinder;
+    private StopParser mStopFinder;
+    private RouteParser mRouteFinder;
+    private RouteDetailParser mRouteDetailFinder;
     private ArrayList<Route> mRoutes = null;
     private ArrayList<String> mRouteDetails = null;
 
     private Planner() {
-        mStopFinder = new StopFinder();
-        mRouteFinder = new RouteFinder();
-        mRouteDetailFinder = new RouteDetailFinder();
+        mStopFinder = new StopParser();
+        mRouteFinder = new RouteParser();
+        mRouteDetailFinder = new RouteDetailParser();
     }
 
     public ArrayList<String> findStop(String name) {
