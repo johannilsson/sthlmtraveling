@@ -12,7 +12,7 @@ import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-public class RouteDetail extends ListActivity {
+public class RouteDetailActivity extends ListActivity {
     private ArrayAdapter<String> mDetailAdapter;
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,7 +29,7 @@ public class RouteDetail extends ListActivity {
         toView.setText(route.to + " (" + route.arrival + ")");
 
         mDetailAdapter = new ArrayAdapter<String>(
-                RouteDetail.this, R.layout.route_details_row, 
+                RouteDetailActivity.this, R.layout.route_details_row, 
                     Planner.getInstance().lastFoundRouteDetail());
         setListAdapter(mDetailAdapter);
     }
@@ -43,7 +43,7 @@ public class RouteDetail extends ListActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.new_search :
-                final Intent intent = new Intent(this, Search.class);
+                final Intent intent = new Intent(this, SearchActivity.class);
                 startActivity(intent);
                 return true;
         }

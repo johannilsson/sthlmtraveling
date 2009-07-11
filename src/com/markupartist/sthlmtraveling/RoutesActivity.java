@@ -22,7 +22,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-public class Routes extends ListActivity {
+public class RoutesActivity extends ListActivity {
     private final String TAG = "Routes";
     private static final int DIALOG_NO_ROUTE_DETAILS_FOUND = 0;
     private ArrayAdapter<Route> mRouteAdapter;
@@ -90,7 +90,7 @@ public class Routes extends ListActivity {
     private void onSearchRouteDetailsResult() {
         if (Planner.getInstance().lastFoundRouteDetail() != null 
                 && !Planner.getInstance().lastFoundRoutes().isEmpty()) {
-            Intent i = new Intent(Routes.this, RouteDetail.class);
+            Intent i = new Intent(RoutesActivity.this, RouteDetailActivity.class);
             i.putExtra("com.markupartist.sthlmtraveling.route_position", mCurrentRoutePosition);
             startActivity(i);
         } else {
@@ -107,7 +107,7 @@ public class Routes extends ListActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.new_search :
-                final Intent intent = new Intent(this, Search.class);
+                final Intent intent = new Intent(this, SearchActivity.class);
                 startActivity(intent);
                 return true;
         }

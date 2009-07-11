@@ -2,7 +2,6 @@ package com.markupartist.sthlmtraveling;
 
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -27,13 +26,12 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
-public class Search extends Activity {
+public class SearchActivity extends Activity {
     private static final String TAG = "Search";
     private static final int DIALOG_START_POINT = 0;
     private static final int DIALOG_END_POINT = 1;
@@ -127,7 +125,7 @@ public class Search extends Activity {
     private void onSearchRoutesResult() {
         if (Planner.getInstance().lastFoundRoutes() != null 
                 && !Planner.getInstance().lastFoundRoutes().isEmpty()) {
-            Intent i = new Intent(Search.this, Routes.class);
+            Intent i = new Intent(SearchActivity.this, RoutesActivity.class);
             startActivity(i);
         } else {
             // TODO: This works for now, but we need to see if there are any
