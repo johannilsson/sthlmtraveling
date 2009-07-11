@@ -8,12 +8,8 @@ import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -44,9 +40,9 @@ public class RoutesActivity extends ListActivity {
             mFromView = (TextView) findViewById(R.id.route_from);
             mToView = (TextView) findViewById(R.id.route_to);
 
-            Route route = mRouteAdapter.getItem(0);
-            mFromView.setText(route.from);
-            mToView.setText(route.to);            
+            Bundle extras = getIntent().getExtras();
+            mFromView.setText(extras.getString("com.markupartist.sthlmtraveling.startPoint"));
+            mToView.setText(extras.getString("com.markupartist.sthlmtraveling.endPoint"));
         }
     }
 

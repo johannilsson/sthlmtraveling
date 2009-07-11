@@ -126,6 +126,10 @@ public class SearchActivity extends Activity {
         if (Planner.getInstance().lastFoundRoutes() != null 
                 && !Planner.getInstance().lastFoundRoutes().isEmpty()) {
             Intent i = new Intent(SearchActivity.this, RoutesActivity.class);
+            i.putExtra("com.markupartist.sthlmtraveling.startPoint", 
+                    mFromAutoComplete.getText().toString());
+            i.putExtra("com.markupartist.sthlmtraveling.endPoint", 
+                    mToAutoComplete.getText().toString());
             startActivity(i);
         } else {
             // TODO: This works for now, but we need to see if there are any
