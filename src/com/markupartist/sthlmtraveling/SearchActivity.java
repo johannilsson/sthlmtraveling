@@ -54,12 +54,12 @@ public class SearchActivity extends Activity {
 
         Planner planner = Planner.getInstance();
         mFromAutoComplete = (AutoCompleteTextView) findViewById(R.id.from);
-        StopSimpleAdapter stopAdapter = new StopSimpleAdapter(this, 
+        AutoCompleteStopAdapter stopAdapter = new AutoCompleteStopAdapter(this, 
                 android.R.layout.simple_dropdown_item_1line, planner);
         mFromAutoComplete.setAdapter(stopAdapter);
 
         mToAutoComplete = (AutoCompleteTextView) findViewById(R.id.to);
-        StopSimpleAdapter toAdapter = new StopSimpleAdapter(this, 
+        AutoCompleteStopAdapter toAdapter = new AutoCompleteStopAdapter(this, 
                 android.R.layout.simple_dropdown_item_1line, planner);
         mToAutoComplete.setAdapter(toAdapter);
 

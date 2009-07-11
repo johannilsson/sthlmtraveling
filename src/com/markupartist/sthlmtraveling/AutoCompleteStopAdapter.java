@@ -10,11 +10,11 @@ import android.widget.ArrayAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
 
-public class StopSimpleAdapter extends ArrayAdapter<String> implements Filterable {
-    private static String TAG = "StopSimpleAdapter";
+public class AutoCompleteStopAdapter extends ArrayAdapter<String> implements Filterable {
+    private static String TAG = "AutoCompleteStopAdapter";
     private Planner mPlanner;
 
-    public StopSimpleAdapter(Context context, int textViewResourceId, Planner planner) {
+    public AutoCompleteStopAdapter(Context context, int textViewResourceId, Planner planner) {
         super(context, textViewResourceId);
         this.mPlanner = planner;
     }
