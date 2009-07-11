@@ -25,15 +25,13 @@ public class RouteDetailFinder extends DefaultHandler {
     private boolean mInKey = false;
     private ArrayList<String> mDetails = new ArrayList<String>();
 
-    public ArrayList<String> findDetail(String ident, String routeId) {
+    public ArrayList<String> parseDetail(InputSource input) {
         mDetails.clear();
         try {
-            URL endpoint = new URL(STHLM_TRAVELING_API_ENDPOINT +"?method=routeDetail&ident=" + ident + "&routeId=" + routeId);
             SAXParserFactory spf = SAXParserFactory.newInstance();
             SAXParser sp = spf.newSAXParser();
             XMLReader xr = sp.getXMLReader();
             xr.setContentHandler(this);
-            InputSource input = new InputSource(endpoint.openStream());
             input.setEncoding("UTF-8");
             xr.parse(input);
             // TODO: Not ok to kill all exceptions like this!!!
