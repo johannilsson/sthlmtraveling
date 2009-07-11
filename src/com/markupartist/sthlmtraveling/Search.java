@@ -37,6 +37,8 @@ public class Search extends Activity {
     private static final String TAG = "Search";
     private static final int DIALOG_START_POINT = 0;
     private static final int DIALOG_END_POINT = 1;
+    private static final int DIALOG_NO_ROUTES_FOUND = 2;
+    private static final int DIALOG_ABOUT = 3;
 
     private AutoCompleteTextView mFromAutoComplete;
     private AutoCompleteTextView mToAutoComplete;
@@ -44,7 +46,7 @@ public class Search extends Activity {
 
     final Runnable mSearchRoutes = new Runnable() {
         public void run() {
-            onSearchResult();
+            onSearchRoutesResult();
         }
     };
 
@@ -92,31 +94,21 @@ public class Search extends Activity {
             } else if (mToAutoComplete.getText().length() <= 0) {
                 mToAutoComplete.setError(getText(R.string.empty_value));
             } else {
-                /* TODO: Query for routes here and just post the request to the
-                 * next intent. Think that will be a better ux. Then we can also 
-                 * suggest alternatives if no route was found.  
-                 */
                 searchRoutes(mFromAutoComplete.getText().toString(), 
                         mToAutoComplete.getText().toString());
-                /*
-                Intent i = new Intent(Search.this, Routes.class);
-                i.putExtra("from", mFromAutoComplete.getText().toString());
-                i.putExtra("to", mToAutoComplete.getText().toString());
-                startActivity(i);
-                */
             }
         }
     };
 
     /**
-     * Fires off a thread to do the query. Will call updateRoutesInUi when done.
-     * @param from TODO
-     * @param to TODO
+     * Fires off a thread to do the query. Will call onSearchResult when done.
+     * @param from the start point
+     * @param to the end point
      */
     private void searchRoutes(final String from, final String to) {
         final ProgressDialog progressDialog = 
             ProgressDialog.show(this, "", getText(R.string.loading), true);
-        Thread t = new Thread() {
+        new Thread() {
             public void run() {
                 try {
                     Planner.getInstance().findRoutes(from, to);
@@ -126,26 +118,32 @@ public class Search extends Activity {
                     progressDialog.dismiss();
                 }
             }
-        };
-        t.start();
+        }.start();
     }
 
-    private void onSearchResult() {
-        if (Planner.getInstance().lastFoundRoutes() != null) {
+    /**
+     * Called when we have a search result for routes.
+     */
+    private void onSearchRoutesResult() {
+        if (Planner.getInstance().lastFoundRoutes() != null 
+                && !Planner.getInstance().lastFoundRoutes().isEmpty()) {
             Intent i = new Intent(Search.this, Routes.class);
             startActivity(i);
+        } else {
+            // TODO: This works for now, but we need to see if there are any
+            // alternative stops available in later on.
+            showDialog(DIALOG_NO_ROUTES_FOUND);
         }
     }
-    
+
     @Override
     protected Dialog onCreateDialog(int id) {
-        final CharSequence[] items = {"My Location"};
         Dialog dialog = null;
         switch(id) {
         case DIALOG_START_POINT:
             AlertDialog.Builder startPointDialogBuilder = new AlertDialog.Builder(this);
             startPointDialogBuilder.setTitle("Choose start point");
-            startPointDialogBuilder.setItems(items, new DialogInterface.OnClickListener() {
+            startPointDialogBuilder.setItems(getMyLocationItems(), new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int item) {
                     mFromAutoComplete.setText(getAddressFromCurrentPosition());
                 }
@@ -155,43 +153,53 @@ public class Search extends Activity {
         case DIALOG_END_POINT:
             AlertDialog.Builder endPointDialogBuilder = new AlertDialog.Builder(this);
             endPointDialogBuilder.setTitle("Choose end point");
-            endPointDialogBuilder.setItems(items, new DialogInterface.OnClickListener() {
+            endPointDialogBuilder.setItems(getMyLocationItems(), new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int item) {
                     mToAutoComplete.setText(getAddressFromCurrentPosition());
                 }
             });
             dialog = endPointDialogBuilder.create();
             break;
+        case DIALOG_NO_ROUTES_FOUND:
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            dialog = builder.setTitle("Unfortunately no routes was found")
+                .setMessage("If searhing for an address try adding a house number.")
+                .setCancelable(true)
+                .setNeutralButton("Ok", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                   }
+                }).create();
+            break;
+        case DIALOG_ABOUT:
+            PackageManager pm = getPackageManager();
+            String version = "";
+            try {
+                PackageInfo pi = pm.getPackageInfo(this.getPackageName(), 0);
+                version = pi.versionName;
+            } catch (NameNotFoundException e) {
+                Log.e(TAG, "Could not get the package info.");
+            }
+
+            dialog = new Dialog(this);
+            dialog.setCanceledOnTouchOutside(true);
+            dialog.setContentView(R.layout.about_dialog);
+            dialog.setTitle(getText(R.string.app_name) + " " + version);
+            break;
         }
         return dialog;
     }
 
+    private CharSequence[] getMyLocationItems() {
+        CharSequence[] items = {"My Location"};
+        return items;
+    }
+    
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.options_menu_search, menu);
         return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.about:
-                Dialog dialog = new Dialog(this);
-                PackageManager pm = getPackageManager();
-                String version = "";
-                try {
-                    PackageInfo pi = pm.getPackageInfo(this.getPackageName(), 0);
-                    version = pi.versionName;
-                } catch (NameNotFoundException e) {
-                    Log.e(TAG, "Could not get the package info.");
-                }
-                dialog.setContentView(R.layout.about_dialog);
-                dialog.setTitle(getText(R.string.about) + " " + version);
-                dialog.show();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     private String getAddressFromCurrentPosition() {
@@ -202,7 +210,8 @@ public class Search extends Activity {
         if (loc == null && gpsLoc != null) {
             loc = gpsLoc;
         } else if (gpsLoc != null && gpsLoc.getTime() > loc.getTime()) {
-            // If we got the gps loc is more recent than the network loc use it.
+            // If we the gps location is more recent than the network 
+            // location use it.
             loc = gpsLoc;
         }
 
@@ -237,10 +246,20 @@ public class Search extends Activity {
                 }
             }
         } catch (IOException e) {
-            // Change to some dialog?
+            // TODO: Change to dialog
             Toast.makeText(this, "Could not determine your position", 10);
             Log.e(TAG, e.getMessage());
         }
         return addressString;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.about:
+                showDialog(DIALOG_ABOUT);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
