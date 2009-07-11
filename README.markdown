@@ -13,10 +13,23 @@ of a route.
 More about this project at <http://markupartist.com/sthlmtraveling> or follow 
 me on [twitter](http://twitter.com/johanni) where I announce new versions.
 
+Setting up the project
+----------------------
+
+Once forked and imported to eclipse you need to run "Fix Project Properties".
+This is found under Android Tools. 
+
+You then need to add the following class that holds the api endpoint and point 
+out where the api is located.
+
+    public class ApiSettings {
+        public static String STHLM_TRAVELING_API_ENDPOINT = "";
+    }
+
 Changelog
 ---------
 
-* 1.0.1
+* 1.1.0
     * Improved the ux by doing searches in the current activity
     * Added ApiSettings that holds the api endpoint
     * Introduced Planner groups all journey planning functionality
