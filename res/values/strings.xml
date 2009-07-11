@@ -11,5 +11,5 @@
     <string name="loading">Loading. Please wait...</string>
     <string name="my_location">My location</string>
     <string name="about">About</string>
-    <string name="about_this_app">STHLM Traveling helps you plan your journeys using data from Stockholm Public Transport (SL, Stockholms Lokaltrafik). \n\nThis application is developed by Johan Nilsson, please contact him if you have ideas or experience any problems. \n\nsthlmtraveling@markupartist.com</string>
+    <string name="about_this_app">STHLM Traveling is developed by Johan Nilsson, please contact him if you have ideas or experience any problems. \n\nsthlmtraveling@markupartist.com</string>
 </resources>
