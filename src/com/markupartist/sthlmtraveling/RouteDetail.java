@@ -14,56 +14,23 @@ import android.widget.TextView;
 
 public class RouteDetail extends ListActivity {
     private ArrayAdapter<String> mDetailAdapter;
-    final Handler mHandler = new Handler();
-    final RouteDetailFinder mDetailFinder = new RouteDetailFinder();
-    final Runnable mUpdateRouteDetails = new Runnable() {
-        public void run() {
-            updateRouteDetailsInUi();
-        }
-    };
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.route_details_list);
 
         Bundle extras = getIntent().getExtras();
-        String from = extras.getString("from");
-        String to = extras.getString("to");
-        String ident = extras.getString("ident");
-        String routeId = extras.getString("routeId");
+        int routePosition = extras.getInt("com.markupartist.sthlmtraveling.route_position");
+        Route route = Planner.getInstance().lastFoundRoutes().get(routePosition);
 
         TextView fromView = (TextView) findViewById(R.id.route_from);
-        fromView.setText(from);
+        fromView.setText(route.from + " (" + route.departure + ")");
         TextView toView = (TextView) findViewById(R.id.route_to);
-        toView.setText(to);
+        toView.setText(route.to + " (" + route.arrival + ")");
 
-        findRouteDetails(ident, routeId);
-    }
-
-    /**
-     * Fires off a thread to do the query. Will call updateRouteDetailsInUi 
-     * when done.
-     */
-    private void findRouteDetails(final String ident, final String routeId) {
-        final ProgressDialog progressDialog = 
-            ProgressDialog.show(this, "", getText(R.string.loading), true);
-        Thread t = new Thread() {
-            public void run() {
-                try {
-                    mDetailAdapter = new ArrayAdapter<String>(
-                            RouteDetail.this, R.layout.route_details_row, 
-                                mDetailFinder.findDetail(ident, routeId));
-                    mHandler.post(mUpdateRouteDetails);
-                    progressDialog.dismiss();
-                } catch (Exception e) {
-                    progressDialog.dismiss();
-                }
-            }
-        };
-        t.start();
-    }
-    
-    private void updateRouteDetailsInUi() {
+        mDetailAdapter = new ArrayAdapter<String>(
+                RouteDetail.this, R.layout.route_details_row, 
+                    Planner.getInstance().lastFoundRouteDetail());
         setListAdapter(mDetailAdapter);
     }
 
