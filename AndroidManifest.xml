@@ -4,15 +4,15 @@
       android:versionCode="3"
       android:versionName="1.0.0">
     <application android:icon="@drawable/icon" android:label="@string/app_name" android:debuggable="false">
-        <activity android:name=".Search"
+        <activity android:name=".SearchActivity"
                   android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-    <activity android:name=".Routes"></activity>
-    <activity android:name=".RouteDetail"></activity>
+    <activity android:name=".RoutesActivity"></activity>
+    <activity android:name=".RouteDetailActivity"></activity>
 </application>
     <uses-sdk android:minSdkVersion="3" />
     <uses-permission android:name="android.permission.INTERNET"></uses-permission>
