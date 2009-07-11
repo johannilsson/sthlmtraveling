@@ -4,16 +4,11 @@
 	android:layout_height="fill_parent"
 	android:padding="10dp"
 	>
-	<ImageView
-		android:layout_width="wrap_content"
-		android:layout_height="fill_parent"
-		android:layout_marginRight="10dp"
-		android:src="@drawable/icon"
-		/>
 	<TextView
 		android:layout_width="wrap_content"
 		android:layout_height="fill_parent"
 		android:textColor="#FFF"
+		android:autoLink="email"
 		android:text="@string/about_this_app"
 		/>
 </LinearLayout>
