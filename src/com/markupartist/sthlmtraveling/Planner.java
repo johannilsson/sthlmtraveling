@@ -17,11 +17,14 @@ public class Planner {
     private static Planner instance = null;
     private StopFinder mStopFinder;
     private RouteFinder mRouteFinder;
+    private RouteDetailFinder mRouteDetailFinder;
     private ArrayList<Route> mRoutes = null;
+    private ArrayList<String> mRouteDetails = null;
 
     private Planner() {
         mStopFinder = new StopFinder();
         mRouteFinder = new RouteFinder();
+        mRouteDetailFinder = new RouteDetailFinder();
     }
 
     public ArrayList<String> findStop(String name) {
@@ -62,6 +65,26 @@ public class Planner {
 
     public ArrayList<Route> lastFoundRoutes() {
         return mRoutes;
+    }
+
+    public ArrayList<String> findRouteDetails(Route route) {
+        mRouteDetails = new ArrayList<String>();
+        try {
+            URL endpoint = new URL(STHLM_TRAVELING_API_ENDPOINT
+                    + "?method=routeDetail&ident=" + route.ident 
+                    + "&routeId=" + route.routeId);
+            mRouteDetails = mRouteDetailFinder.parseDetail(
+                    new InputSource(endpoint.openStream()));
+        } catch (MalformedURLException e) {
+            Log.e(TAG, e.getMessage());
+        } catch (IOException e) {
+            Log.e(TAG, e.getMessage());
+        }
+        return mRouteDetails;
+    }
+
+    public ArrayList<String> lastFoundRouteDetail() {
+        return mRouteDetails;
     }
 
     public static Planner getInstance() {
