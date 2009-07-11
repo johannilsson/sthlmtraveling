@@ -2,7 +2,6 @@ package com.markupartist.sthlmtraveling;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -16,8 +15,6 @@ import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 
 import android.util.Log;
-
-import static com.markupartist.sthlmtraveling.ApiSettings.STHLM_TRAVELING_API_ENDPOINT;
 
 public class RouteDetailFinder extends DefaultHandler {
     private static final String TAG = "StopFinder";
