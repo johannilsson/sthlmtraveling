@@ -15,6 +15,7 @@ import android.util.Log;
 public class Planner {
     private static final String TAG = "Planner";
     private static Planner instance = null;
+    private int mRequestCount;
     private StopParser mStopFinder;
     private RouteParser mRouteFinder;
     private RouteDetailParser mRouteDetailFinder;
@@ -55,6 +56,8 @@ public class Planner {
                     + fromEncoded + "&to=" + toEncoded);
             InputSource input = new InputSource(endpoint.openStream());
             mRoutes = mRouteFinder.parseRoutes(input);
+            // Update the request count, needed for all request that needs an ident.
+            mRequestCount = mRouteFinder.getRequestCount();
         } catch (MalformedURLException e) {
             Log.e(TAG, e.getMessage());
         } catch (IOException e) {
@@ -72,9 +75,12 @@ public class Planner {
         try {
             URL endpoint = new URL(STHLM_TRAVELING_API_ENDPOINT
                     + "?method=routeDetail&ident=" + route.ident 
-                    + "&routeId=" + route.routeId);
+                    + "&routeId=" + route.routeId
+                    + "&requestCount=" + mRequestCount);
             mRouteDetails = mRouteDetailFinder.parseDetail(
                     new InputSource(endpoint.openStream()));
+            // Update the request count, needed for all request that needs an ident.
+            mRequestCount = mRouteDetailFinder.getRequestCount();
         } catch (MalformedURLException e) {
             Log.e(TAG, e.getMessage());
         } catch (IOException e) {

@@ -19,6 +19,7 @@ public class RouteParser extends DefaultHandler {
     private static final String TAG = "RouteFinder";
     private ArrayList<Route> mRoutes = new ArrayList<Route>();
     private String mIdent;
+    private int mRequestCount;
     private String mCurrentText;
     private boolean mInBy = false;
     private Route mCurrentRoute = null;
@@ -44,6 +45,10 @@ public class RouteParser extends DefaultHandler {
         return mRoutes;
     }
 
+    public int getRequestCount() {
+        return mRequestCount;
+    }
+
     public void startElement(String uri, String name, String qName, Attributes atts) {
         if (!mInBy) {
             if (name.trim().startsWith("key_")) {
@@ -63,6 +68,8 @@ public class RouteParser extends DefaultHandler {
                 throws SAXException {
         if (name.trim().equals("ident")) {
             mIdent = mCurrentText;
+        } else if (name.trim().equals("requestCount")) {
+            mRequestCount = Integer.parseInt(mCurrentText.trim());
         }
 
         if (mCurrentRoute != null) {

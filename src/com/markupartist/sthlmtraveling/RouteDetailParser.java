@@ -20,6 +20,8 @@ public class RouteDetailParser extends DefaultHandler {
     private static final String TAG = "StopFinder";
 
     private boolean mInKey = false;
+    private String mCurrentText;
+    private int mRequestCount;
     private ArrayList<String> mDetails = new ArrayList<String>();
 
     public ArrayList<String> parseDetail(InputSource input) {
@@ -45,15 +47,19 @@ public class RouteDetailParser extends DefaultHandler {
         return mDetails;
     }
 
+    public int getRequestCount() {
+        return mRequestCount;
+    }
+
     public void startElement(String uri, String name, String qName, Attributes atts) {
         if (name.trim().startsWith("key_"))
             mInKey = true;
     }
 
     public void characters(char ch[], int start, int length) {
+        mCurrentText = (new String(ch).substring(start, start + length));
         if (mInKey) {
-            String chars = (new String(ch).substring(start, start + length));
-            mDetails.add(chars.trim());
+            mDetails.add(mCurrentText.trim());
         }
     }
 
@@ -61,5 +67,8 @@ public class RouteDetailParser extends DefaultHandler {
                 throws SAXException {
         if (name.trim().startsWith("key_"))
             mInKey = false;
+
+        if (name.trim().equals("requestCount"))
+            mRequestCount = Integer.parseInt(mCurrentText.trim());
     }
 }
