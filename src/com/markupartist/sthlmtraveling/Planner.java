@@ -88,8 +88,6 @@ public class Planner {
             Log.e(TAG, e.getMessage());
         }
 
-        Log.d("TAG", "Got routes " + mRoutes);
-
         return mRoutes;
     }
 
@@ -112,8 +110,6 @@ public class Planner {
         } catch (IOException e) {
             Log.e(TAG, e.getMessage());
         }
-
-        Log.d("TAG", "Got routes " + mRoutes);
 
         return mRoutes;
     }

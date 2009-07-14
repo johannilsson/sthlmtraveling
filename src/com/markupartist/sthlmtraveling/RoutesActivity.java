@@ -102,8 +102,6 @@ public class RoutesActivity extends ListActivity {
 
     private void updateRoutes() {
         ArrayList<Route> routes = Planner.getInstance().lastFoundRoutes();
-        Log.d(TAG, "Updating routes " + routes);
-
         mRouteAdapter = new ArrayAdapter<Route>(this, R.layout.routes_row, routes);
         setListAdapter(mRouteAdapter);
     }
