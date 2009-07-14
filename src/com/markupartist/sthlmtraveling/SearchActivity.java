@@ -40,6 +40,7 @@ public class SearchActivity extends Activity {
 
     private AutoCompleteTextView mFromAutoComplete;
     private AutoCompleteTextView mToAutoComplete;
+
     private final Handler mHandler = new Handler();
 
     final Runnable mSearchRoutes = new Runnable() {
