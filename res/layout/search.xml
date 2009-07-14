@@ -7,7 +7,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:background="@drawable/search_plate"
+        android:background="#999999"
         >
 		<LinearLayout 
 	        android:layout_width="fill_parent"
@@ -25,7 +25,7 @@
            		android:singleLine="true"
            		android:layout_weight="1"
 				/>
-	    	<!-- <EditText 
+	    	<!--<EditText 
 		    		android:id="@+id/from"
 		    		android:hint="@string/from"
 		    		android:textSize="?android:attr/textAppearanceSmall"
@@ -33,7 +33,7 @@
             		android:layout_height="wrap_content"
             		android:singleLine="true"
             		android:layout_weight="1"
-					/> -->
+					/>-->
 			<ImageButton
 					android:id="@+id/from_menu"
 					android:src="@android:drawable/ic_input_get"
@@ -58,15 +58,15 @@
 				android:singleLine="true"
 				android:layout_weight="1"
 				/>
-		    	<!-- <EditText 
-		    		android:id="@+id/to"
-		    		android:hint="@string/to"
-		    		android:textSize="?android:attr/textAppearanceSmall"
-           			android:layout_width="wrap_content"
-            		android:layout_height="wrap_content"
-            		android:singleLine="true"
-            		android:layout_weight="1"
-					/>-->
+		    <!-- <EditText 
+				android:id="@+id/to"
+				android:hint="@string/to"
+				android:textSize="?android:attr/textAppearanceSmall"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:singleLine="true"
+				android:layout_weight="1"
+                />-->
 				<ImageButton
 					android:id="@+id/to_menu"
 					android:src="@android:drawable/ic_input_get"
