@@ -16,6 +16,7 @@ public class Planner {
     private static final String TAG = "Planner";
     private static Planner instance = null;
     private int mRequestCount;
+    private String mIdent;
     private StopParser mStopFinder;
     private RouteParser mRouteFinder;
     private RouteDetailParser mRouteDetailFinder;
@@ -58,11 +59,62 @@ public class Planner {
             mRoutes = mRouteFinder.parseRoutes(input);
             // Update the request count, needed for all request that needs an ident.
             mRequestCount = mRouteFinder.getRequestCount();
+            mIdent = mRouteFinder.getIdent();
         } catch (MalformedURLException e) {
             Log.e(TAG, e.getMessage());
         } catch (IOException e) {
             Log.e(TAG, e.getMessage());
         }
+        return mRoutes;
+    }
+
+    public ArrayList<Route> findEarlierRoutes() {
+        String ident = URLEncoder.encode(mIdent);
+
+        mRoutes = new ArrayList<Route>();
+        try {
+            URL endpoint = new URL(STHLM_TRAVELING_API_ENDPOINT
+                    + "?method=findEarlierRoutes"
+                    + "&requestCount=" + mRequestCount
+                    + "&ident=" + ident);
+            InputSource input = new InputSource(endpoint.openStream());
+            mRoutes = mRouteFinder.parseRoutes(input);
+            // Update the request count, needed for all request that needs an ident.
+            mRequestCount = mRouteFinder.getRequestCount();
+            mIdent = mRouteFinder.getIdent();
+        } catch (MalformedURLException e) {
+            Log.e(TAG, e.getMessage());
+        } catch (IOException e) {
+            Log.e(TAG, e.getMessage());
+        }
+
+        Log.d("TAG", "Got routes " + mRoutes);
+
+        return mRoutes;
+    }
+
+    public ArrayList<Route> findLaterRoutes() {
+        String ident = URLEncoder.encode(mIdent);
+
+        mRoutes = new ArrayList<Route>();
+        try {
+            URL endpoint = new URL(STHLM_TRAVELING_API_ENDPOINT
+                    + "?method=findLaterRoutes"
+                    + "&requestCount=" + mRequestCount
+                    + "&ident=" + ident);
+            InputSource input = new InputSource(endpoint.openStream());
+            mRoutes = mRouteFinder.parseRoutes(input);
+            // Update the request count, needed for all request that needs an ident.
+            mRequestCount = mRouteFinder.getRequestCount();
+            mIdent = mRouteFinder.getIdent();
+        } catch (MalformedURLException e) {
+            Log.e(TAG, e.getMessage());
+        } catch (IOException e) {
+            Log.e(TAG, e.getMessage());
+        }
+
+        Log.d("TAG", "Got routes " + mRoutes);
+
         return mRoutes;
     }
 
