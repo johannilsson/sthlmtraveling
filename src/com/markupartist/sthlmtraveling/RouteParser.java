@@ -49,6 +49,10 @@ public class RouteParser extends DefaultHandler {
         return mRequestCount;
     }
 
+    public String getIdent() {
+        return mIdent;
+    }
+
     public void startElement(String uri, String name, String qName, Attributes atts) {
         if (!mInBy) {
             if (name.trim().startsWith("key_")) {
