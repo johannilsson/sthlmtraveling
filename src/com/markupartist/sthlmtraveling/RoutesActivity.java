@@ -10,40 +10,102 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.AdapterView.OnItemClickListener;
 
 public class RoutesActivity extends ListActivity {
-    private final String TAG = "Routes";
+    private final String TAG = "RoutesActivity";
+    private final int LATER_ROUTES = 1;
+    private final int EARLIER_ROUTES = 0;
     private static final int DIALOG_NO_ROUTE_DETAILS_FOUND = 0;
+    private final Handler mHandler = new Handler();
     private ArrayAdapter<Route> mRouteAdapter;
     private TextView mFromView;
     private TextView mToView;
     private int mCurrentRoutePosition;
-    final Handler mHandler = new Handler();
+    private ListView mEarlierLaterRoutes;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.routes_list);
 
-        ArrayList<Route> routes = Planner.getInstance().lastFoundRoutes();
-        if (routes != null && !routes.isEmpty()) {
-            mRouteAdapter = new ArrayAdapter<Route>(this, 
-                    R.layout.routes_row, routes);
-            setListAdapter(mRouteAdapter);
+        updateRoutes();
 
-            mFromView = (TextView) findViewById(R.id.route_from);
-            mToView = (TextView) findViewById(R.id.route_to);
+        mFromView = (TextView) findViewById(R.id.route_from);
+        mToView = (TextView) findViewById(R.id.route_to);
 
-            Bundle extras = getIntent().getExtras();
-            mFromView.setText(extras.getString("com.markupartist.sthlmtraveling.startPoint"));
-            mToView.setText(extras.getString("com.markupartist.sthlmtraveling.endPoint"));
+        Bundle extras = getIntent().getExtras();
+        mFromView.setText(extras.getString("com.markupartist.sthlmtraveling.startPoint"));
+        mToView.setText(extras.getString("com.markupartist.sthlmtraveling.endPoint"));
+
+        // Check the simple view in android.layout to see if we can use them
+        // instead of simple_list_row.
+        ArrayAdapter<String> earlierLaterAdapter = 
+            new ArrayAdapter<String>(this, R.layout.simple_list_row);
+
+        earlierLaterAdapter.add("Show earlier routes");
+        earlierLaterAdapter.add("Show later routes");
+
+        mEarlierLaterRoutes = (ListView) findViewById(R.id.earlier_later_routes);
+        mEarlierLaterRoutes.setAdapter(earlierLaterAdapter);
+        mEarlierLaterRoutes.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, 
+                    int position, long id) {
+                switch (position) {
+                    case EARLIER_ROUTES:
+                        final ProgressDialog earlierProgress = ProgressDialog.show(RoutesActivity.this, "", getText(R.string.loading), true);
+                        new Thread() {
+                            public void run() {
+                                try {
+                                    Planner.getInstance().findEarlierRoutes();
+                                    mHandler.post(mSearchRoutes);
+                                    earlierProgress.dismiss();
+                                } catch (Exception e) {
+                                    earlierProgress.dismiss();
+                                }
+                            }
+                        }.start();
+                        break;
+                    case LATER_ROUTES:
+                        final ProgressDialog laterProgress = ProgressDialog.show(RoutesActivity.this, "", getText(R.string.loading), true);
+                        new Thread() {
+                            public void run() {
+                                try {
+                                    Planner.getInstance().findEarlierRoutes();
+                                    mHandler.post(mSearchRoutes);
+                                    laterProgress.dismiss();
+                                } catch (Exception e) {
+                                    laterProgress.dismiss();
+                                }
+                            }
+                        }.start();
+                        break;
+                }
+            }
+        });
+    }
+
+    final Runnable mSearchRoutes = new Runnable() {
+        public void run() {
+            updateRoutes();
         }
+    };
+
+    private void updateRoutes() {
+        ArrayList<Route> routes = Planner.getInstance().lastFoundRoutes();
+        Log.d(TAG, "Updating routes " + routes);
+
+        mRouteAdapter = new ArrayAdapter<Route>(this, R.layout.routes_row, routes);
+        setListAdapter(mRouteAdapter);
     }
 
     @Override
