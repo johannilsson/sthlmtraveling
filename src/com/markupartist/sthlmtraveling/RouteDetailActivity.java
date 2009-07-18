@@ -16,9 +16,7 @@ public class RouteDetailActivity extends ListActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.route_details_list);
 
-        Bundle extras = getIntent().getExtras();
-        int routePosition = extras.getInt("com.markupartist.sthlmtraveling.route_position");
-        Route route = Planner.getInstance().lastFoundRoutes().get(routePosition);
+        Route route = RoutesActivity.route;
 
         TextView fromView = (TextView) findViewById(R.id.route_from);
         fromView.setText(route.from + " (" + route.departure + ")");
