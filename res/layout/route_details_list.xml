@@ -28,6 +28,8 @@
     	android:id="@+id/android:list"
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
+        android:dividerHeight="0.1dip"
+        android:divider="#4A4A4A"
 		/>
 	<TextView android:id="@+id/android:empty"
 		android:layout_width="wrap_content"

@@ -26,6 +26,14 @@
 			android:textColor="#ffffff"
 	        />
 	</LinearLayout>
+	<ListView
+	    android:id="@+id/android:list"
+	    android:layout_width="fill_parent" 
+	    android:layout_height="fill_parent"
+	    android:dividerHeight="0.1dip"
+	    android:divider="#4A4A4A"
+        />
+	<!--
     <ListView 
         android:id="@+id/earlier_later_routes"
         android:layout_width="fill_parent"
@@ -41,5 +49,6 @@
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
 		/>
+	-->
 </LinearLayout>
 
