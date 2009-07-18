@@ -15,6 +15,11 @@ import android.util.Log;
 public class Planner {
     private static final String TAG = "Planner";
     private static Planner instance = null;
+    /**
+     * Needed to keep track of which routes to remove when getting earlier and
+     * later routes. Later on we will return the full set then this will be removed.
+     */
+    private int mPreviousRouteCount;
     private int mRequestCount;
     private String mIdent;
     private StopParser mStopFinder;
@@ -57,6 +62,8 @@ public class Planner {
                     + fromEncoded + "&to=" + toEncoded);
             InputSource input = new InputSource(endpoint.openStream());
             mRoutes = mRouteFinder.parseRoutes(input);
+
+            mPreviousRouteCount = mRoutes.size();
             // Update the request count, needed for all request that needs an ident.
             mRequestCount = mRouteFinder.getRequestCount();
             mIdent = mRouteFinder.getIdent();
@@ -69,6 +76,11 @@ public class Planner {
     }
 
     public ArrayList<Route> findEarlierRoutes() {
+        if (mIdent == null) {
+            Log.e(TAG, "findEarlierRoutes was accessed before findRoutes.");
+            throw new IllegalStateException("findRoutes must be run firsts.");
+        }
+
         String ident = URLEncoder.encode(mIdent);
 
         mRoutes = new ArrayList<Route>();
@@ -79,6 +91,18 @@ public class Planner {
                     + "&ident=" + ident);
             InputSource input = new InputSource(endpoint.openStream());
             mRoutes = mRouteFinder.parseRoutes(input);
+            /*
+            ArrayList<Route> routes = mRouteFinder.parseRoutes(input);
+            int newCount = routes.size();
+            int count = mPreviousRouteCount;
+            int itemsToAdd = newCount - count;
+            for (int i = 0; i < itemsToAdd; i++) {
+                Route route = routes.get(i);
+                mRoutes.add(route);
+            }
+            mPreviousRouteCount = routes.size();
+            */
+
             // Update the request count, needed for all request that needs an ident.
             mRequestCount = mRouteFinder.getRequestCount();
             mIdent = mRouteFinder.getIdent();
@@ -92,6 +116,11 @@ public class Planner {
     }
 
     public ArrayList<Route> findLaterRoutes() {
+        if (mIdent == null) {
+            Log.e(TAG, "findEarlierRoutes was accessed before findRoutes.");
+            throw new IllegalStateException("findRoutes must be run firsts.");
+        }
+
         String ident = URLEncoder.encode(mIdent);
 
         mRoutes = new ArrayList<Route>();
@@ -101,8 +130,19 @@ public class Planner {
                     + "&requestCount=" + mRequestCount
                     + "&ident=" + ident);
             InputSource input = new InputSource(endpoint.openStream());
+            
             mRoutes = mRouteFinder.parseRoutes(input);
-            // Update the request count, needed for all request that needs an ident.
+            /*
+            ArrayList<Route> routes = mRouteFinder.parseRoutes(input);
+
+            int count = mPreviousRouteCount;
+            for (int i = count; i < routes.size(); i++) {
+                Route route = routes.get(i);
+                mRoutes.add(route);
+            }
+            */
+
+            //mPreviousRouteCount = routes.size();
             mRequestCount = mRouteFinder.getRequestCount();
             mIdent = mRouteFinder.getIdent();
         } catch (MalformedURLException e) {
