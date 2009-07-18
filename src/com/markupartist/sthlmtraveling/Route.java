@@ -23,4 +23,15 @@ public class Route {
         //TODO: Will be split up in different views in the routes_row layout later on.
         return departure + "-" + arrival + ", " + changes + " changes (" + duration + ")";
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        Route other = (Route) obj;
+        if (routeId == null) {
+            if (other.routeId != null)
+                return false;
+        } else if (!routeId.equals(other.routeId))
+            return false;
+        return true;
+    }
 }
