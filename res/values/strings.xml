@@ -8,7 +8,7 @@
     <string name="no_route_details">Unfortunately there was no route found. Most likely this search was to old.</string>
     <string name="new_search">Search</string>
     <string name="empty_value">Missing value</string>
-    <string name="loading">Loading. Please wait...</string>
+    <string name="loading">Searching. Please wait...</string>
     <string name="my_location">My location</string>
     <string name="about">About</string>
     <string name="about_this_app">STHLM Traveling is developed by Johan Nilsson, please contact him if you have ideas or experience any problems. \n\nsthlmtraveling@markupartist.com \n\nAll data is gathered from SL - Stockholm Public Transport.</string>
