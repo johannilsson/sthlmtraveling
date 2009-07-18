@@ -24,8 +24,6 @@ import com.markupartist.sthlmtraveling.SectionedAdapter.Section;
 
 public class RoutesActivity extends ListActivity {
     private final String TAG = "RoutesActivity";
-    private final int EARLIER_ROUTES = 0;
-    private final int LATER_ROUTES = 1;
     private static final int DIALOG_NO_ROUTE_DETAILS_FOUND = 0;
 
     private final int SECTION_EARLIER_ROUTES = 1;
@@ -34,7 +32,6 @@ public class RoutesActivity extends ListActivity {
 
     private final Handler mHandler = new Handler();
     private ArrayAdapter<Route> mRouteAdapter;
-    //private RouteListAdapter mRouteAdapter;
     private TextView mFromView;
     private TextView mToView;
     /**
@@ -145,40 +142,6 @@ public class RoutesActivity extends ListActivity {
                     }
                 }.start();
             }
-            
-            /*
-            int sectionIndex = mSectionedAdapter.getSectionIndex(position);
-            switch (sectionIndex) {
-                case EARLIER_ROUTES:
-                    final ProgressDialog earlierProgress = ProgressDialog.show(RoutesActivity.this, "", getText(R.string.loading), true);
-                    new Thread() {
-                        public void run() {
-                            try {
-                                Planner.getInstance().findEarlierRoutes();
-                                mHandler.post(mUpdateRoutes);
-                                earlierProgress.dismiss();
-                            } catch (Exception e) {
-                                earlierProgress.dismiss();
-                            }
-                        }
-                    }.start();
-                    break;
-                case SECTION_LATER_ROUTES:
-                    final ProgressDialog laterProgress = ProgressDialog.show(RoutesActivity.this, "", getText(R.string.loading), true);
-                    new Thread() {
-                        public void run() {
-                            try {
-                                Planner.getInstance().findLaterRoutes();
-                                mHandler.post(mUpdateRoutes);
-                                laterProgress.dismiss();
-                            } catch (Exception e) {
-                                laterProgress.dismiss();
-                            }
-                        }
-                    }.start();
-                    break;
-                }
-                */
         }
     }
 
