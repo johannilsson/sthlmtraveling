@@ -105,7 +105,4 @@ public class RouteParser extends DefaultHandler {
             mInBy = false;
         }
     }
-
-    // Used to test xml parsing...
-    static String xmlString = "<findRoutes><ident>ng.015773217.1245358576</ident><routes><key_0><routeId>C0-0</routeId><from>T-Centralen</from><to>Tensta</to><departure>22:58</departure><arrival>23:24</arrival><duration>0:26</duration><changes>1</changes><by><key_0>tunnelbanans gröna linje 19</key_0><key_1>tunnelbanans blå linje 10</key_1></by></key_0><key_1><routeId>C0-1</routeId><from>Stockholms central</from><to>Tensta</to><departure>23:13</departure><arrival>23:39</arrival><duration>0:26</duration><changes>1</changes><by><key_0>pendeltåg 35</key_0><key_1>tunnelbanans blå linje 10</key_1></by></key_1><key_2><routeId>C0-2</routeId><from>T-Centralen</from><to>Tensta</to><departure>23:28</departure><arrival>23:54</arrival><duration>0:26</duration><changes>1</changes><by><key_0>tunnelbanans gröna linje 19</key_0><key_1>tunnelbanans blå linje 10</key_1></by></key_2></routes><status>success</status></findRoutes>";
 }
