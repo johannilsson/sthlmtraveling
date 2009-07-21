@@ -3,6 +3,7 @@ package com.markupartist.sthlmtraveling;
 import static com.markupartist.sthlmtraveling.ApiSettings.STHLM_TRAVELING_API_ENDPOINT;
 
 import java.io.IOException;
+import java.io.StringReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -15,6 +16,7 @@ import android.util.Log;
 public class Planner {
     private static final String TAG = "Planner";
     private static Planner instance = null;
+    private boolean mUseMockData = true;
     /**
      * Needed to keep track of which routes to remove when getting earlier and
      * later routes. Later on we will return the full set then this will be removed.
@@ -37,9 +39,16 @@ public class Planner {
     public ArrayList<String> findStop(String name) {
         ArrayList<String> stops = new ArrayList<String>();
         try {
-            URL endpoint = new URL(STHLM_TRAVELING_API_ENDPOINT
-                    + "?method=findStop&name=" + URLEncoder.encode(name));
-            InputSource input = new InputSource(endpoint.openStream());
+            InputSource input;
+            if (mUseMockData) {
+                StringReader sr = new StringReader(mStopsXml);
+                input = new InputSource(sr);
+            } else {
+                URL endpoint = new URL(STHLM_TRAVELING_API_ENDPOINT
+                        + "?method=findStop&name=" + URLEncoder.encode(name));
+                input = new InputSource(endpoint.openStream());
+            }
+
             stops = mStopFinder.parseStops(input);
         } catch (MalformedURLException e) {
             Log.e(TAG, e.getMessage());
@@ -57,10 +66,16 @@ public class Planner {
 
         mRoutes = new ArrayList<Route>();
         try {
-            URL endpoint = new URL(STHLM_TRAVELING_API_ENDPOINT
-                    + "?method=findRoutes&from=" 
-                    + fromEncoded + "&to=" + toEncoded);
-            InputSource input = new InputSource(endpoint.openStream());
+            InputSource input;
+            if (mUseMockData) {
+                StringReader sr = new StringReader(mRoutesXml);
+                input = new InputSource(sr);
+            } else {
+                URL endpoint = new URL(STHLM_TRAVELING_API_ENDPOINT
+                        + "?method=findRoutes&from=" 
+                        + fromEncoded + "&to=" + toEncoded);
+                input = new InputSource(endpoint.openStream());
+            }
             mRoutes = mRouteFinder.parseRoutes(input);
 
             mPreviousRouteCount = mRoutes.size();
@@ -85,11 +100,17 @@ public class Planner {
 
         mRoutes = new ArrayList<Route>();
         try {
-            URL endpoint = new URL(STHLM_TRAVELING_API_ENDPOINT
-                    + "?method=findEarlierRoutes"
-                    + "&requestCount=" + mRequestCount
-                    + "&ident=" + ident);
-            InputSource input = new InputSource(endpoint.openStream());
+            InputSource input;
+            if (mUseMockData) {
+                StringReader sr = new StringReader(mRoutesXml);
+                input = new InputSource(sr);
+            } else {
+                URL endpoint = new URL(STHLM_TRAVELING_API_ENDPOINT
+                        + "?method=findEarlierRoutes"
+                        + "&requestCount=" + mRequestCount
+                        + "&ident=" + ident);
+                input = new InputSource(endpoint.openStream());
+            }
             mRoutes = mRouteFinder.parseRoutes(input);
             /*
             ArrayList<Route> routes = mRouteFinder.parseRoutes(input);
@@ -125,11 +146,17 @@ public class Planner {
 
         mRoutes = new ArrayList<Route>();
         try {
-            URL endpoint = new URL(STHLM_TRAVELING_API_ENDPOINT
-                    + "?method=findLaterRoutes"
-                    + "&requestCount=" + mRequestCount
-                    + "&ident=" + ident);
-            InputSource input = new InputSource(endpoint.openStream());
+            InputSource input;
+            if (mUseMockData) {
+                StringReader sr = new StringReader(mRoutesXml);
+                input = new InputSource(sr);
+            } else {
+                URL endpoint = new URL(STHLM_TRAVELING_API_ENDPOINT
+                        + "?method=findLaterRoutes"
+                        + "&requestCount=" + mRequestCount
+                        + "&ident=" + ident);
+                input = new InputSource(endpoint.openStream());
+            }
             
             mRoutes = mRouteFinder.parseRoutes(input);
             /*
@@ -161,12 +188,18 @@ public class Planner {
     public ArrayList<String> findRouteDetails(Route route) {
         mRouteDetails = new ArrayList<String>();
         try {
-            URL endpoint = new URL(STHLM_TRAVELING_API_ENDPOINT
-                    + "?method=routeDetail&ident=" + route.ident 
-                    + "&routeId=" + route.routeId
-                    + "&requestCount=" + mRequestCount);
-            mRouteDetails = mRouteDetailFinder.parseDetail(
-                    new InputSource(endpoint.openStream()));
+            InputSource input;
+            if (mUseMockData) {
+                StringReader sr = new StringReader(mRouteDetailXml);
+                input = new InputSource(sr);
+            } else {
+                URL endpoint = new URL(STHLM_TRAVELING_API_ENDPOINT
+                        + "?method=routeDetail&ident=" + route.ident 
+                        + "&routeId=" + route.routeId
+                        + "&requestCount=" + mRequestCount);
+                input = new InputSource(endpoint.openStream());
+            }
+            mRouteDetails = mRouteDetailFinder.parseDetail(input);
             // Update the request count, needed for all request that needs an ident.
             mRequestCount = mRouteDetailFinder.getRequestCount();
         } catch (MalformedURLException e) {
@@ -186,4 +219,19 @@ public class Planner {
             instance = new Planner();
         return instance;
     }
+
+    /**
+     * Mocked routes xml
+     */
+    private static final String mRoutesXml = "<findRoutes generator='zend' version='1.0'><requestCount>1</requestCount><ident>54.010259213.1248185539</ident><routes><key_0><routeId>C0-0</routeId><from>Centralen (Klarabergsviad.)</from><to>Tensta</to><departure>approx. 19:36</departure><arrival>20:03</arrival><duration>0:27</duration><changes>1</changes><by><key_0>Bus -</key_0><key_1>Metro blue line 10</key_1></by></key_0><key_1><routeId>C0-1</routeId><from>Centralen (Klarabergsviad.)</from><to>Tensta</to><departure>approx. 19:46</departure><arrival>20:13</arrival><duration>0:27</duration><changes>1</changes><by><key_0>Bus -</key_0><key_1>Metro blue line 10</key_1></by></key_1><key_2><routeId>C0-2</routeId><from>Centralen (Klarabergsviad.)</from><to>Tensta</to><departure>approx. 19:56</departure><arrival>20:23</arrival><duration>0:27</duration><changes>1</changes><by><key_0>Bus -</key_0><key_1>Metro blue line 10</key_1></by></key_2></routes><status>success</status></findRoutes>";
+
+    /**
+     * Mocked stops xml
+     */
+    private static final String mStopsXml = "<findStop generator='zend' version='1.0'><key_0>Telefonplan (Stockholm)</key_0><key_1>Telegramvägen (Nacka)</key_1><key_2>Telemarksgränd (Stockholm)</key_2><key_3>Tellusborgsvägen (Stockholm)</key_3><key_4>TEL</key_4><key_5>Telia (Stockholm)</key_5><key_6>Tellusvägen (Järfälla)</key_6><key_7>Tellusgatan (Sigtuna)</key_7><key_8>Telgebo (Södertälje)</key_8><status>success</status></findStop>";
+
+    /**
+     * Mocked route detail xml
+     */
+    private static final String mRouteDetailXml = "<routeDetail generator='zend' version='1.0'><requestCount>3</requestCount><details><key_0>Take Bus - from Centralen (Klarabergsviad.) towards Rådhuset.Your departure from Centralen (Klarabergsviad.) is at approx. 19:36, your arrival in Rådhuset is at 19:40.</key_0><key_1>At Rådhuset change to Metro blue line 10 towards Hjulsta.Your departure from Rådhuset is at 19:45.You arrive in Tensta at 20:03.</key_1><key_2>The duration of your journey is 27 minutes.</key_2><key_3>Have a nice journey!</key_3></details><status>success</status></routeDetail>";
 }
