@@ -1,6 +1,7 @@
 package com.markupartist.sthlmtraveling;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -10,14 +11,17 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.format.Time;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Adapter;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 import com.markupartist.sthlmtraveling.SectionedAdapter.Section;
@@ -26,12 +30,16 @@ public class RoutesActivity extends ListActivity {
     private final String TAG = "RoutesActivity";
     private static final int DIALOG_NO_ROUTE_DETAILS_FOUND = 0;
 
-    private final int SECTION_EARLIER_ROUTES = 1;
+    private static final int ADAPTER_EARLIER = 0;
+    private static final int ADAPTER_ROUTES = 1;
+    private static final int ADAPTER_LATER = 2;
+
+    private final int SECTION_DATE_TIME = 1;
     private final int SECTION_ROUTES = 2;
-    private final int SECTION_LATER_ROUTES = 3;
 
     private final Handler mHandler = new Handler();
     private ArrayAdapter<Route> mRouteAdapter;
+    private MultipleListAdapter mMultipleListAdapter;
     private TextView mFromView;
     private TextView mToView;
     /**
@@ -55,38 +63,57 @@ public class RoutesActivity extends ListActivity {
     }
 
     private void createSections() {
+        // Date and time adapter.
+
+        // For now just get the current date time.
+        Time time = new Time();
+        time.setToNow();
+        String timeString = time.format("%R %x"); // %r
+        ArrayList<HashMap<String,String> > list = new ArrayList<HashMap<String,String> >(1); 
+        HashMap<String, String> item = new HashMap<String, String>();
+        item.put("title", timeString);
+        list.add(item);
+        SimpleAdapter dateTimeAdapter = new SimpleAdapter(
+                this,
+                list,
+                R.layout.date_and_time,
+                new String[] { "title" },
+                new int[] { R.id.date_time } );
+
         // Earlier routes
         ArrayAdapter<String> earlierAdapter = 
             new ArrayAdapter<String>(this, R.layout.simple_list_row);
         earlierAdapter.add("Show earlier routes");
-        mSectionedAdapter.addSection(SECTION_EARLIER_ROUTES, "Earlier routes", earlierAdapter);
 
         // Routes
         ArrayList<Route> routes = Planner.getInstance().lastFoundRoutes();        
         mRouteAdapter = new ArrayAdapter<Route>(this, R.layout.routes_row, routes);
-        mRouteAdapter.setNotifyOnChange(true);
-        mSectionedAdapter.addSection(SECTION_ROUTES, "Routes", mRouteAdapter);
 
         // Later routes
         ArrayAdapter<String> laterAdapter = 
             new ArrayAdapter<String>(this, R.layout.simple_list_row);
         laterAdapter.add("Show later routes");
-        mSectionedAdapter.addSection(SECTION_LATER_ROUTES, "Later routes", laterAdapter);
+
+        mMultipleListAdapter = new MultipleListAdapter();
+        mMultipleListAdapter.addAdapter(ADAPTER_EARLIER, earlierAdapter);
+        mMultipleListAdapter.addAdapter(ADAPTER_ROUTES, mRouteAdapter);
+        mMultipleListAdapter.addAdapter(ADAPTER_LATER, laterAdapter);
+
+        mSectionedAdapter.addSection(SECTION_DATE_TIME, "Date & Time", dateTimeAdapter);
+        mSectionedAdapter.addSection(SECTION_ROUTES, "Routes", mMultipleListAdapter);
 
         setListAdapter(mSectionedAdapter);
     }
-    
+
     SectionedAdapter mSectionedAdapter = new SectionedAdapter() {
         protected View getHeaderView(Section section, int index, 
                 View convertView, ViewGroup parent) {
             TextView result = (TextView) convertView;
 
-            if (convertView == null) {
+            if (convertView == null)
                 result = (TextView) getLayoutInflater().inflate(R.layout.header, null);
-            }
 
             result.setText(section.caption);
-
             return (result);
         }
     };
@@ -98,7 +125,8 @@ public class RoutesActivity extends ListActivity {
         @Override public void run() {
             final ArrayList<Route> routes = Planner.getInstance().lastFoundRoutes();
             //TODO: Should find a better way than resetting the adapter like this.
-            mRouteAdapter = new ArrayAdapter<Route>(RoutesActivity.this, R.layout.routes_row, routes);
+            mRouteAdapter = new ArrayAdapter<Route>(
+                    RoutesActivity.this, R.layout.routes_row, routes);
             mSectionedAdapter.notifyDataSetChanged();
         }
     };
@@ -107,14 +135,17 @@ public class RoutesActivity extends ListActivity {
     protected void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
 
-        Object item = mSectionedAdapter.getItem(position);
-        if (item instanceof Route) {
-            route = (Route) item;
-            findRouteDetails(route);            
-        } else {
-            Section section = mSectionedAdapter.getSection(position);
-            Log.d(TAG, "section.id=" + section.id);
-            if (section.id == SECTION_EARLIER_ROUTES) {
+        Section section = mSectionedAdapter.getSection(position);
+        int sectionId = section.id;
+        int innerPosition = mSectionedAdapter.getSectionIndex(position);
+        Adapter adapter = section.adapter;
+
+        switch (sectionId) {
+        case SECTION_ROUTES:
+            MultipleListAdapter multipleListAdapter = (MultipleListAdapter) adapter;
+            int adapterId = multipleListAdapter.getAdapterId(innerPosition);
+            switch(adapterId) {
+            case ADAPTER_EARLIER:
                 final ProgressDialog earlierProgress = ProgressDialog.show(RoutesActivity.this, "", getText(R.string.loading), true);
                 earlierProgress.setCancelable(true);
                 new Thread() {
@@ -127,8 +158,9 @@ public class RoutesActivity extends ListActivity {
                             earlierProgress.dismiss();
                         }
                     }
-                }.start();
-            } else if (section.id == SECTION_LATER_ROUTES) {
+                }.start(); 
+                break;
+            case ADAPTER_LATER:
                 final ProgressDialog laterProgress = ProgressDialog.show(RoutesActivity.this, "", getText(R.string.loading), true);
                 new Thread() {
                     public void run() {
@@ -141,7 +173,15 @@ public class RoutesActivity extends ListActivity {
                         }
                     }
                 }.start();
+                break;
+            case ADAPTER_ROUTES:
+                route = (Route) mSectionedAdapter.getItem(position);
+                findRouteDetails(route);
+                break;
             }
+            break;
+        case SECTION_DATE_TIME:
+            break;
         }
     }
 
