@@ -69,7 +69,7 @@ abstract public class SectionedAdapter extends BaseAdapter {
     }
 
     /**
-     * Get the section if of the inner adapter
+     * Get the section id of the inner adapter
      * @author johan
      * @param position the position
      * @return the inner adapters position
