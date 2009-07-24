@@ -13,6 +13,7 @@
         </activity>
     <activity android:name=".RoutesActivity"></activity>
     <activity android:name=".RouteDetailActivity"></activity>
+    <activity android:name=".ChangeRouteTimeActivity"></activity>
 </application>
     <uses-sdk android:minSdkVersion="3" />
     <uses-permission android:name="android.permission.INTERNET"></uses-permission>
