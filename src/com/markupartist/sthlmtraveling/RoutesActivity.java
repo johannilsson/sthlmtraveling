@@ -11,6 +11,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.Editable;
 import android.text.format.Time;
 import android.util.Log;
 import android.view.Menu;
@@ -34,14 +35,18 @@ public class RoutesActivity extends ListActivity {
     private static final int ADAPTER_ROUTES = 1;
     private static final int ADAPTER_LATER = 2;
 
-    private final int SECTION_DATE_TIME = 1;
+    private final int SECTION_CHANGE_TIME = 1;
     private final int SECTION_ROUTES = 2;
+
+    private final int CHANGE_TIME = 0;
 
     private final Handler mHandler = new Handler();
     private ArrayAdapter<Route> mRouteAdapter;
     private MultipleListAdapter mMultipleListAdapter;
     private TextView mFromView;
     private TextView mToView;
+    private ArrayList<HashMap<String, String>> mDateAdapterData;
+    private Time mTime;
     /**
      * Holds the current selected route, this is referenced by 
      * RouteDetailActivity.
@@ -66,16 +71,16 @@ public class RoutesActivity extends ListActivity {
         // Date and time adapter.
 
         // For now just get the current date time.
-        Time time = new Time();
-        time.setToNow();
-        String timeString = time.format("%R %x"); // %r
-        ArrayList<HashMap<String,String> > list = new ArrayList<HashMap<String,String> >(1); 
+        mTime = new Time();
+        mTime.setToNow();
+        String timeString = mTime.format("%R %x"); // %r
+        mDateAdapterData = new ArrayList<HashMap<String,String>>(1); 
         HashMap<String, String> item = new HashMap<String, String>();
         item.put("title", timeString);
-        list.add(item);
+        mDateAdapterData.add(item);
         SimpleAdapter dateTimeAdapter = new SimpleAdapter(
                 this,
-                list,
+                mDateAdapterData,
                 R.layout.date_and_time,
                 new String[] { "title" },
                 new int[] { R.id.date_time } );
@@ -99,7 +104,7 @@ public class RoutesActivity extends ListActivity {
         mMultipleListAdapter.addAdapter(ADAPTER_ROUTES, mRouteAdapter);
         mMultipleListAdapter.addAdapter(ADAPTER_LATER, laterAdapter);
 
-        mSectionedAdapter.addSection(SECTION_DATE_TIME, "Date & Time", dateTimeAdapter);
+        mSectionedAdapter.addSection(SECTION_CHANGE_TIME, "Date & Time", dateTimeAdapter);
         mSectionedAdapter.addSection(SECTION_ROUTES, "Routes", mMultipleListAdapter);
 
         setListAdapter(mSectionedAdapter);
@@ -180,7 +185,13 @@ public class RoutesActivity extends ListActivity {
                 break;
             }
             break;
-        case SECTION_DATE_TIME:
+        case SECTION_CHANGE_TIME:
+            Intent i = new Intent(this, ChangeRouteTimeActivity.class);
+
+            i.putExtra("com.markupartist.sthlmtraveling.routeTime", mTime.format2445());
+            i.putExtra("com.markupartist.sthlmtraveling.startPoint", mFromView.getText());
+            i.putExtra("com.markupartist.sthlmtraveling.endPoint", mToView.getText());
+            startActivityForResult(i, CHANGE_TIME);
             break;
         }
     }
@@ -222,6 +233,40 @@ public class RoutesActivity extends ListActivity {
         }
     }
 
+    /**
+     * This method is called when the sending activity has finished, with the
+     * result it supplied.
+     * 
+     * @param requestCode The original request code as given to
+     *                    startActivity().
+     * @param resultCode From sending activity as per setResult().
+     * @param data From sending activity as per setResult().
+     */
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode,
+                Intent data) {
+        if (requestCode == CHANGE_TIME) {
+            if (resultCode == RESULT_CANCELED) {
+                Log.d(TAG, "Change time activity cancelled.");
+            } else {
+                final ArrayList<Route> routes = Planner.getInstance().lastFoundRoutes();
+
+                String newTime = data.getStringExtra("com.markupartist.sthlmtraveling.routeTime");
+                Time time = new Time();
+                time.parse(newTime);
+
+                //TODO: Should find a better way than resetting the adapter like this.
+                mRouteAdapter = new ArrayAdapter<Route>(
+                        RoutesActivity.this, R.layout.routes_row, routes);
+
+                HashMap<String, String> item = mDateAdapterData.get(0);
+                item.put("title", time.format("%R %x"));
+
+                mSectionedAdapter.notifyDataSetChanged();
+            }
+        }
+    }
+    
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.options_menu, menu);
