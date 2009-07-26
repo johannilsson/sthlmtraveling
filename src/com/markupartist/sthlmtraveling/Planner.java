@@ -11,17 +11,18 @@ import java.util.ArrayList;
 
 import org.xml.sax.InputSource;
 
+import android.text.format.Time;
 import android.util.Log;
 
 public class Planner {
     private static final String TAG = "Planner";
     private static Planner instance = null;
-    private boolean mUseMockData = true;
+    private boolean mUseMockData = false;
     /**
      * Needed to keep track of which routes to remove when getting earlier and
      * later routes. Later on we will return the full set then this will be removed.
      */
-    private int mPreviousRouteCount;
+    //private int mPreviousRouteCount;
     private int mRequestCount;
     private String mIdent;
     private StopParser mStopFinder;
@@ -58,11 +59,13 @@ public class Planner {
         return stops;
     }
 
-    public ArrayList<Route> findRoutes(String from, String to) {
-        Log.d(TAG, "Searching for from=" + from + ",to=" + to);
+    public ArrayList<Route> findRoutes(String startPoint, String endPoint, 
+            Time time) {
+        Log.d(TAG, "Searching for startPoint=" + startPoint + ",endPoint=" + endPoint);
 
-        String fromEncoded = URLEncoder.encode(from);
-        String toEncoded = URLEncoder.encode(to);
+        String startPointEncoded = URLEncoder.encode(startPoint);
+        String endPointEncoded = URLEncoder.encode(endPoint);
+        String timeEncoded = URLEncoder.encode(time.format("%Y-%m-%d %H:%M"));
 
         mRoutes = new ArrayList<Route>();
         try {
@@ -72,13 +75,15 @@ public class Planner {
                 input = new InputSource(sr);
             } else {
                 URL endpoint = new URL(STHLM_TRAVELING_API_ENDPOINT
-                        + "?method=findRoutes&from=" 
-                        + fromEncoded + "&to=" + toEncoded);
+                        + "?method=findRoutes" 
+                        + "&from=" + startPointEncoded 
+                        + "&to=" + endPointEncoded
+                        + "&time=" + timeEncoded);
                 input = new InputSource(endpoint.openStream());
             }
             mRoutes = mRouteFinder.parseRoutes(input);
 
-            mPreviousRouteCount = mRoutes.size();
+            //mPreviousRouteCount = mRoutes.size();
             // Update the request count, needed for all request that needs an ident.
             mRequestCount = mRouteFinder.getRequestCount();
             mIdent = mRouteFinder.getIdent();
