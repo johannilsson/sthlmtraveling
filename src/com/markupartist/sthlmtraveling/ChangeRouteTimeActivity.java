@@ -1,18 +1,16 @@
 package com.markupartist.sthlmtraveling;
 
-import java.util.ArrayList;
-
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.format.Time;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -23,9 +21,12 @@ public class ChangeRouteTimeActivity extends Activity {
     static final String TAG = "ChangeRouteTimeActivity"; 
     static final int DIALOG_DATE = 0;
     static final int DIALOG_TIME = 1;
+    static final int DIALOG_PROGRESS = 2;
+    static final int DIALOG_NO_ROUTES_FOUND = 3;
     private Time mTime;
     private Button mDateButton;
     private Button mTimeButton;
+    private final Handler mHandler = new Handler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,13 +59,7 @@ public class ChangeRouteTimeActivity extends Activity {
         Button changeButton = (Button) findViewById(R.id.change_route_time_change);
         changeButton.setOnClickListener(new OnClickListener() {
             @Override public void onClick(View v) {
-                SearchRoutesTask task = new SearchRoutesTask();
-                task.execute(startPoint, endPoint);
-
-                setResult(RESULT_OK, (new Intent())
-                        .putExtra("com.markupartist.sthlmtraveling.routeTime", 
-                                mTime.format2445()));
-                finish();
+                searchRoutes(startPoint, endPoint, mTime);
             }
         });
 
@@ -100,6 +95,20 @@ public class ChangeRouteTimeActivity extends Activity {
                 // TODO: Base 24 hour on locale, same with the format.
                 return new TimePickerDialog(this,
                         mTimeSetListener, mTime.hour, mTime.minute, true);
+            case DIALOG_PROGRESS:
+                ProgressDialog progress = new ProgressDialog(this);
+                progress.setMessage(getText(R.string.loading));
+                return progress;
+            case DIALOG_NO_ROUTES_FOUND:
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                return builder.setTitle("Unfortunately no routes was found")
+                    .setMessage("If searhing for an address try adding a house number.")
+                    .setCancelable(true)
+                    .setNeutralButton("Ok", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            dialog.cancel();
+                       }
+                    }).create();
         }
         return null;
     }
@@ -114,7 +123,7 @@ public class ChangeRouteTimeActivity extends Activity {
                 ((TimePickerDialog) dialog).updateTime(mTime.hour, mTime.minute);
                 break;
         }
-    }    
+    }
 
     private DatePickerDialog.OnDateSetListener mDateSetListener =
         new DatePickerDialog.OnDateSetListener() {
@@ -137,30 +146,47 @@ public class ChangeRouteTimeActivity extends Activity {
                 updateDisplay();
             }
         };
+        
+    /**
+     * Fires off a thread to do the query. Will call onSearchResult when done.
+     * @param startPoint the start point.
+     * @param endPoint the end point.
+     * @param time the time to base the search on.
+     */
+    private void searchRoutes(final String startPoint, final String endPoint, 
+            final Time time) {
+        showDialog(DIALOG_PROGRESS);
+        new Thread() {
+            public void run() {
+                try {
+                    Planner.getInstance().findRoutes(startPoint, endPoint, time);
+                    mHandler.post(new Runnable() {
+                        @Override public void run() {
+                            onSearchRoutesResult();
+                        }
+                    });
+                    dismissDialog(DIALOG_PROGRESS);
+                } catch (Exception e) {
+                    dismissDialog(DIALOG_PROGRESS);
+                }
+            }
+        }.start();
+    }
 
     /**
-     * Search for routes.
+     * Called when we have a search result for routes.
      */
-    private class SearchRoutesTask extends AsyncTask<String, Void, ArrayList<Route>> {
-        private ProgressDialog mProgressDialog;
-        @Override
-        protected ArrayList<Route> doInBackground(String... params) {
-            publishProgress();
-            ArrayList<Route> routes = Planner.getInstance().findRoutes(params[0], params[1]);
-            return routes;
-        }
-
-        @Override
-        protected void onProgressUpdate(Void... progress) {
-            if (mProgressDialog == null) {
-                mProgressDialog = 
-                    ProgressDialog.show(ChangeRouteTimeActivity.this, "", getText(R.string.loading), true);
-            }
-        }
-
-        @Override
-        protected void onPostExecute(ArrayList<Route> routes) {
-            mProgressDialog.dismiss();
+    private void onSearchRoutesResult() {
+        if (Planner.getInstance().lastFoundRoutes() != null 
+                && !Planner.getInstance().lastFoundRoutes().isEmpty()) {
+            setResult(RESULT_OK, (new Intent())
+                    .putExtra("com.markupartist.sthlmtraveling.routeTime", 
+                            mTime.format2445()));
+            finish();
+        } else {
+            // TODO: This works for now, but we need to see if there are any
+            // alternative stops available in later on.
+            showDialog(DIALOG_NO_ROUTES_FOUND);
         }
     }
 }
