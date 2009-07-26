@@ -21,6 +21,7 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.format.Time;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -37,17 +38,12 @@ public class SearchActivity extends Activity {
     private static final int DIALOG_END_POINT = 1;
     private static final int DIALOG_NO_ROUTES_FOUND = 2;
     private static final int DIALOG_ABOUT = 3;
+    private static final int DIALOG_PROGRESS = 4;
 
     private AutoCompleteTextView mFromAutoComplete;
     private AutoCompleteTextView mToAutoComplete;
 
     private final Handler mHandler = new Handler();
-
-    final Runnable mSearchRoutes = new Runnable() {
-        public void run() {
-            onSearchRoutesResult();
-        }
-    };
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -93,28 +89,33 @@ public class SearchActivity extends Activity {
             } else if (mToAutoComplete.getText().length() <= 0) {
                 mToAutoComplete.setError(getText(R.string.empty_value));
             } else {
+                Time time = new Time();
+                time.setToNow();
                 searchRoutes(mFromAutoComplete.getText().toString(), 
-                        mToAutoComplete.getText().toString());
+                        mToAutoComplete.getText().toString(), time);
             }
         }
     };
 
     /**
      * Fires off a thread to do the query. Will call onSearchResult when done.
-     * @param from the start point
-     * @param to the end point
+     * @param startPoint the start point
+     * @param endPoint the end point
      */
-    private void searchRoutes(final String from, final String to) {
-        final ProgressDialog progressDialog = 
-            ProgressDialog.show(this, "", getText(R.string.loading), true);
+    private void searchRoutes(final String startPoint, final String endPoint, final Time time) {
+        showDialog(DIALOG_PROGRESS);
         new Thread() {
             public void run() {
                 try {
-                    Planner.getInstance().findRoutes(from, to);
-                    mHandler.post(mSearchRoutes);
-                    progressDialog.dismiss();
+                    Planner.getInstance().findRoutes(startPoint, endPoint, time);
+                    mHandler.post(new Runnable() {
+                        @Override public void run() {
+                            onSearchRoutesResult();
+                        }
+                    });
+                    dismissDialog(DIALOG_PROGRESS);
                 } catch (Exception e) {
-                    progressDialog.dismiss();
+                    dismissDialog(DIALOG_PROGRESS);
                 }
             }
         }.start();
@@ -189,10 +190,15 @@ public class SearchActivity extends Activity {
             dialog.setContentView(R.layout.about_dialog);
             dialog.setTitle(getText(R.string.app_name) + " " + version);
             break;
+        case DIALOG_PROGRESS:
+            ProgressDialog progress = new ProgressDialog(this);
+            progress.setMessage(getText(R.string.loading));
+            dialog = progress;
+            break;
         }
         return dialog;
     }
-
+    
     private CharSequence[] getMyLocationItems() {
         CharSequence[] items = {"My Location"};
         return items;
