@@ -252,15 +252,14 @@ public class RoutesActivity extends ListActivity {
                 final ArrayList<Route> routes = Planner.getInstance().lastFoundRoutes();
 
                 String newTime = data.getStringExtra("com.markupartist.sthlmtraveling.routeTime");
-                Time time = new Time();
-                time.parse(newTime);
+                mTime.parse(newTime);
 
                 //TODO: Should find a better way than resetting the adapter like this.
                 mRouteAdapter = new ArrayAdapter<Route>(
                         RoutesActivity.this, R.layout.routes_row, routes);
 
                 HashMap<String, String> item = mDateAdapterData.get(0);
-                item.put("title", time.format("%R %x"));
+                item.put("title", mTime.format("%R %x"));
 
                 mSectionedAdapter.notifyDataSetChanged();
             }
