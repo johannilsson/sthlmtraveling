@@ -29,6 +29,10 @@ out where the api is located.
 Changelog
 ---------
 
+* 1.2.0
+    * Added support for searching for earlier and later routes in the routes 
+      view
+    * Added support for changing the department time
 * 1.1.0
     * Improved the ux by doing searches in the current activity
     * Added ApiSettings that holds the api endpoint
@@ -42,7 +46,8 @@ Changelog
     * Added about dialog
 * 0.2
     * Added search based on the current postion
-    * Fixed problems around finding stops, some searches did not return the expected values
+    * Fixed problems around finding stops, some searches did not return the 
+      expected values
     * Made the search button bigger
 * 0.1
     * Initial release
