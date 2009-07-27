@@ -3,9 +3,7 @@ package com.markupartist.sthlmtraveling;
 import java.util.ArrayList;
 import java.util.List;
 
-
 import android.content.Context;
-import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;

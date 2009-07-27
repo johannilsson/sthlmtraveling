@@ -210,6 +210,7 @@ public class MultipleListAdapter extends BaseAdapter {
      * the added adapters.
      * @see android.widget.BaseAdapter#getViewTypeCount()
      */
+    @Override
     public int getViewTypeCount() {
         int total = 0;
 
@@ -223,6 +224,7 @@ public class MultipleListAdapter extends BaseAdapter {
      * The view type that will be used when calling getView.
      * @see android.widget.BaseAdapter#getItemViewType(int)
      */
+    @Override
     public int getItemViewType(int position) {
         int typeOffset = 0; // start counting from here
 
@@ -269,6 +271,7 @@ public class MultipleListAdapter extends BaseAdapter {
      * (A separator is a non-selectable, non-clickable item).
      * @see android.widget.BaseAdapter#isEnabled(int)
      */
+    @Override
     public boolean isEnabled(int position) {
         for (BaseAdapter adapter: mAdapters.values()) {
             if (position == 0)
