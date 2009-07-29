@@ -7,8 +7,11 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.format.Time;
@@ -20,6 +23,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Adapter;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
@@ -40,7 +46,8 @@ public class RoutesActivity extends ListActivity {
     private final int CHANGE_TIME = 0;
 
     private final Handler mHandler = new Handler();
-    private ArrayAdapter<Route> mRouteAdapter;
+    //private ArrayAdapter<Route> mRouteAdapter;
+    private RoutesAdapter mRouteAdapter;
     private MultipleListAdapter mMultipleListAdapter;
     private TextView mFromView;
     private TextView mToView;
@@ -91,7 +98,8 @@ public class RoutesActivity extends ListActivity {
 
         // Routes
         ArrayList<Route> routes = Planner.getInstance().lastFoundRoutes();        
-        mRouteAdapter = new ArrayAdapter<Route>(this, R.layout.routes_row, routes);
+        //mRouteAdapter = new ArrayAdapter<Route>(this, R.layout.routes_row, routes);
+        mRouteAdapter = new RoutesAdapter(this, routes);
 
         // Later routes
         ArrayAdapter<String> laterAdapter = 
@@ -129,9 +137,9 @@ public class RoutesActivity extends ListActivity {
         @Override public void run() {
             final ArrayList<Route> routes = Planner.getInstance().lastFoundRoutes();
             //TODO: Should find a better way than resetting the adapter like this.
-            mRouteAdapter = new ArrayAdapter<Route>(
+            /*mRouteAdapter = new ArrayAdapter<Route>(
                     RoutesActivity.this, R.layout.routes_row, routes);
-            mSectionedAdapter.notifyDataSetChanged();
+            mSectionedAdapter.notifyDataSetChanged();*/
         }
     };
 
@@ -254,8 +262,8 @@ public class RoutesActivity extends ListActivity {
                 mTime.parse(newTime);
 
                 //TODO: Should find a better way than resetting the adapter like this.
-                mRouteAdapter = new ArrayAdapter<Route>(
-                        RoutesActivity.this, R.layout.routes_row, routes);
+                /*mRouteAdapter = new ArrayAdapter<Route>(
+                        RoutesActivity.this, R.layout.routes_row, routes);*/
 
                 HashMap<String, String> item = mDateAdapterData.get(0);
                 item.put("title", mTime.format("%R %x"));
@@ -298,5 +306,66 @@ public class RoutesActivity extends ListActivity {
             break;
         }
         return dialog;
+    }
+    
+    private class RoutesAdapter extends BaseAdapter {
+
+        private Context mContext;
+        private ArrayList<Route> mRoutes;
+
+        public RoutesAdapter(Context context, ArrayList<Route> routes) {
+            mContext = context;
+            mRoutes = routes;
+        }
+
+        @Override
+        public int getCount() {
+            return mRoutes.size();
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return mRoutes.get(position);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            Route route = mRoutes.get(position);
+            return new RouteAdapterView(mContext, route);
+        }
+    }
+    
+    private class RouteAdapterView extends LinearLayout {
+
+        public RouteAdapterView(Context context, Route route) {
+            super(context);
+            this.setOrientation(VERTICAL);
+
+            this.setPadding(10, 10, 10, 10);
+
+            TextView routeDetail = new TextView(context);
+            routeDetail.setText(route.toString());
+            routeDetail.setTextColor(Color.WHITE);
+            routeDetail.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
+
+            LinearLayout routeChanges = new LinearLayout(context);
+            routeChanges.setPadding(0, 3, 0, 0);
+
+            for (int i = 0; i < 5; i++) {
+                ImageView change = new ImageView(context);
+                change.setImageResource(R.drawable.metro);
+                change.setPadding(0, 0, 5, 0);
+                routeChanges.addView(change);
+            }            
+
+            this.addView(routeDetail);
+            this.addView(routeChanges);
+        }
+        
     }
 }
