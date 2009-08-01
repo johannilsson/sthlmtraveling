@@ -26,6 +26,25 @@ out where the api is located.
         public static String STHLM_TRAVELING_API_ENDPOINT = "";
     }
 
+Run tests
+---------
+
+To be able to run the tests from Eclipse follow these instructions. These 
+instructions assume that you alrady have STHLM Traveling setup as a project and
+deployed. 
+
+* Create a new Android Project.
+* Choose create project from existing source. Choose tests/src as project root.
+* Under project properties and Java Build Path choose Projects and add a 
+  dependency to STHLM Traveling.
+* If necessary run Fix Project Properties under Android Tools.
+* Now you should be able to run the tests. Choose Run As Android JUnit Test.
+
+To run the tests from a terminal just type in. Note, you must have both the 
+application and the tests application deployed before.
+
+    adb shell am instrument -w com.markupartist.sthlmtraveling.tests/android.test.InstrumentationTestRunner
+
 Changelog
 ---------
 
