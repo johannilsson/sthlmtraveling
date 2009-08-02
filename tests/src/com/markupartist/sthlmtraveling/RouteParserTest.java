@@ -30,8 +30,51 @@ public class RouteParserTest extends TestCase {
         ArrayList<Route> routes = mRouteParser.parseRoutes(new InputSource(sr));
 
         assertTrue(routes.size() == 3);
+
+        Route route = routes.get(0);
+
+        assertEquals("C0-0", route.routeId);
+        assertEquals("Centralen (Klarabergsviad.)", route.from);
+        assertEquals("Tensta", route.to);
+        assertEquals("approx. 19:36", route.departure);
+        assertEquals("20:03", route.arrival);
+        assertEquals("0:27", route.duration);
+        assertEquals("1", route.changes);
+
+        assertTrue(2 == route.transports.size());
     }
 
+    public void testParsingOfTransports() {
+        StringReader sr = new StringReader("<findRoutes generator='zend' version='1.0'>" +
+        		"<requestCount>1</requestCount>" +
+        		"<ident>54.010259213.1248185539</ident>" +
+        		"<routes><key_0>" +
+        		"<routeId>C0-0</routeId>" +
+        		"<from>Centralen (Klarabergsviad.)</from>" +
+        		"<to>Tensta</to>" +
+        		"<departure>approx. 19:36</departure>" +
+        		"<arrival>20:03</arrival>" +
+        		"<duration>0:27</duration>" +
+        		"<changes>1</changes>" +
+        		"<by>" +
+        		"<key_0>Bus -</key_0>" +
+        		"<key_1>Metro blue line 10</key_1>" +
+        		"<key_2>Metro green line 10</key_2>" +
+        		"<key_3>Metro red line 10</key_3>" +
+        		"<key_4>Commuter Train</key_4>" +
+        		"<key_5>train</key_5>" +
+        		"<key_6>tvärbanan</key_6>" +
+        		"</by>" +
+        		"</key_0>" +
+        		"</routes>" +
+        		"<status>success</status></findRoutes>");
+
+        ArrayList<Route> routes = mRouteParser.parseRoutes(new InputSource(sr));
+        Route route = routes.get(0);
+
+        assertTrue(7 == route.transports.size());
+    }
+    
     public void testGetRequestCount() {
         StringReader sr = new StringReader(mRoutesXml);
         mRouteParser.parseRoutes(new InputSource(sr));
