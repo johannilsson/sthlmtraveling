@@ -1,7 +1,6 @@
 package com.markupartist.sthlmtraveling;
 
-import java.util.Collections;
-import java.util.List;
+import java.util.ArrayList;
 
 public class Route {
     public String ident;
@@ -12,10 +11,16 @@ public class Route {
     public String arrival;
     public String duration;
     public String changes;
-    public List<String> by = Collections.emptyList();
+    public ArrayList<Transport> transports;
 
     public static Route createInstance() {
         return new Route();
+    }
+
+    public void addTransport(Transport transport) {
+        if (transports == null)
+            transports = new ArrayList<Transport>();
+        transports.add(transport);
     }
 
     @Override
@@ -34,4 +39,51 @@ public class Route {
             return false;
         return true;
     }
+
+    public enum Transport {
+        BUS             ("Bus"),
+        METRO_RED       ("Metro red line"),
+        METRO_BLUE      ("Metro blue line"),
+        METRO_GREEN     ("Metro green line"),
+        COMMUTER_TRAIN  ("Commuter train"),
+        TVARBANAN       ("Tvärbanan"),
+        TRAIN           ("Train");
+
+        private final String transport;
+
+        Transport(String name) {
+            this.transport = name;
+        }
+
+        public int imageResource() {
+            switch (this) {
+                case BUS:
+                    return R.drawable.transport_bus;
+                case METRO_RED:
+                    return R.drawable.transport_metro_red;
+                case METRO_BLUE:
+                    return R.drawable.transport_metro_red;
+                case METRO_GREEN:
+                    return R.drawable.transport_metro_red;
+                case COMMUTER_TRAIN:
+                    return R.drawable.transport_metro_red;
+                case TVARBANAN:
+                    return R.drawable.transport_metro_red;
+                case TRAIN:
+                    return R.drawable.transport_metro_red;
+                default:
+                    return 0;
+            }
+        }
+
+        public String transport() {
+            return transport;
+        }
+
+        @Override
+        public String toString() {
+            return transport();
+        }
+    }
+
 }
