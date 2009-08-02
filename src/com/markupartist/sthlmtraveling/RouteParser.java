@@ -106,7 +106,6 @@ public class RouteParser extends DefaultHandler {
                 mRoutes.add(mCurrentRoute);
             }
         } else {
-            Log.d(TAG, "currentText=" + mCurrentText);
             if (mCurrentText.toLowerCase().contains("metro")) {
                 if (mCurrentText.contains("red")) {
                     mCurrentRoute.addTransport(Route.Transport.METRO_RED);
@@ -115,10 +114,10 @@ public class RouteParser extends DefaultHandler {
                 } else if (mCurrentText.contains("green")) {
                     mCurrentRoute.addTransport(Route.Transport.METRO_GREEN);
                 }
-            } else if (mCurrentText.toLowerCase().contains("train")) {
-                mCurrentRoute.addTransport(Route.Transport.TRAIN);
             } else if (mCurrentText.toLowerCase().contains("commuter train")) {
                 mCurrentRoute.addTransport(Route.Transport.COMMUTER_TRAIN);
+            } else if (mCurrentText.toLowerCase().contains("train")) {
+                mCurrentRoute.addTransport(Route.Transport.TRAIN);
             } else if (mCurrentText.toLowerCase().contains("tvärbanan")) {
                 mCurrentRoute.addTransport(Route.Transport.TVARBANAN);
             } else if (mCurrentText.toLowerCase().contains("bus")) {
