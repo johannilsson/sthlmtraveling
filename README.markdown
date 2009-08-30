@@ -13,6 +13,8 @@ of a route.
 More about this project at <http://markupartist.com/sthlmtraveling> or follow 
 me on [twitter](http://twitter.com/johanni) where I announce new versions.
 
+Icons by [Fredrik Broman](http://fredrikbroman.com).
+
 Setting up the project
 ----------------------
 
@@ -45,9 +47,17 @@ application and the tests application deployed before.
 
     adb shell am instrument -w com.markupartist.sthlmtraveling.tests/android.test.InstrumentationTestRunner
 
+License
+-------
+STHLM Traveling is open source and licenced under 
+[Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.html).
+Icons by Fredrik Broman is licensed under [CC Attribution 3.0](http://creativecommons.org/licenses/by/3.0/).
+
 Changelog
 ---------
-
+* NEXT RELEASE
+    * Added support for icons in routes list. Icons by [@frebro](http://twitter.com/frebro)
+    * Replaced earlier/later routes text with arrows, as suggested by [fohlin](http://twitter.com/fohlin) 
 * 1.2.0
     * Added support for searching for earlier and later routes in the routes 
       view
