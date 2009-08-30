@@ -23,6 +23,12 @@
 	        android:layout_height="wrap_content"
 			android:textColor="#ffffff"
 	        />
+        <TextView
+            android:id="@+id/route_date_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#D1D1D1"
+            />
 	</LinearLayout>
     <ListView 
     	android:id="@+id/android:list"
