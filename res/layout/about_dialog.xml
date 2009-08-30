@@ -8,7 +8,7 @@
 		android:layout_width="wrap_content"
 		android:layout_height="fill_parent"
 		android:textColor="#FFF"
-		android:autoLink="email"
+		android:autoLink="all"
 		android:text="@string/about_this_app"
 		/>
 </LinearLayout>
