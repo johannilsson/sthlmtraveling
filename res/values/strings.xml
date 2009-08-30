@@ -7,7 +7,7 @@
     <string name="departing">Departing</string>
     <string name="arriving">Arriving</string>
     <string name="no_routes">Unfortunately there was no route found. Please try entering another station/stop.</string>
-    <string name="no_route_details">Unfortunately there was no route found. Most likely this search was to old.</string>
+    <string name="no_route_details">Unfortunately there was no route found. Most likely this search was too old.</string>
     <string name="new_search">Search</string>
     <string name="empty_value">Missing value</string>
     <string name="loading">Searching. Please wait...</string>
