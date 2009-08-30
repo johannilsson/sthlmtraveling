@@ -22,7 +22,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="2dip"
-        android:layout_marginRight="2dip"
+        android:layout_marginRight="5dip"
         android:layout_marginBottom="2dip"
         android:padding="5dip"
         />
