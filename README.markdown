@@ -56,7 +56,7 @@ Icons by Fredrik Broman is licensed under [CC Attribution 3.0](http://creativeco
 Changelog
 ---------
 * NEXT RELEASE
-    * Added support for icons in routes list. Icons by [@frebro](http://twitter.com/frebro)
+    * Added support for icons in routes list. Icons by [Fredrik Broman](http://fredrikbroman.com)
     * Replaced earlier/later routes text with arrows, as suggested by [fohlin](http://twitter.com/fohlin) 
 * 1.2.0
     * Added support for searching for earlier and later routes in the routes 
