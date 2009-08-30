@@ -19,9 +19,11 @@ public class RouteDetailActivity extends ListActivity {
         Route route = RoutesActivity.route;
 
         TextView fromView = (TextView) findViewById(R.id.route_from);
-        fromView.setText(route.from + " (" + route.departure + ")");
+        fromView.setText(route.from);
         TextView toView = (TextView) findViewById(R.id.route_to);
-        toView.setText(route.to + " (" + route.arrival + ")");
+        toView.setText(route.to);
+        TextView dateTimeView = (TextView) findViewById(R.id.route_date_time);
+        dateTimeView.setText(route.toString());
 
         mDetailAdapter = new ArrayAdapter<String>(
                 RouteDetailActivity.this, R.layout.route_details_row, 

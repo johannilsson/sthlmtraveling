@@ -26,7 +26,7 @@ public class Route {
     @Override
     public String toString() {
         //TODO: Will be split up in different views in the routes_row layout later on.
-        return departure + "-" + arrival + ", " + changes + " changes (" + duration + ")";
+        return departure + "-" + arrival + " (" + duration + ")";
     }
 
     @Override
@@ -62,15 +62,15 @@ public class Route {
                 case METRO_RED:
                     return R.drawable.transport_metro_red;
                 case METRO_BLUE:
-                    return R.drawable.transport_metro_red;
+                    return R.drawable.transport_metro_blue;
                 case METRO_GREEN:
-                    return R.drawable.transport_metro_red;
+                    return R.drawable.transport_metro_green;
                 case COMMUTER_TRAIN:
-                    return R.drawable.transport_metro_red;
+                    return R.drawable.transport_train;
                 case TVARBANAN:
-                    return R.drawable.transport_metro_red;
+                    return R.drawable.transport_train;
                 case TRAIN:
-                    return R.drawable.transport_metro_red;
+                    return R.drawable.transport_train;
                 default:
                     return 0;
             }

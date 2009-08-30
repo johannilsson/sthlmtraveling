@@ -2,6 +2,7 @@ package com.markupartist.sthlmtraveling;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -22,13 +23,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Adapter;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
+import android.widget.SimpleAdapter.ViewBinder;
 
 import com.markupartist.sthlmtraveling.SectionedAdapter.Section;
 
@@ -46,7 +47,6 @@ public class RoutesActivity extends ListActivity {
     private final int CHANGE_TIME = 0;
 
     private final Handler mHandler = new Handler();
-    //private ArrayAdapter<Route> mRouteAdapter;
     private RoutesAdapter mRouteAdapter;
     private MultipleListAdapter mMultipleListAdapter;
     private TextView mFromView;
@@ -92,19 +92,14 @@ public class RoutesActivity extends ListActivity {
                 new int[] { R.id.date_time } );
 
         // Earlier routes
-        ArrayAdapter<String> earlierAdapter = 
-            new ArrayAdapter<String>(this, R.layout.simple_list_row);
-        earlierAdapter.add("Show earlier routes");
+        SimpleAdapter earlierAdapter = createEarlierLaterAdapter(android.R.drawable.arrow_up_float);
 
         // Routes
         ArrayList<Route> routes = Planner.getInstance().lastFoundRoutes();        
-        //mRouteAdapter = new ArrayAdapter<Route>(this, R.layout.routes_row, routes);
         mRouteAdapter = new RoutesAdapter(this, routes);
 
         // Later routes
-        ArrayAdapter<String> laterAdapter = 
-            new ArrayAdapter<String>(this, R.layout.simple_list_row);
-        laterAdapter.add("Show later routes");
+        SimpleAdapter laterAdapter = createEarlierLaterAdapter(android.R.drawable.arrow_down_float);
 
         mMultipleListAdapter = new MultipleListAdapter();
         mMultipleListAdapter.addAdapter(ADAPTER_EARLIER, earlierAdapter);
@@ -131,15 +126,48 @@ public class RoutesActivity extends ListActivity {
     };
 
     /**
+     * Helper to create earlier or later adapter.
+     * @param resource the image resource to show in the list
+     * @return a prepared adapter
+     */
+    private SimpleAdapter createEarlierLaterAdapter(int resource) {
+        ArrayList<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("image", resource);
+        list.add(map);
+
+        SimpleAdapter adapter = new SimpleAdapter(this, list, 
+                R.layout.earlier_later_routes_row,
+                new String[] { "image"},
+                new int[] { 
+                    R.id.earlier_later,
+                }
+        );
+
+        adapter.setViewBinder(new ViewBinder() {
+            @Override
+            public boolean setViewValue(View view, Object data,
+                    String textRepresentation) {
+                switch (view.getId()) {
+                case R.id.earlier_later:
+                    ImageView imageView = (ImageView) view;
+                    imageView.setImageResource((Integer) data);
+                    return true;
+                }
+                return false;
+            }
+        });
+        return adapter;
+    }
+
+    /**
      * Updates routes in the UI after a search.
      */
     final Runnable mUpdateRoutes = new Runnable() {
         @Override public void run() {
             final ArrayList<Route> routes = Planner.getInstance().lastFoundRoutes();
-            //TODO: Should find a better way than resetting the adapter like this.
-            /*mRouteAdapter = new ArrayAdapter<Route>(
-                    RoutesActivity.this, R.layout.routes_row, routes);
-            mSectionedAdapter.notifyDataSetChanged();*/
+            mRouteAdapter.refill(routes);
+            mSectionedAdapter.notifyDataSetChanged();
         }
     };
 
@@ -261,9 +289,7 @@ public class RoutesActivity extends ListActivity {
                 String newTime = data.getStringExtra("com.markupartist.sthlmtraveling.routeTime");
                 mTime.parse(newTime);
 
-                //TODO: Should find a better way than resetting the adapter like this.
-                /*mRouteAdapter = new ArrayAdapter<Route>(
-                        RoutesActivity.this, R.layout.routes_row, routes);*/
+                mRouteAdapter.refill(routes);
 
                 HashMap<String, String> item = mDateAdapterData.get(0);
                 item.put("title", mTime.format("%R %x"));
@@ -318,6 +344,10 @@ public class RoutesActivity extends ListActivity {
             mRoutes = routes;
         }
 
+        public void refill(ArrayList<Route> routes) {
+            mRoutes = routes;
+        }
+
         @Override
         public int getCount() {
             return mRoutes.size();
@@ -339,7 +369,7 @@ public class RoutesActivity extends ListActivity {
             return new RouteAdapterView(mContext, route);
         }
     }
-    
+
     private class RouteAdapterView extends LinearLayout {
 
         public RouteAdapterView(Context context, Route route) {
@@ -356,16 +386,34 @@ public class RoutesActivity extends ListActivity {
             LinearLayout routeChanges = new LinearLayout(context);
             routeChanges.setPadding(0, 3, 0, 0);
 
-            for (int i = 0; i < 5; i++) {
+            /*
+            TextView changesView = new TextView(context);
+            changesView.setText(route.changes + " changes:");
+            changesView.setPadding(0, 0, 5, 0);
+            routeChanges.addView(changesView);
+            */
+
+            int currentTransportCount = 1;
+            int transportCount = route.transports.size();
+            for (Route.Transport transport : route.transports) {
                 ImageView change = new ImageView(context);
-                change.setImageResource(R.drawable.metro);
+                change.setImageResource(transport.imageResource());
                 change.setPadding(0, 0, 5, 0);
                 routeChanges.addView(change);
-            }            
+
+                if (transportCount > currentTransportCount) {
+                    ImageView separator = new ImageView(context);
+                    separator.setImageResource(R.drawable.transport_separator);
+                    separator.setPadding(0, 5, 5, 0);
+                    routeChanges.addView(separator);
+                }
+
+                currentTransportCount++;
+            }
 
             this.addView(routeDetail);
             this.addView(routeChanges);
         }
-        
+
     }
 }
