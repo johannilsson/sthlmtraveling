@@ -1,13 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
  
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-	android:id="@+id/routes_row"
-	android:layout_width="fill_parent"
-	android:layout_height="wrap_content"
-	android:textStyle="bold"
-	android:textColor="#ffffff"
-	android:padding="10dip"
-	/>
+ <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
+    android:orientation="vertical"
+    android:layout_width="fill_parent" 
+    android:layout_height="wrap_content"
+    android:padding="5dip">
+	<TextView
+		android:id="@+id/routes_row"
+		android:text="16:19-16:25 2 changes (0:14)"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:textStyle="bold"
+		android:textColor="#ffffff"
+		/>
+    <LinearLayout
+            android:id="@+id/routes_changes"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:addStatesFromChildren="true"
+            android:gravity="center_vertical"
+            android:paddingRight="0dip"
+        >
+	    <ImageView 
+	        android:id="@+id/routes_image_changes"
+	        android:src="@drawable/metro"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:paddingRight="3dip"
+	    />
+	    <ImageView 
+	        android:id="@+id/routes_image_changes2"
+	        android:src="@drawable/metro"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	    />
+    </LinearLayout>
+</LinearLayout>
 
 <!--
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
