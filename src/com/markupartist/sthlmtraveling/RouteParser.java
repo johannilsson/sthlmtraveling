@@ -16,7 +16,7 @@ import org.xml.sax.helpers.DefaultHandler;
 import android.util.Log;
 
 public class RouteParser extends DefaultHandler {
-    private static final String TAG = "RouteFinder";
+    private static final String TAG = "RouteParser";
     private ArrayList<Route> mRoutes = new ArrayList<Route>();
     private String mIdent;
     private int mRequestCount;
@@ -35,11 +35,12 @@ public class RouteParser extends DefaultHandler {
             xr.parse(input);
             // TODO: Not ok to kill all exceptions like this!!!
         } catch (IOException e) {
-            Log.e(TAG, e.toString());
+            Log.e(TAG, "IOException: " + e.toString());
         } catch (SAXException e) {
-            Log.e(TAG, e.toString());
+            Log.e(TAG, "SAXException: " + e.toString());
+            e.printStackTrace();
         } catch (ParserConfigurationException e) {
-            Log.e(TAG, e.toString());
+            Log.e(TAG, "ParserConfigurationException: " + e.toString());
         }
 
         return mRoutes;
