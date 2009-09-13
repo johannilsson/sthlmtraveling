@@ -229,28 +229,31 @@ public class SearchActivity extends Activity {
         Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
         String addressString = null;
         try {
-            //Log.d(TAG, "Getting address from position " + lat + "," + lng);
-            List<Address> addresses = geocoder.getFromLocation(lat, lng, 1);
+            Log.d(TAG, "Getting address from position " + lat + "," + lng);
+            List<Address> addresses = geocoder.getFromLocation(lat, lng, 5);
             if (!addresses.isEmpty()) {
-                // Address address = addresses.get(0);
                 for (Address address : addresses) {
-                    //Log.d("Search", address.getLocality()); // City
-                    //Log.d("Search", address.getAddressLine(0)); // Full Street
-                    //Log.d("Search", address.getThoroughfare()); // Street name
-                    //Log.d("Search", address.getFeatureName()); // House number or interval*/
                     //Log.d(TAG, address.toString());
-                    addressString = address.getLocality() + ", " + address.getThoroughfare();
-                    if (address.getFeatureName().contains("-")) {
-                        // getFeatureName returns all house numbers on the 
-                        // position like 14-16 get the first number and append 
-                        // that to the address.
-                        addressString += " " + address.getFeatureName().split("-")[0];
-                    } else if (address.getFeatureName().length() < 4) {
-                        // Sometime the feature name also is the same as the 
-                        // postal code, this is a bit ugly but we just assume that
-                        // we do not have any house numbers that is bigger longer 
-                        // than four, if so append it to the address.
-                        addressString += " " + address.getFeatureName();
+                    if (addressString == null) {
+                        addressString = address.getThoroughfare();
+                        if (address.getFeatureName().contains("-")) {
+                            // getFeatureName returns all house numbers on the 
+                            // position like 14-16 get the first number and append 
+                            // that to the address.
+                            addressString += " " + address.getFeatureName().split("-")[0];
+                        } else if (address.getFeatureName().length() < 4) {
+                            // Sometime the feature name also is the same as the 
+                            // postal code, this is a bit ugly but we just assume that
+                            // we do not have any house numbers that is bigger longer 
+                            // than four, if so append it to the address.
+                            addressString += " " + address.getFeatureName();
+                        }
+                    }
+
+                    String locality = address.getLocality();
+                    if (locality != null) {
+                        addressString = locality + ", " + addressString;
+                        break; // Get out of the loop
                     }
                 }
             }
