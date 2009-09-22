@@ -55,13 +55,13 @@ Icons by Fredrik Broman is licensed under [CC Attribution 3.0](http://creativeco
 
 Changelog
 ---------
-* NEXT RELEASE
+* 1.2.1
     * Added support for icons in routes list. Icons by 
       [Fredrik Broman](http://fredrikbroman.com)
     * Replaced earlier/later routes text with arrows, as suggested by 
       [fohlin](http://twitter.com/fohlin)
     * Added setup for unit tests and some tests
-    * Fixed issue with "My Location" returning null instead of city
+    * Fixed issue with "My Location" returning null instead of city sometimes
 * 1.2.0
     * Added support for searching for earlier and later routes in the routes 
       view
