@@ -55,6 +55,8 @@ Icons by Fredrik Broman is licensed under [CC Attribution 3.0](http://creativeco
 
 Changelog
 ---------
+* 1.2.2
+    * Added Saltsjöbanan as an transport, closes issue #2
 * 1.2.1
     * Added support for icons in routes list. Icons by 
       [Fredrik Broman](http://fredrikbroman.com)
