@@ -123,6 +123,8 @@ public class RouteParser extends DefaultHandler {
                 mCurrentRoute.addTransport(Route.Transport.TVARBANAN);
             } else if (mCurrentText.toLowerCase().contains("bus")) {
                 mCurrentRoute.addTransport(Route.Transport.BUS);
+            } else if (mCurrentText.toLowerCase().contains("saltsjöbanan")) {
+                mCurrentRoute.addTransport(Route.Transport.SALTSJOBANAN);
             }
         }
     }

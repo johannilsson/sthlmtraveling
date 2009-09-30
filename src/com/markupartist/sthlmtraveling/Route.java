@@ -47,6 +47,7 @@ public class Route {
         METRO_GREEN     ("Metro green line"),
         COMMUTER_TRAIN  ("Commuter train"),
         TVARBANAN       ("Tvärbanan"),
+        SALTSJOBANAN    ("Saltsjöbanan"),
         TRAIN           ("Train");
 
         private final String transport;
@@ -70,6 +71,8 @@ public class Route {
                 case TVARBANAN:
                     return R.drawable.transport_train;
                 case TRAIN:
+                    return R.drawable.transport_train;
+                case SALTSJOBANAN:
                     return R.drawable.transport_train;
                 default:
                     return 0;
