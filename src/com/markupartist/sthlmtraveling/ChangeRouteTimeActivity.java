@@ -1,15 +1,13 @@
 package com.markupartist.sthlmtraveling;
 
+import java.util.ArrayList;
+
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.text.format.Time;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -17,16 +15,16 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.TimePicker;
 
-public class ChangeRouteTimeActivity extends Activity {
+import com.markupartist.sthlmtraveling.SearchRoutesTask.OnSearchRoutesResultListener;
+
+public class ChangeRouteTimeActivity extends Activity implements OnSearchRoutesResultListener {
     static final String TAG = "ChangeRouteTimeActivity"; 
     static final int DIALOG_DATE = 0;
     static final int DIALOG_TIME = 1;
-    static final int DIALOG_PROGRESS = 2;
-    static final int DIALOG_NO_ROUTES_FOUND = 3;
+
     private Time mTime;
     private Button mDateButton;
     private Button mTimeButton;
-    private final Handler mHandler = new Handler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,20 +93,6 @@ public class ChangeRouteTimeActivity extends Activity {
                 // TODO: Base 24 hour on locale, same with the format.
                 return new TimePickerDialog(this,
                         mTimeSetListener, mTime.hour, mTime.minute, true);
-            case DIALOG_PROGRESS:
-                ProgressDialog progress = new ProgressDialog(this);
-                progress.setMessage(getText(R.string.loading));
-                return progress;
-            case DIALOG_NO_ROUTES_FOUND:
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                return builder.setTitle("Unfortunately no routes was found")
-                    .setMessage("If searhing for an address try adding a house number.")
-                    .setCancelable(true)
-                    .setNeutralButton("Ok", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            dialog.cancel();
-                       }
-                    }).create();
         }
         return null;
     }
@@ -155,38 +139,19 @@ public class ChangeRouteTimeActivity extends Activity {
      */
     private void searchRoutes(final String startPoint, final String endPoint, 
             final Time time) {
-        showDialog(DIALOG_PROGRESS);
-        new Thread() {
-            public void run() {
-                try {
-                    Planner.getInstance().findRoutes(startPoint, endPoint, time);
-                    mHandler.post(new Runnable() {
-                        @Override public void run() {
-                            onSearchRoutesResult();
-                        }
-                    });
-                    dismissDialog(DIALOG_PROGRESS);
-                } catch (Exception e) {
-                    dismissDialog(DIALOG_PROGRESS);
-                }
-            }
-        }.start();
+        SearchRoutesTask searchRoutesTask = new SearchRoutesTask(this)
+            .setOnSearchRoutesResultListener(this);
+        searchRoutesTask.execute(startPoint, endPoint, time);
     }
 
     /**
      * Called when we have a search result for routes.
      */
-    private void onSearchRoutesResult() {
-        if (Planner.getInstance().lastFoundRoutes() != null 
-                && !Planner.getInstance().lastFoundRoutes().isEmpty()) {
-            setResult(RESULT_OK, (new Intent())
-                    .putExtra("com.markupartist.sthlmtraveling.routeTime", 
-                            mTime.format2445()));
-            finish();
-        } else {
-            // TODO: This works for now, but we need to see if there are any
-            // alternative stops available in later on.
-            showDialog(DIALOG_NO_ROUTES_FOUND);
-        }
+    @Override
+    public void onSearchRoutesResult(ArrayList<Route> routes) {
+        setResult(RESULT_OK, (new Intent())
+                .putExtra("com.markupartist.sthlmtraveling.routeTime", 
+                        mTime.format2445()));
+        finish();
     }
 }
