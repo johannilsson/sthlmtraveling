@@ -3,7 +3,7 @@
 	<string name="app_name">STHLM Traveling</string>
     <string name="from">From</string>
     <string name="to">To</string>
-    <string name="search_route">Search</string>
+    <string name="search">Search</string>
     <string name="departing">Departing</string>
     <string name="arriving">Arriving</string>
     <string name="no_routes">Unfortunately there was no route found. Please try entering another station/stop.</string>
@@ -13,6 +13,12 @@
     <string name="loading">Searching. Please wait...</string>
     <string name="my_location">My location</string>
     <string name="change_date_and_time">Change date &amp; time</string>
+    <string name="reverse_start_end">Reverse from &amp; to</string>
     <string name="about">About</string>
-    <string name="about_this_app">STHLM Traveling is developed by Johan Nilsson, please contact him if you have ideas or experience any problems.\n\nsthlmtraveling@markupartist.com\n\nAll data is gathered from SL - Stockholm Public Transport.\n\nIcons by Fredrik Broman, http://fredrikbroman.com.</string>
+    <string name="about_this_app">STHLM Traveling is developed by Johan Nilsson, please contact him if you have ideas or experience any problems.\n\nAll data is gathered from SL - Stockholm Public Transport.\n\nIcons by Fredrik Broman, http://fredrikbroman.com.</string>
+    <string name="donate">Donate</string>
+    <string name="feedback">Feedback</string>
+    <string name="send_email">Send email...</string>
+    <string name="favorites_label">Favorites</string>
+    <string name="no_favorites">No favorites yet...</string>
 </resources>
