@@ -32,6 +32,7 @@ import android.widget.TextView;
 import android.widget.SimpleAdapter.ViewBinder;
 
 import com.markupartist.sthlmtraveling.SectionedAdapter.Section;
+import com.markupartist.sthlmtraveling.provider.FavoritesDbAdapter;
 
 public class RoutesActivity extends ListActivity {
     private final String TAG = "RoutesActivity";
@@ -53,17 +54,21 @@ public class RoutesActivity extends ListActivity {
     private TextView mToView;
     private ArrayList<HashMap<String, String>> mDateAdapterData;
     private Time mTime;
+    private FavoritesDbAdapter mFavoritesDbAdapter;
+    private FavoriteButtonHelper mFavoriteButtonHelper;
+
     /**
      * Holds the current selected route, this is referenced by 
      * RouteDetailActivity.
      */
     public static Route route;
 
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.routes_list);
 
-        createSections();
+        mFavoritesDbAdapter = new FavoritesDbAdapter(this).open();
 
         mFromView = (TextView) findViewById(R.id.route_from);
         mToView = (TextView) findViewById(R.id.route_to);
@@ -71,6 +76,19 @@ public class RoutesActivity extends ListActivity {
         Bundle extras = getIntent().getExtras();
         mFromView.setText(extras.getString("com.markupartist.sthlmtraveling.startPoint"));
         mToView.setText(extras.getString("com.markupartist.sthlmtraveling.endPoint"));
+
+        mFavoriteButtonHelper = new FavoriteButtonHelper(
+                this, mFavoritesDbAdapter, 
+                mFromView.getText().toString(), mToView.getText().toString());
+        mFavoriteButtonHelper.loadImage();
+
+        createSections();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mFavoriteButtonHelper.loadImage();
     }
 
     private void createSections() {
@@ -262,6 +280,8 @@ public class RoutesActivity extends ListActivity {
         if (Planner.getInstance().lastFoundRouteDetail() != null 
                 && !Planner.getInstance().lastFoundRoutes().isEmpty()) {
             Intent i = new Intent(RoutesActivity.this, RouteDetailActivity.class);
+            i.putExtra("com.markupartist.sthlmtraveling.startPoint", mFromView.getText().toString());
+            i.putExtra("com.markupartist.sthlmtraveling.endPoint", mToView.getText().toString());
             startActivity(i);
         } else {
             showDialog(DIALOG_NO_ROUTE_DETAILS_FOUND);
@@ -333,7 +353,13 @@ public class RoutesActivity extends ListActivity {
         }
         return dialog;
     }
-    
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mFavoritesDbAdapter.close();
+    }
+
     private class RoutesAdapter extends BaseAdapter {
 
         private Context mContext;
