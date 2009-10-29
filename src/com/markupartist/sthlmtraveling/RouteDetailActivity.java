@@ -9,34 +9,53 @@ import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import com.markupartist.sthlmtraveling.provider.FavoritesDbAdapter;
+
 public class RouteDetailActivity extends ListActivity {
     private ArrayAdapter<String> mDetailAdapter;
+    private TextView mFromView;
+    private TextView mToView;
+    private FavoritesDbAdapter mFavoritesDbAdapter;
 
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.route_details_list);
 
+        Bundle extras = getIntent().getExtras();
+
+        mFavoritesDbAdapter = new FavoritesDbAdapter(this).open();
+
         Route route = RoutesActivity.route;
 
-        TextView fromView = (TextView) findViewById(R.id.route_from);
-        fromView.setText(route.from);
-        TextView toView = (TextView) findViewById(R.id.route_to);
-        toView.setText(route.to);
+        mFromView = (TextView) findViewById(R.id.route_from);
+        mFromView.setText(extras.getString("com.markupartist.sthlmtraveling.startPoint"));
+        mToView = (TextView) findViewById(R.id.route_to);
+        mToView.setText(extras.getString("com.markupartist.sthlmtraveling.endPoint"));
+
         TextView dateTimeView = (TextView) findViewById(R.id.route_date_time);
         dateTimeView.setText(route.toString());
+
+        FavoriteButtonHelper favoriteButtonHelper = new FavoriteButtonHelper(
+                this, mFavoritesDbAdapter, 
+                mFromView.getText().toString(), mToView.getText().toString());
+        favoriteButtonHelper.loadImage();
 
         mDetailAdapter = new ArrayAdapter<String>(
                 RouteDetailActivity.this, R.layout.route_details_row, 
                     Planner.getInstance().lastFoundRouteDetail());
+
         setListAdapter(mDetailAdapter);
     }
-
+    
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.options_menu, menu);
         return true;
     }
 
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.new_search :
@@ -46,4 +65,11 @@ public class RouteDetailActivity extends ListActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mFavoritesDbAdapter.close();
+    }
+
 }
