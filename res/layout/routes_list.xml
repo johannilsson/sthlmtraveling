@@ -4,28 +4,7 @@
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
-
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:background="#999999"
-        android:layout_marginBottom="0dip"
-        android:padding="10dip"
-        >
-	    <TextView
-	    	android:id="@+id/route_from"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-			android:textColor="#ffffff"
-	        />
-	    <TextView
-	    	android:id="@+id/route_to"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-			android:textColor="#ffffff"
-	        />
-	</LinearLayout>
+    <include layout="@layout/route_header" />
 	<ListView
 	    android:id="@+id/android:list"
 	    android:layout_width="fill_parent" 

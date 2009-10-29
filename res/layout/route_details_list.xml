@@ -3,33 +3,27 @@
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
+    <include layout="@layout/route_header" />
+    <ImageView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:src="@drawable/stroke"
+        />
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:background="#999999"
+        android:background="#e4e4e4"
         android:layout_marginBottom="0dip"
         android:padding="10dip"
         >
-	    <TextView
-	    	android:id="@+id/route_from"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-			android:textColor="#ffffff"
-	        />
-	    <TextView
-	    	android:id="@+id/route_to"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-			android:textColor="#ffffff"
-	        />
         <TextView
             android:id="@+id/route_date_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="#D1D1D1"
+            android:textAppearance="?android:attr/textAppearanceSmallInverse"
             />
-	</LinearLayout>
+    </LinearLayout>
     <ListView 
     	android:id="@+id/android:list"
 		android:layout_width="fill_parent"
