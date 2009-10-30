@@ -29,7 +29,7 @@ public class StartActivity extends TabActivity {
         final TabHost tabHost = getTabHost();
 
         tabHost.addTab(tabHost.newTabSpec("search")
-                .setIndicator(getText(R.string.search), getResources().getDrawable(R.drawable.zoom))
+                .setIndicator(getText(R.string.search_label), getResources().getDrawable(R.drawable.zoom))
                 .setContent(new Intent(this, PlannerActivity.class)
                 // Setting this to clear solves a java.lang.StackOverflowError
                 // issues that is triggered sometimes...
