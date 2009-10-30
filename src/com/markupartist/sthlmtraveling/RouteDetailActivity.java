@@ -59,7 +59,7 @@ public class RouteDetailActivity extends ListActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.new_search :
-                final Intent intent = new Intent(this, SearchActivity.class);
+                final Intent intent = new Intent(this, PlannerActivity.class);
                 startActivity(intent);
                 return true;
         }

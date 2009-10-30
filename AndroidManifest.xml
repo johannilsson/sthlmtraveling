@@ -10,7 +10,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".SearchActivity"></activity>
+        <activity-alias android:name=".SearchActivity" android:targetActivity=".StartActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity-alias>
+        <activity android:name=".PlannerActivity"></activity>
         <activity android:name=".FavoritesActivity"></activity>
         <activity android:name=".RoutesActivity"></activity>
         <activity android:name=".RouteDetailActivity"></activity>
@@ -20,4 +26,4 @@
     <uses-permission android:name="android.permission.INTERNET"></uses-permission>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-</manifest> 
+</manifest>
