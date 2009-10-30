@@ -183,7 +183,7 @@ public class PlannerActivity extends Activity implements OnSearchRoutesResultLis
                         emailIntent .putExtra(android.content.Intent.EXTRA_EMAIL,
                                 new String[]{"sthlmtraveling@markupartist.com"});
                         emailIntent .putExtra(android.content.Intent.EXTRA_SUBJECT,
-                                "iglaset feedback");
+                                "STHLM Traveling feedback");
                         startActivity(Intent.createChooser(emailIntent,
                                 getText(R.string.send_email)));
                     }
