@@ -28,6 +28,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -156,10 +157,14 @@ public class PlannerActivity extends Activity implements OnSearchRoutesResultLis
                 Log.e(TAG, "Could not get the package info.");
             }
 
+            View aboutLayout = getLayoutInflater()
+                .inflate(R.layout.about_dialog,
+                        (ViewGroup) findViewById(R.id.about_dialog_layout_root));
+
             return new AlertDialog.Builder(this)
                 .setTitle(getText(R.string.app_name) + " " + version)
                 .setIcon(android.R.drawable.ic_dialog_info)
-                .setMessage(getText(R.string.about_this_app))
+                .setView(aboutLayout)
                 .setCancelable(true)
                 .setPositiveButton(getText(android.R.string.ok), null)
                 .setNeutralButton(getText(R.string.donate), new DialogInterface.OnClickListener() {
