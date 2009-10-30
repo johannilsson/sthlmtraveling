@@ -15,7 +15,7 @@
     <string name="change_date_and_time">Change date &amp; time</string>
     <string name="reverse_start_end">Reverse from &amp; to</string>
     <string name="about">About</string>
-    <string name="about_this_app">STHLM Traveling is developed by Johan Nilsson, please contact him if you have ideas or experience any problems.\n\nAll data is gathered from SL - Stockholm Public Transport.\n\n<b>Contributions</b>\nPatches by Morgan Christiansson http://screeninteraction.com\nIcons by Fredrik Broman, http://fredrikbroman.com\n</string>
+    <string name="about_this_app">STHLM Traveling is developed by Johan Nilsson, please contact him if you have ideas or experience any problems.\n\nAll data is gathered from SL - Stockholm Public Transport.\n\n<b>Credits</b>\nPatches by Morgan Christiansson http://screeninteraction.com\nIcons by Fredrik Broman, http://fredrikbroman.com\n</string>
     <string name="donate">Donate</string>
     <string name="feedback">Feedback</string>
     <string name="send_email">Send email...</string>
