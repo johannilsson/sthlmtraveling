@@ -3,7 +3,7 @@
 	<string name="app_name">STHLM Traveling</string>
     <string name="from">From</string>
     <string name="to">To</string>
-    <string name="search">Search</string>
+    <string name="search_label">Search</string>
     <string name="departing">Departing</string>
     <string name="arriving">Arriving</string>
     <string name="no_routes">Unfortunately there was no route found. Please try entering another station/stop.</string>
