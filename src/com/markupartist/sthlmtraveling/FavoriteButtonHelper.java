@@ -15,8 +15,8 @@ public class FavoriteButtonHelper implements OnClickListener {
     private FavoritesDbAdapter mFavoritesDbAdapter;
     private String mStartPoint;
     private String mEndPoint;
-    private static int STAR_ON_RESOURCE = android.R.drawable.star_big_on;
-    private static int STAR_OFF_RESOURCE = android.R.drawable.star_big_off;
+    private static int STAR_ON_RESOURCE = R.drawable.star;
+    private static int STAR_OFF_RESOURCE = R.drawable.star_grey;
 
     public FavoriteButtonHelper(Activity activity, 
                                 FavoritesDbAdapter favoritesDbAdapter, 

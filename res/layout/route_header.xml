@@ -7,7 +7,7 @@
     android:layout_marginBottom="0dip"
     android:paddingTop="10dip"
     android:paddingRight="5dip"
-    android:paddingBottom="10dip"
+    android:paddingBottom="5dip"
     android:paddingLeft="10dip"
     >
     <LinearLayout 
@@ -26,8 +26,11 @@
                     android:lines="1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceMediumInverse"
-                    android:ellipsize="marquee"
+                    android:textAppearance="?android:attr/textAppearanceSmallInverse"
+                    android:layout_marginTop="4dip"
+                    android:layout_marginBottom="2dip"
+                    android:textStyle="bold"
+                    android:text="T-Centralen"
                     />
             </TableRow>
             <TableRow>
@@ -36,21 +39,27 @@
                     android:lines="1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceMediumInverse"
-                    android:ellipsize="marquee"
+                    android:textAppearance="?android:attr/textAppearanceSmallInverse"
+                    android:layout_marginTop="2dip"
+                    android:layout_marginBottom="2dip"
+                    android:textStyle="bold"
+                    android:text="Telefonplan"
                     />
             </TableRow>
         </TableLayout>
         <ImageButton
             android:id="@+id/route_favorite"
-            android:src="@android:drawable/star_big_off"
+            android:src="@drawable/star_grey"
             android:layout_gravity="right"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="2dip"
+            android:layout_marginTop="0dip"
             android:layout_marginRight="2dip"
             android:layout_marginBottom="2dip"
-            android:padding="10dip"
+            android:paddingTop="5dip"
+            android:paddingRight="10dip"
+            android:paddingBottom="10dip"
+            android:paddingLeft="10dip"
             />
     </LinearLayout>
 </LinearLayout>
