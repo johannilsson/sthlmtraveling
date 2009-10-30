@@ -179,10 +179,10 @@ public class PlannerActivity extends Activity implements OnSearchRoutesResultLis
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         final Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
-                        emailIntent .setType("plain/text");
-                        emailIntent .putExtra(android.content.Intent.EXTRA_EMAIL,
+                        emailIntent.setType("plain/text");
+                        emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL,
                                 new String[]{"sthlmtraveling@markupartist.com"});
-                        emailIntent .putExtra(android.content.Intent.EXTRA_SUBJECT,
+                        emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT,
                                 "STHLM Traveling feedback");
                         startActivity(Intent.createChooser(emailIntent,
                                 getText(R.string.send_email)));
