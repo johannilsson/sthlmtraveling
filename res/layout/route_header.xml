@@ -27,7 +27,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceSmallInverse"
-                    android:layout_marginTop="4dip"
+                    android:layout_marginTop="2dip"
                     android:layout_marginBottom="2dip"
                     android:textStyle="bold"
                     android:text="T-Centralen"
