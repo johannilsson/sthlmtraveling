@@ -3,9 +3,11 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
+    android:layout_height="fill_parent"
+    >
 	<ListView
 	    android:id="@+id/android:list"
+        android:padding="5dip"
 	    android:layout_width="fill_parent" 
 	    android:layout_height="fill_parent"
 	    android:dividerHeight="0.1dip"
@@ -14,9 +16,10 @@
     <TextView android:id="@+id/android:empty"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="#ffffff"
-        android:padding="5dip"
+        android:padding="10dip"
+        android:textColor="?android:attr/textColorPrimary"
         android:text="@string/no_favorites"
+        android:textSize="16dip"
         />
 </LinearLayout>
 
