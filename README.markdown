@@ -13,7 +13,16 @@ of a route.
 More about this project at <http://markupartist.com/sthlmtraveling> or follow 
 me on [twitter](http://twitter.com/johanni) where I announce new versions.
 
-Icons by [Fredrik Broman](http://fredrikbroman.com).
+Credits
+-------
+
+* Patches by [Morgan Christiansson, Screen Interaction AB](http://screeninteraction.com)
+* Concepts & ideas Olof Brickarp
+* Icons by [Fredrik Broman](http://fredrikbroman.com)
+* Icons by [FatCow](http://www.fatcow.com/free-icons)
+* Feedback, suggestions & test by [Swedroid users](http://swedroid.se)
+* Also a great thank you to my Twitter and Flickr followers for their suggestions 
+  and feedback
 
 Setting up the project
 ----------------------
@@ -49,12 +58,25 @@ application and the tests application deployed before.
 
 License
 -------
-STHLM Traveling is open source and licenced under 
+STHLM Traveling is open source and licensed under 
 [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.html).
-Icons by Fredrik Broman is licensed under [CC Attribution 3.0](http://creativecommons.org/licenses/by/3.0/).
+
+### Exceptions
+
+* Icons by Fredrik Broman is licensed under [CC Attribution 3.0](http://creativecommons.org/licenses/by/3.0/)
+* SectionedAdapter released under [GNU General Public License](http://www.gnu.org/licenses/gpl.html)
 
 Changelog
 ---------
+* 1.3.0
+    * Favorite routes
+    * History for start and end point
+    * Fixed force close when location is not available, closes issue #4
+    * Compiling against 1.6
+    * Tested for QVGA screens
+    * Improved ui with icons from FatCow
+    * Refactored search routes to a AsyncTask
+    * Renamed SearchActivity to PlannerActivity, patch by Morgan Christiansson
 * 1.2.2
     * Added Saltsjöbanan as an transport, closes issue #2
 * 1.2.1
