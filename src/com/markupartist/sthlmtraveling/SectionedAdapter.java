@@ -1,4 +1,4 @@
-/***
+/*
  	Copyright (c) 2008-2009 CommonsWare, LLC
 	portions Copyright (c) 2008 Jeffrey Sharkey
 	portions Copyright (c) 2009 Johan Nilsson
@@ -14,7 +14,7 @@
 	GNU General Public License for more details.
 
 	You should have received a copy of the GNU General Public License
-	along with this program.	If not, see <http://www.gnu.org/licenses/>.
+	along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 package com.markupartist.sthlmtraveling;
