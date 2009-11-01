@@ -9,9 +9,9 @@
         android:id="@+id/about_dialog_text"
 		android:layout_width="wrap_content"
 		android:layout_height="fill_parent"
-		android:textColor="#FFFFFF"
+		android:textColor="?android:attr/textColorPrimary"
 		android:autoLink="all"
-        android:textColorLink="#FFFFFF"
+        android:textColorLink="?android:attr/textColorPrimary"
 		android:text="@string/about_this_app"
 		/>
 </LinearLayout>
