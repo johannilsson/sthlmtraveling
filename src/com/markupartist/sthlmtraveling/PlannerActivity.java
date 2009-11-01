@@ -32,7 +32,6 @@ import android.view.ViewGroup;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.Toast;
 
 import com.markupartist.sthlmtraveling.SearchRoutesTask.OnSearchRoutesResultListener;
 import com.markupartist.sthlmtraveling.provider.HistoryDbAdapter;
@@ -44,6 +43,7 @@ public class PlannerActivity extends Activity implements OnSearchRoutesResultLis
     private static final int DIALOG_ABOUT = 2;
     private static final int DIALOG_START_POINT_HISTORY = 3;
     private static final int DIALOG_END_POINT_HISTORY = 4;
+    private static final int NO_LOCATION = 5;
 
     private AutoCompleteTextView mFromAutoComplete;
     private AutoCompleteTextView mToAutoComplete;
@@ -119,7 +119,9 @@ public class PlannerActivity extends Activity implements OnSearchRoutesResultLis
                 public void onClick(DialogInterface dialog, int item) {
                     switch(item) {
                     case 0:
-                        mFromAutoComplete.setText(getAddressFromCurrentPosition());
+                        String startPointAddress = getAddressFromCurrentPosition();
+                        if (startPointAddress== null) showDialog(NO_LOCATION);
+                        mFromAutoComplete.setText(startPointAddress);
                         break;
                     case 1:
                         showDialog(DIALOG_START_POINT_HISTORY);
@@ -137,7 +139,9 @@ public class PlannerActivity extends Activity implements OnSearchRoutesResultLis
                 public void onClick(DialogInterface dialog, int item) {
                     switch(item) {
                     case 0:
-                        mToAutoComplete.setText(getAddressFromCurrentPosition());
+                        String endPointAddress = getAddressFromCurrentPosition();
+                        if (endPointAddress == null) showDialog(NO_LOCATION);
+                        mToAutoComplete.setText(endPointAddress);
                         break;
                     case 1:
                         showDialog(DIALOG_END_POINT_HISTORY);
@@ -217,6 +221,13 @@ public class PlannerActivity extends Activity implements OnSearchRoutesResultLis
                     }
                 }, HistoryDbAdapter.KEY_NAME)
                 .create();
+        case NO_LOCATION:
+            return new AlertDialog.Builder(this)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setTitle(getText(R.string.no_location_title))
+                .setMessage(getText(R.string.no_location_message))
+                .setPositiveButton(android.R.string.ok, null)
+                .create();
         }
         return dialog;
     }
@@ -233,6 +244,12 @@ public class PlannerActivity extends Activity implements OnSearchRoutesResultLis
         return true;
     }
 
+    /**
+     * Get address from the current position.
+     * TODO: Extract to a class
+     * @return the address in the format "location name, street" or null if failed
+     * to determine address 
+     */
     private String getAddressFromCurrentPosition() {
         final LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         Location loc = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
@@ -244,6 +261,10 @@ public class PlannerActivity extends Activity implements OnSearchRoutesResultLis
             // If we the gps location is more recent than the network 
             // location use it.
             loc = gpsLoc;
+        }
+
+        if (loc == null) {
+            return null;
         }
 
         Double lat = loc.getLatitude();
@@ -280,8 +301,6 @@ public class PlannerActivity extends Activity implements OnSearchRoutesResultLis
                 }
             }
         } catch (IOException e) {
-            // TODO: Change to dialog
-            Toast.makeText(this, "Could not determine your position", 10);
             Log.e(TAG, e.getMessage());
         }
         return addressString;

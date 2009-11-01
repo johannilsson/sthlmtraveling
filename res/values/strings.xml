@@ -21,4 +21,6 @@
     <string name="send_email">Send email...</string>
     <string name="favorites_label">Favorites</string>
     <string name="no_favorites"><b>No favorites yet...</b>\nAdd and remove favorites by pressing the star button after a search.</string>
+    <string name="no_location_title">Location Problem</string>
+    <string name="no_location_message">Failed to determine your location.</string>
 </resources>
