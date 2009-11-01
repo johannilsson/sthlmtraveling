@@ -20,31 +20,61 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             >
-            <TableRow>
-                <TextView
-                	android:id="@+id/route_from"
-                    android:lines="1"
-                    android:layout_width="wrap_content"
+            <TableRow
+                android:layout_marginTop="2dip"
+                android:layout_marginBottom="2dip"
+                >
+                <LinearLayout
+                    android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceSmallInverse"
-                    android:layout_marginTop="2dip"
-                    android:layout_marginBottom="2dip"
-                    android:textStyle="bold"
-                    android:text="T-Centralen"
-                    />
+                    android:orientation="horizontal"
+                    >
+                    <ImageView 
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="2dip"
+                        android:src="@drawable/bullet_white"
+                        />
+                    <TextView
+                    	android:id="@+id/route_from"
+                        android:lines="1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="?android:attr/textColorPrimary"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:layout_marginLeft="2dip"
+                        android:textStyle="bold"
+                        android:text="T-Centralen"
+                        />
+                </LinearLayout>
             </TableRow>
-            <TableRow>
-                <TextView
-                	android:id="@+id/route_to"
-                    android:lines="1"
-                    android:layout_width="wrap_content"
+            <TableRow
+                android:layout_marginTop="2dip"
+                android:layout_marginBottom="2dip"
+                >
+                <LinearLayout
+                    android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceSmallInverse"
-                    android:layout_marginTop="2dip"
-                    android:layout_marginBottom="2dip"
-                    android:textStyle="bold"
-                    android:text="Telefonplan"
-                    />
+                    android:orientation="horizontal"
+                    >
+                    <ImageView 
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="2dip"
+                        android:src="@drawable/bullet_black"
+                        />
+                    <TextView
+                    	android:id="@+id/route_to"
+                        android:lines="1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="?android:attr/textColorPrimary"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:layout_marginLeft="2dip"
+                        android:textStyle="bold"
+                        android:text="Telefonplan"
+                        />
+                </LinearLayout>
             </TableRow>
         </TableLayout>
         <ImageButton
