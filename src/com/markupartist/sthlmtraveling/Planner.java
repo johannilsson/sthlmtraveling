@@ -30,15 +30,13 @@ import org.xml.sax.InputSource;
 import android.text.format.Time;
 import android.util.Log;
 
+/**
+ * Journey planner for the sl.se API.
+ */
 public class Planner {
     private static final String TAG = "Planner";
     private static Planner instance = null;
     private boolean mUseMockData = false;
-    /**
-     * Needed to keep track of which routes to remove when getting earlier and
-     * later routes. Later on we will return the full set then this will be removed.
-     */
-    //private int mPreviousRouteCount;
     private int mRequestCount;
     private String mIdent;
     private StopParser mStopFinder;
@@ -99,8 +97,6 @@ public class Planner {
             }
             mRoutes = mRouteFinder.parseRoutes(input);
 
-            //mPreviousRouteCount = mRoutes.size();
-            // Update the request count, needed for all request that needs an ident.
             mRequestCount = mRouteFinder.getRequestCount();
             mIdent = mRouteFinder.getIdent();
         } catch (MalformedURLException e) {
@@ -133,17 +129,6 @@ public class Planner {
                 input = new InputSource(endpoint.openStream());
             }
             mRoutes = mRouteFinder.parseRoutes(input);
-            /*
-            ArrayList<Route> routes = mRouteFinder.parseRoutes(input);
-            int newCount = routes.size();
-            int count = mPreviousRouteCount;
-            int itemsToAdd = newCount - count;
-            for (int i = 0; i < itemsToAdd; i++) {
-                Route route = routes.get(i);
-                mRoutes.add(route);
-            }
-            mPreviousRouteCount = routes.size();
-            */
 
             // Update the request count, needed for all request that needs an ident.
             mRequestCount = mRouteFinder.getRequestCount();
@@ -178,19 +163,9 @@ public class Planner {
                         + "&ident=" + ident);
                 input = new InputSource(endpoint.openStream());
             }
-            
+
             mRoutes = mRouteFinder.parseRoutes(input);
-            /*
-            ArrayList<Route> routes = mRouteFinder.parseRoutes(input);
 
-            int count = mPreviousRouteCount;
-            for (int i = count; i < routes.size(); i++) {
-                Route route = routes.get(i);
-                mRoutes.add(route);
-            }
-            */
-
-            //mPreviousRouteCount = routes.size();
             mRequestCount = mRouteFinder.getRequestCount();
             mIdent = mRouteFinder.getIdent();
         } catch (MalformedURLException e) {
