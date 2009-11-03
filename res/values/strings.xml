@@ -41,4 +41,6 @@
     <string name="no_favorites"><b>No favorites yet...</b>\nAdd and remove favorites by pressing the star button after a search.</string>
     <string name="no_location_title">Location Problem</string>
     <string name="no_location_message">Failed to determine your location.</string>
+    <string name="network_problem_label">Network problem</string>
+    <string name="network_problem_message">A network problem occurred</string>
 </resources>

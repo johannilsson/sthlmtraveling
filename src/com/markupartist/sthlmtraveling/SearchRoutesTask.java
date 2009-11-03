@@ -16,10 +16,8 @@
 
 package com.markupartist.sthlmtraveling;
 
+import java.io.IOException;
 import java.util.ArrayList;
-
-import com.markupartist.sthlmtraveling.planner.Planner;
-import com.markupartist.sthlmtraveling.planner.Route;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -28,6 +26,9 @@ import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.text.format.Time;
 
+import com.markupartist.sthlmtraveling.planner.Planner;
+import com.markupartist.sthlmtraveling.planner.Route;
+
 /**
  * Background task for searching for routes.
  */
@@ -35,6 +36,7 @@ public class SearchRoutesTask extends AsyncTask<Object, Void, ArrayList<Route>>{
     private Activity mActivity;
     private ProgressDialog mProgress;
     private OnSearchRoutesResultListener mOnSearchRoutesResultListener;
+    private boolean mWasSuccess = true;
 
     public SearchRoutesTask(Activity activity) {
         mActivity = activity;
@@ -47,8 +49,13 @@ public class SearchRoutesTask extends AsyncTask<Object, Void, ArrayList<Route>>{
     protected ArrayList<Route> doInBackground(Object... params) {
         publishProgress();
 
-        return Planner.getInstance().findRoutes((String) params[0], 
-                (String) params[1], (Time) params[2]);
+        try {
+            return Planner.getInstance().findRoutes((String) params[0], 
+                    (String) params[1], (Time) params[2]);
+        } catch (IOException e) {
+            mWasSuccess = false;
+            return null;
+        }
     }
 
     @Override
@@ -62,6 +69,8 @@ public class SearchRoutesTask extends AsyncTask<Object, Void, ArrayList<Route>>{
 
         if (result != null && !result.isEmpty()) {
             mOnSearchRoutesResultListener.onSearchRoutesResult(result);
+        } else if (!mWasSuccess) {
+            onNetworkProblem();
         } else {
             onNoRoutesFound();
         }
@@ -73,11 +82,17 @@ public class SearchRoutesTask extends AsyncTask<Object, Void, ArrayList<Route>>{
         return this;
     }
 
+    private void onNetworkProblem() {
+        new AlertDialog.Builder(mActivity)
+            .setTitle(mActivity.getText(R.string.network_problem_label))
+            .setMessage(mActivity.getText(R.string.network_problem_message))
+            .setNeutralButton(mActivity.getText(android.R.string.ok), null).create().show();
+    }
+
     private void onNoRoutesFound() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
-        builder.setTitle("Unfortunately no routes was found")
+        new AlertDialog.Builder(mActivity)
+            .setTitle("Unfortunately no routes was found")
             .setMessage("If searhing for an address try adding a house number.")
-            .setCancelable(true)
             .setNeutralButton("Ok", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                     dialog.cancel();
