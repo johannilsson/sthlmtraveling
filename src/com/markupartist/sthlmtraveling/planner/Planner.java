@@ -51,30 +51,26 @@ public class Planner {
         mRouteDetailFinder = new RouteDetailParser();
     }
 
-    public ArrayList<String> findStop(String name) {
+    public ArrayList<String> findStop(String name) throws IOException{
         ArrayList<String> stops = new ArrayList<String>();
-        try {
-            InputSource input;
-            if (mUseMockData) {
-                StringReader sr = new StringReader(mStopsXml);
-                input = new InputSource(sr);
-            } else {
-                URL endpoint = new URL(STHLM_TRAVELING_API_ENDPOINT
-                        + "?method=findStop&name=" + URLEncoder.encode(name));
-                input = new InputSource(endpoint.openStream());
-            }
 
-            stops = mStopFinder.parseStops(input);
-        } catch (MalformedURLException e) {
-            Log.e(TAG, e.getMessage());
-        } catch (IOException e) {
-            Log.e(TAG, e.getMessage());
+        InputSource input;
+        if (mUseMockData) {
+            StringReader sr = new StringReader(mStopsXml);
+            input = new InputSource(sr);
+        } else {
+            URL endpoint = new URL(STHLM_TRAVELING_API_ENDPOINT
+                    + "?method=findStop&name=" + URLEncoder.encode(name));
+            input = new InputSource(endpoint.openStream());
         }
+
+        stops = mStopFinder.parseStops(input);
+
         return stops;
     }
 
-    public ArrayList<Route> findRoutes(String startPoint, String endPoint, 
-            Time time) {
+    public ArrayList<Route> findRoutes(String startPoint, String endPoint, Time time) 
+            throws IOException {
         Log.d(TAG, "Searching for startPoint=" + startPoint + ",endPoint=" + endPoint);
 
         String startPointEncoded = URLEncoder.encode(startPoint);
@@ -82,97 +78,81 @@ public class Planner {
         String timeEncoded = URLEncoder.encode(time.format("%Y-%m-%d %H:%M"));
 
         mRoutes = new ArrayList<Route>();
-        try {
-            InputSource input;
-            if (mUseMockData) {
-                StringReader sr = new StringReader(mRoutesXml);
-                input = new InputSource(sr);
-            } else {
-                URL endpoint = new URL(STHLM_TRAVELING_API_ENDPOINT
-                        + "?method=findRoutes" 
-                        + "&from=" + startPointEncoded 
-                        + "&to=" + endPointEncoded
-                        + "&time=" + timeEncoded);
-                input = new InputSource(endpoint.openStream());
-            }
-            mRoutes = mRouteFinder.parseRoutes(input);
 
-            mRequestCount = mRouteFinder.getRequestCount();
-            mIdent = mRouteFinder.getIdent();
-        } catch (MalformedURLException e) {
-            Log.e(TAG, e.getMessage());
-        } catch (IOException e) {
-            Log.e(TAG, e.getMessage());
+        InputSource input;
+        if (mUseMockData) {
+            StringReader sr = new StringReader(mRoutesXml);
+            input = new InputSource(sr);
+        } else {
+            URL endpoint = new URL(STHLM_TRAVELING_API_ENDPOINT
+                    + "?method=findRoutes" 
+                    + "&from=" + startPointEncoded 
+                    + "&to=" + endPointEncoded
+                    + "&time=" + timeEncoded);
+            input = new InputSource(endpoint.openStream());
         }
+
+        mRoutes = mRouteFinder.parseRoutes(input);
+        mRequestCount = mRouteFinder.getRequestCount();
+        mIdent = mRouteFinder.getIdent();
+
         return mRoutes;
     }
 
-    public ArrayList<Route> findEarlierRoutes() {
+    public ArrayList<Route> findEarlierRoutes() throws IOException {
         if (mIdent == null) {
             Log.e(TAG, "findEarlierRoutes was accessed before findRoutes.");
-            throw new IllegalStateException("findRoutes must be run firsts.");
+            throw new IllegalStateException("findRoutes must be run first.");
         }
 
         String ident = URLEncoder.encode(mIdent);
 
         mRoutes = new ArrayList<Route>();
-        try {
-            InputSource input;
-            if (mUseMockData) {
-                StringReader sr = new StringReader(mRoutesXml);
-                input = new InputSource(sr);
-            } else {
-                URL endpoint = new URL(STHLM_TRAVELING_API_ENDPOINT
-                        + "?method=findEarlierRoutes"
-                        + "&requestCount=" + mRequestCount
-                        + "&ident=" + ident);
-                input = new InputSource(endpoint.openStream());
-            }
-            mRoutes = mRouteFinder.parseRoutes(input);
 
-            // Update the request count, needed for all request that needs an ident.
-            mRequestCount = mRouteFinder.getRequestCount();
-            mIdent = mRouteFinder.getIdent();
-        } catch (MalformedURLException e) {
-            Log.e(TAG, e.getMessage());
-        } catch (IOException e) {
-            Log.e(TAG, e.getMessage());
+        InputSource input;
+        if (mUseMockData) {
+            StringReader sr = new StringReader(mRoutesXml);
+            input = new InputSource(sr);
+        } else {
+            URL endpoint = new URL(STHLM_TRAVELING_API_ENDPOINT
+                    + "?method=findEarlierRoutes"
+                    + "&requestCount=" + mRequestCount
+                    + "&ident=" + ident);
+            input = new InputSource(endpoint.openStream());
         }
+
+        mRoutes = mRouteFinder.parseRoutes(input);
+        mRequestCount = mRouteFinder.getRequestCount();
+        mIdent = mRouteFinder.getIdent();
 
         return mRoutes;
     }
 
-    public ArrayList<Route> findLaterRoutes() {
+    public ArrayList<Route> findLaterRoutes() throws IOException {
         if (mIdent == null) {
             Log.e(TAG, "findEarlierRoutes was accessed before findRoutes.");
-            throw new IllegalStateException("findRoutes must be run firsts.");
+            throw new IllegalStateException("findRoutes must be run first.");
         }
 
         String ident = URLEncoder.encode(mIdent);
 
         mRoutes = new ArrayList<Route>();
-        try {
-            InputSource input;
-            if (mUseMockData) {
-                StringReader sr = new StringReader(mRoutesXml);
-                input = new InputSource(sr);
-            } else {
-                URL endpoint = new URL(STHLM_TRAVELING_API_ENDPOINT
-                        + "?method=findLaterRoutes"
-                        + "&requestCount=" + mRequestCount
-                        + "&ident=" + ident);
-                input = new InputSource(endpoint.openStream());
-            }
 
-            mRoutes = mRouteFinder.parseRoutes(input);
-
-            mRequestCount = mRouteFinder.getRequestCount();
-            mIdent = mRouteFinder.getIdent();
-        } catch (MalformedURLException e) {
-            Log.e(TAG, e.getMessage());
-        } catch (IOException e) {
-            Log.e(TAG, e.getMessage());
+        InputSource input;
+        if (mUseMockData) {
+            StringReader sr = new StringReader(mRoutesXml);
+            input = new InputSource(sr);
+        } else {
+            URL endpoint = new URL(STHLM_TRAVELING_API_ENDPOINT
+                    + "?method=findLaterRoutes"
+                    + "&requestCount=" + mRequestCount
+                    + "&ident=" + ident);
+            input = new InputSource(endpoint.openStream());
         }
+
+        mRoutes = mRouteFinder.parseRoutes(input);
+        mRequestCount = mRouteFinder.getRequestCount();
+        mIdent = mRouteFinder.getIdent();
 
         return mRoutes;
     }
@@ -181,28 +161,24 @@ public class Planner {
         return mRoutes;
     }
 
-    public ArrayList<String> findRouteDetails(Route route) {
+    public ArrayList<String> findRouteDetails(Route route) throws IOException {
         mRouteDetails = new ArrayList<String>();
-        try {
-            InputSource input;
-            if (mUseMockData) {
-                StringReader sr = new StringReader(mRouteDetailXml);
-                input = new InputSource(sr);
-            } else {
-                URL endpoint = new URL(STHLM_TRAVELING_API_ENDPOINT
-                        + "?method=routeDetail&ident=" + route.ident 
-                        + "&routeId=" + route.routeId
-                        + "&requestCount=" + mRequestCount);
-                input = new InputSource(endpoint.openStream());
-            }
-            mRouteDetails = mRouteDetailFinder.parseDetail(input);
-            // Update the request count, needed for all request that needs an ident.
-            mRequestCount = mRouteDetailFinder.getRequestCount();
-        } catch (MalformedURLException e) {
-            Log.e(TAG, e.getMessage());
-        } catch (IOException e) {
-            Log.e(TAG, e.getMessage());
+
+        InputSource input;
+        if (mUseMockData) {
+            StringReader sr = new StringReader(mRouteDetailXml);
+            input = new InputSource(sr);
+        } else {
+            URL endpoint = new URL(STHLM_TRAVELING_API_ENDPOINT
+                    + "?method=routeDetail&ident=" + route.ident 
+                    + "&routeId=" + route.routeId
+                    + "&requestCount=" + mRequestCount);
+            input = new InputSource(endpoint.openStream());
         }
+
+        mRouteDetails = mRouteDetailFinder.parseDetail(input);
+        mRequestCount = mRouteDetailFinder.getRequestCount();
+
         return mRouteDetails;
     }
 
