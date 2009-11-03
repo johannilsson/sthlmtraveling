@@ -3,4 +3,5 @@
 .settings
 bin
 gen
+src/com/markupartist/sthlmtraveling/planner/ApiSettings.java
 src/com/markupartist/sthlmtraveling/ApiSettings.java
