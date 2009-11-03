@@ -14,9 +14,12 @@
  * limitations under the License.
  */
 
-package com.markupartist.sthlmtraveling;
+package com.markupartist.sthlmtraveling.planner;
 
 import java.util.ArrayList;
+
+import com.markupartist.sthlmtraveling.R;
+import com.markupartist.sthlmtraveling.R.drawable;
 
 public class Route {
     public String ident;

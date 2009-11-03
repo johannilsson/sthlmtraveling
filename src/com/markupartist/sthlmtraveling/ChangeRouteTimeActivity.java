@@ -32,6 +32,7 @@ import android.widget.DatePicker;
 import android.widget.TimePicker;
 
 import com.markupartist.sthlmtraveling.SearchRoutesTask.OnSearchRoutesResultListener;
+import com.markupartist.sthlmtraveling.planner.Route;
 
 public class ChangeRouteTimeActivity extends Activity implements OnSearchRoutesResultListener {
     static final String TAG = "ChangeRouteTimeActivity"; 

@@ -18,6 +18,9 @@ package com.markupartist.sthlmtraveling;
 
 import java.util.ArrayList;
 
+import com.markupartist.sthlmtraveling.planner.Planner;
+import com.markupartist.sthlmtraveling.planner.Route;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;

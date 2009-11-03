@@ -48,6 +48,8 @@ import android.widget.TextView;
 import android.widget.SimpleAdapter.ViewBinder;
 
 import com.markupartist.sthlmtraveling.SectionedAdapter.Section;
+import com.markupartist.sthlmtraveling.planner.Planner;
+import com.markupartist.sthlmtraveling.planner.Route;
 import com.markupartist.sthlmtraveling.provider.FavoritesDbAdapter;
 
 public class RoutesActivity extends ListActivity {

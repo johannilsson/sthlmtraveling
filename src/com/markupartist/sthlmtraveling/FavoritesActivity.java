@@ -28,6 +28,7 @@ import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
 import com.markupartist.sthlmtraveling.SearchRoutesTask.OnSearchRoutesResultListener;
+import com.markupartist.sthlmtraveling.planner.Route;
 import com.markupartist.sthlmtraveling.provider.FavoritesDbAdapter;
 
 public class FavoritesActivity extends ListActivity {

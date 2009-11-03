@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.markupartist.sthlmtraveling;
+package com.markupartist.sthlmtraveling.planner;
 
-import static com.markupartist.sthlmtraveling.ApiSettings.STHLM_TRAVELING_API_ENDPOINT;
+import static com.markupartist.sthlmtraveling.planner.ApiSettings.STHLM_TRAVELING_API_ENDPOINT;
 
 import java.io.IOException;
 import java.io.StringReader;

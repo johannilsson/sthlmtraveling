@@ -19,6 +19,8 @@ package com.markupartist.sthlmtraveling;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.markupartist.sthlmtraveling.planner.Planner;
+
 import android.content.Context;
 import android.widget.ArrayAdapter;
 import android.widget.Filter;

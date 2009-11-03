@@ -25,6 +25,8 @@ import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import com.markupartist.sthlmtraveling.planner.Planner;
+import com.markupartist.sthlmtraveling.planner.Route;
 import com.markupartist.sthlmtraveling.provider.FavoritesDbAdapter;
 
 public class RouteDetailActivity extends ListActivity {

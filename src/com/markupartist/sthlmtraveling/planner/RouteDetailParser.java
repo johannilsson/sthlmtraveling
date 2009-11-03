@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.markupartist.sthlmtraveling;
+package com.markupartist.sthlmtraveling.planner;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
