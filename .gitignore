@@ -1,5 +1,6 @@
 .classpath
 .project
+.settings
 bin
 gen
 src/com/markupartist/sthlmtraveling/ApiSettings.java
