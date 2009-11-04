@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.markupartist.sthlmtraveling;
+package com.markupartist.sthlmtraveling.tasks;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -26,6 +26,8 @@ import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.text.format.Time;
 
+import com.markupartist.sthlmtraveling.R;
+import com.markupartist.sthlmtraveling.R.string;
 import com.markupartist.sthlmtraveling.planner.Planner;
 import com.markupartist.sthlmtraveling.planner.Route;
 
