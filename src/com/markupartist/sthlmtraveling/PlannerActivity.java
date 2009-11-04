@@ -51,8 +51,8 @@ import android.widget.ImageButton;
 import com.markupartist.sthlmtraveling.planner.Planner;
 import com.markupartist.sthlmtraveling.planner.Route;
 import com.markupartist.sthlmtraveling.provider.HistoryDbAdapter;
+import com.markupartist.sthlmtraveling.tasks.OnSearchRoutesResultListener;
 import com.markupartist.sthlmtraveling.tasks.SearchRoutesTask;
-import com.markupartist.sthlmtraveling.tasks.SearchRoutesTask.OnSearchRoutesResultListener;
 
 public class PlannerActivity extends Activity implements OnSearchRoutesResultListener {
     private static final String TAG = "Search";
