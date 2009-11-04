@@ -30,6 +30,10 @@ import com.markupartist.sthlmtraveling.planner.Route;
  */
 public class SearchRoutesTask extends AbstractSearchRoutesTask {
 
+    /**
+     * Constructs a new SearchRoutesTask
+     * @param activity the activity
+     */
     public SearchRoutesTask(Activity activity) {
         super(activity);
     }
