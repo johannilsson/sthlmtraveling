@@ -117,9 +117,8 @@ public class PlannerActivity extends Activity implements OnSearchRoutesResultLis
                 Time time = new Time();
                 time.setToNow();
 
-                SearchRoutesTask searchRoutesTask = 
-                    new SearchRoutesTask(PlannerActivity.this)
-                        .setOnSearchRoutesResultListener(PlannerActivity.this);
+                SearchRoutesTask searchRoutesTask = new SearchRoutesTask(PlannerActivity.this);
+                searchRoutesTask.setOnSearchRoutesResultListener(PlannerActivity.this);
                 searchRoutesTask.execute(mFromAutoComplete.getText().toString(), 
                         mToAutoComplete.getText().toString(), time);
             }

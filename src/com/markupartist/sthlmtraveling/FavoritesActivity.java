@@ -78,13 +78,13 @@ public class FavoritesActivity extends ListActivity {
         Time time = new Time();
         time.setToNow();
 
-        //searchRoutes(startPoint, endPoint, time);
         OnSearchResult onSearchResult = new OnSearchResult();
         onSearchResult.startPoint = startPoint;
         onSearchResult.endPoint = endPoint;
-        new SearchRoutesTask(this)
-            .setOnSearchRoutesResultListener(onSearchResult)
-            .execute(startPoint, endPoint, time);
+
+        SearchRoutesTask searchRoutesTask = new SearchRoutesTask(this);
+        searchRoutesTask.setOnSearchRoutesResultListener(onSearchResult);
+        searchRoutesTask.execute(startPoint, endPoint, time);
     }
 
     @Override

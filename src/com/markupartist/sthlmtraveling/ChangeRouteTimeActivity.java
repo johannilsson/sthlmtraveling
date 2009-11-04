@@ -157,8 +157,8 @@ public class ChangeRouteTimeActivity extends Activity implements OnSearchRoutesR
      */
     private void searchRoutes(final String startPoint, final String endPoint, 
             final Time time) {
-        SearchRoutesTask searchRoutesTask = new SearchRoutesTask(this)
-            .setOnSearchRoutesResultListener(this);
+        SearchRoutesTask searchRoutesTask = new SearchRoutesTask(this);
+        searchRoutesTask.setOnSearchRoutesResultListener(this);
         searchRoutesTask.execute(startPoint, endPoint, time);
     }
 
