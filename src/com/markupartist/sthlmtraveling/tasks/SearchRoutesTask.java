@@ -27,7 +27,6 @@ import android.os.AsyncTask;
 import android.text.format.Time;
 
 import com.markupartist.sthlmtraveling.R;
-import com.markupartist.sthlmtraveling.R.string;
 import com.markupartist.sthlmtraveling.planner.Planner;
 import com.markupartist.sthlmtraveling.planner.Route;
 
@@ -100,16 +99,5 @@ public class SearchRoutesTask extends AsyncTask<Object, Void, ArrayList<Route>>{
                     dialog.cancel();
                }
             }).create().show();        
-    }
-
-    /**
-     * The callback used when there is a search result.
-     */
-    public interface OnSearchRoutesResultListener {
-        /**
-         * Called when we have a search result.
-         * @param routes the routes
-         */
-        public void onSearchRoutesResult(ArrayList<Route> routes);
     }
 }
