@@ -315,13 +315,15 @@ public class RoutesActivity extends ListActivity implements OnSearchRoutesResult
             }
         }
     }
-    
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.options_menu, menu);
         return true;
     }
 
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.new_search :
