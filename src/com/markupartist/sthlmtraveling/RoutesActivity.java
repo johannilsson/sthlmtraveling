@@ -51,8 +51,11 @@ import com.markupartist.sthlmtraveling.SectionedAdapter.Section;
 import com.markupartist.sthlmtraveling.planner.Planner;
 import com.markupartist.sthlmtraveling.planner.Route;
 import com.markupartist.sthlmtraveling.provider.FavoritesDbAdapter;
+import com.markupartist.sthlmtraveling.tasks.OnSearchRoutesResultListener;
+import com.markupartist.sthlmtraveling.tasks.SearchEarlierRoutesTask;
+import com.markupartist.sthlmtraveling.tasks.SearchLaterRoutesTask;
 
-public class RoutesActivity extends ListActivity {
+public class RoutesActivity extends ListActivity implements OnSearchRoutesResultListener {
     private final String TAG = "RoutesActivity";
     private static final int DIALOG_NO_ROUTE_DETAILS_FOUND = 0;
 
@@ -196,17 +199,6 @@ public class RoutesActivity extends ListActivity {
         return adapter;
     }
 
-    /**
-     * Updates routes in the UI after a search.
-     */
-    final Runnable mUpdateRoutes = new Runnable() {
-        @Override public void run() {
-            final ArrayList<Route> routes = Planner.getInstance().lastFoundRoutes();
-            mRouteAdapter.refill(routes);
-            mSectionedAdapter.notifyDataSetChanged();
-        }
-    };
-
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
@@ -222,33 +214,14 @@ public class RoutesActivity extends ListActivity {
             int adapterId = multipleListAdapter.getAdapterId(innerPosition);
             switch(adapterId) {
             case ADAPTER_EARLIER:
-                final ProgressDialog earlierProgress = ProgressDialog.show(RoutesActivity.this, "", getText(R.string.loading), true);
-                earlierProgress.setCancelable(true);
-                new Thread() {
-                    public void run() {
-                        try {
-                            Planner.getInstance().findEarlierRoutes();
-                            mHandler.post(mUpdateRoutes);
-                            earlierProgress.dismiss();
-                        } catch (Exception e) {
-                            earlierProgress.dismiss();
-                        }
-                    }
-                }.start(); 
+                SearchEarlierRoutesTask serTask = new SearchEarlierRoutesTask(this);
+                serTask.setOnSearchRoutesResultListener(this);
+                serTask.execute();
                 break;
             case ADAPTER_LATER:
-                final ProgressDialog laterProgress = ProgressDialog.show(RoutesActivity.this, "", getText(R.string.loading), true);
-                new Thread() {
-                    public void run() {
-                        try {
-                            Planner.getInstance().findLaterRoutes();
-                            mHandler.post(mUpdateRoutes);
-                            laterProgress.dismiss();
-                        } catch (Exception e) {
-                            laterProgress.dismiss();
-                        }
-                    }
-                }.start();
+                SearchLaterRoutesTask slrTask = new SearchLaterRoutesTask(this);
+                slrTask.setOnSearchRoutesResultListener(this);
+                slrTask.execute();
                 break;
             case ADAPTER_ROUTES:
                 route = (Route) mSectionedAdapter.getItem(position);
@@ -265,6 +238,12 @@ public class RoutesActivity extends ListActivity {
             startActivityForResult(i, CHANGE_TIME);
             break;
         }
+    }
+
+    @Override
+    public void onSearchRoutesResult(ArrayList<Route> routes) {
+        mRouteAdapter.refill(routes);
+        mSectionedAdapter.notifyDataSetChanged();
     }
 
     /**
