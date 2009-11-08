@@ -23,14 +23,12 @@ import java.util.Map;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ListActivity;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.os.Handler;
 import android.text.format.Time;
 import android.util.Log;
 import android.view.Menu;
@@ -68,7 +66,6 @@ public class RoutesActivity extends ListActivity implements OnSearchRoutesResult
 
     private final int CHANGE_TIME = 0;
 
-    private final Handler mHandler = new Handler();
     private RoutesAdapter mRouteAdapter;
     private MultipleListAdapter mMultipleListAdapter;
     private TextView mFromView;
@@ -77,12 +74,6 @@ public class RoutesActivity extends ListActivity implements OnSearchRoutesResult
     private Time mTime;
     private FavoritesDbAdapter mFavoritesDbAdapter;
     private FavoriteButtonHelper mFavoriteButtonHelper;
-
-    /**
-     * Holds the current selected route, this is referenced by 
-     * RouteDetailActivity.
-     */
-    public static Route route;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -224,7 +215,7 @@ public class RoutesActivity extends ListActivity implements OnSearchRoutesResult
                 slrTask.execute();
                 break;
             case ADAPTER_ROUTES:
-                route = (Route) mSectionedAdapter.getItem(position);
+                Route route = (Route) mSectionedAdapter.getItem(position);
                 findRouteDetails(route);
                 break;
             }
@@ -247,50 +238,22 @@ public class RoutesActivity extends ListActivity implements OnSearchRoutesResult
     }
 
     /**
-     * Find route details. Calls onSearchRouteDetailsResult when done.
-     * @param route the route to find details for
+     * Find route details. Will start {@link RouteDetailActivity}. 
+     * @param route the route to find details for 
      */
     private void findRouteDetails(final Route route) {
-        final ProgressDialog progressDialog = 
-            ProgressDialog.show(this, "", getText(R.string.loading), true);
-        new Thread() {
-            public void run() {
-                try {
-                    Planner.getInstance().findRouteDetails(route);
-                    mHandler.post(new Runnable() {
-                        @Override public void run() {
-                            onSearchRouteDetailsResult();
-                        }
-                    });
-                    progressDialog.dismiss();
-                } catch (Exception e) {
-                    progressDialog.dismiss();
-                }
-            }
-        }.start();
-    }
-
-    /**
-     * Called when we got a route details search result.
-     */
-    private void onSearchRouteDetailsResult() {
-        if (Planner.getInstance().lastFoundRouteDetail() != null 
-                && !Planner.getInstance().lastFoundRoutes().isEmpty()) {
-            Intent i = new Intent(RoutesActivity.this, RouteDetailActivity.class);
-            i.putExtra("com.markupartist.sthlmtraveling.startPoint", mFromView.getText().toString());
-            i.putExtra("com.markupartist.sthlmtraveling.endPoint", mToView.getText().toString());
-            startActivity(i);
-        } else {
-            showDialog(DIALOG_NO_ROUTE_DETAILS_FOUND);
-        }
+        Intent i = new Intent(RoutesActivity.this, RouteDetailActivity.class);
+        i.putExtra("com.markupartist.sthlmtraveling.startPoint", mFromView.getText().toString());
+        i.putExtra("com.markupartist.sthlmtraveling.endPoint", mToView.getText().toString());
+        i.putExtra("com.markupartist.sthlmtraveling.route", route);
+        startActivity(i);
     }
 
     /**
      * This method is called when the sending activity has finished, with the
      * result it supplied.
      * 
-     * @param requestCode The original request code as given to
-     *                    startActivity().
+     * @param requestCode The original request code as given to startActivity().
      * @param resultCode From sending activity as per setResult().
      * @param data From sending activity as per setResult().
      */
