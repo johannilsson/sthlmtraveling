@@ -18,10 +18,12 @@ package com.markupartist.sthlmtraveling.planner;
 
 import java.util.ArrayList;
 
-import com.markupartist.sthlmtraveling.R;
-import com.markupartist.sthlmtraveling.R.drawable;
+import android.os.Parcel;
+import android.os.Parcelable;
 
-public class Route {
+import com.markupartist.sthlmtraveling.R;
+
+public class Route implements Parcelable {
     public String ident;
     public String routeId;
     public String from;
@@ -32,6 +34,24 @@ public class Route {
     public String changes;
     public ArrayList<Transport> transports;
 
+    public Route() {
+        
+    }
+
+    public Route(Parcel parcel) {
+        ident = parcel.readString();
+        routeId = parcel.readString();
+        from = parcel.readString();
+        to = parcel.readString();
+        departure = parcel.readString();
+        arrival = parcel.readString();
+        duration = parcel.readString();
+        changes = parcel.readString();
+
+        transports = new ArrayList<Transport>();
+        parcel.readTypedList(transports, Transport.CREATOR);
+    }
+    
     public static Route createInstance() {
         return new Route();
     }
@@ -41,6 +61,34 @@ public class Route {
             transports = new ArrayList<Transport>();
         transports.add(transport);
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(ident);
+        dest.writeString(routeId);
+        dest.writeString(from);
+        dest.writeString(to);
+        dest.writeString(departure);
+        dest.writeString(arrival);
+        dest.writeString(duration);
+        dest.writeString(changes);
+        dest.writeTypedList(transports);
+    }
+
+    public static final Creator<Route> CREATOR = new Creator<Route>() {
+        public Route createFromParcel(Parcel parcel) {
+            return new Route(parcel);
+        }
+
+        public Route[] newArray(int size) {
+            return new Route[size];
+        }
+    };
 
     @Override
     public String toString() {
@@ -59,53 +107,61 @@ public class Route {
         return true;
     }
 
-    public enum Transport {
-        BUS             ("Bus"),
-        METRO_RED       ("Metro red line"),
-        METRO_BLUE      ("Metro blue line"),
-        METRO_GREEN     ("Metro green line"),
-        COMMUTER_TRAIN  ("Commuter train"),
-        TVARBANAN       ("Tvärbanan"),
-        SALTSJOBANAN    ("Saltsjöbanan"),
-        TRAIN           ("Train");
+    public static class Transport implements Parcelable {
+        public static final Transport BUS = new Transport(R.drawable.transport_bus, "Bus");
+        public static final Transport METRO_RED = new Transport(R.drawable.transport_metro_red, "Metro red line");
+        public static final Transport METRO_BLUE = new Transport(R.drawable.transport_metro_blue, "Metro blue line");
+        public static final Transport METRO_GREEN = new Transport(R.drawable.transport_metro_green, "Metro green line");
+        public static final Transport COMMUTER_TRAIN = new Transport(R.drawable.transport_train, "Commuter train");
+        public static final Transport TVARBANAN = new Transport(R.drawable.transport_train, "Tvärbanan");
+        public static final Transport SALTSJOBANAN = new Transport(R.drawable.transport_train, "Saltsjöbanan");
+        public static final Transport TRAIN = new Transport(R.drawable.transport_train, "Train");
 
-        private final String transport;
+        private int mImageResource;
+        private String mName;
 
-        Transport(String name) {
-            this.transport = name;
+        public Transport(int imageResource, String name) {
+            mImageResource = imageResource;
+            mName = name;
+        }
+
+        public Transport(Parcel parcel) {
+            mImageResource = parcel.readInt();
+            mName = parcel.readString();
         }
 
         public int imageResource() {
-            switch (this) {
-                case BUS:
-                    return R.drawable.transport_bus;
-                case METRO_RED:
-                    return R.drawable.transport_metro_red;
-                case METRO_BLUE:
-                    return R.drawable.transport_metro_blue;
-                case METRO_GREEN:
-                    return R.drawable.transport_metro_green;
-                case COMMUTER_TRAIN:
-                    return R.drawable.transport_train;
-                case TVARBANAN:
-                    return R.drawable.transport_train;
-                case TRAIN:
-                    return R.drawable.transport_train;
-                case SALTSJOBANAN:
-                    return R.drawable.transport_train;
-                default:
-                    return 0;
-            }
+            return mImageResource;
         }
 
-        public String transport() {
-            return transport;
+        public String name() {
+            return mName;
         }
 
         @Override
         public String toString() {
-            return transport();
+            return mName;
         }
-    }
 
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeInt(mImageResource);
+            dest.writeString(mName);
+        }
+
+        public static final Creator<Transport> CREATOR = new Creator<Transport>() {
+            public Transport createFromParcel(Parcel parcel) {
+                return new Transport(parcel);
+            }
+
+            public Transport[] newArray(int size) {
+                return new Transport[size];
+            }
+        };
+    }
 }
