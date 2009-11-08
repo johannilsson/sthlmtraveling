@@ -16,6 +16,8 @@
 
 package com.markupartist.sthlmtraveling;
 
+import java.util.ArrayList;
+
 import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -25,11 +27,12 @@ import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import com.markupartist.sthlmtraveling.planner.Planner;
 import com.markupartist.sthlmtraveling.planner.Route;
 import com.markupartist.sthlmtraveling.provider.FavoritesDbAdapter;
+import com.markupartist.sthlmtraveling.tasks.FindRouteDetailsTask;
+import com.markupartist.sthlmtraveling.tasks.FindRouteDetailsTask.OnRouteDetailsResultListener;
 
-public class RouteDetailActivity extends ListActivity {
+public class RouteDetailActivity extends ListActivity implements OnRouteDetailsResultListener {
     private ArrayAdapter<String> mDetailAdapter;
     private TextView mFromView;
     private TextView mToView;
@@ -41,10 +44,12 @@ public class RouteDetailActivity extends ListActivity {
         setContentView(R.layout.route_details_list);
 
         Bundle extras = getIntent().getExtras();
+        Route route = extras.getParcelable("com.markupartist.sthlmtraveling.route");
 
+        System.out.println("route " + route.ident);
+        System.out.println("route " + route.routeId);
+        
         mFavoritesDbAdapter = new FavoritesDbAdapter(this).open();
-
-        Route route = RoutesActivity.route;
 
         mFromView = (TextView) findViewById(R.id.route_from);
         mFromView.setText(extras.getString("com.markupartist.sthlmtraveling.startPoint"));
@@ -59,11 +64,9 @@ public class RouteDetailActivity extends ListActivity {
                 mFromView.getText().toString(), mToView.getText().toString());
         favoriteButtonHelper.loadImage();
 
-        mDetailAdapter = new ArrayAdapter<String>(
-                RouteDetailActivity.this, R.layout.route_details_row, 
-                    Planner.getInstance().lastFoundRouteDetail());
-
-        setListAdapter(mDetailAdapter);
+        FindRouteDetailsTask findRouteDetailsTask = new FindRouteDetailsTask(this);
+        findRouteDetailsTask.setOnRouteDetailsResultListener(this);
+        findRouteDetailsTask.execute(route);
     }
     
     @Override
@@ -88,6 +91,12 @@ public class RouteDetailActivity extends ListActivity {
     protected void onDestroy() {
         super.onDestroy();
         mFavoritesDbAdapter.close();
+    }
+
+    @Override
+    public void onRouteDetailsResult(ArrayList<String> details) {
+        mDetailAdapter = new ArrayAdapter<String>(this, R.layout.route_details_row, details);
+        setListAdapter(mDetailAdapter);
     }
 
 }
