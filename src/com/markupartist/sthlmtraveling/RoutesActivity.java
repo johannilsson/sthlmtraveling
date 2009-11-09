@@ -46,12 +46,12 @@ import android.widget.TextView;
 import android.widget.SimpleAdapter.ViewBinder;
 
 import com.markupartist.sthlmtraveling.SectionedAdapter.Section;
-import com.markupartist.sthlmtraveling.planner.Planner;
 import com.markupartist.sthlmtraveling.planner.Route;
 import com.markupartist.sthlmtraveling.provider.FavoritesDbAdapter;
 import com.markupartist.sthlmtraveling.tasks.OnSearchRoutesResultListener;
 import com.markupartist.sthlmtraveling.tasks.SearchEarlierRoutesTask;
 import com.markupartist.sthlmtraveling.tasks.SearchLaterRoutesTask;
+import com.markupartist.sthlmtraveling.tasks.SearchRoutesTask;
 
 public class RoutesActivity extends ListActivity implements OnSearchRoutesResultListener {
     private final String TAG = "RoutesActivity";
@@ -86,6 +86,10 @@ public class RoutesActivity extends ListActivity implements OnSearchRoutesResult
         mToView = (TextView) findViewById(R.id.route_to);
 
         Bundle extras = getIntent().getExtras();
+
+        mTime = new Time();
+        mTime.parse(extras.getString("com.markupartist.sthlmtraveling.routeTime"));
+
         mFromView.setText(extras.getString("com.markupartist.sthlmtraveling.startPoint"));
         mToView.setText(extras.getString("com.markupartist.sthlmtraveling.endPoint"));
 
@@ -94,7 +98,11 @@ public class RoutesActivity extends ListActivity implements OnSearchRoutesResult
                 mFromView.getText().toString(), mToView.getText().toString());
         mFavoriteButtonHelper.loadImage();
 
-        createSections();
+        // Search for routes
+        SearchRoutesTask searchRoutesTask = new SearchRoutesTask(this);
+        searchRoutesTask.setOnSearchRoutesResultListener(this);
+        searchRoutesTask.execute(mFromView.getText().toString(), 
+                mToView.getText().toString(), mTime);
     }
 
     @Override
@@ -105,10 +113,6 @@ public class RoutesActivity extends ListActivity implements OnSearchRoutesResult
 
     private void createSections() {
         // Date and time adapter.
-
-        // For now just get the current date time.
-        mTime = new Time();
-        mTime.setToNow();
         String timeString = mTime.format("%R %x"); // %r
         mDateAdapterData = new ArrayList<HashMap<String,String>>(1); 
         HashMap<String, String> item = new HashMap<String, String>();
@@ -123,10 +127,6 @@ public class RoutesActivity extends ListActivity implements OnSearchRoutesResult
 
         // Earlier routes
         SimpleAdapter earlierAdapter = createEarlierLaterAdapter(android.R.drawable.arrow_up_float);
-
-        // Routes
-        ArrayList<Route> routes = Planner.getInstance().lastFoundRoutes();        
-        mRouteAdapter = new RoutesAdapter(this, routes);
 
         // Later routes
         SimpleAdapter laterAdapter = createEarlierLaterAdapter(android.R.drawable.arrow_down_float);
@@ -222,7 +222,6 @@ public class RoutesActivity extends ListActivity implements OnSearchRoutesResult
             break;
         case SECTION_CHANGE_TIME:
             Intent i = new Intent(this, ChangeRouteTimeActivity.class);
-
             i.putExtra("com.markupartist.sthlmtraveling.routeTime", mTime.format2445());
             i.putExtra("com.markupartist.sthlmtraveling.startPoint", mFromView.getText());
             i.putExtra("com.markupartist.sthlmtraveling.endPoint", mToView.getText());
@@ -232,9 +231,14 @@ public class RoutesActivity extends ListActivity implements OnSearchRoutesResult
     }
 
     @Override
-    public void onSearchRoutesResult(ArrayList<Route> routes) {
-        mRouteAdapter.refill(routes);
-        mSectionedAdapter.notifyDataSetChanged();
+    public void onSearchRoutesResult(ArrayList<Route> routes) { 
+        if (mRouteAdapter == null) {
+            mRouteAdapter = new RoutesAdapter(this, routes);
+            createSections();
+        } else {
+            mRouteAdapter.refill(routes);
+            mSectionedAdapter.notifyDataSetChanged();
+        }
     }
 
     /**
@@ -264,17 +268,17 @@ public class RoutesActivity extends ListActivity implements OnSearchRoutesResult
             if (resultCode == RESULT_CANCELED) {
                 Log.d(TAG, "Change time activity cancelled.");
             } else {
-                final ArrayList<Route> routes = Planner.getInstance().lastFoundRoutes();
-
+                String startPoint = data.getStringExtra("com.markupartist.sthlmtraveling.startPoint");
+                String endPoint = data.getStringExtra("com.markupartist.sthlmtraveling.endPoint");
                 String newTime = data.getStringExtra("com.markupartist.sthlmtraveling.routeTime");
+
                 mTime.parse(newTime);
-
-                mRouteAdapter.refill(routes);
-
                 HashMap<String, String> item = mDateAdapterData.get(0);
                 item.put("title", mTime.format("%R %x"));
 
-                mSectionedAdapter.notifyDataSetChanged();
+                SearchRoutesTask searchRoutesTask = new SearchRoutesTask(this);
+                searchRoutesTask.setOnSearchRoutesResultListener(this);
+                searchRoutesTask.execute(startPoint, endPoint, mTime);
             }
         }
     }

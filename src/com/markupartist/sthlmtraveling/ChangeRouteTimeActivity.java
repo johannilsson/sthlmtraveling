@@ -16,8 +16,6 @@
 
 package com.markupartist.sthlmtraveling;
 
-import java.util.ArrayList;
-
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
@@ -31,11 +29,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.TimePicker;
 
-import com.markupartist.sthlmtraveling.planner.Route;
-import com.markupartist.sthlmtraveling.tasks.OnSearchRoutesResultListener;
-import com.markupartist.sthlmtraveling.tasks.SearchRoutesTask;
-
-public class ChangeRouteTimeActivity extends Activity implements OnSearchRoutesResultListener {
+public class ChangeRouteTimeActivity extends Activity {
     static final String TAG = "ChangeRouteTimeActivity"; 
     static final int DIALOG_DATE = 0;
     static final int DIALOG_TIME = 1;
@@ -75,7 +69,11 @@ public class ChangeRouteTimeActivity extends Activity implements OnSearchRoutesR
         Button changeButton = (Button) findViewById(R.id.change_route_time_change);
         changeButton.setOnClickListener(new OnClickListener() {
             @Override public void onClick(View v) {
-                searchRoutes(startPoint, endPoint, mTime);
+                setResult(RESULT_OK, (new Intent())
+                        .putExtra("com.markupartist.sthlmtraveling.routeTime", mTime.format2445()) 
+                        .putExtra("com.markupartist.sthlmtraveling.startPoint", startPoint) 
+                        .putExtra("com.markupartist.sthlmtraveling.endPoint", endPoint));
+                finish();
             }
         });
 
@@ -148,28 +146,4 @@ public class ChangeRouteTimeActivity extends Activity implements OnSearchRoutesR
                 updateDisplay();
             }
         };
-        
-    /**
-     * Fires off a thread to do the query. Will call onSearchResult when done.
-     * @param startPoint the start point.
-     * @param endPoint the end point.
-     * @param time the time to base the search on.
-     */
-    private void searchRoutes(final String startPoint, final String endPoint, 
-            final Time time) {
-        SearchRoutesTask searchRoutesTask = new SearchRoutesTask(this);
-        searchRoutesTask.setOnSearchRoutesResultListener(this);
-        searchRoutesTask.execute(startPoint, endPoint, time);
-    }
-
-    /**
-     * Called when we have a search result for routes.
-     */
-    @Override
-    public void onSearchRoutesResult(ArrayList<Route> routes) {
-        setResult(RESULT_OK, (new Intent())
-                .putExtra("com.markupartist.sthlmtraveling.routeTime", 
-                        mTime.format2445()));
-        finish();
-    }
 }

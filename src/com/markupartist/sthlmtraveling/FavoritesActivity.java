@@ -16,8 +16,6 @@
 
 package com.markupartist.sthlmtraveling;
 
-import java.util.ArrayList;
-
 import android.app.ListActivity;
 import android.content.Intent;
 import android.database.Cursor;
@@ -27,10 +25,7 @@ import android.view.View;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
-import com.markupartist.sthlmtraveling.planner.Route;
 import com.markupartist.sthlmtraveling.provider.FavoritesDbAdapter;
-import com.markupartist.sthlmtraveling.tasks.OnSearchRoutesResultListener;
-import com.markupartist.sthlmtraveling.tasks.SearchRoutesTask;
 
 public class FavoritesActivity extends ListActivity {
 
@@ -70,6 +65,7 @@ public class FavoritesActivity extends ListActivity {
 
         Cursor favoritesCursor = ((SimpleCursorAdapter) this.getListAdapter()).getCursor();
 
+        // TODO: Cache getColumnIndex for the future.
         String startPoint = favoritesCursor.getString(
                 favoritesCursor.getColumnIndex(FavoritesDbAdapter.KEY_START_POINT));
         String endPoint = favoritesCursor.getString(
@@ -78,31 +74,16 @@ public class FavoritesActivity extends ListActivity {
         Time time = new Time();
         time.setToNow();
 
-        OnSearchResult onSearchResult = new OnSearchResult();
-        onSearchResult.startPoint = startPoint;
-        onSearchResult.endPoint = endPoint;
-
-        SearchRoutesTask searchRoutesTask = new SearchRoutesTask(this);
-        searchRoutesTask.setOnSearchRoutesResultListener(onSearchResult);
-        searchRoutesTask.execute(startPoint, endPoint, time);
+        Intent i = new Intent(FavoritesActivity.this, RoutesActivity.class);
+        i.putExtra("com.markupartist.sthlmtraveling.routeTime", time.format2445());
+        i.putExtra("com.markupartist.sthlmtraveling.startPoint", startPoint);
+        i.putExtra("com.markupartist.sthlmtraveling.endPoint", endPoint);
+        startActivity(i);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         mFavoritesDbAdapter.close();
-    }
-
-    private class OnSearchResult implements OnSearchRoutesResultListener {
-        String startPoint;
-        String endPoint;
-
-        @Override
-        public void onSearchRoutesResult(ArrayList<Route> routes) {
-            Intent i = new Intent(FavoritesActivity.this, RoutesActivity.class);
-            i.putExtra("com.markupartist.sthlmtraveling.startPoint", startPoint);
-            i.putExtra("com.markupartist.sthlmtraveling.endPoint", endPoint);
-            startActivity(i);
-        }
     }
 }

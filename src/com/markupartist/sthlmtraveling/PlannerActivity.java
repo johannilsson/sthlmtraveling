@@ -17,7 +17,6 @@
 package com.markupartist.sthlmtraveling;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -49,12 +48,9 @@ import android.widget.Button;
 import android.widget.ImageButton;
 
 import com.markupartist.sthlmtraveling.planner.Planner;
-import com.markupartist.sthlmtraveling.planner.Route;
 import com.markupartist.sthlmtraveling.provider.HistoryDbAdapter;
-import com.markupartist.sthlmtraveling.tasks.OnSearchRoutesResultListener;
-import com.markupartist.sthlmtraveling.tasks.SearchRoutesTask;
 
-public class PlannerActivity extends Activity implements OnSearchRoutesResultListener {
+public class PlannerActivity extends Activity {
     private static final String TAG = "Search";
     private static final int DIALOG_START_POINT = 0;
     private static final int DIALOG_END_POINT = 1;
@@ -114,13 +110,20 @@ public class PlannerActivity extends Activity implements OnSearchRoutesResultLis
             } else if (mToAutoComplete.getText().length() <= 0) {
                 mToAutoComplete.setError(getText(R.string.empty_value));
             } else {
+                String startPoint = mFromAutoComplete.getText().toString();
+                String endPoint = mToAutoComplete.getText().toString();
+
+                mHistoryDbAdapter.create(HistoryDbAdapter.TYPE_START_POINT, startPoint);
+                mHistoryDbAdapter.create(HistoryDbAdapter.TYPE_END_POINT, endPoint);
+
                 Time time = new Time();
                 time.setToNow();
 
-                SearchRoutesTask searchRoutesTask = new SearchRoutesTask(PlannerActivity.this);
-                searchRoutesTask.setOnSearchRoutesResultListener(PlannerActivity.this);
-                searchRoutesTask.execute(mFromAutoComplete.getText().toString(), 
-                        mToAutoComplete.getText().toString(), time);
+                Intent i = new Intent(PlannerActivity.this, RoutesActivity.class);
+                i.putExtra("com.markupartist.sthlmtraveling.routeTime", time.format2445());
+                i.putExtra("com.markupartist.sthlmtraveling.startPoint", startPoint);
+                i.putExtra("com.markupartist.sthlmtraveling.endPoint", endPoint);
+                startActivity(i);
             }
         }
     };
@@ -343,19 +346,5 @@ public class PlannerActivity extends Activity implements OnSearchRoutesResultLis
     protected void onDestroy() {
         super.onDestroy();
         mHistoryDbAdapter.close();
-    }
-
-    @Override
-    public void onSearchRoutesResult(ArrayList<Route> routes) {
-        String startPoint = mFromAutoComplete.getText().toString();
-        String endPoint = mToAutoComplete.getText().toString();
-
-        mHistoryDbAdapter.create(HistoryDbAdapter.TYPE_START_POINT, startPoint);
-        mHistoryDbAdapter.create(HistoryDbAdapter.TYPE_END_POINT, endPoint);
-
-        Intent i = new Intent(PlannerActivity.this, RoutesActivity.class);
-        i.putExtra("com.markupartist.sthlmtraveling.startPoint", startPoint);
-        i.putExtra("com.markupartist.sthlmtraveling.endPoint", endPoint);
-        startActivity(i);
     }
 }
