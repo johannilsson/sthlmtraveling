@@ -20,7 +20,6 @@ import static com.markupartist.sthlmtraveling.planner.ApiSettings.STHLM_TRAVELIN
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -45,12 +44,21 @@ public class Planner {
     private ArrayList<Route> mRoutes = null;
     private ArrayList<String> mRouteDetails = null;
 
+    /**
+     * Constructs a new Planner
+     */
     private Planner() {
         mStopFinder = new StopParser();
         mRouteFinder = new RouteParser();
         mRouteDetailFinder = new RouteDetailParser();
     }
 
+    /**
+     * Find stops that matches the provided name
+     * @param name the name
+     * @return a list of stops
+     * @throws IOException on network problems
+     */
     public ArrayList<String> findStop(String name) throws IOException{
         ArrayList<String> stops = new ArrayList<String>();
 
@@ -69,6 +77,14 @@ public class Planner {
         return stops;
     }
 
+    /**
+     * Find routes.
+     * @param startPoint the start point
+     * @param endPoint the end point
+     * @param time time representing departure
+     * @return a list of RouteS
+     * @throws IOException on network problems
+     */
     public ArrayList<Route> findRoutes(String startPoint, String endPoint, Time time) 
             throws IOException {
         Log.d(TAG, "Searching for startPoint=" + startPoint + ",endPoint=" + endPoint);
@@ -99,6 +115,12 @@ public class Planner {
         return mRoutes;
     }
 
+    /**
+     * Find earlier routes, requires a call to findRoutes before this can be called.
+     * @return a list of RouteS
+     * @throws IOException on network problems
+     * @throws IllegalStateException if called before findRoutes
+     */
     public ArrayList<Route> findEarlierRoutes() throws IOException {
         if (mIdent == null) {
             Log.e(TAG, "findEarlierRoutes was accessed before findRoutes.");
@@ -128,6 +150,12 @@ public class Planner {
         return mRoutes;
     }
 
+    /**
+     * Find later routes, requires a call to findRoutes before this can be called.
+     * @return a list of RouteS
+     * @throws IOException on network problems
+     * @throws IllegalStateException if called before findRoutes
+     */
     public ArrayList<Route> findLaterRoutes() throws IOException {
         if (mIdent == null) {
             Log.e(TAG, "findEarlierRoutes was accessed before findRoutes.");
@@ -157,10 +185,12 @@ public class Planner {
         return mRoutes;
     }
 
-    public ArrayList<Route> lastFoundRoutes() {
-        return mRoutes;
-    }
-
+    /**
+     * Find route details
+     * @param route the Route to find details for
+     * @return a list of details, each string in the result represent a detail for each change
+     * @throws IOException
+     */
     public ArrayList<String> findRouteDetails(Route route) throws IOException {
         mRouteDetails = new ArrayList<String>();
 
@@ -182,10 +212,10 @@ public class Planner {
         return mRouteDetails;
     }
 
-    public ArrayList<String> lastFoundRouteDetail() {
-        return mRouteDetails;
-    }
-
+    /**
+     * Get an instance of Planner.
+     * @return
+     */
     public static Planner getInstance() {
         if (instance == null)
             instance = new Planner();
