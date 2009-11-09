@@ -189,7 +189,7 @@ public class Planner {
      * Find route details
      * @param route the Route to find details for
      * @return a list of details, each string in the result represent a detail for each change
-     * @throws IOException
+     * @throws IOException on network problems
      */
     public ArrayList<String> findRouteDetails(Route route) throws IOException {
         mRouteDetails = new ArrayList<String>();
@@ -214,7 +214,7 @@ public class Planner {
 
     /**
      * Get an instance of Planner.
-     * @return
+     * @return a Planner
      */
     public static Planner getInstance() {
         if (instance == null)
