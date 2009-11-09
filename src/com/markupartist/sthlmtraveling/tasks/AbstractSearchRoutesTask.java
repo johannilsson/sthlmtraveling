@@ -105,7 +105,9 @@ public abstract class AbstractSearchRoutesTask extends AsyncTask<Object, Void, A
         new AlertDialog.Builder(mActivity)
             .setTitle(mActivity.getText(R.string.network_problem_label))
             .setMessage(mActivity.getText(R.string.network_problem_message))
-            .setNeutralButton(mActivity.getText(android.R.string.ok), null).create().show();
+            .setNeutralButton(mActivity.getText(android.R.string.ok), null)
+            .create()
+            .show();
     }
 
     /**
