@@ -294,8 +294,9 @@ public class RoutesActivity extends ListActivity implements OnSearchRoutesResult
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.new_search :
-                final Intent intent = new Intent(this, PlannerActivity.class);
-                startActivity(intent);
+                Intent i = new Intent(this, StartActivity.class);
+                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(i);
                 return true;
         }
         return super.onOptionsItemSelected(item);
