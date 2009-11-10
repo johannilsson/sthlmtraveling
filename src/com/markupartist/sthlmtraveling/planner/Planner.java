@@ -35,7 +35,7 @@ import android.util.Log;
 public class Planner {
     private static final String TAG = "Planner";
     private static Planner instance = null;
-    private boolean mUseMockData = false;
+    private boolean mUseMockData = true;
     private int mRequestCount;
     private String mIdent;
     private StopParser mStopFinder;
