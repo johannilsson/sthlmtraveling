@@ -103,6 +103,7 @@ public abstract class AbstractSearchRoutesTask extends AsyncTask<Object, Void, A
      */
     protected void onNetworkProblem() {
         new AlertDialog.Builder(mActivity)
+            .setIcon(android.R.drawable.ic_dialog_alert)
             .setTitle(mActivity.getText(R.string.network_problem_label))
             .setMessage(mActivity.getText(R.string.network_problem_message))
             .setNeutralButton(mActivity.getText(android.R.string.ok), null)
