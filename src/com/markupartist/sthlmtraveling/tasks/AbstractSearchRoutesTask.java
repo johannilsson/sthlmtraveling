@@ -118,12 +118,10 @@ public abstract class AbstractSearchRoutesTask extends AsyncTask<Object, Void, A
      */
     protected void onNoRoutesFound() {
         new AlertDialog.Builder(mActivity)
-            .setTitle("Unfortunately no routes was found")
-            .setMessage("If searhing for an address try adding a house number.")
-            .setNeutralButton("Ok", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
-                    dialog.cancel();
-               }
-            }).create().show();        
+            .setTitle(mActivity.getText(R.string.no_routes_found_label))
+            .setMessage(mActivity.getText(R.string.no_routes_found_message))
+            .setNeutralButton(mActivity.getText(android.R.string.ok), null)
+            .create()
+            .show();        
     }
 }

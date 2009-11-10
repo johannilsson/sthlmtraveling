@@ -24,6 +24,9 @@
     <string name="search_label">Search</string>
     <string name="departing">Departing</string>
     <string name="arriving">Arriving</string>
+    <string name="no_routes_found_label">Unfortunately no routes was found</string>
+    <string name="no_routes_found_message">If searhing for an address try adding a house number.</string>
+    <!-- TODO: is no_routes used? -->
     <string name="no_routes">Unfortunately there was no route found. Please try entering another station/stop.</string>
     <string name="no_route_details">Unfortunately there was no route found. Most likely this search was too old.</string>
     <string name="new_search">Search</string>
