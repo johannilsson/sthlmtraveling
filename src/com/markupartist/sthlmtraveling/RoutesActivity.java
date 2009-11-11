@@ -93,16 +93,39 @@ public class RoutesActivity extends ListActivity implements OnSearchRoutesResult
         mFromView.setText(extras.getString("com.markupartist.sthlmtraveling.startPoint"));
         mToView.setText(extras.getString("com.markupartist.sthlmtraveling.endPoint"));
 
-        mFavoriteButtonHelper = new FavoriteButtonHelper(
-                this, mFavoritesDbAdapter, 
+        mFavoriteButtonHelper = new FavoriteButtonHelper(this, mFavoritesDbAdapter, 
                 mFromView.getText().toString(), mToView.getText().toString());
         mFavoriteButtonHelper.loadImage();
 
-        // Search for routes
-        SearchRoutesTask searchRoutesTask = new SearchRoutesTask(this);
-        searchRoutesTask.setOnSearchRoutesResultListener(this);
-        searchRoutesTask.execute(mFromView.getText().toString(), 
-                mToView.getText().toString(), mTime);
+        searchRoutes(mFromView.getText().toString(), mToView.getText().toString(), mTime);
+    }
+
+    /**
+     * Search for routes. Will first check if we already have data stored.
+     * @param startPoint the start point
+     * @param endPoint the end point
+     * @param time the time
+     */
+    private void searchRoutes(String startPoint, String endPoint, Time time) {
+        @SuppressWarnings("unchecked")
+        final ArrayList<Route> routes = (ArrayList<Route>) getLastNonConfigurationInstance();
+        if (routes != null) {
+            onSearchRoutesResult(routes);
+        } else {
+            SearchRoutesTask searchRoutesTask = new SearchRoutesTask(this);
+            searchRoutesTask.setOnSearchRoutesResultListener(this);
+            searchRoutesTask.execute(startPoint, endPoint, time);
+        }
+    }
+
+    /**
+     * Called before this activity is destroyed, returns the previous details. This data is used 
+     * if the screen is rotated. Then we don't need to ask for the data again.
+     * @return route details
+     */
+    @Override
+    public Object onRetainNonConfigurationInstance() {
+        return mRouteAdapter.getRoutes();
     }
 
     @Override
@@ -339,6 +362,10 @@ public class RoutesActivity extends ListActivity implements OnSearchRoutesResult
 
         public void refill(ArrayList<Route> routes) {
             mRoutes = routes;
+        }
+
+        public ArrayList<Route> getRoutes() {
+            return mRoutes;
         }
 
         @Override

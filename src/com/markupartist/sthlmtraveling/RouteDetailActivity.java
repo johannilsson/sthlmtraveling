@@ -37,6 +37,7 @@ public class RouteDetailActivity extends ListActivity implements OnRouteDetailsR
     private TextView mFromView;
     private TextView mToView;
     private FavoritesDbAdapter mFavoritesDbAdapter;
+    private ArrayList<String> mDetails;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,11 +62,35 @@ public class RouteDetailActivity extends ListActivity implements OnRouteDetailsR
                 mFromView.getText().toString(), mToView.getText().toString());
         favoriteButtonHelper.loadImage();
 
-        FindRouteDetailsTask findRouteDetailsTask = new FindRouteDetailsTask(this);
-        findRouteDetailsTask.setOnRouteDetailsResultListener(this);
-        findRouteDetailsTask.execute(route);
+        findDetails(route);
+    }
+
+    /**
+     * Find route details. Will first check if we already have data stored. 
+     * @param route
+     */
+    private void findDetails(Route route) {
+        @SuppressWarnings("unchecked")
+        final ArrayList<String> details = (ArrayList<String>) getLastNonConfigurationInstance();
+        if (details != null) {
+            onRouteDetailsResult(details);
+        } else {
+            FindRouteDetailsTask findRouteDetailsTask = new FindRouteDetailsTask(this);
+            findRouteDetailsTask.setOnRouteDetailsResultListener(this);
+            findRouteDetailsTask.execute(route);
+        }
     }
     
+    /**
+     * Called before this activity is destroyed, returns the previous details. This data is used 
+     * if the screen is rotated. Then we don't need to ask for the data again.
+     * @return route details
+     */
+    @Override
+    public Object onRetainNonConfigurationInstance() {
+        return mDetails;
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -95,6 +120,7 @@ public class RouteDetailActivity extends ListActivity implements OnRouteDetailsR
     public void onRouteDetailsResult(ArrayList<String> details) {
         mDetailAdapter = new ArrayAdapter<String>(this, R.layout.route_details_row, details);
         setListAdapter(mDetailAdapter);
+        mDetails = details;
     }
 
 }
