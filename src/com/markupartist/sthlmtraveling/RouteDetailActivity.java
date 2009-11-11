@@ -62,14 +62,14 @@ public class RouteDetailActivity extends ListActivity implements OnRouteDetailsR
                 mFromView.getText().toString(), mToView.getText().toString());
         favoriteButtonHelper.loadImage();
 
-        findDetails(route);
+        initRouteDetails(route);
     }
 
     /**
      * Find route details. Will first check if we already have data stored. 
      * @param route
      */
-    private void findDetails(Route route) {
+    private void initRouteDetails(Route route) {
         @SuppressWarnings("unchecked")
         final ArrayList<String> details = (ArrayList<String>) getLastNonConfigurationInstance();
         if (details != null) {

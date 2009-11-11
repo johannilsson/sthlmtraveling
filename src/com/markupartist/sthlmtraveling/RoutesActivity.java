@@ -97,7 +97,7 @@ public class RoutesActivity extends ListActivity implements OnSearchRoutesResult
                 mFromView.getText().toString(), mToView.getText().toString());
         mFavoriteButtonHelper.loadImage();
 
-        searchRoutes(mFromView.getText().toString(), mToView.getText().toString(), mTime);
+        initRoutes(mFromView.getText().toString(), mToView.getText().toString(), mTime);
     }
 
     /**
@@ -106,7 +106,7 @@ public class RoutesActivity extends ListActivity implements OnSearchRoutesResult
      * @param endPoint the end point
      * @param time the time
      */
-    private void searchRoutes(String startPoint, String endPoint, Time time) {
+    private void initRoutes(String startPoint, String endPoint, Time time) {
         @SuppressWarnings("unchecked")
         final ArrayList<Route> routes = (ArrayList<Route>) getLastNonConfigurationInstance();
         if (routes != null) {
