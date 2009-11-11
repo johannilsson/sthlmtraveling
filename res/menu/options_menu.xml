@@ -18,6 +18,10 @@
 -->
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item 
+        android:id="@+id/reverse_start_end"
+        android:title="@string/reverse_start_end"
+        />
 	<item 
 		android:id="@+id/new_search"
 		android:title="@string/new_search"

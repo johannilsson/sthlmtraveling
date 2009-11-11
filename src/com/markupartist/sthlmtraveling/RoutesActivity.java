@@ -321,6 +321,18 @@ public class RoutesActivity extends ListActivity implements OnSearchRoutesResult
                 i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(i);
                 return true;
+            case R.id.reverse_start_end :
+                String startPoint = mFromView.getText().toString();
+                String endPoint = mToView.getText().toString();
+                SearchRoutesTask searchRoutesTask = new SearchRoutesTask(this);
+                searchRoutesTask.setOnSearchRoutesResultListener(this);
+                searchRoutesTask.execute(endPoint, startPoint, mTime);
+                mFromView.setText(endPoint);
+                mToView.setText(startPoint);
+
+                // Update the favorite button
+                mFavoriteButtonHelper.setStartPoint(endPoint).setEndPoint(startPoint).loadImage();
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }

@@ -16,13 +16,13 @@
 
 package com.markupartist.sthlmtraveling;
 
-import com.markupartist.sthlmtraveling.provider.FavoritesDbAdapter;
-
 import android.app.Activity;
 import android.database.Cursor;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageButton;
+
+import com.markupartist.sthlmtraveling.provider.FavoritesDbAdapter;
 
 public class FavoriteButtonHelper implements OnClickListener {
     private ImageButton mFavoriteButton;
@@ -45,6 +45,16 @@ public class FavoriteButtonHelper implements OnClickListener {
 
         mFavoriteButton = (ImageButton) mActivity.findViewById(R.id.route_favorite);
         mFavoriteButton.setOnClickListener(this);
+    }
+
+    public FavoriteButtonHelper setStartPoint(String startPoint) {
+        mStartPoint = startPoint;
+        return this;
+    }
+
+    public FavoriteButtonHelper setEndPoint(String endPoint) {
+        mEndPoint = endPoint;
+        return this;
     }
 
     public FavoriteButtonHelper loadImage() {
