@@ -35,7 +35,7 @@ import android.util.Log;
 public class Planner {
     private static final String TAG = "Planner";
     private static Planner instance = null;
-    private boolean mUseMockData = true;
+    private boolean mUseMockData = false;
     private int mRequestCount;
     private String mIdent;
     private StopParser mStopFinder;
@@ -60,8 +60,6 @@ public class Planner {
      * @throws IOException on network problems
      */
     public ArrayList<String> findStop(String name) throws IOException{
-        ArrayList<String> stops = new ArrayList<String>();
-
         InputSource input;
         if (mUseMockData) {
             StringReader sr = new StringReader(mStopsXml);
@@ -72,6 +70,7 @@ public class Planner {
             input = new InputSource(endpoint.openStream());
         }
 
+        ArrayList<String> stops = new ArrayList<String>();
         stops = mStopFinder.parseStops(input);
 
         return stops;
@@ -92,8 +91,6 @@ public class Planner {
         String startPointEncoded = URLEncoder.encode(startPoint);
         String endPointEncoded = URLEncoder.encode(endPoint);
         String timeEncoded = URLEncoder.encode(time.format("%Y-%m-%d %H:%M"));
-
-        mRoutes = new ArrayList<Route>();
 
         InputSource input;
         if (mUseMockData) {
@@ -129,8 +126,6 @@ public class Planner {
 
         String ident = URLEncoder.encode(mIdent);
 
-        mRoutes = new ArrayList<Route>();
-
         InputSource input;
         if (mUseMockData) {
             StringReader sr = new StringReader(mRoutesXml);
@@ -163,8 +158,6 @@ public class Planner {
         }
 
         String ident = URLEncoder.encode(mIdent);
-
-        mRoutes = new ArrayList<Route>();
 
         InputSource input;
         if (mUseMockData) {
