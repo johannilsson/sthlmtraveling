@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.os.AsyncTask;
 
 import com.markupartist.sthlmtraveling.R;
@@ -46,6 +45,10 @@ public abstract class AbstractSearchRoutesTask extends AsyncTask<Object, Void, A
 
         mProgress = new ProgressDialog(mActivity);
         mProgress.setMessage(mActivity.getText(R.string.loading));
+    }
+
+    public Activity getActivity() {
+        return mActivity;
     }
 
     /**
@@ -104,7 +107,7 @@ public abstract class AbstractSearchRoutesTask extends AsyncTask<Object, Void, A
     protected void onNetworkProblem() {
         new AlertDialog.Builder(mActivity)
             .setIcon(android.R.drawable.ic_dialog_alert)
-            .setTitle(mActivity.getText(R.string.network_problem_label))
+            .setTitle(mActivity.getText(R.string.attention_label))
             .setMessage(mActivity.getText(R.string.network_problem_message))
             .setNeutralButton(mActivity.getText(android.R.string.ok), null)
             .create()
