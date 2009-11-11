@@ -46,9 +46,6 @@ public class RouteDetailActivity extends ListActivity implements OnRouteDetailsR
         Bundle extras = getIntent().getExtras();
         Route route = extras.getParcelable("com.markupartist.sthlmtraveling.route");
 
-        System.out.println("route " + route.ident);
-        System.out.println("route " + route.routeId);
-        
         mFavoritesDbAdapter = new FavoritesDbAdapter(this).open();
 
         mFromView = (TextView) findViewById(R.id.route_from);
