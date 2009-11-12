@@ -21,8 +21,23 @@
             </intent-filter>
         </activity-alias>
         <activity android:name=".PlannerActivity"></activity>
+        <!-- Alias activity used to create shortcuts on Home. The alias is used
+             simply to have a different label. -->
+        <activity-alias android:name="SearchShortcutActivity"
+            android:targetActivity="PlannerActivity"
+            android:label="@string/activity_create_shortcut">
+            <intent-filter>
+                <action android:name="android.intent.action.CREATE_SHORTCUT" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity-alias>
         <activity android:name=".FavoritesActivity"></activity>
-        <activity android:name=".RoutesActivity"></activity>
+        <activity android:name=".RoutesActivity">
+            <intent-filter>
+                <action android:name="com.markupartist.sthlmtraveling.SEARCH_ROUTE" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
         <activity android:name=".RouteDetailActivity"></activity>
         <activity android:name=".ChangeRouteTimeActivity"></activity>
     </application>

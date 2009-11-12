@@ -48,4 +48,5 @@
     <string name="no_location_message">Failed to determine your location.</string>
     <string name="network_problem_label">Network problem</string>
     <string name="network_problem_message">A network problem occurred</string>
+    <string name="activity_create_shortcut">Routes</string>
 </resources>
