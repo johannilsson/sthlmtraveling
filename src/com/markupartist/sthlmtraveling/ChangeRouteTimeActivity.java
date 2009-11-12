@@ -45,9 +45,9 @@ public class ChangeRouteTimeActivity extends Activity {
         setTitle(getText(R.string.change_date_and_time));
 
         Bundle extras = getIntent().getExtras();
-        final String startPoint = extras.getString("com.markupartist.sthlmtraveling.startPoint");
-        final String endPoint = extras.getString("com.markupartist.sthlmtraveling.endPoint");
-        String timeString = extras.getString("com.markupartist.sthlmtraveling.routeTime");
+        final String startPoint = extras.getString(RoutesActivity.EXTRA_START_POINT);
+        final String endPoint = extras.getString(RoutesActivity.EXTRA_END_POINT);
+        String timeString = extras.getString(RoutesActivity.EXTRA_DEPARTURE_TIME);
 
         mTime = new Time();
         mTime.parse(timeString);
@@ -70,9 +70,9 @@ public class ChangeRouteTimeActivity extends Activity {
         changeButton.setOnClickListener(new OnClickListener() {
             @Override public void onClick(View v) {
                 setResult(RESULT_OK, (new Intent())
-                        .putExtra("com.markupartist.sthlmtraveling.routeTime", mTime.format2445()) 
-                        .putExtra("com.markupartist.sthlmtraveling.startPoint", startPoint) 
-                        .putExtra("com.markupartist.sthlmtraveling.endPoint", endPoint));
+                        .putExtra(RoutesActivity.EXTRA_DEPARTURE_TIME, mTime.format2445()) 
+                        .putExtra(RoutesActivity.EXTRA_START_POINT, startPoint) 
+                        .putExtra(RoutesActivity.EXTRA_END_POINT, endPoint));
                 finish();
             }
         });

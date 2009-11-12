@@ -33,6 +33,10 @@ import com.markupartist.sthlmtraveling.tasks.FindRouteDetailsTask;
 import com.markupartist.sthlmtraveling.tasks.FindRouteDetailsTask.OnRouteDetailsResultListener;
 
 public class RouteDetailActivity extends ListActivity implements OnRouteDetailsResultListener {
+    public static final String EXTRA_START_POINT = "com.markupartist.sthlmtraveling.start_point";
+    public static final String EXTRA_END_POINT = "com.markupartist.sthlmtraveling.end_point";
+    public static final String EXTRA_ROUTE = "com.markupartist.sthlmtraveling.route";
+
     private ArrayAdapter<String> mDetailAdapter;
     private TextView mFromView;
     private TextView mToView;
@@ -45,14 +49,14 @@ public class RouteDetailActivity extends ListActivity implements OnRouteDetailsR
         setContentView(R.layout.route_details_list);
 
         Bundle extras = getIntent().getExtras();
-        Route route = extras.getParcelable("com.markupartist.sthlmtraveling.route");
+        Route route = extras.getParcelable(EXTRA_ROUTE);
 
         mFavoritesDbAdapter = new FavoritesDbAdapter(this).open();
 
         mFromView = (TextView) findViewById(R.id.route_from);
-        mFromView.setText(extras.getString("com.markupartist.sthlmtraveling.startPoint"));
+        mFromView.setText(extras.getString(EXTRA_START_POINT));
         mToView = (TextView) findViewById(R.id.route_to);
-        mToView.setText(extras.getString("com.markupartist.sthlmtraveling.endPoint"));
+        mToView.setText(extras.getString(EXTRA_END_POINT));
 
         TextView dateTimeView = (TextView) findViewById(R.id.route_date_time);
         dateTimeView.setText(route.toString());

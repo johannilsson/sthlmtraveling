@@ -54,7 +54,25 @@ import com.markupartist.sthlmtraveling.tasks.SearchLaterRoutesTask;
 import com.markupartist.sthlmtraveling.tasks.SearchRoutesTask;
 
 public class RoutesActivity extends ListActivity implements OnSearchRoutesResultListener {
+    /**
+     * The search routes action.
+     */
+    static final String ACTION = "com.markupartist.sthlmtraveling.SEARCH_ROUTE";
+    /**
+     * The start point for the search.
+     */
+    static final String EXTRA_START_POINT = "com.markupartist.sthlmtraveling.start_point";
+    /**
+     * The end point for the search.
+     */
+    static final String EXTRA_END_POINT = "com.markupartist.sthlmtraveling.end_point";
+    /**
+     * Departure time in RFC 2445 format.
+     */
+    static final String EXTRA_DEPARTURE_TIME = "com.markupartist.sthlmtraveling.departure_time";
+
     private final String TAG = "RoutesActivity";
+
     private static final int DIALOG_NO_ROUTE_DETAILS_FOUND = 0;
 
     private static final int ADAPTER_EARLIER = 0;
@@ -88,10 +106,14 @@ public class RoutesActivity extends ListActivity implements OnSearchRoutesResult
         Bundle extras = getIntent().getExtras();
 
         mTime = new Time();
-        mTime.parse(extras.getString("com.markupartist.sthlmtraveling.routeTime"));
+        if (extras.containsKey(EXTRA_DEPARTURE_TIME)) {
+            mTime.parse(extras.getString(EXTRA_DEPARTURE_TIME));
+        } else {
+            mTime.setToNow();
+        }
 
-        mFromView.setText(extras.getString("com.markupartist.sthlmtraveling.startPoint"));
-        mToView.setText(extras.getString("com.markupartist.sthlmtraveling.endPoint"));
+        mFromView.setText(extras.getString(EXTRA_START_POINT));
+        mToView.setText(extras.getString(EXTRA_END_POINT));
 
         mFavoriteButtonHelper = new FavoriteButtonHelper(this, mFavoritesDbAdapter, 
                 mFromView.getText().toString(), mToView.getText().toString());
@@ -245,9 +267,9 @@ public class RoutesActivity extends ListActivity implements OnSearchRoutesResult
             break;
         case SECTION_CHANGE_TIME:
             Intent i = new Intent(this, ChangeRouteTimeActivity.class);
-            i.putExtra("com.markupartist.sthlmtraveling.routeTime", mTime.format2445());
-            i.putExtra("com.markupartist.sthlmtraveling.startPoint", mFromView.getText());
-            i.putExtra("com.markupartist.sthlmtraveling.endPoint", mToView.getText());
+            i.putExtra(EXTRA_DEPARTURE_TIME, mTime.format2445());
+            i.putExtra(EXTRA_START_POINT, mFromView.getText());
+            i.putExtra(EXTRA_END_POINT, mToView.getText());
             startActivityForResult(i, CHANGE_TIME);
             break;
         }
@@ -270,9 +292,9 @@ public class RoutesActivity extends ListActivity implements OnSearchRoutesResult
      */
     private void findRouteDetails(final Route route) {
         Intent i = new Intent(RoutesActivity.this, RouteDetailActivity.class);
-        i.putExtra("com.markupartist.sthlmtraveling.startPoint", mFromView.getText().toString());
-        i.putExtra("com.markupartist.sthlmtraveling.endPoint", mToView.getText().toString());
-        i.putExtra("com.markupartist.sthlmtraveling.route", route);
+        i.putExtra(RouteDetailActivity.EXTRA_START_POINT, mFromView.getText().toString());
+        i.putExtra(RouteDetailActivity.EXTRA_END_POINT, mToView.getText().toString());
+        i.putExtra(RouteDetailActivity.EXTRA_ROUTE, route);
         startActivity(i);
     }
 
@@ -291,9 +313,9 @@ public class RoutesActivity extends ListActivity implements OnSearchRoutesResult
             if (resultCode == RESULT_CANCELED) {
                 Log.d(TAG, "Change time activity cancelled.");
             } else {
-                String startPoint = data.getStringExtra("com.markupartist.sthlmtraveling.startPoint");
-                String endPoint = data.getStringExtra("com.markupartist.sthlmtraveling.endPoint");
-                String newTime = data.getStringExtra("com.markupartist.sthlmtraveling.routeTime");
+                String startPoint = data.getStringExtra(EXTRA_START_POINT);
+                String endPoint = data.getStringExtra(EXTRA_END_POINT);
+                String newTime = data.getStringExtra(EXTRA_DEPARTURE_TIME);
 
                 mTime.parse(newTime);
                 HashMap<String, String> item = mDateAdapterData.get(0);

@@ -143,9 +143,9 @@ public class PlannerActivity extends Activity {
         mHistoryDbAdapter.create(HistoryDbAdapter.TYPE_START_POINT, startPoint);
         mHistoryDbAdapter.create(HistoryDbAdapter.TYPE_END_POINT, endPoint);
         Intent i = new Intent(this, RoutesActivity.class);
-        i.putExtra("com.markupartist.sthlmtraveling.routeTime", time.format2445());
-        i.putExtra("com.markupartist.sthlmtraveling.startPoint", startPoint);
-        i.putExtra("com.markupartist.sthlmtraveling.endPoint", endPoint);
+        i.putExtra(RoutesActivity.EXTRA_DEPARTURE_TIME, time.format2445());
+        i.putExtra(RoutesActivity.EXTRA_START_POINT, startPoint);
+        i.putExtra(RoutesActivity.EXTRA_END_POINT, endPoint);
         startActivity(i);
     }
 
@@ -157,8 +157,8 @@ public class PlannerActivity extends Activity {
     protected void onCreateShortCut(String startPoint, String endPoint) {
         final Intent shortcutIntent = new Intent(RoutesActivity.ACTION);
         shortcutIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        shortcutIntent.putExtra("com.markupartist.sthlmtraveling.startPoint", startPoint);
-        shortcutIntent.putExtra("com.markupartist.sthlmtraveling.endPoint", endPoint);
+        shortcutIntent.putExtra(RoutesActivity.EXTRA_START_POINT, startPoint);
+        shortcutIntent.putExtra(RoutesActivity.EXTRA_END_POINT, endPoint);
 
         // Then, set up the container intent (the response to the caller)
         Intent intent = new Intent();

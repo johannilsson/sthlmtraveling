@@ -75,9 +75,9 @@ public class FavoritesActivity extends ListActivity {
         time.setToNow();
 
         Intent i = new Intent(FavoritesActivity.this, RoutesActivity.class);
-        i.putExtra("com.markupartist.sthlmtraveling.routeTime", time.format2445());
-        i.putExtra("com.markupartist.sthlmtraveling.startPoint", startPoint);
-        i.putExtra("com.markupartist.sthlmtraveling.endPoint", endPoint);
+        i.putExtra(RoutesActivity.EXTRA_DEPARTURE_TIME, time.format2445());
+        i.putExtra(RoutesActivity.EXTRA_START_POINT, startPoint);
+        i.putExtra(RoutesActivity.EXTRA_END_POINT, endPoint);
         startActivity(i);
     }
 
