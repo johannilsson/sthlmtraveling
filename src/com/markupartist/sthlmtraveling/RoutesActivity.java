@@ -322,6 +322,7 @@ public class RoutesActivity extends ListActivity implements OnSearchRoutesResult
                 startActivity(i);
                 return true;
             case R.id.reverse_start_end :
+                // TODO: Launch as a new activity? This will then work with the back as well. 
                 String startPoint = mFromView.getText().toString();
                 String endPoint = mToView.getText().toString();
                 SearchRoutesTask searchRoutesTask = new SearchRoutesTask(this);
