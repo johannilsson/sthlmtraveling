@@ -36,6 +36,7 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.text.format.Time;
 import android.util.Log;
 import android.view.Menu;
@@ -62,10 +63,17 @@ public class PlannerActivity extends Activity {
     private AutoCompleteTextView mFromAutoComplete;
     private AutoCompleteTextView mToAutoComplete;
     private HistoryDbAdapter mHistoryDbAdapter;
+    private boolean mCreateShortcut;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.search);
+
+        // If the activity was started with the "create shortcut" action, we
+        // remember this to change the behavior upon a search.
+        if (Intent.ACTION_CREATE_SHORTCUT.equals(getIntent().getAction())) {
+            mCreateShortcut = true;
+        }
 
         mHistoryDbAdapter = new HistoryDbAdapter(this).open();
 
@@ -82,8 +90,10 @@ public class PlannerActivity extends Activity {
         mToAutoComplete.setAdapter(toAdapter);
 
         final Button search = (Button) findViewById(R.id.search_route);
-
         search.setOnClickListener(mGetSearchListener);
+        if (mCreateShortcut) {
+            search.setText("Create shortcut");
+        }
 
         final ImageButton fromDialog = (ImageButton) findViewById(R.id.from_menu);
         fromDialog.setOnClickListener(new View.OnClickListener() {
@@ -112,21 +122,56 @@ public class PlannerActivity extends Activity {
             } else {
                 String startPoint = mFromAutoComplete.getText().toString();
                 String endPoint = mToAutoComplete.getText().toString();
-
-                mHistoryDbAdapter.create(HistoryDbAdapter.TYPE_START_POINT, startPoint);
-                mHistoryDbAdapter.create(HistoryDbAdapter.TYPE_END_POINT, endPoint);
-
-                Time time = new Time();
-                time.setToNow();
-
-                Intent i = new Intent(PlannerActivity.this, RoutesActivity.class);
-                i.putExtra("com.markupartist.sthlmtraveling.routeTime", time.format2445());
-                i.putExtra("com.markupartist.sthlmtraveling.startPoint", startPoint);
-                i.putExtra("com.markupartist.sthlmtraveling.endPoint", endPoint);
-                startActivity(i);
+                if (mCreateShortcut) {
+                    onCreateShortCut(startPoint, endPoint);
+                } else {
+                    Time time = new Time();
+                    time.setToNow();
+                    onSearchRoutes(startPoint, endPoint, time);
+                }
             }
         }
     };
+
+    /**
+     * Start the search.
+     * @param startPoint the start point
+     * @param endPoint the end point
+     * @param time the departure time
+     */
+    private void onSearchRoutes(String startPoint, String endPoint, Time time) {
+        mHistoryDbAdapter.create(HistoryDbAdapter.TYPE_START_POINT, startPoint);
+        mHistoryDbAdapter.create(HistoryDbAdapter.TYPE_END_POINT, endPoint);
+        Intent i = new Intent(this, RoutesActivity.class);
+        i.putExtra("com.markupartist.sthlmtraveling.routeTime", time.format2445());
+        i.putExtra("com.markupartist.sthlmtraveling.startPoint", startPoint);
+        i.putExtra("com.markupartist.sthlmtraveling.endPoint", endPoint);
+        startActivity(i);
+    }
+
+    /**
+     * Setup a search short cut.
+     * @param startPoint the start point
+     * @param endPoint the end point
+     */
+    protected void onCreateShortCut(String startPoint, String endPoint) {
+        final Intent shortcutIntent = new Intent(RoutesActivity.ACTION);
+        shortcutIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        shortcutIntent.putExtra("com.markupartist.sthlmtraveling.startPoint", startPoint);
+        shortcutIntent.putExtra("com.markupartist.sthlmtraveling.endPoint", endPoint);
+
+        // Then, set up the container intent (the response to the caller)
+        Intent intent = new Intent();
+        intent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortcutIntent);
+        intent.putExtra(Intent.EXTRA_SHORTCUT_NAME, startPoint + " " + endPoint);
+        Parcelable iconResource = Intent.ShortcutIconResource.fromContext(
+                this, R.drawable.icon);
+        intent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, iconResource);
+
+        // Now, return the result to the launcher
+        setResult(RESULT_OK, intent);
+        finish();
+    }
 
     @Override
     protected Dialog onCreateDialog(int id) {
