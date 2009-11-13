@@ -36,6 +36,7 @@ public class FindRouteDetailsTask extends AsyncTask<Route, Void, ArrayList<Strin
     private Activity mActivity;
     private ProgressDialog mProgress;
     private OnRouteDetailsResultListener mOnRouteDetailsResultListener;
+    private OnNoRoutesDetailsResultListener mOnNoResultListener;
     private boolean mWasSuccess = true;
 
     /**
@@ -53,9 +54,16 @@ public class FindRouteDetailsTask extends AsyncTask<Route, Void, ArrayList<Strin
      * Set a listener for search results. 
      * @param listener the listener
      */
-    public void setOnRouteDetailsResultListener(
-            OnRouteDetailsResultListener listener) {
+    public void setOnRouteDetailsResultListener(OnRouteDetailsResultListener listener) {
         mOnRouteDetailsResultListener = listener;
+    }
+
+    /**
+     * Set callback for no result. 
+     * @param listener the listener
+     */
+    public void setOnNoResultListener(OnNoRoutesDetailsResultListener listener) {
+        this.mOnNoResultListener = listener;
     }
 
     @Override
@@ -84,7 +92,7 @@ public class FindRouteDetailsTask extends AsyncTask<Route, Void, ArrayList<Strin
         } else if (!mWasSuccess) {
             onNetworkProblem();
         } else {
-            onNoResult();
+            if (mOnNoResultListener != null) mOnNoResultListener.onNoRoutesDetailsResult();
         }
     }
 
@@ -99,20 +107,23 @@ public class FindRouteDetailsTask extends AsyncTask<Route, Void, ArrayList<Strin
     }
 
     /**
-     * Called on no result. Will display a Dialog with an informative message.
+     * Result listener for routes details.
      */
-    protected void onNoResult() {
-        new AlertDialog.Builder(mActivity)
-            .setTitle("Unfortunately no route details was found")
-            .setMessage("Most likely your session has timed out.")
-            .setNeutralButton("Ok", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
-                    dialog.cancel();
-               }
-            }).create().show();        
+    public interface OnRouteDetailsResultListener {
+        /**
+         * Callback for route details
+         * @param details the details
+         */
+        public void onRouteDetailsResult(ArrayList<String> details);
     }
 
-    public interface OnRouteDetailsResultListener {
-        public void onRouteDetailsResult(ArrayList<String> details);
+    /**
+     * No result listener for routes details 
+     */
+    public interface OnNoRoutesDetailsResultListener {
+        /**
+         * Called when no route details was found. 
+         */
+        public void onNoRoutesDetailsResult();
     }
 }

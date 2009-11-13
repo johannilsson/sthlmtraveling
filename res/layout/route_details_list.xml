@@ -36,24 +36,28 @@
         android:padding="10dip"
         >
         <TextView
-            android:id="@+id/route_date_time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmallInverse"
-            />
+			android:id="@+id/route_date_time"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:textAppearance="?android:attr/textAppearanceSmallInverse"
+        />
     </LinearLayout>
     <ListView 
-    	android:id="@+id/android:list"
+		android:id="@+id/android:list"
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
-        android:dividerHeight="0.1dip"
-        android:divider="#4A4A4A"
-		/>
-	<TextView android:id="@+id/android:empty"
+		android:dividerHeight="0.1dip"
+		android:divider="#4A4A4A"
+    />
+	<TextView 
+        android:id="@+id/route_details_no_result"
+        android:visibility="gone"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:textColor="#ffffff"
+		android:textColor="?android:attr/textColorPrimary"
+		android:layout_marginTop="15dip"
 		android:padding="5dip"
+		android:textSize="16dip"
 		android:text="@string/no_route_details"
-		/>
+    />
 </LinearLayout>

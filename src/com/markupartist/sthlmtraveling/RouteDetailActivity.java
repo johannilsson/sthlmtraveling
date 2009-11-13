@@ -24,15 +24,18 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.markupartist.sthlmtraveling.planner.Route;
 import com.markupartist.sthlmtraveling.provider.FavoritesDbAdapter;
 import com.markupartist.sthlmtraveling.tasks.FindRouteDetailsTask;
+import com.markupartist.sthlmtraveling.tasks.FindRouteDetailsTask.OnNoRoutesDetailsResultListener;
 import com.markupartist.sthlmtraveling.tasks.FindRouteDetailsTask.OnRouteDetailsResultListener;
 
-public class RouteDetailActivity extends ListActivity implements OnRouteDetailsResultListener {
+public class RouteDetailActivity extends ListActivity 
+        implements OnRouteDetailsResultListener, OnNoRoutesDetailsResultListener {
     public static final String EXTRA_START_POINT = "com.markupartist.sthlmtraveling.start_point";
     public static final String EXTRA_END_POINT = "com.markupartist.sthlmtraveling.end_point";
     public static final String EXTRA_ROUTE = "com.markupartist.sthlmtraveling.route";
@@ -81,10 +84,11 @@ public class RouteDetailActivity extends ListActivity implements OnRouteDetailsR
         } else {
             FindRouteDetailsTask findRouteDetailsTask = new FindRouteDetailsTask(this);
             findRouteDetailsTask.setOnRouteDetailsResultListener(this);
+            findRouteDetailsTask.setOnNoResultListener(this);
             findRouteDetailsTask.execute(route);
         }
     }
-    
+
     /**
      * Called before this activity is destroyed, returns the previous details. This data is used 
      * if the screen is rotated. Then we don't need to ask for the data again.
@@ -125,6 +129,12 @@ public class RouteDetailActivity extends ListActivity implements OnRouteDetailsR
         mDetailAdapter = new ArrayAdapter<String>(this, R.layout.route_details_row, details);
         setListAdapter(mDetailAdapter);
         mDetails = details;
+    }
+
+    @Override
+    public void onNoRoutesDetailsResult() {
+        TextView noResult = (TextView) findViewById(R.id.route_details_no_result);
+        noResult.setVisibility(View.VISIBLE);
     }
 
 }
