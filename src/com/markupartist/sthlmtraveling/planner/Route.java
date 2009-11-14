@@ -93,7 +93,7 @@ public class Route implements Parcelable {
     @Override
     public String toString() {
         //TODO: Will be split up in different views in the routes_row layout later on.
-        return departure + "-" + arrival + " (" + duration + ")";
+        return departure + " - " + arrival + " (" + duration + ")";
     }
 
     @Override
