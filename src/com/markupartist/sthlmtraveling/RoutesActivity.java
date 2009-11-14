@@ -26,11 +26,13 @@ import android.app.ListActivity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.text.format.Time;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -422,7 +424,51 @@ public class RoutesActivity extends ListActivity implements OnSearchRoutesResult
         public View getView(int position, View convertView, ViewGroup parent) {
             Route route = mRoutes.get(position);
             return new RouteAdapterView(mContext, route);
+            //return createView(mContext, route);
         }
+
+        /*
+        private View createView(Context context, Route route) {
+            LayoutInflater inflater = (LayoutInflater)context.getSystemService(
+                    Context.LAYOUT_INFLATER_SERVICE);
+
+            View layout = inflater.inflate(R.layout.routes_row, null);
+
+            TextView startPoint = (TextView) layout.findViewById(R.id.route_startpoint_label);
+            startPoint.setText(route.from);
+            TextView startPointDeparture = (TextView) layout.findViewById(R.id.route_startpoint_departure);
+            startPointDeparture.setText(route.departure);
+
+            TextView endPoint = (TextView) layout.findViewById(R.id.route_endpoint_label);
+            endPoint.setText(route.to);
+            TextView endPointArrival = (TextView) layout.findViewById(R.id.route_endpoint_arrival);
+            endPointArrival.setText(route.arrival);
+
+            TextView durationAndChanges = (TextView) layout.findViewById(R.id.route_duration_and_changes);
+            durationAndChanges.setText(route.duration);
+
+            LinearLayout routeChangesDrawables = (LinearLayout) findViewById(R.id.route_changes);
+            int currentTransportCount = 1;
+            int transportCount = route.transports.size();
+            for (Route.Transport transport : route.transports) {
+                ImageView change = new ImageView(context);
+                change.setImageResource(transport.imageResource());
+                change.setPadding(0, 0, 5, 0);
+                routeChangesDrawables.addView(change);
+
+                if (transportCount > currentTransportCount) {
+                    ImageView separator = new ImageView(context);
+                    separator.setImageResource(R.drawable.transport_separator);
+                    separator.setPadding(0, 5, 5, 0);
+                    routeChangesDrawables.addView(separator);
+                }
+
+                currentTransportCount++;
+            }
+            
+            return layout;
+        }
+        */
     }
 
     private class RouteAdapterView extends LinearLayout {
@@ -436,17 +482,15 @@ public class RoutesActivity extends ListActivity implements OnSearchRoutesResult
             TextView routeDetail = new TextView(context);
             routeDetail.setText(route.toString());
             routeDetail.setTextColor(Color.WHITE);
-            routeDetail.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
+            //routeDetail.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
+
+            TextView startAndEndPoint = new TextView(context);
+            startAndEndPoint.setText(route.from + " - " + route.to);
+            startAndEndPoint.setTextColor(Color.GRAY);
+            startAndEndPoint.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
 
             LinearLayout routeChanges = new LinearLayout(context);
-            routeChanges.setPadding(0, 3, 0, 0);
-
-            /*
-            TextView changesView = new TextView(context);
-            changesView.setText(route.changes + " changes:");
-            changesView.setPadding(0, 0, 5, 0);
-            routeChanges.addView(changesView);
-            */
+            routeChanges.setPadding(0, 5, 0, 0);
 
             int currentTransportCount = 1;
             int transportCount = route.transports.size();
@@ -466,9 +510,9 @@ public class RoutesActivity extends ListActivity implements OnSearchRoutesResult
                 currentTransportCount++;
             }
 
+            this.addView(startAndEndPoint);
             this.addView(routeDetail);
             this.addView(routeChanges);
         }
-
     }
 }
