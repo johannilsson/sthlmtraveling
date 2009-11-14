@@ -22,82 +22,89 @@
     android:layout_width="fill_parent" 
     android:layout_height="wrap_content"
     android:padding="5dip">
-	<TextView
-		android:id="@+id/routes_row"
-		android:text="16:19-16:25 2 changes (0:14)"
-		android:layout_width="fill_parent"
-		android:layout_height="wrap_content"
-		android:textStyle="bold"
-		android:textColor="#ffffff"
-		/>
     <LinearLayout
-            android:id="@+id/routes_changes"
+        android:orientation="horizontal"
+	    android:layout_width="wrap_content" 
+	    android:layout_height="wrap_content"
+    >
+	    <TextView
+	        android:id="@+id/route_startpoint_departure"
+	        android:text="10.23"
+	        android:textStyle="bold"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:textColor="?android:attr/textColorPrimary"
+	        />
+           <TextView
+               android:id="@+id/route_startpoint_label"
+               android:layout_marginLeft="10dip"
+               android:text="Telefonplan"
+               android:layout_width="fill_parent"
+               android:layout_height="wrap_content"
+               android:textColor="?android:attr/textColorPrimary"
+               />
+    </LinearLayout>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="wrap_content" 
+        android:layout_height="wrap_content"
+    >
+        <TextView
+            android:id="@+id/route_endpoint_arrival"
+            android:text="10.23-approx"
+            android:textStyle="bold"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:addStatesFromChildren="true"
-            android:gravity="center_vertical"
-            android:paddingRight="0dip"
-        >
-	    <ImageView 
-	        android:id="@+id/routes_image_changes"
-	        android:src="@drawable/metro"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:paddingRight="3dip"
-	    />
-	    <ImageView 
-	        android:id="@+id/routes_image_changes2"
-	        android:src="@drawable/metro"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	    />
+            android:textColor="?android:attr/textColorPrimary"
+            />
+           <TextView
+               android:id="@+id/route_endpoint_label"
+               android:layout_marginLeft="10dip"
+               android:text="T-Centralen"
+               android:layout_width="fill_parent"
+               android:layout_height="wrap_content"
+               android:textColor="?android:attr/textColorPrimary"
+               />
+    </LinearLayout>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="wrap_content" 
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dip"
+    >
+	    <LinearLayout
+	            android:id="@+id/route_changes"
+	            android:layout_width="fill_parent"
+	            android:layout_height="wrap_content"
+	            android:addStatesFromChildren="true"
+	            android:gravity="center_vertical"
+	            android:paddingRight="0dip"
+	        >
+	        <!--
+		    <ImageView 
+		        android:id="@+id/routes_image_changes"
+		        android:src="@drawable/metro"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:paddingRight="3dip"
+		    />
+		    <ImageView 
+		        android:id="@+id/routes_image_changes2"
+		        android:src="@drawable/metro"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		    />
+	       -->
+	    </LinearLayout>
+        <TextView
+            android:id="@+id/route_duration_and_changes"
+            android:layout_marginLeft="10dip"
+            android:text="Duration 14 minutes 1 changes"
+            android:textSize="12dip"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textColor="?android:attr/textColorSecondary"
+            />
     </LinearLayout>
 </LinearLayout>
-
-<!--
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
-    android:orientation="vertical"
-    android:layout_width="fill_parent" 
-    android:layout_height="wrap_content"
-    android:padding="5dip">
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Duration 0:40 with 2 changes" 
-        />
-		<TableLayout
-			xmlns:android="http://schemas.android.com/apk/res/android"
-			android:layout_height="fill_parent"
-			android:layout_width="fill_parent">
-			<TableRow>
-		        <TextView
-		            android:layout_width="wrap_content"
-		            android:layout_height="wrap_content"
-		            android:textStyle="bold"
-		            android:text="Telefonplan" 
-		            />
-		        <TextView
-		        	android:paddingLeft="20dip"
-		            android:layout_width="fill_parent"
-		            android:layout_height="wrap_content"
-		            android:textStyle="bold"
-		            android:text="Hötorget"
-		            />
-			</TableRow>
-			<TableRow>
-		        <TextView
-		            android:layout_width="wrap_content"
-		            android:layout_height="wrap_content"
-		            android:text="01:21" 
-		            />
-		        <TextView
-		        	android:paddingLeft="20dip"
-		            android:layout_width="fill_parent"
-		            android:layout_height="wrap_content"
-		            android:text="01:41"
-		            />
-			</TableRow>
-		</TableLayout>
-</LinearLayout>
--->
 
