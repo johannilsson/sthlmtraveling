@@ -33,7 +33,7 @@
         android:singleLine="true"
         android:layout_weight="1"
         android:textColor="?android:attr/textColorPrimary"
-        android:textStyle="bold"
+        android:textStyle="normal"
         android:padding="10dip"
         />
 	<ImageView 
