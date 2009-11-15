@@ -31,6 +31,7 @@
     <string name="no_route_details">Unfortunately there was no route found. Most likely this search was too old.</string>
     <string name="session_timeout_message">Most likely this search was too old.</string>
     <string name="attention_label">Attention</string>
+    <string name="bad_routes_parameters_message">Start point or end point must not be empty.</string>
     <string name="new_search">Search</string>
     <string name="empty_value">Missing value</string>
     <string name="loading">Searching. Please wait...</string>

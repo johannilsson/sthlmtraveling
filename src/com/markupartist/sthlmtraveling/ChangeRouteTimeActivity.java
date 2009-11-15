@@ -47,7 +47,7 @@ public class ChangeRouteTimeActivity extends Activity {
         Bundle extras = getIntent().getExtras();
         final String startPoint = extras.getString(RoutesActivity.EXTRA_START_POINT);
         final String endPoint = extras.getString(RoutesActivity.EXTRA_END_POINT);
-        String timeString = extras.getString(RoutesActivity.EXTRA_DEPARTURE_TIME);
+        String timeString = extras.getString(RoutesActivity.EXTRA_TIME);
 
         mTime = new Time();
         mTime.parse(timeString);
@@ -70,8 +70,8 @@ public class ChangeRouteTimeActivity extends Activity {
         changeButton.setOnClickListener(new OnClickListener() {
             @Override public void onClick(View v) {
                 setResult(RESULT_OK, (new Intent())
-                        .putExtra(RoutesActivity.EXTRA_DEPARTURE_TIME, mTime.format2445()) 
-                        .putExtra(RoutesActivity.EXTRA_START_POINT, startPoint) 
+                        .putExtra(RoutesActivity.EXTRA_TIME, mTime.format2445())
+                        .putExtra(RoutesActivity.EXTRA_START_POINT, startPoint)
                         .putExtra(RoutesActivity.EXTRA_END_POINT, endPoint));
                 finish();
             }
@@ -102,13 +102,12 @@ public class ChangeRouteTimeActivity extends Activity {
     protected Dialog onCreateDialog(int id) {
         switch (id) {
             case DIALOG_DATE:
-                return new DatePickerDialog(this,
-                            mDateSetListener,
-                            mTime.year, mTime.month, mTime.monthDay);
+                return new DatePickerDialog(this, mDateSetListener,
+                        mTime.year, mTime.month, mTime.monthDay);
             case DIALOG_TIME:
                 // TODO: Base 24 hour on locale, same with the format.
-                return new TimePickerDialog(this,
-                        mTimeSetListener, mTime.hour, mTime.minute, true);
+                return new TimePickerDialog(this, mTimeSetListener,
+                        mTime.hour, mTime.minute, true);
         }
         return null;
     }

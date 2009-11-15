@@ -34,8 +34,9 @@
         <activity android:name=".FavoritesActivity"></activity>
         <activity android:name=".RoutesActivity">
             <intent-filter>
-                <action android:name="com.markupartist.sthlmtraveling.SEARCH_ROUTE" />
-                <category android:name="android.intent.category.DEFAULT" />
+	            <action android:name="android.intent.action.VIEW"/>
+	            <category android:name="android.intent.category.DEFAULT"/>
+	            <data android:scheme="journeyplanner" android:host="routes" />
             </intent-filter>
         </activity>
         <activity android:name=".RouteDetailActivity"></activity>

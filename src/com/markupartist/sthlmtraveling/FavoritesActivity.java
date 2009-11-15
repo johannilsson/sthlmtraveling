@@ -19,8 +19,8 @@ package com.markupartist.sthlmtraveling;
 import android.app.ListActivity;
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
-import android.text.format.Time;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
@@ -71,13 +71,8 @@ public class FavoritesActivity extends ListActivity {
         String endPoint = favoritesCursor.getString(
                 favoritesCursor.getColumnIndex(FavoritesDbAdapter.KEY_END_POINT));
 
-        Time time = new Time();
-        time.setToNow();
-
-        Intent i = new Intent(FavoritesActivity.this, RoutesActivity.class);
-        i.putExtra(RoutesActivity.EXTRA_DEPARTURE_TIME, time.format2445());
-        i.putExtra(RoutesActivity.EXTRA_START_POINT, startPoint);
-        i.putExtra(RoutesActivity.EXTRA_END_POINT, endPoint);
+        Uri routesUri = RoutesActivity.createRoutesUri(startPoint, endPoint);
+        Intent i = new Intent(Intent.ACTION_VIEW, routesUri, this, RoutesActivity.class);
         startActivity(i);
     }
 
