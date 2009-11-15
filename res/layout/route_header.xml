@@ -62,7 +62,6 @@
                         android:textAppearance="?android:attr/textAppearanceSmall"
                         android:layout_marginLeft="2dip"
                         android:textStyle="bold"
-                        android:text="T-Centralen"
                         />
                 </LinearLayout>
             </TableRow>
@@ -90,7 +89,6 @@
                         android:textAppearance="?android:attr/textAppearanceSmall"
                         android:layout_marginLeft="2dip"
                         android:textStyle="bold"
-                        android:text="Telefonplan"
                         />
                 </LinearLayout>
             </TableRow>
