@@ -404,7 +404,9 @@ public class RoutesActivity extends ListActivity implements OnSearchRoutesResult
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mFavoritesDbAdapter.close();
+        if (mFavoritesDbAdapter != null) {
+            mFavoritesDbAdapter.close();
+        }
     }
 
     /**
