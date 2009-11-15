@@ -92,7 +92,7 @@ public class PlannerActivity extends Activity {
         final Button search = (Button) findViewById(R.id.search_route);
         search.setOnClickListener(mGetSearchListener);
         if (mCreateShortcut) {
-            search.setText("Create shortcut");
+            search.setText(getText(R.string.create_shortcut_label));
         }
 
         final ImageButton fromDialog = (ImageButton) findViewById(R.id.from_menu);
@@ -177,7 +177,7 @@ public class PlannerActivity extends Activity {
         switch(id) {
         case DIALOG_START_POINT:
             AlertDialog.Builder startPointDialogBuilder = new AlertDialog.Builder(this);
-            startPointDialogBuilder.setTitle("Choose start point");
+            startPointDialogBuilder.setTitle(getText(R.string.choose_start_point_label));
             startPointDialogBuilder.setItems(getDialogSelectPointItems(), new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int item) {
                     switch(item) {
@@ -196,7 +196,7 @@ public class PlannerActivity extends Activity {
             break;
         case DIALOG_END_POINT:
             AlertDialog.Builder endPointDialogBuilder = new AlertDialog.Builder(this);
-            endPointDialogBuilder.setTitle("Choose end point");
+            endPointDialogBuilder.setTitle(getText(R.string.choose_end_point_label));
             endPointDialogBuilder.setItems(getDialogSelectPointItems(), 
                     new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int item) {
@@ -238,7 +238,7 @@ public class PlannerActivity extends Activity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         Intent browserIntent = new Intent(Intent.ACTION_VIEW,
-                                Uri.parse("http://pledgie.com/campaigns/6527"));
+                                Uri.parse(getString(R.string.donate_url)));
                         startActivity(browserIntent);
                     }
                 })
@@ -248,9 +248,9 @@ public class PlannerActivity extends Activity {
                         final Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
                         emailIntent.setType("plain/text");
                         emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL,
-                                new String[]{"sthlmtraveling@markupartist.com"});
+                                new String[]{getString(R.string.send_feedback_email_emailaddress)});
                         emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT,
-                                "STHLM Traveling feedback");
+                                getText(R.string.send_feedback_email_title));
                         startActivity(Intent.createChooser(emailIntent,
                                 getText(R.string.send_email)));
                     }
@@ -261,7 +261,7 @@ public class PlannerActivity extends Activity {
             startManagingCursor(startPointCursor);
             Log.d(TAG, "startPoints: " + startPointCursor.getCount());
             return new AlertDialog.Builder(this)
-                .setTitle("History")
+                .setTitle(getText(R.string.history_label))
                 .setCursor(startPointCursor, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -275,7 +275,7 @@ public class PlannerActivity extends Activity {
             startManagingCursor(endPointCursor);
             Log.d(TAG, "endPoints: " + endPointCursor.getCount());
             return new AlertDialog.Builder(this)
-                .setTitle("History")
+                .setTitle(getText(R.string.history_label))
                 .setCursor(endPointCursor, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -296,7 +296,10 @@ public class PlannerActivity extends Activity {
     }
 
     private CharSequence[] getDialogSelectPointItems() {
-        CharSequence[] items = {"My Location", "History"};
+        CharSequence[] items = {
+                getText(R.string.my_location), 
+                getText(R.string.history_label)
+            };
         return items;
     }
 
@@ -336,6 +339,7 @@ public class PlannerActivity extends Activity {
         String addressString = null;
         try {
             Log.d(TAG, "Getting address from position " + lat + "," + lng);
+            // TODO: Move the call for getFromLocation to a separate background thread.
             List<Address> addresses = geocoder.getFromLocation(lat, lng, 5);
             if (!addresses.isEmpty()) {
                 for (Address address : addresses) {

@@ -391,11 +391,7 @@ public class RoutesActivity extends ListActivity implements OnSearchRoutesResult
                 .setTitle(getText(R.string.attention_label))
                 .setMessage(getText(R.string.bad_routes_parameters_message))
                 .setCancelable(true)
-                .setNeutralButton("Ok", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.cancel();
-                   }
-                })
+                .setNeutralButton(getText(android.R.string.ok), null)
                 .create();
         }
         return null;

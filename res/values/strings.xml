@@ -41,6 +41,7 @@
     <string name="about">About</string>
     <string name="about_this_app">STHLM Traveling is developed by Johan Nilsson, please contact him if you have ideas or experience any problems.\n\nAll data is gathered from SL - Stockholm Public Transport.\n\n<b>Credits</b>\n<li>Patches by Morgan Christiansson\nhttp://screeninteraction.com</li>\n<li>App icon &amp; ideas Olof Brickarp\nhttp://www.yay.se</li>\n<li>Icons by Fredrik Broman\nhttp://fredrikbroman.com</li>\n<li>Icons by FatCow\nhttp://www.fatcow.com/free-icons</li>\n<li>Feedback from Swedroid\nhttp://swedroid.se</li></string>
     <string name="donate">Donate</string>
+    <string name="donate_url">http://pledgie.com/campaigns/6527</string>
     <string name="feedback">Feedback</string>
     <string name="send_email">Send email...</string>
     <string name="favorites_label">Favorites</string>
@@ -50,4 +51,10 @@
     <string name="network_problem_label">Network problem</string>
     <string name="network_problem_message">A network problem occurred</string>
     <string name="activity_create_shortcut">Routes</string>
+    <string name="create_shortcut_label">Create Shortcut</string>
+    <string name="choose_start_point_label">Choose start point</string>
+    <string name="choose_end_point_label">Choose end point</string>
+    <string name="send_feedback_email_title">STHLM Traveling feedback</string>
+    <string name="send_feedback_email_emailaddress">sthlmtraveling@markupartist.com</string>
+    <string name="history_label">History</string>
 </resources>
