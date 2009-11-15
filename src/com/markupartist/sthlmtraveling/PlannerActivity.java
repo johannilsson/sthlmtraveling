@@ -22,7 +22,9 @@ import java.util.Locale;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -44,14 +46,21 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.View.OnClickListener;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.DatePicker;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.TimePicker;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 
 import com.markupartist.sthlmtraveling.planner.Planner;
 import com.markupartist.sthlmtraveling.provider.HistoryDbAdapter;
 
-public class PlannerActivity extends Activity {
+public class PlannerActivity extends Activity implements OnCheckedChangeListener {
     private static final String TAG = "Search";
     private static final int DIALOG_START_POINT = 0;
     private static final int DIALOG_END_POINT = 1;
@@ -59,11 +68,17 @@ public class PlannerActivity extends Activity {
     private static final int DIALOG_START_POINT_HISTORY = 3;
     private static final int DIALOG_END_POINT_HISTORY = 4;
     private static final int NO_LOCATION = 5;
+    private static final int DIALOG_DATE = 6;
+    private static final int DIALOG_TIME = 7;
 
     private AutoCompleteTextView mFromAutoComplete;
     private AutoCompleteTextView mToAutoComplete;
     private HistoryDbAdapter mHistoryDbAdapter;
     private boolean mCreateShortcut;
+    private Time mTime;
+    private Button mDateButton;
+    private Button mTimeButton;
+    private LinearLayout mChangeTimeLayout;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,6 +94,7 @@ public class PlannerActivity extends Activity {
 
         Planner planner = Planner.getInstance();
 
+        // Setup autocomplete views.
         mFromAutoComplete = (AutoCompleteTextView) findViewById(R.id.from);
         AutoCompleteStopAdapter stopAdapter = new AutoCompleteStopAdapter(this, 
                 android.R.layout.simple_dropdown_item_1line, planner);
@@ -89,12 +105,14 @@ public class PlannerActivity extends Activity {
                 android.R.layout.simple_dropdown_item_1line, planner);
         mToAutoComplete.setAdapter(toAdapter);
 
+        // Setup search button.
         final Button search = (Button) findViewById(R.id.search_route);
         search.setOnClickListener(mGetSearchListener);
         if (mCreateShortcut) {
             search.setText(getText(R.string.create_shortcut_label));
         }
 
+        // Setup view for choosing other data for start and end point.
         final ImageButton fromDialog = (ImageButton) findViewById(R.id.from_menu);
         fromDialog.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -110,8 +128,40 @@ public class PlannerActivity extends Activity {
                 showDialog(DIALOG_END_POINT);
             }
         });
+
+        // Views for date and time
+        mChangeTimeLayout = (LinearLayout) findViewById(R.id.planner_change_time_layout);
+
+        mDateButton = (Button) findViewById(R.id.planner_route_date);
+        mDateButton.setOnClickListener(new OnClickListener() {
+            @Override public void onClick(View v) {
+                showDialog(DIALOG_DATE);
+            }
+        });
+
+        mTimeButton = (Button) findViewById(R.id.planner_route_time);
+        mTimeButton.setOnClickListener(new OnClickListener() {
+            @Override public void onClick(View v) {
+                showDialog(DIALOG_TIME);
+            }
+        });
+
+        // Set time to now, and notify buttons about the new time.
+        mTime = new Time();
+        mTime.setToNow();
+        onTimeChanged();
+
+        // Views for radio buttons
+        RadioButton nowRadioButton = (RadioButton) findViewById(R.id.planner_check_now);
+        nowRadioButton.setOnCheckedChangeListener(this);
+        RadioButton laterRadioButton = (RadioButton) findViewById(R.id.planner_check_later);
+        laterRadioButton.setOnCheckedChangeListener(this);
     }
 
+    /**
+     * On click listener for search and create shortcut button. Validates that the start point and 
+     * the end point is correctly filled out before moving on.
+     */
     View.OnClickListener mGetSearchListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -125,13 +175,41 @@ public class PlannerActivity extends Activity {
                 if (mCreateShortcut) {
                     onCreateShortCut(startPoint, endPoint);
                 } else {
-                    Time time = new Time();
-                    time.setToNow();
-                    onSearchRoutes(startPoint, endPoint, time);
+                    onSearchRoutes(startPoint, endPoint, mTime);
                 }
             }
         }
     };
+
+    /**
+     * On date set listener for the date picker. Sets the new date to the time member and updates 
+     * views if the date was changed.
+     */
+    private DatePickerDialog.OnDateSetListener mDateSetListener =
+        new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int monthOfYear,
+                    int dayOfMonth) {
+                mTime.year = year;
+                mTime.month = monthOfYear;
+                mTime.monthDay = dayOfMonth;
+                onTimeChanged();
+            }
+        };
+
+    /**
+     * On time set listener for the time picker. Sets the new time to the time member and updates 
+     * views if the time was changed.
+     */
+    private TimePickerDialog.OnTimeSetListener mTimeSetListener =
+        new TimePickerDialog.OnTimeSetListener() {
+            @Override
+            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                mTime.hour = hourOfDay;
+                mTime.minute = minute;
+                onTimeChanged();
+            }
+        };
 
     /**
      * Start the search.
@@ -169,6 +247,18 @@ public class PlannerActivity extends Activity {
         // Now, return the result to the launcher
         setResult(RESULT_OK, intent);
         finish();
+    }
+
+    @Override
+    protected void onPrepareDialog(int id, Dialog dialog) {
+        switch (id) {
+            case DIALOG_DATE:
+                ((DatePickerDialog) dialog).updateDate(mTime.year, mTime.month, mTime.monthDay);
+                break;
+            case DIALOG_TIME:
+                ((TimePickerDialog) dialog).updateTime(mTime.hour, mTime.minute);
+                break;
+        }
     }
 
     @Override
@@ -291,6 +381,13 @@ public class PlannerActivity extends Activity {
                 .setMessage(getText(R.string.no_location_message))
                 .setPositiveButton(android.R.string.ok, null)
                 .create();
+        case DIALOG_DATE:
+            return new DatePickerDialog(this, mDateSetListener,
+                    mTime.year, mTime.month, mTime.monthDay);
+        case DIALOG_TIME:
+            // TODO: Base 24 hour on locale, same with the format.
+            return new TimePickerDialog(this, mTimeSetListener,
+                    mTime.hour, mTime.minute, true);
         }
         return dialog;
     }
@@ -308,6 +405,16 @@ public class PlannerActivity extends Activity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.options_menu_search, menu);
         return true;
+    }
+
+    /**
+     * Update time on the buttons.
+     */
+    private void onTimeChanged() {
+        String formattedDate = mTime.format("%x");
+        String formattedTime = mTime.format("%R");
+        mDateButton.setText(formattedDate);
+        mTimeButton.setText(formattedTime);
     }
 
     /**
@@ -393,5 +500,17 @@ public class PlannerActivity extends Activity {
     protected void onDestroy() {
         super.onDestroy();
         mHistoryDbAdapter.close();
+    }
+
+    @Override
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        // We only check the state for later radio button.
+        if (isChecked && buttonView.getId() == R.id.planner_check_later) {
+            mChangeTimeLayout.setVisibility(View.VISIBLE);
+        } else if (!isChecked && buttonView.getId() == R.id.planner_check_later) {
+            mChangeTimeLayout.setVisibility(View.GONE);
+            mTime.setToNow();
+            onTimeChanged();
+        }
     }
 }
