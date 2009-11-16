@@ -102,7 +102,7 @@ public class RouteDetailActivity extends ListActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.options_menu, menu);
+        inflater.inflate(R.menu.options_menu_route_details, menu);
         return true;
     }
 

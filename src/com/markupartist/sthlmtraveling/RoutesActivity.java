@@ -58,7 +58,7 @@ import com.markupartist.sthlmtraveling.tasks.SearchRoutesTask;
  * Routes activity
  * <br/>
  * Accepts a routes data URI in the format:
- * <code>sthlmtraveling://routes?startpoint=STARTPOINT&endpoint=ENDPOINT&time=TIME</code>
+ * <code>journeyplanner://routes?startpoint=STARTPOINT&endpoint=ENDPOINT&time=TIME</code>
  * All parameters needs to be url encoded. Time is optional, but if provided it must be in
  * RFC 2445 format.
  */
@@ -348,7 +348,7 @@ public class RoutesActivity extends ListActivity implements OnSearchRoutesResult
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.options_menu, menu);
+        inflater.inflate(R.menu.options_menu_routes, menu);
         return true;
     }
 
