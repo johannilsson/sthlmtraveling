@@ -16,8 +16,8 @@ me on [twitter](http://twitter.com/johanni) where I announce new versions.
 Credits
 -------
 
+* App icon, concepts & ideas Olof Brickarp
 * Patches by [Morgan Christiansson, Screen Interaction AB](http://screeninteraction.com)
-* Concepts & ideas Olof Brickarp
 * Icons by [Fredrik Broman](http://fredrikbroman.com)
 * Icons by [FatCow](http://www.fatcow.com/free-icons)
 * Feedback, suggestions & test by [Swedroid users](http://swedroid.se)
