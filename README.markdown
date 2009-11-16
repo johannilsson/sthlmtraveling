@@ -65,20 +65,37 @@ STHLM Traveling is open source and licensed under
 
 * Icons by Fredrik Broman is licensed under [CC Attribution 3.0](http://creativecommons.org/licenses/by/3.0/)
 * SectionedAdapter released under [GNU General Public License](http://www.gnu.org/licenses/gpl.html)
+* App icon by Olof Brickarp is copyright Olof Brickarp
 
 Changelog
 ---------
+* 1.3.5
+    * New app icon by [Olof Brickarp](http://www.yay.se)
+    * Choose departure time from the planner
+    * Shortcuts for routes
+    * Share search via QR-code
+    * Public intent for searching routes, other apps can now trigger a search
+      for routes. See RoutesActivity for documentation
+    * Reverse search from the routes list 
+    * Show alert if we having problems with the network, closes issue [#6](http://github.com/johannilsson/sthlmtraveling/issues/#issue/6) 
+    * Added start and end point to routes list
+    * Moved actually searching to RoutesActivity
+    * Moved planner code to own package
+    * Replaced handlers with AsyncTask, now located in the tasks package
+    * Fixed bug with menu for search did not launch the tabbed StartActivity, 
+      patch by [Morgan Christiansson](http://www.screeninteraction.com/)
+    * Moved all hard coded strings to strings.xml
 * 1.3.0
     * Favorite routes
     * History for start and end point
-    * Fixed force close when location is not available, closes issue #4
+    * Fixed force close when location is not available, closes issue [#4](http://github.com/johannilsson/sthlmtraveling/issues/#issue/4)
     * Compiling against 1.6
     * Tested for QVGA screens
     * Improved ui with icons from FatCow
     * Refactored search routes to a AsyncTask
-    * Renamed SearchActivity to PlannerActivity, patch by Morgan Christiansson
+    * Renamed SearchActivity to PlannerActivity, patch by [Morgan Christiansson](http://www.screeninteraction.com/)
 * 1.2.2
-    * Added Saltsjöbanan as an transport, closes issue #2
+    * Added Saltsjöbanan as an transport, closes issue [#2](http://github.com/johannilsson/sthlmtraveling/issues/#issue/2)
 * 1.2.1
     * Added support for icons in routes list. Icons by 
       [Fredrik Broman](http://fredrikbroman.com)
