@@ -57,4 +57,9 @@
     <string name="send_feedback_email_title">STHLM Traveling feedback</string>
     <string name="send_feedback_email_emailaddress">sthlmtraveling@markupartist.com</string>
     <string name="history_label">History</string>
+    <string name="show_qr_code">Show QR-Code</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="requires_barcode_scanner_message">This application requires Barcode Scanner. Would you like to install it?</string>
+    <string name="install_barcode_scanner_title">Install Barcode Scanner?</string>
 </resources>

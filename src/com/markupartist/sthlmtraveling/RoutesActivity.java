@@ -53,6 +53,7 @@ import com.markupartist.sthlmtraveling.tasks.OnSearchRoutesResultListener;
 import com.markupartist.sthlmtraveling.tasks.SearchEarlierRoutesTask;
 import com.markupartist.sthlmtraveling.tasks.SearchLaterRoutesTask;
 import com.markupartist.sthlmtraveling.tasks.SearchRoutesTask;
+import com.markupartist.sthlmtraveling.utils.BarcodeScannerIntegrator;
 
 /**
  * Routes activity
@@ -377,6 +378,14 @@ public class RoutesActivity extends ListActivity implements OnSearchRoutesResult
 
                 // Update the favorite button
                 mFavoriteButtonHelper.setStartPoint(endPoint).setEndPoint(startPoint).loadImage();
+                return true;
+            case R.id.show_qr_code :
+                BarcodeScannerIntegrator.shareText(this, createRoutesUri(
+                        mFromView.getText().toString(), mToView.getText().toString()).toString(),
+                        R.string.install_barcode_scanner_title,
+                        R.string.requires_barcode_scanner_message,
+                        R.string.yes, R.string.no);
+
                 return true;
         }
         return super.onOptionsItemSelected(item);
