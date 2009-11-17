@@ -91,6 +91,7 @@ public final class BarcodeScannerIntegrator {
     intent.setAction("com.google.zxing.client.android.ENCODE");
     intent.putExtra("ENCODE_TYPE", "TEXT_TYPE");
     intent.putExtra("ENCODE_DATA", text);
+    //intent.putExtra("com.google.zxing.client.android.ENCODE_FORMAT", "QR_CODE"); 
     try {
       activity.startActivity(intent);
     } catch (ActivityNotFoundException e) {
