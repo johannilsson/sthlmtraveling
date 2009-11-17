@@ -69,6 +69,8 @@ STHLM Traveling is open source and licensed under
 
 Changelog
 ---------
+* 1.3.6
+    * Fix for barcode generator
 * 1.3.5
     * New app icon by [Olof Brickarp](http://www.yay.se)
     * Choose departure time from the planner
