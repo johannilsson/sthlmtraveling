@@ -380,8 +380,10 @@ public class RoutesActivity extends ListActivity implements OnSearchRoutesResult
                 mFavoriteButtonHelper.setStartPoint(endPoint).setEndPoint(startPoint).loadImage();
                 return true;
             case R.id.show_qr_code :
-                BarcodeScannerIntegrator.shareText(this, createRoutesUri(
-                        mFromView.getText().toString(), mToView.getText().toString()).toString(),
+                Uri routesUri = createRoutesUri(
+                        Uri.encode(mFromView.getText().toString()), 
+                        Uri.encode(mToView.getText().toString()));
+                BarcodeScannerIntegrator.shareText(this, routesUri.toString(),
                         R.string.install_barcode_scanner_title,
                         R.string.requires_barcode_scanner_message,
                         R.string.yes, R.string.no);
