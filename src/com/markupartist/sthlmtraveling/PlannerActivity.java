@@ -442,7 +442,9 @@ public class PlannerActivity extends Activity implements OnCheckedChangeListener
 
         Double lat = loc.getLatitude();
         Double lng = loc.getLongitude();
+
         Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
+
         String addressString = null;
         try {
             Log.d(TAG, "Getting address from position " + lat + "," + lng);
