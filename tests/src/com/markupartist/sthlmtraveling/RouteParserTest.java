@@ -1,16 +1,13 @@
 package com.markupartist.sthlmtraveling;
 
-import java.io.StringReader;
-import java.util.ArrayList;
-
+import android.util.Log;
+import com.markupartist.sthlmtraveling.planner.RouteParser;
+import com.markupartist.sthlmtraveling.planner.Route;
 import junit.framework.TestCase;
-
 import org.xml.sax.InputSource;
 
-import android.util.Log;
-
-import com.markupartist.sthlmtraveling.Route;
-import com.markupartist.sthlmtraveling.RouteParser;
+import java.io.StringReader;
+import java.util.ArrayList;
 
 public class RouteParserTest extends TestCase {
 
