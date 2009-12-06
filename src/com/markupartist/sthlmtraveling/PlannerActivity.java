@@ -16,29 +16,23 @@
 
 package com.markupartist.sthlmtraveling;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.Locale;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.database.Cursor;
-import android.location.Address;
-import android.location.Geocoder;
-import android.location.Location;
-import android.location.LocationManager;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.text.format.Time;
 import android.util.Log;
 import android.view.Menu;
@@ -51,13 +45,16 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TimePicker;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 
 import com.markupartist.sthlmtraveling.planner.Planner;
+import com.markupartist.sthlmtraveling.planner.Stop;
 import com.markupartist.sthlmtraveling.provider.HistoryDbAdapter;
 
 public class PlannerActivity extends Activity implements OnCheckedChangeListener {
@@ -67,12 +64,15 @@ public class PlannerActivity extends Activity implements OnCheckedChangeListener
     private static final int DIALOG_ABOUT = 2;
     private static final int DIALOG_START_POINT_HISTORY = 3;
     private static final int DIALOG_END_POINT_HISTORY = 4;
-    private static final int NO_LOCATION = 5;
-    private static final int DIALOG_DATE = 6;
+    private static final int DIALOG_NO_LOCATION = 5;
+    private static final int DIALOG_DIALOG_DATE = 6;
     private static final int DIALOG_TIME = 7;
+    private static final int DIALOG_CREATE_SHORTCUT_NAME = 8;
 
-    private AutoCompleteTextView mFromAutoComplete;
-    private AutoCompleteTextView mToAutoComplete;
+    private AutoCompleteTextView mStartPointAutoComplete;
+    private AutoCompleteTextView mEndPointAutoComplete;
+    private Stop mStartPoint = new Stop();
+    private Stop mEndPoint = new Stop();
     private HistoryDbAdapter mHistoryDbAdapter;
     private boolean mCreateShortcut;
     private Time mTime;
@@ -92,25 +92,12 @@ public class PlannerActivity extends Activity implements OnCheckedChangeListener
 
         mHistoryDbAdapter = new HistoryDbAdapter(this).open();
 
-        Planner planner = Planner.getInstance();
-
-        // Setup autocomplete views.
-        mFromAutoComplete = (AutoCompleteTextView) findViewById(R.id.from);
-        AutoCompleteStopAdapter stopAdapter = new AutoCompleteStopAdapter(this, 
-                android.R.layout.simple_dropdown_item_1line, planner);
-        mFromAutoComplete.setAdapter(stopAdapter);
-
-        mToAutoComplete = (AutoCompleteTextView) findViewById(R.id.to);
-        AutoCompleteStopAdapter toAdapter = new AutoCompleteStopAdapter(this, 
-                android.R.layout.simple_dropdown_item_1line, planner);
-        mToAutoComplete.setAdapter(toAdapter);
+        mStartPointAutoComplete = createAutoCompleteTextView(R.id.from, mStartPoint);
+        mEndPointAutoComplete = createAutoCompleteTextView(R.id.to, mEndPoint);
 
         // Setup search button.
         final Button search = (Button) findViewById(R.id.search_route);
         search.setOnClickListener(mGetSearchListener);
-        if (mCreateShortcut) {
-            search.setText(getText(R.string.create_shortcut_label));
-        }
 
         // Setup view for choosing other data for start and end point.
         final ImageButton fromDialog = (ImageButton) findViewById(R.id.from_menu);
@@ -135,7 +122,7 @@ public class PlannerActivity extends Activity implements OnCheckedChangeListener
         mDateButton = (Button) findViewById(R.id.planner_route_date);
         mDateButton.setOnClickListener(new OnClickListener() {
             @Override public void onClick(View v) {
-                showDialog(DIALOG_DATE);
+                showDialog(DIALOG_DIALOG_DATE);
             }
         });
 
@@ -156,6 +143,14 @@ public class PlannerActivity extends Activity implements OnCheckedChangeListener
         nowRadioButton.setOnCheckedChangeListener(this);
         RadioButton laterRadioButton = (RadioButton) findViewById(R.id.planner_check_later);
         laterRadioButton.setOnCheckedChangeListener(this);
+
+        // Handle create shortcut.
+        if (mCreateShortcut) {
+            setTitle(R.string.create_shortcut_label);
+            search.setText(getText(R.string.create_shortcut_label));
+            RadioGroup chooseTimeGroup = (RadioGroup) findViewById(R.id.planner_choose_time_group);
+            chooseTimeGroup.setVisibility(View.GONE);
+        }
     }
 
     /**
@@ -165,24 +160,47 @@ public class PlannerActivity extends Activity implements OnCheckedChangeListener
     View.OnClickListener mGetSearchListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            if (mFromAutoComplete.getText().length() <= 0) {
-                mFromAutoComplete.setError(getText(R.string.empty_value));
-            } else if (mToAutoComplete.getText().length() <= 0) {
-                mToAutoComplete.setError(getText(R.string.empty_value));
+            if (!mStartPoint.hasName()) {
+                mStartPointAutoComplete.setError(getText(R.string.empty_value));
+            } else if (!mEndPoint.hasName()) {
+                mEndPointAutoComplete.setError(getText(R.string.empty_value));
             } else {
-                String startPoint = mFromAutoComplete.getText().toString();
-                String endPoint = mToAutoComplete.getText().toString();
                 if (mCreateShortcut) {
-                    onCreateShortCut(startPoint, endPoint);
+                    showDialog(DIALOG_CREATE_SHORTCUT_NAME);
+                    //onCreateShortCut(mStartPoint, mEndPoint);
                 } else {
-                    onSearchRoutes(startPoint, endPoint, mTime);
+                    onSearchRoutes(mStartPoint, mEndPoint, mTime);
                 }
             }
         }
     };
 
+    private AutoCompleteTextView createAutoCompleteTextView(int id, final Stop stop) {
+        final AutoCompleteTextView autoCompleteTextView = (AutoCompleteTextView) findViewById(id);
+        AutoCompleteStopAdapter stopAdapter = new AutoCompleteStopAdapter(this,
+                android.R.layout.simple_dropdown_item_1line, Planner.getInstance());
+        autoCompleteTextView.setAdapter(stopAdapter);
+        autoCompleteTextView.setSelectAllOnFocus(true);
+
+        autoCompleteTextView.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if (autoCompleteTextView.hasSelection()) {
+					autoCompleteTextView.setTextKeepState(autoCompleteTextView.getText());
+				}
+			}
+		});
+
+        autoCompleteTextView.addTextChangedListener(
+                new ReservedNameTextWatcher(getText(R.string.my_location), autoCompleteTextView));
+        autoCompleteTextView.addTextChangedListener(
+                new UpdateStopTextWatcher(stop));
+
+        return autoCompleteTextView;
+    }
+
     /**
-     * On date set listener for the date picker. Sets the new date to the time member and updates 
+     * On date set listener for the date picker. Sets the new date to the time member and updates
      * views if the date was changed.
      */
     private DatePickerDialog.OnDateSetListener mDateSetListener =
@@ -217,11 +235,11 @@ public class PlannerActivity extends Activity implements OnCheckedChangeListener
      * @param endPoint the end point
      * @param time the departure time
      */
-    private void onSearchRoutes(String startPoint, String endPoint, Time time) {
-        mHistoryDbAdapter.create(HistoryDbAdapter.TYPE_START_POINT, startPoint);
-        mHistoryDbAdapter.create(HistoryDbAdapter.TYPE_END_POINT, endPoint);
-
-        Uri routesUri = RoutesActivity.createRoutesUri(startPoint, endPoint, time);
+    private void onSearchRoutes(Stop startPoint, Stop endPoint, Time time) {
+        mHistoryDbAdapter.create(HistoryDbAdapter.TYPE_START_POINT, startPoint.getName());
+        mHistoryDbAdapter.create(HistoryDbAdapter.TYPE_END_POINT, endPoint.getName());
+        Uri routesUri = RoutesActivity.createRoutesUri(
+        		startPoint.getName(), endPoint.getName(), time);
         Intent i = new Intent(Intent.ACTION_VIEW, routesUri, this, RoutesActivity.class);
         startActivity(i);
     }
@@ -231,15 +249,17 @@ public class PlannerActivity extends Activity implements OnCheckedChangeListener
      * @param startPoint the start point
      * @param endPoint the end point
      */
-    protected void onCreateShortCut(String startPoint, String endPoint) {
-        Uri routesUri = RoutesActivity.createRoutesUri(startPoint, endPoint);
+    protected void onCreateShortCut(Stop startPoint, Stop endPoint, String name) {
+        Uri routesUri = RoutesActivity.createRoutesUri(startPoint.getName(), endPoint.getName());
         Intent shortcutIntent = new Intent(Intent.ACTION_VIEW, routesUri,
                 this, RoutesActivity.class);
         shortcutIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         // Then, set up the container intent (the response to the caller)
         Intent intent = new Intent();
         intent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortcutIntent);
-        intent.putExtra(Intent.EXTRA_SHORTCUT_NAME, startPoint + " " + endPoint);
+        /*intent.putExtra(Intent.EXTRA_SHORTCUT_NAME, 
+        		String.format("%s %s", startPoint.getName(), endPoint.getName()));*/
+        intent.putExtra(Intent.EXTRA_SHORTCUT_NAME, name);
         Parcelable iconResource = Intent.ShortcutIconResource.fromContext(
                 this, R.drawable.icon);
         intent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, iconResource);
@@ -252,7 +272,7 @@ public class PlannerActivity extends Activity implements OnCheckedChangeListener
     @Override
     protected void onPrepareDialog(int id, Dialog dialog) {
         switch (id) {
-            case DIALOG_DATE:
+            case DIALOG_DIALOG_DATE:
                 ((DatePickerDialog) dialog).updateDate(mTime.year, mTime.month, mTime.monthDay);
                 break;
             case DIALOG_TIME:
@@ -272,9 +292,8 @@ public class PlannerActivity extends Activity implements OnCheckedChangeListener
                 public void onClick(DialogInterface dialog, int item) {
                     switch(item) {
                     case 0:
-                        String startPointAddress = getAddressFromCurrentPosition();
-                        if (startPointAddress== null) showDialog(NO_LOCATION);
-                        mFromAutoComplete.setText(startPointAddress);
+                        mStartPoint.setName(Stop.TYPE_MY_LOCATION);
+                        mStartPointAutoComplete.setText(getText(R.string.my_location));
                         break;
                     case 1:
                         showDialog(DIALOG_START_POINT_HISTORY);
@@ -292,9 +311,8 @@ public class PlannerActivity extends Activity implements OnCheckedChangeListener
                 public void onClick(DialogInterface dialog, int item) {
                     switch(item) {
                     case 0:
-                        String endPointAddress = getAddressFromCurrentPosition();
-                        if (endPointAddress == null) showDialog(NO_LOCATION);
-                        mToAutoComplete.setText(endPointAddress);
+                        mEndPoint.setName(Stop.TYPE_MY_LOCATION);
+                        mEndPointAutoComplete.setText(getText(R.string.my_location));
                         break;
                     case 1:
                         showDialog(DIALOG_END_POINT_HISTORY);
@@ -349,45 +367,56 @@ public class PlannerActivity extends Activity implements OnCheckedChangeListener
         case DIALOG_START_POINT_HISTORY:
             final Cursor startPointCursor = mHistoryDbAdapter.fetchAllStartPoints();
             startManagingCursor(startPointCursor);
-            Log.d(TAG, "startPoints: " + startPointCursor.getCount());
             return new AlertDialog.Builder(this)
                 .setTitle(getText(R.string.history_label))
                 .setCursor(startPointCursor, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         int index = startPointCursor.getColumnIndex(HistoryDbAdapter.KEY_NAME);
-                        mFromAutoComplete.setText(startPointCursor.getString(index));
+                        mStartPointAutoComplete.setText(startPointCursor.getString(index));
                     }
                 }, HistoryDbAdapter.KEY_NAME)
                 .create();
         case DIALOG_END_POINT_HISTORY:
             final Cursor endPointCursor = mHistoryDbAdapter.fetchAllEndPoints();
             startManagingCursor(endPointCursor);
-            Log.d(TAG, "endPoints: " + endPointCursor.getCount());
             return new AlertDialog.Builder(this)
                 .setTitle(getText(R.string.history_label))
                 .setCursor(endPointCursor, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         int index = endPointCursor.getColumnIndex(HistoryDbAdapter.KEY_NAME);
-                        mToAutoComplete.setText(endPointCursor.getString(index));
+                        mEndPointAutoComplete.setText(endPointCursor.getString(index));
                     }
                 }, HistoryDbAdapter.KEY_NAME)
                 .create();
-        case NO_LOCATION:
+        case DIALOG_NO_LOCATION:
             return new AlertDialog.Builder(this)
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .setTitle(getText(R.string.no_location_title))
                 .setMessage(getText(R.string.no_location_message))
                 .setPositiveButton(android.R.string.ok, null)
                 .create();
-        case DIALOG_DATE:
+        case DIALOG_DIALOG_DATE:
             return new DatePickerDialog(this, mDateSetListener,
                     mTime.year, mTime.month, mTime.monthDay);
         case DIALOG_TIME:
             // TODO: Base 24 hour on locale, same with the format.
             return new TimePickerDialog(this, mTimeSetListener,
                     mTime.hour, mTime.minute, true);
+        case DIALOG_CREATE_SHORTCUT_NAME:
+            final View chooseShortcutName = getLayoutInflater().inflate(R.layout.create_shortcut_name, null);
+            final EditText shortCutName = (EditText) chooseShortcutName.findViewById(R.id.shortcut_name);
+            return new AlertDialog.Builder(this)
+                .setTitle(R.string.create_shortcut_label)
+                .setView(chooseShortcutName)
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        onCreateShortCut(mStartPoint, mEndPoint, shortCutName.getText().toString());
+                    }
+                })
+                .create();
         }
         return dialog;
     }
@@ -417,71 +446,6 @@ public class PlannerActivity extends Activity implements OnCheckedChangeListener
         mTimeButton.setText(formattedTime);
     }
 
-    /**
-     * Get address from the current position.
-     * TODO: Extract to a class
-     * @return the address in the format "location name, street" or null if failed
-     * to determine address 
-     */
-    private String getAddressFromCurrentPosition() {
-        final LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        Location loc = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-        Location gpsLoc = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-
-        if (loc == null && gpsLoc != null) {
-            loc = gpsLoc;
-        } else if (gpsLoc != null && gpsLoc.getTime() > loc.getTime()) {
-            // If we the gps location is more recent than the network 
-            // location use it.
-            loc = gpsLoc;
-        }
-
-        if (loc == null) {
-            return null;
-        }
-
-        Double lat = loc.getLatitude();
-        Double lng = loc.getLongitude();
-
-        Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
-
-        String addressString = null;
-        try {
-            Log.d(TAG, "Getting address from position " + lat + "," + lng);
-            // TODO: Move the call for getFromLocation to a separate background thread.
-            List<Address> addresses = geocoder.getFromLocation(lat, lng, 5);
-            if (!addresses.isEmpty()) {
-                for (Address address : addresses) {
-                    //Log.d(TAG, address.toString());
-                    if (addressString == null) {
-                        addressString = address.getThoroughfare();
-                        if (address.getFeatureName().contains("-")) {
-                            // getFeatureName returns all house numbers on the 
-                            // position like 14-16 get the first number and append 
-                            // that to the address.
-                            addressString += " " + address.getFeatureName().split("-")[0];
-                        } else if (address.getFeatureName().length() < 4) {
-                            // Sometime the feature name also is the same as the 
-                            // postal code, this is a bit ugly but we just assume that
-                            // we do not have any house numbers that is bigger longer 
-                            // than four, if so append it to the address.
-                            addressString += " " + address.getFeatureName();
-                        }
-                    }
-
-                    String locality = address.getLocality();
-                    if (locality != null) {
-                        addressString = locality + ", " + addressString;
-                        break; // Get out of the loop
-                    }
-                }
-            }
-        } catch (IOException e) {
-            Log.e(TAG, e.getMessage());
-        }
-        return addressString;
-    }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -489,10 +453,10 @@ public class PlannerActivity extends Activity implements OnCheckedChangeListener
                 showDialog(DIALOG_ABOUT);
                 return true;
             case R.id.reverse_start_end:
-                String startPoint = mFromAutoComplete.getText().toString();
-                String endPoint = mToAutoComplete.getText().toString();
-                mFromAutoComplete.setText(endPoint);
-                mToAutoComplete.setText(startPoint);
+                String startPoint = mStartPointAutoComplete.getText().toString();
+                String endPoint = mEndPointAutoComplete.getText().toString();
+                mStartPointAutoComplete.setText(endPoint);
+                mEndPointAutoComplete.setText(startPoint);
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -514,5 +478,70 @@ public class PlannerActivity extends Activity implements OnCheckedChangeListener
             mTime.setToNow();
             onTimeChanged();
         }
+    }
+
+    private class UpdateStopTextWatcher implements TextWatcher {
+        private final Stop mStop;
+
+        public UpdateStopTextWatcher(Stop stop) {
+            mStop = stop;
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            if (!getString(R.string.my_location).equals(s.toString())) {
+                mStop.setName(s.toString());
+            }
+        }
+
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            // Needed by interface, but not used.
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            // Needed by interface, but not used.
+        }
+        
+    }
+
+    private class ReservedNameTextWatcher implements TextWatcher {
+        private final CharSequence mReservedName;
+    	private final AutoCompleteTextView mViewToWatch;
+    	private boolean mRemoveText = false;
+    	private String mNewText;
+
+    	public ReservedNameTextWatcher(CharSequence reservedName, AutoCompleteTextView viewToWatch) {
+    	    mReservedName = reservedName;
+    		mViewToWatch = viewToWatch;
+    	}
+
+		@Override
+		public void afterTextChanged(Editable s) {
+            if (mRemoveText) {
+                mRemoveText = false;
+                if (!mViewToWatch.getText().toString().equals(mNewText)) {
+                    mViewToWatch.setText(mNewText);
+                }
+            }
+		}
+
+		@Override
+		public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+		    if (mRemoveText == false && s.toString().equals(mReservedName.toString())) {
+		        mRemoveText = true;
+		        mViewToWatch.setTextColor(Color.BLACK);
+		    }
+		}
+
+		@Override
+		public void onTextChanged(CharSequence s, int start, int before, int count) {
+		    mNewText = s.toString().substring(start, start + count);
+
+		    if (s.toString().equals(mReservedName.toString())) {
+                mViewToWatch.setTextColor(Color.BLUE);
+            }
+		}
     }
 }
