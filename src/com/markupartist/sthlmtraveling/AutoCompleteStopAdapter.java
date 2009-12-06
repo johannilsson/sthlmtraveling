@@ -28,6 +28,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.Toast;
+import android.text.TextWatcher;
 
 public class AutoCompleteStopAdapter extends ArrayAdapter<String> implements Filterable {
     private static String TAG = "AutoCompleteStopAdapter";
@@ -47,7 +48,8 @@ public class AutoCompleteStopAdapter extends ArrayAdapter<String> implements Fil
             protected FilterResults performFiltering(CharSequence constraint) {
                 FilterResults filterResults = new FilterResults();
 
-                if (constraint != null) {
+                // TODO: Remove hard coded My location string here.
+                if (constraint != null && !constraint.equals("My location")) {
                     //Log.d(TAG, "Searching for " + constraint);
                     ArrayList<String> list;
                     try {
@@ -62,6 +64,7 @@ public class AutoCompleteStopAdapter extends ArrayAdapter<String> implements Fil
                 return filterResults;
             }
 
+            @SuppressWarnings("unchecked") // For the list used in the for each statement
             @Override
             protected void publishResults(CharSequence constraint, FilterResults results) {
                 if (results != null && results.count > 0) {
