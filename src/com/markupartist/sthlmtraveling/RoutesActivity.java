@@ -24,9 +24,10 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ListActivity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.location.Location;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.format.Time;
@@ -44,10 +45,13 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.SimpleAdapter.ViewBinder;
 
+import com.markupartist.sthlmtraveling.MyLocationManager.MyLocationFoundListener;
 import com.markupartist.sthlmtraveling.SectionedAdapter.Section;
 import com.markupartist.sthlmtraveling.planner.Route;
+import com.markupartist.sthlmtraveling.planner.Stop;
 import com.markupartist.sthlmtraveling.provider.FavoritesDbAdapter;
 import com.markupartist.sthlmtraveling.tasks.OnSearchRoutesResultListener;
 import com.markupartist.sthlmtraveling.tasks.SearchEarlierRoutesTask;
@@ -57,13 +61,17 @@ import com.markupartist.sthlmtraveling.utils.BarcodeScannerIntegrator;
 
 /**
  * Routes activity
- * <br/>
+ * 
  * Accepts a routes data URI in the format:
- * <code>journeyplanner://routes?startpoint=STARTPOINT&endpoint=ENDPOINT&time=TIME</code>
+ * 
+ * <pre>
+ * <code>journeyplanner://routes?start_point=STARTPOINT&end_point=ENDPOINT&time=TIME</code>
+ * </pre>
+ * 
  * All parameters needs to be url encoded. Time is optional, but if provided it must be in
  * RFC 2445 format.
  */
-public class RoutesActivity extends ListActivity implements OnSearchRoutesResultListener {
+public class RoutesActivity extends ListActivity implements OnSearchRoutesResultListener, MyLocationFoundListener {
     /**
      * The start point for the search.
      */
@@ -95,16 +103,25 @@ public class RoutesActivity extends ListActivity implements OnSearchRoutesResult
     private TextView mFromView;
     private TextView mToView;
     private ArrayList<HashMap<String, String>> mDateAdapterData;
+    private Stop mStartPoint;
+    private Stop mEndPoint;
     private Time mTime;
     private FavoritesDbAdapter mFavoritesDbAdapter;
     private FavoriteButtonHelper mFavoriteButtonHelper;
+    private MyLocationManager mMyLocationManager;
+    private SearchRoutesTask mSearchRoutesTask;
+    private Toast mToast;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.routes_list);
 
-        // Parse data URI
+        LocationManager locationManager =
+            (LocationManager)getSystemService(LOCATION_SERVICE);
+        mMyLocationManager = new MyLocationManager(locationManager);
+
+        // Parse data URI       
         final Uri uri = getIntent().getData();
         String startPoint  = uri.getQueryParameter("start_point");
         String endPoint    = uri.getQueryParameter("end_point");
@@ -116,6 +133,9 @@ public class RoutesActivity extends ListActivity implements OnSearchRoutesResult
             return;
         }
 
+        mStartPoint = new Stop(startPoint);
+        mEndPoint = new Stop(endPoint);
+
         mTime = new Time();
         if (time != null ) {
             mTime.parse(time);
@@ -126,15 +146,47 @@ public class RoutesActivity extends ListActivity implements OnSearchRoutesResult
         mFavoritesDbAdapter = new FavoritesDbAdapter(this).open();
 
         mFromView = (TextView) findViewById(R.id.route_from);
-        mFromView.setText(startPoint);
         mToView = (TextView) findViewById(R.id.route_to);
-        mToView.setText(endPoint);
+        updateStartAndEndPointViews(mStartPoint, mEndPoint);
 
         mFavoriteButtonHelper = new FavoriteButtonHelper(this, mFavoritesDbAdapter, 
                 startPoint, endPoint);
         mFavoriteButtonHelper.loadImage();
 
-        initRoutes(startPoint, endPoint, mTime);
+        initRoutes(mStartPoint, mEndPoint, mTime);
+    }
+
+    /**
+     * Update the {@link TextView} for start and end points in the ui.
+     * @param startPoint the start point
+     * @param endPoint the end point
+     */
+    private void updateStartAndEndPointViews(Stop startPoint, Stop endPoint) {
+        if (startPoint.isMyLocation()) {
+            mFromView.setText(getMyLocationString(startPoint));
+        } else {
+            mFromView.setText(startPoint.getName());
+        }
+        if (endPoint.isMyLocation()) {
+            mToView.setText(getMyLocationString(endPoint));
+        } else {
+            mToView.setText(endPoint.getName());
+        }        
+    }
+
+    /**
+     * Helper that returns the my location text representation. If the {@link Location}
+     * is set the accuracy will also be appended.
+     * @param stop the stop
+     * @return a text representation of my location
+     */
+    private CharSequence getMyLocationString(Stop stop) {
+        CharSequence string = getText(R.string.my_location);
+        Location location = stop.getLocation(); 
+        if (location != null) {
+            string = String.format("%s (%sm)", string, location.getAccuracy());
+        }
+        return string;
     }
 
     /**
@@ -143,15 +195,26 @@ public class RoutesActivity extends ListActivity implements OnSearchRoutesResult
      * @param endPoint the end point
      * @param time the time
      */
-    private void initRoutes(String startPoint, String endPoint, Time time) {
+    private void initRoutes(Stop startPoint, Stop endPoint, Time time) {
         @SuppressWarnings("unchecked")
         final ArrayList<Route> routes = (ArrayList<Route>) getLastNonConfigurationInstance();
         if (routes != null) {
             onSearchRoutesResult(routes);
         } else {
-            SearchRoutesTask searchRoutesTask = new SearchRoutesTask(this);
-            searchRoutesTask.setOnSearchRoutesResultListener(this);
-            searchRoutesTask.execute(startPoint, endPoint, time);
+            if (startPoint.isMyLocation() || endPoint.isMyLocation()) {
+                Location location = mMyLocationManager.getLastKnownLocation();
+                if (mMyLocationManager.shouldAcceptLocation(location)) {
+                    onMyLocationFound(location);
+                } else {
+                    mMyLocationManager.requestLocationUpdates(this);
+                    mToast = Toast.makeText(this, "Determining your position", Toast.LENGTH_LONG);
+                    mToast.show();
+                }
+            } else {
+                mSearchRoutesTask = new SearchRoutesTask(this);
+                mSearchRoutesTask.setOnSearchRoutesResultListener(this);
+                mSearchRoutesTask.execute(startPoint, endPoint, time);
+            }
         }
     }
 
@@ -172,6 +235,21 @@ public class RoutesActivity extends ListActivity implements OnSearchRoutesResult
         if (mFavoriteButtonHelper != null) {
             mFavoriteButtonHelper.loadImage();
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mFavoritesDbAdapter != null) {
+            mFavoritesDbAdapter.close();
+        }
+        mMyLocationManager.removeUpdates();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mMyLocationManager.removeUpdates();
     }
 
     private void createSections() {
@@ -286,8 +364,8 @@ public class RoutesActivity extends ListActivity implements OnSearchRoutesResult
         case SECTION_CHANGE_TIME:
             Intent i = new Intent(this, ChangeRouteTimeActivity.class);
             i.putExtra(EXTRA_TIME, mTime.format2445());
-            i.putExtra(EXTRA_START_POINT, mFromView.getText());
-            i.putExtra(EXTRA_END_POINT, mToView.getText());
+            i.putExtra(EXTRA_START_POINT, mStartPoint);
+            i.putExtra(EXTRA_END_POINT, mEndPoint);
             startActivityForResult(i, CHANGE_TIME);
             break;
         }
@@ -304,14 +382,40 @@ public class RoutesActivity extends ListActivity implements OnSearchRoutesResult
         }
     }
 
+    @Override
+    public void onMyLocationFound(Location location) {
+        Log.d(TAG, "onMyLocationFound: " + location);
+
+        mMyLocationManager.removeUpdates();
+
+        if (mToast != null ) mToast.cancel();
+
+        if (location == null) {
+            mToast.setText("Failed to determine your position, please go back and retry");
+            mToast.show();
+            return;
+        }
+
+        if (mStartPoint.isMyLocation())
+            mStartPoint.setLocation(location);
+        if (mEndPoint.isMyLocation())
+            mEndPoint.setLocation(location);
+
+        updateStartAndEndPointViews(mStartPoint, mEndPoint);
+
+        mSearchRoutesTask = new SearchRoutesTask(this);
+        mSearchRoutesTask.setOnSearchRoutesResultListener(this);
+        mSearchRoutesTask.execute(mStartPoint, mEndPoint, mTime);
+    }
+
     /**
      * Find route details. Will start {@link RouteDetailActivity}. 
      * @param route the route to find details for 
      */
     private void findRouteDetails(final Route route) {
         Intent i = new Intent(RoutesActivity.this, RouteDetailActivity.class);
-        i.putExtra(RouteDetailActivity.EXTRA_START_POINT, mFromView.getText().toString());
-        i.putExtra(RouteDetailActivity.EXTRA_END_POINT, mToView.getText().toString());
+        i.putExtra(RouteDetailActivity.EXTRA_START_POINT, mStartPoint);
+        i.putExtra(RouteDetailActivity.EXTRA_END_POINT, mEndPoint);
         i.putExtra(RouteDetailActivity.EXTRA_ROUTE, route);
         startActivity(i);
     }
@@ -331,17 +435,19 @@ public class RoutesActivity extends ListActivity implements OnSearchRoutesResult
             if (resultCode == RESULT_CANCELED) {
                 Log.d(TAG, "Change time activity cancelled.");
             } else {
-                String startPoint = data.getStringExtra(EXTRA_START_POINT);
-                String endPoint = data.getStringExtra(EXTRA_END_POINT);
+                Stop startPoint = data.getParcelableExtra(EXTRA_START_POINT);
+                Stop endPoint = data.getParcelableExtra(EXTRA_END_POINT);
                 String newTime = data.getStringExtra(EXTRA_TIME);
 
                 mTime.parse(newTime);
                 HashMap<String, String> item = mDateAdapterData.get(0);
                 item.put("title", mTime.format("%R %x"));
 
-                SearchRoutesTask searchRoutesTask = new SearchRoutesTask(this);
-                searchRoutesTask.setOnSearchRoutesResultListener(this);
-                searchRoutesTask.execute(startPoint, endPoint, mTime);
+                //updateStartAndEndPointViews(startPoint, endPoint);
+
+                mSearchRoutesTask = new SearchRoutesTask(this);
+                mSearchRoutesTask.setOnSearchRoutesResultListener(this);
+                mSearchRoutesTask.execute(startPoint, endPoint, mTime);
             }
         }
     }
@@ -362,27 +468,33 @@ public class RoutesActivity extends ListActivity implements OnSearchRoutesResult
                 startActivity(i);
                 return true;
             case R.id.reverse_start_end :
-                String startPoint = mFromView.getText().toString();
-                String endPoint = mToView.getText().toString();
+                Stop tmpStartPoint = new Stop(mEndPoint);
+                Stop tmpEndPoint = new Stop(mStartPoint);
+
+                mStartPoint = tmpStartPoint;
+                mEndPoint = tmpEndPoint;
 
                 /*
                  * Note: To launch a new intent won't work because sl.se would need to have a new
                  * ident generated to be able to search for route details in the next step.
                  */
 
-                SearchRoutesTask searchRoutesTask = new SearchRoutesTask(this);
-                searchRoutesTask.setOnSearchRoutesResultListener(this);
-                searchRoutesTask.execute(endPoint, startPoint, mTime);
-                mFromView.setText(endPoint);
-                mToView.setText(startPoint);
+                mSearchRoutesTask = new SearchRoutesTask(this);
+                mSearchRoutesTask.setOnSearchRoutesResultListener(this);
+                mSearchRoutesTask.execute(mStartPoint, mEndPoint, mTime);
+
+                updateStartAndEndPointViews(mStartPoint, mEndPoint);
 
                 // Update the favorite button
-                mFavoriteButtonHelper.setStartPoint(endPoint).setEndPoint(startPoint).loadImage();
+                mFavoriteButtonHelper
+                        .setStartPoint(mStartPoint.getName())
+                        .setEndPoint(mEndPoint.getName())
+                        .loadImage();
                 return true;
             case R.id.show_qr_code :
                 Uri routesUri = createRoutesUri(
-                        Uri.encode(mFromView.getText().toString()), 
-                        Uri.encode(mToView.getText().toString()));
+                        Uri.encode(mStartPoint.getName()), 
+                        Uri.encode(mEndPoint.getName()));
                 BarcodeScannerIntegrator.shareText(this, routesUri.toString(),
                         R.string.install_barcode_scanner_title,
                         R.string.requires_barcode_scanner_message,
@@ -406,14 +518,6 @@ public class RoutesActivity extends ListActivity implements OnSearchRoutesResult
                 .create();
         }
         return null;
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (mFavoritesDbAdapter != null) {
-            mFavoritesDbAdapter.close();
-        }
     }
 
     /**
