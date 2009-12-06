@@ -20,6 +20,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import com.markupartist.sthlmtraveling.planner.Stop;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -100,6 +102,10 @@ public class HistoryDbAdapter {
      * occurred
      */
     public long create(int type, String name) {
+        if (name.equals(Stop.TYPE_MY_LOCATION)) {
+            return -1;
+        }
+
         // Create a sql date time format
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date date = new Date();
