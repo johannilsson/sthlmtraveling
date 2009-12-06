@@ -21,10 +21,16 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
+import android.widget.TextView;
+import android.widget.SimpleCursorAdapter.CursorToStringConverter;
+import android.widget.SimpleCursorAdapter.ViewBinder;
 
+import com.markupartist.sthlmtraveling.planner.Stop;
 import com.markupartist.sthlmtraveling.provider.FavoritesDbAdapter;
 
 public class FavoritesActivity extends ListActivity {
@@ -53,8 +59,34 @@ public class FavoritesActivity extends ListActivity {
 
         int[] to = new int[]{R.id.favorite_start_point, R.id.favorite_end_point};
 
-        SimpleCursorAdapter favorites = new SimpleCursorAdapter(
+        final SimpleCursorAdapter favorites = new SimpleCursorAdapter(
                 this, R.layout.favorite_row, favoritesCursor, from, to);
+        favorites.setViewBinder(new ViewBinder() {
+            @Override
+            public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
+                String name = cursor.getString(columnIndex);
+                if (name.equals(Stop.TYPE_MY_LOCATION)) {
+                    /*
+                    View layout = getLayoutInflater().inflate(R.layout.favorite_row, null);
+
+                    if (view.getId() == R.id.favorite_start_point) {
+                        ImageView startImageView = (ImageView) 
+                                layout.findViewById(R.id.favorite_start_point_image);
+                        startImageView.setImageResource(R.drawable.ic_current_position);
+                    } else {
+                        ImageView endImageView = (ImageView) 
+                                layout.findViewById(R.id.favorite_end_point_image);
+                        endImageView.setImageResource(R.drawable.ic_current_position);
+                    }
+                    */
+
+                    name = getString(R.string.my_location);
+                }
+
+                ((TextView) view).setText(name);
+                return true;
+            }
+        });
 
         setListAdapter(favorites);
     }
