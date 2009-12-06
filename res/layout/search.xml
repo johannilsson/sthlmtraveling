@@ -54,6 +54,7 @@
                		android:singleLine="true"
                		android:layout_weight="1"
                     android:imeOptions="actionDone"
+                    android:nextFocusRight="@+id/from_menu"
     				/>
     	    	<!-- <EditText 
     		    		android:id="@+id/from"
@@ -116,6 +117,7 @@
     				/>
     		</LinearLayout>
             <RadioGroup
+                android:id="@+id/planner_choose_time_group"
                 android:orientation="horizontal"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
