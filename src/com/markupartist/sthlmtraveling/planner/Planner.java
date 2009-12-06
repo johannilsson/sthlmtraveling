@@ -84,12 +84,23 @@ public class Planner {
      * @return a list of RouteS
      * @throws IOException on network problems
      */
-    public ArrayList<Route> findRoutes(String startPoint, String endPoint, Time time) 
+    public ArrayList<Route> findRoutes(Stop startPoint, Stop endPoint, Time time) 
             throws IOException {
         Log.d(TAG, "Searching for startPoint=" + startPoint + ",endPoint=" + endPoint);
 
-        String startPointEncoded = URLEncoder.encode(startPoint);
-        String endPointEncoded = URLEncoder.encode(endPoint);
+        String startPointPositionPart = "";
+        if (startPoint.getLocation() != null) {
+            startPointPositionPart = String.format("&fromLat=%s&fromLng=%s",
+                    startPoint.getLocation().getLatitude(), startPoint.getLocation().getLongitude());
+        }
+        String endPointPositionPart = "";
+        if (endPoint.getLocation() != null) {
+            endPointPositionPart = String.format("&toLat=%s&toLng=%s",
+                    endPoint.getLocation().getLatitude(), endPoint.getLocation().getLongitude());
+        }
+
+        String startPointEncoded = URLEncoder.encode(startPoint.getName());
+        String endPointEncoded = URLEncoder.encode(endPoint.getName());
         String timeEncoded = URLEncoder.encode(time.format("%Y-%m-%d %H:%M"));
 
         InputSource input;
@@ -101,7 +112,9 @@ public class Planner {
                     + "?method=findRoutes" 
                     + "&from=" + startPointEncoded 
                     + "&to=" + endPointEncoded
-                    + "&time=" + timeEncoded);
+                    + "&time=" + timeEncoded
+                    + startPointPositionPart
+                    + endPointPositionPart);
             input = new InputSource(endpoint.openStream());
         }
 
