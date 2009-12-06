@@ -20,6 +20,7 @@ import java.util.ArrayList;
 
 import android.app.ListActivity;
 import android.content.Intent;
+import android.location.Location;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -29,6 +30,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.markupartist.sthlmtraveling.planner.Route;
+import com.markupartist.sthlmtraveling.planner.Stop;
 import com.markupartist.sthlmtraveling.provider.FavoritesDbAdapter;
 import com.markupartist.sthlmtraveling.tasks.FindRouteDetailsTask;
 import com.markupartist.sthlmtraveling.tasks.FindRouteDetailsTask.OnNoRoutesDetailsResultListener;
@@ -41,8 +43,6 @@ public class RouteDetailActivity extends ListActivity
     public static final String EXTRA_ROUTE = "com.markupartist.sthlmtraveling.route";
 
     private ArrayAdapter<String> mDetailAdapter;
-    private TextView mFromView;
-    private TextView mToView;
     private FavoritesDbAdapter mFavoritesDbAdapter;
     private ArrayList<String> mDetails;
 
@@ -53,23 +53,45 @@ public class RouteDetailActivity extends ListActivity
 
         Bundle extras = getIntent().getExtras();
         Route route = extras.getParcelable(EXTRA_ROUTE);
+        Stop startPoint = extras.getParcelable(EXTRA_START_POINT);
+        Stop endPoint = extras.getParcelable(EXTRA_END_POINT);
 
         mFavoritesDbAdapter = new FavoritesDbAdapter(this).open();
 
-        mFromView = (TextView) findViewById(R.id.route_from);
-        mFromView.setText(extras.getString(EXTRA_START_POINT));
-        mToView = (TextView) findViewById(R.id.route_to);
-        mToView.setText(extras.getString(EXTRA_END_POINT));
+        TextView startPointView = (TextView) findViewById(R.id.route_from);
+        startPointView.setText(startPoint.getName());
+        TextView endPointView = (TextView) findViewById(R.id.route_to);
+        endPointView.setText(endPoint.getName());
 
+        if (startPoint.isMyLocation()) {
+            startPointView.setText(getMyLocationString(startPoint));
+        }
+        if (endPoint.isMyLocation()) {
+            endPointView.setText(getMyLocationString(endPoint));
+        }
+        
         TextView dateTimeView = (TextView) findViewById(R.id.route_date_time);
         dateTimeView.setText(route.toString());
 
         FavoriteButtonHelper favoriteButtonHelper = new FavoriteButtonHelper(
-                this, mFavoritesDbAdapter, 
-                mFromView.getText().toString(), mToView.getText().toString());
+                this, mFavoritesDbAdapter, startPoint.getName(), endPoint.getName());
         favoriteButtonHelper.loadImage();
 
         initRouteDetails(route);
+    }
+
+    /**
+     * Helper that returns the my location text representation. If the {@link Location}
+     * is set the accuracy will also be appended.
+     * @param stop the stop
+     * @return a text representation of my location
+     */
+    private CharSequence getMyLocationString(Stop stop) {
+        CharSequence string = getText(R.string.my_location);
+        if (stop.getLocation() != null) {
+            string = String.format("%s (%sm)", string, stop.getLocation().getAccuracy());
+        }
+        return string;
     }
 
     /**
