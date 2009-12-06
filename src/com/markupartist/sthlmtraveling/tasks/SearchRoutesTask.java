@@ -24,6 +24,7 @@ import android.text.format.Time;
 
 import com.markupartist.sthlmtraveling.planner.Planner;
 import com.markupartist.sthlmtraveling.planner.Route;
+import com.markupartist.sthlmtraveling.planner.Stop;
 
 /**
  * Background task for searching for routes.
@@ -40,7 +41,7 @@ public class SearchRoutesTask extends AbstractSearchRoutesTask {
 
     @Override
     ArrayList<Route> doSearchInBackground(Object... params) throws IOException {
-        return Planner.getInstance().findRoutes((String) params[0], 
-                (String) params[1], (Time) params[2]);
+        return Planner.getInstance().findRoutes(
+                (Stop) params[0], (Stop) params[1], (Time) params[2]);
     }
 }
