@@ -29,6 +29,8 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.TimePicker;
 
+import com.markupartist.sthlmtraveling.planner.Stop;
+
 public class ChangeRouteTimeActivity extends Activity {
     static final String TAG = "ChangeRouteTimeActivity"; 
     static final int DIALOG_DATE = 0;
@@ -45,8 +47,8 @@ public class ChangeRouteTimeActivity extends Activity {
         setTitle(getText(R.string.change_date_and_time));
 
         Bundle extras = getIntent().getExtras();
-        final String startPoint = extras.getString(RoutesActivity.EXTRA_START_POINT);
-        final String endPoint = extras.getString(RoutesActivity.EXTRA_END_POINT);
+        final Stop startPoint = extras.getParcelable(RoutesActivity.EXTRA_START_POINT);
+        final Stop endPoint = extras.getParcelable(RoutesActivity.EXTRA_END_POINT);
         String timeString = extras.getString(RoutesActivity.EXTRA_TIME);
 
         mTime = new Time();
