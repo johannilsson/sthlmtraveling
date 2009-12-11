@@ -59,12 +59,18 @@ public class Stop implements Parcelable {
         mLocation = location;
     }
 
+    public void setLocation(int latitudeE6, int longitudeE6) {
+        mLocation = new Location("sthlmtraveling");
+        mLocation.setLatitude(latitudeE6 / 1E6);
+        mLocation.setLongitude(longitudeE6 / 1E6);
+    }
+
     public Location getLocation() {
         return mLocation;
     }
 
     public boolean isMyLocation() {
-        return mName.equals(TYPE_MY_LOCATION);
+        return hasName() && mName.equals(TYPE_MY_LOCATION);
     }
 
     @Override
