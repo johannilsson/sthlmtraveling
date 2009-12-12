@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:id="@+id/main" 
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent">
+
+	<com.google.android.maps.MapView
+		android:id="@+id/mapview" 
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent" 
+		android:enabled="true"
+		android:clickable="true" 
+		android:apiKey="0YNZJeHdJba1DJNb-MXyEiG-jtHmwmTmeHW_hZg" />
+
+	<LinearLayout android:id="@+id/bar" 
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content" 
+		android:paddingRight="15px"
+		android:paddingBottom="15px"
+		android:layout_alignParentBottom="true"
+		android:layout_alignParentRight="true">
+
+		<ImageView android:id="@+id/loader" 
+		android:visibility="invisible"
+		android:layout_width="25px"
+		android:layout_height="26px" 
+		android:layout_alignParentBottom="true"
+		android:layout_alignParentRight="true" />
+
+	</LinearLayout>
+
+
+</RelativeLayout>

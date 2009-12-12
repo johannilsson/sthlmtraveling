@@ -32,6 +32,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.format.Time;
 import android.util.Log;
@@ -68,6 +69,8 @@ public class PlannerActivity extends Activity implements OnCheckedChangeListener
     private static final int DIALOG_DIALOG_DATE = 6;
     private static final int DIALOG_TIME = 7;
     private static final int DIALOG_CREATE_SHORTCUT_NAME = 8;
+    protected static final int REQUEST_CODE_POINT_ON_MAP_START = 0;
+    protected static final int REQUEST_CODE_POINT_ON_MAP_END = 1;
 
     private AutoCompleteTextView mStartPointAutoComplete;
     private AutoCompleteTextView mEndPointAutoComplete;
@@ -83,6 +86,8 @@ public class PlannerActivity extends Activity implements OnCheckedChangeListener
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.search);
+
+        restoreState(savedInstanceState);
 
         // If the activity was started with the "create shortcut" action, we
         // remember this to change the behavior upon a search.
@@ -153,6 +158,21 @@ public class PlannerActivity extends Activity implements OnCheckedChangeListener
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (mTime != null) {
+            mTime.setToNow();
+        }
+        if (!mStartPoint.hasName()) {
+            mStartPointAutoComplete.setText("");
+        }
+        if (!mEndPoint.hasName()) {
+            mEndPointAutoComplete.setText("");
+        }
+    }
+
     /**
      * On click listener for search and create shortcut button. Validates that the start point and 
      * the end point is correctly filled out before moving on.
@@ -160,11 +180,16 @@ public class PlannerActivity extends Activity implements OnCheckedChangeListener
     View.OnClickListener mGetSearchListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            if (!mStartPoint.hasName()) {
+            //if (!mStartPoint.hasName()) {
+            if (TextUtils.isEmpty(mStartPointAutoComplete.getText())) {
                 mStartPointAutoComplete.setError(getText(R.string.empty_value));
-            } else if (!mEndPoint.hasName()) {
+            //} else if (!mEndPoint.hasName()) {
+            } else if (TextUtils.isEmpty(mEndPointAutoComplete.getText())) {
                 mEndPointAutoComplete.setError(getText(R.string.empty_value));
             } else {
+                mStartPoint = buildStop(mStartPoint, mStartPointAutoComplete);
+                mEndPoint = buildStop(mEndPoint, mEndPointAutoComplete);
+
                 if (mCreateShortcut) {
                     showDialog(DIALOG_CREATE_SHORTCUT_NAME);
                     //onCreateShortCut(mStartPoint, mEndPoint);
@@ -174,6 +199,49 @@ public class PlannerActivity extends Activity implements OnCheckedChangeListener
             }
         }
     };
+
+    private Stop buildStop(Stop stop, AutoCompleteTextView auTextView) {
+        if (stop.hasName() 
+                && stop.getName().equals(auTextView.getText().toString())) {
+            return stop;
+        } else if (stop.isMyLocation()
+                && auTextView.getText().toString().equals(getString(R.string.my_location))) {
+            // Check for my location.
+            return stop;
+        } else if (auTextView.getText().toString().equals(getString(R.string.point_on_map))) {
+                // Check for point-on-map.
+                return stop;
+        }
+        stop.setName(auTextView.getText().toString());
+        stop.setLocation(null);
+        return stop;
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (mStartPoint != null) {
+            outState.putParcelable("startPoint", mStartPoint);
+        }
+        if (mEndPoint != null) {
+            outState.putParcelable("endPoint", mEndPoint);
+        }
+    }
+
+    private void restoreState(Bundle state) {
+        mStartPoint = new Stop();
+        mEndPoint = new Stop();
+        if (state != null) {
+            Stop startPoint = state.getParcelable("startPoint");
+            Stop endPoint = state.getParcelable("endPoint");
+            if (startPoint != null) {
+                mStartPoint = startPoint;
+            }
+            if (endPoint != null) {
+                mEndPoint = endPoint;
+            }
+        }
+    }
 
     private AutoCompleteTextView createAutoCompleteTextView(int id, final Stop stop) {
         final AutoCompleteTextView autoCompleteTextView = (AutoCompleteTextView) findViewById(id);
@@ -193,6 +261,8 @@ public class PlannerActivity extends Activity implements OnCheckedChangeListener
 
         autoCompleteTextView.addTextChangedListener(
                 new ReservedNameTextWatcher(getText(R.string.my_location), autoCompleteTextView));
+        autoCompleteTextView.addTextChangedListener(
+                new ReservedNameTextWatcher(getText(R.string.point_on_map), autoCompleteTextView));
         autoCompleteTextView.addTextChangedListener(
                 new UpdateStopTextWatcher(stop));
 
@@ -236,10 +306,15 @@ public class PlannerActivity extends Activity implements OnCheckedChangeListener
      * @param time the departure time
      */
     private void onSearchRoutes(Stop startPoint, Stop endPoint, Time time) {
-        mHistoryDbAdapter.create(HistoryDbAdapter.TYPE_START_POINT, startPoint.getName());
-        mHistoryDbAdapter.create(HistoryDbAdapter.TYPE_END_POINT, endPoint.getName());
+        // TODO: We should not handle point-on-map this way. But for now we just
+        // want it to work.
+        if (!mStartPointAutoComplete.getText().toString().equals(getString(R.string.point_on_map)))
+            mHistoryDbAdapter.create(HistoryDbAdapter.TYPE_START_POINT, startPoint.getName());
+        if (!mEndPointAutoComplete.getText().toString().equals(getString(R.string.point_on_map)))
+            mHistoryDbAdapter.create(HistoryDbAdapter.TYPE_END_POINT, endPoint.getName());
+
         Uri routesUri = RoutesActivity.createRoutesUri(
-        		startPoint.getName(), endPoint.getName(), time);
+        		startPoint, endPoint, time);
         Intent i = new Intent(Intent.ACTION_VIEW, routesUri, this, RoutesActivity.class);
         startActivity(i);
     }
@@ -257,8 +332,6 @@ public class PlannerActivity extends Activity implements OnCheckedChangeListener
         // Then, set up the container intent (the response to the caller)
         Intent intent = new Intent();
         intent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortcutIntent);
-        /*intent.putExtra(Intent.EXTRA_SHORTCUT_NAME, 
-        		String.format("%s %s", startPoint.getName(), endPoint.getName()));*/
         intent.putExtra(Intent.EXTRA_SHORTCUT_NAME, name);
         Parcelable iconResource = Intent.ShortcutIconResource.fromContext(
                 this, R.drawable.icon);
@@ -298,6 +371,13 @@ public class PlannerActivity extends Activity implements OnCheckedChangeListener
                     case 1:
                         showDialog(DIALOG_START_POINT_HISTORY);
                         break;
+                    case 2:
+                        Intent pointOnMapForStartPointIntent = new Intent(
+                                PlannerActivity.this, PointOnMapActivity.class);
+                        pointOnMapForStartPointIntent.putExtra(PointOnMapActivity.EXTRA_STOP, mStartPoint);
+                        startActivityForResult(pointOnMapForStartPointIntent,
+                                REQUEST_CODE_POINT_ON_MAP_START);
+                        break;
                     }
                 }
             });
@@ -316,6 +396,13 @@ public class PlannerActivity extends Activity implements OnCheckedChangeListener
                         break;
                     case 1:
                         showDialog(DIALOG_END_POINT_HISTORY);
+                        break;
+                    case 2:
+                        Intent pointOnMapForStartPointIntent = new Intent(
+                                PlannerActivity.this, PointOnMapActivity.class);
+                        pointOnMapForStartPointIntent.putExtra(PointOnMapActivity.EXTRA_STOP, mEndPoint);
+                        startActivityForResult(pointOnMapForStartPointIntent,
+                                REQUEST_CODE_POINT_ON_MAP_END);
                         break;
                     }
                 }
@@ -424,7 +511,8 @@ public class PlannerActivity extends Activity implements OnCheckedChangeListener
     private CharSequence[] getDialogSelectPointItems() {
         CharSequence[] items = {
                 getText(R.string.my_location), 
-                getText(R.string.history_label)
+                getText(R.string.history_label),
+                getText(R.string.point_on_map)
             };
         return items;
     }
@@ -463,6 +551,33 @@ public class PlannerActivity extends Activity implements OnCheckedChangeListener
     }
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode,
+                Intent data) {
+        switch (requestCode) {
+        case REQUEST_CODE_POINT_ON_MAP_START:
+            if (resultCode == RESULT_CANCELED) {
+                Log.d(TAG, "action canceled");
+            } else {
+                mStartPoint = data.getParcelableExtra(PointOnMapActivity.EXTRA_STOP);
+                mStartPointAutoComplete.setText(getText(R.string.point_on_map));
+                //mStartPointAutoComplete.setText(mStartPoint.getName());
+                Log.d(TAG, "Got Stop " + mStartPoint);
+            }
+            break;
+        case REQUEST_CODE_POINT_ON_MAP_END:
+            if (resultCode == RESULT_CANCELED) {
+                Log.d(TAG, "action canceled");
+            } else {
+                mEndPoint = data.getParcelableExtra(PointOnMapActivity.EXTRA_STOP);
+                mEndPointAutoComplete.setText(getText(R.string.point_on_map));
+                //mEndPointAutoComplete.setText(mEndPoint.getName());
+                Log.d(TAG, "Got Stop " + mEndPoint);
+            }
+            break;
+        }
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         mHistoryDbAdapter.close();
@@ -489,8 +604,10 @@ public class PlannerActivity extends Activity implements OnCheckedChangeListener
 
         @Override
         public void afterTextChanged(Editable s) {
-            if (!getString(R.string.my_location).equals(s.toString())) {
+            if (!getString(R.string.my_location).equals(s.toString())
+                    || getString(R.string.point_on_map).equals(s.toString())) {
                 mStop.setName(s.toString());
+                //mStop.setLocation(null);
             }
         }
 
