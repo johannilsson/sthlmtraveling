@@ -22,6 +22,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageButton;
 
+import com.markupartist.sthlmtraveling.planner.Stop;
 import com.markupartist.sthlmtraveling.provider.FavoritesDbAdapter;
 
 public class FavoriteButtonHelper implements OnClickListener {
@@ -29,15 +30,15 @@ public class FavoriteButtonHelper implements OnClickListener {
     private Cursor mFavoriteCursor;
     private Activity mActivity;
     private FavoritesDbAdapter mFavoritesDbAdapter;
-    private String mStartPoint;
-    private String mEndPoint;
+    private Stop mStartPoint;
+    private Stop mEndPoint;
     private static int STAR_ON_RESOURCE = R.drawable.star;
     private static int STAR_OFF_RESOURCE = R.drawable.star_grey;
 
     public FavoriteButtonHelper(Activity activity, 
                                 FavoritesDbAdapter favoritesDbAdapter, 
-                                String startPoint, 
-                                String endPoint) {
+                                Stop startPoint, 
+                                Stop endPoint) {
         mActivity = activity;
         mFavoritesDbAdapter = favoritesDbAdapter;
         mStartPoint = startPoint;
@@ -47,12 +48,12 @@ public class FavoriteButtonHelper implements OnClickListener {
         mFavoriteButton.setOnClickListener(this);
     }
 
-    public FavoriteButtonHelper setStartPoint(String startPoint) {
+    public FavoriteButtonHelper setStartPoint(Stop startPoint) {
         mStartPoint = startPoint;
         return this;
     }
 
-    public FavoriteButtonHelper setEndPoint(String endPoint) {
+    public FavoriteButtonHelper setEndPoint(Stop endPoint) {
         mEndPoint = endPoint;
         return this;
     }
@@ -80,8 +81,7 @@ public class FavoriteButtonHelper implements OnClickListener {
     @Override
     public void onClick(View view) {
         if (isFavorite()) {
-            long id = mFavoriteCursor.getLong(
-                    mFavoriteCursor.getColumnIndex(FavoritesDbAdapter.KEY_ROWID));
+            long id = mFavoriteCursor.getLong(FavoritesDbAdapter.INDEX_ROWID);
             mFavoritesDbAdapter.delete(id);
         } else {
             mFavoritesDbAdapter.create(mStartPoint, mEndPoint);

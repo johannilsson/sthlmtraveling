@@ -18,6 +18,7 @@ package com.markupartist.sthlmtraveling.provider;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 import android.content.ContentValues;
@@ -28,15 +29,30 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import com.markupartist.sthlmtraveling.planner.Stop;
+
 public class FavoritesDbAdapter {
     public static final String KEY_ROWID = "_id";
     public static final String KEY_START_POINT = "start_point";
+    public static final String KEY_START_POINT_LATITUDE = "start_point_latitude";
+    public static final String KEY_START_POINT_LONGITUDE = "start_point_longitude";
     public static final String KEY_END_POINT = "end_point";
+    public static final String KEY_END_POINT_LATITUDE = "end_point_latitude";
+    public static final String KEY_END_POINT_LONGITUDE = "end_point_longitude";
     public static final String KEY_CREATED = "created";
+
+    public static final int INDEX_ROWID = 0;
+    public static final int INDEX_START_POINT = 1;
+    public static final int INDEX_START_POINT_LATITUDE = 2;
+    public static final int INDEX_START_POINT_LONGITUDE = 3;
+    public static final int INDEX_END_POINT = 4;
+    public static final int INDEX_END_POINT_LATITUDE = 5;
+    public static final int INDEX_END_POINT_LONGITUDE = 6;
+    public static final int INDEX_CREATED = 7;
 
     private static final String DATABASE_NAME = "favorite";
     private static final String DATABASE_TABLE = "favorites";
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 4;
 
     private static final String TAG = "FavoritesDbAdapter";
 
@@ -52,6 +68,10 @@ public class FavoritesDbAdapter {
                 + "_id INTEGER PRIMARY KEY AUTOINCREMENT"
                 + ", start_point TEXT NOT NULL" 
                 + ", end_point TEXT NOT NULL"
+                + ", start_point_latitude INTEGER NULL"
+                + ", start_point_longitude INTEGER NULL"
+                + ", end_point_latitude INTEGER NULL"
+                + ", end_point_longitude INTEGER NULL"
                 + ", created date"
                 + ");";
 
@@ -94,14 +114,28 @@ public class FavoritesDbAdapter {
      * @return the row id associated with the created entry or -1 of an error
      * occurred
      */
-    public long create(String startPoint, String endPoint) {
+    public long create(Stop startPoint, Stop endPoint) {
+        ContentValues initialValues = new ContentValues();
+
+        initialValues.put(KEY_START_POINT, startPoint.getName());
+        if (startPoint.getLocation() != null && !startPoint.isMyLocation()) {
+            int startLatitude = (int) (startPoint.getLocation().getLatitude() * 1E6);
+            int startLongitude = (int) (startPoint.getLocation().getLongitude() * 1E6);
+            initialValues.put(KEY_START_POINT_LATITUDE, startLatitude);
+            initialValues.put(KEY_START_POINT_LONGITUDE, startLongitude);
+        }
+
+        initialValues.put(KEY_END_POINT, endPoint.getName());
+        if (endPoint.getLocation() != null && !endPoint.isMyLocation()) {
+            int endLatitude = (int) (endPoint.getLocation().getLatitude() * 1E6);
+            int endLongitude = (int) (endPoint.getLocation().getLongitude() * 1E6);
+            initialValues.put(KEY_END_POINT_LATITUDE, endLatitude);
+            initialValues.put(KEY_END_POINT_LONGITUDE, endLongitude);
+        }
+
         // Create a sql date time format
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date date = new Date();
-
-        ContentValues initialValues = new ContentValues();
-        initialValues.put(KEY_START_POINT, startPoint);
-        initialValues.put(KEY_END_POINT, endPoint);
         initialValues.put(KEY_CREATED, dateFormat.format(date));
 
         return mDb.insert(DATABASE_TABLE, null, initialValues);
@@ -122,13 +156,40 @@ public class FavoritesDbAdapter {
      * @param name the name
      * @return a Cursor object positioned at the first entry
      */
-    public Cursor fetch(String startPoint, String endPoint) {
+    public Cursor fetch(Stop startPoint, Stop endPoint) {
+        ArrayList<String> selectionArgs = new ArrayList<String>();
+        selectionArgs.add(startPoint.getName());
+        selectionArgs.add(endPoint.getName());
+        StringBuilder selectionBuilder = new StringBuilder();
+        selectionBuilder.append("start_point=? AND end_point=?");
+
+        if (startPoint.getLocation() != null && !startPoint.isMyLocation()) {
+            int startLatitude = (int) (startPoint.getLocation().getLatitude() * 1E6);
+            int startLongitude = (int) (startPoint.getLocation().getLongitude() * 1E6);
+            selectionArgs.add(String.valueOf(startLatitude));
+            selectionArgs.add(String.valueOf(startLongitude));
+
+            selectionBuilder.append(" AND start_point_latitude=? AND start_point_longitude=?");
+        }
+        if (endPoint.getLocation() != null && !endPoint.isMyLocation()) {
+            int endLatitude = (int) (endPoint.getLocation().getLatitude() * 1E6);
+            int endLongitude = (int) (endPoint.getLocation().getLongitude() * 1E6);
+            selectionArgs.add(String.valueOf(endLatitude));
+            selectionArgs.add(String.valueOf(endLongitude));
+
+            selectionBuilder.append(" AND end_point_latitude=? AND end_point_longitude=?");
+        }
+
+        String[] args = new String[]{};
+        args = selectionArgs.toArray(args);
+
+        //Log.d(TAG, Arrays.toString(args));
         Cursor mCursor =
-            mDb.query(true, DATABASE_TABLE, new String[] {KEY_ROWID,
-                    KEY_START_POINT, KEY_END_POINT}, 
-                        KEY_START_POINT+ "=\"" + startPoint + "\"" 
-                        + " AND " + KEY_END_POINT + "=\"" + endPoint + "\"", 
-                    null, null, null, null, null);
+            mDb.query(true, DATABASE_TABLE, new String[] {
+                    KEY_ROWID, KEY_START_POINT, KEY_END_POINT,
+                    KEY_START_POINT_LATITUDE, KEY_START_POINT_LONGITUDE,
+                    KEY_END_POINT_LATITUDE, KEY_END_POINT_LONGITUDE},
+                    selectionBuilder.toString(), args, null, null, null, null);
         if (mCursor != null) {
             mCursor.moveToFirst();
         }
@@ -141,9 +202,11 @@ public class FavoritesDbAdapter {
      */
     public Cursor fetch() {
         Cursor mCursor =
-            mDb.query(true, DATABASE_TABLE, new String[] {KEY_ROWID,
-                    KEY_START_POINT, KEY_END_POINT}, null, null,
-                    null, null, KEY_CREATED + " DESC", null);
+            mDb.query(true, DATABASE_TABLE, new String[] { KEY_ROWID,
+                    KEY_START_POINT, KEY_START_POINT_LATITUDE,
+                    KEY_START_POINT_LONGITUDE, KEY_END_POINT,
+                    KEY_END_POINT_LATITUDE, KEY_END_POINT_LONGITUDE },
+                    null, null, null, null, KEY_CREATED + " DESC", null);
         return mCursor;        
     }
 
@@ -161,12 +224,52 @@ public class FavoritesDbAdapter {
             db.execSQL(DATABASE_CREATE);
         }
 
+        /**
+         * Upgrade the favorites table to the latest version.
+         * 
+         * Based on the example here,
+         * http://www.unwesen.de/articles/android-development-database-upgrades
+         */
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
             Log.w(TAG, "Upgrading database from version " + oldVersion + " to "
-                    + newVersion + ", which will destroy all old data");
+                    + newVersion + "");
+
+            db.beginTransaction();
+            boolean success = true;
+
+            for (int i = oldVersion ; i < newVersion ; ++i) {
+                int nextVersion = i + 1;
+                switch (nextVersion) {
+                    case 1:
+                    case 2:
+                    case 3:
+                        success = upgradeToVersion3(db);
+                        break;
+                    case 4:
+                        success = upgradeToVersion4(db);
+                        break;
+                }
+            }
+
+            if (success) {
+                db.setTransactionSuccessful();
+            }
+            db.endTransaction();
+        }
+
+        private boolean upgradeToVersion3(SQLiteDatabase db) {
             db.execSQL("DROP TABLE IF EXISTS favorites");
             onCreate(db);
+            return true;
+        }
+
+        private boolean upgradeToVersion4(SQLiteDatabase db) {
+            db.execSQL("ALTER TABLE favorites ADD COLUMN start_point_latitude INTEGER NULL;");
+            db.execSQL("ALTER TABLE favorites ADD COLUMN start_point_longitude INTEGER NULL;");
+            db.execSQL("ALTER TABLE favorites ADD COLUMN end_point_latitude INTEGER NULL;");
+            db.execSQL("ALTER TABLE favorites ADD COLUMN end_point_longitude INTEGER NULL;");
+            return true;
         }
     }
 }

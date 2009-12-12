@@ -21,13 +21,10 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
-import android.widget.SimpleCursorAdapter.CursorToStringConverter;
 import android.widget.SimpleCursorAdapter.ViewBinder;
 
 import com.markupartist.sthlmtraveling.planner.Stop;
@@ -97,13 +94,18 @@ public class FavoritesActivity extends ListActivity {
 
         Cursor favoritesCursor = ((SimpleCursorAdapter) this.getListAdapter()).getCursor();
 
-        // TODO: Cache getColumnIndex for the future.
-        String startPoint = favoritesCursor.getString(
-                favoritesCursor.getColumnIndex(FavoritesDbAdapter.KEY_START_POINT));
-        String endPoint = favoritesCursor.getString(
-                favoritesCursor.getColumnIndex(FavoritesDbAdapter.KEY_END_POINT));
+        String startPointName = favoritesCursor.getString(FavoritesDbAdapter.INDEX_START_POINT);
+        Stop startPoint = new Stop(startPointName);
+        startPoint.setLocation(
+                favoritesCursor.getInt(FavoritesDbAdapter.INDEX_START_POINT_LATITUDE),
+                favoritesCursor.getInt(FavoritesDbAdapter.INDEX_START_POINT_LONGITUDE));
+        String endPointName = favoritesCursor.getString(FavoritesDbAdapter.INDEX_END_POINT);
+        Stop endPoint = new Stop(endPointName);
+        endPoint.setLocation(
+                favoritesCursor.getInt(FavoritesDbAdapter.INDEX_END_POINT_LATITUDE),
+                favoritesCursor.getInt(FavoritesDbAdapter.INDEX_END_POINT_LONGITUDE));
 
-        Uri routesUri = RoutesActivity.createRoutesUri(startPoint, endPoint);
+        Uri routesUri = RoutesActivity.createRoutesUri(startPoint, endPoint, null);
         Intent i = new Intent(Intent.ACTION_VIEW, routesUri, this, RoutesActivity.class);
         startActivity(i);
     }
