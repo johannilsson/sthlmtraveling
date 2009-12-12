@@ -16,6 +16,7 @@
 
 package com.markupartist.sthlmtraveling;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -23,13 +24,18 @@ import java.util.Map;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ListActivity;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.DialogInterface.OnClickListener;
 import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.text.format.Time;
 import android.util.Log;
 import android.util.TypedValue;
@@ -50,13 +56,10 @@ import android.widget.SimpleAdapter.ViewBinder;
 
 import com.markupartist.sthlmtraveling.MyLocationManager.MyLocationFoundListener;
 import com.markupartist.sthlmtraveling.SectionedAdapter.Section;
+import com.markupartist.sthlmtraveling.planner.Planner;
 import com.markupartist.sthlmtraveling.planner.Route;
 import com.markupartist.sthlmtraveling.planner.Stop;
 import com.markupartist.sthlmtraveling.provider.FavoritesDbAdapter;
-import com.markupartist.sthlmtraveling.tasks.OnSearchRoutesResultListener;
-import com.markupartist.sthlmtraveling.tasks.SearchEarlierRoutesTask;
-import com.markupartist.sthlmtraveling.tasks.SearchLaterRoutesTask;
-import com.markupartist.sthlmtraveling.tasks.SearchRoutesTask;
 import com.markupartist.sthlmtraveling.utils.BarcodeScannerIntegrator;
 
 /**
@@ -71,15 +74,18 @@ import com.markupartist.sthlmtraveling.utils.BarcodeScannerIntegrator;
  * All parameters needs to be url encoded. Time is optional, but if provided it must be in
  * RFC 2445 format.
  */
-public class RoutesActivity extends ListActivity implements OnSearchRoutesResultListener, MyLocationFoundListener {
+public class RoutesActivity extends ListActivity 
+        implements MyLocationFoundListener {
     /**
      * The start point for the search.
      */
-    static final String EXTRA_START_POINT = "com.markupartist.sthlmtraveling.start_point";
+    static final String EXTRA_START_POINT =
+        "com.markupartist.sthlmtraveling.start_point";
     /**
      * The end point for the search.
      */
-    static final String EXTRA_END_POINT = "com.markupartist.sthlmtraveling.end_point";
+    static final String EXTRA_END_POINT =
+        "com.markupartist.sthlmtraveling.end_point";
     /**
      * Departure time in RFC 2445 format.
      */
@@ -88,6 +94,11 @@ public class RoutesActivity extends ListActivity implements OnSearchRoutesResult
     private final String TAG = "RoutesActivity";
 
     private static final int DIALOG_ILLEGAL_PARAMETERS = 0;
+    private static final int DIALOG_SEARCH_ROUTES_NETWORK_PROBLEM = 1;
+    private static final int DIALOG_GET_EARLIER_ROUTES_NETWORK_PROBLEM = 2;
+    private static final int DIALOG_GET_LATER_ROUTES_NETWORK_PROBLEM = 3;
+    private static final int DIALOG_GET_ROUTES_SESSION_TIMEOUT = 4;
+    private static final int DIALOG_SEARCH_ROUTES_NO_RESULT = 5;
 
     private static final int ADAPTER_EARLIER = 0;
     private static final int ADAPTER_ROUTES = 1;
@@ -97,6 +108,16 @@ public class RoutesActivity extends ListActivity implements OnSearchRoutesResult
     private final int SECTION_ROUTES = 2;
 
     private final int CHANGE_TIME = 0;
+
+    /**
+     * Key to identify if the instance of SearchRoutesTask is in progress. 
+     */
+    private static final String STATE_SEARCH_ROUTES_IN_PROGRESS =
+        "com.markupartist.sthlmtraveling.searchroutes.inprogress";
+    private static final String STATE_GET_EARLIER_ROUTES_IN_PROGRESS =
+        "com.markupartist.sthlmtraveling.getearlierroutes.inprogress";
+    private static final String STATE_GET_LATER_ROUTES_IN_PROGRESS =
+        "com.markupartist.sthlmtraveling.getlaterroutes.inprogress";
 
     private RoutesAdapter mRouteAdapter;
     private MultipleListAdapter mMultipleListAdapter;
@@ -110,7 +131,11 @@ public class RoutesActivity extends ListActivity implements OnSearchRoutesResult
     private FavoriteButtonHelper mFavoriteButtonHelper;
     private MyLocationManager mMyLocationManager;
     private SearchRoutesTask mSearchRoutesTask;
+    private GetEarlierRoutesTask mGetEarlierRoutesTask;
+    private GetLaterRoutesTask mGetLaterRoutesTask;
     private Toast mToast;
+    private ProgressDialog mProgress;
+    private Bundle mSavedState;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,23 +146,48 @@ public class RoutesActivity extends ListActivity implements OnSearchRoutesResult
             (LocationManager)getSystemService(LOCATION_SERVICE);
         mMyLocationManager = new MyLocationManager(locationManager);
 
+        mStartPoint = new Stop();
+        mEndPoint = new Stop();
+
         // Parse data URI       
         final Uri uri = getIntent().getData();
-        String startPoint  = uri.getQueryParameter("start_point");
-        String endPoint    = uri.getQueryParameter("end_point");
-        String time        = uri.getQueryParameter("time");
 
-        if (startPoint == null || endPoint == null) {
+        mStartPoint.setName(uri.getQueryParameter("start_point"));
+        if (!TextUtils.isEmpty(uri.getQueryParameter("start_point_lat"))
+                && !TextUtils.isEmpty(uri.getQueryParameter("start_point_lng"))) {
+            double startPointLat = Double.parseDouble(uri.getQueryParameter("start_point_lat"));
+            double startPointLng = Double.parseDouble(uri.getQueryParameter("start_point_lng"));
+            if (startPointLat != 0 && startPointLng != 0) {
+                Location startLocation = new Location("sthlmtraveling");
+                startLocation.setLatitude(startPointLat);
+                startLocation.setLongitude(startPointLng);
+                mStartPoint.setLocation(startLocation);
+            }
+        }
+
+        mEndPoint.setName(uri.getQueryParameter("end_point"));
+        if (!TextUtils.isEmpty(uri.getQueryParameter("end_point_lat"))
+                && !TextUtils.isEmpty(uri.getQueryParameter("end_point_lng"))) {
+            double endPointLat = Double.parseDouble(uri.getQueryParameter("end_point_lat"));
+            double endPointLng = Double.parseDouble(uri.getQueryParameter("end_point_lng"));
+            if (endPointLat != 0 && endPointLng != 0) {
+                Location endLocation = new Location("sthlmtraveling");
+                endLocation.setLatitude(endPointLat);
+                endLocation.setLongitude(endPointLng);
+                mEndPoint.setLocation(endLocation);
+            }
+        }
+        
+        String time = uri.getQueryParameter("time");
+
+        if (mStartPoint.getName() == null || mEndPoint.getName() == null) {
             showDialog(DIALOG_ILLEGAL_PARAMETERS);
             // If passed with bad parameters, break the execution.
             return;
         }
 
-        mStartPoint = new Stop(startPoint);
-        mEndPoint = new Stop(endPoint);
-
         mTime = new Time();
-        if (time != null ) {
+        if (!TextUtils.isEmpty(time)) {
             mTime.parse(time);
         } else {
             mTime.setToNow();
@@ -150,7 +200,7 @@ public class RoutesActivity extends ListActivity implements OnSearchRoutesResult
         updateStartAndEndPointViews(mStartPoint, mEndPoint);
 
         mFavoriteButtonHelper = new FavoriteButtonHelper(this, mFavoritesDbAdapter, 
-                startPoint, endPoint);
+                mStartPoint, mEndPoint);
         mFavoriteButtonHelper.loadImage();
 
         initRoutes(mStartPoint, mEndPoint, mTime);
@@ -211,8 +261,8 @@ public class RoutesActivity extends ListActivity implements OnSearchRoutesResult
                     mToast.show();
                 }
             } else {
-                mSearchRoutesTask = new SearchRoutesTask(this);
-                mSearchRoutesTask.setOnSearchRoutesResultListener(this);
+                mSearchRoutesTask = new SearchRoutesTask();
+                //mSearchRoutesTask.setOnSearchRoutesResultListener(this);
                 mSearchRoutesTask.execute(startPoint, endPoint, time);
             }
         }
@@ -225,7 +275,38 @@ public class RoutesActivity extends ListActivity implements OnSearchRoutesResult
      */
     @Override
     public Object onRetainNonConfigurationInstance() {
-        return mRouteAdapter.getRoutes();
+        if (mRouteAdapter != null) {
+            return mRouteAdapter.getRoutes();
+        }
+        return null;
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        restoreLocalState(savedInstanceState);
+        mSavedState = null;
+    }
+
+    /**
+     * Restores the local state.
+     * @param savedInstanceState the bundle containing the saved state
+     */
+    private void restoreLocalState(Bundle savedInstanceState) {
+        restoreStartAndEndPoints(savedInstanceState);
+        restoreSearchRoutesTask(savedInstanceState);
+        restoreGetEarlierRoutesTask(savedInstanceState);
+        restoreGetLaterRoutesTask(savedInstanceState);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        saveStartAndEndPoints(outState);
+        saveSearchRoutesTask(outState);
+        saveGetEarlierRoutesTask(outState);
+        saveGetLaterRoutesTask(outState);
+        mSavedState = outState;
     }
 
     @Override
@@ -235,6 +316,7 @@ public class RoutesActivity extends ListActivity implements OnSearchRoutesResult
         if (mFavoriteButtonHelper != null) {
             mFavoriteButtonHelper.loadImage();
         }
+        if (mSavedState != null) restoreLocalState(mSavedState);
     }
 
     @Override
@@ -244,6 +326,7 @@ public class RoutesActivity extends ListActivity implements OnSearchRoutesResult
             mFavoritesDbAdapter.close();
         }
         mMyLocationManager.removeUpdates();
+        dismissProgress();
     }
 
     @Override
@@ -252,6 +335,108 @@ public class RoutesActivity extends ListActivity implements OnSearchRoutesResult
         mMyLocationManager.removeUpdates();
     }
 
+    /**
+     * Restores the search routes task.
+     * @param savedInstanceState the saved state
+     */
+    private void restoreStartAndEndPoints(Bundle savedInstanceState) {
+        if (savedInstanceState.containsKey(EXTRA_START_POINT)) {
+            mStartPoint = savedInstanceState.getParcelable(EXTRA_START_POINT);
+        }
+        if (savedInstanceState.containsKey(EXTRA_END_POINT)) {
+            mEndPoint = savedInstanceState.getParcelable(EXTRA_END_POINT);
+        }
+    }
+
+    /**
+     * If there is any running search for routes, save it and process it later 
+     * on.
+     * @param outState the out state
+     */
+    private void saveStartAndEndPoints(Bundle outState) {
+        outState.putParcelable(EXTRA_START_POINT, mStartPoint);
+        outState.putParcelable(EXTRA_END_POINT, mEndPoint);
+    }
+
+    /**
+     * Restores the search routes task.
+     * @param savedInstanceState the saved state
+     */
+    private void restoreSearchRoutesTask(Bundle savedInstanceState) {
+        if (savedInstanceState.getBoolean(STATE_SEARCH_ROUTES_IN_PROGRESS)) {
+            Log.d(TAG, "restoring SearchRoutesTask");
+            mSearchRoutesTask = new SearchRoutesTask();
+            mSearchRoutesTask.execute(mStartPoint, mEndPoint, mTime);
+        }
+    }
+
+    /**
+     * If there is any running search for routes, save it and process it later 
+     * on.
+     * @param outState the out state
+     */
+    private void saveSearchRoutesTask(Bundle outState) {
+        final SearchRoutesTask task = mSearchRoutesTask;
+        if (task != null && task.getStatus() != AsyncTask.Status.FINISHED) {
+            Log.d(TAG, "saving SearchRoutesTask");
+            task.cancel(true);
+            mSearchRoutesTask = null;
+            outState.putBoolean(STATE_SEARCH_ROUTES_IN_PROGRESS, true);
+        }
+    }
+
+    /**
+     * Restores the task for getting earlier routes task.
+     * @param savedInstanceState the saved state
+     */
+    private void restoreGetEarlierRoutesTask(Bundle savedInstanceState) {
+        if (savedInstanceState.getBoolean(STATE_GET_EARLIER_ROUTES_IN_PROGRESS)) {
+            Log.d(TAG, "restoring GetEarlierRoutesTask");
+            mGetEarlierRoutesTask = new GetEarlierRoutesTask();
+            mGetEarlierRoutesTask.execute();
+        }
+    }
+
+    /**
+     * Save the state for the task for getting earlier routes.
+     * @param outState the out state
+     */
+    private void saveGetEarlierRoutesTask(Bundle outState) {
+        final GetEarlierRoutesTask task = mGetEarlierRoutesTask;
+        if (task != null && task.getStatus() != AsyncTask.Status.FINISHED) {
+            Log.d(TAG, "saving GetEarlierRoutesTas");
+            task.cancel(true);
+            mGetEarlierRoutesTask = null;
+            outState.putBoolean(STATE_GET_EARLIER_ROUTES_IN_PROGRESS, true);
+        }
+    }
+
+    /**
+     * Restores the task for getting earlier routes task.
+     * @param savedInstanceState the saved state
+     */
+    private void restoreGetLaterRoutesTask(Bundle savedInstanceState) {
+        if (savedInstanceState.getBoolean(STATE_GET_LATER_ROUTES_IN_PROGRESS)) {
+            Log.d(TAG, "restoring GetLaterRoutesTask");
+            mGetLaterRoutesTask = new GetLaterRoutesTask();
+            mGetLaterRoutesTask.execute();
+        }
+    }
+
+    /**
+     * Save the state for the task for getting earlier routes.
+     * @param outState the out state
+     */
+    private void saveGetLaterRoutesTask(Bundle outState) {
+        final GetLaterRoutesTask task = mGetLaterRoutesTask;
+        if (task != null && task.getStatus() != AsyncTask.Status.FINISHED) {
+            Log.d(TAG, "saving GetLaterRoutesTas");
+            task.cancel(true);
+            mGetLaterRoutesTask = null;
+            outState.putBoolean(STATE_GET_LATER_ROUTES_IN_PROGRESS, true);
+        }
+    }
+    
     private void createSections() {
         // Date and time adapter.
         String timeString = mTime.format("%R %x"); // %r
@@ -346,14 +531,12 @@ public class RoutesActivity extends ListActivity implements OnSearchRoutesResult
             int adapterId = multipleListAdapter.getAdapterId(innerPosition);
             switch(adapterId) {
             case ADAPTER_EARLIER:
-                SearchEarlierRoutesTask serTask = new SearchEarlierRoutesTask(this);
-                serTask.setOnSearchRoutesResultListener(this);
-                serTask.execute();
+                mGetEarlierRoutesTask = new GetEarlierRoutesTask();
+                mGetEarlierRoutesTask.execute();
                 break;
             case ADAPTER_LATER:
-                SearchLaterRoutesTask slrTask = new SearchLaterRoutesTask(this);
-                slrTask.setOnSearchRoutesResultListener(this);
-                slrTask.execute();
+                mGetLaterRoutesTask = new GetLaterRoutesTask();
+                mGetLaterRoutesTask.execute();
                 break;
             case ADAPTER_ROUTES:
                 Route route = (Route) mSectionedAdapter.getItem(position);
@@ -371,7 +554,6 @@ public class RoutesActivity extends ListActivity implements OnSearchRoutesResult
         }
     }
 
-    @Override
     public void onSearchRoutesResult(ArrayList<Route> routes) { 
         if (mRouteAdapter == null) {
             mRouteAdapter = new RoutesAdapter(this, routes);
@@ -403,8 +585,7 @@ public class RoutesActivity extends ListActivity implements OnSearchRoutesResult
 
         updateStartAndEndPointViews(mStartPoint, mEndPoint);
 
-        mSearchRoutesTask = new SearchRoutesTask(this);
-        mSearchRoutesTask.setOnSearchRoutesResultListener(this);
+        mSearchRoutesTask = new SearchRoutesTask();
         mSearchRoutesTask.execute(mStartPoint, mEndPoint, mTime);
     }
 
@@ -445,8 +626,7 @@ public class RoutesActivity extends ListActivity implements OnSearchRoutesResult
 
                 //updateStartAndEndPointViews(startPoint, endPoint);
 
-                mSearchRoutesTask = new SearchRoutesTask(this);
-                mSearchRoutesTask.setOnSearchRoutesResultListener(this);
+                mSearchRoutesTask = new SearchRoutesTask();
                 mSearchRoutesTask.execute(startPoint, endPoint, mTime);
             }
         }
@@ -479,16 +659,15 @@ public class RoutesActivity extends ListActivity implements OnSearchRoutesResult
                  * ident generated to be able to search for route details in the next step.
                  */
 
-                mSearchRoutesTask = new SearchRoutesTask(this);
-                mSearchRoutesTask.setOnSearchRoutesResultListener(this);
+                mSearchRoutesTask = new SearchRoutesTask();
                 mSearchRoutesTask.execute(mStartPoint, mEndPoint, mTime);
 
                 updateStartAndEndPointViews(mStartPoint, mEndPoint);
 
                 // Update the favorite button
                 mFavoriteButtonHelper
-                        .setStartPoint(mStartPoint.getName())
-                        .setEndPoint(mEndPoint.getName())
+                        .setStartPoint(mStartPoint)
+                        .setEndPoint(mEndPoint)
                         .loadImage();
                 return true;
             case R.id.show_qr_code :
@@ -516,6 +695,49 @@ public class RoutesActivity extends ListActivity implements OnSearchRoutesResult
                 .setCancelable(true)
                 .setNeutralButton(getText(android.R.string.ok), null)
                 .create();
+        case DIALOG_SEARCH_ROUTES_NETWORK_PROBLEM:
+            return DialogHelper.createNetworkProblemDialog(this, new OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    mSearchRoutesTask = new SearchRoutesTask();
+                    mSearchRoutesTask.execute(mStartPoint, mEndPoint, mTime);
+                }
+            });
+        case DIALOG_GET_EARLIER_ROUTES_NETWORK_PROBLEM:
+            return DialogHelper.createNetworkProblemDialog(this, new OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    mGetEarlierRoutesTask = new GetEarlierRoutesTask();
+                    mGetEarlierRoutesTask.execute();
+                }
+            });
+        case DIALOG_GET_LATER_ROUTES_NETWORK_PROBLEM:
+            return DialogHelper.createNetworkProblemDialog(this, new OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    mGetLaterRoutesTask = new GetLaterRoutesTask();
+                    mGetLaterRoutesTask.execute();
+                }
+            });
+        case DIALOG_GET_ROUTES_SESSION_TIMEOUT:
+            return new AlertDialog.Builder(this)
+            .setIcon(android.R.drawable.ic_dialog_alert)
+            .setTitle(getText(R.string.attention_label))
+            .setMessage(getText(R.string.session_timeout_message))
+            .setNeutralButton(getText(android.R.string.ok), null)
+            .create();
+        case DIALOG_SEARCH_ROUTES_NO_RESULT:
+            return new AlertDialog.Builder(this)
+            .setTitle(getText(R.string.no_routes_found_label))
+            .setMessage(getText(R.string.no_routes_found_message))
+            .setPositiveButton("Back", new OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    finish();
+                }
+            })
+            .setNegativeButton(getText(android.R.string.cancel), null)
+            .create();
         }
         return null;
     }
@@ -548,6 +770,42 @@ public class RoutesActivity extends ListActivity implements OnSearchRoutesResult
                     String.format("journeyplanner://routes?start_point=%s&end_point=%s",
                             startPoint, endPoint));
         }
+
+        return routesUri;
+    }
+
+    public static Uri createRoutesUri(Stop startPoint, Stop endPoint, Time time) {
+        Uri routesUri;
+        String timeString = "";
+        String startLat = "";
+        String startLng = "";
+        String endLat = "";
+        String endLng = "";
+
+        if (time != null) {
+            timeString = time.format2445();
+        }
+        if (startPoint.getLocation() != null) {
+            startLat = String.valueOf(startPoint.getLocation().getLatitude());
+            startLng = String.valueOf(startPoint.getLocation().getLongitude());
+        }
+        if (endPoint.getLocation() != null) {
+            endLat = String.valueOf(endPoint.getLocation().getLatitude());
+            endLng = String.valueOf(endPoint.getLocation().getLongitude());
+        }
+
+        routesUri = Uri.parse(
+                    String.format("journeyplanner://routes?" 
+                            + "start_point=%s"
+                            + "&start_point_lat=%s"
+                            + "&start_point_lng=%s"
+                            + "&end_point=%s"
+                            + "&end_point_lat=%s"
+                            + "&end_point_lng=%s"
+                            + "&time=%s",
+                            startPoint.getName(), startLat, startLng,
+                            endPoint.getName(), endLat, endLng, 
+                            timeString));
 
         return routesUri;
     }
@@ -678,6 +936,133 @@ public class RoutesActivity extends ListActivity implements OnSearchRoutesResult
             this.addView(startAndEndPoint);
             this.addView(routeDetail);
             this.addView(routeChanges);
+        }
+    }
+
+    /**
+     * Show progress dialog.
+     */
+    private void showProgress() {
+        if (mProgress == null) {
+            mProgress = new ProgressDialog(this);
+            mProgress.setMessage(getText(R.string.loading));
+            mProgress.show();   
+        }
+    }
+
+    /**
+     * Dismiss the progress dialog.
+     */
+    private void dismissProgress() {
+        if (mProgress != null) {
+            mProgress.dismiss();
+            mProgress = null;
+        }
+    }
+
+    /**
+     * Background task for searching for routes.
+     */
+    private class SearchRoutesTask extends AsyncTask<Object, Void, ArrayList<Route>> {
+        private boolean mWasSuccess = true;
+
+        @Override
+        public void onPreExecute() {
+            showProgress();
+        }
+
+        @Override
+        protected ArrayList<Route> doInBackground(Object... params) {
+            try {
+                return Planner.getInstance().findRoutes(
+                        (Stop) params[0], (Stop) params[1], (Time) params[2]);
+            } catch (IOException e) {
+                mWasSuccess = false;
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<Route> result) {
+            dismissProgress();
+
+            if (result != null && !result.isEmpty()) {
+                onSearchRoutesResult(result);
+            } else if (!mWasSuccess) {
+                showDialog(DIALOG_SEARCH_ROUTES_NETWORK_PROBLEM);
+            } else {
+                showDialog(DIALOG_SEARCH_ROUTES_NO_RESULT);
+            }
+        }
+    }
+
+    /**
+     * Background task for getting earlier routes.
+     */
+    private class GetEarlierRoutesTask extends AsyncTask<Void, Void, ArrayList<Route>> {
+        private boolean mWasSuccess = true;
+
+        @Override
+        public void onPreExecute() {
+            showProgress();
+        }
+
+        @Override
+        protected ArrayList<Route> doInBackground(Void... params) {
+            try {
+                return Planner.getInstance().findEarlierRoutes();
+            } catch (IOException e) {
+                mWasSuccess = false;
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<Route> result) {
+            dismissProgress();
+
+            if (result != null && !result.isEmpty()) {
+                onSearchRoutesResult(result);
+            } else if (!mWasSuccess) {
+                showDialog(DIALOG_GET_EARLIER_ROUTES_NETWORK_PROBLEM);
+            } else {
+                showDialog(DIALOG_GET_ROUTES_SESSION_TIMEOUT);
+            }
+        }
+    }
+
+    /**
+     * Background task for getting later routes.
+     */
+    private class GetLaterRoutesTask extends AsyncTask<Void, Void, ArrayList<Route>> {
+        private boolean mWasSuccess = true;
+
+        @Override
+        public void onPreExecute() {
+            showProgress();
+        }
+
+        @Override
+        protected ArrayList<Route> doInBackground(Void... params) {
+            try {
+                return Planner.getInstance().findLaterRoutes();
+            } catch (IOException e) {
+                mWasSuccess = false;
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<Route> result) {
+            dismissProgress();
+
+            if (result != null && !result.isEmpty()) {
+                onSearchRoutesResult(result);
+            } else if (!mWasSuccess) {
+                showDialog(DIALOG_GET_LATER_ROUTES_NETWORK_PROBLEM);
+            } else {
+                showDialog(DIALOG_GET_ROUTES_SESSION_TIMEOUT);
+            }
         }
     }
 }
