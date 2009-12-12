@@ -16,12 +16,20 @@
 
 package com.markupartist.sthlmtraveling;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ListActivity;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.DialogInterface.OnClickListener;
 import android.location.Location;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -29,22 +37,27 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import com.markupartist.sthlmtraveling.planner.Planner;
 import com.markupartist.sthlmtraveling.planner.Route;
 import com.markupartist.sthlmtraveling.planner.Stop;
 import com.markupartist.sthlmtraveling.provider.FavoritesDbAdapter;
-import com.markupartist.sthlmtraveling.tasks.FindRouteDetailsTask;
-import com.markupartist.sthlmtraveling.tasks.FindRouteDetailsTask.OnNoRoutesDetailsResultListener;
-import com.markupartist.sthlmtraveling.tasks.FindRouteDetailsTask.OnRouteDetailsResultListener;
 
-public class RouteDetailActivity extends ListActivity 
-        implements OnRouteDetailsResultListener, OnNoRoutesDetailsResultListener {
+public class RouteDetailActivity extends ListActivity {
+    public static final String TAG = "RouteDetailActivity";
     public static final String EXTRA_START_POINT = "com.markupartist.sthlmtraveling.start_point";
     public static final String EXTRA_END_POINT = "com.markupartist.sthlmtraveling.end_point";
     public static final String EXTRA_ROUTE = "com.markupartist.sthlmtraveling.route";
+    private static final String STATE_GET_DETAILS_IN_PROGRESS =
+        "com.markupartist.sthlmtraveling.getdetails.inprogress";
+    private static final String STATE_ROUTE = "com.markupartist.sthlmtraveling.route";
+    private static final int DIALOG_NETWORK_PROBLEM = 0;
 
     private ArrayAdapter<String> mDetailAdapter;
     private FavoritesDbAdapter mFavoritesDbAdapter;
     private ArrayList<String> mDetails;
+    private GetDetailsTask mGetDetailsTask;
+    private Route mRoute;
+    private ProgressDialog mProgress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +65,7 @@ public class RouteDetailActivity extends ListActivity
         setContentView(R.layout.route_details_list);
 
         Bundle extras = getIntent().getExtras();
-        Route route = extras.getParcelable(EXTRA_ROUTE);
+        mRoute = extras.getParcelable(EXTRA_ROUTE);
         Stop startPoint = extras.getParcelable(EXTRA_START_POINT);
         Stop endPoint = extras.getParcelable(EXTRA_END_POINT);
 
@@ -71,13 +84,13 @@ public class RouteDetailActivity extends ListActivity
         }
         
         TextView dateTimeView = (TextView) findViewById(R.id.route_date_time);
-        dateTimeView.setText(route.toString());
+        dateTimeView.setText(mRoute.toString());
 
         FavoriteButtonHelper favoriteButtonHelper = new FavoriteButtonHelper(
-                this, mFavoritesDbAdapter, startPoint.getName(), endPoint.getName());
+                this, mFavoritesDbAdapter, startPoint, endPoint);
         favoriteButtonHelper.loadImage();
 
-        initRouteDetails(route);
+        initRouteDetails(mRoute);
     }
 
     /**
@@ -103,11 +116,11 @@ public class RouteDetailActivity extends ListActivity
         final ArrayList<String> details = (ArrayList<String>) getLastNonConfigurationInstance();
         if (details != null) {
             onRouteDetailsResult(details);
-        } else {
-            FindRouteDetailsTask findRouteDetailsTask = new FindRouteDetailsTask(this);
-            findRouteDetailsTask.setOnRouteDetailsResultListener(this);
-            findRouteDetailsTask.setOnNoResultListener(this);
-            findRouteDetailsTask.execute(route);
+        } else if (mGetDetailsTask == null) {
+            mGetDetailsTask = new GetDetailsTask();
+            //findRouteDetailsTask.setOnRouteDetailsResultListener(this);
+            //findRouteDetailsTask.setOnNoResultListener(this);
+            mGetDetailsTask.execute(route);
         }
     }
 
@@ -119,6 +132,54 @@ public class RouteDetailActivity extends ListActivity
     @Override
     public Object onRetainNonConfigurationInstance() {
         return mDetails;
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        saveGetDetailsTask(outState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        restoreLocalState(savedInstanceState);
+    }
+
+    /**
+     * Restores any local state, if any.
+     * @param savedInstanceState the bundle containing the saved state
+     */
+    private void restoreLocalState(Bundle savedInstanceState) {
+        restoreGetDetailsTask(savedInstanceState);
+    }
+
+    /**
+     * Restores the search routes task.
+     * @param savedInstanceState the saved state
+     */
+    private void restoreGetDetailsTask(Bundle savedInstanceState) {
+        if (savedInstanceState.getBoolean(STATE_GET_DETAILS_IN_PROGRESS)) {
+            mRoute = savedInstanceState.getParcelable(STATE_ROUTE);
+            Log.d(TAG, "restoring getDetailsTask");
+            mGetDetailsTask = new GetDetailsTask();
+            mGetDetailsTask.execute(mRoute);
+        }
+    }
+
+    /**
+     *
+     * @param outState
+     */
+    private void saveGetDetailsTask(Bundle outState) {
+        final GetDetailsTask task = mGetDetailsTask;
+        if (task != null && task.getStatus() != AsyncTask.Status.FINISHED) {
+            Log.d(TAG, "saving SearchRoutesTask");
+            task.cancel(true);
+            mGetDetailsTask = null;
+            outState.putBoolean(STATE_GET_DETAILS_IN_PROGRESS, true);
+            outState.putParcelable(STATE_ROUTE, mRoute);
+        }
     }
 
     @Override
@@ -143,20 +204,102 @@ public class RouteDetailActivity extends ListActivity
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        dismissProgress();
         mFavoritesDbAdapter.close();
     }
 
-    @Override
+    /**
+     * Called when there is results to display.
+     * @param details the route details
+     */
     public void onRouteDetailsResult(ArrayList<String> details) {
         mDetailAdapter = new ArrayAdapter<String>(this, R.layout.route_details_row, details);
         setListAdapter(mDetailAdapter);
         mDetails = details;
     }
 
-    @Override
+    /**
+     * Called when there is no result returned. 
+     */
     public void onNoRoutesDetailsResult() {
         TextView noResult = (TextView) findViewById(R.id.route_details_no_result);
         noResult.setVisibility(View.VISIBLE);
     }
 
+    @Override
+    protected Dialog onCreateDialog(int id) {
+        switch(id) {
+        case DIALOG_NETWORK_PROBLEM:
+            return new AlertDialog.Builder(this)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setTitle(getText(R.string.network_problem_label))
+                .setMessage(getText(R.string.network_problem_message))
+                .setPositiveButton("Retry", new OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        mGetDetailsTask = new GetDetailsTask();
+                        mGetDetailsTask.execute(mRoute);
+                    }
+                })
+                .setNegativeButton(getText(android.R.string.ok), null)
+                .create();
+        }
+        return null;
+    }
+
+    /**
+     * Show progress dialog.
+     */
+    private void showProgress() {
+        if (mProgress == null) {
+            mProgress = new ProgressDialog(this);
+            mProgress.setMessage(getText(R.string.loading));
+            mProgress.show();   
+        }
+    }
+
+    /**
+     * Dismiss the progress dialog.
+     */
+    private void dismissProgress() {
+        if (mProgress != null) {
+            mProgress.dismiss();
+            mProgress = null;
+        }
+    }
+
+    /**
+     * Background task for fetching route details.
+     */
+    private class GetDetailsTask extends AsyncTask<Route, Void, ArrayList<String>> {
+        private boolean mWasSuccess = true;
+
+        @Override
+        public void onPreExecute() {
+            showProgress();
+        }
+
+        @Override
+        protected ArrayList<String> doInBackground(Route... params) {
+            try {
+                return Planner.getInstance().findRouteDetails(params[0]);
+            } catch (IOException e) {
+                mWasSuccess = false;
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<String> result) {
+            dismissProgress();
+
+            if (result != null && !result.isEmpty()) {
+                onRouteDetailsResult(result);
+            } else if (!mWasSuccess) {
+                showDialog(DIALOG_NETWORK_PROBLEM);
+            } else {
+                onNoRoutesDetailsResult();
+            }
+        }
+    }
 }
