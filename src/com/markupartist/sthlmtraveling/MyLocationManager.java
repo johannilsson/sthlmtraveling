@@ -27,7 +27,7 @@ public class MyLocationManager {
     private static final String TAG = "MyLocationManager";
     private static final long FIND_LOCATION_TIME_OUT_MILLIS = 5000;
     private static final int ACCEPTED_LOCATION_ACCURACY_METERS = 100;
-    private static final int ACCEPTED_LOCATION_AGE_MILLIS = 300000;
+    private static final int ACCEPTED_LOCATION_AGE_MILLIS = 150000;
     private LocationRequestTimeOut mLocationRequestTimeOut;
     private LocationManager mLocationManager;
     private MyLocationFoundListener mMyLocationFoundListener;
@@ -97,18 +97,6 @@ public class MyLocationManager {
         }
     }
 
-    /*
-    @Override
-    public void onLocationChanged(Location location) {
-        Log.d(TAG, "location changed " + location);
-        if (shouldAcceptLocation(location)) {
-            mLocationManager.removeUpdates(this);
-            reportLocationFound(location);
-            mLocationRequestTimeOut.cancel();
-        }
-    }
-    */
-
     /**
      * Is the provided {@link Location} accepted?
      * @param location the location
@@ -123,23 +111,6 @@ public class MyLocationManager {
         }
         return false;
     }
-
-    /*
-    @Override
-    public void onProviderDisabled(String provider) {
-        // Needed by interface.
-    }
-
-    @Override
-    public void onProviderEnabled(String provider) {
-        // Needed by interface.
-    }
-
-    @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
-        // Needed by interface.
-    }
-    */
 
     private class MyLocationListener implements LocationListener {
 
