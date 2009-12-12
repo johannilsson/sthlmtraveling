@@ -20,15 +20,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.markupartist.sthlmtraveling.planner.Planner;
-
-import android.app.AlertDialog;
 import android.content.Context;
 import android.widget.ArrayAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.Toast;
-import android.text.TextWatcher;
+
+import com.markupartist.sthlmtraveling.planner.Planner;
 
 public class AutoCompleteStopAdapter extends ArrayAdapter<String> implements Filterable {
     private static String TAG = "AutoCompleteStopAdapter";
