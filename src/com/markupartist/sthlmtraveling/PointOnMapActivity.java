@@ -13,12 +13,14 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
+import android.widget.Toast;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 import com.google.android.maps.MyLocationOverlay;
+import com.markupartist.sthlmtraveling.graphics.LabelMarker;
 import com.markupartist.sthlmtraveling.planner.Stop;
 
 import de.android1.overlaymanager.ManagedOverlay;
@@ -32,16 +34,16 @@ public class PointOnMapActivity extends MapActivity {
     private static final String TAG = "PointOnMapActivity";
 
     public static String EXTRA_STOP = "com.markupartist.sthlmtraveling.pointonmap.stop";
+    public static String EXTRA_HELP_TEXT = "com.markupartist.sthlmtraveling.pointonmap.helptext";
 
     private MapView mMapView;
     private MapController mapController;
     private GeoPoint mGeoPoint;
     private OverlayManager mOverlayManager;
     private ManagedOverlayItem mManagedOverlayItem;
-
     private Stop mStop;
-
     private MyLocationOverlay mMyLocationOverlay;
+    private LabelMarker mLabelMarker;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -50,6 +52,11 @@ public class PointOnMapActivity extends MapActivity {
 
         Bundle extras = getIntent().getExtras();
         mStop = (Stop) extras.getParcelable(EXTRA_STOP);
+        String helpText = extras.getString(EXTRA_HELP_TEXT);
+
+        showHelpToast(helpText);
+
+        mLabelMarker = new LabelMarker(getString(R.string.tap_to_select_this_point), 15);
 
         mMapView = (MapView) findViewById(R.id.mapview);
         mMapView.setBuiltInZoomControls(true);
@@ -72,10 +79,16 @@ public class PointOnMapActivity extends MapActivity {
 
         mOverlayManager = new OverlayManager(getApplication(), mMapView);
 
-        pointToSelectOverlay();
         myLocationOverlay();
+        pointToSelectOverlay();
     }
 
+    private void showHelpToast(String helpText) {
+        if (helpText != null) {
+            Toast.makeText(this, helpText, Toast.LENGTH_LONG).show();
+        }
+    }
+    
     @Override
     public void onWindowFocusChanged(boolean b) {
         //pointToSelectOverlay();
@@ -140,19 +153,11 @@ public class PointOnMapActivity extends MapActivity {
         mMapView.getOverlays().add(mMyLocationOverlay);
         mMyLocationOverlay.enableCompass();
         mMyLocationOverlay.enableMyLocation();
-        /*
-        mMyLocationOverlay.runOnFirstFix(new Runnable() {
-            public void run() {
-                mapController.animateTo(mMyLocationOverlay.getMyLocation());
-            }
-        });
-        */
     }
     
     private void pointToSelectOverlay() {
-        //ManagedOverlay managedOverlay = mOverlayManager.createOverlay();
         ManagedOverlay managedOverlay = mOverlayManager.createOverlay(
-                getResources().getDrawable(R.drawable.point_on_map_marker));
+                mLabelMarker.getMarker());
 
         mManagedOverlayItem = new ManagedOverlayItem(mGeoPoint, "title", "snippet");
         managedOverlay.add(mManagedOverlayItem);
@@ -191,16 +196,19 @@ public class PointOnMapActivity extends MapActivity {
                                        GeoPoint geoPoint,
                                        ManagedOverlayItem managedOverlayItem) {
                 if (managedOverlayItem != null) {
+                    Toast.makeText(getApplicationContext(),
+                            getText(R.string.point_selected), Toast.LENGTH_LONG).show();
+
                     GeoPoint currentPoint = managedOverlayItem.getPoint();
-                    Location location = new Location("sthlmtraveling");
+                    /*Location location = new Location("sthlmtraveling");
                     location.setLatitude(currentPoint.getLatitudeE6() / 1E6);
-                    location.setLongitude(currentPoint.getLongitudeE6() / 1E6);
+                    location.setLongitude(currentPoint.getLongitudeE6() / 1E6);*/
 
-                    mStop.setName(getStopName(location));
-                    mStop.setLocation(location);
+                    mStop.setLocation(currentPoint.getLatitudeE6(),
+                            currentPoint.getLongitudeE6());
+                    mStop.setName(getStopName(mStop.getLocation()));
 
-                    setResult(RESULT_OK, (new Intent())
-                            .putExtra(EXTRA_STOP, mStop));
+                    setResult(RESULT_OK, (new Intent()).putExtra(EXTRA_STOP, mStop));
                     finish();
                 } else {
                     managedOverlay.remove(mManagedOverlayItem);
