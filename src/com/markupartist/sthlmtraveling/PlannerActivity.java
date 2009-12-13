@@ -325,7 +325,7 @@ public class PlannerActivity extends Activity implements OnCheckedChangeListener
      * @param endPoint the end point
      */
     protected void onCreateShortCut(Stop startPoint, Stop endPoint, String name) {
-        Uri routesUri = RoutesActivity.createRoutesUri(startPoint.getName(), endPoint.getName());
+        Uri routesUri = RoutesActivity.createRoutesUri(startPoint, endPoint, null);
         Intent shortcutIntent = new Intent(Intent.ACTION_VIEW, routesUri,
                 this, RoutesActivity.class);
         shortcutIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -361,7 +361,8 @@ public class PlannerActivity extends Activity implements OnCheckedChangeListener
         case DIALOG_START_POINT:
             AlertDialog.Builder startPointDialogBuilder = new AlertDialog.Builder(this);
             startPointDialogBuilder.setTitle(getText(R.string.choose_start_point_label));
-            startPointDialogBuilder.setItems(getDialogSelectPointItems(), new DialogInterface.OnClickListener() {
+            startPointDialogBuilder.setItems(getDialogSelectPointItems(),
+                    new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int item) {
                     switch(item) {
                     case 0:
@@ -372,11 +373,11 @@ public class PlannerActivity extends Activity implements OnCheckedChangeListener
                         showDialog(DIALOG_START_POINT_HISTORY);
                         break;
                     case 2:
-                        Intent pointOnMapForStartPointIntent = new Intent(
-                                PlannerActivity.this, PointOnMapActivity.class);
-                        pointOnMapForStartPointIntent.putExtra(PointOnMapActivity.EXTRA_STOP, mStartPoint);
-                        startActivityForResult(pointOnMapForStartPointIntent,
-                                REQUEST_CODE_POINT_ON_MAP_START);
+                        Intent i = new Intent(PlannerActivity.this, PointOnMapActivity.class);
+                        i.putExtra(PointOnMapActivity.EXTRA_STOP, mStartPoint);
+                        i.putExtra(PointOnMapActivity.EXTRA_HELP_TEXT,
+                                getString(R.string.tap_your_start_point_on_map));
+                        startActivityForResult(i, REQUEST_CODE_POINT_ON_MAP_START);
                         break;
                     }
                 }
@@ -398,11 +399,11 @@ public class PlannerActivity extends Activity implements OnCheckedChangeListener
                         showDialog(DIALOG_END_POINT_HISTORY);
                         break;
                     case 2:
-                        Intent pointOnMapForStartPointIntent = new Intent(
-                                PlannerActivity.this, PointOnMapActivity.class);
-                        pointOnMapForStartPointIntent.putExtra(PointOnMapActivity.EXTRA_STOP, mEndPoint);
-                        startActivityForResult(pointOnMapForStartPointIntent,
-                                REQUEST_CODE_POINT_ON_MAP_END);
+                        Intent i = new Intent(PlannerActivity.this, PointOnMapActivity.class);
+                        i.putExtra(PointOnMapActivity.EXTRA_STOP, mEndPoint);
+                        i.putExtra(PointOnMapActivity.EXTRA_HELP_TEXT,
+                                getString(R.string.tap_your_end_point_on_map));
+                        startActivityForResult(i, REQUEST_CODE_POINT_ON_MAP_END);
                         break;
                     }
                 }
