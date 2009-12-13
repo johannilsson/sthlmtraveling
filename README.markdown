@@ -15,7 +15,8 @@ me on [twitter](http://twitter.com/johanni) where I announce new versions.
 
 Credits
 -------
-
+* Johan Walles for his great code in his SL app. Marker for the map is built
+  from his code
 * App icon, concepts & ideas Olof Brickarp
 * Patches by [Morgan Christiansson, Screen Interaction AB](http://screeninteraction.com)
 * Icons by [Fredrik Broman](http://fredrikbroman.com)
@@ -65,10 +66,19 @@ STHLM Traveling is open source and licensed under
 
 * Icons by Fredrik Broman is licensed under [CC Attribution 3.0](http://creativecommons.org/licenses/by/3.0/)
 * SectionedAdapter released under [GNU General Public License](http://www.gnu.org/licenses/gpl.html)
+* LabelMarker released under [GNU General Public License](http://www.gnu.org/licenses/gpl.html)
+  Originally from Johan Walles [SL app](https://launchpad.net/sl),
 * App icon by Olof Brickarp is copyright Olof Brickarp
 
 Changelog
 ---------
+* 1.3.7
+    * Point on map
+    * Improved My location, now passing the real position to sl.se
+    * Added support for lat and lng to favorites
+    * Added retry button to the network problem dialog
+    * Fixed bug with screen rotation when performing background jobs
+    * Added support for named shortcuts
 * 1.3.6
     * Fix for barcode generator
 * 1.3.5
