@@ -17,7 +17,7 @@ public class DialogHelper {
             .setIcon(android.R.drawable.ic_dialog_alert)
             .setTitle(activity.getText(R.string.attention_label))
             .setMessage(activity.getText(R.string.network_problem_message))
-            .setPositiveButton("Retry", onClickListener)
+            .setPositiveButton(activity.getText(R.string.retry), onClickListener)
             .setNegativeButton(activity.getText(android.R.string.cancel), null)
             .create();
     }
