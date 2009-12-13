@@ -671,9 +671,7 @@ public class RoutesActivity extends ListActivity
                         .loadImage();
                 return true;
             case R.id.show_qr_code :
-                Uri routesUri = createRoutesUri(
-                        Uri.encode(mStartPoint.getName()), 
-                        Uri.encode(mEndPoint.getName()));
+                Uri routesUri = createRoutesUri(mStartPoint, mEndPoint, null);
                 BarcodeScannerIntegrator.shareText(this, routesUri.toString(),
                         R.string.install_barcode_scanner_title,
                         R.string.requires_barcode_scanner_message,
@@ -743,39 +741,15 @@ public class RoutesActivity extends ListActivity
     }
 
     /**
-     * Constructs a search routes data Uri.
-     * @param startPoint the start point
-     * @param endPoint the end point
-     * @return a search routes data uri
-     */
-    public static Uri createRoutesUri(String startPoint, String endPoint) {
-        return createRoutesUri(startPoint, endPoint, null);
-    }
-
-    /**
      * Constructs a search routes data URI.
      * @param startPoint the start point
      * @param endPoint the end point
-     * @param time the time
-     * @return a search routes data URI
+     * @param time the time, pass null for now
+     * @return the data uri
      */
-    public static Uri createRoutesUri(String startPoint, String endPoint, Time time) {
-        Uri routesUri;
-        if (time != null) {
-            routesUri = Uri.parse(
-                    String.format("journeyplanner://routes?start_point=%s&end_point=%s&time=%s",
-                            startPoint, endPoint, time.format2445()));
-        } else {
-            routesUri = Uri.parse(
-                    String.format("journeyplanner://routes?start_point=%s&end_point=%s",
-                            startPoint, endPoint));
-        }
-
-        return routesUri;
-    }
-
     public static Uri createRoutesUri(Stop startPoint, Stop endPoint, Time time) {
         Uri routesUri;
+
         String timeString = "";
         String startLat = "";
         String startLng = "";
@@ -803,8 +777,8 @@ public class RoutesActivity extends ListActivity
                             + "&end_point_lat=%s"
                             + "&end_point_lng=%s"
                             + "&time=%s",
-                            startPoint.getName(), startLat, startLng,
-                            endPoint.getName(), endLat, endLng, 
+                            Uri.encode(startPoint.getName()), startLat, startLng,
+                            Uri.encode(endPoint.getName()), endLat, endLng, 
                             timeString));
 
         return routesUri;
