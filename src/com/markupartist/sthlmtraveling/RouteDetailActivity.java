@@ -118,8 +118,6 @@ public class RouteDetailActivity extends ListActivity {
             onRouteDetailsResult(details);
         } else if (mGetDetailsTask == null) {
             mGetDetailsTask = new GetDetailsTask();
-            //findRouteDetailsTask.setOnRouteDetailsResultListener(this);
-            //findRouteDetailsTask.setOnNoResultListener(this);
             mGetDetailsTask.execute(route);
         }
     }
@@ -234,14 +232,14 @@ public class RouteDetailActivity extends ListActivity {
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .setTitle(getText(R.string.network_problem_label))
                 .setMessage(getText(R.string.network_problem_message))
-                .setPositiveButton("Retry", new OnClickListener() {
+                .setPositiveButton(getText(R.string.retry), new OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         mGetDetailsTask = new GetDetailsTask();
                         mGetDetailsTask.execute(mRoute);
                     }
                 })
-                .setNegativeButton(getText(android.R.string.ok), null)
+                .setNegativeButton(getText(android.R.string.cancel), null)
                 .create();
         }
         return null;
