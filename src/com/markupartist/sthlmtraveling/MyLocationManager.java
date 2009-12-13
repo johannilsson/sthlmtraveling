@@ -112,11 +112,14 @@ public class MyLocationManager {
         return false;
     }
 
+    /**
+     * Used for receiving notifications from the LocationManager when the 
+     * location has changed.
+     */
     private class MyLocationListener implements LocationListener {
 
         @Override
         public void onLocationChanged(Location location) {
-            Log.d(TAG, "location changed " + location);
             if (shouldAcceptLocation(location)) {
                 reportLocationFound(location);
                 removeUpdates();
@@ -125,25 +128,25 @@ public class MyLocationManager {
 
         @Override
         public void onProviderDisabled(String provider) {
-            // TODO Auto-generated method stub
+            // Needed by the interface.
             
         }
 
         @Override
         public void onProviderEnabled(String provider) {
-            // TODO Auto-generated method stub
+            // Needed by the interface.
             
         }
 
         @Override
         public void onStatusChanged(String provider, int status, Bundle extras) {
-            // TODO Auto-generated method stub
+            // Needed by the interface.
         }
     }
     
     
     /**
-     * Helper that determine when we should stop check for {@link Location} updates.
+     * Used to determine when we should stop search for location changes.
      */
     private class LocationRequestTimeOut extends CountDownTimer {
         public LocationRequestTimeOut() {
@@ -160,17 +163,17 @@ public class MyLocationManager {
 
         @Override
         public void onTick(long millisUntilFinished) {
-            // Needed by interface.
+            // Needed by the interface.
         }        
     }
 
     /**
-     *  
+     * 
      */
     public interface MyLocationFoundListener {
         /**
-         *  
-         * @param location the location
+         * Called when a location is found.
+         * @param location the location, could be null
          */
         public void onMyLocationFound(Location location);
     }
