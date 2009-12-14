@@ -72,7 +72,7 @@ STHLM Traveling is open source and licensed under
 
 Changelog
 ---------
-* 1.3.7
+* 1.4.0
     * Point on map
     * Improved My location, now passing the real position to sl.se
     * Added support for lat and lng to favorites
