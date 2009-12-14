@@ -81,7 +81,6 @@ public class MyLocationManager {
         } else {
             float location1Score = location1.getTime() + location1.getAccuracy();
             float location2Score = location2.getTime() + location2.getAccuracy();
-            Log.d(TAG, "location1Score=" + location1Score + ", location2Score=" + location2Score);
             if (location1Score < location2Score) {
                 Log.d(TAG, location1.getProvider() + " won");
                 return location1;
@@ -104,7 +103,6 @@ public class MyLocationManager {
      */
     public boolean shouldAcceptLocation(Location location) {
         long timeSinceUpdate = System.currentTimeMillis() - location.getTime();
-        Log.d(TAG, "time since updated " + timeSinceUpdate);
         if (timeSinceUpdate <= ACCEPTED_LOCATION_AGE_MILLIS 
                 && location.getAccuracy() <= ACCEPTED_LOCATION_ACCURACY_METERS) {
             return true;
