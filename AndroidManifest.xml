@@ -21,7 +21,8 @@
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </activity-alias>
-        <activity android:name=".PlannerActivity"></activity>
+        <activity android:name=".PlannerActivity"
+                  android:label="@string/search_label"></activity>
         <!-- Alias activity used to create shortcuts on Home. The alias is used
              simply to have a different label. -->
         <activity-alias android:name="SearchShortcutActivity"
@@ -32,17 +33,22 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity-alias>
-        <activity android:name=".FavoritesActivity"></activity>
-        <activity android:name=".RoutesActivity">
+        <activity android:name=".FavoritesActivity"
+                  android:label="@string/favorites_label"></activity>
+        <activity android:name=".RoutesActivity"
+                  android:label="@string/routes_label">
             <intent-filter>
 	            <action android:name="android.intent.action.VIEW"/>
 	            <category android:name="android.intent.category.DEFAULT"/>
 	            <data android:scheme="journeyplanner" android:host="routes" />
             </intent-filter>
         </activity>
-        <activity android:name=".RouteDetailActivity"></activity>
-        <activity android:name=".ChangeRouteTimeActivity"></activity>
-        <activity android:name=".PointOnMapActivity" android:label="@string/point_on_map"></activity>
+        <activity android:name=".RouteDetailActivity"
+                  android:label="@string/route_details_label"></activity>
+        <activity android:name=".ChangeRouteTimeActivity"
+                  android:label="@string/change_date_and_time"></activity>
+        <activity android:name=".PointOnMapActivity"
+                  android:label="@string/point_on_map"></activity>
 </application>
     <uses-sdk android:minSdkVersion="3" android:targetSdkVersion="4" />
     <uses-permission android:name="android.permission.INTERNET"></uses-permission>
