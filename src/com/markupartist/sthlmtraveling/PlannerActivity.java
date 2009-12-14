@@ -335,7 +335,7 @@ public class PlannerActivity extends Activity implements OnCheckedChangeListener
         intent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortcutIntent);
         intent.putExtra(Intent.EXTRA_SHORTCUT_NAME, name);
         Parcelable iconResource = Intent.ShortcutIconResource.fromContext(
-                this, R.drawable.icon);
+                this, R.drawable.shortcut);
         intent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, iconResource);
 
         // Now, return the result to the launcher

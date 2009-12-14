@@ -51,6 +51,7 @@
     <string name="network_problem_label">Network problem</string>
     <string name="network_problem_message">A network problem occurred</string>
     <string name="activity_create_shortcut">Routes</string>
+    <string name="name_of_shortcut">Name of shortcut</string>
     <string name="create_shortcut_label">Create Shortcut</string>
     <string name="choose_start_point_label">Choose start point</string>
     <string name="choose_end_point_label">Choose end point</string>

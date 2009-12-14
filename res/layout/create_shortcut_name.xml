@@ -24,6 +24,12 @@
     android:layout_height="fill_parent"
     android:padding="5dip"
     >
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/name_of_shortcut"
+        android:layout_marginBottom="5dip"
+        />
 	<EditText
 		android:id="@+id/shortcut_name"	
 		android:layout_width="fill_parent"
