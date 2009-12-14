@@ -164,6 +164,7 @@ public class PlannerActivity extends Activity implements OnCheckedChangeListener
 
         if (mTime != null) {
             mTime.setToNow();
+            onTimeChanged();
         }
         if (!mStartPoint.hasName()) {
             mStartPointAutoComplete.setText("");
@@ -542,6 +543,12 @@ public class PlannerActivity extends Activity implements OnCheckedChangeListener
                 showDialog(DIALOG_ABOUT);
                 return true;
             case R.id.reverse_start_end:
+                Stop tmpStartPoint = new Stop(mEndPoint);
+                Stop tmpEndPoint = new Stop(mStartPoint);
+
+                mStartPoint = tmpStartPoint;
+                mEndPoint = tmpEndPoint;
+
                 String startPoint = mStartPointAutoComplete.getText().toString();
                 String endPoint = mEndPointAutoComplete.getText().toString();
                 mStartPointAutoComplete.setText(endPoint);
