@@ -135,7 +135,7 @@ public class RoutesActivity extends ListActivity
     private GetLaterRoutesTask mGetLaterRoutesTask;
     private Toast mToast;
     private ProgressDialog mProgress;
-    private Bundle mSavedState;
+    //private Bundle mSavedState;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -285,7 +285,7 @@ public class RoutesActivity extends ListActivity
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         restoreLocalState(savedInstanceState);
-        mSavedState = null;
+        //mSavedState = null;
     }
 
     /**
@@ -306,7 +306,7 @@ public class RoutesActivity extends ListActivity
         saveSearchRoutesTask(outState);
         saveGetEarlierRoutesTask(outState);
         saveGetLaterRoutesTask(outState);
-        mSavedState = outState;
+        //mSavedState = outState;
     }
 
     @Override
@@ -316,7 +316,7 @@ public class RoutesActivity extends ListActivity
         if (mFavoriteButtonHelper != null) {
             mFavoriteButtonHelper.loadImage();
         }
-        if (mSavedState != null) restoreLocalState(mSavedState);
+        //if (mSavedState != null) restoreLocalState(mSavedState);
     }
 
     @Override
