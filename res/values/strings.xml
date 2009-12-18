@@ -69,4 +69,5 @@
     <string name="point_selected">Point selected</string>
     <string name="tap_your_end_point_on_map">Tap your end point on the map</string>
     <string name="tap_your_start_point_on_map">Tap your start point on the map</string>
+    <string name="tap_your_location_on_map">Failed to determine your location. Tap your location on the map</string>
 </resources>
