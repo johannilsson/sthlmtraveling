@@ -107,7 +107,9 @@ public class RoutesActivity extends ListActivity
     private final int SECTION_CHANGE_TIME = 1;
     private final int SECTION_ROUTES = 2;
 
-    private final int CHANGE_TIME = 0;
+    protected static final int REQUEST_CODE_CHANGE_TIME = 0;
+    protected static final int REQUEST_CODE_POINT_ON_MAP_START = 1;
+    protected static final int REQUEST_CODE_POINT_ON_MAP_END = 2;
 
     /**
      * Key to identify if the instance of SearchRoutesTask is in progress. 
@@ -221,7 +223,7 @@ public class RoutesActivity extends ListActivity
             mToView.setText(getMyLocationString(endPoint));
         } else {
             mToView.setText(endPoint.getName());
-        }        
+        }
     }
 
     /**
@@ -549,7 +551,7 @@ public class RoutesActivity extends ListActivity
             i.putExtra(EXTRA_TIME, mTime.format2445());
             i.putExtra(EXTRA_START_POINT, mStartPoint);
             i.putExtra(EXTRA_END_POINT, mEndPoint);
-            startActivityForResult(i, CHANGE_TIME);
+            startActivityForResult(i, REQUEST_CODE_CHANGE_TIME);
             break;
         }
     }
@@ -572,16 +574,26 @@ public class RoutesActivity extends ListActivity
 
         if (mToast != null ) mToast.cancel();
 
-        if (location == null) {
-            mToast.setText("Failed to determine your position, please go back and retry");
-            mToast.show();
-            return;
-        }
-
-        if (mStartPoint.isMyLocation())
+        if (mStartPoint.isMyLocation()) {
             mStartPoint.setLocation(location);
-        if (mEndPoint.isMyLocation())
+            if (!mMyLocationManager.shouldAcceptLocation(location)) {
+                Intent i = new Intent(this, PointOnMapActivity.class);
+                i.putExtra(PointOnMapActivity.EXTRA_STOP, mStartPoint);
+                i.putExtra(PointOnMapActivity.EXTRA_HELP_TEXT,
+                        getString(R.string.tap_your_location_on_map));
+                startActivityForResult(i, REQUEST_CODE_POINT_ON_MAP_START);
+            }
+        }
+        if (mEndPoint.isMyLocation()) {
             mEndPoint.setLocation(location);
+            if (!mMyLocationManager.shouldAcceptLocation(location)) {
+                Intent i = new Intent(this, PointOnMapActivity.class);
+                i.putExtra(PointOnMapActivity.EXTRA_STOP, mStartPoint);
+                i.putExtra(PointOnMapActivity.EXTRA_HELP_TEXT,
+                        getString(R.string.tap_your_location_on_map));
+                startActivityForResult(i, REQUEST_CODE_POINT_ON_MAP_START);
+            }
+        }
 
         updateStartAndEndPointViews(mStartPoint, mEndPoint);
 
@@ -612,7 +624,8 @@ public class RoutesActivity extends ListActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode,
                 Intent data) {
-        if (requestCode == CHANGE_TIME) {
+        switch (requestCode) {
+        case REQUEST_CODE_CHANGE_TIME:
             if (resultCode == RESULT_CANCELED) {
                 Log.d(TAG, "Change time activity cancelled.");
             } else {
@@ -629,6 +642,31 @@ public class RoutesActivity extends ListActivity
                 mSearchRoutesTask = new SearchRoutesTask();
                 mSearchRoutesTask.execute(startPoint, endPoint, mTime);
             }
+            break;
+        case REQUEST_CODE_POINT_ON_MAP_START:
+            if (resultCode == RESULT_CANCELED) {
+                Log.d(TAG, "action canceled");
+            } else {
+                mStartPoint = data.getParcelableExtra(PointOnMapActivity.EXTRA_STOP);
+                Log.d(TAG, "Got Stop " + mStartPoint);
+                mStartPoint.setName(Stop.TYPE_MY_LOCATION);
+                mSearchRoutesTask = new SearchRoutesTask();
+                mSearchRoutesTask.execute(mStartPoint, mEndPoint, mTime);
+                updateStartAndEndPointViews(mStartPoint, mEndPoint);
+            }
+            break;
+        case REQUEST_CODE_POINT_ON_MAP_END:
+            if (resultCode == RESULT_CANCELED) {
+                Log.d(TAG, "action canceled");
+            } else {
+                mEndPoint = data.getParcelableExtra(PointOnMapActivity.EXTRA_STOP);
+                Log.d(TAG, "Got Stop " + mEndPoint);
+                mEndPoint.setName(Stop.TYPE_MY_LOCATION);
+                mSearchRoutesTask = new SearchRoutesTask();
+                mSearchRoutesTask.execute(mStartPoint, mEndPoint, mTime);
+                updateStartAndEndPointViews(mStartPoint, mEndPoint);
+            }
+            break;
         }
     }
 
