@@ -72,6 +72,8 @@ STHLM Traveling is open source and licensed under
 
 Changelog
 ---------
+* 1.4.1
+    * Added fallback on point on map when failed to determine "My location"
 * 1.4.0
     * Point on map
     * Improved My location, now passing the real position to sl.se
