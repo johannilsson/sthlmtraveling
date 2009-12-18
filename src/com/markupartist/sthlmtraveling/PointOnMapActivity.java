@@ -200,9 +200,6 @@ public class PointOnMapActivity extends MapActivity {
                             getText(R.string.point_selected), Toast.LENGTH_LONG).show();
 
                     GeoPoint currentPoint = managedOverlayItem.getPoint();
-                    /*Location location = new Location("sthlmtraveling");
-                    location.setLatitude(currentPoint.getLatitudeE6() / 1E6);
-                    location.setLongitude(currentPoint.getLongitudeE6() / 1E6);*/
 
                     mStop.setLocation(currentPoint.getLatitudeE6(),
                             currentPoint.getLongitudeE6());
