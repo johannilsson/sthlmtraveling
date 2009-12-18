@@ -23,9 +23,12 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.util.Log;
 
+/**
+ * Manager for retrieving the user location.
+ */
 public class MyLocationManager {
     private static final String TAG = "MyLocationManager";
-    private static final long FIND_LOCATION_TIME_OUT_MILLIS = 5000;
+    private static final long FIND_LOCATION_TIME_OUT_MILLIS = 6000;
     private static final int ACCEPTED_LOCATION_ACCURACY_METERS = 100;
     private static final int ACCEPTED_LOCATION_AGE_MILLIS = 150000;
     private LocationRequestTimeOut mLocationRequestTimeOut;
@@ -34,11 +37,20 @@ public class MyLocationManager {
     private MyLocationListener mGpsLocationListener;
     private MyLocationListener mNetworkLocationListener;
 
+    /**
+     * Constructs a new MyLocationManager.
+     * @param locationManager the location manager
+     */
     public MyLocationManager(LocationManager locationManager) {
         mLocationManager = locationManager;
         mLocationRequestTimeOut = new LocationRequestTimeOut();
     }
 
+    /**
+     * Request location updates, will periodically query the GPS and network
+     * provider for location updates.
+     * @param myLocationFoundListener the callback
+     */
     public void requestLocationUpdates(MyLocationFoundListener myLocationFoundListener) {
         mMyLocationFoundListener = myLocationFoundListener;
 
@@ -52,6 +64,9 @@ public class MyLocationManager {
         mLocationRequestTimeOut.start();
     }
 
+    /**
+     * Removes any current registration for location updates. 
+     */
     public void removeUpdates() {
         if (mGpsLocationListener != null)
             mLocationManager.removeUpdates(mGpsLocationListener);
@@ -62,6 +77,11 @@ public class MyLocationManager {
         mMyLocationFoundListener = null;
     }
 
+    /**
+     * Get the last known location, will look for the best location from both
+     * GPS and the network provider.
+     * @return
+     */
     public Location getLastKnownLocation() {
         Location gpsLocation =
             mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
@@ -71,6 +91,12 @@ public class MyLocationManager {
         return getBestLocation(gpsLocation, networkLocation);
     }
 
+    /**
+     * Get the best location out of the passed {@link Location}S.
+     * @param location1 the location
+     * @param location2 the location
+     * @return the best location
+     */
     public Location getBestLocation(Location location1, Location location2) {
         if (location1 == null && location2 == null) {
             return null;
@@ -102,6 +128,9 @@ public class MyLocationManager {
      * @return <code>true</code> if accepted <code>false</code> otherwise
      */
     public boolean shouldAcceptLocation(Location location) {
+        if (location == null)
+            return false;
+
         long timeSinceUpdate = System.currentTimeMillis() - location.getTime();
         if (timeSinceUpdate <= ACCEPTED_LOCATION_AGE_MILLIS 
                 && location.getAccuracy() <= ACCEPTED_LOCATION_ACCURACY_METERS) {
