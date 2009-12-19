@@ -56,15 +56,6 @@
                     android:imeOptions="actionDone"
                     android:nextFocusRight="@+id/from_menu"
     				/>
-    	    	<!-- <EditText 
-    		    		android:id="@+id/from"
-    		    		android:hint="@string/from"
-    		    		android:textSize="?android:attr/textAppearanceSmall"
-               			android:layout_width="wrap_content"
-                		android:layout_height="wrap_content"
-                		android:singleLine="true"
-                		android:layout_weight="1"
-    					/>-->
     			<ImageButton
     					android:id="@+id/from_menu"
     					android:src="@android:drawable/ic_input_get"
@@ -95,16 +86,6 @@
     				android:layout_weight="1"
                     android:imeOptions="actionDone"
     				/>
-    		    <!-- 
-    		    <EditText 
-    				android:id="@+id/to"
-    				android:hint="@string/to"
-    				android:textSize="?android:attr/textAppearanceSmall"
-    				android:layout_width="wrap_content"
-    				android:layout_height="wrap_content"
-    				android:singleLine="true"
-    				android:layout_weight="1"
-                    /> -->
     				<ImageButton
     					android:id="@+id/to_menu"
     					android:src="@android:drawable/ic_input_get"
@@ -135,13 +116,48 @@
                         android:text="Later"
                     />
             </RadioGroup>
-            <LinearLayout
-				android:id="@+id/planner_change_time_layout"
-				android:orientation="horizontal"
-				android:layout_width="fill_parent"
-				android:layout_height="wrap_content"
-				android:visibility="gone"
+            
+            <TableLayout
+                android:id="@+id/planner_change_time_layout"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:visibility="gone"
                 >
+                <TableRow>
+	                <Spinner 
+	                    android:id="@+id/departure_arrival_choice"
+	                    android:layout_width="wrap_content"
+	                    android:layout_height="wrap_content"
+	                    android:drawSelectorOnTop="true"
+	                />
+                </TableRow>
+                <TableRow>
+	                <Button
+	                    android:id="@+id/planner_route_time"
+	                    android:layout_width="wrap_content"
+	                    android:layout_height="wrap_content"
+	                    />
+	                <Button
+	                    android:id="@+id/planner_route_date"
+	                    android:layout_width="wrap_content"
+	                    android:layout_height="wrap_content"
+	                    />
+                </TableRow>
+            </TableLayout>
+            <!-- 
+            <LinearLayout
+                android:id="@+id/planner_change_time_layout"
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:visibility="visible"
+                >
+                <Spinner 
+                    android:id="@+id/departure_arrival_choice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawSelectorOnTop="true"
+                />
                 <Button
 					android:id="@+id/planner_route_time"
 					android:layout_width="wrap_content"
@@ -153,6 +169,7 @@
 					android:layout_height="wrap_content"
 					/>
             </LinearLayout>
+             -->
             <Button
                 android:layout_marginTop="5dip"
 				android:id="@+id/search_route"

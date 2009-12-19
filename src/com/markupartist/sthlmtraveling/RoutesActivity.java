@@ -74,7 +74,7 @@ import com.markupartist.sthlmtraveling.utils.BarcodeScannerIntegrator;
  * All parameters needs to be url encoded. Time is optional, but if provided it must be in
  * RFC 2445 format.
  */
-public class RoutesActivity extends ListActivity 
+public class RoutesActivity extends ListActivity
         implements MyLocationFoundListener {
     /**
      * The start point for the search.
@@ -90,6 +90,12 @@ public class RoutesActivity extends ListActivity
      * Departure time in RFC 2445 format.
      */
     static final String EXTRA_TIME = "com.markupartist.sthlmtraveling.time";
+
+    /**
+     * Indicates if the time is the departure or arrival time. 
+     */
+    static final String EXTRA_IS_TIME_DEPARTURE =
+        "com.markupartist.sthlmtraveling.is_time_departure";
 
     private final String TAG = "RoutesActivity";
 
@@ -137,6 +143,8 @@ public class RoutesActivity extends ListActivity
     private GetLaterRoutesTask mGetLaterRoutesTask;
     private Toast mToast;
     private ProgressDialog mProgress;
+    private boolean mIsTimeDeparture;
+
     //private Bundle mSavedState;
 
     @Override
@@ -179,7 +187,14 @@ public class RoutesActivity extends ListActivity
                 mEndPoint.setLocation(endLocation);
             }
         }
-        
+
+        if (!TextUtils.isEmpty(uri.getQueryParameter("isTimeDeparture"))) {
+            mIsTimeDeparture = Boolean.parseBoolean(
+                    uri.getQueryParameter("isTimeDeparture"));
+        } else {
+            mIsTimeDeparture = true;
+        }
+
         String time = uri.getQueryParameter("time");
 
         if (mStartPoint.getName() == null || mEndPoint.getName() == null) {
@@ -265,7 +280,7 @@ public class RoutesActivity extends ListActivity
             } else {
                 mSearchRoutesTask = new SearchRoutesTask();
                 //mSearchRoutesTask.setOnSearchRoutesResultListener(this);
-                mSearchRoutesTask.execute(startPoint, endPoint, time);
+                mSearchRoutesTask.execute(startPoint, endPoint, time, mIsTimeDeparture);
             }
         }
     }
@@ -295,7 +310,7 @@ public class RoutesActivity extends ListActivity
      * @param savedInstanceState the bundle containing the saved state
      */
     private void restoreLocalState(Bundle savedInstanceState) {
-        restoreStartAndEndPoints(savedInstanceState);
+        restoreSearchCriteria(savedInstanceState);
         restoreSearchRoutesTask(savedInstanceState);
         restoreGetEarlierRoutesTask(savedInstanceState);
         restoreGetLaterRoutesTask(savedInstanceState);
@@ -304,7 +319,7 @@ public class RoutesActivity extends ListActivity
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        saveStartAndEndPoints(outState);
+        saveSearchCriteria(outState);
         saveSearchRoutesTask(outState);
         saveGetEarlierRoutesTask(outState);
         saveGetLaterRoutesTask(outState);
@@ -341,12 +356,18 @@ public class RoutesActivity extends ListActivity
      * Restores the search routes task.
      * @param savedInstanceState the saved state
      */
-    private void restoreStartAndEndPoints(Bundle savedInstanceState) {
+    private void restoreSearchCriteria(Bundle savedInstanceState) {
         if (savedInstanceState.containsKey(EXTRA_START_POINT)) {
             mStartPoint = savedInstanceState.getParcelable(EXTRA_START_POINT);
         }
         if (savedInstanceState.containsKey(EXTRA_END_POINT)) {
             mEndPoint = savedInstanceState.getParcelable(EXTRA_END_POINT);
+        }
+        if (savedInstanceState.containsKey(EXTRA_END_POINT)) {
+            mIsTimeDeparture =
+                savedInstanceState.getBoolean(EXTRA_IS_TIME_DEPARTURE);
+        } else {
+            mIsTimeDeparture = true;
         }
     }
 
@@ -355,9 +376,10 @@ public class RoutesActivity extends ListActivity
      * on.
      * @param outState the out state
      */
-    private void saveStartAndEndPoints(Bundle outState) {
+    private void saveSearchCriteria(Bundle outState) {
         outState.putParcelable(EXTRA_START_POINT, mStartPoint);
         outState.putParcelable(EXTRA_END_POINT, mEndPoint);
+        outState.putBoolean(EXTRA_IS_TIME_DEPARTURE, mIsTimeDeparture);
     }
 
     /**
@@ -368,7 +390,7 @@ public class RoutesActivity extends ListActivity
         if (savedInstanceState.getBoolean(STATE_SEARCH_ROUTES_IN_PROGRESS)) {
             Log.d(TAG, "restoring SearchRoutesTask");
             mSearchRoutesTask = new SearchRoutesTask();
-            mSearchRoutesTask.execute(mStartPoint, mEndPoint, mTime);
+            mSearchRoutesTask.execute(mStartPoint, mEndPoint, mTime, mIsTimeDeparture);
         }
     }
 
@@ -438,13 +460,23 @@ public class RoutesActivity extends ListActivity
             outState.putBoolean(STATE_GET_LATER_ROUTES_IN_PROGRESS, true);
         }
     }
-    
+
+    private String buildDateString() {
+        String timeString = mTime.format("%R");
+        String dateString = mTime.format("%e/%m");
+
+        if (mIsTimeDeparture) {
+            return getString(R.string.departing_on, timeString, dateString);
+        } else {
+            return getString(R.string.arriving_by, timeString, dateString);
+        }
+    }
+
     private void createSections() {
         // Date and time adapter.
-        String timeString = mTime.format("%R %x"); // %r
         mDateAdapterData = new ArrayList<HashMap<String,String>>(1); 
         HashMap<String, String> item = new HashMap<String, String>();
-        item.put("title", timeString);
+        item.put("title", buildDateString());
         mDateAdapterData.add(item);
         SimpleAdapter dateTimeAdapter = new SimpleAdapter(
                 this,
@@ -551,6 +583,7 @@ public class RoutesActivity extends ListActivity
             i.putExtra(EXTRA_TIME, mTime.format2445());
             i.putExtra(EXTRA_START_POINT, mStartPoint);
             i.putExtra(EXTRA_END_POINT, mEndPoint);
+            i.putExtra(EXTRA_IS_TIME_DEPARTURE, mIsTimeDeparture);
             startActivityForResult(i, REQUEST_CODE_CHANGE_TIME);
             break;
         }
@@ -598,7 +631,7 @@ public class RoutesActivity extends ListActivity
         updateStartAndEndPointViews(mStartPoint, mEndPoint);
 
         mSearchRoutesTask = new SearchRoutesTask();
-        mSearchRoutesTask.execute(mStartPoint, mEndPoint, mTime);
+        mSearchRoutesTask.execute(mStartPoint, mEndPoint, mTime, mIsTimeDeparture);
     }
 
     /**
@@ -632,15 +665,16 @@ public class RoutesActivity extends ListActivity
                 Stop startPoint = data.getParcelableExtra(EXTRA_START_POINT);
                 Stop endPoint = data.getParcelableExtra(EXTRA_END_POINT);
                 String newTime = data.getStringExtra(EXTRA_TIME);
+                mIsTimeDeparture = data.getBooleanExtra(EXTRA_IS_TIME_DEPARTURE, true);
 
                 mTime.parse(newTime);
                 HashMap<String, String> item = mDateAdapterData.get(0);
-                item.put("title", mTime.format("%R %x"));
+                item.put("title", buildDateString());
 
                 //updateStartAndEndPointViews(startPoint, endPoint);
 
                 mSearchRoutesTask = new SearchRoutesTask();
-                mSearchRoutesTask.execute(startPoint, endPoint, mTime);
+                mSearchRoutesTask.execute(startPoint, endPoint, mTime, mIsTimeDeparture);
             }
             break;
         case REQUEST_CODE_POINT_ON_MAP_START:
@@ -651,7 +685,7 @@ public class RoutesActivity extends ListActivity
                 Log.d(TAG, "Got Stop " + mStartPoint);
                 mStartPoint.setName(Stop.TYPE_MY_LOCATION);
                 mSearchRoutesTask = new SearchRoutesTask();
-                mSearchRoutesTask.execute(mStartPoint, mEndPoint, mTime);
+                mSearchRoutesTask.execute(mStartPoint, mEndPoint, mTime, mIsTimeDeparture);
                 updateStartAndEndPointViews(mStartPoint, mEndPoint);
             }
             break;
@@ -663,7 +697,7 @@ public class RoutesActivity extends ListActivity
                 Log.d(TAG, "Got Stop " + mEndPoint);
                 mEndPoint.setName(Stop.TYPE_MY_LOCATION);
                 mSearchRoutesTask = new SearchRoutesTask();
-                mSearchRoutesTask.execute(mStartPoint, mEndPoint, mTime);
+                mSearchRoutesTask.execute(mStartPoint, mEndPoint, mTime, mIsTimeDeparture);
                 updateStartAndEndPointViews(mStartPoint, mEndPoint);
             }
             break;
@@ -698,7 +732,7 @@ public class RoutesActivity extends ListActivity
                  */
 
                 mSearchRoutesTask = new SearchRoutesTask();
-                mSearchRoutesTask.execute(mStartPoint, mEndPoint, mTime);
+                mSearchRoutesTask.execute(mStartPoint, mEndPoint, mTime, mIsTimeDeparture);
 
                 updateStartAndEndPointViews(mStartPoint, mEndPoint);
 
@@ -709,7 +743,7 @@ public class RoutesActivity extends ListActivity
                         .loadImage();
                 return true;
             case R.id.show_qr_code :
-                Uri routesUri = createRoutesUri(mStartPoint, mEndPoint, null);
+                Uri routesUri = createRoutesUri(mStartPoint, mEndPoint, null, true);
                 BarcodeScannerIntegrator.shareText(this, routesUri.toString(),
                         R.string.install_barcode_scanner_title,
                         R.string.requires_barcode_scanner_message,
@@ -736,7 +770,7 @@ public class RoutesActivity extends ListActivity
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     mSearchRoutesTask = new SearchRoutesTask();
-                    mSearchRoutesTask.execute(mStartPoint, mEndPoint, mTime);
+                    mSearchRoutesTask.execute(mStartPoint, mEndPoint, mTime, mIsTimeDeparture);
                 }
             });
         case DIALOG_GET_EARLIER_ROUTES_NETWORK_PROBLEM:
@@ -783,9 +817,11 @@ public class RoutesActivity extends ListActivity
      * @param startPoint the start point
      * @param endPoint the end point
      * @param time the time, pass null for now
+     * @param isTimeDeparture true if the time is departure time, false if arrival
      * @return the data uri
      */
-    public static Uri createRoutesUri(Stop startPoint, Stop endPoint, Time time) {
+    public static Uri createRoutesUri(Stop startPoint, Stop endPoint, Time time,
+            boolean isTimeDeparture) {
         Uri routesUri;
 
         String timeString = "";
@@ -814,10 +850,11 @@ public class RoutesActivity extends ListActivity
                             + "&end_point=%s"
                             + "&end_point_lat=%s"
                             + "&end_point_lng=%s"
-                            + "&time=%s",
+                            + "&time=%s"
+                            + "&isTimeDeparture=%s",
                             Uri.encode(startPoint.getName()), startLat, startLng,
                             Uri.encode(endPoint.getName()), endLat, endLng, 
-                            timeString));
+                            timeString, isTimeDeparture));
 
         return routesUri;
     }
@@ -987,7 +1024,8 @@ public class RoutesActivity extends ListActivity
         protected ArrayList<Route> doInBackground(Object... params) {
             try {
                 return Planner.getInstance().findRoutes(
-                        (Stop) params[0], (Stop) params[1], (Time) params[2]);
+                        (Stop) params[0], (Stop) params[1], (Time) params[2],
+                        (Boolean) params[3]);
             } catch (IOException e) {
                 mWasSuccess = false;
                 return null;

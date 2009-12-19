@@ -17,7 +17,7 @@
 */
 -->
 
-<resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 	<string name="app_name">STHLM Traveling</string>
     <string name="from">From</string>
     <string name="to">To</string>
@@ -70,4 +70,6 @@
     <string name="tap_your_end_point_on_map">Tap your end point on the map</string>
     <string name="tap_your_start_point_on_map">Tap your start point on the map</string>
     <string name="tap_your_location_on_map">Failed to determine your location. Tap your location on the map</string>
+    <string name="departing_on">Departing <xliff:g id="time">%s</xliff:g> on <xliff:g id="date">%s</xliff:g></string>
+    <string name="arriving_by">Arriving by <xliff:g id="time">%s</xliff:g> on <xliff:g id="date">%s</xliff:g></string>
 </resources>

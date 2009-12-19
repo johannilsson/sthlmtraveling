@@ -42,6 +42,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -51,6 +52,7 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Spinner;
 import android.widget.TimePicker;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 
@@ -82,6 +84,7 @@ public class PlannerActivity extends Activity implements OnCheckedChangeListener
     private Button mDateButton;
     private Button mTimeButton;
     private LinearLayout mChangeTimeLayout;
+    private Spinner mWhenSpinner;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -148,6 +151,12 @@ public class PlannerActivity extends Activity implements OnCheckedChangeListener
         nowRadioButton.setOnCheckedChangeListener(this);
         RadioButton laterRadioButton = (RadioButton) findViewById(R.id.planner_check_later);
         laterRadioButton.setOnCheckedChangeListener(this);
+
+        mWhenSpinner = (Spinner) findViewById(R.id.departure_arrival_choice);
+        ArrayAdapter<CharSequence> whenChoiceAdapter = ArrayAdapter.createFromResource(
+                this, R.array.when_choice, android.R.layout.simple_spinner_item);
+        whenChoiceAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mWhenSpinner.setAdapter(whenChoiceAdapter);
 
         // Handle create shortcut.
         if (mCreateShortcut) {
@@ -314,8 +323,10 @@ public class PlannerActivity extends Activity implements OnCheckedChangeListener
         if (!mEndPointAutoComplete.getText().toString().equals(getString(R.string.point_on_map)))
             mHistoryDbAdapter.create(HistoryDbAdapter.TYPE_END_POINT, endPoint.getName());
 
+        boolean isTimeDeparture = mWhenSpinner.getSelectedItemId() == 0 ? true : false;
+
         Uri routesUri = RoutesActivity.createRoutesUri(
-        		startPoint, endPoint, time);
+        		startPoint, endPoint, time, isTimeDeparture);
         Intent i = new Intent(Intent.ACTION_VIEW, routesUri, this, RoutesActivity.class);
         startActivity(i);
     }
@@ -326,7 +337,7 @@ public class PlannerActivity extends Activity implements OnCheckedChangeListener
      * @param endPoint the end point
      */
     protected void onCreateShortCut(Stop startPoint, Stop endPoint, String name) {
-        Uri routesUri = RoutesActivity.createRoutesUri(startPoint, endPoint, null);
+        Uri routesUri = RoutesActivity.createRoutesUri(startPoint, endPoint, null, true);
         Intent shortcutIntent = new Intent(Intent.ACTION_VIEW, routesUri,
                 this, RoutesActivity.class);
         shortcutIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

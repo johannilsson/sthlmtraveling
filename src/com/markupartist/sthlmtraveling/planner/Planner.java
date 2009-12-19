@@ -81,10 +81,12 @@ public class Planner {
      * @param startPoint the start point
      * @param endPoint the end point
      * @param time time representing departure
+     * @param isTimeDeparture true is time is departure, false if arrival
      * @return a list of RouteS
      * @throws IOException on network problems
      */
-    public ArrayList<Route> findRoutes(Stop startPoint, Stop endPoint, Time time) 
+    public ArrayList<Route> findRoutes(Stop startPoint, Stop endPoint,
+            Time time, boolean isTimeDeparture) 
             throws IOException {
         Log.d(TAG, "Searching for startPoint=" + startPoint + ",endPoint=" + endPoint);
 
@@ -102,6 +104,7 @@ public class Planner {
         String startPointEncoded = URLEncoder.encode(startPoint.getName());
         String endPointEncoded = URLEncoder.encode(endPoint.getName());
         String timeEncoded = URLEncoder.encode(time.format("%Y-%m-%d %H:%M"));
+        int isDeparture = isTimeDeparture ? 1 : 0;
 
         InputSource input;
         if (mUseMockData) {
@@ -113,6 +116,7 @@ public class Planner {
                     + "&from=" + startPointEncoded 
                     + "&to=" + endPointEncoded
                     + "&time=" + timeEncoded
+                    + "&isTimeDeparture=" + isDeparture
                     + startPointPositionPart
                     + endPointPositionPart);
             input = new InputSource(endpoint.openStream());

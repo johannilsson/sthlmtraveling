@@ -25,8 +25,10 @@ import android.os.Bundle;
 import android.text.format.Time;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.Spinner;
 import android.widget.TimePicker;
 
 import com.markupartist.sthlmtraveling.planner.Stop;
@@ -50,6 +52,7 @@ public class ChangeRouteTimeActivity extends Activity {
         final Stop startPoint = extras.getParcelable(RoutesActivity.EXTRA_START_POINT);
         final Stop endPoint = extras.getParcelable(RoutesActivity.EXTRA_END_POINT);
         String timeString = extras.getString(RoutesActivity.EXTRA_TIME);
+        boolean isTimeDeparture = extras.getBoolean(RoutesActivity.EXTRA_IS_TIME_DEPARTURE, true);
 
         mTime = new Time();
         mTime.parse(timeString);
@@ -68,10 +71,21 @@ public class ChangeRouteTimeActivity extends Activity {
             }
         });
 
+        int selectedPosition = isTimeDeparture ? 0 : 1;
+        final Spinner whenSpinner = (Spinner) findViewById(R.id.departure_arrival_choice);
+        ArrayAdapter<CharSequence> whenChoiceAdapter = ArrayAdapter.createFromResource(
+                this, R.array.when_choice, android.R.layout.simple_spinner_item);
+        whenChoiceAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        whenSpinner.setAdapter(whenChoiceAdapter);
+        whenSpinner.setSelection(selectedPosition);
+
         Button changeButton = (Button) findViewById(R.id.change_route_time_change);
         changeButton.setOnClickListener(new OnClickListener() {
             @Override public void onClick(View v) {
+                boolean isTimeDeparture =
+                    whenSpinner.getSelectedItemId() == 0 ? true : false; 
                 setResult(RESULT_OK, (new Intent())
+                        .putExtra(RoutesActivity.EXTRA_IS_TIME_DEPARTURE, isTimeDeparture)
                         .putExtra(RoutesActivity.EXTRA_TIME, mTime.format2445())
                         .putExtra(RoutesActivity.EXTRA_START_POINT, startPoint)
                         .putExtra(RoutesActivity.EXTRA_END_POINT, endPoint));

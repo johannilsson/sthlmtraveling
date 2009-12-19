@@ -105,7 +105,7 @@ public class FavoritesActivity extends ListActivity {
                 favoritesCursor.getInt(FavoritesDbAdapter.INDEX_END_POINT_LATITUDE),
                 favoritesCursor.getInt(FavoritesDbAdapter.INDEX_END_POINT_LONGITUDE));
 
-        Uri routesUri = RoutesActivity.createRoutesUri(startPoint, endPoint, null);
+        Uri routesUri = RoutesActivity.createRoutesUri(startPoint, endPoint, null, true);
         Intent i = new Intent(Intent.ACTION_VIEW, routesUri, this, RoutesActivity.class);
         startActivity(i);
     }
