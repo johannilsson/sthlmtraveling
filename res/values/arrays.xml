@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+    <string-array name="when_choice">
+        <item>Departure time</item>
+        <item>Arrival time</item>
+    </string-array>
+</resources>
