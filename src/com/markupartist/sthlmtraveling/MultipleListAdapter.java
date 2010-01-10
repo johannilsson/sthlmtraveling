@@ -43,6 +43,7 @@ public class MultipleListAdapter extends BaseAdapter {
     /**
      * The Log TAG.
      */
+    @SuppressWarnings("unused")
     private static final String TAG = "MultipleListAdapter";
 
     /**
