@@ -1,0 +1,427 @@
+/*
+ * Copyright (C) 2009 Johan Nilsson <http://markupartist.com>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.markupartist.sthlmtraveling;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.ListActivity;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.SimpleAdapter;
+import android.widget.TextView;
+
+import com.markupartist.sthlmtraveling.provider.departure.Departure;
+import com.markupartist.sthlmtraveling.provider.departure.DepartureList;
+import com.markupartist.sthlmtraveling.provider.departure.DeparturesStore;
+import com.markupartist.sthlmtraveling.provider.site.Site;
+import com.markupartist.sthlmtraveling.provider.site.SitesStore;
+
+
+public class DeparturesActivity extends ListActivity {
+    static String EXTRA_SITE_NAME = "com.markupartist.sthlmtraveling.siteName";
+
+    private static final String STATE_GET_SITES_IN_PROGRESS =
+        "com.markupartist.sthlmtraveling.getsites.inprogress";
+    private static final String STATE_GET_DEPARTURES_IN_PROGRESS =
+        "com.markupartist.sthlmtraveling.getdepartures.inprogress";
+
+    static String TAG = "DeparturesActivity";
+    
+    private static final int DIALOG_SITE_ALTERNATIVES = 0;
+    private static final int DIALOG_GET_SITES_NETWORK_PROBLEM = 1;
+    private static final int DIALOG_GET_DEPARTURES_NETWORK_PROBLEM = 3;
+
+    private static Site mSite;
+    private static ArrayList<Site> mSiteAlternatives;
+
+    private ProgressDialog mProgress;
+    private GetSitesTask mGetSitesTask;
+    private GetDeparturesTask mGetDeparturesTask;
+    private String mSiteName;
+    private HashMap<String, DepartureList> mDepartureResult;
+
+    SectionedAdapter mSectionedAdapter = new SectionedAdapter() {
+        protected View getHeaderView(Section section, int index, 
+                View convertView, ViewGroup parent) {
+            TextView result = (TextView) convertView;
+
+            if (convertView == null)
+                result = (TextView) getLayoutInflater().inflate(R.layout.header, null);
+
+            result.setText(section.caption);
+            return (result);
+        }
+    };
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.departures_list);
+
+        Bundle extras = getIntent().getExtras();
+        mSiteName = extras.getString(EXTRA_SITE_NAME);
+
+        loadDepartures();
+    }
+
+    private void loadDepartures() {
+        @SuppressWarnings("unchecked")
+        final HashMap<String, DepartureList> departureResult =
+            (HashMap<String, DepartureList>) getLastNonConfigurationInstance();
+        if (departureResult != null) {
+            fillData(departureResult);
+        } else {
+            mGetSitesTask = new GetSitesTask();
+            mGetSitesTask.execute(mSiteName);
+        }
+    }
+
+    private void fillData(HashMap<String,DepartureList> result) {
+        TextView emptyResultView = (TextView) findViewById(R.id.empty_result);
+        //TextView resultUpdatedView = (TextView) findViewById(R.id.result_updated);
+        if (result.isEmpty()) {
+            Log.d(TAG, "is empty");
+            emptyResultView.setVisibility(View.VISIBLE);
+            return;
+        }
+        emptyResultView.setVisibility(View.GONE);
+        
+        //Time time = new Time();
+        //time.setToNow();
+        //resultUpdatedView.setVisibility(View.VISIBLE);
+        //resultUpdatedView.setText("Updated at " + time.format("%H:%M"));
+
+        //DepartureFilter filter = new DepartureFilter("BUS", "47");
+        //DepartureFilter filter = null;
+
+        mSectionedAdapter.clear();
+        for (Entry<String, DepartureList> entry : result.entrySet()) {
+            DepartureList departureList = entry.getValue();
+            if (!departureList.isEmpty()) {
+                mSectionedAdapter.addSection(0,
+                        transportModeToString(entry.getKey()),
+                        createAdapter(departureList));
+            }
+        }
+
+        mDepartureResult = result;
+
+        setTitle(String.format("%s for %s",
+                getString(R.string.departures), mSite.getName()));
+
+        mSectionedAdapter.notifyDataSetChanged();
+        setListAdapter(mSectionedAdapter);
+    }
+
+    private SimpleAdapter createAdapter(DepartureList departureList) {
+        ArrayList<Map<String, String>> list = new ArrayList<Map<String, String>>();
+
+        for (Departure departure : departureList) {
+            Map<String, String> map = new HashMap<String, String>();
+            map.put("line", departure.getLineNumber());
+            map.put("destination", departure.getDestination());
+            map.put("timeToDisplay", departure.getDisplayTime());
+            list.add(map);
+        }
+
+        SimpleAdapter adapter = new SimpleAdapter(this, list, 
+                R.layout.departures_row,
+                new String[] { "line", "destination", "timeToDisplay"},
+                new int[] { 
+                    R.id.departure_line,
+                    R.id.departure_destination,
+                    R.id.departure_timeToDisplay
+                }
+        );
+
+        return adapter;
+    }
+
+    private String transportModeToString(String transport) {
+        if ("METROS".equals(transport)) {
+            return getString(R.string.metros);
+        } else if ("BUSES".equals(transport)) {
+            return getString(R.string.buses);
+        } else if ("TRAINS".equals(transport)) {
+            return getString(R.string.trains);
+        } else if ("TRAMS".equals(transport)) {
+            return getString(R.string.trams);
+        }
+        throw new IllegalArgumentException("Unkown transport");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d(TAG, "onResume");
+    }
+
+    @Override
+    public Object onRetainNonConfigurationInstance() {
+        return mDepartureResult;
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        saveGetSitesTask(outState);
+        saveGetDeparturesTask(outState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        restoreLocalState(savedInstanceState);
+    }
+
+    /**
+     * Restores any local state, if any.
+     * @param savedInstanceState the bundle containing the saved state
+     */
+    private void restoreLocalState(Bundle savedInstanceState) {
+        restoreGetSitesTask(savedInstanceState);
+        restoreGetDeparturesTask(savedInstanceState);
+    }
+
+    /**
+     * Restores the {@link GetSitesTask}.
+     * @param savedInstanceState the saved state
+     */
+    private void restoreGetSitesTask(Bundle savedInstanceState) {
+        if (savedInstanceState.getBoolean(STATE_GET_SITES_IN_PROGRESS)) {
+            mSiteName = savedInstanceState.getString(EXTRA_SITE_NAME);
+            Log.d(TAG, "restoring getSitesTask");
+            mGetSitesTask = new GetSitesTask();
+            mGetSitesTask.execute(mSiteName);
+        }
+    }
+
+    /**
+     * Saves the state of {@link GetSitesTask}.
+     * @param outState
+     */
+    private void saveGetSitesTask(Bundle outState) {
+        final GetSitesTask task = mGetSitesTask;
+        if (task != null && task.getStatus() != AsyncTask.Status.FINISHED) {
+            Log.d(TAG, "saving GetSitesTask");
+            task.cancel(true);
+            mGetSitesTask = null;
+            outState.putBoolean(STATE_GET_SITES_IN_PROGRESS, true);
+            outState.putString(EXTRA_SITE_NAME, mSiteName);
+        }
+    }
+
+    /**
+     * Restores the {@link GetDeparturesTask}.
+     * @param savedInstanceState the saved state
+     */
+    private void restoreGetDeparturesTask(Bundle savedInstanceState) {
+        if (savedInstanceState.getBoolean(STATE_GET_DEPARTURES_IN_PROGRESS)) {
+            Log.d(TAG, "restoring getSitesTask");
+            mGetDeparturesTask = new GetDeparturesTask();
+            mGetDeparturesTask.execute(mSite);
+        }
+    }
+
+    /**
+     * Saves the state of {@link GetDeparturesTask}.
+     * @param outState
+     */
+    private void saveGetDeparturesTask(Bundle outState) {
+        final GetDeparturesTask task = mGetDeparturesTask;
+        if (task != null && task.getStatus() != AsyncTask.Status.FINISHED) {
+            Log.d(TAG, "saving GetDeparturesState");
+            task.cancel(true);
+            mGetSitesTask = null;
+            outState.putBoolean(STATE_GET_DEPARTURES_IN_PROGRESS, true);
+            //outState.putParcelable(STATE_SITE, mSite);
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.options_menu_departures, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_refresh:
+                new GetDeparturesTask().execute(mSite);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected Dialog onCreateDialog(int id) {
+        switch(id) {
+        case DIALOG_SITE_ALTERNATIVES:
+            ArrayAdapter<Site> siteAdapter =
+                new ArrayAdapter<Site>(this, android.R.layout.simple_dropdown_item_1line,
+                        mSiteAlternatives);
+            return new AlertDialog.Builder(this)
+                .setTitle("Did you mean?")
+                .setAdapter(siteAdapter, new OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        new GetDeparturesTask().execute(
+                                mSiteAlternatives.get(which));
+                    }
+                })
+                .create();
+        case DIALOG_GET_SITES_NETWORK_PROBLEM:
+            return DialogHelper.createNetworkProblemDialog(this, new OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    mGetSitesTask = new GetSitesTask();
+                    mGetSitesTask.execute(mSiteName);
+                }
+            });
+        case DIALOG_GET_DEPARTURES_NETWORK_PROBLEM:
+            return DialogHelper.createNetworkProblemDialog(this, new OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    mGetDeparturesTask = new GetDeparturesTask();
+                    mGetDeparturesTask.execute(mSite);
+                }
+            });
+        }
+        return null;
+    }
+
+    /**
+     * Show progress dialog.
+     */
+    private void showProgress() {
+        if (mProgress == null) {
+            mProgress = new ProgressDialog(this);
+            mProgress.setMessage(getText(R.string.loading));
+            mProgress.show();   
+        }
+    }
+
+    /**
+     * Dismiss the progress dialog.
+     */
+    private void dismissProgress() {
+        if (mProgress != null) {
+            mProgress.dismiss();
+            mProgress = null;
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        dismissProgress();
+    }
+
+    /**
+     * Background job for getting {@link Site}s.
+     */
+    private class GetSitesTask extends AsyncTask<String, Void, ArrayList<Site>> {
+        private boolean mWasSuccess = true;
+
+        @Override
+        public void onPreExecute() {
+            showProgress();
+        }
+
+        @Override
+        protected ArrayList<Site> doInBackground(String... params) {
+            SitesStore sitesStore = new SitesStore();
+            try {
+                return sitesStore.getSite(params[0]);
+            } catch (IOException e) {
+                mWasSuccess = false;
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<Site> result) {
+            dismissProgress();
+
+            if (result != null && !result.isEmpty()) {
+                if (result.size() == 1) {
+                    new GetDeparturesTask().execute(result.get(0));
+                } else {
+                    mSiteAlternatives = result;
+                    showDialog(DIALOG_SITE_ALTERNATIVES);
+                }
+            } else if (!mWasSuccess) {
+                showDialog(DIALOG_GET_SITES_NETWORK_PROBLEM);
+            } else {
+            //    onNoRoutesDetailsResult();
+            }
+        }
+    }
+
+    /**
+     * Background job for getting {@link Departure}s.
+     */
+    private class GetDeparturesTask extends AsyncTask<Site, Void, HashMap<String,DepartureList>> {
+        private boolean mWasSuccess = true;
+
+        @Override
+        public void onPreExecute() {
+            showProgress();
+        }
+
+        @Override
+        protected HashMap<String,DepartureList> doInBackground(Site... params) {
+            try {
+                mSite = params[0];
+                DeparturesStore departures = new DeparturesStore();
+                return departures.find(params[0], null);
+            } catch (IOException e) {
+                mWasSuccess = false;
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(HashMap<String,DepartureList> result) {
+            dismissProgress();
+
+            if (mWasSuccess) {
+                fillData(result);
+            } else {
+                showDialog(DIALOG_GET_DEPARTURES_NETWORK_PROBLEM);
+            }
+        }
+    }
+}
