@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="com.markupartist.sthlmtraveling"
-      android:versionName="1.4.2" android:versionCode="26">
+      android:versionName="1.5.0RC2" android:versionCode="28">
     <supports-screens
         android:largeScreens="true"
         android:normalScreens="true"
@@ -49,6 +49,10 @@
                   android:label="@string/change_date_and_time"></activity>
         <activity android:name=".PointOnMapActivity"
                   android:label="@string/point_on_map"></activity>
+        <activity android:name=".SearchDeparturesActivity"
+                  android:label="@string/departures"></activity>
+        <activity android:name=".DeparturesActivity"
+                  android:label="@string/departures"></activity>
 </application>
     <uses-sdk android:minSdkVersion="3" android:targetSdkVersion="4" />
     <uses-permission android:name="android.permission.INTERNET"></uses-permission>
