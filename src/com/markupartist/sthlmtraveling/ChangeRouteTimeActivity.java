@@ -31,7 +31,7 @@ import android.widget.DatePicker;
 import android.widget.Spinner;
 import android.widget.TimePicker;
 
-import com.markupartist.sthlmtraveling.planner.Stop;
+import com.markupartist.sthlmtraveling.provider.planner.Stop;
 
 public class ChangeRouteTimeActivity extends Activity {
     static final String TAG = "ChangeRouteTimeActivity"; 

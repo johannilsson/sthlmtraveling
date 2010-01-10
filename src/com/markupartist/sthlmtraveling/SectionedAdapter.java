@@ -19,12 +19,13 @@
 
 package com.markupartist.sthlmtraveling;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Adapter;
 import android.widget.BaseAdapter;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Sectioned adapter groups several adapters into one.
@@ -40,6 +41,13 @@ abstract public class SectionedAdapter extends BaseAdapter {
         super();
     }
 
+    /**
+     * Clears all sections.
+     */
+    public void clear() {
+        sections.clear();
+    }
+    
     public void addSection(int id, String caption, Adapter adapter) {
         sections.add(new Section(id, caption, adapter));
     }

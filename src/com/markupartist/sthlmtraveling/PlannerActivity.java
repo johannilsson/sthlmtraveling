@@ -56,9 +56,9 @@ import android.widget.Spinner;
 import android.widget.TimePicker;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 
-import com.markupartist.sthlmtraveling.planner.Planner;
-import com.markupartist.sthlmtraveling.planner.Stop;
 import com.markupartist.sthlmtraveling.provider.HistoryDbAdapter;
+import com.markupartist.sthlmtraveling.provider.planner.Planner;
+import com.markupartist.sthlmtraveling.provider.planner.Stop;
 
 public class PlannerActivity extends Activity implements OnCheckedChangeListener {
     private static final String TAG = "Search";

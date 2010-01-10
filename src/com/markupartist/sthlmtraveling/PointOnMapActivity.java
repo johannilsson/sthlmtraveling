@@ -21,7 +21,7 @@ import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 import com.google.android.maps.MyLocationOverlay;
 import com.markupartist.sthlmtraveling.graphics.LabelMarker;
-import com.markupartist.sthlmtraveling.planner.Stop;
+import com.markupartist.sthlmtraveling.provider.planner.Stop;
 
 import de.android1.overlaymanager.ManagedOverlay;
 import de.android1.overlaymanager.ManagedOverlayGestureDetector;

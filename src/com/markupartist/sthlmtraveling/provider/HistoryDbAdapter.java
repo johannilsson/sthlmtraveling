@@ -20,7 +20,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import com.markupartist.sthlmtraveling.planner.Stop;
+import com.markupartist.sthlmtraveling.provider.planner.Stop;
 
 import android.content.ContentValues;
 import android.content.Context;

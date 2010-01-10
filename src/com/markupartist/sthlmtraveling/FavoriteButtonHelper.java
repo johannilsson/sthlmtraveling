@@ -22,8 +22,8 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageButton;
 
-import com.markupartist.sthlmtraveling.planner.Stop;
 import com.markupartist.sthlmtraveling.provider.FavoritesDbAdapter;
+import com.markupartist.sthlmtraveling.provider.planner.Stop;
 
 public class FavoriteButtonHelper implements OnClickListener {
     private ImageButton mFavoriteButton;

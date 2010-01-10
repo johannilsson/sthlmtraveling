@@ -29,7 +29,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import com.markupartist.sthlmtraveling.planner.Stop;
+import com.markupartist.sthlmtraveling.provider.planner.Stop;
 
 public class FavoritesDbAdapter {
     public static final String KEY_ROWID = "_id";

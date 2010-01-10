@@ -37,10 +37,10 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import com.markupartist.sthlmtraveling.planner.Planner;
-import com.markupartist.sthlmtraveling.planner.Route;
-import com.markupartist.sthlmtraveling.planner.Stop;
 import com.markupartist.sthlmtraveling.provider.FavoritesDbAdapter;
+import com.markupartist.sthlmtraveling.provider.planner.Planner;
+import com.markupartist.sthlmtraveling.provider.planner.Route;
+import com.markupartist.sthlmtraveling.provider.planner.Stop;
 
 public class RouteDetailActivity extends ListActivity {
     public static final String TAG = "RouteDetailActivity";
@@ -194,6 +194,12 @@ public class RouteDetailActivity extends ListActivity {
                 Intent i = new Intent(this, StartActivity.class);
                 i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(i);
+                return true;
+            case R.id.menu_departures_for_start:
+                Intent departuresIntent = new Intent(this, DeparturesActivity.class);
+                departuresIntent.putExtra(DeparturesActivity.EXTRA_SITE_NAME,
+                        mRoute.from);
+                startActivity(departuresIntent);
                 return true;
         }
         return super.onOptionsItemSelected(item);

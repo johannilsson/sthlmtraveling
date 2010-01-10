@@ -39,5 +39,9 @@ public class StartActivity extends TabActivity {
                 .setContent(new Intent(this, FavoritesActivity.class)
                 .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)));
 
+        tabHost.addTab(tabHost.newTabSpec("departures")
+                .setIndicator(getText(R.string.departures), 
+                        getResources().getDrawable(R.drawable.time))
+                .setContent(new Intent(this, SearchDeparturesActivity.class)));
     }
 }

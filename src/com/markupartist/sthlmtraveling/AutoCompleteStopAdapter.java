@@ -26,9 +26,10 @@ import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.Toast;
 
-import com.markupartist.sthlmtraveling.planner.Planner;
+import com.markupartist.sthlmtraveling.provider.planner.Planner;
 
 public class AutoCompleteStopAdapter extends ArrayAdapter<String> implements Filterable {
+    @SuppressWarnings("unused")
     private static String TAG = "AutoCompleteStopAdapter";
     private Planner mPlanner;
 

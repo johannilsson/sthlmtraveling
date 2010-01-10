@@ -56,10 +56,10 @@ import android.widget.SimpleAdapter.ViewBinder;
 
 import com.markupartist.sthlmtraveling.MyLocationManager.MyLocationFoundListener;
 import com.markupartist.sthlmtraveling.SectionedAdapter.Section;
-import com.markupartist.sthlmtraveling.planner.Planner;
-import com.markupartist.sthlmtraveling.planner.Route;
-import com.markupartist.sthlmtraveling.planner.Stop;
 import com.markupartist.sthlmtraveling.provider.FavoritesDbAdapter;
+import com.markupartist.sthlmtraveling.provider.planner.Planner;
+import com.markupartist.sthlmtraveling.provider.planner.Route;
+import com.markupartist.sthlmtraveling.provider.planner.Stop;
 import com.markupartist.sthlmtraveling.utils.BarcodeScannerIntegrator;
 
 /**
