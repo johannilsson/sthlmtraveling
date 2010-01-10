@@ -18,9 +18,14 @@
 -->
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/menu_departures_for_start"
+        android:title="@string/show_departures_for_start"
+        android:icon="@drawable/ic_menu_view"
+        />
 	<item
 		android:id="@+id/new_search"
 		android:title="@string/new_search"
-		android:icon="@drawable/ic_search_category_default"
+		android:icon="@drawable/ic_menu_search"
 		/>
 </menu>

@@ -31,7 +31,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:background="#999999"
-            android:paddingTop="10dip"
+            android:paddingTop="5dip"
             >
     		<LinearLayout 
     	        android:layout_width="fill_parent"
@@ -39,6 +39,7 @@
     	        android:addStatesFromChildren="true"
     	        android:gravity="center_vertical"
     	        android:paddingRight="0dip"
+    	        android:paddingTop="0dip"
     		    >
 	            <!-- Empty dummy to prevent AutoCompleteTextView from receiving focus -->
 	            <LinearLayout
