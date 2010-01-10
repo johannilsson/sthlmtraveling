@@ -16,7 +16,7 @@
 
 package com.markupartist.sthlmtraveling.planner;
 
-import static com.markupartist.sthlmtraveling.planner.ApiSettings.STHLM_TRAVELING_API_ENDPOINT;
+import static com.markupartist.sthlmtraveling.provider.EndpointConf.PLANNER_API_ENDPOINT;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -24,7 +24,12 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpGet;
 import org.xml.sax.InputSource;
+
+import com.markupartist.sthlmtraveling.utils.HttpManager;
 
 import android.text.format.Time;
 import android.util.Log;
@@ -65,9 +70,12 @@ public class Planner {
             StringReader sr = new StringReader(mStopsXml);
             input = new InputSource(sr);
         } else {
-            URL endpoint = new URL(STHLM_TRAVELING_API_ENDPOINT
+            final HttpGet get = new HttpGet(PLANNER_API_ENDPOINT
                     + "?method=findStop&name=" + URLEncoder.encode(name));
-            input = new InputSource(endpoint.openStream());
+            HttpEntity entity = null;
+            final HttpResponse response = HttpManager.execute(get);
+            entity = response.getEntity();
+            input = new InputSource(entity.getContent());
         }
 
         ArrayList<String> stops = new ArrayList<String>();
@@ -111,7 +119,7 @@ public class Planner {
             StringReader sr = new StringReader(mRoutesXml);
             input = new InputSource(sr);
         } else {
-            URL endpoint = new URL(STHLM_TRAVELING_API_ENDPOINT
+            final HttpGet get = new HttpGet(PLANNER_API_ENDPOINT
                     + "?method=findRoutes" 
                     + "&from=" + startPointEncoded 
                     + "&to=" + endPointEncoded
@@ -119,7 +127,10 @@ public class Planner {
                     + "&isTimeDeparture=" + isDeparture
                     + startPointPositionPart
                     + endPointPositionPart);
-            input = new InputSource(endpoint.openStream());
+            HttpEntity entity = null;
+            final HttpResponse response = HttpManager.execute(get);
+            entity = response.getEntity();
+            input = new InputSource(entity.getContent());
         }
 
         mRoutes = mRouteFinder.parseRoutes(input);
@@ -148,11 +159,14 @@ public class Planner {
             StringReader sr = new StringReader(mRoutesXml);
             input = new InputSource(sr);
         } else {
-            URL endpoint = new URL(STHLM_TRAVELING_API_ENDPOINT
+            final HttpGet get = new HttpGet(PLANNER_API_ENDPOINT
                     + "?method=findEarlierRoutes"
                     + "&requestCount=" + mRequestCount
                     + "&ident=" + ident);
-            input = new InputSource(endpoint.openStream());
+            HttpEntity entity = null;
+            final HttpResponse response = HttpManager.execute(get);
+            entity = response.getEntity();
+            input = new InputSource(entity.getContent());
         }
 
         mRoutes = mRouteFinder.parseRoutes(input);
@@ -181,11 +195,14 @@ public class Planner {
             StringReader sr = new StringReader(mRoutesXml);
             input = new InputSource(sr);
         } else {
-            URL endpoint = new URL(STHLM_TRAVELING_API_ENDPOINT
+            final HttpGet get = new HttpGet(PLANNER_API_ENDPOINT
                     + "?method=findLaterRoutes"
                     + "&requestCount=" + mRequestCount
                     + "&ident=" + ident);
-            input = new InputSource(endpoint.openStream());
+            HttpEntity entity = null;
+            final HttpResponse response = HttpManager.execute(get);
+            entity = response.getEntity();
+            input = new InputSource(entity.getContent());
         }
 
         mRoutes = mRouteFinder.parseRoutes(input);
@@ -209,11 +226,14 @@ public class Planner {
             StringReader sr = new StringReader(mRouteDetailXml);
             input = new InputSource(sr);
         } else {
-            URL endpoint = new URL(STHLM_TRAVELING_API_ENDPOINT
+            final HttpGet get = new HttpGet(PLANNER_API_ENDPOINT
                     + "?method=routeDetail&ident=" + route.ident 
                     + "&routeId=" + route.routeId
                     + "&requestCount=" + mRequestCount);
-            input = new InputSource(endpoint.openStream());
+            HttpEntity entity = null;
+            final HttpResponse response = HttpManager.execute(get);
+            entity = response.getEntity();
+            input = new InputSource(entity.getContent());
         }
 
         mRouteDetails = mRouteDetailFinder.parseDetail(input);
