@@ -23,7 +23,7 @@
     <string name="to">To</string>
     <string name="search_label">Search</string>
     <string name="departing">Departing</string>
-    <string name="arriving">Arriving</string>
+    <string name="arriving">Arrivistartng</string>
     <string name="no_routes_found_label">Unfortunately no routes was found</string>
     <string name="no_routes_found_message">Please try entering another station/stop.</string>
     <string name="routes_label">Routes</string>
@@ -72,4 +72,13 @@
     <string name="tap_your_location_on_map">Failed to determine your location. Tap your location on the map</string>
     <string name="departing_on">Departing <xliff:g id="time">%s</xliff:g> on <xliff:g id="date">%s</xliff:g></string>
     <string name="arriving_by">Arriving by <xliff:g id="time">%s</xliff:g> on <xliff:g id="date">%s</xliff:g></string>
+    <string name="departures">Departures</string>
+    <string name="no_departures"><b>No Departures at the moment</b>\nOnly showing departures within 10 minutes. Please refresh using the menu option in a while.</string>
+    <string name="site_name">Site name</string>
+    <string name="refresh">Refresh</string>
+    <string name="show_departures_for_start">Departures for start point</string>
+    <string name="metros">Metros</string>
+    <string name="buses">Buses</string>
+    <string name="trains">Trains</string>
+    <string name="trams">Trams</string>
 </resources>
