@@ -100,6 +100,20 @@ public class Departure {
         this.mDisplayTime = displayTime;
     }
 
+    /**
+     * @param groupOfLine the groupOfLine to set
+     */
+    public void setGroupOfLine(String groupOfLine) {
+        mGroupOfLine = groupOfLine;
+    }
+
+    /**
+     * @return the groupOfLine
+     */
+    public String getGroupOfLine() {
+        return mGroupOfLine;
+    }
+    
     /* (non-Javadoc)
      * @see java.lang.Object#toString()
      */
@@ -112,6 +126,5 @@ public class Departure {
                 + ", mTimeTabledDateTime=" + mTimeTabledDateTime
                 + ", mTransport=" + mTransport + "]";
     }
-
 
 }

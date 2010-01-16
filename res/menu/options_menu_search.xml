@@ -21,6 +21,7 @@
     <item 
         android:id="@+id/reverse_start_end"
         android:title="@string/reverse_start_end"
+        android:icon="@drawable/ic_menu_rotate"
         />
 	<item 
 		android:id="@+id/about"

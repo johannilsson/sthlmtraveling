@@ -30,18 +30,19 @@ public class StartActivity extends TabActivity {
 
         tabHost.addTab(tabHost.newTabSpec("search")
                .setIndicator(getText(R.string.search_label), 
-                       getResources().getDrawable(R.drawable.zoom))
+                       getResources().getDrawable(R.drawable.tab_planner))
                .setContent(new Intent(this, PlannerActivity.class)));
 
         tabHost.addTab(tabHost.newTabSpec("favorites")
                 .setIndicator(getText(R.string.favorites_label), 
-                        getResources().getDrawable(R.drawable.star))
+                        getResources().getDrawable(R.drawable.tab_favorites))
                 .setContent(new Intent(this, FavoritesActivity.class)
                 .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)));
 
         tabHost.addTab(tabHost.newTabSpec("departures")
                 .setIndicator(getText(R.string.departures), 
-                        getResources().getDrawable(R.drawable.time))
-                .setContent(new Intent(this, SearchDeparturesActivity.class)));
+                        getResources().getDrawable(R.drawable.tab_departures))
+                .setContent(new Intent(this, SearchDeparturesActivity.class)));        
     }
+
 }

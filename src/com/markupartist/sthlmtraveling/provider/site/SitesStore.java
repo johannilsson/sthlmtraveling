@@ -1,8 +1,8 @@
 package com.markupartist.sthlmtraveling.provider.site;
 
-import static com.markupartist.sthlmtraveling.provider.EndpointConf.SL_API_ENDPOINT;
-import static com.markupartist.sthlmtraveling.provider.EndpointConf.KEY;
-import static com.markupartist.sthlmtraveling.provider.EndpointConf.key;
+import static com.markupartist.sthlmtraveling.provider.ApiConf.KEY;
+import static com.markupartist.sthlmtraveling.provider.ApiConf.apiEndpoint;
+import static com.markupartist.sthlmtraveling.provider.ApiConf.get;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,9 +23,9 @@ public class SitesStore {
     public ArrayList<Site> getSite(String name) throws IOException {
         ArrayList<Site> sites = new ArrayList<Site>();
 
-        final HttpGet get = new HttpGet(SL_API_ENDPOINT + "sites/"
+        final HttpGet get = new HttpGet(apiEndpoint() + "sites/"
                 + "?q=" + URLEncoder.encode(name)
-                + "&key=" + key(KEY));
+                + "&key=" + get(KEY));
 
         HttpEntity entity = null;
         final HttpResponse response = HttpManager.execute(get);

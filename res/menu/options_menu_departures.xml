@@ -23,4 +23,9 @@
 		android:title="@string/refresh"
 		android:icon="@drawable/ic_menu_refresh"
 		/>
+    <item
+        android:id="@+id/menu_journey_planner"
+        android:title="@string/journey_planner_label"
+        android:icon="@drawable/ic_menu_search"
+        />
 </menu>

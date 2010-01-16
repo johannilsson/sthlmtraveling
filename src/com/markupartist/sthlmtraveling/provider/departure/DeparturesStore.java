@@ -1,8 +1,8 @@
 package com.markupartist.sthlmtraveling.provider.departure;
 
-import static com.markupartist.sthlmtraveling.provider.EndpointConf.SL_API_ENDPOINT;
-import static com.markupartist.sthlmtraveling.provider.EndpointConf.KEY;
-import static com.markupartist.sthlmtraveling.provider.EndpointConf.key;
+import static com.markupartist.sthlmtraveling.provider.ApiConf.apiEndpoint;
+import static com.markupartist.sthlmtraveling.provider.ApiConf.KEY;
+import static com.markupartist.sthlmtraveling.provider.ApiConf.get;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,6 +17,8 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
+import android.text.format.Time;
+
 import com.markupartist.sthlmtraveling.provider.site.Site;
 import com.markupartist.sthlmtraveling.utils.HttpManager;
 
@@ -27,9 +29,9 @@ public class DeparturesStore {
 
     public HashMap<String, DepartureList> find(Site site,
             DepartureFilter filter) throws IOException {
-        final HttpGet get = new HttpGet(SL_API_ENDPOINT
+        final HttpGet get = new HttpGet(apiEndpoint()
                 + "dpsdepartures/" + site.getId()
-                + "/?key=" + key(KEY));
+                + "/?key=" + get(KEY));
 
         HttpEntity entity = null;
         final HttpResponse response = HttpManager.execute(get);
@@ -111,6 +113,26 @@ public class DeparturesStore {
         }
     }
 
+    /**
+    <DpsMetro> 
+      <SiteId>xxx</SiteId> 
+      <StopAreaNumber>xxx</StopAreaNumber> 
+      <TransportMode>METRO</TransportMode> 
+      <StopAreaName>T-Centralen</StopAreaName> 
+      <LineNumber>18</LineNumber> 
+      <Destination>Alvik</Destination> 
+      <TimeTabledDateTime>2010-01-11T21:23:00</TimeTabledDateTime> 
+      <ExpectedDateTime>2010-01-11T21:23:00</ExpectedDateTime> 
+      <DisplayTime>21:23</DisplayTime> 
+      <JourneyDirection>1</JourneyDirection> 
+      <GroupOfLine>tunnelbanans gröna linje</GroupOfLine> 
+    </DpsMetro> 
+     * @param parser
+     * @param departure
+     * @return
+     * @throws XmlPullParserException
+     * @throws IOException
+     */
     private boolean parseDeparture(XmlPullParser parser, Departure departure)
             throws XmlPullParserException, IOException {
         int type;
@@ -140,6 +162,22 @@ public class DeparturesStore {
             } else if ("DisplayTime".equals(name)) {
                 if (parser.next() == XmlPullParser.TEXT) {
                     departure.setDisplayTime(parser.getText());
+                }
+            } else if ("TimeTabledDateTime".equals(name)) {
+                if (parser.next() == XmlPullParser.TEXT) {
+                    Time timeTabledDateTime = new Time();
+                    timeTabledDateTime.parse3339(parser.getText());
+                    departure.setTimeTabledDateTime(timeTabledDateTime);
+                }
+            } else if ("ExpectedDateTime".equals(name)) {
+                if (parser.next() == XmlPullParser.TEXT) {
+                    Time expectedDateTime = new Time();
+                    expectedDateTime.parse3339(parser.getText());
+                    departure.setExpectedDateTime(expectedDateTime);
+                }
+            } else if ("GroupOfLine".equals(name)) {
+                if (parser.next() == XmlPullParser.TEXT) {
+                    departure.setGroupOfLine(parser.getText());
                 }
             }
         }

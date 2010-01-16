@@ -16,7 +16,7 @@
 
 package com.markupartist.sthlmtraveling.provider.planner;
 
-import static com.markupartist.sthlmtraveling.provider.EndpointConf.PLANNER_API_ENDPOINT;
+import static com.markupartist.sthlmtraveling.provider.ApiConf.plannerEndpoint;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -69,7 +69,7 @@ public class Planner {
             StringReader sr = new StringReader(mStopsXml);
             input = new InputSource(sr);
         } else {
-            final HttpGet get = new HttpGet(PLANNER_API_ENDPOINT
+            final HttpGet get = new HttpGet(plannerEndpoint()
                     + "?method=findStop&name=" + URLEncoder.encode(name));
             HttpEntity entity = null;
             final HttpResponse response = HttpManager.execute(get);
@@ -118,7 +118,7 @@ public class Planner {
             StringReader sr = new StringReader(mRoutesXml);
             input = new InputSource(sr);
         } else {
-            final HttpGet get = new HttpGet(PLANNER_API_ENDPOINT
+            final HttpGet get = new HttpGet(plannerEndpoint()
                     + "?method=findRoutes" 
                     + "&from=" + startPointEncoded 
                     + "&to=" + endPointEncoded
@@ -158,7 +158,7 @@ public class Planner {
             StringReader sr = new StringReader(mRoutesXml);
             input = new InputSource(sr);
         } else {
-            final HttpGet get = new HttpGet(PLANNER_API_ENDPOINT
+            final HttpGet get = new HttpGet(plannerEndpoint()
                     + "?method=findEarlierRoutes"
                     + "&requestCount=" + mRequestCount
                     + "&ident=" + ident);
@@ -194,7 +194,7 @@ public class Planner {
             StringReader sr = new StringReader(mRoutesXml);
             input = new InputSource(sr);
         } else {
-            final HttpGet get = new HttpGet(PLANNER_API_ENDPOINT
+            final HttpGet get = new HttpGet(plannerEndpoint()
                     + "?method=findLaterRoutes"
                     + "&requestCount=" + mRequestCount
                     + "&ident=" + ident);
@@ -225,7 +225,7 @@ public class Planner {
             StringReader sr = new StringReader(mRouteDetailXml);
             input = new InputSource(sr);
         } else {
-            final HttpGet get = new HttpGet(PLANNER_API_ENDPOINT
+            final HttpGet get = new HttpGet(plannerEndpoint()
                     + "?method=routeDetail&ident=" + route.ident 
                     + "&routeId=" + route.routeId
                     + "&requestCount=" + mRequestCount);

@@ -21,10 +21,12 @@
     <item
         android:id="@+id/reverse_start_end"
         android:title="@string/reverse_start_end"
+        android:icon="@drawable/ic_menu_rotate"
         />
     <item
         android:id="@+id/show_qr_code"
         android:title="@string/show_qr_code"
+        android:icon="@drawable/ic_menu_barcode"
         />
 	<item
 		android:id="@+id/new_search"

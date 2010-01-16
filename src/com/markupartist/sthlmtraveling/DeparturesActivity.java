@@ -27,9 +27,13 @@ import android.app.Dialog;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.DialogInterface.OnClickListener;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.text.format.Time;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -39,6 +43,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
+import android.widget.SimpleAdapter.ViewBinder;
 
 import com.markupartist.sthlmtraveling.provider.departure.Departure;
 import com.markupartist.sthlmtraveling.provider.departure.DepartureList;
@@ -146,25 +151,64 @@ public class DeparturesActivity extends ListActivity {
     private SimpleAdapter createAdapter(DepartureList departureList) {
         ArrayList<Map<String, String>> list = new ArrayList<Map<String, String>>();
 
+        Time now = new Time();
+        now.setToNow();
         for (Departure departure : departureList) {
             Map<String, String> map = new HashMap<String, String>();
             map.put("line", departure.getLineNumber());
             map.put("destination", departure.getDestination());
-            map.put("timeToDisplay", departure.getDisplayTime());
+            //map.put("timeToDisplay", departure.getDisplayTime());
+            map.put("timeToDisplay", humanTimeUntil(now, departure.getExpectedDateTime()));
+            map.put("groupOfLine", departure.getGroupOfLine());
             list.add(map);
         }
 
         SimpleAdapter adapter = new SimpleAdapter(this, list, 
                 R.layout.departures_row,
-                new String[] { "line", "destination", "timeToDisplay"},
+                new String[] { "line", "destination", "timeToDisplay", "groupOfLine"},
                 new int[] { 
                     R.id.departure_line,
                     R.id.departure_destination,
-                    R.id.departure_timeToDisplay
+                    R.id.departure_timeToDisplay,
+                    R.id.departure_color
                 }
         );
 
+        adapter.setViewBinder(new ViewBinder() {
+            @Override
+            public boolean setViewValue(View view, Object data,
+                    String textRepresentation) {
+                switch (view.getId()) {
+                case R.id.departure_line:
+                case R.id.departure_destination:
+                case R.id.departure_timeToDisplay:
+                    ((TextView)view).setText(textRepresentation);
+                    return true;
+                case R.id.departure_color:
+                    if (!TextUtils.isEmpty(textRepresentation)) {
+                        view.setBackgroundColor(
+                                groupOfLineToColor(textRepresentation));
+                    } else {
+                        view.setVisibility(View.GONE);
+                    }
+                    return true;
+                }
+                return false;
+            }
+        });
+
         return adapter;
+    }
+
+    private int groupOfLineToColor(String groupOfLine) {
+        if ("tunnelbanans gröna linje".equals(groupOfLine)) {
+            return 0xFF228B22;
+        } else if ("tunnelbanans röda linje".equals(groupOfLine)) {
+            return 0xFFEE4000;
+        } else if ("tunnelbanans blå linje".equals(groupOfLine)) {
+            return 0xFF104E8B;
+        }
+        return Color.GRAY;
     }
 
     private String transportModeToString(String transport) {
@@ -281,6 +325,11 @@ public class DeparturesActivity extends ListActivity {
             case R.id.menu_refresh:
                 new GetDeparturesTask().execute(mSite);
                 return true;
+            case R.id.menu_journey_planner:
+                Intent i = new Intent(this, StartActivity.class);
+                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(i);
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -322,6 +371,17 @@ public class DeparturesActivity extends ListActivity {
         return null;
     }
 
+    private String humanTimeUntil(Time start, Time end) {
+        long distanceInMillis = Math.round(end.toMillis(true) - start.toMillis(true));
+        long distanceInSeconds = Math.round(distanceInMillis / 1000);
+        long distanceInMinutes = Math.round(distanceInSeconds / 60);
+
+        if (distanceInMinutes <= 0.0) {
+            return getString(R.string.now);
+        }
+        return String.format("%s min", distanceInMinutes);
+    }
+    
     /**
      * Show progress dialog.
      */
