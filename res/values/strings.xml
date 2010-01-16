@@ -39,7 +39,7 @@
     <string name="change_date_and_time">Change date &amp; time</string>
     <string name="reverse_start_end">Reverse from &amp; to</string>
     <string name="about">About</string>
-    <string name="about_this_app">STHLM Traveling is developed by Johan Nilsson, please contact him if you have ideas or experience any problems.\n\nAll data is gathered from SL - Stockholm Public Transport.\n\n<b>Credits</b>\n<li>Patches by Morgan Christiansson\nhttp://screeninteraction.com</li>\n<li>App icon &amp; ideas Olof Brickarp\nhttp://www.yay.se</li>\n<li>Icons by Fredrik Broman\nhttp://fredrikbroman.com</li>\n<li>Icons by FatCow\nhttp://www.fatcow.com/free-icons</li>\n<li>Feedback from Swedroid\nhttp://swedroid.se</li></string>
+    <string name="about_this_app">STHLM Traveling is developed by Johan Nilsson, please contact him if you have ideas or experience any problems using the Feedback button.\n\nAll data is gathered from SL - Stockholm Public Transport.\n\n<b>Credits</b>\n<li>App icon &amp; ideas Olof Brickarp\nhttp://www.yay.se</li>\n<li>Patches by Morgan Christiansson\nhttp://screeninteraction.com</li>\n<li>Icons by Fredrik Broman\nhttp://fredrikbroman.com</li>\n<li>Icons by Android Icons\nhttp://androidicons.com</li>\n<li>Icons by FatCow\nhttp://www.fatcow.com/free-icons</li>\n<li>Feedback from Swedroid\nhttp://swedroid.se</li></string>
     <string name="donate">Donate</string>
     <string name="donate_url">http://pledgie.com/campaigns/6527</string>
     <string name="feedback">Feedback</string>
@@ -81,4 +81,6 @@
     <string name="buses">Buses</string>
     <string name="trains">Trains</string>
     <string name="trams">Trams</string>
+    <string name="now">now</string>
+    <string name="journey_planner_label">Journey Planner</string>
 </resources>
