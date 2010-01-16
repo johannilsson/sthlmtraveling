@@ -61,7 +61,7 @@ public class RouteParserTest extends TestCase {
         		"<key_1>Metro blue line 10</key_1>" +
         		"<key_2>Metro green line 10</key_2>" +
         		"<key_3>Metro red line 10</key_3>" +
-                        "<key_4>train</key_4>" +
+                "<key_4>train</key_4>" +
         		"<key_5>Commuter Train</key_5>" +
         		"<key_6>tvärbanan</key_6>" +
         		"<key_7>Saltsjöbanan 25</key_7>" +

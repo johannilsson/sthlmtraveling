@@ -18,6 +18,8 @@ package com.markupartist.sthlmtraveling.provider.planner;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -29,10 +31,15 @@ import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 
+import com.markupartist.sthlmtraveling.R;
+import com.markupartist.sthlmtraveling.provider.planner.Route.Transport;
+
 import android.util.Log;
 
 public class RouteParser extends DefaultHandler {
     private static final String TAG = "RouteParser";
+    private static String TRANSPORT_PATTERN = "([A-Za-zåäöÅÄÖ ]+) (\\d+$)";
+    private Pattern mTransportPattern = Pattern.compile(TRANSPORT_PATTERN);
     private ArrayList<Route> mRoutes = new ArrayList<Route>();
     private String mIdent;
     private int mRequestCount;
@@ -123,6 +130,11 @@ public class RouteParser extends DefaultHandler {
                 mRoutes.add(mCurrentRoute);
             }
         } else {
+            Transport transport = createTransport(mCurrentText);
+            if (transport != null) {
+                mCurrentRoute.addTransport(transport);
+            }
+            /*
             if (mCurrentText.toLowerCase().contains("metro")) {
                 if (mCurrentText.contains("red")) {
                     mCurrentRoute.addTransport(Route.Transport.METRO_RED);
@@ -142,6 +154,45 @@ public class RouteParser extends DefaultHandler {
             } else if (mCurrentText.toLowerCase().contains("saltsjöbanan")) {
                 mCurrentRoute.addTransport(Route.Transport.SALTSJOBANAN);
             }
+            */
         }
+    }
+
+    private Transport createTransport(String transportString) {
+        Matcher matcher = mTransportPattern.matcher(transportString);
+        boolean matchFound = matcher.find(); 
+
+        Transport transport = null;
+        if (matchFound) {
+            String name = matcher.group(1);
+            int lineNumber = Integer.parseInt(matcher.group(2));
+            transport = new Transport(getTransportImageResource(name), name, lineNumber);
+        }
+        return transport;
+    }
+
+    private int getTransportImageResource(String name) {
+        if (name.toLowerCase().contains("metro")) {
+            if (name.contains("red")) {
+                return R.drawable.transport_metro_red;
+            } else if (name.contains("blue")) {
+                return R.drawable.transport_metro_blue;
+            } else if (name.contains("green")) {
+                return R.drawable.transport_metro_green;
+            }
+        } else if (name.toLowerCase().contains("commuter train")) {
+            return R.drawable.transport_train;
+        } else if (name.toLowerCase().contains("train")) {
+            return R.drawable.transport_train;
+        } else if (name.toLowerCase().contains("tvärbanan")) {
+            return R.drawable.transport_train;
+        } else if (name.toLowerCase().contains("bus")) {
+            return R.drawable.transport_bus;
+        } else if (name.toLowerCase().contains("saltsjöbanan")) {
+            return R.drawable.transport_train;
+        } else if (name.toLowerCase().contains("wax")) {
+            return R.drawable.transport_boat;
+        }
+        return R.drawable.transport_unkown;
     }
 }

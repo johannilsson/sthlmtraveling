@@ -108,6 +108,7 @@ public class Route implements Parcelable {
     }
 
     public static class Transport implements Parcelable {
+        /*
         public static final Transport BUS = new Transport(R.drawable.transport_bus, "Bus");
         public static final Transport METRO_RED = new Transport(R.drawable.transport_metro_red, "Metro red line");
         public static final Transport METRO_BLUE = new Transport(R.drawable.transport_metro_blue, "Metro blue line");
@@ -116,18 +117,22 @@ public class Route implements Parcelable {
         public static final Transport TVARBANAN = new Transport(R.drawable.transport_train, "Tvärbanan");
         public static final Transport SALTSJOBANAN = new Transport(R.drawable.transport_train, "Saltsjöbanan");
         public static final Transport TRAIN = new Transport(R.drawable.transport_train, "Train");
+        */
 
         private int mImageResource;
         private String mName;
+        private int mLineNumber;
 
-        public Transport(int imageResource, String name) {
+        public Transport(int imageResource, String name, int lineNumber) {
             mImageResource = imageResource;
             mName = name;
+            mLineNumber = lineNumber;
         }
 
         public Transport(Parcel parcel) {
             mImageResource = parcel.readInt();
             mName = parcel.readString();
+            mLineNumber = parcel.readInt();
         }
 
         public int imageResource() {
@@ -136,6 +141,10 @@ public class Route implements Parcelable {
 
         public String name() {
             return mName;
+        }
+
+        public int lineNumber() {
+            return mLineNumber;
         }
 
         @Override
@@ -152,6 +161,7 @@ public class Route implements Parcelable {
         public void writeToParcel(Parcel dest, int flags) {
             dest.writeInt(mImageResource);
             dest.writeString(mName);
+            dest.writeInt(mLineNumber);
         }
 
         public static final Creator<Transport> CREATOR = new Creator<Transport>() {

@@ -972,6 +972,15 @@ public class RoutesActivity extends ListActivity
                 change.setPadding(0, 0, 5, 0);
                 routeChanges.addView(change);
 
+                if (transport.lineNumber() > 0) {
+                    TextView lineNumberView = new TextView(context);
+                    lineNumberView.setTextColor(Color.GRAY);
+                    lineNumberView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
+                    lineNumberView.setText(String.valueOf(transport.lineNumber()));
+                    lineNumberView.setPadding(0, 2, 5, 0);
+                    routeChanges.addView(lineNumberView);
+                }
+                
                 if (transportCount > currentTransportCount) {
                     ImageView separator = new ImageView(context);
                     separator.setImageResource(R.drawable.transport_separator);
@@ -982,8 +991,8 @@ public class RoutesActivity extends ListActivity
                 currentTransportCount++;
             }
 
-            this.addView(startAndEndPoint);
             this.addView(routeDetail);
+            this.addView(startAndEndPoint);
             this.addView(routeChanges);
         }
     }
