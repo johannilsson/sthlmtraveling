@@ -25,6 +25,7 @@ import java.util.ArrayList;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.HttpGet;
 import org.xml.sax.InputSource;
 
@@ -73,6 +74,9 @@ public class Planner {
                     + "?method=findStop&name=" + URLEncoder.encode(name));
             HttpEntity entity = null;
             final HttpResponse response = HttpManager.execute(get);
+            if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
+                throw new IOException("A remote server error occurred when getting stops.");
+            }
             entity = response.getEntity();
             input = new InputSource(entity.getContent());
         }
@@ -128,6 +132,9 @@ public class Planner {
                     + endPointPositionPart);
             HttpEntity entity = null;
             final HttpResponse response = HttpManager.execute(get);
+            if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
+                throw new IOException("A remote server error occurred when getting routes.");
+            }
             entity = response.getEntity();
             input = new InputSource(entity.getContent());
         }
@@ -164,6 +171,9 @@ public class Planner {
                     + "&ident=" + ident);
             HttpEntity entity = null;
             final HttpResponse response = HttpManager.execute(get);
+            if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
+                throw new IOException("A remote server error occurred when getting earlier routes.");
+            }
             entity = response.getEntity();
             input = new InputSource(entity.getContent());
         }
@@ -200,6 +210,9 @@ public class Planner {
                     + "&ident=" + ident);
             HttpEntity entity = null;
             final HttpResponse response = HttpManager.execute(get);
+            if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
+                throw new IOException("A remote server error occurred when getting later routes.");
+            }
             entity = response.getEntity();
             input = new InputSource(entity.getContent());
         }
@@ -231,6 +244,9 @@ public class Planner {
                     + "&requestCount=" + mRequestCount);
             HttpEntity entity = null;
             final HttpResponse response = HttpManager.execute(get);
+            if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
+                throw new IOException("A remote server error occurred when getting route details.");
+            }
             entity = response.getEntity();
             input = new InputSource(entity.getContent());
         }

@@ -12,6 +12,7 @@ import java.util.ArrayList;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.HttpGet;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -29,6 +30,11 @@ public class SitesStore {
 
         HttpEntity entity = null;
         final HttpResponse response = HttpManager.execute(get);
+
+        if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
+            throw new IOException("A remote server error occurred when getting sites.");
+        }
+
         entity = response.getEntity();
         SiteParser.parseResponse(entity.getContent(), sites);
 
