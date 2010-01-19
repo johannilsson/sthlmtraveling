@@ -16,6 +16,8 @@
 
 package com.markupartist.sthlmtraveling;
 
+import com.markupartist.sthlmtraveling.utils.ErrorReporter;
+
 import android.app.TabActivity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -25,6 +27,9 @@ public class StartActivity extends TabActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        final ErrorReporter reporter = ErrorReporter.getInstance();
+        reporter.checkErrorAndReport(this);
 
         final TabHost tabHost = getTabHost();
 

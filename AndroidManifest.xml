@@ -7,7 +7,7 @@
         android:normalScreens="true"
         android:smallScreens="true"
         android:anyDensity="true" />
-    <application android:icon="@drawable/icon" android:label="@string/app_name" android:debuggable="false">
+    <application android:icon="@drawable/icon" android:label="@string/app_name" android:debuggable="false" android:name="MyApplication">
         <uses-library android:name="com.google.android.maps" />
         <activity android:name=".StartActivity"
                   android:label="@string/app_name">
