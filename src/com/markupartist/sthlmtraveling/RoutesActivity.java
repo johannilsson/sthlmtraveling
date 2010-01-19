@@ -991,8 +991,8 @@ public class RoutesActivity extends ListActivity
                 currentTransportCount++;
             }
 
-            this.addView(routeDetail);
             this.addView(startAndEndPoint);
+            this.addView(routeDetail);
             this.addView(routeChanges);
         }
     }
