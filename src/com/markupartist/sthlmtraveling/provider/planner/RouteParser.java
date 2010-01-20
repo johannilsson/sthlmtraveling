@@ -166,7 +166,11 @@ public class RouteParser extends DefaultHandler {
         if (matchFound) {
             String name = matcher.group(1);
             int lineNumber = Integer.parseInt(matcher.group(2));
-            transport = new Transport(getTransportImageResource(name), name, lineNumber);
+            transport = new Transport(
+                    getTransportImageResource(name), name, lineNumber);
+        } else {
+            transport = new Transport(
+                    getTransportImageResource(transportString), transportString);
         }
         return transport;
     }
@@ -186,6 +190,8 @@ public class RouteParser extends DefaultHandler {
             return R.drawable.transport_train;
         } else if (name.toLowerCase().contains("tvärbanan")) {
             return R.drawable.transport_train;
+        } else if (name.toLowerCase().contains("airport") || name.toLowerCase().contains("flygbuss")) {
+            return R.drawable.transport_bus;
         } else if (name.toLowerCase().contains("bus")) {
             return R.drawable.transport_bus;
         } else if (name.toLowerCase().contains("saltsjöbanan")) {

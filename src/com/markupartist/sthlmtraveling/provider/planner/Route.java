@@ -32,7 +32,7 @@ public class Route implements Parcelable {
     public String arrival;
     public String duration;
     public String changes;
-    public ArrayList<Transport> transports;
+    public ArrayList<Transport> transports = new ArrayList<Transport>();
 
     public Route() {
         
@@ -129,10 +129,22 @@ public class Route implements Parcelable {
             mLineNumber = lineNumber;
         }
 
+        public Transport(int imageResource, String name) {
+            mImageResource = imageResource;
+            mName = name;
+        }
+
         public Transport(Parcel parcel) {
             mImageResource = parcel.readInt();
             mName = parcel.readString();
             mLineNumber = parcel.readInt();
+        }
+
+        /**
+         * @return if the line number is greater than zero true otherwise false. 
+         */
+        public boolean hasLineNumber() {
+            return mLineNumber > 0;
         }
 
         public int imageResource() {
