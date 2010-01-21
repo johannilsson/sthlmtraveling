@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -107,11 +108,23 @@ public class PointOnMapActivity extends MapActivity {
         switch (item.getItemId()) {
             case R.id.menu_my_location:
                 if (mMyLocationOverlay != null) {
-                    mapController.animateTo(mMyLocationOverlay.getMyLocation());
+                    GeoPoint myLocation = mMyLocationOverlay.getMyLocation();
+                    if (myLocation != null) {
+                        mapController.animateTo(myLocation);
+                    } else {
+                        toastMissingMyLocationSource();
+                    }
+                } else {
+                    toastMissingMyLocationSource();
                 }
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void toastMissingMyLocationSource() {
+        Toast.makeText(this, getText(R.string.my_location_source_disabled),
+                Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -149,10 +162,17 @@ public class PointOnMapActivity extends MapActivity {
     }
 
     private void myLocationOverlay() {
-        mMyLocationOverlay = new MyLocationOverlay(this, mMapView);
-        mMapView.getOverlays().add(mMyLocationOverlay);
-        mMyLocationOverlay.enableCompass();
-        mMyLocationOverlay.enableMyLocation();
+        LocationManager locationManager =
+            (LocationManager)getSystemService(LOCATION_SERVICE);
+        if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
+                || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
+            mMyLocationOverlay = new MyLocationOverlay(this, mMapView);
+            mMapView.getOverlays().add(mMyLocationOverlay);
+            mMyLocationOverlay.enableCompass();
+            mMyLocationOverlay.enableMyLocation();
+        } else {
+            Log.d(TAG, "No Location provider is not enabled, ignoring...");
+        }
     }
     
     private void pointToSelectOverlay() {

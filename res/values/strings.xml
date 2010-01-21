@@ -85,4 +85,5 @@
     <string name="journey_planner_label">Journey Planner</string>
     <string name="crash_report_mail_subject">STHLM Traveling Crash Report</string>
     <string name="crash_report_mail_body">By sending this crash report you are helping me to fix the bug. I won't use the information for any other thing.</string>
+    <string name="my_location_source_disabled">Please enable a My Location source in system settings</string>
 </resources>
