@@ -154,6 +154,7 @@ public class RoutesActivity extends ListActivity
 
         LocationManager locationManager =
             (LocationManager)getSystemService(LOCATION_SERVICE);
+
         mMyLocationManager = new MyLocationManager(locationManager);
 
         mStartPoint = new Stop();
