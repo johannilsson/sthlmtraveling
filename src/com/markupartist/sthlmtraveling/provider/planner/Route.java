@@ -20,8 +20,7 @@ import java.util.ArrayList;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-
-import com.markupartist.sthlmtraveling.R;
+import android.text.TextUtils;
 
 public class Route implements Parcelable {
     public String ident;
@@ -108,22 +107,11 @@ public class Route implements Parcelable {
     }
 
     public static class Transport implements Parcelable {
-        /*
-        public static final Transport BUS = new Transport(R.drawable.transport_bus, "Bus");
-        public static final Transport METRO_RED = new Transport(R.drawable.transport_metro_red, "Metro red line");
-        public static final Transport METRO_BLUE = new Transport(R.drawable.transport_metro_blue, "Metro blue line");
-        public static final Transport METRO_GREEN = new Transport(R.drawable.transport_metro_green, "Metro green line");
-        public static final Transport COMMUTER_TRAIN = new Transport(R.drawable.transport_train, "Commuter train");
-        public static final Transport TVARBANAN = new Transport(R.drawable.transport_train, "Tvärbanan");
-        public static final Transport SALTSJOBANAN = new Transport(R.drawable.transport_train, "Saltsjöbanan");
-        public static final Transport TRAIN = new Transport(R.drawable.transport_train, "Train");
-        */
-
         private int mImageResource;
         private String mName;
-        private int mLineNumber;
+        private String mLineNumber;
 
-        public Transport(int imageResource, String name, int lineNumber) {
+        public Transport(int imageResource, String name, String lineNumber) {
             mImageResource = imageResource;
             mName = name;
             mLineNumber = lineNumber;
@@ -137,14 +125,14 @@ public class Route implements Parcelable {
         public Transport(Parcel parcel) {
             mImageResource = parcel.readInt();
             mName = parcel.readString();
-            mLineNumber = parcel.readInt();
+            mLineNumber = parcel.readString();
         }
 
         /**
          * @return if the line number is greater than zero true otherwise false. 
          */
         public boolean hasLineNumber() {
-            return mLineNumber > 0;
+            return !TextUtils.isEmpty(mLineNumber);
         }
 
         public int imageResource() {
@@ -155,7 +143,7 @@ public class Route implements Parcelable {
             return mName;
         }
 
-        public int lineNumber() {
+        public String lineNumber() {
             return mLineNumber;
         }
 
@@ -173,7 +161,7 @@ public class Route implements Parcelable {
         public void writeToParcel(Parcel dest, int flags) {
             dest.writeInt(mImageResource);
             dest.writeString(mName);
-            dest.writeInt(mLineNumber);
+            dest.writeString(mLineNumber);
         }
 
         public static final Creator<Transport> CREATOR = new Creator<Transport>() {

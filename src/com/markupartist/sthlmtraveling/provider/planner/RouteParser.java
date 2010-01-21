@@ -38,7 +38,7 @@ import android.util.Log;
 
 public class RouteParser extends DefaultHandler {
     private static final String TAG = "RouteParser";
-    private static String TRANSPORT_PATTERN = "([A-Za-zåäöÅÄÖ ]+) (\\d+$)";
+    private static String TRANSPORT_PATTERN = "([A-Za-zåäöÅÄÖ ]+) ([\\d]+[ A-Z]?)$";
     private Pattern mTransportPattern = Pattern.compile(TRANSPORT_PATTERN);
     private ArrayList<Route> mRoutes = new ArrayList<Route>();
     private String mIdent;
@@ -134,27 +134,6 @@ public class RouteParser extends DefaultHandler {
             if (transport != null) {
                 mCurrentRoute.addTransport(transport);
             }
-            /*
-            if (mCurrentText.toLowerCase().contains("metro")) {
-                if (mCurrentText.contains("red")) {
-                    mCurrentRoute.addTransport(Route.Transport.METRO_RED);
-                } else if (mCurrentText.contains("blue")) {
-                    mCurrentRoute.addTransport(Route.Transport.METRO_BLUE);
-                } else if (mCurrentText.contains("green")) {
-                    mCurrentRoute.addTransport(Route.Transport.METRO_GREEN);
-                }
-            } else if (mCurrentText.toLowerCase().contains("commuter train")) {
-                mCurrentRoute.addTransport(Route.Transport.COMMUTER_TRAIN);
-            } else if (mCurrentText.toLowerCase().contains("train")) {
-                mCurrentRoute.addTransport(Route.Transport.TRAIN);
-            } else if (mCurrentText.toLowerCase().contains("tvärbanan")) {
-                mCurrentRoute.addTransport(Route.Transport.TVARBANAN);
-            } else if (mCurrentText.toLowerCase().contains("bus")) {
-                mCurrentRoute.addTransport(Route.Transport.BUS);
-            } else if (mCurrentText.toLowerCase().contains("saltsjöbanan")) {
-                mCurrentRoute.addTransport(Route.Transport.SALTSJOBANAN);
-            }
-            */
         }
     }
 
@@ -165,7 +144,7 @@ public class RouteParser extends DefaultHandler {
         Transport transport = null;
         if (matchFound) {
             String name = matcher.group(1);
-            int lineNumber = Integer.parseInt(matcher.group(2));
+            String lineNumber = matcher.group(2);
             transport = new Transport(
                     getTransportImageResource(name), name, lineNumber);
         } else {
