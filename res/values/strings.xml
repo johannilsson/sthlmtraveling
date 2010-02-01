@@ -27,6 +27,7 @@
     <string name="no_routes_found_label">Unfortunately no routes was found</string>
     <string name="no_routes_found_message">Please try entering another station/stop.</string>
     <string name="routes_label">Routes</string>
+    <string name="route_alternatives_label">Alternatives</string>
     <string name="route_details_label">Route details</string>
     <string name="no_route_details">Unfortunately there was no route found. Most likely this search was too old.</string>
     <string name="session_timeout_message">Most likely this search was too old.</string>
@@ -39,7 +40,7 @@
     <string name="change_date_and_time">Change date &amp; time</string>
     <string name="reverse_start_end">Reverse from &amp; to</string>
     <string name="about">About</string>
-    <string name="about_this_app">STHLM Traveling is developed by Johan Nilsson, please contact him if you have ideas or experience any problems using the Feedback button.\n\nAll data is gathered from SL - Stockholm Public Transport.\n\n<b>Credits</b>\n<li>App icon &amp; ideas Olof Brickarp\nhttp://www.yay.se</li>\n<li>Patches by Morgan Christiansson\nhttp://screeninteraction.com</li>\n<li>Icons by Fredrik Broman\nhttp://fredrikbroman.com</li>\n<li>Icons by Android Icons\nhttp://androidicons.com</li>\n<li>Icons by FatCow\nhttp://www.fatcow.com/free-icons</li>\n<li>Feedback from Swedroid\nhttp://swedroid.se</li></string>
+    <string name="about_this_app">STHLM Traveling is developed by Johan Nilsson, please contact him if you have ideas or experience any problems using the Feedback button.\n\nAll data is gathered from SL - Stockholm Public Transport.\n\n<b>Credits</b>\n<li>App icon &amp; ideas Olof Brickarp\nhttp://www.yay.se</li>\n<li>Swedish translation Jean Diarbakerli</li>\n<li>Patches by Morgan Christiansson\nhttp://screeninteraction.com</li>\n<li>Icons by Fredrik Broman\nhttp://fredrikbroman.com</li>\n<li>Icons by Android Icons\nhttp://androidicons.com</li>\n<li>Icons by FatCow\nhttp://www.fatcow.com/free-icons</li>\n<li>Feedback from Swedroid\nhttp://swedroid.se</li></string>
     <string name="donate">Donate</string>
     <string name="donate_url">http://pledgie.com/campaigns/6527</string>
     <string name="feedback">Feedback</string>
@@ -51,8 +52,10 @@
     <string name="network_problem_label">Network problem</string>
     <string name="network_problem_message">A network problem occurred</string>
     <string name="activity_create_shortcut">Routes</string>
+    <string name="activity_create_departure_shortcut">Departures</string>
     <string name="name_of_shortcut">Name of shortcut</string>
     <string name="create_shortcut_label">Create Shortcut</string>
+    <string name="create_shortcut_for_departure_label">Create shortcut for departure</string>
     <string name="choose_start_point_label">Choose start point</string>
     <string name="choose_end_point_label">Choose end point</string>
     <string name="send_feedback_email_title">STHLM Traveling feedback</string>
@@ -73,6 +76,7 @@
     <string name="departing_on">Departing <xliff:g id="time">%s</xliff:g> on <xliff:g id="date">%s</xliff:g></string>
     <string name="arriving_by">Arriving by <xliff:g id="time">%s</xliff:g> on <xliff:g id="date">%s</xliff:g></string>
     <string name="departures">Departures</string>
+    <string name="departures_for">Departures for <xliff:g id="site_name">%s</xliff:g></string>
     <string name="no_departures"><b>No Departures at the moment</b>\nOnly showing departures within 10 minutes. Please refresh using the menu option in a while.</string>
     <string name="site_name">Site name</string>
     <string name="refresh">Refresh</string>
@@ -86,4 +90,19 @@
     <string name="crash_report_mail_subject">STHLM Traveling Crash Report</string>
     <string name="crash_report_mail_body">By sending this crash report you are helping me to fix the bug. I won't use the information for any other thing.</string>
     <string name="my_location_source_disabled">Please enable a My Location source in system settings</string>
+    <string name="title_settings">Settings</string>
+    <string name="now_label">Now</string>
+    <string name="later_label">Later</string>
+    <string name="date_and_time_label">Date &amp; Time</string>
+    <string name="determining_your_position">Determining your position</string>
+    <string name="back">Back</string>
+    <string name="cancel">Cancel</string>
+    <string name="change">Change</string>
+    <!-- Preferences -->
+    <string name="restart_app_for_full_effect">Restart the app for full effect.</string>
+    <string name="dialog_general_preferences">Basics</string>
+    <string name="title_language_preference">Language</string>
+    <string name="summary_language_preference">Choose your preferred language.</string>
+    <string name="dialog_title_language_preference">Choose language</string>
+    <string name="settings_saved">Saved</string>
 </resources>

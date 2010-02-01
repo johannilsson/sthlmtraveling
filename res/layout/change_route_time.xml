@@ -62,7 +62,7 @@
         >
         <Button
             android:id="@+id/change_route_time_change"
-            android:text="Change"
+            android:text="@string/change"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
@@ -70,7 +70,7 @@
             />
         <Button
             android:id="@+id/change_route_time_cancel"
-            android:text="Cancel"
+            android:text="@string/cancel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"

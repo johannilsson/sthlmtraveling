@@ -97,7 +97,7 @@ public class Planner {
      * @throws IOException on network problems
      */
     public ArrayList<Route> findRoutes(Stop startPoint, Stop endPoint,
-            Time time, boolean isTimeDeparture) 
+            Time time, boolean isTimeDeparture, String languageCode) 
             throws IOException {
         Log.d(TAG, "Searching for startPoint=" + startPoint + ",endPoint=" + endPoint);
 
@@ -128,6 +128,7 @@ public class Planner {
                     + "&to=" + endPointEncoded
                     + "&time=" + timeEncoded
                     + "&isTimeDeparture=" + isDeparture
+                    + "&langCode=" + languageCode
                     + startPointPositionPart
                     + endPointPositionPart);
             HttpEntity entity = null;
@@ -152,7 +153,7 @@ public class Planner {
      * @throws IOException on network problems
      * @throws IllegalStateException if called before findRoutes
      */
-    public ArrayList<Route> findEarlierRoutes() throws IOException {
+    public ArrayList<Route> findEarlierRoutes(String languageCode) throws IOException {
         if (mIdent == null) {
             Log.e(TAG, "findEarlierRoutes was accessed before findRoutes.");
             throw new IllegalStateException("findRoutes must be run first.");
@@ -168,7 +169,8 @@ public class Planner {
             final HttpGet get = new HttpGet(plannerEndpoint()
                     + "?method=findEarlierRoutes"
                     + "&requestCount=" + mRequestCount
-                    + "&ident=" + ident);
+                    + "&ident=" + ident
+                    + "&langCode=" + languageCode);
             HttpEntity entity = null;
             final HttpResponse response = HttpManager.execute(get);
             if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
@@ -191,7 +193,7 @@ public class Planner {
      * @throws IOException on network problems
      * @throws IllegalStateException if called before findRoutes
      */
-    public ArrayList<Route> findLaterRoutes() throws IOException {
+    public ArrayList<Route> findLaterRoutes(String languageCode) throws IOException {
         if (mIdent == null) {
             Log.e(TAG, "findEarlierRoutes was accessed before findRoutes.");
             throw new IllegalStateException("findRoutes must be run first.");
@@ -207,7 +209,8 @@ public class Planner {
             final HttpGet get = new HttpGet(plannerEndpoint()
                     + "?method=findLaterRoutes"
                     + "&requestCount=" + mRequestCount
-                    + "&ident=" + ident);
+                    + "&ident=" + ident
+                    + "&langCode=" + languageCode);
             HttpEntity entity = null;
             final HttpResponse response = HttpManager.execute(get);
             if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
@@ -230,7 +233,8 @@ public class Planner {
      * @return a list of details, each string in the result represent a detail for each change
      * @throws IOException on network problems
      */
-    public ArrayList<String> findRouteDetails(Route route) throws IOException {
+    public ArrayList<String> findRouteDetails(Route route, String languageCode)
+            throws IOException {
         mRouteDetails = new ArrayList<String>();
 
         InputSource input;
@@ -241,7 +245,8 @@ public class Planner {
             final HttpGet get = new HttpGet(plannerEndpoint()
                     + "?method=routeDetail&ident=" + route.ident 
                     + "&routeId=" + route.routeId
-                    + "&requestCount=" + mRequestCount);
+                    + "&requestCount=" + mRequestCount
+                    + "&langCode=" + languageCode);
             HttpEntity entity = null;
             final HttpResponse response = HttpManager.execute(get);
             if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {

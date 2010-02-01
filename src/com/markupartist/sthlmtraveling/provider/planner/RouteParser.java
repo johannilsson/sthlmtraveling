@@ -155,17 +155,17 @@ public class RouteParser extends DefaultHandler {
     }
 
     private int getTransportImageResource(String name) {
-        if (name.toLowerCase().contains("metro")) {
-            if (name.contains("red")) {
+        if (name.toLowerCase().contains("metro") || name.toLowerCase().contains("tunnelbana")) {
+            if (name.contains("red") || name.contains("röd")) {
                 return R.drawable.transport_metro_red;
-            } else if (name.contains("blue")) {
+            } else if (name.contains("blue") || name.contains("blå")) {
                 return R.drawable.transport_metro_blue;
-            } else if (name.contains("green")) {
+            } else if (name.contains("green") || name.contains("grön")) {
                 return R.drawable.transport_metro_green;
             }
-        } else if (name.toLowerCase().contains("commuter train")) {
+        } else if (name.toLowerCase().contains("commuter train") || name.toLowerCase().contains("pendel")) {
             return R.drawable.transport_train;
-        } else if (name.toLowerCase().contains("train")) {
+        } else if (name.toLowerCase().contains("train") || name.toLowerCase().contains("tåg")) {
             return R.drawable.transport_train;
         } else if (name.toLowerCase().contains("tvärbanan")) {
             return R.drawable.transport_train;

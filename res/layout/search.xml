@@ -108,13 +108,13 @@
 		                android:id="@+id/planner_check_now"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-		                android:text="Now" />
+		                android:text="@string/now_label" />
                     <RadioButton
                         android:id="@+id/planner_check_later"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="15dip"
-                        android:text="Later"
+                        android:text="@string/later_label"
                     />
             </RadioGroup>
             

@@ -286,7 +286,11 @@ public class RouteDetailActivity extends ListActivity {
         @Override
         protected ArrayList<String> doInBackground(Route... params) {
             try {
-                return Planner.getInstance().findRouteDetails(params[0]);
+                String language = getApplicationContext()
+                    .getResources()
+                    .getConfiguration()
+                    .locale.getLanguage();
+                return Planner.getInstance().findRouteDetails(params[0], language);
             } catch (IOException e) {
                 mWasSuccess = false;
                 return null;

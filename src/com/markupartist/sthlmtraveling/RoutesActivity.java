@@ -275,7 +275,7 @@ public class RoutesActivity extends ListActivity
                     onMyLocationFound(location);
                 } else {
                     mMyLocationManager.requestLocationUpdates(this);
-                    mToast = Toast.makeText(this, "Determining your position", Toast.LENGTH_LONG);
+                    mToast = Toast.makeText(this, getText(R.string.determining_your_position), Toast.LENGTH_LONG);
                     mToast.show();
                 }
             } else {
@@ -497,8 +497,8 @@ public class RoutesActivity extends ListActivity
         mMultipleListAdapter.addAdapter(ADAPTER_ROUTES, mRouteAdapter);
         mMultipleListAdapter.addAdapter(ADAPTER_LATER, laterAdapter);
 
-        mSectionedAdapter.addSection(SECTION_CHANGE_TIME, "Date & Time", dateTimeAdapter);
-        mSectionedAdapter.addSection(SECTION_ROUTES, "Routes", mMultipleListAdapter);
+        mSectionedAdapter.addSection(SECTION_CHANGE_TIME, getString(R.string.date_and_time_label), dateTimeAdapter);
+        mSectionedAdapter.addSection(SECTION_ROUTES, getString(R.string.route_alternatives_label), mMultipleListAdapter);
 
         setListAdapter(mSectionedAdapter);
     }
@@ -801,13 +801,13 @@ public class RoutesActivity extends ListActivity
             return new AlertDialog.Builder(this)
             .setTitle(getText(R.string.no_routes_found_label))
             .setMessage(getText(R.string.no_routes_found_message))
-            .setPositiveButton("Back", new OnClickListener() {
+            .setPositiveButton(getText(R.string.back), new OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     finish();
                 }
             })
-            .setNegativeButton(getText(android.R.string.cancel), null)
+            .setNegativeButton(getText(R.string.cancel), null)
             .create();
         }
         return null;
@@ -1034,9 +1034,13 @@ public class RoutesActivity extends ListActivity
         @Override
         protected ArrayList<Route> doInBackground(Object... params) {
             try {
+                String language = getApplicationContext()
+                    .getResources()
+                    .getConfiguration()
+                    .locale.getLanguage();
                 return Planner.getInstance().findRoutes(
                         (Stop) params[0], (Stop) params[1], (Time) params[2],
-                        (Boolean) params[3]);
+                        (Boolean) params[3], language);
             } catch (IOException e) {
                 mWasSuccess = false;
                 return null;
@@ -1071,7 +1075,11 @@ public class RoutesActivity extends ListActivity
         @Override
         protected ArrayList<Route> doInBackground(Void... params) {
             try {
-                return Planner.getInstance().findEarlierRoutes();
+                String language = getApplicationContext()
+                    .getResources()
+                    .getConfiguration()
+                    .locale.getLanguage();
+                return Planner.getInstance().findEarlierRoutes(language);
             } catch (IOException e) {
                 mWasSuccess = false;
                 return null;
@@ -1106,7 +1114,11 @@ public class RoutesActivity extends ListActivity
         @Override
         protected ArrayList<Route> doInBackground(Void... params) {
             try {
-                return Planner.getInstance().findLaterRoutes();
+                String language = getApplicationContext()
+                    .getResources()
+                    .getConfiguration()
+                    .locale.getLanguage();
+                return Planner.getInstance().findLaterRoutes(language);
             } catch (IOException e) {
                 mWasSuccess = false;
                 return null;

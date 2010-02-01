@@ -72,6 +72,18 @@ STHLM Traveling is open source and licensed under
 
 Changelog
 ---------
+* 1.5.2
+    * Bug fix for transports without line numbers
+    * Bug fix for line numbers, now Bus 123A will be parsed correct
+    * Bug fix when my location sources is turned of in system settings
+    * Added transport for the airport coach
+* 1.5.1
+    * Added line numbers in the routes view
+    * Added a crash reporter
+    * Added icon for boat
+* 1.5.0
+    * Added departures
+    * Changed to use the Apache http client
 * 1.4.2
     * Added support for setting arrival time
 * 1.4.1

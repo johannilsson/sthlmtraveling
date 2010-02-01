@@ -141,8 +141,7 @@ public class DeparturesActivity extends ListActivity {
 
         mDepartureResult = result;
 
-        setTitle(String.format("%s for %s",
-                getString(R.string.departures), mSite.getName()));
+        setTitle(getString(R.string.departures_for, mSite.getName()));
 
         mSectionedAdapter.notifyDataSetChanged();
         setListAdapter(mSectionedAdapter);

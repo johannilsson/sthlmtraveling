@@ -19,13 +19,13 @@
 
 <resources>
     <string-array name="when_choice">
-        <item>Departure time</item>
-        <item>Arrival time</item>
+        <item>Avgång</item>
+        <item>Ankomst</item>
     </string-array>
 
     <!-- Preferences -->
     <string-array name="entries_language_preference">
-        <item>System Locale</item>
+        <item>Systemets Locale</item>
         <item>Svenska</item><!-- Do not translate -->
         <item>English</item><!-- Do not translate -->
     </string-array>
@@ -34,5 +34,4 @@
         <item>sv</item><!-- Do not translate -->
         <item>en</item><!-- Do not translate -->
     </string-array>
-
 </resources>

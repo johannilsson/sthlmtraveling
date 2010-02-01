@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*
+** Copyright (C) 2009 Johan Nilsson <http://markupartist.com>
+**
+** Licensed under the Apache License, Version 2.0 (the "License"); 
+** you may not use this file except in compliance with the License. 
+** You may obtain a copy of the License at 
+**
+**     http://www.apache.org/licenses/LICENSE-2.0 
+**
+** Unless required by applicable law or agreed to in writing, software 
+** distributed under the License is distributed on an "AS IS" BASIS, 
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+** See the License for the specific language governing permissions and 
+** limitations under the License.
+*/
+-->
+
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="app_name">STHLM Traveling</string>
+    <string name="from">Från</string>
+    <string name="to">Till</string>
+    <string name="search_label">Sök</string>
+    <string name="departing">Avgår</string>
+    <string name="arriving">Ankommer</string>
+    <string name="no_routes_found_label">Inga resvägar hittades</string>
+    <string name="no_routes_found_message">Var god ange en annan hållplats.</string>
+    <string name="routes_label">Resvägar</string>
+    <string name="route_alternatives_label">Alternativ</string>
+    <string name="route_details_label">Detaljerad beskrivning</string> 
+    <string name="no_route_details">Inga resvägar hittades. Detta antagligen beroende på att avgångstiden har passerat.</string>
+    <string name="session_timeout_message">Sökningen är troligtvis utdaterad.</string>
+    <string name="attention_label">Varning</string>
+    <string name="bad_routes_parameters_message">Från- eller Till-fältet får inte lämnas blankt.</string>
+    <string name="new_search">Sök</string>
+    <string name="empty_value">Värde saknas</string>
+    <string name="loading">Söker... Var god dröj</string>
+    <string name="my_location">Min position</string>
+    <string name="change_date_and_time">Ändra datum &amp; tid</string>
+    <string name="reverse_start_end">Ändra ordning på från &amp; till</string>
+    <string name="about">Om</string>
+    <string name="about_this_app">STHLM Traveling är utvecklat av Johan Nilsson. Kontakta honom om du har idéer på vidare förbättringar eller vid problem via Feedback-knappen.\n\nAll data är hämtad från AB Storstockholms Lokaltrafik.\n\n<b>Credits</b>\n<li>Programikon &amp; idéer av Olof Brickarp\nhttp://www.yay.se</li>\n<li>Svensk översättning Jean Diarbakerli</li>\n<li>Patchar av Morgan Christiansson\nhttp://screeninteraction.com</li>\n<li>Ikoner av Fredrik Broman\nhttp://fredrikbroman.com</li>\n<li>Ikoner av Android Icons\nhttp://androidicons.com</li>\n<li>Ikoner av FatCow\nhttp://www.fatcow.com/free-icons</li>\n<li>Feedback från Swedroid\nhttp://swedroid.se</li></string>
+    <string name="donate">Donera</string>
+    <string name="donate_url">http://pledgie.com/campaigns/6527</string>
+    <string name="feedback">Feedback</string>
+    <string name="send_email">Skicka e-mail</string>
+    <string name="favorites_label">Favoriter</string>
+    <string name="no_favorites"><b>Du har inga favoriter</b>\nLägg till och ta bort favoriter genom att trycka på knappen med en stjärna efter en sökning.</string>
+    <string name="no_location_title">Lokaliseringsproblem</string>
+    <string name="no_location_message">Misslyckades med att fastställa din position.</string>
+    <string name="network_problem_label">Problem med nätverket</string>
+    <string name="network_problem_message">Ett nätverksfel inträffade</string>
+    <string name="activity_create_shortcut">Resvägar</string>
+    <string name="activity_create_departure_shortcut">Avgångar</string>
+    <string name="name_of_shortcut">Namn på genväg</string>
+    <string name="create_shortcut_label">Skapa genväg</string>
+    <string name="create_shortcut_for_departure_label">Skapa genväg för avångar</string>
+    <string name="choose_start_point_label">Välj avgångspunkt</string>
+    <string name="choose_end_point_label">Välj ankomstpunkt</string>
+    <string name="send_feedback_email_title">STHLM Traveling feedback</string>
+    <string name="send_feedback_email_emailaddress">sthlmtraveling@markupartist.com</string>
+    <string name="history_label">Historik</string>
+    <string name="show_qr_code">Visa QR Kod</string>
+    <string name="yes">Ja</string>
+    <string name="no">Nej</string>
+    <string name="retry">Försök igen</string>
+    <string name="requires_barcode_scanner_message">Detta program kräver att användaren har programmet Barcode Scanner installerat. Vill du installera det?</string>
+    <string name="install_barcode_scanner_title">Installera Barcode Scanner?</string>
+    <string name="point_on_map">Välj en plats på kartan</string>
+    <string name="tap_to_select_this_point">Tryck för att välja denna plats</string>
+    <string name="point_selected">Plats vald</string>
+    <string name="tap_your_end_point_on_map">Välj ankomstpunkt på kartan</string>
+    <string name="tap_your_start_point_on_map">Välj avgångspunkt på kartan</string>
+    <string name="tap_your_location_on_map">Misslyckades med att bestämma din position. Välj denna på kartan.</string>
+    <string name="departing_on">Avgår <xliff:g id="time">%s</xliff:g> den <xliff:g id="date">%s</xliff:g></string>
+    <string name="arriving_by">Anländer <xliff:g id="time">%s</xliff:g> den <xliff:g id="date">%s</xliff:g></string>
+    <string name="departures">Avgångar</string>
+    <string name="departures_for">Avgångar för <xliff:g id="site_name">%s</xliff:g></string>
+    <string name="no_departures"><b>Inga avgångar hittades</b>\nEnbart avgångar inom 10 minuter listas. Uppdatera via menyn om ett tag.</string>
+    <string name="site_name">Hållplatsnamn</string>
+    <string name="refresh">Uppdatera</string>
+    <string name="show_departures_for_start">Avgångar från hållplatsen du vill åka från</string>
+    <string name="metros">Tunnelbana</string>
+    <string name="buses">Bussar</string>
+    <string name="trains">Pendeltåg</string>
+    <string name="trams">Lokalbana</string>
+    <string name="now">Nu</string>
+    <string name="journey_planner_label">Reseplanerare</string>
+    <string name="crash_report_mail_subject">STHLM Traveling Crash Report</string><!-- Do not translate -->
+    <string name="crash_report_mail_body">By sending this crash report you are helping me to fix the bug. I won't use the information for any other thing.</string>
+    <string name="my_location_source_disabled">Lägg till "Min position" källa under systeminställningar.</string>
+    <string name="title_settings">Inställningar</string>
+    <string name="now_label">Nu</string>
+    <string name="later_label">Senare</string>
+    <string name="date_and_time_label">Datum &amp; Tid</string>
+    <string name="determining_your_position">Fastställer din position</string>
+    <string name="back">Tillbaka</string>
+    <string name="cancel">Avbryt</string>
+    <string name="change">Ändra</string>
+    <!-- Preferences -->
+    <string name="restart_app_for_full_effect">Starta om appen för att ändringen ska slå igenom fullt.</string>
+    <string name="dialog_general_preferences">Grundläggande</string>
+    <string name="title_language_preference">Språk</string>
+    <string name="summary_language_preference">Föredraget språk</string>
+    <string name="dialog_title_language_preference">Välj språk</string>
+    <string name="settings_saved">Sparat</string>
+</resources>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="com.markupartist.sthlmtraveling"
-      android:versionName="1.5.1" android:versionCode="30">
+      android:versionName="1.6.0" android:versionCode="34">
     <supports-screens
         android:largeScreens="true"
         android:normalScreens="true"
@@ -51,8 +51,23 @@
                   android:label="@string/point_on_map"></activity>
         <activity android:name=".SearchDeparturesActivity"
                   android:label="@string/departures"></activity>
+        <activity-alias android:name="CreateDepartureShortcutActivity"
+            android:targetActivity="SearchDeparturesActivity"
+            android:label="@string/activity_create_departure_shortcut">
+            <intent-filter>
+                <action android:name="android.intent.action.CREATE_SHORTCUT" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity-alias>
         <activity android:name=".DeparturesActivity"
-                  android:label="@string/departures"></activity>
+                  android:label="@string/departures">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+        <activity android:name=".SettingsActivity"
+                  android:label="@string/title_settings"></activity>
 </application>
     <uses-sdk android:minSdkVersion="3" android:targetSdkVersion="4" />
     <uses-permission android:name="android.permission.INTERNET"></uses-permission>

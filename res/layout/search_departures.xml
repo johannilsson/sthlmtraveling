@@ -23,6 +23,53 @@
     android:paddingTop="7dip"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content">
+
+    <LinearLayout 
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:addStatesFromChildren="true"
+        android:gravity="center_vertical"
+        android:paddingRight="0dip"
+        android:paddingTop="0dip"
+        >
+        <!-- Empty dummy to prevent AutoCompleteTextView from receiving focus -->
+        <LinearLayout
+            android:focusable="true" android:focusableInTouchMode="true"
+            android:layout_width="0px" android:layout_height="0px"
+        />
+        <AutoCompleteTextView 
+            android:id="@+id/sites"
+            android:hint="@string/site_name"
+            android:dropDownWidth="fill_parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:layout_weight="1"
+            android:imeOptions="actionDone"
+            />
+        <ImageButton
+                android:id="@+id/site_menu"
+                android:src="@android:drawable/ic_input_get"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dip"
+                android:layout_marginRight="2dip"
+                android:layout_marginBottom="2dip"
+                android:padding="5dip"
+            />
+    </LinearLayout>
+    <!-- Empty dummy to prevent AutoCompleteTextView from receiving focus -->
+    <LinearLayout
+        android:focusable="true" android:focusableInTouchMode="true"
+        android:layout_width="0px" android:layout_height="0px"
+    />
+    <Button
+        android:layout_marginTop="5dip"
+        android:id="@+id/search_departure"
+        android:text="@string/search_label"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"/>
+<!-- 
 	<AutoCompleteTextView 
 	    android:id="@+id/sites"
 	    android:hint="@string/site_name"
@@ -39,5 +86,6 @@
         android:text="@string/search_label"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"/>
+ -->
 </LinearLayout>
 

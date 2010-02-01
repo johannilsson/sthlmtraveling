@@ -565,6 +565,11 @@ public class PlannerActivity extends Activity implements OnCheckedChangeListener
                 mStartPointAutoComplete.setText(endPoint);
                 mEndPointAutoComplete.setText(startPoint);
                 return true;
+            case R.id.menu_settings:
+                Intent settingsIntent = new Intent()
+                        .setClass(this, SettingsActivity.class);
+                startActivity(settingsIntent);
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen
+        xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory
+            android:title="@string/dialog_general_preferences">
+         <ListPreference
+                android:negativeButtonText="@string/cancel"
+                android:key="prefered_language_preference"
+                android:title="@string/title_language_preference"
+                android:summary="@string/summary_language_preference"
+                android:entries="@array/entries_language_preference"
+                android:entryValues="@array/entryvalues_language_preference"
+                android:dialogTitle="@string/dialog_title_language_preference" />
+    </PreferenceCategory>
+</PreferenceScreen>
