@@ -71,6 +71,7 @@ public class PlannerActivity extends Activity implements OnCheckedChangeListener
     private static final int DIALOG_DIALOG_DATE = 6;
     private static final int DIALOG_TIME = 7;
     private static final int DIALOG_CREATE_SHORTCUT_NAME = 8;
+    private static final int DIALOG_REINSTALL_APP = 9;
     protected static final int REQUEST_CODE_POINT_ON_MAP_START = 0;
     protected static final int REQUEST_CODE_POINT_ON_MAP_END = 1;
 
@@ -98,10 +99,15 @@ public class PlannerActivity extends Activity implements OnCheckedChangeListener
             mCreateShortcut = true;
         }
 
-        mHistoryDbAdapter = new HistoryDbAdapter(this).open();
-
         mStartPointAutoComplete = createAutoCompleteTextView(R.id.from, mStartPoint);
         mEndPointAutoComplete = createAutoCompleteTextView(R.id.to, mEndPoint);
+
+        try {
+            mHistoryDbAdapter = new HistoryDbAdapter(this).open();
+        } catch (Exception e) {
+            showDialog(DIALOG_REINSTALL_APP);
+            return;
+        }
 
         // Setup search button.
         final Button search = (Button) findViewById(R.id.search_route);
@@ -516,6 +522,13 @@ public class PlannerActivity extends Activity implements OnCheckedChangeListener
                         onCreateShortCut(mStartPoint, mEndPoint, shortCutName.getText().toString());
                     }
                 })
+                .create();
+        case DIALOG_REINSTALL_APP:
+            return new AlertDialog.Builder(this)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setTitle(getText(R.string.attention_label))
+                .setMessage(getText(R.string.reinstall_app_message))
+                .setPositiveButton(android.R.string.ok, null)
                 .create();
         }
         return dialog;
