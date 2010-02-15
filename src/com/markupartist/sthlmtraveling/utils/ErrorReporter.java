@@ -280,14 +280,21 @@ public class ErrorReporter implements Thread.UncaughtExceptionHandler {
                     }
 
                     // DELETE FILES !!!!
-                    File curFile = new File(FilePath + "/" + curString);
-                    curFile.delete();
+                    //File curFile = new File(FilePath + "/" + curString);
+                    //curFile.delete();
+                    deleteFile(curString);
                 }
                 sendErrorMail(_context, WholeErrorText);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public void deleteFile(String file) {
+        // DELETE FILES !!!!
+        File curFile = new File(FilePath + "/" + file);
+        curFile.delete();
     }
 
     public void checkErrorAndReport(final Context context) {
@@ -299,13 +306,28 @@ public class ErrorReporter implements Thread.UncaughtExceptionHandler {
                                 "A previous crash was reported. Would you like to send"
                                         + " the developer the error log to fix this issue in the future?")
                         .setPositiveButton("OK", new OnClickListener() {
-
                             @Override
                             public void onClick(DialogInterface dialog,
                                     int which) {
                                 checkErrorAndSendMail(context);
                             }
-                        }).setNegativeButton("Cancel", null).show();
+                        }).setNegativeButton("Cancel", new OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog,
+                                    int which) {
+                                try {
+                                    if (isThereAnyErrorFile()) {
+                                        String[] ErrorFileList = getErrorFileList();
+                                        for (String curString : ErrorFileList) {
+                                            deleteFile(curString);
+                                        }
+                                    }
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        })
+                        .show();
             }
         } catch (Exception e) {
             e.printStackTrace();
