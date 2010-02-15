@@ -28,6 +28,7 @@ import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
+import android.util.DisplayMetrics;
 
 /**
  * Represent a marker with a label inside.
@@ -68,6 +69,7 @@ public class LabelMarker {
      */
     public BitmapDrawable create() {
         // Measure the title size in pixels
+
         Paint paint = new Paint();
         paint.setTextSize(mTextSize);
         Rect textSize = new Rect();
