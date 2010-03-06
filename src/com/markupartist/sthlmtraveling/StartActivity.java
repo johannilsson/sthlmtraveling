@@ -16,12 +16,13 @@
 
 package com.markupartist.sthlmtraveling;
 
-import com.markupartist.sthlmtraveling.utils.ErrorReporter;
-
 import android.app.TabActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TabHost;
+
+import com.markupartist.sthlmtraveling.service.DeviationService;
+import com.markupartist.sthlmtraveling.utils.ErrorReporter;
 
 public class StartActivity extends TabActivity {
     @Override
@@ -47,7 +48,15 @@ public class StartActivity extends TabActivity {
         tabHost.addTab(tabHost.newTabSpec("departures")
                 .setIndicator(getText(R.string.departures), 
                         getResources().getDrawable(R.drawable.tab_departures))
-                .setContent(new Intent(this, SearchDeparturesActivity.class)));        
+                .setContent(new Intent(this, SearchDeparturesActivity.class)));
+
+        tabHost.addTab(tabHost.newTabSpec("deviations")
+                .setIndicator(getText(R.string.deviations_label), 
+                        getResources().getDrawable(R.drawable.tab_deviations))
+                .setContent(new Intent(this, DeviationsActivity.class)));
+
+        // Start background service.
+        DeviationService.startAsRepeating(getApplicationContext());
     }
 
 }
