@@ -259,7 +259,8 @@ public class DeparturesActivity extends ListActivity {
      * Cancels the {@link GetSitesTask} if it is running.
      */
     private void onCancelGetSitesTask() {
-        if (mGetSitesTask != null && mGetSitesTask.getStatus() == AsyncTask.Status.RUNNING) {
+        if (mGetSitesTask != null &&
+                mGetSitesTask.getStatus() == AsyncTask.Status.RUNNING) {
             Log.i(TAG, "Cancels GetSitesTask.");
             mGetSitesTask.cancel(true);
             mGetSitesTask = null;
@@ -298,7 +299,8 @@ public class DeparturesActivity extends ListActivity {
      * Cancels the {@link GetDeparturesTask} if it is running.
      */
     private void onCancelGetDeparturesTask() {
-        if (mGetDeparturesTask != null && mGetDeparturesTask.getStatus() == AsyncTask.Status.RUNNING) {
+        if (mGetDeparturesTask != null &&
+                mGetDeparturesTask.getStatus() == AsyncTask.Status.RUNNING) {
             Log.i(TAG, "Cancels GetDeparturesTask.");
             mGetDeparturesTask.cancel(true);
             mGetDeparturesTask= null;
