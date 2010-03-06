@@ -20,7 +20,7 @@
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
-    <TextView android:id="@+id/empty_result"
+    <TextView android:id="@+id/departures_empty_result"
         android:visibility="gone"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
@@ -29,17 +29,6 @@
         android:text="@string/no_departures"
         android:textSize="16dip"
         />
-    <!-- 
-    <TextView
-        android:id="@+id/result_updated"
-        android:visibility="gone"
-        android:layout_width="fill_parent" 
-        android:layout_height="wrap_content" 
-        android:background="#999999"
-        android:padding="5dip"
-        android:textColor="?android:attr/textColorPrimary"
-        />
-    -->
 	<ListView
 	    android:id="@+id/android:list"
 	    android:layout_width="fill_parent" 
