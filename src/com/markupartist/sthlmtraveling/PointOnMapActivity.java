@@ -1,6 +1,7 @@
 package com.markupartist.sthlmtraveling;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.List;
 
 import android.content.Context;
@@ -15,6 +16,7 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -38,7 +40,6 @@ import de.android1.overlaymanager.OverlayManager;
 import de.android1.overlaymanager.ZoomEvent;
 
 public class PointOnMapActivity extends MapActivity {
-
     private static final String TAG = "PointOnMapActivity";
 
     public static String EXTRA_STOP = "com.markupartist.sthlmtraveling.pointonmap.stop";
@@ -64,7 +65,29 @@ public class PointOnMapActivity extends MapActivity {
 
         showHelpToast(helpText);
 
-        mLabelMarker = new LabelMarker(getString(R.string.tap_to_select_this_point), 15);
+        int textSize = 17;
+        /*try {
+            DisplayMetrics metrics = new DisplayMetrics();
+            getWindowManager().getDefaultDisplay().getMetrics(metrics);
+
+            Field densityDpiFiled = DisplayMetrics.class.getField("densityDpi");
+            int densityDpi = densityDpiFiled.getInt(null);
+            if (densityDpi == DisplayMetrics.DENSITY_HIGH) {
+                textSize = 22;
+            }
+        } catch (NoSuchFieldException e) {
+            Log.d(TAG, "Older device...");
+            ; // Just pass, we are dealing with an older device.
+        } catch (IllegalArgumentException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        */
+
+        mLabelMarker = new LabelMarker(getString(R.string.tap_to_select_this_point), textSize);
 
         mMapView = (MapView) findViewById(R.id.mapview);
         mMapView.setBuiltInZoomControls(true);

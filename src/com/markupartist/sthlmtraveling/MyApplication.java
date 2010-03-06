@@ -10,6 +10,7 @@ import android.preference.PreferenceManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
 
+import com.markupartist.sthlmtraveling.service.DeviationService;
 import com.markupartist.sthlmtraveling.utils.ErrorReporter;
 
 public class MyApplication extends Application {
@@ -22,7 +23,7 @@ public class MyApplication extends Application {
 
         final ErrorReporter reporter = ErrorReporter.getInstance();
         reporter.init(getApplicationContext());
-
+        
         reloadLocaleForApplication();
     }
 
