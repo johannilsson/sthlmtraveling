@@ -21,7 +21,7 @@
     <item
         android:id="@+id/menu_departures_for_start"
         android:title="@string/show_departures_for_start"
-        android:icon="@drawable/clock"
+        android:icon="@drawable/ic_menu_clock"
         />
 	<item
 		android:id="@+id/new_search"
