@@ -226,7 +226,6 @@ public class DeparturesActivity extends ListActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        Log.d(TAG, "onResume");
     }
 
     @Override
@@ -257,6 +256,17 @@ public class DeparturesActivity extends ListActivity {
     }
 
     /**
+     * Cancels the {@link GetSitesTask} if it is running.
+     */
+    private void onCancelGetSitesTask() {
+        if (mGetSitesTask != null && mGetSitesTask.getStatus() == AsyncTask.Status.RUNNING) {
+            Log.i(TAG, "Cancels GetSitesTask.");
+            mGetSitesTask.cancel(true);
+            mGetSitesTask = null;
+        }
+    }
+
+    /**
      * Restores the {@link GetSitesTask}.
      * @param savedInstanceState the saved state
      */
@@ -281,6 +291,17 @@ public class DeparturesActivity extends ListActivity {
             mGetSitesTask = null;
             outState.putBoolean(STATE_GET_SITES_IN_PROGRESS, true);
             outState.putString(EXTRA_SITE_NAME, mSiteName);
+        }
+    }
+
+    /**
+     * Cancels the {@link GetDeparturesTask} if it is running.
+     */
+    private void onCancelGetDeparturesTask() {
+        if (mGetDeparturesTask != null && mGetDeparturesTask.getStatus() == AsyncTask.Status.RUNNING) {
+            Log.i(TAG, "Cancels GetDeparturesTask.");
+            mGetDeparturesTask.cancel(true);
+            mGetDeparturesTask= null;
         }
     }
 
@@ -405,6 +426,10 @@ public class DeparturesActivity extends ListActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+
+        onCancelGetSitesTask();
+        onCancelGetDeparturesTask();
+
         dismissProgress();
     }
 
