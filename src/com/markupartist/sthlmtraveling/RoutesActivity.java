@@ -340,6 +340,11 @@ public class RoutesActivity extends ListActivity
     @Override
     protected void onDestroy() {
         super.onDestroy();
+
+        onCancelSearchRoutesTask();
+        onCancelGetEarlierRoutesTask();
+        onCancelGetLaterRoutesTask();
+
         if (mFavoritesDbAdapter != null) {
             mFavoritesDbAdapter.close();
         }
@@ -384,6 +389,17 @@ public class RoutesActivity extends ListActivity
     }
 
     /**
+     * Cancels a search routes task if it is running.
+     */
+    private void onCancelSearchRoutesTask() {
+        if (mSearchRoutesTask != null && mSearchRoutesTask.getStatus() == AsyncTask.Status.RUNNING) {
+            Log.i(TAG, "Cancels the search routes task.");
+            mSearchRoutesTask.cancel(true);
+            mSearchRoutesTask = null;
+        }
+    }
+    
+    /**
      * Restores the search routes task.
      * @param savedInstanceState the saved state
      */
@@ -411,6 +427,18 @@ public class RoutesActivity extends ListActivity
     }
 
     /**
+     * Cancel the get earlier routes task if it is running.
+     */
+    private void onCancelGetEarlierRoutesTask() {
+        if (mGetEarlierRoutesTask != null &&
+                mGetEarlierRoutesTask.getStatus() == AsyncTask.Status.RUNNING) {
+            Log.i(TAG, "Cancels the get earlier routes task.");
+            mGetEarlierRoutesTask.cancel(true);
+            mGetEarlierRoutesTask = null;
+        }
+    }
+    
+    /**
      * Restores the task for getting earlier routes task.
      * @param savedInstanceState the saved state
      */
@@ -433,6 +461,18 @@ public class RoutesActivity extends ListActivity
             task.cancel(true);
             mGetEarlierRoutesTask = null;
             outState.putBoolean(STATE_GET_EARLIER_ROUTES_IN_PROGRESS, true);
+        }
+    }
+
+    /**
+     * Cancel the get later routes task if it is running.
+     */
+    private void onCancelGetLaterRoutesTask() {
+        if (mGetLaterRoutesTask != null &&
+                mGetLaterRoutesTask.getStatus() == AsyncTask.Status.RUNNING) {
+            Log.i(TAG, "Cancels the get later routes task.");
+            mGetLaterRoutesTask.cancel(true);
+            mGetLaterRoutesTask = null;
         }
     }
 
