@@ -1,5 +1,7 @@
 package com.markupartist.sthlmtraveling;
 
+import com.markupartist.sthlmtraveling.service.DeviationService;
+
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
@@ -25,6 +27,8 @@ public class SettingsActivity extends PreferenceActivity
             application.reloadLocaleForApplication();
             Toast.makeText(this, R.string.restart_app_for_full_effect,
                     Toast.LENGTH_LONG).show();
+        } else if (key.equals("notification_deviations_enabled")) {
+            DeviationService.startAsRepeating(SettingsActivity.this);
         }
 
         Toast.makeText(this, R.string.settings_saved, Toast.LENGTH_LONG).show();
