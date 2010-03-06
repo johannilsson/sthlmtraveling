@@ -13,4 +13,29 @@
                 android:entryValues="@array/entryvalues_language_preference"
                 android:dialogTitle="@string/dialog_title_language_preference" />
     </PreferenceCategory>
+    <PreferenceCategory
+            android:title="@string/dialog_notification_preferences">
+        <CheckBoxPreference
+            android:key="notification_deviations_enabled"
+            android:title="@string/deviation_notification_preference"
+            android:summary="@string/deviation_notification_summary_preference" 
+            />
+         <ListPreference
+                android:negativeButtonText="@string/cancel"
+                android:key="notification_deviations_update_interval"
+                android:title="@string/deviation_update_interval_preference"
+                android:summary="@string/deviation_update_interval_summary_preference"
+                android:entries="@array/entries_deviations_preference"
+                android:entryValues="@array/entryvalues_deviations_preference"
+                android:dependency="notification_deviations_enabled"
+                />
+        <EditTextPreference
+            android:key="notification_deviations_lines_csv"
+            android:title="@string/deviation_lines_preference"
+            android:summary="@string/deviation_lines_summary_preference"
+            android:dialogMessage="@string/deviation_lines_dialog_message_preference"
+            android:dependency="notification_deviations_enabled"
+            android:hint="4,42"
+            />
+    </PreferenceCategory>
 </PreferenceScreen>
