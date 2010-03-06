@@ -119,8 +119,6 @@ public class DeviationsActivity extends ListActivity {
         now.setToNow();
         for (Deviation deviation : deviations) {
             Time created = deviation.getCreated();
-            // TODO: Fix timezone stuff...
-            //created.switchTimezone("CET");
 
             Map<String, String> map = new HashMap<String, String>();
             map.put("header", deviation.getHeader());
