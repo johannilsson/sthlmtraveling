@@ -112,7 +112,7 @@ public class DeparturesActivity extends ListActivity {
     }
 
     private void fillData(HashMap<String,DepartureList> result) {
-        TextView emptyResultView = (TextView) findViewById(R.id.empty_result);
+        TextView emptyResultView = (TextView) findViewById(R.id.departures_empty_result);
         //TextView resultUpdatedView = (TextView) findViewById(R.id.result_updated);
         if (result.isEmpty()) {
             Log.d(TAG, "is empty");
