@@ -34,5 +34,18 @@
         <item>sv</item><!-- Do not translate -->
         <item>en</item><!-- Do not translate -->
     </string-array>
-
+    <string-array name="entries_deviations_preference">
+        <item>10 min</item>
+        <item>15 min</item>
+        <item>30 min</item>
+        <item>45 min</item>
+        <item>1 h</item>
+    </string-array>
+    <string-array name="entryvalues_deviations_preference">
+        <item>600000</item><!-- Do not translate -->
+        <item>900000</item><!-- Do not translate -->
+        <item>1800000</item><!-- Do not translate -->
+        <item>2700000</item><!-- Do not translate -->
+        <item>3600000</item><!-- Do not translate -->
+    </string-array>
 </resources>

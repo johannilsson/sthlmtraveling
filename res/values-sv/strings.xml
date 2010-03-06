@@ -98,11 +98,23 @@
     <string name="back">Tillbaka</string>
     <string name="cancel">Avbryt</string>
     <string name="change">Ändra</string>
+    <string name="deviations_label">Störningar</string>
+    <string name="new_deviations">Nya störningar i trafiken.</string>
+    <string name="no_deviations"><b>Inga kända störningar</b></string>
+    <string name="reinstall_app_message">Tyvärr måste du installera STHLM Traveling på nytt för att forsätta använda den fullt ut.\n\nDetta är orsakat av en bugg i Android. För en utförligare beskrivning läs mer på min blogg, http://bit.ly/fcissue.\n\nJag är verkligen ledsen för det här!</string>
     <!-- Preferences -->
     <string name="restart_app_for_full_effect">Starta om appen för att ändringen ska slå igenom fullt.</string>
     <string name="dialog_general_preferences">Grundläggande</string>
+    <string name="dialog_notification_preferences">Aviseringar</string>
     <string name="title_language_preference">Språk</string>
     <string name="summary_language_preference">Föredraget språk</string>
     <string name="dialog_title_language_preference">Välj språk</string>
     <string name="settings_saved">Sparat</string>
+    <string name="deviation_notification_preference">Aviseringar för störningar</string>
+    <string name="deviation_notification_summary_preference">Experimentell. Drar batteri och kräver uppkoppling till internet periodvis.</string>
+    <string name="deviation_update_interval_preference">Interval för uppdateringar</string>
+    <string name="deviation_update_interval_summary_preference">Längre interval sparar batteri.</string>
+    <string name="deviation_lines_preference">Linjer</string>
+    <string name="deviation_lines_summary_preference">Kommaseparerad lista över linjenummer du vill bevaka. Ex: '42,28,707'.</string>
+    <string name="deviation_lines_dialog_message_preference">Separera linjenummer med ett komma. Ex: '42,28,707'.</string>
 </resources>

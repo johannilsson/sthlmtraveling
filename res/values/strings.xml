@@ -78,7 +78,7 @@
     <string name="departures">Departures</string>
     <string name="departures_for">Departures for <xliff:g id="site_name">%s</xliff:g></string>
     <string name="no_departures"><b>No Departures at the moment</b>\nOnly showing departures within 10 minutes. Please refresh using the menu option in a while.</string>
-    <string name="site_name">Site name</string>
+    <string name="site_name">Location</string>
     <string name="refresh">Refresh</string>
     <string name="show_departures_for_start">Departures for start point</string>
     <string name="metros">Metros</string>
@@ -98,11 +98,23 @@
     <string name="back">Back</string>
     <string name="cancel">Cancel</string>
     <string name="change">Change</string>
+    <string name="deviations_label">Deviations</string>
+    <string name="new_deviations">New deviations.</string>
+    <string name="no_deviations"><b>No known deviations</b></string>
+    <string name="reinstall_app_message">You need to reinstall STHLM Traveling to be able to use is properly.\n\nThis is caused by a bug in Android. You can read more about this issue at my blog, http://bit.ly/fcissue.\n\nI'm really sorry about this!</string>
     <!-- Preferences -->
     <string name="restart_app_for_full_effect">Restart the app for full effect.</string>
     <string name="dialog_general_preferences">Basics</string>
+    <string name="dialog_notification_preferences">Notifications</string>
     <string name="title_language_preference">Language</string>
     <string name="summary_language_preference">Choose your preferred language.</string>
     <string name="dialog_title_language_preference">Choose language</string>
     <string name="settings_saved">Saved</string>
+    <string name="deviation_notification_preference">Deviation Notifications</string>
+    <string name="deviation_notification_summary_preference">Experimental. Enabling drains battery and requires permanent internet connection.</string>
+    <string name="deviation_update_interval_preference">Update interval</string>
+    <string name="deviation_update_interval_summary_preference">Longer update intervals saves your battery.</string>
+    <string name="deviation_lines_preference">Lines</string>
+    <string name="deviation_lines_summary_preference">Comma separated list of line numvers. Eg: '42,28,707'.</string>
+    <string name="deviation_lines_dialog_message_preference">Separate the line numbers with a comma. Eg: '42,28,707'.</string>
 </resources>
