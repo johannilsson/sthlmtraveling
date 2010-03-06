@@ -207,6 +207,18 @@ public class DeviationsActivity extends ListActivity {
     }
 
     /**
+     * Cancels the {@link GetDeparturesTask} if it is running.
+     */
+    private void onCancelGetDeviationsTask() {
+        if (mGetDeviationsTask != null &&
+                mGetDeviationsTask.getStatus() == AsyncTask.Status.RUNNING) {
+            Log.i(TAG, "Cancels GetDeparturesTask.");
+            mGetDeviationsTask.cancel(true);
+            mGetDeviationsTask= null;
+        }
+    }
+
+    /**
      * Restores the {@link GetDeviationsTask}.
      * @param savedInstanceState the saved state
      */
@@ -271,6 +283,9 @@ public class DeviationsActivity extends ListActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+
+        onCancelGetDeviationsTask();
+
         dismissProgress();
     }
 
