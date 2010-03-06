@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="com.markupartist.sthlmtraveling"
-      android:versionName="1.6.0" android:versionCode="34">
+      android:versionName="1.7.1" android:versionCode="37">
     <supports-screens
         android:largeScreens="true"
         android:normalScreens="true"
@@ -43,6 +43,22 @@
 	            <data android:scheme="journeyplanner" android:host="routes" />
             </intent-filter>
         </activity>
+        <activity android:name=".DeviationsActivity"
+                  android:label="@string/deviations_label">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <action android:name="com.markupartist.sthlmtraveling.action.DEVIATION_FILTER"/>
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".DeviationDetailActivity"
+                  android:label="@string/deviations_label">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <data android:scheme="journeyplanner" android:host="deviations" />
+            </intent-filter>
+        </activity>
         <activity android:name=".RouteDetailActivity"
                   android:label="@string/route_details_label"></activity>
         <activity android:name=".ChangeRouteTimeActivity"
@@ -68,9 +84,26 @@
         </activity>
         <activity android:name=".SettingsActivity"
                   android:label="@string/title_settings"></activity>
+        <receiver android:name=".receivers.OnBootReceiver"
+                  android:enabled="true" 
+                  android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+        <receiver android:name=".receivers.OnAlarmReceiver"
+                  android:enabled="true" 
+                  android:exported="false">
+        </receiver>
+        <service android:name=".service.DeviationService"
+                  android:enabled="true" 
+                  android:exported="false"
+         />
 </application>
     <uses-sdk android:minSdkVersion="3" android:targetSdkVersion="4" />
-    <uses-permission android:name="android.permission.INTERNET"></uses-permission>
+    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 </manifest>
