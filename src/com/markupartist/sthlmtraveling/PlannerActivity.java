@@ -694,7 +694,7 @@ public class PlannerActivity extends Activity implements OnCheckedChangeListener
 		    mNewText = s.toString().substring(start, start + count);
 
 		    if (s.toString().equals(mReservedName.toString())) {
-                mViewToWatch.setTextColor(Color.BLUE);
+                mViewToWatch.setTextColor(0xFF4F94CD);
             }
 		}
     }
