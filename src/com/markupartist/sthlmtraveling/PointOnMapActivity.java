@@ -1,7 +1,22 @@
+/*
+ * Copyright (C) 2010 Johan Nilsson <http://markupartist.com>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.markupartist.sthlmtraveling;
 
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.util.List;
 
 import android.content.Context;
@@ -14,7 +29,6 @@ import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -32,6 +46,7 @@ import com.google.android.maps.MyLocationOverlay;
 import com.google.android.maps.Projection;
 import com.markupartist.sthlmtraveling.graphics.LabelMarker;
 import com.markupartist.sthlmtraveling.provider.planner.Stop;
+import com.markupartist.sthlmtraveling.utils.DisplayMetricsHelper;
 
 import de.android1.overlaymanager.ManagedOverlay;
 import de.android1.overlaymanager.ManagedOverlayGestureDetector;
@@ -65,33 +80,13 @@ public class PointOnMapActivity extends MapActivity {
 
         showHelpToast(helpText);
 
-        int textSize = 17;
-        /*try {
-            DisplayMetrics metrics = new DisplayMetrics();
-            getWindowManager().getDefaultDisplay().getMetrics(metrics);
-
-            Field densityDpiFiled = DisplayMetrics.class.getField("densityDpi");
-            int densityDpi = densityDpiFiled.getInt(null);
-            if (densityDpi == DisplayMetrics.DENSITY_HIGH) {
-                textSize = 22;
-            }
-        } catch (NoSuchFieldException e) {
-            Log.d(TAG, "Older device...");
-            ; // Just pass, we are dealing with an older device.
-        } catch (IllegalArgumentException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        */
-
-        mLabelMarker = new LabelMarker(getString(R.string.tap_to_select_this_point), textSize);
+        mLabelMarker = new LabelMarker(
+                getString(R.string.tap_to_select_this_point), getLabelTextSize());
 
         mMapView = (MapView) findViewById(R.id.mapview);
         mMapView.setBuiltInZoomControls(true);
         mapController = mMapView.getController();
+        myLocationOverlay();
 
         // Use stops location if present, otherwise set a geo point in 
         // central Stockholm.
@@ -101,6 +96,7 @@ public class PointOnMapActivity extends MapActivity {
                     (int) (mStop.getLocation().getLongitude() * 1E6));
             mapController.setZoom(16);
         } else {
+            //mGeoPoint = mMyLocationOverlay.getMyLocation();
             mGeoPoint = new GeoPoint(
                     (int) (59.325309 * 1E6), 
                     (int) (18.069763 * 1E6));
@@ -110,10 +106,28 @@ public class PointOnMapActivity extends MapActivity {
 
         mOverlayManager = new OverlayManager(getApplication(), mMapView);
 
-        myLocationOverlay();
         pointToSelectOverlay();
     }
 
+    /**
+     * Get the text size for the label marker. Will adapt the text size to the
+     * device density. Internally wraps {@link DisplayMetrics} with reflection
+     * to work on devices still running on 1.5.
+     * @return the text size
+     */
+    private int getLabelTextSize() {
+        int textSize = 17;
+
+        DisplayMetrics metrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(metrics);
+        int density = DisplayMetricsHelper.getDensityDpi(metrics);
+        if (DisplayMetricsHelper.DENSITY_HIGH == density) {
+            textSize = 22;
+        }
+
+        return textSize;
+    }
+    
     private void showHelpToast(String helpText) {
         if (helpText != null) {
             Toast.makeText(this, helpText, Toast.LENGTH_LONG).show();
@@ -137,12 +151,10 @@ public class PointOnMapActivity extends MapActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_my_location:
-                if (mMyLocationOverlay != null) {
+                if (mMyLocationOverlay.isMyLocationEnabled()) {
                     GeoPoint myLocation = mMyLocationOverlay.getMyLocation();
                     if (myLocation != null) {
                         mapController.animateTo(myLocation);
-                    } else {
-                        toastMissingMyLocationSource();
                     }
                 } else {
                     toastMissingMyLocationSource();
@@ -192,20 +204,16 @@ public class PointOnMapActivity extends MapActivity {
     }
 
     private void myLocationOverlay() {
-        LocationManager locationManager =
-            (LocationManager)getSystemService(LOCATION_SERVICE);
-        if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
-                || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
-            //mMyLocationOverlay = new MyLocationOverlay(this, mMapView);
-            mMyLocationOverlay = new FixedMyLocationOverlay(this, mMapView);
-            mMapView.getOverlays().add(mMyLocationOverlay);
-            mMyLocationOverlay.enableCompass();
+        mMyLocationOverlay = new FixedMyLocationOverlay(this, mMapView);
+        if (mMyLocationOverlay.isMyLocationEnabled()) {
             mMyLocationOverlay.enableMyLocation();
-        } else {
-            Log.d(TAG, "No Location provider is not enabled, ignoring...");
         }
+        if (mMyLocationOverlay.isCompassEnabled()) {
+            mMyLocationOverlay.enableCompass();
+        }
+        mMapView.getOverlays().add(mMyLocationOverlay);
     }
-    
+
     private void pointToSelectOverlay() {
         ManagedOverlay managedOverlay = mOverlayManager.createOverlay(
                 mLabelMarker.getMarker());
@@ -324,6 +332,7 @@ public class PointOnMapActivity extends MapActivity {
                 }
             }
             if (bugged) {
+                Log.w(TAG, "Bugged device, failed to draw my location.");
                 if (drawable == null) {
                     accuracyPaint = new Paint();
                     accuracyPaint.setAntiAlias(true);
