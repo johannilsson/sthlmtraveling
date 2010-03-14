@@ -4,14 +4,14 @@ STHLM Traveling
 Travel in Stockholm with your Android phone.
 
 STHLM Traveling helps you plan your journeys using data from Stockholm Public 
-Transport (SL, Stockholms Lokaltrafik).
-
-Features include Auto complete of station and addresses. Usage of GPS for 
-finding stops near your location. Route alternatives and detail description 
-of a route.
+Transport (SL, Stockholms Lokaltrafik). 
 
 More about this project at <http://markupartist.com/sthlmtraveling> or follow 
 me on [twitter](http://twitter.com/johanni) where I announce new versions.
+
+The app is powered by two backend services. The journey planner in the app is
+written in php and screen scrapes sl.se. The other one is written is Java and
+hosted on Googles AppEnginge and is used for deviations and real time data.
 
 Credits
 -------
@@ -22,7 +22,7 @@ Credits
 * Icons by [Fredrik Broman](http://fredrikbroman.com)
 * Icons by [FatCow](http://www.fatcow.com/free-icons)
 * Feedback, suggestions & test by [Swedroid users](http://swedroid.se)
-* Also a great thank you to my Twitter and Flickr followers for their suggestions 
+* Also great thanks to my Twitter and Flickr followers for their suggestions 
   and feedback
 
 Setting up the project
@@ -72,6 +72,13 @@ STHLM Traveling is open source and licensed under
 
 Changelog
 ---------
+* 1.7.2
+    * New app icon by [Olof Brickarp](http://www.yay.se)
+    * Improvements for hdpi screens
+    * Bug fix for network problem that occurred when switching between different
+      networks.
+    * Bug fix for maps, that caused the my location indicator to not show up
+      direct
 * 1.5.2
     * Bug fix for transports without line numbers
     * Bug fix for line numbers, now Bus 123A will be parsed correct
