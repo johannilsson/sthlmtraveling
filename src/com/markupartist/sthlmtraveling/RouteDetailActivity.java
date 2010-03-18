@@ -180,6 +180,18 @@ public class RouteDetailActivity extends ListActivity {
         }
     }
 
+    /**
+     * Cancels a running {@link GetDetailsTask}.
+     */
+    private void onCancelGetDetailsTask() {
+        if (mGetDetailsTask != null
+                && mGetDetailsTask.getStatus() == AsyncTask.Status.RUNNING) {
+            Log.i(TAG, "Cancels the get deails task.");
+            mGetDetailsTask.cancel(true);
+            mGetDetailsTask = null;
+        }
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -208,6 +220,9 @@ public class RouteDetailActivity extends ListActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+
+        onCancelGetDetailsTask();
+
         dismissProgress();
         mFavoritesDbAdapter.close();
     }
