@@ -32,6 +32,7 @@ import org.xml.sax.InputSource;
 import android.text.format.Time;
 import android.util.Log;
 
+import com.markupartist.sthlmtraveling.provider.site.SitesStore;
 import com.markupartist.sthlmtraveling.utils.HttpManager;
 
 /**
@@ -96,26 +97,41 @@ public class Planner {
      * @return a list of RouteS
      * @throws IOException on network problems
      */
-    public ArrayList<Route> findRoutes(Stop startPoint, Stop endPoint,
-            Time time, boolean isTimeDeparture, String languageCode) 
+    public Trip findRoutes(Trip trip, String languageCode)
             throws IOException {
-        Log.d(TAG, "Searching for startPoint=" + startPoint + ",endPoint=" + endPoint);
+        Log.d(TAG, "Searching for startPoint=" + trip.getStartPoint() + ",endPoint=" + trip.getEndPoint());
+
+        Stop startPoint = trip.getStartPoint();
+        Stop endPoint = trip.getEndPoint();
 
         String startPointPositionPart = "";
         if (startPoint.getLocation() != null) {
             startPointPositionPart = String.format("&fromLat=%s&fromLng=%s",
-                    startPoint.getLocation().getLatitude(), startPoint.getLocation().getLongitude());
+                    startPoint.getLocation().getLatitude(),
+                    startPoint.getLocation().getLongitude());
         }
         String endPointPositionPart = "";
         if (endPoint.getLocation() != null) {
             endPointPositionPart = String.format("&toLat=%s&toLng=%s",
-                    endPoint.getLocation().getLatitude(), endPoint.getLocation().getLongitude());
+                    endPoint.getLocation().getLatitude(),
+                    endPoint.getLocation().getLongitude());
         }
 
-        String startPointEncoded = URLEncoder.encode(startPoint.getName());
-        String endPointEncoded = URLEncoder.encode(endPoint.getName());
-        String timeEncoded = URLEncoder.encode(time.format("%Y-%m-%d %H:%M"));
-        int isDeparture = isTimeDeparture ? 1 : 0;
+        String startPointEncoded;
+        if (startPoint.getSiteId() > 0) {
+            startPointEncoded = Integer.toString(startPoint.getSiteId());
+        } else {
+            startPointEncoded = URLEncoder.encode(startPoint.getName());
+        }
+        String endPointEncoded;
+        if (endPoint.getSiteId() > 0) {
+            endPointEncoded = Integer.toString(endPoint.getSiteId());
+        } else {
+            endPointEncoded = URLEncoder.encode(endPoint.getName());
+        }
+
+        String timeEncoded = URLEncoder.encode(trip.getTime().format("%Y-%m-%d %H:%M"));
+        int isDeparture = trip.isTimeDeparture() ? 1 : 0;
 
         InputSource input;
         if (mUseMockData) {
@@ -144,7 +160,24 @@ public class Planner {
         mRequestCount = mRouteFinder.getRequestCount();
         mIdent = mRouteFinder.getIdent();
 
-        return mRoutes;
+        if (mRoutes.isEmpty()) {
+            if (startPoint.getLocation() == null || startPoint.getSiteId() == 0) {
+                trip.setStartPointAlternatives(
+                        SitesStore.getInstance().getSite(startPoint.getName()));
+            } else {
+                trip.setStartPointAlternatives(null);
+            }
+            if (endPoint.getLocation() == null || endPoint.getSiteId() == 0) {
+                trip.setEndPointAlternatives(
+                        SitesStore.getInstance().getSite(endPoint.getName()));
+            } else {
+                trip.setEndPointAlternatives(null);
+            }
+        }
+
+        trip.setRoutes(mRoutes);
+
+        return trip;
     }
 
     /**
