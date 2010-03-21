@@ -448,9 +448,8 @@ public class DeparturesActivity extends ListActivity {
 
         @Override
         protected ArrayList<Site> doInBackground(String... params) {
-            SitesStore sitesStore = new SitesStore();
             try {
-                return sitesStore.getSite(params[0]);
+                return SitesStore.getInstance().getSite(params[0]);
             } catch (IOException e) {
                 mWasSuccess = false;
                 return null;

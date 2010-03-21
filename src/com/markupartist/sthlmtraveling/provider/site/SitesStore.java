@@ -21,6 +21,18 @@ import org.xmlpull.v1.XmlPullParserFactory;
 import com.markupartist.sthlmtraveling.utils.HttpManager;
 
 public class SitesStore {
+    private static SitesStore sInstance;
+
+    private SitesStore() {
+    }
+
+    public static SitesStore getInstance() {
+        if (sInstance == null) {
+            sInstance = new SitesStore();
+        }
+        return sInstance;
+    }
+
     public ArrayList<Site> getSite(String name) throws IOException {
         ArrayList<Site> sites = new ArrayList<Site>();
 
