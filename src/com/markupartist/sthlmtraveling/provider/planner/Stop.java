@@ -9,6 +9,7 @@ public class Stop implements Parcelable {
     public static String TYPE_MY_LOCATION = "MY_LOCATION";
     private String mName;
     private Location mLocation;
+    private int mSiteId;
 
     public Stop() {
     }
@@ -32,6 +33,7 @@ public class Stop implements Parcelable {
     public Stop(Parcel parcel) {
         mName = parcel.readString();
         mLocation = parcel.readParcelable(null);
+        mSiteId = parcel.readInt();
     }
 
     /**
@@ -73,6 +75,14 @@ public class Stop implements Parcelable {
         return hasName() && mName.equals(TYPE_MY_LOCATION);
     }
 
+    public void setSiteId(int siteId) {
+        mSiteId = siteId;
+    }
+
+    public int getSiteId() {
+        return mSiteId;
+    }
+
     @Override
     public String toString() {
         return "Stop [mLocation=" + mLocation + ", mName=" + mName + "]";
@@ -87,6 +97,7 @@ public class Stop implements Parcelable {
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(mName);
         parcel.writeParcelable(mLocation, 0);
+        parcel.writeInt(mSiteId);
     }
 
     public static final Creator<Stop> CREATOR = new Creator<Stop>() {
