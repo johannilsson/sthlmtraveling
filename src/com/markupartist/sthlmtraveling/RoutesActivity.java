@@ -1014,8 +1014,11 @@ public class RoutesActivity extends ListActivity
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            Route route = mRoutes.get(position);
-            return new RouteAdapterView(mContext, route);
+            if (!isEmpty()) {
+                Route route = mRoutes.get(position);
+                return new RouteAdapterView(mContext, route);
+            }
+            return new View(mContext);
             //return createView(mContext, route);
         }
 
