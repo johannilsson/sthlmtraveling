@@ -32,6 +32,7 @@ import android.widget.Spinner;
 import android.widget.TimePicker;
 
 import com.markupartist.sthlmtraveling.provider.planner.Stop;
+import com.markupartist.sthlmtraveling.provider.planner.Trip;
 
 public class ChangeRouteTimeActivity extends Activity {
     static final String TAG = "ChangeRouteTimeActivity"; 
@@ -53,7 +54,9 @@ public class ChangeRouteTimeActivity extends Activity {
         final Stop endPoint = extras.getParcelable(RoutesActivity.EXTRA_END_POINT);
         String timeString = extras.getString(RoutesActivity.EXTRA_TIME);
         boolean isTimeDeparture = extras.getBoolean(RoutesActivity.EXTRA_IS_TIME_DEPARTURE, true);
-
+        
+        //final Trip trip = extras.getParcelable(RoutesActivity.EXTRA_TRIP);
+        //mTime = trip.getTime();
         mTime = new Time();
         mTime.parse(timeString);
 
@@ -83,12 +86,19 @@ public class ChangeRouteTimeActivity extends Activity {
         changeButton.setOnClickListener(new OnClickListener() {
             @Override public void onClick(View v) {
                 boolean isTimeDeparture =
-                    whenSpinner.getSelectedItemId() == 0 ? true : false; 
+                    whenSpinner.getSelectedItemId() == 0 ? true : false;
+
+                /*trip.setTime(mTime);
+                trip.setIsTimeDeparture(isTimeDeparture);
                 setResult(RESULT_OK, (new Intent())
-                        .putExtra(RoutesActivity.EXTRA_IS_TIME_DEPARTURE, isTimeDeparture)
-                        .putExtra(RoutesActivity.EXTRA_TIME, mTime.format2445())
+                        .putExtra(RoutesActivity.EXTRA_TRIP, trip));*/
+                setResult(RESULT_OK, (new Intent())
                         .putExtra(RoutesActivity.EXTRA_START_POINT, startPoint)
-                        .putExtra(RoutesActivity.EXTRA_END_POINT, endPoint));
+                        .putExtra(RoutesActivity.EXTRA_END_POINT, endPoint)
+                        .putExtra(RoutesActivity.EXTRA_TIME, mTime.format3339(false))
+                        .putExtra(RoutesActivity.EXTRA_IS_TIME_DEPARTURE, isTimeDeparture)
+                        );
+
                 finish();
             }
         });
