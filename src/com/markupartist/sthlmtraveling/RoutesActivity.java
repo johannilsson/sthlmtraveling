@@ -45,6 +45,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Adapter;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -60,6 +61,8 @@ import com.markupartist.sthlmtraveling.provider.FavoritesDbAdapter;
 import com.markupartist.sthlmtraveling.provider.planner.Planner;
 import com.markupartist.sthlmtraveling.provider.planner.Route;
 import com.markupartist.sthlmtraveling.provider.planner.Stop;
+import com.markupartist.sthlmtraveling.provider.planner.Trip;
+import com.markupartist.sthlmtraveling.provider.site.Site;
 import com.markupartist.sthlmtraveling.utils.BarcodeScannerIntegrator;
 
 /**
@@ -76,6 +79,11 @@ import com.markupartist.sthlmtraveling.utils.BarcodeScannerIntegrator;
  */
 public class RoutesActivity extends ListActivity
         implements MyLocationFoundListener {
+    /**
+     * The trip.
+     */
+    static final String EXTRA_TRIP = "com.markupartist.sthlmtraveling.trip";
+
     /**
      * The start point for the search.
      */
@@ -105,6 +113,8 @@ public class RoutesActivity extends ListActivity
     private static final int DIALOG_GET_LATER_ROUTES_NETWORK_PROBLEM = 3;
     private static final int DIALOG_GET_ROUTES_SESSION_TIMEOUT = 4;
     private static final int DIALOG_SEARCH_ROUTES_NO_RESULT = 5;
+    private static final int DIALOG_START_POINT_ALTERNATIVES = 6;
+    private static final int DIALOG_END_POINT_ALTERNATIVES = 7;
 
     private static final int ADAPTER_EARLIER = 0;
     private static final int ADAPTER_ROUTES = 1;
@@ -132,9 +142,9 @@ public class RoutesActivity extends ListActivity
     private TextView mFromView;
     private TextView mToView;
     private ArrayList<HashMap<String, String>> mDateAdapterData;
-    private Stop mStartPoint;
-    private Stop mEndPoint;
-    private Time mTime;
+    //private Stop mStartPoint;
+    //private Stop mEndPoint;
+    //private Time mTime;
     private FavoritesDbAdapter mFavoritesDbAdapter;
     private FavoriteButtonHelper mFavoriteButtonHelper;
     private MyLocationManager mMyLocationManager;
@@ -143,8 +153,8 @@ public class RoutesActivity extends ListActivity
     private GetLaterRoutesTask mGetLaterRoutesTask;
     private Toast mToast;
     private ProgressDialog mProgress;
-    private boolean mIsTimeDeparture;
-
+    //private boolean mIsTimeDeparture;
+    private Trip mTrip;
     //private Bundle mSavedState;
 
     @Override
@@ -157,13 +167,33 @@ public class RoutesActivity extends ListActivity
 
         mMyLocationManager = new MyLocationManager(locationManager);
 
-        mStartPoint = new Stop();
-        mEndPoint = new Stop();
-
         // Parse data URI       
-        final Uri uri = getIntent().getData();
+        mTrip = createTrip(getIntent().getData());
 
-        mStartPoint.setName(uri.getQueryParameter("start_point"));
+        if (mTrip.getStartPoint().getName() == null || mTrip.getEndPoint().getName() == null) {
+            showDialog(DIALOG_ILLEGAL_PARAMETERS);
+            // If passed with bad parameters, break the execution.
+            return;
+        }
+
+        mFavoritesDbAdapter = new FavoritesDbAdapter(this).open();
+
+        mFromView = (TextView) findViewById(R.id.route_from);
+        mToView = (TextView) findViewById(R.id.route_to);
+        updateStartAndEndPointViews(mTrip.getStartPoint(), mTrip.getEndPoint());
+
+        mFavoriteButtonHelper = new FavoriteButtonHelper(this, mFavoritesDbAdapter, 
+                mTrip.getStartPoint(), mTrip.getEndPoint());
+        mFavoriteButtonHelper.loadImage();
+
+        initRoutes(mTrip);
+    }
+
+    private Trip createTrip(Uri uri) {
+        Stop startPoint = new Stop();
+        Stop endPoint = new Stop();
+
+        startPoint.setName(uri.getQueryParameter("start_point"));
         if (!TextUtils.isEmpty(uri.getQueryParameter("start_point_lat"))
                 && !TextUtils.isEmpty(uri.getQueryParameter("start_point_lng"))) {
             double startPointLat = Double.parseDouble(uri.getQueryParameter("start_point_lat"));
@@ -172,11 +202,11 @@ public class RoutesActivity extends ListActivity
                 Location startLocation = new Location("sthlmtraveling");
                 startLocation.setLatitude(startPointLat);
                 startLocation.setLongitude(startPointLng);
-                mStartPoint.setLocation(startLocation);
+                startPoint.setLocation(startLocation);
             }
         }
 
-        mEndPoint.setName(uri.getQueryParameter("end_point"));
+        endPoint.setName(uri.getQueryParameter("end_point"));
         if (!TextUtils.isEmpty(uri.getQueryParameter("end_point_lat"))
                 && !TextUtils.isEmpty(uri.getQueryParameter("end_point_lng"))) {
             double endPointLat = Double.parseDouble(uri.getQueryParameter("end_point_lat"));
@@ -185,45 +215,29 @@ public class RoutesActivity extends ListActivity
                 Location endLocation = new Location("sthlmtraveling");
                 endLocation.setLatitude(endPointLat);
                 endLocation.setLongitude(endPointLng);
-                mEndPoint.setLocation(endLocation);
+                endPoint.setLocation(endLocation);
             }
         }
 
+        boolean isTimeDeparture = true;
         if (!TextUtils.isEmpty(uri.getQueryParameter("isTimeDeparture"))) {
-            mIsTimeDeparture = Boolean.parseBoolean(
+            isTimeDeparture = Boolean.parseBoolean(
                     uri.getQueryParameter("isTimeDeparture"));
+        }
+
+        String timeString = uri.getQueryParameter("time");
+
+        Time time = new Time();
+        if (!TextUtils.isEmpty(timeString)) {
+            time.parse(timeString);
         } else {
-            mIsTimeDeparture = true;
+            time.setToNow();
         }
 
-        String time = uri.getQueryParameter("time");
-
-        if (mStartPoint.getName() == null || mEndPoint.getName() == null) {
-            showDialog(DIALOG_ILLEGAL_PARAMETERS);
-            // If passed with bad parameters, break the execution.
-            return;
-        }
-
-        mTime = new Time();
-        if (!TextUtils.isEmpty(time)) {
-            mTime.parse(time);
-        } else {
-            mTime.setToNow();
-        }
-
-        mFavoritesDbAdapter = new FavoritesDbAdapter(this).open();
-
-        mFromView = (TextView) findViewById(R.id.route_from);
-        mToView = (TextView) findViewById(R.id.route_to);
-        updateStartAndEndPointViews(mStartPoint, mEndPoint);
-
-        mFavoriteButtonHelper = new FavoriteButtonHelper(this, mFavoritesDbAdapter, 
-                mStartPoint, mEndPoint);
-        mFavoriteButtonHelper.loadImage();
-
-        initRoutes(mStartPoint, mEndPoint, mTime);
+        Trip trip = new Trip(startPoint, endPoint, time, isTimeDeparture);
+        return trip;
     }
-
+    
     /**
      * Update the {@link TextView} for start and end points in the ui.
      * @param startPoint the start point
@@ -263,13 +277,13 @@ public class RoutesActivity extends ListActivity
      * @param endPoint the end point
      * @param time the time
      */
-    private void initRoutes(Stop startPoint, Stop endPoint, Time time) {
+    private void initRoutes(Trip trip) {
         @SuppressWarnings("unchecked")
-        final ArrayList<Route> routes = (ArrayList<Route>) getLastNonConfigurationInstance();
-        if (routes != null) {
-            onSearchRoutesResult(routes);
+        final Trip savedTrip = (Trip) getLastNonConfigurationInstance();
+        if (savedTrip != null && savedTrip.getRoutes() != null) {
+            onSearchRoutesResult(savedTrip);
         } else {
-            if (startPoint.isMyLocation() || endPoint.isMyLocation()) {
+            if (trip.getStartPoint().isMyLocation() || trip.getEndPoint().isMyLocation()) {
                 Location location = mMyLocationManager.getLastKnownLocation();
                 if (mMyLocationManager.shouldAcceptLocation(location)) {
                     onMyLocationFound(location);
@@ -281,22 +295,19 @@ public class RoutesActivity extends ListActivity
             } else {
                 mSearchRoutesTask = new SearchRoutesTask();
                 //mSearchRoutesTask.setOnSearchRoutesResultListener(this);
-                mSearchRoutesTask.execute(startPoint, endPoint, time, mIsTimeDeparture);
+                mSearchRoutesTask.execute(trip);
             }
         }
     }
 
     /**
-     * Called before this activity is destroyed, returns the previous details. This data is used 
-     * if the screen is rotated. Then we don't need to ask for the data again.
-     * @return route details
+     * Called before this activity is destroyed, returns the previous details.
+     * This data is used if the screen is rotated. Then we don't need to ask for the data again.
+     * @return the trip
      */
     @Override
     public Object onRetainNonConfigurationInstance() {
-        if (mRouteAdapter != null) {
-            return mRouteAdapter.getRoutes();
-        }
-        return null;
+        return mTrip;
     }
 
     @Override
@@ -311,7 +322,7 @@ public class RoutesActivity extends ListActivity
      * @param savedInstanceState the bundle containing the saved state
      */
     private void restoreLocalState(Bundle savedInstanceState) {
-        restoreSearchCriteria(savedInstanceState);
+        //restoreTrip(savedInstanceState);
         restoreSearchRoutesTask(savedInstanceState);
         restoreGetEarlierRoutesTask(savedInstanceState);
         restoreGetLaterRoutesTask(savedInstanceState);
@@ -320,7 +331,7 @@ public class RoutesActivity extends ListActivity
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        saveSearchCriteria(outState);
+        saveTrip(outState);
         saveSearchRoutesTask(outState);
         saveGetEarlierRoutesTask(outState);
         saveGetLaterRoutesTask(outState);
@@ -362,30 +373,21 @@ public class RoutesActivity extends ListActivity
      * Restores the search routes task.
      * @param savedInstanceState the saved state
      */
-    private void restoreSearchCriteria(Bundle savedInstanceState) {
-        if (savedInstanceState.containsKey(EXTRA_START_POINT)) {
-            mStartPoint = savedInstanceState.getParcelable(EXTRA_START_POINT);
-        }
-        if (savedInstanceState.containsKey(EXTRA_END_POINT)) {
-            mEndPoint = savedInstanceState.getParcelable(EXTRA_END_POINT);
-        }
-        if (savedInstanceState.containsKey(EXTRA_END_POINT)) {
-            mIsTimeDeparture =
-                savedInstanceState.getBoolean(EXTRA_IS_TIME_DEPARTURE);
-        } else {
-            mIsTimeDeparture = true;
+    /*
+    private void restoreTrip(Bundle savedInstanceState) {
+        if (savedInstanceState.containsKey(EXTRA_TRIP)) {
+            mTrip = savedInstanceState.getParcelable(EXTRA_TRIP);
         }
     }
+    */
 
     /**
      * If there is any running search for routes, save it and process it later 
      * on.
      * @param outState the out state
      */
-    private void saveSearchCriteria(Bundle outState) {
-        outState.putParcelable(EXTRA_START_POINT, mStartPoint);
-        outState.putParcelable(EXTRA_END_POINT, mEndPoint);
-        outState.putBoolean(EXTRA_IS_TIME_DEPARTURE, mIsTimeDeparture);
+    private void saveTrip(Bundle outState) {
+        outState.putParcelable(EXTRA_TRIP, mTrip);
     }
 
     /**
@@ -407,7 +409,7 @@ public class RoutesActivity extends ListActivity
         if (savedInstanceState.getBoolean(STATE_SEARCH_ROUTES_IN_PROGRESS)) {
             Log.d(TAG, "restoring SearchRoutesTask");
             mSearchRoutesTask = new SearchRoutesTask();
-            mSearchRoutesTask.execute(mStartPoint, mEndPoint, mTime, mIsTimeDeparture);
+            mSearchRoutesTask.execute(mTrip);
         }
     }
 
@@ -503,10 +505,10 @@ public class RoutesActivity extends ListActivity
     }
 
     private String buildDateString() {
-        String timeString = mTime.format("%R");
-        String dateString = mTime.format("%e/%m");
+        String timeString = mTrip.getTime().format("%R");
+        String dateString = mTrip.getTime().format("%e/%m");
 
-        if (mIsTimeDeparture) {
+        if (mTrip.isTimeDeparture()) {
             return getString(R.string.departing_on, timeString, dateString);
         } else {
             return getString(R.string.arriving_by, timeString, dateString);
@@ -621,22 +623,42 @@ public class RoutesActivity extends ListActivity
             break;
         case SECTION_CHANGE_TIME:
             Intent i = new Intent(this, ChangeRouteTimeActivity.class);
-            i.putExtra(EXTRA_TIME, mTime.format2445());
-            i.putExtra(EXTRA_START_POINT, mStartPoint);
-            i.putExtra(EXTRA_END_POINT, mEndPoint);
-            i.putExtra(EXTRA_IS_TIME_DEPARTURE, mIsTimeDeparture);
+            //i.putExtra(EXTRA_TRIP, mTrip);
+            i.putExtra(EXTRA_START_POINT, mTrip.getStartPoint());
+            i.putExtra(EXTRA_END_POINT, mTrip.getEndPoint());
+            i.putExtra(EXTRA_TIME, mTrip.getTime().format2445());
+            i.putExtra(EXTRA_IS_TIME_DEPARTURE, mTrip.isTimeDeparture()); 
             startActivityForResult(i, REQUEST_CODE_CHANGE_TIME);
             break;
         }
     }
 
-    public void onSearchRoutesResult(ArrayList<Route> routes) { 
+    public void onSearchRoutesResult(Trip trip) {
+        mTrip = trip;
+
+        updateStartAndEndPointViews(trip.getStartPoint(), trip.getEndPoint());
+
         if (mRouteAdapter == null) {
-            mRouteAdapter = new RoutesAdapter(this, routes);
+            mRouteAdapter = new RoutesAdapter(this, trip.getRoutes());
             createSections();
         } else {
-            mRouteAdapter.refill(routes);
+            mRouteAdapter.refill(trip.getRoutes());
             mSectionedAdapter.notifyDataSetChanged();
+        }
+    }
+
+    public void onSiteAlternatives(Trip trip) {
+        if (trip.getStartPoint().getSiteId() == 0
+                && trip.getStartPointAlternatives().size() > 1) {
+            Log.d(TAG, "show start alternatives...");
+            showDialog(DIALOG_START_POINT_ALTERNATIVES);
+        } else if (trip.getEndPoint().getSiteId() == 0
+                && trip.getEndPointAlternatives().size() > 1) {
+            Log.d(TAG, "show end alternatives...");
+            showDialog(DIALOG_END_POINT_ALTERNATIVES);
+        } else {
+            mSearchRoutesTask = new SearchRoutesTask();
+            mSearchRoutesTask.execute(mTrip);
         }
     }
 
@@ -648,31 +670,35 @@ public class RoutesActivity extends ListActivity
 
         if (mToast != null ) mToast.cancel();
 
-        if (mStartPoint.isMyLocation()) {
-            mStartPoint.setLocation(location);
+        Stop startPoint = mTrip.getStartPoint();
+        Stop endPoint = mTrip.getEndPoint();
+
+        if (startPoint.isMyLocation()) {
+            startPoint.setLocation(location);
             if (!mMyLocationManager.shouldAcceptLocation(location)) {
                 Intent i = new Intent(this, PointOnMapActivity.class);
-                i.putExtra(PointOnMapActivity.EXTRA_STOP, mStartPoint);
+                i.putExtra(PointOnMapActivity.EXTRA_STOP, startPoint);
                 i.putExtra(PointOnMapActivity.EXTRA_HELP_TEXT,
                         getString(R.string.tap_your_location_on_map));
                 startActivityForResult(i, REQUEST_CODE_POINT_ON_MAP_START);
             }
         }
-        if (mEndPoint.isMyLocation()) {
-            mEndPoint.setLocation(location);
+        if (endPoint.isMyLocation()) {
+            endPoint.setLocation(location);
             if (!mMyLocationManager.shouldAcceptLocation(location)) {
                 Intent i = new Intent(this, PointOnMapActivity.class);
-                i.putExtra(PointOnMapActivity.EXTRA_STOP, mStartPoint);
+                i.putExtra(PointOnMapActivity.EXTRA_STOP, startPoint);
                 i.putExtra(PointOnMapActivity.EXTRA_HELP_TEXT,
                         getString(R.string.tap_your_location_on_map));
                 startActivityForResult(i, REQUEST_CODE_POINT_ON_MAP_START);
             }
         }
 
-        updateStartAndEndPointViews(mStartPoint, mEndPoint);
+        updateStartAndEndPointViews(startPoint, endPoint);
 
+        // TODO: Maybe need to set start and end points to the trip again here?
         mSearchRoutesTask = new SearchRoutesTask();
-        mSearchRoutesTask.execute(mStartPoint, mEndPoint, mTime, mIsTimeDeparture);
+        mSearchRoutesTask.execute(mTrip);
     }
 
     /**
@@ -680,9 +706,10 @@ public class RoutesActivity extends ListActivity
      * @param route the route to find details for 
      */
     private void findRouteDetails(final Route route) {
+        // TODO: Change to pass the trip later on instead.
         Intent i = new Intent(RoutesActivity.this, RouteDetailActivity.class);
-        i.putExtra(RouteDetailActivity.EXTRA_START_POINT, mStartPoint);
-        i.putExtra(RouteDetailActivity.EXTRA_END_POINT, mEndPoint);
+        i.putExtra(RouteDetailActivity.EXTRA_START_POINT, mTrip.getStartPoint());
+        i.putExtra(RouteDetailActivity.EXTRA_END_POINT, mTrip.getEndPoint());
         i.putExtra(RouteDetailActivity.EXTRA_ROUTE, route);
         startActivity(i);
     }
@@ -703,43 +730,57 @@ public class RoutesActivity extends ListActivity
             if (resultCode == RESULT_CANCELED) {
                 Log.d(TAG, "Change time activity cancelled.");
             } else {
-                Stop startPoint = data.getParcelableExtra(EXTRA_START_POINT);
-                Stop endPoint = data.getParcelableExtra(EXTRA_END_POINT);
-                String newTime = data.getStringExtra(EXTRA_TIME);
-                mIsTimeDeparture = data.getBooleanExtra(EXTRA_IS_TIME_DEPARTURE, true);
+                //mTrip = data.getParcelableExtra(EXTRA_TRIP);
+                
+                Time time = new Time();
+                time.parse3339(data.getStringExtra((EXTRA_TIME)));
 
-                mTime.parse(newTime);
+                boolean isTimeDeparture =
+                    data.getBooleanExtra(EXTRA_IS_TIME_DEPARTURE, true);
+
+                mTrip.setTime(time);
+                mTrip.setIsTimeDeparture(isTimeDeparture);
+
                 HashMap<String, String> item = mDateAdapterData.get(0);
                 item.put("title", buildDateString());
 
                 //updateStartAndEndPointViews(startPoint, endPoint);
 
                 mSearchRoutesTask = new SearchRoutesTask();
-                mSearchRoutesTask.execute(startPoint, endPoint, mTime, mIsTimeDeparture);
+                mSearchRoutesTask.execute(mTrip);
             }
             break;
         case REQUEST_CODE_POINT_ON_MAP_START:
             if (resultCode == RESULT_CANCELED) {
                 Log.d(TAG, "action canceled");
             } else {
-                mStartPoint = data.getParcelableExtra(PointOnMapActivity.EXTRA_STOP);
-                Log.d(TAG, "Got Stop " + mStartPoint);
-                mStartPoint.setName(Stop.TYPE_MY_LOCATION);
+                Stop startPoint = data.getParcelableExtra(PointOnMapActivity.EXTRA_STOP);
+                Log.d(TAG, "Got Stop " + startPoint);
+                startPoint.setName(Stop.TYPE_MY_LOCATION);
+
+                mTrip.setStartPoint(startPoint);
+
                 mSearchRoutesTask = new SearchRoutesTask();
-                mSearchRoutesTask.execute(mStartPoint, mEndPoint, mTime, mIsTimeDeparture);
-                updateStartAndEndPointViews(mStartPoint, mEndPoint);
+                mSearchRoutesTask.execute(mTrip);
+
+                // TODO: Is this call really needed?
+                updateStartAndEndPointViews(mTrip.getStartPoint(), mTrip.getEndPoint());
             }
             break;
         case REQUEST_CODE_POINT_ON_MAP_END:
             if (resultCode == RESULT_CANCELED) {
                 Log.d(TAG, "action canceled");
             } else {
-                mEndPoint = data.getParcelableExtra(PointOnMapActivity.EXTRA_STOP);
-                Log.d(TAG, "Got Stop " + mEndPoint);
-                mEndPoint.setName(Stop.TYPE_MY_LOCATION);
+                Stop endPoint = data.getParcelableExtra(PointOnMapActivity.EXTRA_STOP);
+                Log.d(TAG, "Got Stop " + endPoint);
+                endPoint.setName(Stop.TYPE_MY_LOCATION);
+
+                mTrip.setEndPoint(endPoint);
+
                 mSearchRoutesTask = new SearchRoutesTask();
-                mSearchRoutesTask.execute(mStartPoint, mEndPoint, mTime, mIsTimeDeparture);
-                updateStartAndEndPointViews(mStartPoint, mEndPoint);
+                mSearchRoutesTask.execute(mTrip);
+
+                updateStartAndEndPointViews(mTrip.getStartPoint(), mTrip.getEndPoint());
             }
             break;
         }
@@ -761,30 +802,32 @@ public class RoutesActivity extends ListActivity
                 startActivity(i);
                 return true;
             case R.id.reverse_start_end :
-                Stop tmpStartPoint = new Stop(mEndPoint);
-                Stop tmpEndPoint = new Stop(mStartPoint);
+                Stop tmpStartPoint = new Stop(mTrip.getEndPoint());
+                Stop tmpEndPoint = new Stop(mTrip.getStartPoint());
 
-                mStartPoint = tmpStartPoint;
-                mEndPoint = tmpEndPoint;
+                mTrip.setStartPoint(tmpStartPoint);
+                mTrip.setEndPoint(tmpEndPoint);
 
                 /*
-                 * Note: To launch a new intent won't work because sl.se would need to have a new
-                 * ident generated to be able to search for route details in the next step.
+                 * Note: To launch a new intent won't work because sl.se would
+                 * need to have a new ident generated to be able to search for
+                 * route details in the next step.
                  */
-
                 mSearchRoutesTask = new SearchRoutesTask();
-                mSearchRoutesTask.execute(mStartPoint, mEndPoint, mTime, mIsTimeDeparture);
+                mSearchRoutesTask.execute(mTrip);
 
-                updateStartAndEndPointViews(mStartPoint, mEndPoint);
+                updateStartAndEndPointViews(
+                        mTrip.getStartPoint(), mTrip.getEndPoint());
 
                 // Update the favorite button
                 mFavoriteButtonHelper
-                        .setStartPoint(mStartPoint)
-                        .setEndPoint(mEndPoint)
+                        .setStartPoint(mTrip.getStartPoint())
+                        .setEndPoint(mTrip.getEndPoint())
                         .loadImage();
                 return true;
             case R.id.show_qr_code :
-                Uri routesUri = createRoutesUri(mStartPoint, mEndPoint, null, true);
+                Uri routesUri = createRoutesUri(
+                        mTrip.getStartPoint(), mTrip.getEndPoint(), null, true);
                 BarcodeScannerIntegrator.shareText(this, routesUri.toString(),
                         R.string.install_barcode_scanner_title,
                         R.string.requires_barcode_scanner_message,
@@ -811,7 +854,7 @@ public class RoutesActivity extends ListActivity
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     mSearchRoutesTask = new SearchRoutesTask();
-                    mSearchRoutesTask.execute(mStartPoint, mEndPoint, mTime, mIsTimeDeparture);
+                    mSearchRoutesTask.execute(mTrip);
                 }
             });
         case DIALOG_GET_EARLIER_ROUTES_NETWORK_PROBLEM:
@@ -849,6 +892,42 @@ public class RoutesActivity extends ListActivity
             })
             .setNegativeButton(getText(R.string.cancel), null)
             .create();
+        case DIALOG_START_POINT_ALTERNATIVES:
+            ArrayAdapter<Site> startAlternativesAdapter =
+                new ArrayAdapter<Site>(this, android.R.layout.simple_dropdown_item_1line,
+                        mTrip.getStartPointAlternatives());
+            return new AlertDialog.Builder(this)
+                .setTitle("Did you mean?")
+                .setAdapter(startAlternativesAdapter, new OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Site site = mTrip.getStartPointAlternatives().get(which);
+                        Stop startPoint = mTrip.getStartPoint();
+                        startPoint.setSiteId(site.getId());
+                        startPoint.setName(site.getName());
+
+                        onSiteAlternatives(mTrip);
+                    }
+                })
+                .create();
+        case DIALOG_END_POINT_ALTERNATIVES:
+            ArrayAdapter<Site> endAlternativesAdapter =
+                new ArrayAdapter<Site>(this, android.R.layout.simple_dropdown_item_1line,
+                        mTrip.getEndPointAlternatives());
+            return new AlertDialog.Builder(this)
+                .setTitle("Did you mean?")
+                .setAdapter(endAlternativesAdapter, new OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Site site = mTrip.getEndPointAlternatives().get(which);
+                        Stop endPoint = mTrip.getEndPoint();
+                        endPoint.setSiteId(site.getId());
+                        endPoint.setName(site.getName());
+
+                        onSiteAlternatives(mTrip);
+                    }
+                })
+                .create();
         }
         return null;
     }
@@ -1063,7 +1142,7 @@ public class RoutesActivity extends ListActivity
     /**
      * Background task for searching for routes.
      */
-    private class SearchRoutesTask extends AsyncTask<Object, Void, ArrayList<Route>> {
+    private class SearchRoutesTask extends AsyncTask<Object, Void, Trip> {
         private boolean mWasSuccess = true;
 
         @Override
@@ -1072,15 +1151,17 @@ public class RoutesActivity extends ListActivity
         }
 
         @Override
-        protected ArrayList<Route> doInBackground(Object... params) {
+        protected Trip doInBackground(Object... params) {
             try {
                 String language = getApplicationContext()
                     .getResources()
                     .getConfiguration()
                     .locale.getLanguage();
-                return Planner.getInstance().findRoutes(
-                        (Stop) params[0], (Stop) params[1], (Time) params[2],
-                        (Boolean) params[3], language);
+
+                @SuppressWarnings("unchecked")
+                Trip trip = (Trip) params[0];
+
+                return Planner.getInstance().findRoutes(trip, language);
             } catch (IOException e) {
                 mWasSuccess = false;
                 return null;
@@ -1088,13 +1169,15 @@ public class RoutesActivity extends ListActivity
         }
 
         @Override
-        protected void onPostExecute(ArrayList<Route> result) {
+        protected void onPostExecute(Trip result) {
             dismissProgress();
 
-            if (result != null && !result.isEmpty()) {
+            if (!result.getRoutes().isEmpty()) {
                 onSearchRoutesResult(result);
             } else if (!mWasSuccess) {
                 showDialog(DIALOG_SEARCH_ROUTES_NETWORK_PROBLEM);
+            } else if (result.hasAlternatives()) {
+                onSiteAlternatives(result);
             } else {
                 showDialog(DIALOG_SEARCH_ROUTES_NO_RESULT);
             }
@@ -1131,7 +1214,8 @@ public class RoutesActivity extends ListActivity
             dismissProgress();
 
             if (result != null && !result.isEmpty()) {
-                onSearchRoutesResult(result);
+                mTrip.setRoutes(result);
+                onSearchRoutesResult(mTrip);
             } else if (!mWasSuccess) {
                 showDialog(DIALOG_GET_EARLIER_ROUTES_NETWORK_PROBLEM);
             } else {
@@ -1170,7 +1254,8 @@ public class RoutesActivity extends ListActivity
             dismissProgress();
 
             if (result != null && !result.isEmpty()) {
-                onSearchRoutesResult(result);
+                mTrip.setRoutes(result);
+                onSearchRoutesResult(mTrip);
             } else if (!mWasSuccess) {
                 showDialog(DIALOG_GET_LATER_ROUTES_NETWORK_PROBLEM);
             } else {
