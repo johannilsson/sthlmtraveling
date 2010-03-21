@@ -169,6 +169,8 @@ public class RouteParser extends DefaultHandler {
             return R.drawable.transport_train;
         } else if (name.toLowerCase().contains("tvärbanan")) {
             return R.drawable.transport_train;
+        } else if (name.toLowerCase().contains("roslagsbanan")) {
+            return R.drawable.transport_train;
         } else if (name.toLowerCase().contains("airport") || name.toLowerCase().contains("flygbuss")) {
             return R.drawable.transport_bus;
         } else if (name.toLowerCase().contains("bus")) {
