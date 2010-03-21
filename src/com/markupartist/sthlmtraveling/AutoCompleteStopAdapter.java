@@ -47,8 +47,12 @@ public class AutoCompleteStopAdapter extends ArrayAdapter<String> implements Fil
             protected FilterResults performFiltering(CharSequence constraint) {
                 FilterResults filterResults = new FilterResults();
 
-                // TODO: Remove hard coded My location string here.
-                if (constraint != null && !constraint.equals("My location")) {
+                // TODO: Remove hard coded strings here.
+                if (constraint != null
+                        && !constraint.equals("My location")
+                        && !constraint.equals("Min position")
+                        && !constraint.equals("Välj en plats på kartan")
+                        && !constraint.equals("Point on map")) {
                     //Log.d(TAG, "Searching for " + constraint);
                     ArrayList<String> list;
                     try {
