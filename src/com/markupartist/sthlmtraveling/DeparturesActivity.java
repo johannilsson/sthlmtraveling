@@ -364,7 +364,7 @@ public class DeparturesActivity extends ListActivity {
                 new ArrayAdapter<Site>(this, android.R.layout.simple_dropdown_item_1line,
                         mSiteAlternatives);
             return new AlertDialog.Builder(this)
-                .setTitle("Did you mean?")
+                .setTitle(R.string.did_you_mean)
                 .setAdapter(siteAdapter, new OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {

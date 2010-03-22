@@ -102,6 +102,7 @@
     <string name="new_deviations">New deviations.</string>
     <string name="no_deviations"><b>No known deviations</b></string>
     <string name="reinstall_app_message">You need to reinstall STHLM Traveling to be able to use is properly.\n\nThis is caused by a bug in Android. You can read more about this issue at my blog, http://bit.ly/fcissue.\n\nI'm really sorry about this!</string>
+    <string name="did_you_mean">Did you mean?</string>
     <!-- Preferences -->
     <string name="restart_app_for_full_effect">Restart the app for full effect.</string>
     <string name="dialog_general_preferences">Basics</string>

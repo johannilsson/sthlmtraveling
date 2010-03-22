@@ -898,7 +898,7 @@ public class RoutesActivity extends ListActivity
                 new ArrayAdapter<Site>(this, android.R.layout.simple_dropdown_item_1line,
                         mTrip.getStartPointAlternatives());
             return new AlertDialog.Builder(this)
-                .setTitle("Did you mean?")
+                .setTitle(R.string.did_you_mean)
                 .setAdapter(startAlternativesAdapter, new OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -916,7 +916,7 @@ public class RoutesActivity extends ListActivity
                 new ArrayAdapter<Site>(this, android.R.layout.simple_dropdown_item_1line,
                         mTrip.getEndPointAlternatives());
             return new AlertDialog.Builder(this)
-                .setTitle("Did you mean?")
+                .setTitle(R.string.did_you_mean)
                 .setAdapter(endAlternativesAdapter, new OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
