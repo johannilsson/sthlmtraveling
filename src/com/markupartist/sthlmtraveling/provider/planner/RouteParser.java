@@ -173,7 +173,7 @@ public class RouteParser extends DefaultHandler {
             return R.drawable.transport_train;
         } else if (name.toLowerCase().contains("airport") || name.toLowerCase().contains("flygbuss")) {
             return R.drawable.transport_bus;
-        } else if (name.toLowerCase().contains("bus")) {
+        } else if (name.toLowerCase().contains("bus") || name.toLowerCase().contains("närtrafiken")) {
             return R.drawable.transport_bus;
         } else if (name.toLowerCase().contains("saltsjöbanan")) {
             return R.drawable.transport_train;
