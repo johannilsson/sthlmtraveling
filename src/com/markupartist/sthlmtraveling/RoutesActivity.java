@@ -278,7 +278,6 @@ public class RoutesActivity extends ListActivity
      * @param time the time
      */
     private void initRoutes(Trip trip) {
-        @SuppressWarnings("unchecked")
         final Trip savedTrip = (Trip) getLastNonConfigurationInstance();
         if (savedTrip != null && savedTrip.getRoutes() != null) {
             onSearchRoutesResult(savedTrip);
@@ -993,10 +992,6 @@ public class RoutesActivity extends ListActivity
             mRoutes = routes;
         }
 
-        public ArrayList<Route> getRoutes() {
-            return mRoutes;
-        }
-
         @Override
         public int getCount() {
             return mRoutes.size();
@@ -1161,7 +1156,6 @@ public class RoutesActivity extends ListActivity
                     .getConfiguration()
                     .locale.getLanguage();
 
-                @SuppressWarnings("unchecked")
                 Trip trip = (Trip) params[0];
 
                 return Planner.getInstance().findRoutes(trip, language);
