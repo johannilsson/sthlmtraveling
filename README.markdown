@@ -72,6 +72,10 @@ STHLM Traveling is open source and licensed under
 
 Changelog
 ---------
+* 1.7.5
+    * Fixed bug related to alternatives when one stop had an location
+* 1.7.4
+    * Wrong map key
 * 1.7.3
     * Added site suggestions if a routes was not found because sl.se mixed up
       some sites, or if the user misspelled the site name. Resolves #3
