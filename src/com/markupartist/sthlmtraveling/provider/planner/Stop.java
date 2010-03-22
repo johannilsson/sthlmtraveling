@@ -43,6 +43,7 @@ public class Stop implements Parcelable {
     public Stop(Stop stop) {
         mName = stop.getName();
         mLocation = stop.getLocation();
+        mSiteId = stop.getSiteId();
     }
 
     public String getName() {
