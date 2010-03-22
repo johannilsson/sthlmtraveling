@@ -158,6 +158,8 @@ public class Planner {
         mIdent = mRouteFinder.getIdent();
 
         if (mRoutes.isEmpty()) {
+            // TODO: Iterate over the results and see if the initial name
+            // match any in the alternatives list, if it does do the request again.
             if (!startPoint.isMyLocation()
                     && (startPoint.getLocation() == null 
                     || startPoint.getSiteId() == 0)) {
