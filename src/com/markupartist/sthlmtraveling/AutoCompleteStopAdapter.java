@@ -31,6 +31,7 @@ import com.markupartist.sthlmtraveling.provider.planner.Planner;
 public class AutoCompleteStopAdapter extends ArrayAdapter<String> implements Filterable {
     @SuppressWarnings("unused")
     private static String TAG = "AutoCompleteStopAdapter";
+    private final Object mLock = new Object();
     private Planner mPlanner;
 
     public AutoCompleteStopAdapter(Context context, int textViewResourceId, Planner planner) {
@@ -56,9 +57,11 @@ public class AutoCompleteStopAdapter extends ArrayAdapter<String> implements Fil
                     //Log.d(TAG, "Searching for " + constraint);
                     ArrayList<String> list;
                     try {
-                        list = mPlanner.findStop(constraint.toString());
-                        filterResults.values = list;
-                        filterResults.count = list.size();
+                        synchronized (mLock) {
+                            list = mPlanner.findStop(constraint.toString());
+                            filterResults.values = list;
+                            filterResults.count = list.size();
+                        }
                     } catch (IOException e) {
                         mWasSuccess = false;
                     }
@@ -72,8 +75,10 @@ public class AutoCompleteStopAdapter extends ArrayAdapter<String> implements Fil
             protected void publishResults(CharSequence constraint, FilterResults results) {
                 if (results != null && results.count > 0) {
                     clear();
-                    for (String value : (List<String>)results.values) {
-                        add(value);
+                    synchronized (mLock) {
+                        for (String value : (List<String>)results.values) {
+                            add(value);
+                        }
                     }
                     notifyDataSetChanged();
                 } else if (!mWasSuccess) {
