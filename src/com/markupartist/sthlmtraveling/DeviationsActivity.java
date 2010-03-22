@@ -161,7 +161,6 @@ public class DeviationsActivity extends ListActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        Log.d(TAG, "onResume");
     }
 
     @Override
