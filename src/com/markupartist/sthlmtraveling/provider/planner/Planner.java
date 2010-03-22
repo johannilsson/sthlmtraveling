@@ -161,13 +161,17 @@ public class Planner {
         mIdent = mRouteFinder.getIdent();
 
         if (mRoutes.isEmpty()) {
-            if (startPoint.getLocation() == null || startPoint.getSiteId() == 0) {
+            if (!startPoint.isMyLocation()
+                    && (startPoint.getLocation() == null 
+                    || startPoint.getSiteId() == 0)) {
                 trip.setStartPointAlternatives(
                         SitesStore.getInstance().getSite(startPoint.getName()));
             } else {
                 trip.setStartPointAlternatives(null);
             }
-            if (endPoint.getLocation() == null || endPoint.getSiteId() == 0) {
+            if (!endPoint.isMyLocation()
+                    && (endPoint.getLocation() == null || 
+                    endPoint.getSiteId() == 0)) {
                 trip.setEndPointAlternatives(
                         SitesStore.getInstance().getSite(endPoint.getName()));
             } else {
