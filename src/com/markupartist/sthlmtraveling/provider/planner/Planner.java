@@ -162,15 +162,15 @@ public class Planner {
             // match any in the alternatives list, if it does do the request again.
             if (!startPoint.isMyLocation()
                     && (startPoint.getLocation() == null 
-                    || startPoint.getSiteId() == 0)) {
+                    && startPoint.getSiteId() == 0)) {
                 trip.setStartPointAlternatives(
                         SitesStore.getInstance().getSite(startPoint.getName()));
             } else {
                 trip.setStartPointAlternatives(null);
             }
             if (!endPoint.isMyLocation()
-                    && (endPoint.getLocation() == null || 
-                    endPoint.getSiteId() == 0)) {
+                    && (endPoint.getLocation() == null
+                    && endPoint.getSiteId() == 0)) {
                 trip.setEndPointAlternatives(
                         SitesStore.getInstance().getSite(endPoint.getName()));
             } else {
