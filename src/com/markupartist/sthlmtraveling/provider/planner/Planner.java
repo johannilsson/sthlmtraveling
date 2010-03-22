@@ -29,7 +29,6 @@ import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.HttpGet;
 import org.xml.sax.InputSource;
 
-import android.text.format.Time;
 import android.util.Log;
 
 import com.markupartist.sthlmtraveling.provider.site.SitesStore;
@@ -47,6 +46,7 @@ public class Planner {
     private StopParser mStopFinder;
     private RouteParser mRouteFinder;
     private RouteDetailParser mRouteDetailFinder;
+    // TODO: We should remove routes and details from here...
     private ArrayList<Route> mRoutes = null;
     private ArrayList<String> mRouteDetails = null;
 
@@ -90,11 +90,8 @@ public class Planner {
 
     /**
      * Find routes.
-     * @param startPoint the start point
-     * @param endPoint the end point
-     * @param time time representing departure
-     * @param isTimeDeparture true is time is departure, false if arrival
-     * @return a list of RouteS
+     * @param trip the {@link Trip}
+     * @return a {@link Trip}
      * @throws IOException on network problems
      */
     public Trip findRoutes(Trip trip, String languageCode)
