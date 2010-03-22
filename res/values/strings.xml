@@ -24,7 +24,7 @@
     <string name="search_label">Search</string>
     <string name="departing">Departing</string>
     <string name="arriving">Arrivistartng</string>
-    <string name="no_routes_found_label">Unfortunately no routes was found</string>
+    <string name="no_routes_found_label">Unfortunately no routes were found</string>
     <string name="no_routes_found_message">Please try entering another station/stop.</string>
     <string name="routes_label">Routes</string>
     <string name="route_alternatives_label">Alternatives</string>
