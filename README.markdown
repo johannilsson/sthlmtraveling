@@ -72,10 +72,12 @@ STHLM Traveling is open source and licensed under
 
 Changelog
 ---------
-* NEXT
+* 1.7.3
     * Added site suggestions if a routes was not found because sl.se mixed up
       some sites, or if the user misspelled the site name. Resolves #3
     * Bug fix for networks problems in the RoutesActivity
+    * Various clean up
+    * Removed QR code, need to rework that part a bit
 * 1.7.2
     * New app icon by [Olof Brickarp](http://www.yay.se)
     * Improvements for hdpi screens
