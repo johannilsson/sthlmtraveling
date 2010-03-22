@@ -824,6 +824,7 @@ public class RoutesActivity extends ListActivity
                         .setEndPoint(mTrip.getEndPoint())
                         .loadImage();
                 return true;
+            /*
             case R.id.show_qr_code :
                 Uri routesUri = createRoutesUri(
                         mTrip.getStartPoint(), mTrip.getEndPoint(), null, true);
@@ -833,6 +834,7 @@ public class RoutesActivity extends ListActivity
                         R.string.yes, R.string.no);
 
                 return true;
+            */
         }
         return super.onOptionsItemSelected(item);
     }
