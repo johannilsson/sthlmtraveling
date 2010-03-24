@@ -1,12 +1,12 @@
 package com.markupartist.sthlmtraveling;
 
-import com.markupartist.sthlmtraveling.service.DeviationService;
-
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.widget.Toast;
+
+import com.markupartist.sthlmtraveling.service.DeviationService;
 
 public class SettingsActivity extends PreferenceActivity
         implements OnSharedPreferenceChangeListener {
@@ -23,8 +23,6 @@ public class SettingsActivity extends PreferenceActivity
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
             String key) {
         if (key.equals("prefered_language_preference")) {
-            MyApplication application = (MyApplication) getApplication();
-            application.reloadLocaleForApplication();
             Toast.makeText(this, R.string.restart_app_for_full_effect,
                     Toast.LENGTH_LONG).show();
         } else if (key.equals("notification_deviations_enabled")) {
