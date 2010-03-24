@@ -72,6 +72,10 @@ STHLM Traveling is open source and licensed under
 
 Changelog
 ---------
+* 1.7.6
+    * Fixed issue with changing locale on Android 2.0.x, closes #9
+    * Added double tap to zoom on map
+    * Removed center to geo point when clicking on the map
 * 1.7.5
     * Fixed bug related to alternatives when one stop had an location
 * 1.7.4
