@@ -10,7 +10,6 @@ import android.preference.PreferenceManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
 
-import com.markupartist.sthlmtraveling.service.DeviationService;
 import com.markupartist.sthlmtraveling.utils.ErrorReporter;
 
 public class MyApplication extends Application {
@@ -55,8 +54,8 @@ public class MyApplication extends Application {
             Log.d(TAG, "setting locale " + locale);
             Resources res = getResources(); 
             DisplayMetrics dm = res.getDisplayMetrics(); 
-            Configuration conf = res.getConfiguration(); 
-            conf.locale = locale; 
+            Configuration conf = res.getConfiguration();
+            conf.locale = locale;
             res.updateConfiguration(conf, dm);
         }
     }
