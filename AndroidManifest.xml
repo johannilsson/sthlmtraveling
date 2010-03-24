@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="com.markupartist.sthlmtraveling"
-      android:versionCode="41" android:versionName="1.7.5">
+      android:versionCode="43" android:versionName="1.7.6">
     <supports-screens
         android:largeScreens="true"
         android:normalScreens="true"
@@ -10,33 +10,40 @@
     <application android:icon="@drawable/icon" android:label="@string/app_name" android:debuggable="false" android:name="MyApplication">
         <uses-library android:name="com.google.android.maps" />
         <activity android:name=".StartActivity"
-                  android:label="@string/app_name">
+                  android:label="@string/app_name"
+                  android:configChanges="locale">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity-alias android:name=".SearchActivity" android:targetActivity=".StartActivity">
+        <activity-alias android:name=".SearchActivity"
+                        android:targetActivity=".StartActivity"
+                        android:configChanges="locale">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </activity-alias>
         <activity android:name=".PlannerActivity"
-                  android:label="@string/search_label"></activity>
+                  android:label="@string/search_label"
+                  android:configChanges="locale"></activity>
         <!-- Alias activity used to create shortcuts on Home. The alias is used
              simply to have a different label. -->
         <activity-alias android:name="SearchShortcutActivity"
             android:targetActivity="PlannerActivity"
-            android:label="@string/activity_create_shortcut">
+            android:label="@string/activity_create_shortcut"
+            android:configChanges="locale">
             <intent-filter>
                 <action android:name="android.intent.action.CREATE_SHORTCUT" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity-alias>
         <activity android:name=".FavoritesActivity"
-                  android:label="@string/favorites_label"></activity>
+                  android:label="@string/favorites_label"
+                  android:configChanges="locale"></activity>
         <activity android:name=".RoutesActivity"
-                  android:label="@string/routes_label">
+                  android:label="@string/routes_label"
+                  android:configChanges="locale">
             <intent-filter>
 	            <action android:name="android.intent.action.VIEW"/>
 	            <category android:name="android.intent.category.DEFAULT"/>
@@ -44,7 +51,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".DeviationsActivity"
-                  android:label="@string/deviations_label">
+                  android:label="@string/deviations_label"
+                  android:configChanges="locale">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
                 <action android:name="com.markupartist.sthlmtraveling.action.DEVIATION_FILTER"/>
@@ -52,7 +60,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".DeviationDetailActivity"
-                  android:label="@string/deviations_label">
+                  android:label="@string/deviations_label"
+                  android:configChanges="locale">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
                 <category android:name="android.intent.category.DEFAULT"/>
@@ -60,30 +69,37 @@
             </intent-filter>
         </activity>
         <activity android:name=".RouteDetailActivity"
-                  android:label="@string/route_details_label"></activity>
+                  android:label="@string/route_details_label"
+                  android:configChanges="locale"></activity>
         <activity android:name=".ChangeRouteTimeActivity"
-                  android:label="@string/change_date_and_time"></activity>
+                  android:label="@string/change_date_and_time"
+                  android:configChanges="locale"></activity>
         <activity android:name=".PointOnMapActivity"
-                  android:label="@string/point_on_map"></activity>
+                  android:label="@string/point_on_map"
+                  android:configChanges="locale"></activity>
         <activity android:name=".SearchDeparturesActivity"
-                  android:label="@string/departures"></activity>
+                  android:label="@string/departures"
+                  android:configChanges="locale"></activity>
         <activity-alias android:name="CreateDepartureShortcutActivity"
-            android:targetActivity="SearchDeparturesActivity"
-            android:label="@string/activity_create_departure_shortcut">
+			            android:targetActivity="SearchDeparturesActivity"
+			            android:label="@string/activity_create_departure_shortcut"
+			            android:configChanges="locale">
             <intent-filter>
                 <action android:name="android.intent.action.CREATE_SHORTCUT" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity-alias>
         <activity android:name=".DeparturesActivity"
-                  android:label="@string/departures">
+                  android:label="@string/departures"
+                  android:configChanges="locale">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
         <activity android:name=".SettingsActivity"
-                  android:label="@string/title_settings"></activity>
+                  android:label="@string/title_settings"
+                  android:configChanges="locale"></activity>
         <receiver android:name=".receivers.OnBootReceiver"
                   android:enabled="true" 
                   android:exported="false">
