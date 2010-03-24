@@ -227,7 +227,8 @@ public class PointOnMapActivity extends MapActivity {
             @Override
             public boolean onDoubleTap(MotionEvent motionEvent, ManagedOverlay managedOverlay,
                     GeoPoint geoPoint, ManagedOverlayItem managedOverlayItem) {
-                return false;
+                mapController.zoomIn();
+                return true;
             }
 
             @Override
@@ -271,7 +272,7 @@ public class PointOnMapActivity extends MapActivity {
                     mManagedOverlayItem = new ManagedOverlayItem(geoPoint, "", "");
                     managedOverlay.add(mManagedOverlayItem);
 
-                    mapController.animateTo(geoPoint);    
+                    //mapController.animateTo(geoPoint);    
                     mMapView.invalidate();
                 }
                 return true;
