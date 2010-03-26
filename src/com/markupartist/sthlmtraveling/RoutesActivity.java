@@ -63,7 +63,6 @@ import com.markupartist.sthlmtraveling.provider.planner.Route;
 import com.markupartist.sthlmtraveling.provider.planner.Stop;
 import com.markupartist.sthlmtraveling.provider.planner.Trip;
 import com.markupartist.sthlmtraveling.provider.site.Site;
-import com.markupartist.sthlmtraveling.utils.BarcodeScannerIntegrator;
 
 /**
  * Routes activity
@@ -1171,7 +1170,7 @@ public class RoutesActivity extends ListActivity
         protected void onPostExecute(Trip result) {
             dismissProgress();
 
-            if (!result.getRoutes().isEmpty()) {
+            if (result != null && !result.getRoutes().isEmpty()) {
                 onSearchRoutesResult(result);
             } else if (!mWasSuccess) {
                 showDialog(DIALOG_SEARCH_ROUTES_NETWORK_PROBLEM);
