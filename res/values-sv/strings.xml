@@ -103,6 +103,7 @@
     <string name="no_deviations"><b>Inga kända störningar</b></string>
     <string name="reinstall_app_message">Tyvärr måste du installera STHLM Traveling på nytt för att forsätta använda den fullt ut.\n\nDetta är orsakat av en bugg i Android. För en utförligare beskrivning läs mer på min blogg, http://bit.ly/fcissue.\n\nJag är verkligen ledsen för det här!</string>
     <string name="did_you_mean">Menade du?</string>
+    <string name="share_label">Dela med andra</string>
     <!-- Preferences -->
     <string name="restart_app_for_full_effect">Starta om appen för att ändringen ska slå igenom fullt.</string>
     <string name="dialog_general_preferences">Grundläggande</string>

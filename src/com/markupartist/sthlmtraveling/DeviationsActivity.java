@@ -26,6 +26,7 @@ import android.app.Dialog;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.DialogInterface.OnClickListener;
 import android.os.AsyncTask;
@@ -33,10 +34,12 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.format.Time;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.SimpleAdapter.ViewBinder;
@@ -64,6 +67,7 @@ public class DeviationsActivity extends ListActivity {
         setContentView(R.layout.deviations_list);
 
         loadDeviations();
+        registerForContextMenu(getListView());
 
         // Show text that this view is only in Swedish.
         Locale locale = getResources().getConfiguration().locale;
@@ -104,7 +108,6 @@ public class DeviationsActivity extends ListActivity {
         }
         emptyResultView.setVisibility(View.GONE);
 
-        
         SimpleAdapter deviationAdapter = createAdapter(result);
 
         mDeviationsResult = result;
@@ -161,6 +164,21 @@ public class DeviationsActivity extends ListActivity {
     @Override
     protected void onResume() {
         super.onResume();
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v,
+            ContextMenu.ContextMenuInfo menuInfo) {
+        menu.add(R.string.share_label);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo menuInfo =
+            (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        Deviation deviation = mDeviationsResult.get(menuInfo.position);
+        share(deviation.getHeader(), deviation.getDetails());
+        return true;
     }
 
     @Override
@@ -320,5 +338,20 @@ public class DeviationsActivity extends ListActivity {
                 showDialog(DIALOG_GET_DEVIATIONS_NETWORK_PROBLEM);
             }
         }
+    }
+
+    /**
+     * Share a {@link Deviation} with others.
+     * @param subject the subject
+     * @param text the text
+     */
+    public void share(String subject,String text) {
+        final Intent intent = new Intent(Intent.ACTION_SEND);
+
+        intent.setType("text/plain");
+        intent.putExtra(Intent.EXTRA_SUBJECT, subject);
+        intent.putExtra(Intent.EXTRA_TEXT, text);
+
+        startActivity(Intent.createChooser(intent, getText(R.string.share_label)));
     }
 }
