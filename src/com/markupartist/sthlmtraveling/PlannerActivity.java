@@ -459,7 +459,7 @@ public class PlannerActivity extends Activity implements OnCheckedChangeListener
                 .setNegativeButton(getText(R.string.feedback), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        final Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
+                        final Intent emailIntent = new Intent(Intent.ACTION_SEND);
                         emailIntent.setType("plain/text");
                         emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL,
                                 new String[]{getString(R.string.send_feedback_email_emailaddress)});
