@@ -31,6 +31,7 @@ import org.xml.sax.InputSource;
 
 import android.util.Log;
 
+import com.markupartist.sthlmtraveling.provider.site.Site;
 import com.markupartist.sthlmtraveling.provider.site.SitesStore;
 import com.markupartist.sthlmtraveling.utils.HttpManager;
 
@@ -157,9 +158,11 @@ public class Planner {
         mRequestCount = mRouteFinder.getRequestCount();
         mIdent = mRouteFinder.getIdent();
 
+        /*
+         * If the result is empty, see if the user just misspelled the start or
+         * end point to see if we can find some suggestions.
+         */
         if (mRoutes.isEmpty()) {
-            // TODO: Iterate over the results and see if the initial name
-            // match any in the alternatives list, if it does do the request again.
             if (!startPoint.isMyLocation()
                     && (startPoint.getLocation() == null 
                     && startPoint.getSiteId() == 0)) {
@@ -175,6 +178,30 @@ public class Planner {
                         SitesStore.getInstance().getSite(endPoint.getName()));
             } else {
                 trip.setEndPointAlternatives(null);
+            }
+
+            /*
+             * Since sl.se can't distinguish between some names, check if the
+             * provided names match the name in the alternative lists. If they
+             * match we query again but with the site id. 
+             */
+            if (trip.hasAlternatives()) {
+                boolean shouldResend = false;
+                for (Site site : trip.getStartPointAlternatives()) {
+                    if (site.getName().equals(startPoint.getName())) {
+                        startPoint.setSiteId(site.getId());
+                        shouldResend = true;
+                        break;
+                    }
+                }
+                for (Site site : trip.getEndPointAlternatives()) {
+                    if (site.getName().equals(endPoint.getName())) {
+                        endPoint.setSiteId(site.getId());
+                        shouldResend = true;
+                    }
+                }
+                if (shouldResend)
+                    return findRoutes(trip, languageCode);
             }
         }
 
