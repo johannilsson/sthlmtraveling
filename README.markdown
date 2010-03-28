@@ -72,6 +72,14 @@ STHLM Traveling is open source and licensed under
 
 Changelog
 ---------
+* 1.7.7
+    * Added possibility to share deviations
+    * Added possibility to share routes
+    * Search improvements, if the start or end point matches a name in the
+      list of suggestions re-query direct instead of showing the suggestions
+      for the end user
+    * Fixed NullPointerException that occurred when searching and the
+      communication failed, closes #10.
 * 1.7.6
     * Fixed issue with changing locale on Android 2.0.x, closes #9
     * Added double tap to zoom on map
