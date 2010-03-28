@@ -23,6 +23,11 @@
         android:title="@string/show_departures_for_start"
         android:icon="@drawable/ic_menu_clock"
         />
+    <item
+        android:id="@+id/menu_share"
+        android:title="@string/share_label"
+        android:icon="@android:drawable/ic_menu_share"
+        />
 	<item
 		android:id="@+id/new_search"
 		android:title="@string/new_search"

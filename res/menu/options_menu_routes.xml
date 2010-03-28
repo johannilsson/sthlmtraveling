@@ -23,6 +23,11 @@
         android:title="@string/reverse_start_end"
         android:icon="@drawable/ic_menu_rotate"
         />
+    <item
+        android:id="@+id/menu_share"
+        android:title="@string/share_label"
+        android:icon="@android:drawable/ic_menu_share"
+        />
     <!--
     Commented out the QR code, see if anyone will miss it.
     <item

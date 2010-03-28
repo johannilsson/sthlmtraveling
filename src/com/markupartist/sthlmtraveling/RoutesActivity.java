@@ -823,6 +823,11 @@ public class RoutesActivity extends ListActivity
                         .setEndPoint(mTrip.getEndPoint())
                         .loadImage();
                 return true;
+            case R.id.menu_share:
+                if (mRouteAdapter != null) {
+                    share(mRouteAdapter.mRoutes);
+                }
+                return true;
             /*
             case R.id.show_qr_code :
                 Uri routesUri = createRoutesUri(
@@ -1139,6 +1144,34 @@ public class RoutesActivity extends ListActivity
     }
 
     /**
+     * Share the list of {@link Route}S with others.
+     * @param routes the routes
+     */
+    public void share(ArrayList<Route> routes) {
+        if (routes == null) {
+            return; // TODO: Fire a toast with some message.
+        }
+
+        final Intent intent = new Intent(Intent.ACTION_SEND);
+
+        String routesString = "";
+        int routesCount = routes.size();
+        int addedRoutes = 0;
+        for (Route route : routes) {
+            routesString += route.toTextRepresentation();
+            addedRoutes++;
+            if (routesCount > addedRoutes)
+                routesString += "\n----------\n";
+        }
+
+        intent.setType("text/plain");
+        intent.putExtra(Intent.EXTRA_SUBJECT, getText(R.string.routes_label));
+        intent.putExtra(Intent.EXTRA_TEXT, routesString);
+
+        startActivity(Intent.createChooser(intent, getText(R.string.share_label)));
+    }
+
+    /**
      * Background task for searching for routes.
      */
     private class SearchRoutesTask extends AsyncTask<Object, Void, Trip> {
@@ -1162,6 +1195,7 @@ public class RoutesActivity extends ListActivity
                 return Planner.getInstance().findRoutes(trip, language);
             } catch (IOException e) {
                 mWasSuccess = false;
+                // TODO: We should return the Trip here as well.
                 return null;
             }
         }

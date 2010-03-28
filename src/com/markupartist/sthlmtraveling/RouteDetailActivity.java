@@ -213,6 +213,9 @@ public class RouteDetailActivity extends ListActivity {
                         mRoute.from);
                 startActivity(departuresIntent);
                 return true;
+            case R.id.menu_share:
+                share(mRoute);
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -285,6 +288,20 @@ public class RouteDetailActivity extends ListActivity {
             mProgress.dismiss();
             mProgress = null;
         }
+    }
+
+    /**
+     * Share a {@link Route} with others.
+     * @param route the route to share
+     */
+    public void share(Route route) {
+        final Intent intent = new Intent(Intent.ACTION_SEND);
+
+        intent.setType("text/plain");
+        intent.putExtra(Intent.EXTRA_SUBJECT, getText(R.string.route_details_label));
+        intent.putExtra(Intent.EXTRA_TEXT, route.toTextRepresentation());
+
+        startActivity(Intent.createChooser(intent, getText(R.string.share_label)));
     }
 
     /**

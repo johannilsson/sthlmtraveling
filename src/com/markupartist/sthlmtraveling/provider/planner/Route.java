@@ -22,6 +22,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
 
+import com.markupartist.sthlmtraveling.R;
+
 public class Route implements Parcelable {
     public String ident;
     public String routeId;
@@ -95,6 +97,49 @@ public class Route implements Parcelable {
         return departure + " - " + arrival + " (" + duration + ")";
     }
 
+    /**
+     * Create a text representation of the {@link Route}.
+     * @return the text describing the route.
+     */
+    public String toTextRepresentation() {
+        String shareText = from + " ⇒ " + to + "\n"
+            + toString() + "\n";
+
+        int transportCount = transports.size();
+        int addedTransports = 0;
+        String transportsString = "";
+        for (Transport transport : transports) {
+            switch (transport.mImageResource) {
+            case R.drawable.transport_boat:
+                transportsString += "F";
+                break;
+            case R.drawable.transport_bus:
+                transportsString += "B";
+                break;
+            case R.drawable.transport_metro_blue:
+            case R.drawable.transport_metro_green:
+            case R.drawable.transport_metro_red:
+                transportsString += "M";
+                break;
+            case R.drawable.transport_train:
+                transportsString += "T";
+                break;
+            default:
+                transportsString += "?";
+                break;
+            }
+
+            if (transport.hasLineNumber())
+                transportsString += transport.lineNumber(); 
+
+            addedTransports++;
+            if (transportCount > addedTransports)
+                transportsString += " ⇾ ";
+        }
+        shareText += transportsString;
+        return shareText;
+    }
+    
     @Override
     public boolean equals(Object obj) {
         Route other = (Route) obj;
