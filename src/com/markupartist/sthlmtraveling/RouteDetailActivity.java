@@ -18,6 +18,8 @@ package com.markupartist.sthlmtraveling;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -29,17 +31,22 @@ import android.content.DialogInterface.OnClickListener;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.format.Time;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.SimpleAdapter;
 import android.widget.TextView;
+import android.widget.SimpleAdapter.ViewBinder;
 
 import com.markupartist.sthlmtraveling.provider.FavoritesDbAdapter;
+import com.markupartist.sthlmtraveling.provider.deviation.Deviation;
 import com.markupartist.sthlmtraveling.provider.planner.Planner;
 import com.markupartist.sthlmtraveling.provider.planner.Route;
+import com.markupartist.sthlmtraveling.provider.planner.RouteDetail;
 import com.markupartist.sthlmtraveling.provider.planner.Stop;
 
 public class RouteDetailActivity extends ListActivity {
@@ -52,9 +59,9 @@ public class RouteDetailActivity extends ListActivity {
     private static final String STATE_ROUTE = "com.markupartist.sthlmtraveling.route";
     private static final int DIALOG_NETWORK_PROBLEM = 0;
 
-    private ArrayAdapter<String> mDetailAdapter;
+    private SimpleAdapter mDetailAdapter;
     private FavoritesDbAdapter mFavoritesDbAdapter;
-    private ArrayList<String> mDetails;
+    private ArrayList<RouteDetail> mDetails;
     private GetDetailsTask mGetDetailsTask;
     private Route mRoute;
     private ProgressDialog mProgress;
@@ -113,7 +120,7 @@ public class RouteDetailActivity extends ListActivity {
      */
     private void initRouteDetails(Route route) {
         @SuppressWarnings("unchecked")
-        final ArrayList<String> details = (ArrayList<String>) getLastNonConfigurationInstance();
+        final ArrayList<RouteDetail> details = (ArrayList<RouteDetail>) getLastNonConfigurationInstance();
         if (details != null) {
             onRouteDetailsResult(details);
         } else if (mGetDetailsTask == null) {
@@ -234,8 +241,38 @@ public class RouteDetailActivity extends ListActivity {
      * Called when there is results to display.
      * @param details the route details
      */
-    public void onRouteDetailsResult(ArrayList<String> details) {
-        mDetailAdapter = new ArrayAdapter<String>(this, R.layout.route_details_row, details);
+    public void onRouteDetailsResult(ArrayList<RouteDetail> details) {
+        ArrayList<Map<String, String>> list = new ArrayList<Map<String, String>>();
+
+        for (RouteDetail detail : details) {
+            Map<String, String> map = new HashMap<String, String>();
+            map.put("description", detail.getDescription());
+            Log.d(TAG, "location: " + detail.getSite().getLocation());
+            list.add(map);
+        }
+
+        mDetailAdapter = new SimpleAdapter(this, list, 
+                R.layout.route_details_row,
+                new String[] { "description"},
+                new int[] { 
+                    R.id.routes_row
+                }
+        );
+
+        mDetailAdapter.setViewBinder(new ViewBinder() {
+            @Override
+            public boolean setViewValue(View view, Object data,
+                    String textRepresentation) {
+                switch (view.getId()) {
+                case R.id.routes_row:
+                    ((TextView)view).setText(android.text.Html.fromHtml(textRepresentation));
+                    return true;
+                }
+                return false;
+            }
+        });
+
+        //mDetailAdapter = new ArrayAdapter<String>(this, R.layout.route_details_row, details);
         setListAdapter(mDetailAdapter);
         mDetails = details;
     }
@@ -307,7 +344,7 @@ public class RouteDetailActivity extends ListActivity {
     /**
      * Background task for fetching route details.
      */
-    private class GetDetailsTask extends AsyncTask<Route, Void, ArrayList<String>> {
+    private class GetDetailsTask extends AsyncTask<Route, Void, ArrayList<RouteDetail>> {
         private boolean mWasSuccess = true;
 
         @Override
@@ -316,7 +353,7 @@ public class RouteDetailActivity extends ListActivity {
         }
 
         @Override
-        protected ArrayList<String> doInBackground(Route... params) {
+        protected ArrayList<RouteDetail> doInBackground(Route... params) {
             try {
                 String language = getApplicationContext()
                     .getResources()
@@ -330,7 +367,7 @@ public class RouteDetailActivity extends ListActivity {
         }
 
         @Override
-        protected void onPostExecute(ArrayList<String> result) {
+        protected void onPostExecute(ArrayList<RouteDetail> result) {
             dismissProgress();
 
             if (result != null && !result.isEmpty()) {

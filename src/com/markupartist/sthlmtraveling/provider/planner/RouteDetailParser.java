@@ -29,17 +29,22 @@ import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 
+import com.markupartist.sthlmtraveling.provider.site.Site;
+
+import android.location.Location;
 import android.util.Log;
 
 public class RouteDetailParser extends DefaultHandler {
     private static final String TAG = "StopFinder";
-
-    private boolean mInKey = false;
-    private String mCurrentText;
+    private StringBuilder mTextBuffer = null;
+    boolean mIsBuffering = false; 
     private int mRequestCount;
-    private ArrayList<String> mDetails = new ArrayList<String>();
+    private ArrayList<RouteDetail> mDetails = new ArrayList<RouteDetail>();
+    private RouteDetail mCurrentDetail;
+    private Location mCurrentLocation;
+    private Site mCurrentSite;
 
-    public ArrayList<String> parseDetail(InputSource input) {
+    public ArrayList<RouteDetail> parseDetail(InputSource input) {
         mDetails.clear();
         try {
             SAXParserFactory spf = SAXParserFactory.newInstance();
@@ -65,23 +70,61 @@ public class RouteDetailParser extends DefaultHandler {
     }
 
     public void startElement(String uri, String name, String qName, Attributes atts) {
-        if (name.trim().startsWith("key_"))
-            mInKey = true;
+        if (name.trim().startsWith("key_")) {
+            mCurrentDetail = new RouteDetail();
+            mCurrentLocation = new Location("sthlmtraveling");
+            mCurrentSite = new Site();
+        } else if (name.equals("description")) {
+            startBuffer();
+        } else if (name.equals("requestCount")) {
+            startBuffer();
+        } else if (name.equals("latitude")) {
+            startBuffer();
+        } else if (name.equals("longitude")) {
+            startBuffer();
+        } else if (name.equals("name")) {
+            startBuffer();
+        }
     }
 
     public void characters(char ch[], int start, int length) {
-        mCurrentText = (new String(ch).substring(start, start + length));
-        if (mInKey) {
-            mDetails.add(mCurrentText.trim());
+        if (mIsBuffering) {
+            mTextBuffer.append(ch, start, length);
         }
     }
 
     public void endElement(String uri, String name, String qName)
                 throws SAXException {
-        if (name.trim().startsWith("key_"))
-            mInKey = false;
+        if (name.trim().startsWith("key_")) {
+            mCurrentSite.setLocation(mCurrentLocation);
+            mCurrentDetail.setSite(mCurrentSite);
+            mDetails.add(mCurrentDetail);
+        }
 
-        if (name.trim().equals("requestCount"))
-            mRequestCount = Integer.parseInt(mCurrentText.trim());
+        if (name.trim().equals("requestCount")) {
+            endBuffer();
+            mRequestCount = Integer.parseInt(mTextBuffer.toString());
+        } else if (name.equals("description")) {
+            endBuffer();
+            mCurrentDetail.setDescription(mTextBuffer.toString().trim());
+        } else if (name.equals("latitude")) {
+            endBuffer();
+            mCurrentLocation.setLatitude(Double.parseDouble(mTextBuffer.toString()));
+        } else if (name.equals("longitude")) {
+            endBuffer();
+            mCurrentLocation.setLongitude(Double.parseDouble(mTextBuffer.toString()));
+        } else if (name.equals("name")) {
+            endBuffer();
+            mCurrentSite.setName(mTextBuffer.toString().trim());
+        }
+    }
+
+    private void startBuffer() {
+        mTextBuffer = new StringBuilder();
+        mIsBuffering = true;
+    }
+
+    private void endBuffer() {
+        mIsBuffering = false;
     }
 }

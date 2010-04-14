@@ -49,7 +49,7 @@ public class Planner {
     private RouteDetailParser mRouteDetailFinder;
     // TODO: We should remove routes and details from here...
     private ArrayList<Route> mRoutes = null;
-    private ArrayList<String> mRouteDetails = null;
+    private ArrayList<RouteDetail> mRouteDetails = null;
 
     /**
      * Constructs a new Planner
@@ -296,9 +296,9 @@ public class Planner {
      * @return a list of details, each string in the result represent a detail for each change
      * @throws IOException on network problems
      */
-    public ArrayList<String> findRouteDetails(Route route, String languageCode)
+    public ArrayList<RouteDetail> findRouteDetails(Route route, String languageCode)
             throws IOException {
-        mRouteDetails = new ArrayList<String>();
+        mRouteDetails = new ArrayList<RouteDetail>();
 
         InputSource input;
         if (mUseMockData) {
