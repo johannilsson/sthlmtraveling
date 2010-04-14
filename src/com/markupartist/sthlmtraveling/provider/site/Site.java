@@ -1,11 +1,13 @@
 package com.markupartist.sthlmtraveling.provider.site;
 
+import android.location.Location;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 public class Site implements Parcelable {
     private int mId;
     private String mName;
+    private Location mLocation;
 
     public Site() {
     }
@@ -13,6 +15,7 @@ public class Site implements Parcelable {
     public Site(Parcel parcel) {
         mId = parcel.readInt();
         mName = parcel.readString();
+        mLocation = parcel.readParcelable(null);
     }
 
     /**
@@ -43,6 +46,14 @@ public class Site implements Parcelable {
         mName = name;
     }
 
+    public void setLocation(Location location) {
+        mLocation = location;
+    }
+
+    public Location getLocation() {
+        return mLocation;
+    }
+
     /**
      * @see java.lang.Object#toString()
      */
@@ -60,6 +71,7 @@ public class Site implements Parcelable {
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeInt(mId);
         parcel.writeString(mName);
+        parcel.writeParcelable(mLocation, 0);
     }
 
     public static final Creator<Site> CREATOR = new Creator<Site>() {
