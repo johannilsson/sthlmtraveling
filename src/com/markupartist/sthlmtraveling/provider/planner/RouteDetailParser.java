@@ -96,7 +96,9 @@ public class RouteDetailParser extends DefaultHandler {
     public void endElement(String uri, String name, String qName)
                 throws SAXException {
         if (name.trim().startsWith("key_")) {
-            mCurrentSite.setLocation(mCurrentLocation);
+            if (mCurrentLocation.getLongitude() != 0 || mCurrentLocation.getLatitude() != 0) {
+                mCurrentSite.setLocation(mCurrentLocation);
+            }
             mCurrentDetail.setSite(mCurrentSite);
             mDetails.add(mCurrentDetail);
         }
