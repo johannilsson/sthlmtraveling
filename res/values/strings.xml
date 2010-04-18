@@ -79,8 +79,9 @@
     <string name="departures_for">Departures for <xliff:g id="site_name">%s</xliff:g></string>
     <string name="no_departures"><b>No Departures at the moment</b>\nOnly showing departures within 10 minutes. Please refresh using the menu option in a while.</string>
     <string name="site_name">Location</string>
+    <string name="stop_label">Stop</string>
     <string name="refresh">Refresh</string>
-    <string name="show_departures_for_start">Departures for start point</string>
+    <string name="show_departures_for_start">Dep. for start</string>
     <string name="metros">Metros</string>
     <string name="buses">Buses</string>
     <string name="trains">Trains</string>
@@ -104,6 +105,10 @@
     <string name="reinstall_app_message">You need to reinstall STHLM Traveling to be able to use is properly.\n\nThis is caused by a bug in Android. You can read more about this issue at my blog, http://bit.ly/fcissue.\n\nI'm really sorry about this!</string>
     <string name="did_you_mean">Did you mean?</string>
     <string name="share_label">Share</string>
+    <string name="sms_ticket_label">SMS Ticket</string>
+    <string name="sms_ticket_price_reduced">Reduced price</string>
+    <string name="sms_ticket_price_full">Full price</string>
+    <string name="sms_ticket_notice_message">This function is experimental, please verify the details before you buy your ticket. STHLM Traveling can't garantuee that the ticket is valid for your journey.</string>
     <!-- Preferences -->
     <string name="restart_app_for_full_effect">Restart the app for full effect.</string>
     <string name="dialog_general_preferences">Basics</string>

@@ -79,8 +79,9 @@
     <string name="departures_for">Avgångar för <xliff:g id="site_name">%s</xliff:g></string>
     <string name="no_departures"><b>Inga avgångar hittades</b>\nEnbart avgångar inom 10 minuter listas. Uppdatera via menyn om ett tag.</string>
     <string name="site_name">Hållplatsnamn</string>
+    <string name="stop_label">Hållplats</string>
     <string name="refresh">Uppdatera</string>
-    <string name="show_departures_for_start">Avgångar från hållplatsen du vill åka från</string>
+    <string name="show_departures_for_start">Avg. för start</string>
     <string name="metros">Tunnelbana</string>
     <string name="buses">Bussar</string>
     <string name="trains">Pendeltåg</string>
@@ -104,6 +105,10 @@
     <string name="reinstall_app_message">Tyvärr måste du installera STHLM Traveling på nytt för att forsätta använda den fullt ut.\n\nDetta är orsakat av en bugg i Android. För en utförligare beskrivning läs mer på min blogg, http://bit.ly/fcissue.\n\nJag är verkligen ledsen för det här!</string>
     <string name="did_you_mean">Menade du?</string>
     <string name="share_label">Dela med andra</string>
+    <string name="sms_ticket_label">SMS-Biljett</string>
+    <string name="sms_ticket_price_reduced">Reducerat pris</string>
+    <string name="sms_ticket_price_full">Helt pris</string>
+    <string name="sms_ticket_notice_message">Den här funtionen är experimentell. Dubbelkolla detaljerna innan du köper din biljett. STHLM Traveling lämnar inga garantier för att biljetten stämmer med resan.</string>
     <!-- Preferences -->
     <string name="restart_app_for_full_effect">Starta om appen för att ändringen ska slå igenom fullt.</string>
     <string name="dialog_general_preferences">Grundläggande</string>
