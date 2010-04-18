@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="com.markupartist.sthlmtraveling"
-      android:versionName="1.7.7" android:versionCode="44">
+      android:versionName="1.7.8RC1" android:versionCode="45">
     <supports-screens
         android:largeScreens="true"
         android:normalScreens="true"
@@ -76,6 +76,9 @@
                   android:configChanges="locale"></activity>
         <activity android:name=".PointOnMapActivity"
                   android:label="@string/point_on_map"
+                  android:configChanges="locale"></activity>
+        <activity android:name=".ViewOnMapActivity"
+                  android:label="@string/stop_label"
                   android:configChanges="locale"></activity>
         <activity android:name=".SearchDeparturesActivity"
                   android:label="@string/departures"
