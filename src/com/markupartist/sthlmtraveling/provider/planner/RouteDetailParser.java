@@ -84,6 +84,8 @@ public class RouteDetailParser extends DefaultHandler {
             startBuffer();
         } else if (name.equals("name")) {
             startBuffer();
+        } else if (name.equals("zone")) {
+            startBuffer();
         }
     }
 
@@ -118,6 +120,9 @@ public class RouteDetailParser extends DefaultHandler {
         } else if (name.equals("name")) {
             endBuffer();
             mCurrentSite.setName(mTextBuffer.toString().trim());
+        } else if (name.equals("zone")) {
+            endBuffer();
+            mCurrentDetail.setZone(mTextBuffer.toString().trim());
         }
     }
 
