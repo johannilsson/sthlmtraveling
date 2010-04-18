@@ -30,16 +30,32 @@
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
+        android:orientation="horizontal"
         android:background="#e4e4e4"
         android:layout_marginBottom="0dip"
         android:padding="10dip"
         >
         <TextView
 			android:id="@+id/route_date_time"
+			android:layout_weight="1"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
+			android:text="17:54 - approx. 19:51 (1.57)"
 			android:textAppearance="?android:attr/textAppearanceSmallInverse"
+        />
+        <TextView
+            android:id="@+id/route_zones"
+            android:visibility="invisible"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12dip"
+            android:gravity="right"
+            android:background="@drawable/zone_background"
+            android:paddingRight="6dip"
+            android:paddingBottom="4dip"
+            android:paddingLeft="6dip"
+            android:paddingTop="4dip"
+            android:textColor="#fff"
         />
     </LinearLayout>
     <ListView 

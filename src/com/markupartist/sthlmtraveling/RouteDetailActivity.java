@@ -29,6 +29,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.DialogInterface.OnClickListener;
 import android.location.Location;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.format.Time;
@@ -38,8 +39,10 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.SimpleAdapter.ViewBinder;
 
 import com.markupartist.sthlmtraveling.provider.FavoritesDbAdapter;
@@ -58,6 +61,7 @@ public class RouteDetailActivity extends ListActivity {
         "com.markupartist.sthlmtraveling.getdetails.inprogress";
     private static final String STATE_ROUTE = "com.markupartist.sthlmtraveling.route";
     private static final int DIALOG_NETWORK_PROBLEM = 0;
+    private static final int DIALOG_BUY_SMS_TICKET = 1;
 
     private SimpleAdapter mDetailAdapter;
     private FavoritesDbAdapter mFavoritesDbAdapter;
@@ -98,6 +102,23 @@ public class RouteDetailActivity extends ListActivity {
         favoriteButtonHelper.loadImage();
 
         initRouteDetails(mRoute);
+    }
+
+    @Override
+    protected void onListItemClick(ListView l, View v, int position, long id) {
+        super.onListItemClick(l, v, position, id);
+
+        RouteDetail detail = mDetails.get(position);
+        if (detail.getSite().getLocation() != null) {
+            //String uri = "geo:"+ detail.getSite().getLocation().getLatitude() + "," + detail.getSite().getLocation().getLongitude() + "?q=" + detail.getSite().getName();  
+            //startActivity(new Intent(android.content.Intent.ACTION_VIEW, Uri.parse(uri)));
+            Intent i = new Intent(this, ViewOnMapActivity.class);
+            i.putExtra(ViewOnMapActivity.EXTRA_LOCATION, detail.getSite().getLocation());
+            i.putExtra(ViewOnMapActivity.EXTRA_MARKER_TEXT, detail.getSite().getName());
+            startActivity(i);
+        } else {
+            Toast.makeText(this, "Missing geo data", Toast.LENGTH_LONG).show();
+        }
     }
 
     /**
@@ -223,6 +244,9 @@ public class RouteDetailActivity extends ListActivity {
             case R.id.menu_share:
                 share(mRoute);
                 return true;
+            case R.id.menu_sms_ticket:
+                showDialog(DIALOG_BUY_SMS_TICKET);
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -275,6 +299,20 @@ public class RouteDetailActivity extends ListActivity {
         //mDetailAdapter = new ArrayAdapter<String>(this, R.layout.route_details_row, details);
         setListAdapter(mDetailAdapter);
         mDetails = details;
+
+        // Add zones
+        String zones = RouteDetail.getZones(mDetails);
+        if (zones.length() > 0) {
+            TextView zoneView = (TextView) findViewById(R.id.route_zones);
+            zoneView.setText(zones);
+            zoneView.setVisibility(View.VISIBLE);
+            zoneView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    showDialog(DIALOG_BUY_SMS_TICKET);
+                }
+            });
+        }
     }
 
     /**
@@ -302,6 +340,25 @@ public class RouteDetailActivity extends ListActivity {
                 })
                 .setNegativeButton(getText(android.R.string.cancel), null)
                 .create();
+        case DIALOG_BUY_SMS_TICKET:
+            CharSequence[] smsOptions = {
+                    getText(R.string.sms_ticket_price_full), 
+                    getText(R.string.sms_ticket_price_reduced)
+                };
+            return new AlertDialog.Builder(this)
+                .setTitle(getText(R.string.sms_ticket_label))
+                .setItems(smsOptions, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int item) {
+                        switch(item) {
+                        case 0:
+                            sendSms(false);
+                            break;
+                        case 1:
+                            sendSms(true);
+                            break;
+                        }
+                    }
+                }).create();
         }
         return null;
     }
@@ -341,6 +398,24 @@ public class RouteDetailActivity extends ListActivity {
         startActivity(Intent.createChooser(intent, getText(R.string.share_label)));
     }
 
+    /**
+     * Invokes the Messaging application.
+     * @param reducedPrice True if the price is reduced, false otherwise.
+     */
+    public void sendSms(boolean reducedPrice) {
+        final Intent intent = new Intent(Intent.ACTION_VIEW);
+
+        String price = reducedPrice ? "R" : "H";
+        intent.setType("vnd.android-dir/mms-sms");
+        intent.putExtra("address", "72150");
+        intent.putExtra("sms_body", price + RouteDetail.getZones(mDetails));
+
+        Toast.makeText(this, R.string.sms_ticket_notice_message,
+                Toast.LENGTH_LONG).show();
+
+        startActivity(intent);
+    }
+    
     /**
      * Background task for fetching route details.
      */

@@ -16,12 +16,28 @@
 ** limitations under the License.
 */
 -->
- 
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-	android:id="@+id/routes_row"
-	android:layout_width="fill_parent"
-	android:layout_height="wrap_content"
-	android:textColor="?android:attr/textColorPrimary"
-	android:padding="10dip"
-	/>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="6dip"
+    android:paddingBottom="10dip"
+    >
+	<ImageView
+	    android:src="@drawable/ic_text_dot"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical|center_horizontal"
+        android:paddingTop="0dip"
+	    />
+	<TextView 
+	    android:id="@+id/routes_row"
+	    android:text="sdsds sdksld dkjsldk slsdk ll dsk d lsdksl dskld ld  skd sl sdkld sk ldsdksdl sdl skdls dksl dkldk skd kd sl sl d kd skd ls"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:paddingTop="4dip"
+	    android:textColor="?android:attr/textColorPrimary"
+	    />
+</LinearLayout>
 

@@ -24,6 +24,11 @@
         android:icon="@drawable/ic_menu_clock"
         />
     <item
+        android:id="@+id/menu_sms_ticket"
+        android:title="@string/sms_ticket_label"
+        android:icon="@android:drawable/ic_menu_send"
+        />
+    <item
         android:id="@+id/menu_share"
         android:title="@string/share_label"
         android:icon="@android:drawable/ic_menu_share"
