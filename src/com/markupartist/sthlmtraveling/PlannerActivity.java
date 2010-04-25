@@ -379,6 +379,7 @@ public class PlannerActivity extends Activity implements OnCheckedChangeListener
         case DIALOG_START_POINT:
             AlertDialog.Builder startPointDialogBuilder = new AlertDialog.Builder(this);
             startPointDialogBuilder.setTitle(getText(R.string.choose_start_point_label));
+            // TODO: Investigate to use an adapter instead the list of items.
             startPointDialogBuilder.setItems(getDialogSelectPointItems(),
                     new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int item) {
