@@ -20,17 +20,20 @@ import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
 import android.text.format.Time;
+import android.util.Log;
 
 import com.markupartist.sthlmtraveling.provider.site.Site;
 import com.markupartist.sthlmtraveling.utils.HttpManager;
 
 public class DeparturesStore {
+    static String TAG = "DeparturesStore";
 
     public DeparturesStore() {
     }
 
     public HashMap<String, DepartureList> find(Site site,
             DepartureFilter filter) throws IOException {
+        Log.d(TAG, "About to get departures for " + site.getName());
         final HttpGet get = new HttpGet(apiEndpoint()
                 + "dpsdepartures/" + site.getId()
                 + "/?key=" + get(KEY));
@@ -39,6 +42,8 @@ public class DeparturesStore {
         final HttpResponse response = HttpManager.execute(get);
 
         if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
+            Log.w(TAG, "A remote server error occurred when getting departures, status code: " +
+                    response.getStatusLine().getStatusCode());
             throw new IOException("A remote server error occurred when getting departures.");
         }
 
