@@ -2,6 +2,7 @@ package com.markupartist.sthlmtraveling;
 
 import com.markupartist.sthlmtraveling.service.DeviationService;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
@@ -48,5 +49,13 @@ public class SettingsActivity extends PreferenceActivity
         // Unregister the listener whenever a key changes            
         getPreferenceScreen().getSharedPreferences()
             .unregisterOnSharedPreferenceChangeListener(this);    
+    }
+
+    @Override
+    public boolean onSearchRequested() {
+        Intent i = new Intent(this, StartActivity.class);
+        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(i);
+        return true;
     }
 }

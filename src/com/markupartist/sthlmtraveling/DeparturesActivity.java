@@ -156,7 +156,9 @@ public class DeparturesActivity extends ListActivity {
             Map<String, String> map = new HashMap<String, String>();
             map.put("line", departure.getLineNumber());
             map.put("destination", departure.getDestination());
-            //map.put("timeToDisplay", departure.getDisplayTime());
+            //map.put("timeSlDisplay", departure.getDisplayTime());
+            //map.put("timeTabled", departure.getTimeTabledDateTime().format("%H:%M"));
+            //map.put("timeExpected", departure.getExpectedDateTime().format("%H:%M"));
             map.put("timeToDisplay", humanTimeUntil(now, departure.getExpectedDateTime()));
             map.put("groupOfLine", departure.getGroupOfLine());
             list.add(map);
@@ -164,10 +166,13 @@ public class DeparturesActivity extends ListActivity {
 
         SimpleAdapter adapter = new SimpleAdapter(this, list, 
                 R.layout.departures_row,
-                new String[] { "line", "destination", "timeToDisplay", "groupOfLine"},
+                new String[] { "line", "destination", /*"timeSlDisplay", "timeTabled", "timeExpected",*/ "timeToDisplay", "groupOfLine"},
                 new int[] { 
                     R.id.departure_line,
                     R.id.departure_destination,
+                    //R.id.departure_timeSlDisplayTime,
+                    //R.id.departure_timeTabled,
+                    //R.id.departure_timeExpected,
                     R.id.departure_timeToDisplay,
                     R.id.departure_color
                 }
@@ -180,6 +185,9 @@ public class DeparturesActivity extends ListActivity {
                 switch (view.getId()) {
                 case R.id.departure_line:
                 case R.id.departure_destination:
+                //case R.id.departure_timeTabled:
+                //case R.id.departure_timeSlDisplayTime:
+                //case R.id.departure_timeExpected:
                 case R.id.departure_timeToDisplay:
                     ((TextView)view).setText(textRepresentation);
                     return true;
@@ -433,6 +441,14 @@ public class DeparturesActivity extends ListActivity {
         onCancelGetDeparturesTask();
 
         dismissProgress();
+    }
+
+    @Override
+    public boolean onSearchRequested() {
+        Intent i = new Intent(this, StartActivity.class);
+        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(i);
+        return true;
     }
 
     /**

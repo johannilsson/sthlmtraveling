@@ -19,13 +19,7 @@ package com.markupartist.sthlmtraveling;
 import java.io.IOException;
 import java.util.List;
 
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.Point;
-import android.graphics.Paint.Style;
-import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -43,7 +37,6 @@ import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 import com.google.android.maps.MyLocationOverlay;
-import com.google.android.maps.Projection;
 import com.markupartist.sthlmtraveling.graphics.FixedMyLocationOverlay;
 import com.markupartist.sthlmtraveling.graphics.LabelMarker;
 import com.markupartist.sthlmtraveling.provider.planner.Stop;
@@ -305,5 +298,13 @@ public class PointOnMapActivity extends MapActivity {
             Log.d(TAG, "Failed to get name " + e.getMessage());
         }
         return name;
+    }
+
+    @Override
+    public boolean onSearchRequested() {
+        Intent i = new Intent(this, StartActivity.class);
+        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(i);
+        return true;
     }
 }

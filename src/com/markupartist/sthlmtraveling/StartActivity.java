@@ -58,5 +58,4 @@ public class StartActivity extends TabActivity {
         // Start background service.
         DeviationService.startAsRepeating(getApplicationContext());
     }
-
 }

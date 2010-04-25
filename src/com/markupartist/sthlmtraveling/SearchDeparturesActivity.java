@@ -170,4 +170,11 @@ public class SearchDeparturesActivity extends Activity {
         finish();
     }
 
+    @Override
+    public boolean onSearchRequested() {
+        Intent i = new Intent(this, StartActivity.class);
+        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(i);
+        return true;
+    }
 }
