@@ -192,6 +192,40 @@ public class Route implements Parcelable {
             return mLineNumber;
         }
 
+        public int getColor() {
+            if (mImageResource == R.drawable.transport_metro_blue) {
+                return 0xFF25368b;
+            } else if (mImageResource == R.drawable.transport_metro_green) {
+                return 0xFF6ec72d;
+            } else if (mImageResource == R.drawable.transport_metro_red) {
+                return 0xFFf1491c;
+            } else if (mImageResource == R.drawable.transport_bus) {
+                return 0xFF176fa7;
+            } else if (mImageResource == R.drawable.transport_train) {
+                return 0xFF807e77;
+            } else if (mImageResource == R.drawable.transport_boat) {
+                return 0xFF176fa7;
+            } else {
+                return 0xFFf1491c;
+            }
+        }
+
+        public String getShortName() {
+            if (mImageResource == R.drawable.transport_metro_blue ||
+                    mImageResource == R.drawable.transport_metro_green ||
+                    mImageResource == R.drawable.transport_metro_red) {
+                return "T" + mLineNumber;
+            } else if (mImageResource == R.drawable.transport_bus) {
+                return "B" + mLineNumber;
+            } else if (mImageResource == R.drawable.transport_train) {
+                return "J" + mLineNumber;
+            } else if (mImageResource == R.drawable.transport_boat) {
+                return "F" + mLineNumber;
+            } else {
+                return  mLineNumber;
+            }
+        }
+
         @Override
         public String toString() {
             return mName;
