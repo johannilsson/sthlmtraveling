@@ -22,6 +22,7 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:paddingTop="6dip"
+    android:paddingRight="4dip"
     android:paddingBottom="10dip"
     >
 	<ImageView
