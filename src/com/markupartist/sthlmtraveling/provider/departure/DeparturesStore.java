@@ -1,7 +1,7 @@
 package com.markupartist.sthlmtraveling.provider.departure;
 
-import static com.markupartist.sthlmtraveling.provider.ApiConf.apiEndpoint;
 import static com.markupartist.sthlmtraveling.provider.ApiConf.KEY;
+import static com.markupartist.sthlmtraveling.provider.ApiConf.apiEndpoint;
 import static com.markupartist.sthlmtraveling.provider.ApiConf.get;
 
 import java.io.IOException;
@@ -13,7 +13,6 @@ import java.util.Map.Entry;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
-import org.apache.http.StatusLine;
 import org.apache.http.client.methods.HttpGet;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
