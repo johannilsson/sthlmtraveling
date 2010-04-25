@@ -1078,6 +1078,8 @@ public class RoutesActivity extends ListActivity
             TextView routeDetail = new TextView(context);
             routeDetail.setText(route.toString());
             routeDetail.setTextColor(Color.WHITE);
+            routeDetail.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
+            routeDetail.setPadding(0, 2, 0, 2);
             //routeDetail.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
 
             TextView startAndEndPoint = new TextView(context);
@@ -1097,27 +1099,38 @@ public class RoutesActivity extends ListActivity
                 change.setPadding(0, 0, 5, 0);
                 routeChanges.addView(change);
 
+                /*
+                RoundRectShape rr = new RoundRectShape(new float[]{6, 6, 6, 6, 6, 6, 6, 6}, null, null);
+                ShapeDrawable ds = new ShapeDrawable();
+                ds.setShape(rr);
+                ds.setColorFilter(transport.getColor(), Mode.SCREEN);
+                */
+
                 if (transport.hasLineNumber()) {
                     TextView lineNumberView = new TextView(context);
-                    lineNumberView.setTextColor(Color.GRAY);
+                    lineNumberView.setTextColor(Color.WHITE);
                     lineNumberView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
-                    lineNumberView.setText(String.valueOf(transport.lineNumber()));
-                    lineNumberView.setPadding(0, 2, 5, 0);
+                    //lineNumberView.setBackgroundDrawable(ds);
+                    //lineNumberView.setText(transport.getShortName());
+                    lineNumberView.setText(transport.lineNumber());
+                    //lineNumberView.setPadding(7, 2, 7, 2);
+                    lineNumberView.setPadding(2, 2, 2, 2);
                     routeChanges.addView(lineNumberView);
                 }
 
                 if (transportCount > currentTransportCount) {
                     ImageView separator = new ImageView(context);
                     separator.setImageResource(R.drawable.transport_separator);
-                    separator.setPadding(0, 5, 5, 0);
+                    //separator.setPadding(9, 7, 9, 0);
+                    separator.setPadding(5, 7, 5, 0);
                     routeChanges.addView(separator);
                 }
 
                 currentTransportCount++;
             }
 
-            this.addView(startAndEndPoint);
             this.addView(routeDetail);
+            this.addView(startAndEndPoint);
             this.addView(routeChanges);
         }
     }
