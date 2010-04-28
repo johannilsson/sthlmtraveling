@@ -1,15 +1,17 @@
 STHLM Traveling
 ===============
 
-Travel in Stockholm with your Android phone.
+![Logo for STHLM Traveling for Android](http://markupartist.com/sthlmtraveling/logo.png)
 
-<object type="application/x-shockwave-flash" width="284" height="400" data="http://www.flickr.com/apps/video/stewart.swf?v=71377" classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"> <param name="flashvars" value="intl_lang=en-us&photo_secret=08ed847fb1&photo_id=4530168055"></param> <param name="movie" value="http://www.flickr.com/apps/video/stewart.swf?v=71377"></param> <param name="bgcolor" value="#000000"></param> <param name="allowFullScreen" value="true"></param><embed type="application/x-shockwave-flash" src="http://www.flickr.com/apps/video/stewart.swf?v=71377" bgcolor="#000000" allowfullscreen="true" flashvars="intl_lang=en-us&photo_secret=08ed847fb1&photo_id=4530168055" height="400" width="284"></embed></object>
+Travel in Stockholm with your Android phone.
 
 STHLM Traveling helps you plan your journeys using data from Stockholm Public 
 Transport (SL, Stockholms Lokaltrafik). 
 
 More about this project at <http://markupartist.com/sthlmtraveling> or follow 
 me on [twitter](http://twitter.com/johanni) where I announce new versions.
+
+Some screen shots is available on my [Flickr](http://www.flickr.com/photos/johannilsson/tags/sthlmtraveling/).
 
 The app is powered by two backend services. The journey planner in the app is
 written in php and screen scrapes sl.se. The other one is written is Java and
