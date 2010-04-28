@@ -46,6 +46,35 @@
                android:layout_weight="1"
                android:textColor="?android:attr/textColorPrimary"
                />
+           <!--
+           <TextView
+               android:id="@+id/departure_timeSlDisplayTime"
+               android:layout_marginLeft="10dip"
+               android:text="1 min"
+               android:paddingRight="5dip"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:textColor="?android:attr/textColorPrimary"
+               />
+           <TextView
+               android:id="@+id/departure_timeTabled"
+               android:layout_marginLeft="10dip"
+               android:text="1 min"
+               android:paddingRight="5dip"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:textColor="?android:attr/textColorPrimary"
+               />
+           <TextView
+               android:id="@+id/departure_timeExpected"
+               android:layout_marginLeft="10dip"
+               android:text="1 min"
+               android:paddingRight="5dip"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:textColor="?android:attr/textColorPrimary"
+               />
+            -->
            <TextView
                android:id="@+id/departure_timeToDisplay"
                android:layout_marginLeft="10dip"
