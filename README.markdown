@@ -3,6 +3,8 @@ STHLM Traveling
 
 Travel in Stockholm with your Android phone.
 
+<object type="application/x-shockwave-flash" width="284" height="400" data="http://www.flickr.com/apps/video/stewart.swf?v=71377" classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"> <param name="flashvars" value="intl_lang=en-us&photo_secret=08ed847fb1&photo_id=4530168055"></param> <param name="movie" value="http://www.flickr.com/apps/video/stewart.swf?v=71377"></param> <param name="bgcolor" value="#000000"></param> <param name="allowFullScreen" value="true"></param><embed type="application/x-shockwave-flash" src="http://www.flickr.com/apps/video/stewart.swf?v=71377" bgcolor="#000000" allowfullscreen="true" flashvars="intl_lang=en-us&photo_secret=08ed847fb1&photo_id=4530168055" height="400" width="284"></embed></object>
+
 STHLM Traveling helps you plan your journeys using data from Stockholm Public 
 Transport (SL, Stockholms Lokaltrafik). 
 
@@ -15,8 +17,6 @@ hosted on Googles AppEnginge and is used for deviations and real time data.
 
 Credits
 -------
-* Johan Walles for his great code in his SL app. Marker for the map is built
-  from his code
 * App icon, concepts & ideas Olof Brickarp
 * Patches by [Morgan Christiansson, Screen Interaction AB](http://screeninteraction.com)
 * Icons by [Fredrik Broman](http://fredrikbroman.com)
@@ -72,6 +72,13 @@ STHLM Traveling is open source and licensed under
 
 Changelog
 ---------
+* 1.8.0
+    * Reworked detailed view
+    * Added buy sms-ticket from the detailed view
+    * Added possibility to show stop on a map from the detailed view
+    * New marker for text on the map view
+    * The hardware search button will bring up the planner view
+    * Various layout fixes
 * 1.7.7
     * Added possibility to share deviations
     * Added possibility to share routes
