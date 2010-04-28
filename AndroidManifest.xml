@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="com.markupartist.sthlmtraveling"
-      android:versionName="1.7.8RC1" android:versionCode="45">
+      android:versionName="1.8.0" android:versionCode="47">
     <supports-screens
         android:largeScreens="true"
         android:normalScreens="true"
@@ -44,6 +44,7 @@
         <activity android:name=".RoutesActivity"
                   android:label="@string/routes_label"
                   android:configChanges="locale">
+                  
             <intent-filter>
 	            <action android:name="android.intent.action.VIEW"/>
 	            <category android:name="android.intent.category.DEFAULT"/>
