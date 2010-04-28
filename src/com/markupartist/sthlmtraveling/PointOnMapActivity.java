@@ -24,12 +24,13 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
+import android.view.View;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.Toast;
 
 import com.google.android.maps.GeoPoint;
@@ -37,10 +38,10 @@ import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 import com.google.android.maps.MyLocationOverlay;
+import com.markupartist.sthlmtraveling.graphics.BalloonOverlayView;
 import com.markupartist.sthlmtraveling.graphics.FixedMyLocationOverlay;
-import com.markupartist.sthlmtraveling.graphics.LabelMarker;
+import com.markupartist.sthlmtraveling.graphics.BalloonOverlayView.OnTapBallonListener;
 import com.markupartist.sthlmtraveling.provider.planner.Stop;
-import com.markupartist.sthlmtraveling.utils.DisplayMetricsHelper;
 
 import de.android1.overlaymanager.ManagedOverlay;
 import de.android1.overlaymanager.ManagedOverlayGestureDetector;
@@ -62,7 +63,8 @@ public class PointOnMapActivity extends MapActivity {
     private ManagedOverlayItem mManagedOverlayItem;
     private Stop mStop;
     private MyLocationOverlay mMyLocationOverlay;
-    private LabelMarker mLabelMarker;
+
+    private BalloonOverlayView balloonView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -79,7 +81,6 @@ public class PointOnMapActivity extends MapActivity {
         if (markerText == null) {
             markerText = getString(R.string.tap_to_select_this_point);
         }
-        mLabelMarker = new LabelMarker(markerText, getLabelTextSize());
 
         mMapView = (MapView) findViewById(R.id.mapview);
         mMapView.setBuiltInZoomControls(true);
@@ -100,32 +101,16 @@ public class PointOnMapActivity extends MapActivity {
                     (int) (18.069763 * 1E6));
             mapController.setZoom(12);
         }
-        mapController.animateTo(mGeoPoint); 
+        mapController.animateTo(mGeoPoint);
+
+        // Show the text balloon from start.
+        showBalloon(mMapView, mGeoPoint);
 
         mOverlayManager = new OverlayManager(getApplication(), mMapView);
 
         pointToSelectOverlay();
     }
 
-    /**
-     * Get the text size for the label marker. Will adapt the text size to the
-     * device density. Internally wraps {@link DisplayMetrics} with reflection
-     * to work on devices still running on 1.5.
-     * @return the text size
-     */
-    private int getLabelTextSize() {
-        int textSize = 17;
-
-        DisplayMetrics metrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(metrics);
-        int density = DisplayMetricsHelper.getDensityDpi(metrics);
-        if (DisplayMetricsHelper.DENSITY_HIGH == density) {
-            textSize = 22;
-        }
-
-        return textSize;
-    }
-    
     private void showHelpToast(String helpText) {
         if (helpText != null) {
             Toast.makeText(this, helpText, Toast.LENGTH_LONG).show();
@@ -213,8 +198,10 @@ public class PointOnMapActivity extends MapActivity {
     }
 
     private void pointToSelectOverlay() {
-        ManagedOverlay managedOverlay = mOverlayManager.createOverlay(
-                mLabelMarker.getMarker());
+        /*ManagedOverlay managedOverlay = mOverlayManager.createOverlay(
+                mLabelMarker.getMarker());*/
+        final ManagedOverlay managedOverlay = mOverlayManager.createOverlay(
+                getResources().getDrawable(R.drawable.marker));
 
         mManagedOverlayItem = new ManagedOverlayItem(mGeoPoint, "title", "snippet");
         managedOverlay.add(mManagedOverlayItem);
@@ -253,26 +240,14 @@ public class PointOnMapActivity extends MapActivity {
                                        ManagedOverlay managedOverlay,
                                        GeoPoint geoPoint,
                                        ManagedOverlayItem managedOverlayItem) {
-                if (managedOverlayItem != null) {
-                    Toast.makeText(getApplicationContext(),
-                            getText(R.string.point_selected), Toast.LENGTH_LONG).show();
+                managedOverlay.remove(mManagedOverlayItem);
+                mManagedOverlayItem = new ManagedOverlayItem(geoPoint, "title", "snippet");
+                managedOverlay.add(mManagedOverlayItem);
 
-                    GeoPoint currentPoint = managedOverlayItem.getPoint();
+                showBalloon(mMapView, geoPoint);
+                //mapController.animateTo(geoPoint);    
+                mMapView.invalidate();
 
-                    mStop.setLocation(currentPoint.getLatitudeE6(),
-                            currentPoint.getLongitudeE6());
-                    mStop.setName(getStopName(mStop.getLocation()));
-
-                    setResult(RESULT_OK, (new Intent()).putExtra(EXTRA_STOP, mStop));
-                    finish();
-                } else {
-                    managedOverlay.remove(mManagedOverlayItem);
-                    mManagedOverlayItem = new ManagedOverlayItem(geoPoint, "", "");
-                    managedOverlay.add(mManagedOverlayItem);
-
-                    //mapController.animateTo(geoPoint);    
-                    mMapView.invalidate();
-                }
                 return true;
             }
 
@@ -306,5 +281,48 @@ public class PointOnMapActivity extends MapActivity {
         i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(i);
         return true;
+    }
+
+    public void showBalloon(final MapView mapView, final GeoPoint point) {
+        
+        boolean isRecycled;
+        int viewOffset = 10;
+        
+        if (balloonView == null) {
+            balloonView = new BalloonOverlayView(mapView.getContext(), viewOffset);
+            //View clickRegion = (View) balloonView.findViewById(R.id.balloon_inner_layout);
+            isRecycled = false;
+        } else {
+            isRecycled = true;
+        }
+
+        balloonView.setVisibility(View.GONE);
+        balloonView.setLabel(getString(R.string.tap_to_select_this_point));
+
+        MapView.LayoutParams params = new MapView.LayoutParams(
+                LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, point,
+                MapView.LayoutParams.BOTTOM_CENTER);
+        params.mode = MapView.LayoutParams.MODE_MAP;
+        
+        balloonView.setOnTapBalloonListener(new OnTapBallonListener() {
+            @Override
+            public void onTap() {
+                Toast.makeText(getApplicationContext(),
+                        getText(R.string.point_selected), Toast.LENGTH_LONG).show();
+                mStop.setLocation(point.getLatitudeE6(), point.getLongitudeE6());
+                mStop.setName(getStopName(mStop.getLocation()));
+
+                setResult(RESULT_OK, (new Intent()).putExtra(EXTRA_STOP, mStop));
+                finish();
+            }
+        });
+
+        balloonView.setVisibility(View.VISIBLE);
+
+        if (isRecycled) {
+            balloonView.setLayoutParams(params);
+        } else {
+            mapView.addView(balloonView, params);
+        }
     }
 }

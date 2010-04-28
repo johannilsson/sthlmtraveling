@@ -16,26 +16,15 @@
 
 package com.markupartist.sthlmtraveling;
 
-import java.io.IOException;
-import java.util.List;
-
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.Point;
-import android.graphics.Paint.Style;
-import android.graphics.drawable.Drawable;
-import android.location.Address;
-import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
+import android.view.View;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.Toast;
 
 import com.google.android.maps.GeoPoint;
@@ -43,11 +32,8 @@ import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 import com.google.android.maps.MyLocationOverlay;
-import com.google.android.maps.Projection;
+import com.markupartist.sthlmtraveling.graphics.BalloonOverlayView;
 import com.markupartist.sthlmtraveling.graphics.FixedMyLocationOverlay;
-import com.markupartist.sthlmtraveling.graphics.LabelMarker;
-import com.markupartist.sthlmtraveling.provider.planner.Stop;
-import com.markupartist.sthlmtraveling.utils.DisplayMetricsHelper;
 
 import de.android1.overlaymanager.ManagedOverlay;
 import de.android1.overlaymanager.ManagedOverlayGestureDetector;
@@ -56,7 +42,7 @@ import de.android1.overlaymanager.OverlayManager;
 import de.android1.overlaymanager.ZoomEvent;
 
 public class ViewOnMapActivity extends MapActivity {
-    private static final String TAG = "PointOnMapActivity";
+    private static final String TAG = "ViewOnMapActivity";
 
     public static String EXTRA_LOCATION = "com.markupartist.sthlmtraveling.pointonmap.location";
     public static String EXTRA_MARKER_TEXT = "com.markupartist.sthlmtraveling.pointonmap.markertext";
@@ -67,7 +53,8 @@ public class ViewOnMapActivity extends MapActivity {
     private OverlayManager mOverlayManager;
     private ManagedOverlayItem mManagedOverlayItem;
     private MyLocationOverlay mMyLocationOverlay;
-    private LabelMarker mLabelMarker;
+
+    private BalloonOverlayView balloonView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -77,8 +64,6 @@ public class ViewOnMapActivity extends MapActivity {
         Bundle extras = getIntent().getExtras();
         Location location = (Location) extras.getParcelable(EXTRA_LOCATION);
         String markerText = extras.getString(EXTRA_MARKER_TEXT);
-
-        mLabelMarker = new LabelMarker(markerText, getLabelTextSize());
 
         mMapView = (MapView) findViewById(R.id.mapview);
         mMapView.setBuiltInZoomControls(true);
@@ -93,28 +78,12 @@ public class ViewOnMapActivity extends MapActivity {
         mapController.setZoom(16);
         mapController.animateTo(mGeoPoint); 
 
+        // Show the text balloon from start.
+        showBalloon(mMapView, mGeoPoint, markerText);
+
         mOverlayManager = new OverlayManager(getApplication(), mMapView);
 
         locationOverlay();
-    }
-
-    /**
-     * Get the text size for the label marker. Will adapt the text size to the
-     * device density. Internally wraps {@link DisplayMetrics} with reflection
-     * to work on devices still running on 1.5.
-     * @return the text size
-     */
-    private int getLabelTextSize() {
-        int textSize = 17;
-
-        DisplayMetrics metrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(metrics);
-        int density = DisplayMetricsHelper.getDensityDpi(metrics);
-        if (DisplayMetricsHelper.DENSITY_HIGH == density) {
-            textSize = 22;
-        }
-
-        return textSize;
     }
 
     @Override
@@ -192,8 +161,10 @@ public class ViewOnMapActivity extends MapActivity {
     }
 
     private void locationOverlay() {
-        ManagedOverlay managedOverlay = mOverlayManager.createOverlay(
-                mLabelMarker.getMarker());
+        /*ManagedOverlay managedOverlay = mOverlayManager.createOverlay(
+                mLabelMarker.getMarker());*/
+        final ManagedOverlay managedOverlay = mOverlayManager.createOverlay(
+                getResources().getDrawable(R.drawable.marker));
 
         mManagedOverlayItem = new ManagedOverlayItem(mGeoPoint, "title", "snippet");
         managedOverlay.add(mManagedOverlayItem);
@@ -250,5 +221,34 @@ public class ViewOnMapActivity extends MapActivity {
         i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(i);
         return true;
+    }
+
+    public void showBalloon(final MapView mapView, final GeoPoint point,
+            String markerText) {
+        boolean isRecycled;
+        int viewOffset = 10;
+        
+        if (balloonView == null) {
+            balloonView = new BalloonOverlayView(mapView.getContext(), viewOffset);
+            isRecycled = false;
+        } else {
+            isRecycled = true;
+        }
+
+        balloonView.setVisibility(View.GONE);
+        balloonView.setLabel(markerText);
+
+        MapView.LayoutParams params = new MapView.LayoutParams(
+                LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, point,
+                MapView.LayoutParams.BOTTOM_CENTER);
+        params.mode = MapView.LayoutParams.MODE_MAP;
+
+        balloonView.setVisibility(View.VISIBLE);
+
+        if (isRecycled) {
+            balloonView.setLayoutParams(params);
+        } else {
+            mapView.addView(balloonView, params);
+        }
     }
 }
