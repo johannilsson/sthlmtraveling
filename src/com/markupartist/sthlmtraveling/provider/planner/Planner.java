@@ -66,7 +66,16 @@ public class Planner {
      * @return a list of stops
      * @throws IOException on network problems
      */
+    @Deprecated
     public ArrayList<String> findStop(String name) throws IOException{
+        ArrayList<Site> sites = SitesStore.getInstance().getSite(name);
+        ArrayList<String> stops = new ArrayList<String>();
+        for (Site site : sites) {
+            stops.add(site.getName());
+        }
+        return stops;
+
+        /*
         InputSource input;
         if (mUseMockData) {
             StringReader sr = new StringReader(mStopsXml);
@@ -87,6 +96,7 @@ public class Planner {
         stops = mStopFinder.parseStops(input);
 
         return stops;
+        */
     }
 
     /**
