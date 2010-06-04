@@ -89,7 +89,7 @@
     <string name="now">Nu</string>
     <string name="journey_planner_label">Reseplanerare</string>
     <string name="crash_report_mail_subject">STHLM Traveling Crash Report</string><!-- Do not translate -->
-    <string name="crash_report_mail_body">By sending this crash report you are helping me to fix the bug. I won't use the information for any other thing.</string>
+    <string name="crash_report_mail_body">By sending this crash report you are helping me to fix the bug. I won\'t use the information for any other thing.</string>
     <string name="my_location_source_disabled">Lägg till "Min position" källa under systeminställningar.</string>
     <string name="title_settings">Inställningar</string>
     <string name="now_label">Nu</string>
@@ -122,6 +122,6 @@
     <string name="deviation_update_interval_preference">Interval för uppdateringar</string>
     <string name="deviation_update_interval_summary_preference">Längre interval sparar batteri.</string>
     <string name="deviation_lines_preference">Linjer</string>
-    <string name="deviation_lines_summary_preference">Kommaseparerad lista över linjenummer du vill bevaka. Ex: '42,28,707'.</string>
-    <string name="deviation_lines_dialog_message_preference">Separera linjenummer med ett komma. Ex: '42,28,707'.</string>
+    <string name="deviation_lines_summary_preference">Kommaseparerad lista över linjenummer du vill bevaka. Ex: \'42,28,707\'.</string>
+    <string name="deviation_lines_dialog_message_preference">Separera linjenummer med ett komma. Ex: \'42,28,707\'.</string>
 </resources>

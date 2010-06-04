@@ -89,7 +89,7 @@
     <string name="now">now</string>
     <string name="journey_planner_label">Journey Planner</string>
     <string name="crash_report_mail_subject">STHLM Traveling Crash Report</string>
-    <string name="crash_report_mail_body">By sending this crash report you are helping me to fix the bug. I won't use the information for any other thing.</string>
+    <string name="crash_report_mail_body">By sending this crash report you are helping me to fix the bug. I won\'t use the information for any other thing.</string>
     <string name="my_location_source_disabled">Please enable a My Location source in system settings</string>
     <string name="title_settings">Settings</string>
     <string name="now_label">Now</string>
@@ -102,13 +102,13 @@
     <string name="deviations_label">Deviations</string>
     <string name="new_deviations">New deviations.</string>
     <string name="no_deviations"><b>No known deviations</b></string>
-    <string name="reinstall_app_message">You need to reinstall STHLM Traveling to be able to use is properly.\n\nThis is caused by a bug in Android. You can read more about this issue at my blog, http://bit.ly/fcissue.\n\nI'm really sorry about this!</string>
+    <string name="reinstall_app_message">You need to reinstall STHLM Traveling to be able to use is properly.\n\nThis is caused by a bug in Android. You can read more about this issue at my blog, http://bit.ly/fcissue.\n\nI\'m really sorry about this!</string>
     <string name="did_you_mean">Did you mean?</string>
     <string name="share_label">Share</string>
     <string name="sms_ticket_label">SMS Ticket</string>
     <string name="sms_ticket_price_reduced">Reduced price</string>
     <string name="sms_ticket_price_full">Full price</string>
-    <string name="sms_ticket_notice_message">This function is experimental, please verify the details before you buy your ticket. STHLM Traveling can't garantuee that the ticket is valid for your journey.</string>
+    <string name="sms_ticket_notice_message">This function is experimental, please verify the details before you buy your ticket. STHLM Traveling can\'t garantuee that the ticket is valid for your journey.</string>
     <!-- Preferences -->
     <string name="restart_app_for_full_effect">Restart the app for full effect.</string>
     <string name="dialog_general_preferences">Basics</string>
@@ -122,6 +122,6 @@
     <string name="deviation_update_interval_preference">Update interval</string>
     <string name="deviation_update_interval_summary_preference">Longer update intervals saves your battery.</string>
     <string name="deviation_lines_preference">Lines</string>
-    <string name="deviation_lines_summary_preference">Comma separated list of line numvers. Eg: '42,28,707'.</string>
-    <string name="deviation_lines_dialog_message_preference">Separate the line numbers with a comma. Eg: '42,28,707'.</string>
+    <string name="deviation_lines_summary_preference">Comma separated list of line numvers. Eg: \'42,28,707\'.</string>
+    <string name="deviation_lines_dialog_message_preference">Separate the line numbers with a comma. Eg: \'42,28,707\'.</string>
 </resources>
