@@ -673,6 +673,10 @@ public class Planner {
             return TYPE_MY_LOCATION.equals(name);
         }
 
+        public boolean hasLocation() {
+            return latitude != 0 && longitude != 0;
+        }
+
         public static Location fromJson(JSONObject json) throws JSONException {
             Location l = new Location();
             l.id = json.getInt("id");
