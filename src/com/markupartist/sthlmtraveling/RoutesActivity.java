@@ -207,11 +207,9 @@ public class RoutesActivity extends ListActivity
         mToView = (TextView) findViewById(R.id.route_to);
         updateStartAndEndPointViews(mJourneyQuery.origin, mJourneyQuery.destination);
 
-        /*
         mFavoriteButtonHelper = new FavoriteButtonHelper(this, mFavoritesDbAdapter, 
-                mTrip.getStartPoint(), mTrip.getEndPoint());
+                mJourneyQuery.origin, mJourneyQuery.destination);
         mFavoriteButtonHelper.loadImage();
-        */
 
         initRoutes(mJourneyQuery);
     }

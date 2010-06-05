@@ -29,6 +29,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import com.markupartist.sthlmtraveling.provider.planner.Planner;
 import com.markupartist.sthlmtraveling.provider.planner.Stop;
 
 public class FavoritesDbAdapter {
@@ -114,23 +115,23 @@ public class FavoritesDbAdapter {
      * @return the row id associated with the created entry or -1 of an error
      * occurred
      */
-    public long create(Stop startPoint, Stop endPoint) {
+    public long create(Planner.Location startPoint, Planner.Location endPoint) {
         ContentValues initialValues = new ContentValues();
 
-        initialValues.put(KEY_START_POINT, startPoint.getName());
-        if (startPoint.getLocation() != null && !startPoint.isMyLocation()) {
-            int startLatitude = (int) (startPoint.getLocation().getLatitude() * 1E6);
-            int startLongitude = (int) (startPoint.getLocation().getLongitude() * 1E6);
-            initialValues.put(KEY_START_POINT_LATITUDE, startLatitude);
-            initialValues.put(KEY_START_POINT_LONGITUDE, startLongitude);
+        initialValues.put(KEY_START_POINT, startPoint.name);
+        if (startPoint.hasLocation() && !startPoint.isMyLocation()) {
+            //int startLatitude = (int) (startPoint.getLocation().getLatitude() * 1E6);
+            //int startLongitude = (int) (startPoint.getLocation().getLongitude() * 1E6);
+            initialValues.put(KEY_START_POINT_LATITUDE, startPoint.latitude);
+            initialValues.put(KEY_START_POINT_LONGITUDE, startPoint.longitude);
         }
 
-        initialValues.put(KEY_END_POINT, endPoint.getName());
-        if (endPoint.getLocation() != null && !endPoint.isMyLocation()) {
-            int endLatitude = (int) (endPoint.getLocation().getLatitude() * 1E6);
-            int endLongitude = (int) (endPoint.getLocation().getLongitude() * 1E6);
-            initialValues.put(KEY_END_POINT_LATITUDE, endLatitude);
-            initialValues.put(KEY_END_POINT_LONGITUDE, endLongitude);
+        initialValues.put(KEY_END_POINT, endPoint.name);
+        if (endPoint.hasLocation() && !endPoint.isMyLocation()) {
+            //int endLatitude = (int) (endPoint.getLocation().getLatitude() * 1E6);
+            //int endLongitude = (int) (endPoint.getLocation().getLongitude() * 1E6);
+            initialValues.put(KEY_END_POINT_LATITUDE, endPoint.latitude);
+            initialValues.put(KEY_END_POINT_LONGITUDE, endPoint.longitude);
         }
 
         // Create a sql date time format
@@ -156,26 +157,26 @@ public class FavoritesDbAdapter {
      * @param name the name
      * @return a Cursor object positioned at the first entry
      */
-    public Cursor fetch(Stop startPoint, Stop endPoint) {
+    public Cursor fetch(Planner.Location startPoint, Planner.Location endPoint) {
         ArrayList<String> selectionArgs = new ArrayList<String>();
-        selectionArgs.add(startPoint.getName());
-        selectionArgs.add(endPoint.getName());
+        selectionArgs.add(startPoint.name);
+        selectionArgs.add(endPoint.name);
         StringBuilder selectionBuilder = new StringBuilder();
         selectionBuilder.append("start_point=? AND end_point=?");
 
-        if (startPoint.getLocation() != null && !startPoint.isMyLocation()) {
-            int startLatitude = (int) (startPoint.getLocation().getLatitude() * 1E6);
-            int startLongitude = (int) (startPoint.getLocation().getLongitude() * 1E6);
-            selectionArgs.add(String.valueOf(startLatitude));
-            selectionArgs.add(String.valueOf(startLongitude));
+        if (startPoint.hasLocation() && !startPoint.isMyLocation()) {
+            //int startLatitude = (int) (startPoint.getLocation().getLatitude() * 1E6);
+            //int startLongitude = (int) (startPoint.getLocation().getLongitude() * 1E6);
+            selectionArgs.add(String.valueOf(startPoint.latitude));
+            selectionArgs.add(String.valueOf(startPoint.longitude));
 
             selectionBuilder.append(" AND start_point_latitude=? AND start_point_longitude=?");
         }
-        if (endPoint.getLocation() != null && !endPoint.isMyLocation()) {
-            int endLatitude = (int) (endPoint.getLocation().getLatitude() * 1E6);
-            int endLongitude = (int) (endPoint.getLocation().getLongitude() * 1E6);
-            selectionArgs.add(String.valueOf(endLatitude));
-            selectionArgs.add(String.valueOf(endLongitude));
+        if (endPoint.hasLocation() && !endPoint.isMyLocation()) {
+            //int endLatitude = (int) (endPoint.getLocation().getLatitude() * 1E6);
+            //int endLongitude = (int) (endPoint.getLocation().getLongitude() * 1E6);
+            selectionArgs.add(String.valueOf(endPoint.latitude));
+            selectionArgs.add(String.valueOf(endPoint.longitude));
 
             selectionBuilder.append(" AND end_point_latitude=? AND end_point_longitude=?");
         }

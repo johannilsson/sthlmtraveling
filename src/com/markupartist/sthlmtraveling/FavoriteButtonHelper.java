@@ -23,6 +23,7 @@ import android.view.View.OnClickListener;
 import android.widget.ImageButton;
 
 import com.markupartist.sthlmtraveling.provider.FavoritesDbAdapter;
+import com.markupartist.sthlmtraveling.provider.planner.Planner;
 import com.markupartist.sthlmtraveling.provider.planner.Stop;
 
 public class FavoriteButtonHelper implements OnClickListener {
@@ -30,15 +31,15 @@ public class FavoriteButtonHelper implements OnClickListener {
     private Cursor mFavoriteCursor;
     private Activity mActivity;
     private FavoritesDbAdapter mFavoritesDbAdapter;
-    private Stop mStartPoint;
-    private Stop mEndPoint;
+    private Planner.Location mStartPoint;
+    private Planner.Location mEndPoint;
     private static int STAR_ON_RESOURCE = android.R.drawable.star_big_on;
     private static int STAR_OFF_RESOURCE = android.R.drawable.star_big_off;
 
     public FavoriteButtonHelper(Activity activity, 
                                 FavoritesDbAdapter favoritesDbAdapter, 
-                                Stop startPoint, 
-                                Stop endPoint) {
+                                Planner.Location startPoint, 
+                                Planner.Location endPoint) {
         mActivity = activity;
         mFavoritesDbAdapter = favoritesDbAdapter;
         mStartPoint = startPoint;
@@ -48,12 +49,12 @@ public class FavoriteButtonHelper implements OnClickListener {
         mFavoriteButton.setOnClickListener(this);
     }
 
-    public FavoriteButtonHelper setStartPoint(Stop startPoint) {
+    public FavoriteButtonHelper setStartPoint(Planner.Location startPoint) {
         mStartPoint = startPoint;
         return this;
     }
 
-    public FavoriteButtonHelper setEndPoint(Stop endPoint) {
+    public FavoriteButtonHelper setEndPoint(Planner.Location endPoint) {
         mEndPoint = endPoint;
         return this;
     }
