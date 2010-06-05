@@ -763,10 +763,19 @@ public class Planner {
             if ("BUS".equals(type)) {
                 return R.drawable.transport_bus;
             } else if ("MET".equals(type)) {
-                return R.drawable.transport_metro_red;
+                if (name.contains("grön")) {
+                    return R.drawable.transport_metro_green;
+                } else if (name.contains("röd")) {
+                    return R.drawable.transport_metro_red;
+                } else if (name.contains("blå")) {
+                    return R.drawable.transport_metro_blue;
+                }
             } else if ("Walk".equals(type)) {
                 return R.drawable.transport_walk;
+            } else if ("SHP".equals(type)) {
+                return R.drawable.transport_boat;
             }
+
             return R.drawable.transport_unkown;
         }
 
