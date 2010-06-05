@@ -47,6 +47,7 @@ import android.view.ViewGroup;
 import android.widget.Adapter;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -62,6 +63,9 @@ import com.markupartist.sthlmtraveling.provider.planner.Planner;
 import com.markupartist.sthlmtraveling.provider.planner.Route;
 import com.markupartist.sthlmtraveling.provider.planner.Stop;
 import com.markupartist.sthlmtraveling.provider.planner.Trip;
+import com.markupartist.sthlmtraveling.provider.planner.Planner.Response;
+import com.markupartist.sthlmtraveling.provider.planner.Planner.SubTrip;
+import com.markupartist.sthlmtraveling.provider.planner.Planner.Trip2;
 import com.markupartist.sthlmtraveling.provider.site.Site;
 
 /**
@@ -279,7 +283,7 @@ public class RoutesActivity extends ListActivity
     private void initRoutes(Trip trip) {
         final Trip savedTrip = (Trip) getLastNonConfigurationInstance();
         if (savedTrip != null && savedTrip.getRoutes() != null) {
-            onSearchRoutesResult(savedTrip);
+            //onSearchRoutesResult(savedTrip);
         } else {
             if (trip.getStartPoint().isMyLocation() || trip.getEndPoint().isMyLocation()) {
                 Location location = mMyLocationManager.getLastKnownLocation();
@@ -556,6 +560,8 @@ public class RoutesActivity extends ListActivity
         }
     };
 
+    private Response mPlannerResponse;
+
     /**
      * Helper to create earlier or later adapter.
      * @param resource the image resource to show in the list
@@ -631,16 +637,16 @@ public class RoutesActivity extends ListActivity
         }
     }
 
-    public void onSearchRoutesResult(Trip trip) {
-        mTrip = trip;
-
-        updateStartAndEndPointViews(trip.getStartPoint(), trip.getEndPoint());
+    public void onSearchRoutesResult(Planner.Response response) {
+        mPlannerResponse = response;
+        //mTrip = trip;
+        //updateStartAndEndPointViews(trip.getStartPoint(), trip.getEndPoint());
 
         if (mRouteAdapter == null) {
-            mRouteAdapter = new RoutesAdapter(this, trip.getRoutes());
+            mRouteAdapter = new RoutesAdapter(this, response.trips);
             createSections();
         } else {
-            mRouteAdapter.refill(trip.getRoutes());
+            mRouteAdapter.refill(response.trips);
             mSectionedAdapter.notifyDataSetChanged();
         }
     }
@@ -825,7 +831,7 @@ public class RoutesActivity extends ListActivity
                 return true;
             case R.id.menu_share:
                 if (mRouteAdapter != null) {
-                    share(mRouteAdapter.mRoutes);
+                    //share(mRouteAdapter.mTrips);
                 }
                 return true;
             /*
@@ -995,25 +1001,25 @@ public class RoutesActivity extends ListActivity
     private class RoutesAdapter extends BaseAdapter {
 
         private Context mContext;
-        private ArrayList<Route> mRoutes;
+        private ArrayList<Trip2> mTrips;
 
-        public RoutesAdapter(Context context, ArrayList<Route> routes) {
+        public RoutesAdapter(Context context, ArrayList<Trip2> trips) {
             mContext = context;
-            mRoutes = routes;
+            mTrips = trips;
         }
 
-        public void refill(ArrayList<Route> routes) {
-            mRoutes = routes;
+        public void refill(ArrayList<Trip2> trips) {
+            mTrips = trips;
         }
 
         @Override
         public int getCount() {
-            return mRoutes.size();
+            return mTrips.size();
         }
 
         @Override
         public Object getItem(int position) {
-            return mRoutes.get(position);
+            return mTrips.get(position);
         }
 
         @Override
@@ -1024,8 +1030,8 @@ public class RoutesActivity extends ListActivity
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             if (!isEmpty()) {
-                Route route = mRoutes.get(position);
-                return new RouteAdapterView(mContext, route);
+                Trip2 trip = mTrips.get(position);
+                return new RouteAdapterView(mContext, trip);
             }
             return new View(mContext);
             //return createView(mContext, route);
@@ -1077,21 +1083,21 @@ public class RoutesActivity extends ListActivity
 
     private class RouteAdapterView extends LinearLayout {
 
-        public RouteAdapterView(Context context, Route route) {
+        public RouteAdapterView(Context context, Trip2 trip) {
             super(context);
             this.setOrientation(VERTICAL);
 
             this.setPadding(10, 10, 10, 10);
 
             TextView routeDetail = new TextView(context);
-            routeDetail.setText(route.toString());
+            routeDetail.setText(trip.toText());
             routeDetail.setTextColor(Color.WHITE);
             routeDetail.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
             routeDetail.setPadding(0, 2, 0, 2);
             //routeDetail.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
 
             TextView startAndEndPoint = new TextView(context);
-            startAndEndPoint.setText(route.from + " - " + route.to);
+            startAndEndPoint.setText(trip.origin.name + " - " + trip.destination.name);
             startAndEndPoint.setTextColor(Color.GRAY);
             startAndEndPoint.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
 
@@ -1100,10 +1106,10 @@ public class RoutesActivity extends ListActivity
 
             int currentTransportCount = 1;
 
-            int transportCount = route.transports.size();
-            for (Route.Transport transport : route.transports) {
+            int transportCount = trip.subTrips.size();
+            for (SubTrip subTrip : trip.subTrips) {
                 ImageView change = new ImageView(context);
-                change.setImageResource(transport.imageResource());
+                change.setImageResource(subTrip.transport.getImageResource());
                 change.setPadding(0, 0, 5, 0);
                 routeChanges.addView(change);
 
@@ -1114,6 +1120,7 @@ public class RoutesActivity extends ListActivity
                 ds.setColorFilter(transport.getColor(), Mode.SCREEN);
                 */
 
+                /*
                 if (transport.hasLineNumber()) {
                     TextView lineNumberView = new TextView(context);
                     lineNumberView.setTextColor(Color.WHITE);
@@ -1125,6 +1132,7 @@ public class RoutesActivity extends ListActivity
                     lineNumberView.setPadding(2, 2, 2, 2);
                     routeChanges.addView(lineNumberView);
                 }
+                */
 
                 if (transportCount > currentTransportCount) {
                     ImageView separator = new ImageView(context);
@@ -1195,7 +1203,7 @@ public class RoutesActivity extends ListActivity
     /**
      * Background task for searching for routes.
      */
-    private class SearchRoutesTask extends AsyncTask<Object, Void, Trip> {
+    private class SearchRoutesTask extends AsyncTask<Object, Void, Planner.Response> {
         private boolean mWasSuccess = true;
 
         @Override
@@ -1204,16 +1212,19 @@ public class RoutesActivity extends ListActivity
         }
 
         @Override
-        protected Trip doInBackground(Object... params) {
+        protected Planner.Response doInBackground(Object... params) {
             try {
+                /*
                 String language = getApplicationContext()
                     .getResources()
                     .getConfiguration()
                     .locale.getLanguage();
 
                 Trip trip = (Trip) params[0];
+                */
+                //return Planner.getInstance().findRoutes(trip, language);
 
-                return Planner.getInstance().findRoutes(trip, language);
+                return Planner.getInstance().query();
             } catch (IOException e) {
                 mWasSuccess = false;
                 // TODO: We should return the Trip here as well.
@@ -1222,16 +1233,16 @@ public class RoutesActivity extends ListActivity
         }
 
         @Override
-        protected void onPostExecute(Trip result) {
+        protected void onPostExecute(Planner.Response result) {
             dismissProgress();
 
-            if (result != null && !result.getRoutes().isEmpty()) {
+            if (result != null && !result.trips.isEmpty()) {
                 onSearchRoutesResult(result);
             } else if (!mWasSuccess) {
                 showDialog(DIALOG_SEARCH_ROUTES_NETWORK_PROBLEM);
-            } else if (result.hasAlternatives()) {
+            }/* else if (result.hasAlternatives()) {
                 onSiteAlternatives(result);
-            } else {
+            }*/ else {
                 showDialog(DIALOG_SEARCH_ROUTES_NO_RESULT);
             }
         }
@@ -1268,7 +1279,7 @@ public class RoutesActivity extends ListActivity
 
             if (result != null && !result.isEmpty()) {
                 mTrip.setRoutes(result);
-                onSearchRoutesResult(mTrip);
+                //onSearchRoutesResult(mTrip);
             } else if (!mWasSuccess) {
                 showDialog(DIALOG_GET_EARLIER_ROUTES_NETWORK_PROBLEM);
             } else {
@@ -1308,7 +1319,7 @@ public class RoutesActivity extends ListActivity
 
             if (result != null && !result.isEmpty()) {
                 mTrip.setRoutes(result);
-                onSearchRoutesResult(mTrip);
+                //onSearchRoutesResult(mTrip);
             } else if (!mWasSuccess) {
                 showDialog(DIALOG_GET_LATER_ROUTES_NETWORK_PROBLEM);
             } else {
