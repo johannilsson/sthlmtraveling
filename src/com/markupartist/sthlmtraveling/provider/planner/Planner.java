@@ -647,6 +647,7 @@ public class Planner {
 
 
     public static class Location implements Parcelable {
+        public static String TYPE_MY_LOCATION = "MY_LOCATION";
         public int id;
         public String name;
         public int latitude;
@@ -654,11 +655,22 @@ public class Planner {
 
         public Location() {}
 
+        public Location(Location location) {
+            id = location.id;
+            name = location.name;
+            latitude = location.latitude;
+            longitude = location.longitude;
+        }
+        
         public Location(Parcel parcel) {
             id = parcel.readInt();
             name = parcel.readString();
             latitude = parcel.readInt();
             longitude = parcel.readInt();
+        }
+
+        public boolean isMyLocation() {
+            return TYPE_MY_LOCATION.equals(name);
         }
 
         public static Location fromJson(JSONObject json) throws JSONException {
