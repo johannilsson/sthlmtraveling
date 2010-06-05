@@ -158,6 +158,7 @@ public class RoutesActivity extends ListActivity
     private ProgressDialog mProgress;
     //private boolean mIsTimeDeparture;
     private Trip mTrip;
+    private Response mPlannerResponse;
     //private Bundle mSavedState;
 
     @Override
@@ -281,9 +282,9 @@ public class RoutesActivity extends ListActivity
      * @param time the time
      */
     private void initRoutes(Trip trip) {
-        final Trip savedTrip = (Trip) getLastNonConfigurationInstance();
-        if (savedTrip != null && savedTrip.getRoutes() != null) {
-            //onSearchRoutesResult(savedTrip);
+        final Planner.Response savedResponse = (Planner.Response) getLastNonConfigurationInstance();
+        if (savedResponse != null) {
+            onSearchRoutesResult(savedResponse);
         } else {
             if (trip.getStartPoint().isMyLocation() || trip.getEndPoint().isMyLocation()) {
                 Location location = mMyLocationManager.getLastKnownLocation();
@@ -309,7 +310,7 @@ public class RoutesActivity extends ListActivity
      */
     @Override
     public Object onRetainNonConfigurationInstance() {
-        return mTrip;
+        return mPlannerResponse;
     }
 
     @Override
@@ -559,8 +560,6 @@ public class RoutesActivity extends ListActivity
             return (result);
         }
     };
-
-    private Response mPlannerResponse;
 
     /**
      * Helper to create earlier or later adapter.
