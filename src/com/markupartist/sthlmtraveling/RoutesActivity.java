@@ -59,6 +59,7 @@ import android.widget.SimpleAdapter.ViewBinder;
 import com.markupartist.sthlmtraveling.MyLocationManager.MyLocationFoundListener;
 import com.markupartist.sthlmtraveling.SectionedAdapter.Section;
 import com.markupartist.sthlmtraveling.provider.FavoritesDbAdapter;
+import com.markupartist.sthlmtraveling.provider.planner.JourneyQuery;
 import com.markupartist.sthlmtraveling.provider.planner.Planner;
 import com.markupartist.sthlmtraveling.provider.planner.Route;
 import com.markupartist.sthlmtraveling.provider.planner.Stop;
@@ -83,18 +84,33 @@ import com.markupartist.sthlmtraveling.provider.site.Site;
 public class RoutesActivity extends ListActivity
         implements MyLocationFoundListener {
     /**
+     * The Journey
+     */
+    static final String EXTRA_JOURNEY =
+        "sthlmtraveling.intent.action.JOURNEY";
+
+    /**
+     * The Journey
+     */
+    static final String EXTRA_JOURNEY_QUERY =
+        "sthlmtraveling.intent.action.JOURNEY_QUERY";
+
+    /**
      * The trip.
      */
+    @Deprecated
     static final String EXTRA_TRIP = "com.markupartist.sthlmtraveling.trip";
 
     /**
      * The start point for the search.
      */
+    @Deprecated
     static final String EXTRA_START_POINT =
         "com.markupartist.sthlmtraveling.start_point";
     /**
      * The end point for the search.
      */
+    @Deprecated
     static final String EXTRA_END_POINT =
         "com.markupartist.sthlmtraveling.end_point";
     /**
@@ -191,6 +207,32 @@ public class RoutesActivity extends ListActivity
         mFavoriteButtonHelper.loadImage();
 
         initRoutes(mTrip);
+    }
+
+    private JourneyQuery createQuery(Uri uri) {
+        JourneyQuery jq = new JourneyQuery();
+
+        jq.origin = new Planner.Location();        
+        jq.origin.name = uri.getQueryParameter("start_point");
+        if (!TextUtils.isEmpty(uri.getQueryParameter("start_point_lat"))
+                && !TextUtils.isEmpty(uri.getQueryParameter("start_point_lng"))) {
+            jq.origin.latitude = Integer.parseInt(uri.getQueryParameter("start_point_lat"));
+            jq.origin.longitude = Integer.parseInt(uri.getQueryParameter("start_point_lng"));
+        }
+
+        jq.destination = new Planner.Location();
+        jq.destination.name = uri.getQueryParameter("end_point");
+        if (!TextUtils.isEmpty(uri.getQueryParameter("end_point_lat"))
+                && !TextUtils.isEmpty(uri.getQueryParameter("end_point_lng"))) {
+            jq.destination.latitude = Integer.parseInt(uri.getQueryParameter("end_point_lat"));
+            jq.destination.longitude = Integer.parseInt(uri.getQueryParameter("end_point_lng"));
+        }
+
+        jq.time = new Time();
+
+        // TODO: add more here..
+        
+        return jq;
     }
 
     private Trip createTrip(Uri uri) {
@@ -619,8 +661,8 @@ public class RoutesActivity extends ListActivity
                 mGetLaterRoutesTask.execute();
                 break;
             case ADAPTER_ROUTES:
-                Route route = (Route) mSectionedAdapter.getItem(position);
-                findRouteDetails(route);
+                Trip2 trip = (Trip2) mSectionedAdapter.getItem(position);
+                findRouteDetails(trip);
                 break;
             }
             break;
@@ -708,12 +750,12 @@ public class RoutesActivity extends ListActivity
      * Find route details. Will start {@link RouteDetailActivity}. 
      * @param route the route to find details for 
      */
-    private void findRouteDetails(final Route route) {
+    private void findRouteDetails(final Trip2 trip) {
         // TODO: Change to pass the trip later on instead.
         Intent i = new Intent(RoutesActivity.this, RouteDetailActivity.class);
         i.putExtra(RouteDetailActivity.EXTRA_START_POINT, mTrip.getStartPoint());
         i.putExtra(RouteDetailActivity.EXTRA_END_POINT, mTrip.getEndPoint());
-        i.putExtra(RouteDetailActivity.EXTRA_ROUTE, route);
+        i.putExtra(RouteDetailActivity.EXTRA_JOURNEY_TRIP, trip);
         startActivity(i);
     }
 

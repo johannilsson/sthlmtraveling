@@ -47,15 +47,24 @@ import com.markupartist.sthlmtraveling.provider.planner.Planner;
 import com.markupartist.sthlmtraveling.provider.planner.Route;
 import com.markupartist.sthlmtraveling.provider.planner.RouteDetail;
 import com.markupartist.sthlmtraveling.provider.planner.Stop;
+import com.markupartist.sthlmtraveling.provider.planner.Planner.Trip2;
 
 public class RouteDetailActivity extends ListActivity {
     public static final String TAG = "RouteDetailActivity";
-    public static final String EXTRA_START_POINT = "com.markupartist.sthlmtraveling.start_point";
-    public static final String EXTRA_END_POINT = "com.markupartist.sthlmtraveling.end_point";
-    public static final String EXTRA_ROUTE = "com.markupartist.sthlmtraveling.route";
+    
+    public static final String EXTRA_JOURNEY_TRIP =
+        "sthlmtraveling.intent.action.JOURNEY_TRIP";
+
+    public static final String EXTRA_START_POINT =
+        "com.markupartist.sthlmtraveling.start_point";
+    public static final String EXTRA_END_POINT =
+        "com.markupartist.sthlmtraveling.end_point";
+    public static final String EXTRA_ROUTE =
+        "com.markupartist.sthlmtraveling.route";
     private static final String STATE_GET_DETAILS_IN_PROGRESS =
         "com.markupartist.sthlmtraveling.getdetails.inprogress";
-    private static final String STATE_ROUTE = "com.markupartist.sthlmtraveling.route";
+    private static final String STATE_ROUTE =
+        "com.markupartist.sthlmtraveling.route";
     private static final int DIALOG_NETWORK_PROBLEM = 0;
     private static final int DIALOG_BUY_SMS_TICKET = 1;
 
@@ -72,11 +81,11 @@ public class RouteDetailActivity extends ListActivity {
         setContentView(R.layout.route_details_list);
 
         Bundle extras = getIntent().getExtras();
-        
-        Planner.Response response = extras.getParcelable("trip");
-        
-        Log.d(TAG, "response: " + response.toString());
-        
+
+        Trip2 trip = extras.getParcelable(EXTRA_JOURNEY_TRIP);
+
+        Log.d(TAG, "response: " + trip.toString());
+
         /*
         mRoute = extras.getParcelable(EXTRA_ROUTE);
         Stop startPoint = extras.getParcelable(EXTRA_START_POINT);
