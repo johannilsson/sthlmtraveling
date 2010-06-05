@@ -31,6 +31,7 @@ import android.widget.DatePicker;
 import android.widget.Spinner;
 import android.widget.TimePicker;
 
+import com.markupartist.sthlmtraveling.provider.planner.JourneyQuery;
 import com.markupartist.sthlmtraveling.provider.planner.Stop;
 
 public class ChangeRouteTimeActivity extends Activity {
@@ -49,15 +50,10 @@ public class ChangeRouteTimeActivity extends Activity {
         setTitle(getText(R.string.change_date_and_time));
 
         Bundle extras = getIntent().getExtras();
-        final Stop startPoint = extras.getParcelable(RoutesActivity.EXTRA_START_POINT);
-        final Stop endPoint = extras.getParcelable(RoutesActivity.EXTRA_END_POINT);
-        String timeString = extras.getString(RoutesActivity.EXTRA_TIME);
-        boolean isTimeDeparture = extras.getBoolean(RoutesActivity.EXTRA_IS_TIME_DEPARTURE, true);
-        
-        //final Trip trip = extras.getParcelable(RoutesActivity.EXTRA_TRIP);
-        //mTime = trip.getTime();
-        mTime = new Time();
-        mTime.parse(timeString);
+        final JourneyQuery journeyQuery =
+            extras.getParcelable(RoutesActivity.EXTRA_JOURNEY_QUERY);
+
+        mTime = journeyQuery.time;
 
         mDateButton = (Button) findViewById(R.id.change_route_date);
         mDateButton.setOnClickListener(new OnClickListener() {
@@ -73,7 +69,7 @@ public class ChangeRouteTimeActivity extends Activity {
             }
         });
 
-        int selectedPosition = isTimeDeparture ? 0 : 1;
+        int selectedPosition = journeyQuery.isTimeDeparture ? 0 : 1;
         final Spinner whenSpinner = (Spinner) findViewById(R.id.departure_arrival_choice);
         ArrayAdapter<CharSequence> whenChoiceAdapter = ArrayAdapter.createFromResource(
                 this, R.array.when_choice, android.R.layout.simple_spinner_item);
@@ -84,19 +80,13 @@ public class ChangeRouteTimeActivity extends Activity {
         Button changeButton = (Button) findViewById(R.id.change_route_time_change);
         changeButton.setOnClickListener(new OnClickListener() {
             @Override public void onClick(View v) {
-                boolean isTimeDeparture =
+                journeyQuery.isTimeDeparture =
                     whenSpinner.getSelectedItemId() == 0 ? true : false;
+                journeyQuery.time = mTime;
 
-                /*trip.setTime(mTime);
-                trip.setIsTimeDeparture(isTimeDeparture);
                 setResult(RESULT_OK, (new Intent())
-                        .putExtra(RoutesActivity.EXTRA_TRIP, trip));*/
-                setResult(RESULT_OK, (new Intent())
-                        .putExtra(RoutesActivity.EXTRA_START_POINT, startPoint)
-                        .putExtra(RoutesActivity.EXTRA_END_POINT, endPoint)
-                        .putExtra(RoutesActivity.EXTRA_TIME, mTime.format3339(false))
-                        .putExtra(RoutesActivity.EXTRA_IS_TIME_DEPARTURE, isTimeDeparture)
-                        );
+                        .putExtra(RoutesActivity.EXTRA_JOURNEY_QUERY,
+                                journeyQuery));
 
                 finish();
             }

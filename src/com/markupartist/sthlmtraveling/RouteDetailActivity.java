@@ -43,6 +43,7 @@ import android.widget.Toast;
 import android.widget.SimpleAdapter.ViewBinder;
 
 import com.markupartist.sthlmtraveling.provider.FavoritesDbAdapter;
+import com.markupartist.sthlmtraveling.provider.planner.JourneyQuery;
 import com.markupartist.sthlmtraveling.provider.planner.Planner;
 import com.markupartist.sthlmtraveling.provider.planner.Route;
 import com.markupartist.sthlmtraveling.provider.planner.RouteDetail;
@@ -54,6 +55,9 @@ public class RouteDetailActivity extends ListActivity {
     
     public static final String EXTRA_JOURNEY_TRIP =
         "sthlmtraveling.intent.action.JOURNEY_TRIP";
+
+    public static final String EXTRA_JOURNEY_QUERY =
+        "sthlmtraveling.intent.action.JOURNEY_QUERY";
 
     public static final String EXTRA_START_POINT =
         "com.markupartist.sthlmtraveling.start_point";
@@ -83,6 +87,7 @@ public class RouteDetailActivity extends ListActivity {
         Bundle extras = getIntent().getExtras();
 
         Trip2 trip = extras.getParcelable(EXTRA_JOURNEY_TRIP);
+        JourneyQuery jq = extras.getParcelable(EXTRA_JOURNEY_QUERY);
 
         Log.d(TAG, "response: " + trip.toString());
 

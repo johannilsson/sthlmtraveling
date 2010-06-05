@@ -173,8 +173,9 @@ public class RoutesActivity extends ListActivity
     private Toast mToast;
     private ProgressDialog mProgress;
     //private boolean mIsTimeDeparture;
-    private Trip mTrip;
+    //private Trip mTrip;
     private Response mPlannerResponse;
+    private JourneyQuery mJourneyQuery;
     //private Bundle mSavedState;
 
     @Override
@@ -188,9 +189,13 @@ public class RoutesActivity extends ListActivity
         mMyLocationManager = new MyLocationManager(locationManager);
 
         // Parse data URI       
-        mTrip = createTrip(getIntent().getData());
+        mJourneyQuery = createQuery(getIntent().getData());
 
-        if (mTrip.getStartPoint().getName() == null || mTrip.getEndPoint().getName() == null) {
+        Log.d(TAG, "dest: " + mJourneyQuery.destination.name);
+        
+
+        if (mJourneyQuery.origin.name == null
+                || mJourneyQuery.destination.name == null) {
             showDialog(DIALOG_ILLEGAL_PARAMETERS);
             // If passed with bad parameters, break the execution.
             return;
@@ -200,13 +205,15 @@ public class RoutesActivity extends ListActivity
 
         mFromView = (TextView) findViewById(R.id.route_from);
         mToView = (TextView) findViewById(R.id.route_to);
-        updateStartAndEndPointViews(mTrip.getStartPoint(), mTrip.getEndPoint());
+        updateStartAndEndPointViews(mJourneyQuery.origin, mJourneyQuery.destination);
 
+        /*
         mFavoriteButtonHelper = new FavoriteButtonHelper(this, mFavoritesDbAdapter, 
                 mTrip.getStartPoint(), mTrip.getEndPoint());
         mFavoriteButtonHelper.loadImage();
+        */
 
-        initRoutes(mTrip);
+        initRoutes(mJourneyQuery);
     }
 
     private JourneyQuery createQuery(Uri uri) {
@@ -216,25 +223,40 @@ public class RoutesActivity extends ListActivity
         jq.origin.name = uri.getQueryParameter("start_point");
         if (!TextUtils.isEmpty(uri.getQueryParameter("start_point_lat"))
                 && !TextUtils.isEmpty(uri.getQueryParameter("start_point_lng"))) {
-            jq.origin.latitude = Integer.parseInt(uri.getQueryParameter("start_point_lat"));
-            jq.origin.longitude = Integer.parseInt(uri.getQueryParameter("start_point_lng"));
+            jq.origin.latitude =
+                (int) (Double.parseDouble(uri.getQueryParameter("start_point_lat")) * 1E6);
+            jq.origin.longitude =
+                (int) (Double.parseDouble(uri.getQueryParameter("start_point_lng")) * 1E6);
         }
 
         jq.destination = new Planner.Location();
         jq.destination.name = uri.getQueryParameter("end_point");
         if (!TextUtils.isEmpty(uri.getQueryParameter("end_point_lat"))
                 && !TextUtils.isEmpty(uri.getQueryParameter("end_point_lng"))) {
-            jq.destination.latitude = Integer.parseInt(uri.getQueryParameter("end_point_lat"));
-            jq.destination.longitude = Integer.parseInt(uri.getQueryParameter("end_point_lng"));
+            jq.destination.latitude =
+                (int) (Double.parseDouble(uri.getQueryParameter("end_point_lat")) * 1E6);
+            jq.destination.longitude =
+                (int) (Double.parseDouble(uri.getQueryParameter("end_point_lng")) * 1E6);
+        }
+
+        jq.isTimeDeparture = true;
+        if (!TextUtils.isEmpty(uri.getQueryParameter("isTimeDeparture"))) {
+            jq.isTimeDeparture = Boolean.parseBoolean(
+                    uri.getQueryParameter("isTimeDeparture"));
         }
 
         jq.time = new Time();
+        String timeString = uri.getQueryParameter("time");
+        if (!TextUtils.isEmpty(timeString)) {
+            jq.time.parse(timeString);
+        } else {
+            jq.time.setToNow();
+        }
 
-        // TODO: add more here..
-        
         return jq;
     }
 
+    /*
     private Trip createTrip(Uri uri) {
         Stop startPoint = new Stop();
         Stop endPoint = new Stop();
@@ -283,22 +305,24 @@ public class RoutesActivity extends ListActivity
         Trip trip = new Trip(startPoint, endPoint, time, isTimeDeparture);
         return trip;
     }
+    */
     
     /**
      * Update the {@link TextView} for start and end points in the ui.
      * @param startPoint the start point
      * @param endPoint the end point
      */
-    private void updateStartAndEndPointViews(Stop startPoint, Stop endPoint) {
+    private void updateStartAndEndPointViews(Planner.Location startPoint,
+            Planner.Location endPoint) {
         if (startPoint.isMyLocation()) {
             mFromView.setText(getMyLocationString(startPoint));
         } else {
-            mFromView.setText(startPoint.getName());
+            mFromView.setText(startPoint.name);
         }
         if (endPoint.isMyLocation()) {
             mToView.setText(getMyLocationString(endPoint));
         } else {
-            mToView.setText(endPoint.getName());
+            mToView.setText(endPoint.name);
         }
     }
 
@@ -308,12 +332,14 @@ public class RoutesActivity extends ListActivity
      * @param stop the stop
      * @return a text representation of my location
      */
-    private CharSequence getMyLocationString(Stop stop) {
+    private CharSequence getMyLocationString(Planner.Location stop) {
         CharSequence string = getText(R.string.my_location);
+        /*
         Location location = stop.getLocation(); 
         if (location != null) {
             string = String.format("%s (%sm)", string, location.getAccuracy());
         }
+        */
         return string;
     }
 
@@ -323,12 +349,13 @@ public class RoutesActivity extends ListActivity
      * @param endPoint the end point
      * @param time the time
      */
-    private void initRoutes(Trip trip) {
+    private void initRoutes(JourneyQuery journeyQuery) {
         final Planner.Response savedResponse = (Planner.Response) getLastNonConfigurationInstance();
         if (savedResponse != null) {
             onSearchRoutesResult(savedResponse);
         } else {
-            if (trip.getStartPoint().isMyLocation() || trip.getEndPoint().isMyLocation()) {
+            if (journeyQuery.origin.isMyLocation()
+                    || journeyQuery.destination.isMyLocation()) {
                 Location location = mMyLocationManager.getLastKnownLocation();
                 if (mMyLocationManager.shouldAcceptLocation(location)) {
                     onMyLocationFound(location);
@@ -340,7 +367,7 @@ public class RoutesActivity extends ListActivity
             } else {
                 mSearchRoutesTask = new SearchRoutesTask();
                 //mSearchRoutesTask.setOnSearchRoutesResultListener(this);
-                mSearchRoutesTask.execute(trip);
+                mSearchRoutesTask.execute(mJourneyQuery);
             }
         }
     }
@@ -367,7 +394,7 @@ public class RoutesActivity extends ListActivity
      * @param savedInstanceState the bundle containing the saved state
      */
     private void restoreLocalState(Bundle savedInstanceState) {
-        //restoreTrip(savedInstanceState);
+        restoreJourneyQuery(savedInstanceState);
         restoreSearchRoutesTask(savedInstanceState);
         restoreGetEarlierRoutesTask(savedInstanceState);
         restoreGetLaterRoutesTask(savedInstanceState);
@@ -376,7 +403,7 @@ public class RoutesActivity extends ListActivity
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        saveTrip(outState);
+        saveJourneyQuery(outState);
         saveSearchRoutesTask(outState);
         saveGetEarlierRoutesTask(outState);
         saveGetLaterRoutesTask(outState);
@@ -418,21 +445,19 @@ public class RoutesActivity extends ListActivity
      * Restores the search routes task.
      * @param savedInstanceState the saved state
      */
-    /*
-    private void restoreTrip(Bundle savedInstanceState) {
-        if (savedInstanceState.containsKey(EXTRA_TRIP)) {
-            mTrip = savedInstanceState.getParcelable(EXTRA_TRIP);
+    private void restoreJourneyQuery(Bundle savedInstanceState) {
+        if (savedInstanceState.containsKey(EXTRA_JOURNEY_QUERY)) {
+            mJourneyQuery = savedInstanceState.getParcelable(EXTRA_JOURNEY_QUERY);
         }
     }
-    */
 
     /**
      * If there is any running search for routes, save it and process it later 
      * on.
      * @param outState the out state
      */
-    private void saveTrip(Bundle outState) {
-        outState.putParcelable(EXTRA_TRIP, mTrip);
+    private void saveJourneyQuery(Bundle outState) {
+        outState.putParcelable(EXTRA_JOURNEY_QUERY, mJourneyQuery);
     }
 
     /**
@@ -454,7 +479,7 @@ public class RoutesActivity extends ListActivity
         if (savedInstanceState.getBoolean(STATE_SEARCH_ROUTES_IN_PROGRESS)) {
             Log.d(TAG, "restoring SearchRoutesTask");
             mSearchRoutesTask = new SearchRoutesTask();
-            mSearchRoutesTask.execute(mTrip);
+            mSearchRoutesTask.execute(mJourneyQuery);
         }
     }
 
@@ -550,10 +575,10 @@ public class RoutesActivity extends ListActivity
     }
 
     private String buildDateString() {
-        String timeString = mTrip.getTime().format("%R");
-        String dateString = mTrip.getTime().format("%e/%m");
+        String timeString = mJourneyQuery.time.format("%R");
+        String dateString = mJourneyQuery.time.format("%e/%m");
 
-        if (mTrip.isTimeDeparture()) {
+        if (mJourneyQuery.isTimeDeparture) {
             return getString(R.string.departing_on, timeString, dateString);
         } else {
             return getString(R.string.arriving_by, timeString, dateString);
@@ -668,11 +693,7 @@ public class RoutesActivity extends ListActivity
             break;
         case SECTION_CHANGE_TIME:
             Intent i = new Intent(this, ChangeRouteTimeActivity.class);
-            //i.putExtra(EXTRA_TRIP, mTrip);
-            i.putExtra(EXTRA_START_POINT, mTrip.getStartPoint());
-            i.putExtra(EXTRA_END_POINT, mTrip.getEndPoint());
-            i.putExtra(EXTRA_TIME, mTrip.getTime().format2445());
-            i.putExtra(EXTRA_IS_TIME_DEPARTURE, mTrip.isTimeDeparture()); 
+            i.putExtra(EXTRA_JOURNEY_QUERY, mJourneyQuery);
             startActivityForResult(i, REQUEST_CODE_CHANGE_TIME);
             break;
         }
@@ -693,6 +714,8 @@ public class RoutesActivity extends ListActivity
     }
 
     public void onSiteAlternatives(Trip trip) {
+        // TODO: Handle alternatives...
+        /*
         if (trip.getStartPoint().getSiteId() == 0
                 && trip.getStartPointAlternatives().size() > 1) {
             Log.d(TAG, "show start alternatives...");
@@ -705,6 +728,7 @@ public class RoutesActivity extends ListActivity
             mSearchRoutesTask = new SearchRoutesTask();
             mSearchRoutesTask.execute(mTrip);
         }
+        */
     }
 
     @Override
@@ -715,24 +739,25 @@ public class RoutesActivity extends ListActivity
 
         if (mToast != null ) mToast.cancel();
 
-        Stop startPoint = mTrip.getStartPoint();
-        Stop endPoint = mTrip.getEndPoint();
+        Planner.Location startPoint = mJourneyQuery.origin;
+        Planner.Location endPoint = mJourneyQuery.destination;
+
+        Stop tmpStop = new Stop();
+        tmpStop.setLocation(location);
 
         if (startPoint.isMyLocation()) {
-            startPoint.setLocation(location);
             if (!mMyLocationManager.shouldAcceptLocation(location)) {
                 Intent i = new Intent(this, PointOnMapActivity.class);
-                i.putExtra(PointOnMapActivity.EXTRA_STOP, startPoint);
+                i.putExtra(PointOnMapActivity.EXTRA_STOP, tmpStop);
                 i.putExtra(PointOnMapActivity.EXTRA_HELP_TEXT,
                         getString(R.string.tap_your_location_on_map));
                 startActivityForResult(i, REQUEST_CODE_POINT_ON_MAP_START);
             }
         }
         if (endPoint.isMyLocation()) {
-            endPoint.setLocation(location);
             if (!mMyLocationManager.shouldAcceptLocation(location)) {
                 Intent i = new Intent(this, PointOnMapActivity.class);
-                i.putExtra(PointOnMapActivity.EXTRA_STOP, startPoint);
+                i.putExtra(PointOnMapActivity.EXTRA_STOP, tmpStop);
                 i.putExtra(PointOnMapActivity.EXTRA_HELP_TEXT,
                         getString(R.string.tap_your_location_on_map));
                 startActivityForResult(i, REQUEST_CODE_POINT_ON_MAP_START);
@@ -743,7 +768,7 @@ public class RoutesActivity extends ListActivity
 
         // TODO: Maybe need to set start and end points to the trip again here?
         mSearchRoutesTask = new SearchRoutesTask();
-        mSearchRoutesTask.execute(mTrip);
+        mSearchRoutesTask.execute(mJourneyQuery);
     }
 
     /**
@@ -753,8 +778,7 @@ public class RoutesActivity extends ListActivity
     private void findRouteDetails(final Trip2 trip) {
         // TODO: Change to pass the trip later on instead.
         Intent i = new Intent(RoutesActivity.this, RouteDetailActivity.class);
-        i.putExtra(RouteDetailActivity.EXTRA_START_POINT, mTrip.getStartPoint());
-        i.putExtra(RouteDetailActivity.EXTRA_END_POINT, mTrip.getEndPoint());
+        i.putExtra(RouteDetailActivity.EXTRA_JOURNEY_QUERY, mJourneyQuery);
         i.putExtra(RouteDetailActivity.EXTRA_JOURNEY_TRIP, trip);
         startActivity(i);
     }
@@ -775,16 +799,7 @@ public class RoutesActivity extends ListActivity
             if (resultCode == RESULT_CANCELED) {
                 Log.d(TAG, "Change time activity cancelled.");
             } else {
-                //mTrip = data.getParcelableExtra(EXTRA_TRIP);
-                
-                Time time = new Time();
-                time.parse3339(data.getStringExtra((EXTRA_TIME)));
-
-                boolean isTimeDeparture =
-                    data.getBooleanExtra(EXTRA_IS_TIME_DEPARTURE, true);
-
-                mTrip.setTime(time);
-                mTrip.setIsTimeDeparture(isTimeDeparture);
+                mJourneyQuery = data.getParcelableExtra(EXTRA_JOURNEY_QUERY);
 
                 HashMap<String, String> item = mDateAdapterData.get(0);
                 item.put("title", buildDateString());
@@ -792,7 +807,7 @@ public class RoutesActivity extends ListActivity
                 //updateStartAndEndPointViews(startPoint, endPoint);
 
                 mSearchRoutesTask = new SearchRoutesTask();
-                mSearchRoutesTask.execute(mTrip);
+                mSearchRoutesTask.execute(mJourneyQuery);
             }
             break;
         case REQUEST_CODE_POINT_ON_MAP_START:
@@ -801,15 +816,17 @@ public class RoutesActivity extends ListActivity
             } else {
                 Stop startPoint = data.getParcelableExtra(PointOnMapActivity.EXTRA_STOP);
                 Log.d(TAG, "Got Stop " + startPoint);
-                startPoint.setName(Stop.TYPE_MY_LOCATION);
 
-                mTrip.setStartPoint(startPoint);
+                mJourneyQuery.origin.name = Planner.Location.TYPE_MY_LOCATION;
+                mJourneyQuery.origin.latitude = (int) (startPoint.getLocation().getLatitude() * 1E6);
+                mJourneyQuery.origin.longitude = (int) (startPoint.getLocation().getLongitude() * 1E6);
 
                 mSearchRoutesTask = new SearchRoutesTask();
-                mSearchRoutesTask.execute(mTrip);
+                mSearchRoutesTask.execute(mJourneyQuery);
 
                 // TODO: Is this call really needed?
-                updateStartAndEndPointViews(mTrip.getStartPoint(), mTrip.getEndPoint());
+                updateStartAndEndPointViews(mJourneyQuery.origin,
+                        mJourneyQuery.destination);
             }
             break;
         case REQUEST_CODE_POINT_ON_MAP_END:
@@ -818,15 +835,18 @@ public class RoutesActivity extends ListActivity
             } else {
                 Stop endPoint = data.getParcelableExtra(PointOnMapActivity.EXTRA_STOP);
                 Log.d(TAG, "Got Stop " + endPoint);
-                endPoint.setName(Stop.TYPE_MY_LOCATION);
 
-                mTrip.setEndPoint(endPoint);
+                mJourneyQuery.origin.name = Planner.Location.TYPE_MY_LOCATION;
+                mJourneyQuery.origin.latitude = (int) (endPoint.getLocation().getLatitude() * 1E6);
+                mJourneyQuery.origin.longitude = (int) (endPoint.getLocation().getLongitude() * 1E6);
 
                 mSearchRoutesTask = new SearchRoutesTask();
-                mSearchRoutesTask.execute(mTrip);
+                mSearchRoutesTask.execute(mJourneyQuery);
 
-                updateStartAndEndPointViews(mTrip.getStartPoint(), mTrip.getEndPoint());
-            }
+                // TODO: Is this call really needed?
+                updateStartAndEndPointViews(mJourneyQuery.origin,
+                        mJourneyQuery.destination);            }
+            
             break;
         }
     }
@@ -847,11 +867,11 @@ public class RoutesActivity extends ListActivity
                 startActivity(i);
                 return true;
             case R.id.reverse_start_end :
-                Stop tmpStartPoint = new Stop(mTrip.getEndPoint());
-                Stop tmpEndPoint = new Stop(mTrip.getStartPoint());
+                Planner.Location tmpStartPoint = new Planner.Location(mJourneyQuery.destination);
+                Planner.Location tmpEndPoint = new Planner.Location(mJourneyQuery.origin);
 
-                mTrip.setStartPoint(tmpStartPoint);
-                mTrip.setEndPoint(tmpEndPoint);
+                mJourneyQuery.origin = tmpStartPoint;
+                mJourneyQuery.destination = tmpEndPoint;
 
                 /*
                  * Note: To launch a new intent won't work because sl.se would
@@ -859,16 +879,19 @@ public class RoutesActivity extends ListActivity
                  * route details in the next step.
                  */
                 mSearchRoutesTask = new SearchRoutesTask();
-                mSearchRoutesTask.execute(mTrip);
+                mSearchRoutesTask.execute(mJourneyQuery);
 
                 updateStartAndEndPointViews(
-                        mTrip.getStartPoint(), mTrip.getEndPoint());
+                        mJourneyQuery.origin, mJourneyQuery.destination);
 
                 // Update the favorite button
+                /*
+                TODO: Fix favorite..
                 mFavoriteButtonHelper
                         .setStartPoint(mTrip.getStartPoint())
                         .setEndPoint(mTrip.getEndPoint())
                         .loadImage();
+                */
                 return true;
             case R.id.menu_share:
                 if (mRouteAdapter != null) {
@@ -906,7 +929,7 @@ public class RoutesActivity extends ListActivity
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     mSearchRoutesTask = new SearchRoutesTask();
-                    mSearchRoutesTask.execute(mTrip);
+                    mSearchRoutesTask.execute(mJourneyQuery);
                 }
             });
         case DIALOG_GET_EARLIER_ROUTES_NETWORK_PROBLEM:
@@ -945,6 +968,7 @@ public class RoutesActivity extends ListActivity
             .setNegativeButton(getText(R.string.cancel), null)
             .create();
         case DIALOG_START_POINT_ALTERNATIVES:
+            /*
             ArrayAdapter<Site> startAlternativesAdapter =
                 new ArrayAdapter<Site>(this, android.R.layout.simple_dropdown_item_1line,
                         mTrip.getStartPointAlternatives());
@@ -962,7 +986,10 @@ public class RoutesActivity extends ListActivity
                     }
                 })
                 .create();
+            */
+            break;
         case DIALOG_END_POINT_ALTERNATIVES:
+            /*
             ArrayAdapter<Site> endAlternativesAdapter =
                 new ArrayAdapter<Site>(this, android.R.layout.simple_dropdown_item_1line,
                         mTrip.getEndPointAlternatives());
@@ -980,6 +1007,8 @@ public class RoutesActivity extends ListActivity
                     }
                 })
                 .create();
+            */
+            break;
         }
         return null;
     }
@@ -1292,7 +1321,7 @@ public class RoutesActivity extends ListActivity
     /**
      * Background task for getting earlier routes.
      */
-    private class GetEarlierRoutesTask extends AsyncTask<Void, Void, ArrayList<Route>> {
+    private class GetEarlierRoutesTask extends AsyncTask<Void, Void, Planner.Response> {
         private boolean mWasSuccess = true;
 
         @Override
@@ -1301,7 +1330,8 @@ public class RoutesActivity extends ListActivity
         }
 
         @Override
-        protected ArrayList<Route> doInBackground(Void... params) {
+        protected Planner.Response doInBackground(Void... params) {
+            /*
             try {
                 String language = getApplicationContext()
                     .getResources()
@@ -1312,12 +1342,15 @@ public class RoutesActivity extends ListActivity
                 mWasSuccess = false;
                 return null;
             }
+            */
+            return null;
         }
 
         @Override
-        protected void onPostExecute(ArrayList<Route> result) {
+        protected void onPostExecute(Planner.Response result) {
             dismissProgress();
 
+            /*
             if (result != null && !result.isEmpty()) {
                 mTrip.setRoutes(result);
                 //onSearchRoutesResult(mTrip);
@@ -1326,13 +1359,14 @@ public class RoutesActivity extends ListActivity
             } else {
                 showDialog(DIALOG_GET_ROUTES_SESSION_TIMEOUT);
             }
+            */
         }
     }
 
     /**
      * Background task for getting later routes.
      */
-    private class GetLaterRoutesTask extends AsyncTask<Void, Void, ArrayList<Route>> {
+    private class GetLaterRoutesTask extends AsyncTask<Void, Void, Planner.Response> {
         private boolean mWasSuccess = true;
 
         @Override
@@ -1341,7 +1375,8 @@ public class RoutesActivity extends ListActivity
         }
 
         @Override
-        protected ArrayList<Route> doInBackground(Void... params) {
+        protected Planner.Response doInBackground(Void... params) {
+            /*
             try {
                 String language = getApplicationContext()
                     .getResources()
@@ -1352,12 +1387,15 @@ public class RoutesActivity extends ListActivity
                 mWasSuccess = false;
                 return null;
             }
+            */
+            return null;
         }
 
         @Override
-        protected void onPostExecute(ArrayList<Route> result) {
+        protected void onPostExecute(Planner.Response result) {
             dismissProgress();
 
+            /*
             if (result != null && !result.isEmpty()) {
                 mTrip.setRoutes(result);
                 //onSearchRoutesResult(mTrip);
@@ -1366,6 +1404,7 @@ public class RoutesActivity extends ListActivity
             } else {
                 showDialog(DIALOG_GET_ROUTES_SESSION_TIMEOUT);
             }
+            */
         }
     }
 }
