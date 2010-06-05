@@ -26,11 +26,14 @@
     android:paddingBottom="10dip"
     >
 	<ImageView
+	    android:id="@+id/routes_row_transport"
 	    android:src="@drawable/ic_text_dot"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical|center_horizontal"
         android:paddingTop="0dip"
+        android:paddingLeft="5dip"
+        android:paddingRight="5dip"
 	    />
 	<TextView 
 	    android:id="@+id/routes_row"
