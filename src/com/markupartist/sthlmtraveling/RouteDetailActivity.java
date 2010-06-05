@@ -72,6 +72,12 @@ public class RouteDetailActivity extends ListActivity {
         setContentView(R.layout.route_details_list);
 
         Bundle extras = getIntent().getExtras();
+        
+        Planner.Response response = extras.getParcelable("trip");
+        
+        Log.d(TAG, "response: " + response.toString());
+        
+        /*
         mRoute = extras.getParcelable(EXTRA_ROUTE);
         Stop startPoint = extras.getParcelable(EXTRA_START_POINT);
         Stop endPoint = extras.getParcelable(EXTRA_END_POINT);
@@ -98,6 +104,7 @@ public class RouteDetailActivity extends ListActivity {
         favoriteButtonHelper.loadImage();
 
         initRouteDetails(mRoute);
+        */
     }
 
     @Override
