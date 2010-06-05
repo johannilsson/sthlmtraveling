@@ -24,6 +24,7 @@ import android.text.TextUtils;
 
 import com.markupartist.sthlmtraveling.R;
 
+@Deprecated
 public class Route implements Parcelable {
     public String ident;
     public String routeId;
@@ -151,6 +152,7 @@ public class Route implements Parcelable {
         return true;
     }
 
+    @Deprecated
     public static class Transport implements Parcelable {
         private int mImageResource;
         private String mName;

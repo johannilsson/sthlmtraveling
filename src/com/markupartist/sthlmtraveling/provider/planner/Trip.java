@@ -8,6 +8,7 @@ import android.text.format.Time;
 
 import com.markupartist.sthlmtraveling.provider.site.Site;
 
+@Deprecated
 public class Trip implements Parcelable {
     private Stop mStartPoint;
     private Stop mEndPoint;

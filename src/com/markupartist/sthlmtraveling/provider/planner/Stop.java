@@ -5,6 +5,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
 
+@Deprecated
 public class Stop implements Parcelable {
     public static String TYPE_MY_LOCATION = "MY_LOCATION";
     private String mName;
