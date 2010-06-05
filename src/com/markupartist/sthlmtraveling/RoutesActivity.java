@@ -59,6 +59,7 @@ import android.widget.SimpleAdapter.ViewBinder;
 import com.markupartist.sthlmtraveling.MyLocationManager.MyLocationFoundListener;
 import com.markupartist.sthlmtraveling.SectionedAdapter.Section;
 import com.markupartist.sthlmtraveling.provider.FavoritesDbAdapter;
+import com.markupartist.sthlmtraveling.provider.deviation.DeviationStore;
 import com.markupartist.sthlmtraveling.provider.planner.JourneyQuery;
 import com.markupartist.sthlmtraveling.provider.planner.Planner;
 import com.markupartist.sthlmtraveling.provider.planner.Route;
@@ -1166,8 +1167,9 @@ public class RoutesActivity extends ListActivity
 
             TextView startAndEndPoint = new TextView(context);
             startAndEndPoint.setText(trip.origin.name + " - " + trip.destination.name);
-            startAndEndPoint.setTextColor(Color.GRAY);
+            startAndEndPoint.setTextColor(Color.WHITE);
             startAndEndPoint.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
+            startAndEndPoint.setPadding(0, 2, 0, 2);
 
             LinearLayout routeChanges = new LinearLayout(context);
             routeChanges.setPadding(0, 5, 0, 0);
@@ -1188,19 +1190,20 @@ public class RoutesActivity extends ListActivity
                 ds.setColorFilter(transport.getColor(), Mode.SCREEN);
                 */
 
-                /*
-                if (transport.hasLineNumber()) {
+                // Okey, this is _not_ okey!!
+                ArrayList<Integer> lineNumbers = new ArrayList<Integer>();
+                lineNumbers = DeviationStore.extractLineNumbers(subTrip.transport.name, lineNumbers);
+                if (!lineNumbers.isEmpty()) {
                     TextView lineNumberView = new TextView(context);
                     lineNumberView.setTextColor(Color.WHITE);
                     lineNumberView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
                     //lineNumberView.setBackgroundDrawable(ds);
                     //lineNumberView.setText(transport.getShortName());
-                    lineNumberView.setText(transport.lineNumber());
+                    lineNumberView.setText(Integer.toString(lineNumbers.get(0)));
                     //lineNumberView.setPadding(7, 2, 7, 2);
                     lineNumberView.setPadding(2, 2, 2, 2);
                     routeChanges.addView(lineNumberView);
                 }
-                */
 
                 if (transportCount > currentTransportCount) {
                     ImageView separator = new ImageView(context);
