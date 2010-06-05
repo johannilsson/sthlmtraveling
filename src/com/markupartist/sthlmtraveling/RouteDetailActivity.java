@@ -31,11 +31,13 @@ import android.content.DialogInterface.OnClickListener;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
@@ -48,6 +50,7 @@ import com.markupartist.sthlmtraveling.provider.planner.Planner;
 import com.markupartist.sthlmtraveling.provider.planner.Route;
 import com.markupartist.sthlmtraveling.provider.planner.RouteDetail;
 import com.markupartist.sthlmtraveling.provider.planner.Stop;
+import com.markupartist.sthlmtraveling.provider.planner.Planner.SubTrip;
 import com.markupartist.sthlmtraveling.provider.planner.Planner.Trip2;
 
 public class RouteDetailActivity extends ListActivity {
@@ -74,10 +77,9 @@ public class RouteDetailActivity extends ListActivity {
 
     private SimpleAdapter mDetailAdapter;
     private FavoritesDbAdapter mFavoritesDbAdapter;
-    private ArrayList<RouteDetail> mDetails;
-    private GetDetailsTask mGetDetailsTask;
-    private Route mRoute;
-    private ProgressDialog mProgress;
+    private Trip2 mTrip;
+    //private Route mRoute;
+    private JourneyQuery mJourneyQuery;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,46 +88,41 @@ public class RouteDetailActivity extends ListActivity {
 
         Bundle extras = getIntent().getExtras();
 
-        Trip2 trip = extras.getParcelable(EXTRA_JOURNEY_TRIP);
-        JourneyQuery jq = extras.getParcelable(EXTRA_JOURNEY_QUERY);
-
-        Log.d(TAG, "response: " + trip.toString());
-
-        /*
-        mRoute = extras.getParcelable(EXTRA_ROUTE);
-        Stop startPoint = extras.getParcelable(EXTRA_START_POINT);
-        Stop endPoint = extras.getParcelable(EXTRA_END_POINT);
+        mTrip = extras.getParcelable(EXTRA_JOURNEY_TRIP);
+        mJourneyQuery = extras.getParcelable(EXTRA_JOURNEY_QUERY);
 
         mFavoritesDbAdapter = new FavoritesDbAdapter(this).open();
 
         TextView startPointView = (TextView) findViewById(R.id.route_from);
-        startPointView.setText(startPoint.getName());
+        startPointView.setText(mJourneyQuery.origin.name);
         TextView endPointView = (TextView) findViewById(R.id.route_to);
-        endPointView.setText(endPoint.getName());
+        endPointView.setText(mJourneyQuery.destination.name);
 
-        if (startPoint.isMyLocation()) {
-            startPointView.setText(getMyLocationString(startPoint));
+        if (mJourneyQuery.origin.isMyLocation()) {
+            startPointView.setText(getMyLocationString(mJourneyQuery.origin));
         }
-        if (endPoint.isMyLocation()) {
-            endPointView.setText(getMyLocationString(endPoint));
+        if (mJourneyQuery.destination.isMyLocation()) {
+            endPointView.setText(getMyLocationString(mJourneyQuery.destination));
         }
-        
+
         TextView dateTimeView = (TextView) findViewById(R.id.route_date_time);
-        dateTimeView.setText(mRoute.toString());
+        dateTimeView.setText(mTrip.toText());
 
         FavoriteButtonHelper favoriteButtonHelper = new FavoriteButtonHelper(
-                this, mFavoritesDbAdapter, startPoint, endPoint);
+                this, mFavoritesDbAdapter, mJourneyQuery.origin,
+                mJourneyQuery.destination);
         favoriteButtonHelper.loadImage();
 
-        initRouteDetails(mRoute);
-        */
+        //initRouteDetails(mRoute);
+        onRouteDetailsResult(mTrip);
     }
 
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
 
-        RouteDetail detail = mDetails.get(position);
+        /*
+        RouteDetail detail = mTrip.subTrips.get(position);
         if (detail.getSite().getLocation() != null) {
             //String uri = "geo:"+ detail.getSite().getLocation().getLatitude() + "," + detail.getSite().getLocation().getLongitude() + "?q=" + detail.getSite().getName();  
             //startActivity(new Intent(android.content.Intent.ACTION_VIEW, Uri.parse(uri)));
@@ -136,19 +133,21 @@ public class RouteDetailActivity extends ListActivity {
         } else {
             Toast.makeText(this, "Missing geo data", Toast.LENGTH_LONG).show();
         }
+        */
+        Toast.makeText(this, "Missing geo data", Toast.LENGTH_LONG).show();
     }
 
     /**
      * Helper that returns the my location text representation. If the {@link Location}
      * is set the accuracy will also be appended.
-     * @param stop the stop
+     * @param location the stop
      * @return a text representation of my location
      */
-    private CharSequence getMyLocationString(Stop stop) {
+    private CharSequence getMyLocationString(Planner.Location location) {
         CharSequence string = getText(R.string.my_location);
-        if (stop.getLocation() != null) {
-            string = String.format("%s (%sm)", string, stop.getLocation().getAccuracy());
-        }
+        /*if (location.getLocation() != null) {
+            string = String.format("%s (%sm)", string, location.getLocation().getAccuracy());
+        }*/
         return string;
     }
 
@@ -157,6 +156,7 @@ public class RouteDetailActivity extends ListActivity {
      * @param route
      */
     private void initRouteDetails(Route route) {
+        /*
         @SuppressWarnings("unchecked")
         final ArrayList<RouteDetail> details = (ArrayList<RouteDetail>) getLastNonConfigurationInstance();
         if (details != null) {
@@ -165,6 +165,7 @@ public class RouteDetailActivity extends ListActivity {
             mGetDetailsTask = new GetDetailsTask();
             mGetDetailsTask.execute(route);
         }
+        */
     }
 
     /**
@@ -174,13 +175,12 @@ public class RouteDetailActivity extends ListActivity {
      */
     @Override
     public Object onRetainNonConfigurationInstance() {
-        return mDetails;
+        return mTrip;
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        saveGetDetailsTask(outState);
     }
 
     @Override
@@ -194,47 +194,6 @@ public class RouteDetailActivity extends ListActivity {
      * @param savedInstanceState the bundle containing the saved state
      */
     private void restoreLocalState(Bundle savedInstanceState) {
-        restoreGetDetailsTask(savedInstanceState);
-    }
-
-    /**
-     * Restores the search routes task.
-     * @param savedInstanceState the saved state
-     */
-    private void restoreGetDetailsTask(Bundle savedInstanceState) {
-        if (savedInstanceState.getBoolean(STATE_GET_DETAILS_IN_PROGRESS)) {
-            mRoute = savedInstanceState.getParcelable(STATE_ROUTE);
-            Log.d(TAG, "restoring getDetailsTask");
-            mGetDetailsTask = new GetDetailsTask();
-            mGetDetailsTask.execute(mRoute);
-        }
-    }
-
-    /**
-     *
-     * @param outState
-     */
-    private void saveGetDetailsTask(Bundle outState) {
-        final GetDetailsTask task = mGetDetailsTask;
-        if (task != null && task.getStatus() != AsyncTask.Status.FINISHED) {
-            Log.d(TAG, "saving SearchRoutesTask");
-            task.cancel(true);
-            mGetDetailsTask = null;
-            outState.putBoolean(STATE_GET_DETAILS_IN_PROGRESS, true);
-            outState.putParcelable(STATE_ROUTE, mRoute);
-        }
-    }
-
-    /**
-     * Cancels a running {@link GetDetailsTask}.
-     */
-    private void onCancelGetDetailsTask() {
-        if (mGetDetailsTask != null
-                && mGetDetailsTask.getStatus() == AsyncTask.Status.RUNNING) {
-            Log.i(TAG, "Cancels the get deails task.");
-            mGetDetailsTask.cancel(true);
-            mGetDetailsTask = null;
-        }
     }
 
     @Override
@@ -255,11 +214,11 @@ public class RouteDetailActivity extends ListActivity {
             case R.id.menu_departures_for_start:
                 Intent departuresIntent = new Intent(this, DeparturesActivity.class);
                 departuresIntent.putExtra(DeparturesActivity.EXTRA_SITE_NAME,
-                        mRoute.from);
+                        mTrip.origin.name);
                 startActivity(departuresIntent);
                 return true;
             case R.id.menu_share:
-                share(mRoute);
+                share(mTrip);
                 return true;
             case R.id.menu_sms_ticket:
                 showDialog(DIALOG_BUY_SMS_TICKET);
@@ -272,9 +231,6 @@ public class RouteDetailActivity extends ListActivity {
     protected void onDestroy() {
         super.onDestroy();
 
-        onCancelGetDetailsTask();
-
-        dismissProgress();
         mFavoritesDbAdapter.close();
     }
 
@@ -282,21 +238,34 @@ public class RouteDetailActivity extends ListActivity {
      * Called when there is results to display.
      * @param details the route details
      */
-    public void onRouteDetailsResult(ArrayList<RouteDetail> details) {
+    public void onRouteDetailsResult(Trip2 trip) {
         ArrayList<Map<String, String>> list = new ArrayList<Map<String, String>>();
 
-        for (RouteDetail detail : details) {
+        for (SubTrip subTrip: trip.subTrips) {
+            String description;
+            if ("Walk".equals(subTrip.transport.type)) {
+                description = String.format("%s - %s Gå från <b>%s</b> till <b>%s</b>",
+                        subTrip.departureTime, subTrip.arrivalTime,
+                        subTrip.origin.name, subTrip.destination.name);
+            } else {
+                description = String.format(
+                        "%s - %s <b>%s</b> från <b>%s</b> mot <b>%s</b>. Kliv av vid <b>%s</b>",
+                        subTrip.departureTime, subTrip.arrivalTime,
+                        subTrip.transport.name, subTrip.origin.name,
+                        subTrip.transport.towards, subTrip.destination.name);                 
+            }
+
             Map<String, String> map = new HashMap<String, String>();
-            map.put("description", detail.getDescription());
-            Log.d(TAG, "location: " + detail.getSite().getLocation());
+            map.put("description", description);
+            map.put("drawable", Integer.toString(subTrip.transport.getImageResource()));
             list.add(map);
         }
 
         mDetailAdapter = new SimpleAdapter(this, list, 
                 R.layout.route_details_row,
-                new String[] { "description"},
+                new String[] { "description", "drawable"},
                 new int[] { 
-                    R.id.routes_row
+                    R.id.routes_row, R.id.routes_row_transport
                 }
         );
 
@@ -305,6 +274,9 @@ public class RouteDetailActivity extends ListActivity {
             public boolean setViewValue(View view, Object data,
                     String textRepresentation) {
                 switch (view.getId()) {
+                case R.id.routes_row_transport:
+                    ((ImageView)view).setImageResource(Integer.parseInt(textRepresentation));
+                    return true;
                 case R.id.routes_row:
                     ((TextView)view).setText(android.text.Html.fromHtml(textRepresentation));
                     return true;
@@ -315,10 +287,11 @@ public class RouteDetailActivity extends ListActivity {
 
         //mDetailAdapter = new ArrayAdapter<String>(this, R.layout.route_details_row, details);
         setListAdapter(mDetailAdapter);
-        mDetails = details;
+        mTrip = trip;
 
         // Add zones
-        String zones = RouteDetail.getZones(mDetails);
+        /*
+        String zones = RouteDetail.getZones(mTrip);
         if (zones.length() > 0) {
             TextView zoneView = (TextView) findViewById(R.id.route_zones);
             zoneView.setText(zones);
@@ -330,6 +303,7 @@ public class RouteDetailActivity extends ListActivity {
                 }
             });
         }
+        */
     }
 
     /**
@@ -343,20 +317,6 @@ public class RouteDetailActivity extends ListActivity {
     @Override
     protected Dialog onCreateDialog(int id) {
         switch(id) {
-        case DIALOG_NETWORK_PROBLEM:
-            return new AlertDialog.Builder(this)
-                .setIcon(android.R.drawable.ic_dialog_alert)
-                .setTitle(getText(R.string.network_problem_label))
-                .setMessage(getText(R.string.network_problem_message))
-                .setPositiveButton(getText(R.string.retry), new OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        mGetDetailsTask = new GetDetailsTask();
-                        mGetDetailsTask.execute(mRoute);
-                    }
-                })
-                .setNegativeButton(getText(android.R.string.cancel), null)
-                .create();
         case DIALOG_BUY_SMS_TICKET:
             CharSequence[] smsOptions = {
                     getText(R.string.sms_ticket_price_full), 
@@ -381,31 +341,11 @@ public class RouteDetailActivity extends ListActivity {
     }
 
     /**
-     * Show progress dialog.
-     */
-    private void showProgress() {
-        if (mProgress == null) {
-            mProgress = new ProgressDialog(this);
-            mProgress.setMessage(getText(R.string.loading));
-            mProgress.show();   
-        }
-    }
-
-    /**
-     * Dismiss the progress dialog.
-     */
-    private void dismissProgress() {
-        if (mProgress != null) {
-            mProgress.dismiss();
-            mProgress = null;
-        }
-    }
-
-    /**
      * Share a {@link Route} with others.
      * @param route the route to share
      */
-    public void share(Route route) {
+    public void share(Trip2 route) {
+        /*
         final Intent intent = new Intent(Intent.ACTION_SEND);
 
         intent.setType("text/plain");
@@ -413,24 +353,29 @@ public class RouteDetailActivity extends ListActivity {
         intent.putExtra(Intent.EXTRA_TEXT, route.toTextRepresentation());
 
         startActivity(Intent.createChooser(intent, getText(R.string.share_label)));
+        */
     }
 
     /**
      * Invokes the Messaging application.
-     * @param reducedPrice True if the price is reduced, false otherwise.
+     * @param reducedPrice True if the price is reduced, false otherwise. 
      */
     public void sendSms(boolean reducedPrice) {
+        Toast.makeText(this, "SMS-Tickets temporally disabled.",
+                Toast.LENGTH_LONG).show();
+        /*
         final Intent intent = new Intent(Intent.ACTION_VIEW);
 
         String price = reducedPrice ? "R" : "H";
         intent.setType("vnd.android-dir/mms-sms");
         intent.putExtra("address", "72150");
-        intent.putExtra("sms_body", price + RouteDetail.getZones(mDetails));
+        intent.putExtra("sms_body", price + RouteDetail.getZones(mTrip));
 
         Toast.makeText(this, R.string.sms_ticket_notice_message,
                 Toast.LENGTH_LONG).show();
 
         startActivity(intent);
+        */
     }
 
     @Override
@@ -439,44 +384,5 @@ public class RouteDetailActivity extends ListActivity {
         i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(i);
         return true;
-    }
-
-    /**
-     * Background task for fetching route details.
-     */
-    private class GetDetailsTask extends AsyncTask<Route, Void, ArrayList<RouteDetail>> {
-        private boolean mWasSuccess = true;
-
-        @Override
-        public void onPreExecute() {
-            showProgress();
-        }
-
-        @Override
-        protected ArrayList<RouteDetail> doInBackground(Route... params) {
-            try {
-                String language = getApplicationContext()
-                    .getResources()
-                    .getConfiguration()
-                    .locale.getLanguage();
-                return Planner.getInstance().findRouteDetails(params[0], language);
-            } catch (IOException e) {
-                mWasSuccess = false;
-                return null;
-            }
-        }
-
-        @Override
-        protected void onPostExecute(ArrayList<RouteDetail> result) {
-            dismissProgress();
-
-            if (result != null && !result.isEmpty()) {
-                onRouteDetailsResult(result);
-            } else if (!mWasSuccess) {
-                showDialog(DIALOG_NETWORK_PROBLEM);
-            } else {
-                onNoRoutesDetailsResult();
-            }
-        }
     }
 }
