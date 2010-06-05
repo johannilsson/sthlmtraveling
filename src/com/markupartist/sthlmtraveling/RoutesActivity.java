@@ -1274,7 +1274,7 @@ public class RoutesActivity extends ListActivity
     /**
      * Background task for searching for routes.
      */
-    private class SearchRoutesTask extends AsyncTask<Object, Void, Planner.Response> {
+    private class SearchRoutesTask extends AsyncTask<JourneyQuery, Void, Planner.Response> {
         private boolean mWasSuccess = true;
 
         @Override
@@ -1283,19 +1283,9 @@ public class RoutesActivity extends ListActivity
         }
 
         @Override
-        protected Planner.Response doInBackground(Object... params) {
+        protected Planner.Response doInBackground(JourneyQuery... params) {
             try {
-                /*
-                String language = getApplicationContext()
-                    .getResources()
-                    .getConfiguration()
-                    .locale.getLanguage();
-
-                Trip trip = (Trip) params[0];
-                */
-                //return Planner.getInstance().findRoutes(trip, language);
-
-                return Planner.getInstance().query();
+                return Planner.getInstance().query(params[0]);
             } catch (IOException e) {
                 mWasSuccess = false;
                 // TODO: We should return the Trip here as well.
