@@ -24,6 +24,7 @@ import android.text.format.Time;
 import android.util.TimeFormatException;
 
 import com.markupartist.sthlmtraveling.utils.HttpManager;
+import com.markupartist.sthlmtraveling.utils.StreamUtils;
 
 public class DeviationStore {
     static String TAG = "DeviationStore";
@@ -82,27 +83,7 @@ public class DeviationStore {
         }
 
         entity = response.getEntity();
-        return convertStreamToString(entity.getContent());
-    }
-    
-    public String convertStreamToString(InputStream is) throws IOException {
-        if (is != null) {
-            StringBuilder sb = new StringBuilder();
-            String line;
-
-            try {
-                BufferedReader reader = new BufferedReader(
-                        new InputStreamReader(is, "UTF-8"));
-                while ((line = reader.readLine()) != null) {
-                    sb.append(line).append("\n");
-                }
-            } finally {
-                is.close();
-            }
-            return sb.toString();
-        } else {        
-            return "";
-        }
+        return StreamUtils.toString(entity.getContent());
     }
 
     public static ArrayList<Deviation> filterByLineNumbers(
