@@ -762,7 +762,7 @@ public class RoutesActivity extends ListActivity
                 i.putExtra(PointOnMapActivity.EXTRA_STOP, tmpStop);
                 i.putExtra(PointOnMapActivity.EXTRA_HELP_TEXT,
                         getString(R.string.tap_your_location_on_map));
-                startActivityForResult(i, REQUEST_CODE_POINT_ON_MAP_START);
+                startActivityForResult(i, REQUEST_CODE_POINT_ON_MAP_END);
             }
         }
 
@@ -838,9 +838,9 @@ public class RoutesActivity extends ListActivity
                 Stop endPoint = data.getParcelableExtra(PointOnMapActivity.EXTRA_STOP);
                 Log.d(TAG, "Got Stop " + endPoint);
 
-                mJourneyQuery.origin.name = Planner.Location.TYPE_MY_LOCATION;
-                mJourneyQuery.origin.latitude = (int) (endPoint.getLocation().getLatitude() * 1E6);
-                mJourneyQuery.origin.longitude = (int) (endPoint.getLocation().getLongitude() * 1E6);
+                mJourneyQuery.destination.name = Planner.Location.TYPE_MY_LOCATION;
+                mJourneyQuery.destination.latitude = (int) (endPoint.getLocation().getLatitude() * 1E6);
+                mJourneyQuery.destination.longitude = (int) (endPoint.getLocation().getLongitude() * 1E6);
 
                 mSearchRoutesTask = new SearchRoutesTask();
                 mSearchRoutesTask.execute(mJourneyQuery);
