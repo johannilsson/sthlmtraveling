@@ -36,7 +36,7 @@ public class SitesStore {
     public ArrayList<Site> getSite(String name) throws IOException {
         ArrayList<Site> sites = new ArrayList<Site>();
 
-        final HttpGet get = new HttpGet(apiEndpoint() + "sites/"
+        final HttpGet get = new HttpGet(apiEndpoint() + "/sites/"
                 + "?q=" + URLEncoder.encode(name)
                 + "&key=" + get(KEY));
 
