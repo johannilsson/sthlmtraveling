@@ -30,7 +30,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:background="#999999"
+            android:background="#e4e4e4"
             android:paddingTop="5dip"
             >
     		<LinearLayout 
@@ -108,13 +108,16 @@
 		                android:id="@+id/planner_check_now"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-		                android:text="@string/now_label" />
+		                android:text="@string/now_label"
+		                android:textColor="#000"
+		                />
                     <RadioButton
                         android:id="@+id/planner_check_later"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="15dip"
                         android:text="@string/later_label"
+                        android:textColor="#000"
                     />
             </RadioGroup>
             
