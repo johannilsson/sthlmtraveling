@@ -34,7 +34,7 @@ public class DeparturesStore {
             DepartureFilter filter) throws IOException {
         Log.d(TAG, "About to get departures for " + site.getName());
         final HttpGet get = new HttpGet(apiEndpoint()
-                + "dpsdepartures/" + site.getId()
+                + "/dpsdepartures/" + site.getId()
                 + "/?key=" + get(KEY));
 
         HttpEntity entity = null;

@@ -16,25 +16,16 @@
 
 package com.markupartist.sthlmtraveling;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ListActivity;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.DialogInterface.OnClickListener;
 import android.location.Location;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Parcelable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -45,17 +36,13 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.SimpleAdapter.ViewBinder;
 
 import com.markupartist.sthlmtraveling.provider.FavoritesDbAdapter;
 import com.markupartist.sthlmtraveling.provider.planner.JourneyQuery;
 import com.markupartist.sthlmtraveling.provider.planner.Planner;
 import com.markupartist.sthlmtraveling.provider.planner.Route;
-import com.markupartist.sthlmtraveling.provider.planner.RouteDetail;
-import com.markupartist.sthlmtraveling.provider.planner.Stop;
 import com.markupartist.sthlmtraveling.provider.planner.Planner.SubTrip;
 import com.markupartist.sthlmtraveling.provider.planner.Planner.Trip2;
 
@@ -68,23 +55,10 @@ public class RouteDetailActivity extends ListActivity {
     public static final String EXTRA_JOURNEY_QUERY =
         "sthlmtraveling.intent.action.JOURNEY_QUERY";
 
-    public static final String EXTRA_START_POINT =
-        "com.markupartist.sthlmtraveling.start_point";
-    public static final String EXTRA_END_POINT =
-        "com.markupartist.sthlmtraveling.end_point";
-    public static final String EXTRA_ROUTE =
-        "com.markupartist.sthlmtraveling.route";
-    private static final String STATE_GET_DETAILS_IN_PROGRESS =
-        "com.markupartist.sthlmtraveling.getdetails.inprogress";
-    private static final String STATE_ROUTE =
-        "com.markupartist.sthlmtraveling.route";
-    private static final int DIALOG_NETWORK_PROBLEM = 0;
     private static final int DIALOG_BUY_SMS_TICKET = 1;
 
-    //private SimpleAdapter mDetailAdapter;
     private FavoritesDbAdapter mFavoritesDbAdapter;
     private Trip2 mTrip;
-    //private Route mRoute;
     private JourneyQuery mJourneyQuery;
     private SubTripAdapter mSubTripAdapter;
 
@@ -156,23 +130,6 @@ public class RouteDetailActivity extends ListActivity {
             string = String.format("%s (%sm)", string, location.getLocation().getAccuracy());
         }*/
         return string;
-    }
-
-    /**
-     * Find route details. Will first check if we already have data stored. 
-     * @param route
-     */
-    private void initRouteDetails(Route route) {
-        /*
-        @SuppressWarnings("unchecked")
-        final ArrayList<RouteDetail> details = (ArrayList<RouteDetail>) getLastNonConfigurationInstance();
-        if (details != null) {
-            onRouteDetailsResult(details);
-        } else if (mGetDetailsTask == null) {
-            mGetDetailsTask = new GetDetailsTask();
-            mGetDetailsTask.execute(route);
-        }
-        */
     }
 
     /**
@@ -251,58 +208,7 @@ public class RouteDetailActivity extends ListActivity {
 
         setListAdapter(mSubTripAdapter);
         mTrip = trip;
-        
-        /*
-        ArrayList<Map<String, String>> list = new ArrayList<Map<String, String>>();
 
-        for (SubTrip subTrip: trip.subTrips) {
-            String description;
-            if ("Walk".equals(subTrip.transport.type)) {
-                description = String.format("%s - %s Gå från <b>%s</b> till <b>%s</b>",
-                        subTrip.departureTime, subTrip.arrivalTime,
-                        subTrip.origin.name, subTrip.destination.name);
-            } else {
-                description = String.format(
-                        "%s - %s <b>%s</b> från <b>%s</b> mot <b>%s</b>. Kliv av vid <b>%s</b>",
-                        subTrip.departureTime, subTrip.arrivalTime,
-                        subTrip.transport.name, subTrip.origin.name,
-                        subTrip.transport.towards, subTrip.destination.name);                 
-            }
-
-            Map<String, String> map = new HashMap<String, String>();
-            map.put("description", description);
-            map.put("drawable", Integer.toString(subTrip.transport.getImageResource()));
-            list.add(map);
-        }
-
-        mDetailAdapter = new SimpleAdapter(this, list, 
-                R.layout.route_details_row,
-                new String[] { "description", "drawable"},
-                new int[] { 
-                    R.id.routes_row, R.id.routes_row_transport
-                }
-        );
-
-        mDetailAdapter.setViewBinder(new ViewBinder() {
-            @Override
-            public boolean setViewValue(View view, Object data,
-                    String textRepresentation) {
-                switch (view.getId()) {
-                case R.id.routes_row_transport:
-                    ((ImageView)view).setImageResource(Integer.parseInt(textRepresentation));
-                    return true;
-                case R.id.routes_row:
-                    ((TextView)view).setText(android.text.Html.fromHtml(textRepresentation));
-                    return true;
-                }
-                return false;
-            }
-        });
-
-        //mDetailAdapter = new ArrayAdapter<String>(this, R.layout.route_details_row, details);
-        setListAdapter(mDetailAdapter);
-        mTrip = trip;
-        */
         // Add zones
         /*
         String zones = RouteDetail.getZones(mTrip);
@@ -318,14 +224,6 @@ public class RouteDetailActivity extends ListActivity {
             });
         }
         */
-    }
-
-    /**
-     * Called when there is no result returned. 
-     */
-    public void onNoRoutesDetailsResult() {
-        TextView noResult = (TextView) findViewById(R.id.route_details_no_result);
-        noResult.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -359,6 +257,8 @@ public class RouteDetailActivity extends ListActivity {
      * @param route the route to share
      */
     public void share(Trip2 route) {
+        Toast.makeText(this, "Share is temporally disabled.",
+                Toast.LENGTH_LONG).show();
         /*
         final Intent intent = new Intent(Intent.ACTION_SEND);
 

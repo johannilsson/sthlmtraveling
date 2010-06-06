@@ -254,57 +254,6 @@ public class RoutesActivity extends ListActivity
 
         return jq;
     }
-
-    /*
-    private Trip createTrip(Uri uri) {
-        Stop startPoint = new Stop();
-        Stop endPoint = new Stop();
-
-        startPoint.setName(uri.getQueryParameter("start_point"));
-        if (!TextUtils.isEmpty(uri.getQueryParameter("start_point_lat"))
-                && !TextUtils.isEmpty(uri.getQueryParameter("start_point_lng"))) {
-            double startPointLat = Double.parseDouble(uri.getQueryParameter("start_point_lat"));
-            double startPointLng = Double.parseDouble(uri.getQueryParameter("start_point_lng"));
-            if (startPointLat != 0 && startPointLng != 0) {
-                Location startLocation = new Location("sthlmtraveling");
-                startLocation.setLatitude(startPointLat);
-                startLocation.setLongitude(startPointLng);
-                startPoint.setLocation(startLocation);
-            }
-        }
-
-        endPoint.setName(uri.getQueryParameter("end_point"));
-        if (!TextUtils.isEmpty(uri.getQueryParameter("end_point_lat"))
-                && !TextUtils.isEmpty(uri.getQueryParameter("end_point_lng"))) {
-            double endPointLat = Double.parseDouble(uri.getQueryParameter("end_point_lat"));
-            double endPointLng = Double.parseDouble(uri.getQueryParameter("end_point_lng"));
-            if (endPointLat != 0 && endPointLng != 0) {
-                Location endLocation = new Location("sthlmtraveling");
-                endLocation.setLatitude(endPointLat);
-                endLocation.setLongitude(endPointLng);
-                endPoint.setLocation(endLocation);
-            }
-        }
-
-        boolean isTimeDeparture = true;
-        if (!TextUtils.isEmpty(uri.getQueryParameter("isTimeDeparture"))) {
-            isTimeDeparture = Boolean.parseBoolean(
-                    uri.getQueryParameter("isTimeDeparture"));
-        }
-
-        String timeString = uri.getQueryParameter("time");
-
-        Time time = new Time();
-        if (!TextUtils.isEmpty(timeString)) {
-            time.parse(timeString);
-        } else {
-            time.setToNow();
-        }
-
-        Trip trip = new Trip(startPoint, endPoint, time, isTimeDeparture);
-        return trip;
-    }
-    */
     
     /**
      * Update the {@link TextView} for start and end points in the ui.
@@ -887,13 +836,10 @@ public class RoutesActivity extends ListActivity
                         mJourneyQuery.origin, mJourneyQuery.destination);
 
                 // Update the favorite button
-                /*
-                TODO: Fix favorite..
                 mFavoriteButtonHelper
-                        .setStartPoint(mTrip.getStartPoint())
-                        .setEndPoint(mTrip.getEndPoint())
+                        .setStartPoint(mJourneyQuery.origin)
+                        .setEndPoint(mJourneyQuery.destination)
                         .loadImage();
-                */
                 return true;
             case R.id.menu_share:
                 if (mRouteAdapter != null) {
