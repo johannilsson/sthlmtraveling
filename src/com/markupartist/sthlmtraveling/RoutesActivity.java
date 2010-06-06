@@ -555,7 +555,7 @@ public class RoutesActivity extends ListActivity
         if (savedInstanceState.getBoolean(STATE_GET_LATER_ROUTES_IN_PROGRESS)) {
             Log.d(TAG, "restoring GetLaterRoutesTask");
             mGetLaterRoutesTask = new GetLaterRoutesTask();
-            mGetLaterRoutesTask.execute();
+            mGetLaterRoutesTask.execute(mJourneyQuery);
         }
     }
 
@@ -678,11 +678,11 @@ public class RoutesActivity extends ListActivity
             switch(adapterId) {
             case ADAPTER_EARLIER:
                 mGetEarlierRoutesTask = new GetEarlierRoutesTask();
-                mGetEarlierRoutesTask.execute();
+                mGetEarlierRoutesTask.execute(mJourneyQuery);
                 break;
             case ADAPTER_LATER:
                 mGetLaterRoutesTask = new GetLaterRoutesTask();
-                mGetLaterRoutesTask.execute();
+                mGetLaterRoutesTask.execute(mJourneyQuery);
                 break;
             case ADAPTER_ROUTES:
                 Trip2 trip = (Trip2) mSectionedAdapter.getItem(position);
@@ -702,6 +702,9 @@ public class RoutesActivity extends ListActivity
         mPlannerResponse = response;
         //mTrip = trip;
         //updateStartAndEndPointViews(trip.getStartPoint(), trip.getEndPoint());
+
+        mJourneyQuery.ident = response.ident;
+        mJourneyQuery.seqnr = response.seqnr;
 
         if (mRouteAdapter == null) {
             mRouteAdapter = new RoutesAdapter(this, response.trips);
@@ -936,7 +939,7 @@ public class RoutesActivity extends ListActivity
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     mGetEarlierRoutesTask = new GetEarlierRoutesTask();
-                    mGetEarlierRoutesTask.execute();
+                    mGetEarlierRoutesTask.execute(mJourneyQuery);
                 }
             });
         case DIALOG_GET_LATER_ROUTES_NETWORK_PROBLEM:
@@ -944,7 +947,7 @@ public class RoutesActivity extends ListActivity
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     mGetLaterRoutesTask = new GetLaterRoutesTask();
-                    mGetLaterRoutesTask.execute();
+                    mGetLaterRoutesTask.execute(mJourneyQuery);
                 }
             });
         case DIALOG_GET_ROUTES_SESSION_TIMEOUT:
@@ -1285,7 +1288,7 @@ public class RoutesActivity extends ListActivity
         @Override
         protected Planner.Response doInBackground(JourneyQuery... params) {
             try {
-                return Planner.getInstance().query(params[0]);
+                return Planner.getInstance().findJourney(params[0]);
             } catch (IOException e) {
                 mWasSuccess = false;
                 // TODO: We should return the Trip here as well.
@@ -1312,7 +1315,7 @@ public class RoutesActivity extends ListActivity
     /**
      * Background task for getting earlier routes.
      */
-    private class GetEarlierRoutesTask extends AsyncTask<Void, Void, Planner.Response> {
+    private class GetEarlierRoutesTask extends AsyncTask<JourneyQuery, Void, Planner.Response> {
         private boolean mWasSuccess = true;
 
         @Override
@@ -1321,43 +1324,33 @@ public class RoutesActivity extends ListActivity
         }
 
         @Override
-        protected Planner.Response doInBackground(Void... params) {
-            /*
+        protected Planner.Response doInBackground(JourneyQuery... params) {
             try {
-                String language = getApplicationContext()
-                    .getResources()
-                    .getConfiguration()
-                    .locale.getLanguage();
-                return Planner.getInstance().findEarlierRoutes(language);
+                return Planner.getInstance().findPreviousJourney(params[0]);
             } catch (IOException e) {
                 mWasSuccess = false;
-                return null;
             }
-            */
             return null;
         }
 
         @Override
         protected void onPostExecute(Planner.Response result) {
             dismissProgress();
-
-            /*
-            if (result != null && !result.isEmpty()) {
-                mTrip.setRoutes(result);
-                //onSearchRoutesResult(mTrip);
+            if (result != null && !result.trips.isEmpty()) {
+                //mTrip.setRoutes(result);
+                onSearchRoutesResult(result);
             } else if (!mWasSuccess) {
                 showDialog(DIALOG_GET_EARLIER_ROUTES_NETWORK_PROBLEM);
             } else {
                 showDialog(DIALOG_GET_ROUTES_SESSION_TIMEOUT);
             }
-            */
         }
     }
 
     /**
      * Background task for getting later routes.
      */
-    private class GetLaterRoutesTask extends AsyncTask<Void, Void, Planner.Response> {
+    private class GetLaterRoutesTask extends AsyncTask<JourneyQuery, Void, Planner.Response> {
         private boolean mWasSuccess = true;
 
         @Override
@@ -1366,36 +1359,26 @@ public class RoutesActivity extends ListActivity
         }
 
         @Override
-        protected Planner.Response doInBackground(Void... params) {
-            /*
+        protected Planner.Response doInBackground(JourneyQuery... params) {
             try {
-                String language = getApplicationContext()
-                    .getResources()
-                    .getConfiguration()
-                    .locale.getLanguage();
-                return Planner.getInstance().findLaterRoutes(language);
+                return Planner.getInstance().findNextJourney(params[0]);
             } catch (IOException e) {
                 mWasSuccess = false;
-                return null;
             }
-            */
             return null;
         }
 
         @Override
         protected void onPostExecute(Planner.Response result) {
             dismissProgress();
-
-            /*
-            if (result != null && !result.isEmpty()) {
-                mTrip.setRoutes(result);
-                //onSearchRoutesResult(mTrip);
+            if (result != null && !result.trips.isEmpty()) {
+                //mTrip.setRoutes(result);
+                onSearchRoutesResult(result);
             } else if (!mWasSuccess) {
-                showDialog(DIALOG_GET_LATER_ROUTES_NETWORK_PROBLEM);
+                showDialog(DIALOG_GET_EARLIER_ROUTES_NETWORK_PROBLEM);
             } else {
                 showDialog(DIALOG_GET_ROUTES_SESSION_TIMEOUT);
             }
-            */
         }
     }
 }
