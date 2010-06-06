@@ -703,6 +703,9 @@ public class Planner {
         public String arrivalDate; // TODO: Combine date and time
         public String arrivalTime;
         public TransportType transport;
+        public ArrayList<String> remarks = new ArrayList<String>();
+        public ArrayList<String> rtuMessages = new ArrayList<String>();
+        public ArrayList<String> mt6Messages = new ArrayList<String>();
 
         public SubTrip() {}
 
@@ -714,6 +717,12 @@ public class Planner {
             arrivalDate = parcel.readString();
             arrivalTime = parcel.readString();
             transport = parcel.readParcelable(TransportType.class.getClassLoader());
+            remarks = new ArrayList<String>();
+            parcel.readStringList(remarks);
+            rtuMessages = new ArrayList<String>();
+            parcel.readStringList(rtuMessages);
+            mt6Messages = new ArrayList<String>();
+            parcel.readStringList(mt6Messages);
         }
 
         @Override
@@ -731,6 +740,9 @@ public class Planner {
             dest.writeString(arrivalDate);
             dest.writeString(arrivalTime);
             dest.writeParcelable(transport, 0);
+            dest.writeStringList(remarks);
+            dest.writeStringList(rtuMessages);
+            dest.writeStringList(mt6Messages);
         }
 
         public static SubTrip fromJson(JSONObject json) throws JSONException {
@@ -744,21 +756,32 @@ public class Planner {
             st.arrivalTime = json.getString("arrivalTime");
             st.transport = TransportType.fromJson(json.getJSONObject("transport"));
 
+            fromJsonArray(json.getJSONArray("remarks"), st.remarks);
+            fromJsonArray(json.getJSONArray("rtuMessages"), st.rtuMessages);
+            fromJsonArray(json.getJSONArray("mt6Messages"), st.mt6Messages);
+
             return st;
         }
-        
+
+        private static void fromJsonArray(JSONArray jsonArray, ArrayList<String> list)
+                throws JSONException {
+            for (int i = 0; i < jsonArray.length(); i++) {
+                list.add(jsonArray.getString(i));
+            }
+        }
+
         @Override
         public String toString() {
-            return "SubTrip{" +
-                    "origin=" + origin +
-                    ", destination=" + destination +
-                    ", departureDate='" + departureDate + '\'' +
-                    ", departureTime='" + departureTime + '\'' +
-                    ", arrivalDate='" + arrivalDate + '\'' +
-                    ", arrivalTime='" + arrivalTime + '\'' +
-                    ", transport=" + transport +
-                    '}';
+            return "SubTrip [arrivalDate=" + arrivalDate + ", arrivalTime="
+                    + arrivalTime + ", departureDate=" + departureDate
+                    + ", departureTime=" + departureTime + ", destination="
+                    + destination + ", mt6Messages=" + mt6Messages
+                    + ", origin=" + origin + ", remarks=" + remarks
+                    + ", rtuMessages=" + rtuMessages + ", transport="
+                    + transport + "]";
         }
+
+
 
         public static final Creator<SubTrip> CREATOR = new Creator<SubTrip>() {
             public SubTrip createFromParcel(Parcel parcel) {
