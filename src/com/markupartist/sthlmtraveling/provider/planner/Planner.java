@@ -921,6 +921,10 @@ public class Planner {
                 }
             } else if ("Walk".equals(type)) {
                 return R.drawable.transport_walk;
+            } else if ("TRN".equals(type)) {
+                return R.drawable.transport_train;
+            } else if ("TRM".equals(type)) {
+                return R.drawable.transport_train;
             } else if ("SHP".equals(type)) {
                 return R.drawable.transport_boat;
             }
