@@ -19,12 +19,14 @@ package com.markupartist.sthlmtraveling;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.DialogInterface.OnClickListener;
@@ -33,11 +35,15 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
@@ -75,11 +81,12 @@ public class RouteDetailActivity extends ListActivity {
     private static final int DIALOG_NETWORK_PROBLEM = 0;
     private static final int DIALOG_BUY_SMS_TICKET = 1;
 
-    private SimpleAdapter mDetailAdapter;
+    //private SimpleAdapter mDetailAdapter;
     private FavoritesDbAdapter mFavoritesDbAdapter;
     private Trip2 mTrip;
     //private Route mRoute;
     private JourneyQuery mJourneyQuery;
+    private SubTripAdapter mSubTripAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -239,6 +246,13 @@ public class RouteDetailActivity extends ListActivity {
      * @param details the route details
      */
     public void onRouteDetailsResult(Trip2 trip) {
+        
+        mSubTripAdapter = new SubTripAdapter(this, trip.subTrips);
+
+        setListAdapter(mSubTripAdapter);
+        mTrip = trip;
+        
+        /*
         ArrayList<Map<String, String>> list = new ArrayList<Map<String, String>>();
 
         for (SubTrip subTrip: trip.subTrips) {
@@ -288,7 +302,7 @@ public class RouteDetailActivity extends ListActivity {
         //mDetailAdapter = new ArrayAdapter<String>(this, R.layout.route_details_row, details);
         setListAdapter(mDetailAdapter);
         mTrip = trip;
-
+        */
         // Add zones
         /*
         String zones = RouteDetail.getZones(mTrip);
@@ -384,5 +398,76 @@ public class RouteDetailActivity extends ListActivity {
         i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(i);
         return true;
+    }
+
+    private class SubTripAdapter extends ArrayAdapter<SubTrip> {
+
+        private LayoutInflater mInflater;
+
+        public SubTripAdapter(Context context, List<SubTrip> objects) {
+            super(context, R.layout.route_details_row, objects);
+
+            mInflater = (LayoutInflater) context.getSystemService(
+                    Context.LAYOUT_INFLATER_SERVICE);
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            SubTrip subTrip = getItem(position);
+            
+            convertView = mInflater.inflate(R.layout.route_details_row, null);
+            ImageView transportImage = (ImageView) convertView.findViewById(R.id.routes_row_transport);
+            TextView descriptionView = (TextView) convertView.findViewById(R.id.routes_row);
+
+            transportImage.setImageResource(subTrip.transport.getImageResource());
+            
+            String description;
+            if ("Walk".equals(subTrip.transport.type)) {
+                description = String.format("%s - %s Gå från <b>%s</b> till <b>%s</b>",
+                        subTrip.departureTime, subTrip.arrivalTime,
+                        subTrip.origin.name, subTrip.destination.name);
+            } else {
+                description = String.format(
+                        "%s - %s <b>%s</b> från <b>%s</b> mot <b>%s</b>. Kliv av vid <b>%s</b>",
+                        subTrip.departureTime, subTrip.arrivalTime,
+                        subTrip.transport.name, subTrip.origin.name,
+                        subTrip.transport.towards, subTrip.destination.name);                 
+            }
+
+            descriptionView.setText(android.text.Html.fromHtml(description));
+            
+            LinearLayout messagesLayout = (LinearLayout) convertView.findViewById(R.id.routes_messages);
+            if (!subTrip.remarks.isEmpty()) {
+                for (String message : subTrip.remarks) {
+                    messagesLayout.addView(inflateMessage("remark", message,
+                                    messagesLayout, position));
+                }
+            }
+            if (!subTrip.rtuMessages.isEmpty()) {
+                for (String message : subTrip.rtuMessages) {
+                    messagesLayout.addView(inflateMessage("rtu", message,
+                                    messagesLayout, position));
+                }
+            }
+            if (!subTrip.mt6Messages.isEmpty()) {
+                for (String message : subTrip.mt6Messages) {
+                    messagesLayout.addView(inflateMessage("mt6", message,
+                                    messagesLayout, position));
+                }
+            }
+            
+            return convertView;
+        }
+
+        private View inflateMessage(String messageType, String message,
+                ViewGroup messagesLayout, int position) {
+            View view = mInflater.inflate(R.layout.route_details_message_row,
+                    messagesLayout, false);
+
+            TextView messageView = (TextView) view.findViewById(R.id.routes_warning_message);
+            messageView.setText(message);
+
+            return view;
+        }
     }
 }

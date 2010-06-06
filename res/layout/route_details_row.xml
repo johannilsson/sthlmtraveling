@@ -18,16 +18,24 @@
 -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:paddingTop="6dip"
     android:paddingRight="4dip"
     android:paddingBottom="10dip"
     >
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="6dip"
+        android:paddingRight="4dip"
+        android:paddingBottom="4dip"
+        >
 	<ImageView
 	    android:id="@+id/routes_row_transport"
-	    android:src="@drawable/ic_text_dot"
+	    android:src="@drawable/transport_metro_red"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical|center_horizontal"
@@ -43,5 +51,15 @@
 	    android:paddingTop="4dip"
 	    android:textColor="?android:attr/textColorPrimary"
 	    />
+    </LinearLayout>
+	<LinearLayout
+	    android:id="@+id/routes_messages"
+	    android:orientation="vertical"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_marginLeft="20dip"
+	    android:paddingTop="2dip"
+	    >   
+    </LinearLayout>
 </LinearLayout>
 
