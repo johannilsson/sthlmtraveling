@@ -27,8 +27,6 @@
         android:padding="5dip"
 	    android:layout_width="fill_parent" 
 	    android:layout_height="fill_parent"
-	    android:dividerHeight="0.1dip"
-	    android:divider="#4A4A4A"
         />
     <TextView android:id="@+id/android:empty"
         android:layout_width="wrap_content"

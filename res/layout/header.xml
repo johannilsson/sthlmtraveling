@@ -22,4 +22,4 @@
 	android:layout_width="fill_parent"
 	android:layout_height="wrap_content"
 	android:padding="3dip"	
-	android:background="#4A4A4A" />
+	android:background="?android:attr/listDivider" />
