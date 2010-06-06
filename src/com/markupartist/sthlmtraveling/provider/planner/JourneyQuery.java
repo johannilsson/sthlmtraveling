@@ -11,6 +11,8 @@ public class JourneyQuery implements Parcelable {
     public Location destination;
     public Time time;
     public boolean isTimeDeparture;
+    public String ident;
+    public String seqnr;
 
     public JourneyQuery() {
     }
@@ -21,6 +23,8 @@ public class JourneyQuery implements Parcelable {
         time = new Time();
         time.parse(parcel.readString());
         isTimeDeparture = (parcel.readInt() == 1) ? true : false;
+        ident = parcel.readString();
+        seqnr = parcel.readString();
     }
 
     @Override
@@ -34,6 +38,8 @@ public class JourneyQuery implements Parcelable {
         dest.writeParcelable(destination, 0);
         dest.writeString(time.format2445());
         dest.writeInt(isTimeDeparture ? 1 : 0);
+        dest.writeString(ident);
+        dest.writeString(seqnr);
     }
 
     public static final Creator<JourneyQuery> CREATOR = new Creator<JourneyQuery>() {
