@@ -90,7 +90,59 @@ public class Planner {
         return stops;
     }
 
-    public Response query(JourneyQuery query) throws IOException {
+    private JSONObject createQuery(JourneyQuery query) throws JSONException {
+        JSONObject jsonQuery = new JSONObject();
+        JSONObject origin = new JSONObject();
+        origin.put("id", query.origin.id);
+        origin.put("name", query.origin.name);
+        origin.put("latitude", query.origin.latitude);
+        origin.put("longitude", query.origin.longitude);
+
+        JSONObject destination = new JSONObject();
+        destination.put("id", query.destination.id);
+        destination.put("name", query.destination.name);
+        destination.put("latitude", query.destination.latitude);
+        destination.put("longitude", query.destination.longitude);
+
+        jsonQuery.put("origin", origin);
+        jsonQuery.put("destination", destination);
+        jsonQuery.put("ident", query.ident);
+        jsonQuery.put("seqnr", query.seqnr);
+        jsonQuery.put("time", query.time.format("%F %R"));
+        jsonQuery.put("isTimeDeparture", query.isTimeDeparture);
+
+        Log.d(TAG, "JSON: " + jsonQuery.toString());
+
+        return jsonQuery;
+    }
+
+    public Response findPreviousJourney(JourneyQuery query) throws IOException {
+        try {
+            JSONObject json = createQuery(query);
+            json.put("isPreviousQuery", true);
+            return doQuery(json);
+        } catch (JSONException e) {
+            throw new IOException(e.getMessage());
+        }
+    }
+
+    public Response findNextJourney(JourneyQuery query) throws IOException {
+        try {
+            JSONObject json = createQuery(query);
+            json.put("isNextQuery", true);
+            return doQuery(json);
+        } catch (JSONException e) {
+            throw new IOException(e.getMessage());
+        }
+    }
+
+    public Response findJourney(JourneyQuery query) throws IOException {
+        try {
+            return doQuery(createQuery(query));
+        } catch (JSONException e) {
+            throw new IOException(e.getMessage());
+        }
+        /*
         Response r = null;
 
         
@@ -110,6 +162,8 @@ public class Planner {
 
             jsonQuery.put("origin", origin);
             jsonQuery.put("destination", destination);
+            jsonQuery.put("ident", query.ident);
+            jsonQuery.put("seqnr", query.seqnr);
             jsonQuery.put("time", query.time.format("%F %R"));
             jsonQuery.put("isTimeDeparture", query.isTimeDeparture);
             
@@ -148,8 +202,42 @@ public class Planner {
         }
 
         return r;
+        */
     }
 
+    private Response doQuery(JSONObject jsonQuery) throws IOException {
+        Response r = null;
+
+        final HttpPost post = new HttpPost(apiEndpoint()
+                + "/journeyplanner/?key=" + get(KEY));
+        post.setEntity(new StringEntity(jsonQuery.toString()));
+
+        HttpEntity entity = null;
+        final HttpResponse response = HttpManager.execute(post);
+
+        if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
+            throw new IOException("A remote server error occurred when getting deviations.");
+        }
+
+        entity = response.getEntity();
+
+        String rawContent = StreamUtils.toString(entity.getContent());
+        
+        //String rawContent = "{\"previousQuery\":\"\",\"nextQuery\":\"\",\"numberOfTrips\":5,\"trips\":[{\"origin\":{\"id\":0,\"name\":\"Kungsberga konsum\",\"latitude\":59404827,\"longitude\":17632341},\"destination\":{\"id\":0,\"name\":\"Mariebergsgatan\",\"latitude\":59331106,\"longitude\":18023560},\"departureDate\":\"04.06.10\",\"departureTime\":\"18:22\",\"arrivalDate\":\"04.06.10\",\"arrivalTime\":\"19:51\",\"changes\":3,\"duration\":\"1:29\",\"priceInfo\":\"-1\",\"co2\":\"3,6\",\"mt6MessageExist\":false,\"rtuMessageExist\":false,\"remarksMessageExist\":false,\"subTrips\":[{\"origin\":{\"id\":0,\"name\":\"My location\",\"latitude\":59404818,\"longitude\":17632332},\"destination\":{\"id\":0,\"name\":\"Kungsberga konsum\",\"latitude\":59404827,\"longitude\":17632341},\"departureDate\":\"04.06.10\",\"departureTime\":\"18:20\",\"arrivalDate\":\"04.06.10\",\"arrivalTime\":\"18:21\",\"transport\":{\"type\":\"Walk\"}},{\"origin\":{\"id\":0,\"name\":\"Kungsberga konsum\",\"latitude\":59404827,\"longitude\":17632341},\"destination\":{\"id\":0,\"name\":\"Solbacka\",\"latitude\":59340698,\"longitude\":17695409},\"departureDate\":\"04.06.10\",\"departureTime\":\"18:22\",\"arrivalDate\":\"04.06.10\",\"arrivalTime\":\"18:49\",\"transport\":{\"type\":\"BUS\",\"name\":\"buss 318\",\"towards\":\"Brommaplan (bussbyte)\"}},{\"origin\":{\"id\":0,\"name\":\"Solbacka\",\"latitude\":59340698,\"longitude\":17695409},\"destination\":{\"id\":0,\"name\":\"Brommaplan\",\"latitude\":59338621,\"longitude\":17938360},\"departureDate\":\"04.06.10\",\"departureTime\":\"18:50\",\"arrivalDate\":\"04.06.10\",\"arrivalTime\":\"19:27\",\"transport\":{\"type\":\"BUS\",\"name\":\"blåbuss 176\",\"towards\":\"Mörby station\"}},{\"origin\":{\"id\":0,\"name\":\"Brommaplan\",\"latitude\":59338289,\"longitude\":17939637},\"destination\":{\"id\":0,\"name\":\"Fridhemsplan\",\"latitude\":59333048,\"longitude\":18031597},\"departureDate\":\"04.06.10\",\"departureTime\":\"19:31\",\"arrivalDate\":\"04.06.10\",\"arrivalTime\":\"19:41\",\"transport\":{\"type\":\"MET\",\"name\":\"tunnelbanans gröna linje 19\",\"towards\":\"Hagsätra\"}},{\"origin\":{\"id\":0,\"name\":\"Fridhemsplan\",\"latitude\":59332158,\"longitude\":18027740},\"destination\":{\"id\":0,\"name\":\"Mariebergsgatan\",\"latitude\":59331106,\"longitude\":18023560},\"departureDate\":\"04.06.10\",\"departureTime\":\"19:50\",\"arrivalDate\":\"04.06.10\",\"arrivalTime\":\"19:51\",\"transport\":{\"type\":\"BUS\",\"name\":\"blåbuss 1\",\"towards\":\"Stora Essingen\"}}]},{\"origin\":{\"id\":0,\"name\":\"Kungsberga konsum\",\"latitude\":59404701,\"longitude\":17632296},\"destination\":{\"id\":0,\"name\":\"Mariebergsgatan\",\"latitude\":59331106,\"longitude\":18023560},\"departureDate\":\"04.06.10\",\"departureTime\":\"19:27\",\"arrivalDate\":\"04.06.10\",\"arrivalTime\":\"20:48\",\"changes\":3,\"duration\":\"1:21\",\"priceInfo\":\"-1\",\"co2\":\"3,2\",\"mt6MessageExist\":false,\"rtuMessageExist\":false,\"remarksMessageExist\":false,\"subTrips\":[{\"origin\":{\"id\":0,\"name\":\"My location\",\"latitude\":59404818,\"longitude\":17632332},\"destination\":{\"id\":0,\"name\":\"Kungsberga konsum\",\"latitude\":59404701,\"longitude\":17632296},\"departureDate\":\"04.06.10\",\"departureTime\":\"19:25\",\"arrivalDate\":\"04.06.10\",\"arrivalTime\":\"19:26\",\"transport\":{\"type\":\"Walk\"}},{\"origin\":{\"id\":0,\"name\":\"Kungsberga konsum\",\"latitude\":59404701,\"longitude\":17632296},\"destination\":{\"id\":0,\"name\":\"Solbacka\",\"latitude\":59340698,\"longitude\":17695409},\"departureDate\":\"04.06.10\",\"departureTime\":\"19:27\",\"arrivalDate\":\"04.06.10\",\"arrivalTime\":\"19:49\",\"transport\":{\"type\":\"BUS\",\"name\":\"buss 317\",\"towards\":\"Brommaplan (bussbyte)\"}},{\"origin\":{\"id\":0,\"name\":\"Solbacka\",\"latitude\":59340698,\"longitude\":17695409},\"destination\":{\"id\":0,\"name\":\"Brommaplan\",\"latitude\":59338621,\"longitude\":17938360},\"departureDate\":\"04.06.10\",\"departureTime\":\"19:50\",\"arrivalDate\":\"04.06.10\",\"arrivalTime\":\"20:27\",\"transport\":{\"type\":\"BUS\",\"name\":\"blåbuss 176\",\"towards\":\"Mörby station\"}},{\"origin\":{\"id\":0,\"name\":\"Brommaplan\",\"latitude\":59338289,\"longitude\":17939637},\"destination\":{\"id\":0,\"name\":\"Fridhemsplan\",\"latitude\":59333048,\"longitude\":18031597},\"departureDate\":\"04.06.10\",\"departureTime\":\"20:31\",\"arrivalDate\":\"04.06.10\",\"arrivalTime\":\"20:41\",\"transport\":{\"type\":\"MET\",\"name\":\"tunnelbanans gröna linje 19\",\"towards\":\"Hagsätra\"}},{\"origin\":{\"id\":0,\"name\":\"Fridhemsplan\",\"latitude\":59332176,\"longitude\":18029610},\"destination\":{\"id\":0,\"name\":\"Mariebergsgatan\",\"latitude\":59331106,\"longitude\":18023560},\"departureDate\":\"04.06.10\",\"departureTime\":\"20:47\",\"arrivalDate\":\"04.06.10\",\"arrivalTime\":\"20:48\",\"transport\":{\"type\":\"BUS\",\"name\":\"blåbuss 4\",\"towards\":\"Gullmarsplan\"}}]},{\"origin\":{\"id\":0,\"name\":\"Kungsberga konsum\",\"latitude\":59404827,\"longitude\":17632341},\"destination\":{\"id\":0,\"name\":\"Mariebergsgatan\",\"latitude\":59331106,\"longitude\":18023560},\"departureDate\":\"04.06.10\",\"departureTime\":\"20:24\",\"arrivalDate\":\"04.06.10\",\"arrivalTime\":\"21:55\",\"changes\":3,\"duration\":\"1:31\",\"priceInfo\":\"-1\",\"co2\":\"3,6\",\"mt6MessageExist\":false,\"rtuMessageExist\":false,\"remarksMessageExist\":false,\"subTrips\":[{\"origin\":{\"id\":0,\"name\":\"My location\",\"latitude\":59404818,\"longitude\":17632332},\"destination\":{\"id\":0,\"name\":\"Kungsberga konsum\",\"latitude\":59404827,\"longitude\":17632341},\"departureDate\":\"04.06.10\",\"departureTime\":\"20:22\",\"arrivalDate\":\"04.06.10\",\"arrivalTime\":\"20:23\",\"transport\":{\"type\":\"Walk\"}},{\"origin\":{\"id\":0,\"name\":\"Kungsberga konsum\",\"latitude\":59404827,\"longitude\":17632341},\"destination\":{\"id\":0,\"name\":\"Solbacka\",\"latitude\":59340698,\"longitude\":17695409},\"departureDate\":\"04.06.10\",\"departureTime\":\"20:24\",\"arrivalDate\":\"04.06.10\",\"arrivalTime\":\"20:51\",\"transport\":{\"type\":\"BUS\",\"name\":\"buss 318\",\"towards\":\"Brommaplan (bussbyte)\"}},{\"origin\":{\"id\":0,\"name\":\"Solbacka\",\"latitude\":59340698,\"longitude\":17695409},\"destination\":{\"id\":0,\"name\":\"Brommaplan\",\"latitude\":59338621,\"longitude\":17938360},\"departureDate\":\"04.06.10\",\"departureTime\":\"20:51\",\"arrivalDate\":\"04.06.10\",\"arrivalTime\":\"21:27\",\"transport\":{\"type\":\"BUS\",\"name\":\"blåbuss 176\",\"towards\":\"Mörby station\"}},{\"origin\":{\"id\":0,\"name\":\"Brommaplan\",\"latitude\":59338289,\"longitude\":17939637},\"destination\":{\"id\":0,\"name\":\"Fridhemsplan\",\"latitude\":59333048,\"longitude\":18031597},\"departureDate\":\"04.06.10\",\"departureTime\":\"21:34\",\"arrivalDate\":\"04.06.10\",\"arrivalTime\":\"21:44\",\"transport\":{\"type\":\"MET\",\"name\":\"tunnelbanans gröna linje 19\",\"towards\":\"Hagsätra\"}},{\"origin\":{\"id\":0,\"name\":\"Fridhemsplan\",\"latitude\":59332176,\"longitude\":18029610},\"destination\":{\"id\":0,\"name\":\"Mariebergsgatan\",\"latitude\":59331106,\"longitude\":18023560},\"departureDate\":\"04.06.10\",\"departureTime\":\"21:54\",\"arrivalDate\":\"04.06.10\",\"arrivalTime\":\"21:55\",\"transport\":{\"type\":\"BUS\",\"name\":\"buss 40\",\"towards\":\"Reimersholme\"}}]},{\"origin\":{\"id\":0,\"name\":\"Kungsberga konsum\",\"latitude\":59404701,\"longitude\":17632296},\"destination\":{\"id\":0,\"name\":\"Mariebergsgatan\",\"latitude\":59331106,\"longitude\":18023560},\"departureDate\":\"04.06.10\",\"departureTime\":\"21:29\",\"arrivalDate\":\"04.06.10\",\"arrivalTime\":\"22:54\",\"changes\":3,\"duration\":\"1:25\",\"priceInfo\":\"-1\",\"co2\":\"3,2\",\"mt6MessageExist\":false,\"rtuMessageExist\":false,\"remarksMessageExist\":false,\"subTrips\":[{\"origin\":{\"id\":0,\"name\":\"My location\",\"latitude\":59404818,\"longitude\":17632332},\"destination\":{\"id\":0,\"name\":\"Kungsberga konsum\",\"latitude\":59404701,\"longitude\":17632296},\"departureDate\":\"04.06.10\",\"departureTime\":\"21:27\",\"arrivalDate\":\"04.06.10\",\"arrivalTime\":\"21:28\",\"transport\":{\"type\":\"Walk\"}},{\"origin\":{\"id\":0,\"name\":\"Kungsberga konsum\",\"latitude\":59404701,\"longitude\":17632296},\"destination\":{\"id\":0,\"name\":\"Solbacka\",\"latitude\":59340698,\"longitude\":17695409},\"departureDate\":\"04.06.10\",\"departureTime\":\"21:29\",\"arrivalDate\":\"04.06.10\",\"arrivalTime\":\"21:51\",\"transport\":{\"type\":\"BUS\",\"name\":\"buss 317\",\"towards\":\"Brommaplan (bussbyte)\"}},{\"origin\":{\"id\":0,\"name\":\"Solbacka\",\"latitude\":59340698,\"longitude\":17695409},\"destination\":{\"id\":0,\"name\":\"Brommaplan\",\"latitude\":59338621,\"longitude\":17938360},\"departureDate\":\"04.06.10\",\"departureTime\":\"21:51\",\"arrivalDate\":\"04.06.10\",\"arrivalTime\":\"22:27\",\"transport\":{\"type\":\"BUS\",\"name\":\"blåbuss 176\",\"towards\":\"Mörby station\"}},{\"origin\":{\"id\":0,\"name\":\"Brommaplan\",\"latitude\":59338289,\"longitude\":17939637},\"destination\":{\"id\":0,\"name\":\"Fridhemsplan\",\"latitude\":59333048,\"longitude\":18031597},\"departureDate\":\"04.06.10\",\"departureTime\":\"22:34\",\"arrivalDate\":\"04.06.10\",\"arrivalTime\":\"22:44\",\"transport\":{\"type\":\"MET\",\"name\":\"tunnelbanans gröna linje 19\",\"towards\":\"Hagsätra\"}},{\"origin\":{\"id\":0,\"name\":\"Fridhemsplan\",\"latitude\":59332176,\"longitude\":18029610},\"destination\":{\"id\":0,\"name\":\"Mariebergsgatan\",\"latitude\":59331106,\"longitude\":18023560},\"departureDate\":\"04.06.10\",\"departureTime\":\"22:53\",\"arrivalDate\":\"04.06.10\",\"arrivalTime\":\"22:54\",\"transport\":{\"type\":\"BUS\",\"name\":\"buss 40\",\"towards\":\"Reimersholme\"}}]},{\"origin\":{\"id\":0,\"name\":\"Kungsberga konsum\",\"latitude\":59404827,\"longitude\":17632341},\"destination\":{\"id\":0,\"name\":\"Mariebergsgatan\",\"latitude\":59331106,\"longitude\":18023560},\"departureDate\":\"04.06.10\",\"departureTime\":\"22:24\",\"arrivalDate\":\"04.06.10\",\"arrivalTime\":\"23:54\",\"changes\":2,\"duration\":\"1:30\",\"priceInfo\":\"-1\",\"co2\":\"3,6\",\"mt6MessageExist\":false,\"rtuMessageExist\":false,\"remarksMessageExist\":false,\"subTrips\":[{\"origin\":{\"id\":0,\"name\":\"My location\",\"latitude\":59404818,\"longitude\":17632332},\"destination\":{\"id\":0,\"name\":\"Kungsberga konsum\",\"latitude\":59404827,\"longitude\":17632341},\"departureDate\":\"04.06.10\",\"departureTime\":\"22:22\",\"arrivalDate\":\"04.06.10\",\"arrivalTime\":\"22:23\",\"transport\":{\"type\":\"Walk\"}},{\"origin\":{\"id\":0,\"name\":\"Kungsberga konsum\",\"latitude\":59404827,\"longitude\":17632341},\"destination\":{\"id\":0,\"name\":\"Brommaplan\",\"latitude\":59338208,\"longitude\":17938109},\"departureDate\":\"04.06.10\",\"departureTime\":\"22:24\",\"arrivalDate\":\"04.06.10\",\"arrivalTime\":\"23:27\",\"transport\":{\"type\":\"BUS\",\"name\":\"buss 318\",\"towards\":\"Brommaplan\"}},{\"origin\":{\"id\":0,\"name\":\"Brommaplan\",\"latitude\":59338289,\"longitude\":17939637},\"destination\":{\"id\":0,\"name\":\"Fridhemsplan\",\"latitude\":59333048,\"longitude\":18031597},\"departureDate\":\"04.06.10\",\"departureTime\":\"23:34\",\"arrivalDate\":\"04.06.10\",\"arrivalTime\":\"23:44\",\"transport\":{\"type\":\"MET\",\"name\":\"tunnelbanans gröna linje 19\",\"towards\":\"Hagsätra\"}},{\"origin\":{\"id\":0,\"name\":\"Fridhemsplan\",\"latitude\":59332176,\"longitude\":18029610},\"destination\":{\"id\":0,\"name\":\"Mariebergsgatan\",\"latitude\":59331106,\"longitude\":18023560},\"departureDate\":\"04.06.10\",\"departureTime\":\"23:53\",\"arrivalDate\":\"04.06.10\",\"arrivalTime\":\"23:54\",\"transport\":{\"type\":\"BUS\",\"name\":\"buss 40\",\"towards\":\"Reimersholme\"}}]}]}";
+        // Telefonplan - Mariebergsgatan
+        //String rawContent = "{\"previousQuery\":\"\",\"nextQuery\":\"\",\"numberOfTrips\":5,\"trips\":[{\"origin\":{\"id\":0,\"name\":\"Telefonplan\",\"latitude\":59298251,\"longitude\":17997321},\"destination\":{\"id\":0,\"name\":\"Mariebergsgatan\",\"latitude\":59331735,\"longitude\":18024918},\"departureDate\":\"04.06.10\",\"departureTime\":\"22:54\",\"arrivalDate\":\"04.06.10\",\"arrivalTime\":\"23:19\",\"changes\":1,\"duration\":\"0:25\",\"priceInfo\":\"1\",\"co2\":\"0,02\",\"mt6MessageExist\":false,\"rtuMessageExist\":false,\"remarksMessageExist\":false,\"subTrips\":[{\"origin\":{\"id\":0,\"name\":\"Telefonplan\",\"latitude\":59298251,\"longitude\":17997321},\"destination\":{\"id\":0,\"name\":\"Hornstull\",\"latitude\":59315959,\"longitude\":18035543},\"departureDate\":\"04.06.10\",\"departureTime\":\"22:54\",\"arrivalDate\":\"04.06.10\",\"arrivalTime\":\"23:00\",\"transport\":{\"type\":\"MET\",\"name\":\"tunnelbanans röda linje 14\",\"towards\":\"Mörby centrum\"}},{\"origin\":{\"id\":0,\"name\":\"Hornstull\",\"latitude\":59316031,\"longitude\":18033808},\"destination\":{\"id\":0,\"name\":\"Mariebergsgatan\",\"latitude\":59331735,\"longitude\":18024918},\"departureDate\":\"04.06.10\",\"departureTime\":\"23:14\",\"arrivalDate\":\"04.06.10\",\"arrivalTime\":\"23:19\",\"transport\":{\"type\":\"BUS\",\"name\":\"blåbuss 4\",\"towards\":\"Radiohuset\"}}]},{\"origin\":{\"id\":0,\"name\":\"Telefonplan\",\"latitude\":59298251,\"longitude\":17997321},\"destination\":{\"id\":0,\"name\":\"Mariebergsgatan\",\"latitude\":59331735,\"longitude\":18024918},\"departureDate\":\"04.06.10\",\"departureTime\":\"23:09\",\"arrivalDate\":\"04.06.10\",\"arrivalTime\":\"23:29\",\"changes\":1,\"duration\":\"0:20\",\"priceInfo\":\"1\",\"co2\":\"0,02\",\"mt6MessageExist\":false,\"rtuMessageExist\":false,\"remarksMessageExist\":false,\"subTrips\":[{\"origin\":{\"id\":0,\"name\":\"Telefonplan\",\"latitude\":59298251,\"longitude\":17997321},\"destination\":{\"id\":0,\"name\":\"Hornstull\",\"latitude\":59315959,\"longitude\":18035543},\"departureDate\":\"04.06.10\",\"departureTime\":\"23:09\",\"arrivalDate\":\"04.06.10\",\"arrivalTime\":\"23:15\",\"transport\":{\"type\":\"MET\",\"name\":\"tunnelbanans röda linje 14\",\"towards\":\"Mörby centrum\"}},{\"origin\":{\"id\":0,\"name\":\"Hornstull\",\"latitude\":59316031,\"longitude\":18033808},\"destination\":{\"id\":0,\"name\":\"Mariebergsgatan\",\"latitude\":59331735,\"longitude\":18024918},\"departureDate\":\"04.06.10\",\"departureTime\":\"23:24\",\"arrivalDate\":\"04.06.10\",\"arrivalTime\":\"23:29\",\"transport\":{\"type\":\"BUS\",\"name\":\"blåbuss 4\",\"towards\":\"Radiohuset\"}}]},{\"origin\":{\"id\":0,\"name\":\"Telefonplan\",\"latitude\":59298251,\"longitude\":17997321},\"destination\":{\"id\":0,\"name\":\"Mariebergsgatan\",\"latitude\":59331735,\"longitude\":18024918},\"departureDate\":\"04.06.10\",\"departureTime\":\"23:24\",\"arrivalDate\":\"04.06.10\",\"arrivalTime\":\"23:49\",\"changes\":1,\"duration\":\"0:25\",\"priceInfo\":\"1\",\"co2\":\"0,02\",\"mt6MessageExist\":false,\"rtuMessageExist\":false,\"remarksMessageExist\":false,\"subTrips\":[{\"origin\":{\"id\":0,\"name\":\"Telefonplan\",\"latitude\":59298251,\"longitude\":17997321},\"destination\":{\"id\":0,\"name\":\"Hornstull\",\"latitude\":59315959,\"longitude\":18035543},\"departureDate\":\"04.06.10\",\"departureTime\":\"23:24\",\"arrivalDate\":\"04.06.10\",\"arrivalTime\":\"23:30\",\"transport\":{\"type\":\"MET\",\"name\":\"tunnelbanans röda linje 14\",\"towards\":\"Mörby centrum\"}},{\"origin\":{\"id\":0,\"name\":\"Hornstull\",\"latitude\":59316031,\"longitude\":18033808},\"destination\":{\"id\":0,\"name\":\"Mariebergsgatan\",\"latitude\":59331735,\"longitude\":18024918},\"departureDate\":\"04.06.10\",\"departureTime\":\"23:44\",\"arrivalDate\":\"04.06.10\",\"arrivalTime\":\"23:49\",\"transport\":{\"type\":\"BUS\",\"name\":\"blåbuss 4\",\"towards\":\"Radiohuset\"}}]},{\"origin\":{\"id\":0,\"name\":\"Telefonplan\",\"latitude\":59298251,\"longitude\":17997321},\"destination\":{\"id\":0,\"name\":\"Mariebergsgatan\",\"latitude\":59331735,\"longitude\":18024918},\"departureDate\":\"04.06.10\",\"departureTime\":\"23:39\",\"arrivalDate\":\"04.06.10\",\"arrivalTime\":\"23:59\",\"changes\":1,\"duration\":\"0:20\",\"priceInfo\":\"1\",\"co2\":\"0,02\",\"mt6MessageExist\":false,\"rtuMessageExist\":false,\"remarksMessageExist\":false,\"subTrips\":[{\"origin\":{\"id\":0,\"name\":\"Telefonplan\",\"latitude\":59298251,\"longitude\":17997321},\"destination\":{\"id\":0,\"name\":\"Hornstull\",\"latitude\":59315959,\"longitude\":18035543},\"departureDate\":\"04.06.10\",\"departureTime\":\"23:39\",\"arrivalDate\":\"04.06.10\",\"arrivalTime\":\"23:45\",\"transport\":{\"type\":\"MET\",\"name\":\"tunnelbanans röda linje 14\",\"towards\":\"Mörby centrum\"}},{\"origin\":{\"id\":0,\"name\":\"Hornstull\",\"latitude\":59316031,\"longitude\":18033808},\"destination\":{\"id\":0,\"name\":\"Mariebergsgatan\",\"latitude\":59331735,\"longitude\":18024918},\"departureDate\":\"04.06.10\",\"departureTime\":\"23:54\",\"arrivalDate\":\"04.06.10\",\"arrivalTime\":\"23:59\",\"transport\":{\"type\":\"BUS\",\"name\":\"blåbuss 4\",\"towards\":\"Radiohuset\"}}]},{\"origin\":{\"id\":0,\"name\":\"Telefonplan\",\"latitude\":59298251,\"longitude\":17997321},\"destination\":{\"id\":0,\"name\":\"Mariebergsgatan\",\"latitude\":59331735,\"longitude\":18024918},\"departureDate\":\"04.06.10\",\"departureTime\":\"23:54\",\"arrivalDate\":\"05.06.10\",\"arrivalTime\":\"00:15\",\"changes\":1,\"duration\":\"0:21\",\"priceInfo\":\"1\",\"co2\":\"0,02\",\"mt6MessageExist\":false,\"rtuMessageExist\":false,\"remarksMessageExist\":false,\"subTrips\":[{\"origin\":{\"id\":0,\"name\":\"Telefonplan\",\"latitude\":59298251,\"longitude\":17997321},\"destination\":{\"id\":0,\"name\":\"Hornstull\",\"latitude\":59315959,\"longitude\":18035543},\"departureDate\":\"04.06.10\",\"departureTime\":\"23:54\",\"arrivalDate\":\"05.06.10\",\"arrivalTime\":\"00:00\",\"transport\":{\"type\":\"MET\",\"name\":\"tunnelbanans röda linje 14\",\"towards\":\"Mörby centrum\"}},{\"origin\":{\"id\":0,\"name\":\"Hornstull\",\"latitude\":59316031,\"longitude\":18033808},\"destination\":{\"id\":0,\"name\":\"Mariebergsgatan\",\"latitude\":59331735,\"longitude\":18024918},\"departureDate\":\"05.06.10\",\"departureTime\":\"00:10\",\"arrivalDate\":\"05.06.10\",\"arrivalTime\":\"00:15\",\"transport\":{\"type\":\"BUS\",\"name\":\"buss 40\",\"towards\":\"Fridhemsplan\"}}]}]}";
+        
+        try {
+            r = Response.fromJson(new JSONObject(rawContent));            
+            Log.d(TAG, "The response: " + r.toString());
+        } catch (JSONException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        return r;
+    }
+    
     /**
      * Find routes.
      * @param trip the {@link Trip}
@@ -414,23 +502,37 @@ public class Planner {
     
     public static class Response implements Parcelable {
         // TODO: Parse out the ident.
-        public String previousQuery;
-        public String nextQuery;
+        public String ident;
+        public String seqnr;
         public int numberOfTrips;
         public ArrayList<Trip2> trips = new ArrayList<Trip2>();
 
         public Response() {}
 
         public Response(Parcel parcel) {
+            ident = parcel.readString();
+            seqnr = parcel.readString();
             trips = new ArrayList<Trip2>();
             parcel.readTypedList(trips, Trip2.CREATOR);
         }
 
         @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeString(ident);
+            dest.writeString(seqnr);
+            dest.writeTypedList(trips);
+        }
+
+        @Override
         public String toString() {
             return "Response{" +
-                    "previousQuery='" + previousQuery + '\'' +
-                    ", nextQuery='" + nextQuery + '\'' +
+                    "ident='" + ident + '\'' +
+                    ", seqnr='" + seqnr + '\'' +
                     ", numberOfTrips=" + numberOfTrips +
                     ", trips=" + trips +
                     '}';
@@ -438,7 +540,10 @@ public class Planner {
 
         public static Response fromJson(JSONObject json) throws JSONException {
             Response r = new Response();
-            
+
+            r.ident = json.getString("ident");
+            r.seqnr = json.getString("seqnr");
+
             JSONArray jsonTrips = json.getJSONArray("trips");
             for (int i = 0; i < jsonTrips.length(); i++) {
                 try {
@@ -450,16 +555,6 @@ public class Planner {
             }
 
             return r;
-        }
-
-        @Override
-        public int describeContents() {
-            return 0;
-        }
-
-        @Override
-        public void writeToParcel(Parcel dest, int flags) {
-            dest.writeTypedList(trips);
         }
 
         public static final Creator<Response> CREATOR = new Creator<Response>() {
@@ -499,6 +594,7 @@ public class Planner {
             arrivalDate = parcel.readString();
             arrivalTime = parcel.readString();
             changes = parcel.readInt();
+            duration = parcel.readString();
             priceInfo = parcel.readString();
             co2 = parcel.readString();
             mt6MessageExist = (parcel.readInt() == 1) ? true : false;
@@ -522,6 +618,7 @@ public class Planner {
             dest.writeString(arrivalDate);
             dest.writeString(arrivalTime);
             dest.writeInt(changes);
+            dest.writeString(duration);
             dest.writeString(priceInfo);
             dest.writeString(co2);
             dest.writeInt((mt6MessageExist == true) ? 1 : 0);
