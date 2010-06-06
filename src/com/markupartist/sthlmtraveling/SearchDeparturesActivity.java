@@ -61,6 +61,7 @@ public class SearchDeparturesActivity extends ListActivity {
             mCreateShortcut = true;
         }
 
+
         mHistoryDbAdapter = new HistoryDbAdapter(this).open();
 
         mSiteTextView = (AutoCompleteTextView) findViewById(R.id.sites); 
@@ -69,9 +70,9 @@ public class SearchDeparturesActivity extends ListActivity {
         mSiteTextView.setSelectAllOnFocus(true);
         mSiteTextView.setAdapter(stopAdapter);
 
-        Button searchButton = (Button) findViewById(R.id.search_departure);
+        ImageButton searchButton = (ImageButton) findViewById(R.id.search_departure);
         if (mCreateShortcut) {
-            searchButton.setText(getText(R.string.create_shortcut_label));
+            //searchButton.setText(getText(R.string.create_shortcut_label));
             setTitle(R.string.create_shortcut_for_departure_label);
         }
         searchButton.setOnClickListener(new OnClickListener() {
