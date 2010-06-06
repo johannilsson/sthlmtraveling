@@ -19,6 +19,7 @@ package com.markupartist.sthlmtraveling;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.ListActivity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -30,13 +31,18 @@ import android.view.View.OnClickListener;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ListView;
+import android.widget.SimpleCursorAdapter;
+import android.widget.TextView;
+import android.widget.SimpleCursorAdapter.ViewBinder;
 
+import com.markupartist.sthlmtraveling.provider.FavoritesDbAdapter;
 import com.markupartist.sthlmtraveling.provider.HistoryDbAdapter;
 import com.markupartist.sthlmtraveling.provider.planner.Planner;
 import com.markupartist.sthlmtraveling.provider.planner.Stop;
 
 
-public class SearchDeparturesActivity extends Activity {
+public class SearchDeparturesActivity extends ListActivity {
     static String TAG = "SearchDeparturesActivity";
     private static final int DIALOG_HISTORY = 0;
     private static final int DIALOG_MORE = 1;
@@ -82,14 +88,8 @@ public class SearchDeparturesActivity extends Activity {
                 }
             }
         });
-        
-        final ImageButton fromDialog = (ImageButton) findViewById(R.id.site_menu);
-        fromDialog.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showDialog(DIALOG_HISTORY);
-            }
-        });
+
+        fillData();
     }
 
     @Override
@@ -98,48 +98,40 @@ public class SearchDeparturesActivity extends Activity {
         mHistoryDbAdapter.close();
     }
 
-    @Override
-    protected Dialog onCreateDialog(int id) {
-        switch(id) {
-        /*case DIALOG_MORE:
-            return new AlertDialog.Builder(this)
-                .setTitle(getText(R.string.choose_start_point_label))
-                .setItems(getDialogSelectPointItems(),
-                    new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int item) {
-                    switch(item) {
-                    case 0:
-                        showDialog(DIALOG_HISTORY);
-                        break;
-                    }
-                }
-            })
-            .create();*/
-        case DIALOG_HISTORY:
-            final Cursor historyCursor =
-                mHistoryDbAdapter.fetchByType(HistoryDbAdapter.TYPE_DEPARTURE_SITE);
-            startManagingCursor(historyCursor);
-            return new AlertDialog.Builder(this)
-                .setTitle(getText(R.string.history_label))
-                .setCursor(historyCursor, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        int index = historyCursor
-                                .getColumnIndex(HistoryDbAdapter.KEY_NAME);
-                        mSiteTextView.setText(historyCursor.getString(index));
-                    }
-                }, HistoryDbAdapter.KEY_NAME)
-                .create();
-        }
-        return null;
+    private void fillData() {
+        final Cursor historyCursor =
+            mHistoryDbAdapter.fetchByType(HistoryDbAdapter.TYPE_DEPARTURE_SITE);
+
+        startManagingCursor(historyCursor);
+
+        String[] from = new String[] {
+                HistoryDbAdapter.KEY_NAME
+            };
+
+        int[] to = new int[]{android.R.id.text1};
+
+        final SimpleCursorAdapter favorites = new SimpleCursorAdapter(
+                this, android.R.layout.simple_list_item_1, historyCursor, from, to);
+
+        stopManagingCursor(historyCursor);
+
+        setListAdapter(favorites);
     }
 
-    /*private CharSequence[] getDialogSelectPointItems() {
-        CharSequence[] items = { 
-                getText(R.string.history_label),
-            };
-        return items;
-    }*/
+    @Override
+    protected void onListItemClick(ListView l, View v, int position, long id) {
+        Cursor historyCursor = ((SimpleCursorAdapter) this.getListAdapter()).getCursor();
+        startManagingCursor(historyCursor);
+        int index = historyCursor.getColumnIndex(HistoryDbAdapter.KEY_NAME);
+        String siteName = historyCursor.getString(index);
+        stopManagingCursor(historyCursor);
+
+        if (mCreateShortcut) {
+            onCreateShortCut(siteName);
+        } else {
+            onSearchDepartures(siteName);
+        }
+    }
 
     private void onSearchDepartures(String siteName) {
         mHistoryDbAdapter.create(HistoryDbAdapter.TYPE_DEPARTURE_SITE, siteName);

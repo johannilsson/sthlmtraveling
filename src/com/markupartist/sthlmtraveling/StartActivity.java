@@ -48,7 +48,8 @@ public class StartActivity extends TabActivity {
         tabHost.addTab(tabHost.newTabSpec("departures")
                 .setIndicator(getText(R.string.departures), 
                         getResources().getDrawable(R.drawable.tab_departures))
-                .setContent(new Intent(this, SearchDeparturesActivity.class)));
+                .setContent(new Intent(this, SearchDeparturesActivity.class)
+                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)));
 
         tabHost.addTab(tabHost.newTabSpec("deviations")
                 .setIndicator(getText(R.string.deviations_label), 
