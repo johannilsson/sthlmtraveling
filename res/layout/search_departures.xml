@@ -40,6 +40,7 @@
 	        android:paddingRight="3dip">
 	        <AutoCompleteTextView 
 	            android:id="@+id/sites"
+	            android:hint="@string/site_name"
 	            android:dropDownWidth="fill_parent"
 	            android:layout_width="wrap_content"
 	            android:layout_height="fill_parent"
