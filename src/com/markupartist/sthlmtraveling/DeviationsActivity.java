@@ -19,12 +19,10 @@ package com.markupartist.sthlmtraveling;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
 import android.app.Dialog;
 import android.app.ListActivity;
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -40,6 +38,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.SimpleAdapter.ViewBinder;
@@ -57,24 +56,21 @@ public class DeviationsActivity extends ListActivity {
 
     private static final int DIALOG_GET_DEVIATIONS_NETWORK_PROBLEM = 1;
 
-    private ProgressDialog mProgress;
+    //private ProgressDialog mProgress;
     private GetDeviationsTask mGetDeviationsTask;
     private ArrayList<Deviation> mDeviationsResult;
+    private LinearLayout mProgress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.deviations_list);
 
+        mProgress = (LinearLayout) findViewById(R.id.search_progress);
+        mProgress.setVisibility(View.GONE);
+
         loadDeviations();
         registerForContextMenu(getListView());
-
-        // Show text that this view is only in Swedish.
-        Locale locale = getResources().getConfiguration().locale;
-        if ("en".equals(locale.getLanguage())) {
-            TextView infoTextView = (TextView) findViewById(R.id.info_box);
-            infoTextView.setVisibility(View.VISIBLE);
-        }
     }
 
     private void loadDeviations() {
@@ -280,21 +276,27 @@ public class DeviationsActivity extends ListActivity {
      * Show progress dialog.
      */
     private void showProgress() {
+        mProgress.setVisibility(View.VISIBLE);
+        /*
         if (mProgress == null) {
             mProgress = new ProgressDialog(this);
             mProgress.setMessage(getText(R.string.loading));
             mProgress.show();   
         }
+        */
     }
 
     /**
      * Dismiss the progress dialog.
      */
     private void dismissProgress() {
+        mProgress.setVisibility(View.GONE);
+        /*
         if (mProgress != null) {
             mProgress.dismiss();
             mProgress = null;
         }
+        */
     }
 
     @Override
