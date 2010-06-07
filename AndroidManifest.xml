@@ -12,7 +12,7 @@
         <activity android:name=".StartActivity"
                   android:label="@string/app_name"
                   android:configChanges="locale"
-                  android:theme="@android:style/Theme.NoTitleBar"
+                  android:theme="@android:style/Theme.Light.NoTitleBar"
                   >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
