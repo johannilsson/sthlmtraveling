@@ -33,71 +33,77 @@
             android:background="#e4e4e4"
             android:paddingTop="5dip"
             >
-    		<LinearLayout 
-    	        android:layout_width="fill_parent"
-    	        android:layout_height="wrap_content"
-    	        android:addStatesFromChildren="true"
-    	        android:gravity="center_vertical"
-    	        android:paddingRight="0dip"
-    	        android:paddingTop="0dip"
-    		    >
-	            <!-- Empty dummy to prevent AutoCompleteTextView from receiving focus -->
-	            <LinearLayout
-	                android:focusable="true" android:focusableInTouchMode="true"
-	                android:layout_width="0px" android:layout_height="0px"
-	            />
-    		    <AutoCompleteTextView 
-    		    	android:id="@+id/from"
-    				android:hint="@string/from"
-    				android:dropDownWidth="fill_parent"
-    				android:layout_width="wrap_content"
-               		android:layout_height="wrap_content"
-               		android:singleLine="true"
-               		android:layout_weight="1"
+            <LinearLayout
+                android:focusable="true" android:focusableInTouchMode="true"
+                android:layout_width="0px" android:layout_height="0px"
+            />
+	        <LinearLayout 
+	            android:layout_width="fill_parent"
+	            android:layout_height="wrap_content"
+	            android:addStatesFromChildren="true"
+	            android:gravity="center_vertical"
+	            android:paddingTop="5dip"
+	            android:paddingBottom="10dip"
+	            android:paddingLeft="3dip"
+	            android:paddingRight="3dip">
+	            <AutoCompleteTextView 
+	                android:id="@+id/from"
+	                android:hint="@string/from"
+	                android:dropDownWidth="fill_parent"
+	                android:layout_width="wrap_content"
+	                android:layout_height="fill_parent"
+	                android:textColor="#000"
+	                android:singleLine="true"
+	                android:layout_weight="1"
+	                android:imeOptions="actionNext"
+	                android:lines="1"
+	                android:inputType="text"
+	                android:background="@drawable/textfield_search"
+	                />
+	            <ImageButton
+	                    android:id="@+id/from_menu"
+	                    android:src="@android:drawable/ic_input_get"
+	                    android:layout_width="wrap_content"
+	                    android:layout_height="fill_parent"
+	                    android:paddingLeft="5dip"
+	                    android:paddingRight="5dip"
+	                    android:background="@drawable/btn_search_dialog"
+	                    />
+	        </LinearLayout>
+            <LinearLayout 
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:addStatesFromChildren="true"
+                android:gravity="center_vertical"
+                android:paddingTop="5dip"
+                android:paddingBottom="10dip"
+                android:paddingLeft="3dip"
+                android:paddingRight="3dip">
+                <AutoCompleteTextView 
+                    android:id="@+id/to"
+                    android:hint="@string/to"
+                    android:dropDownWidth="fill_parent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:textColor="#000"
+                    android:singleLine="true"
+                    android:layout_weight="1"
                     android:imeOptions="actionDone"
-                    android:nextFocusRight="@+id/from_menu"
-    				/>
-    			<ImageButton
-    					android:id="@+id/from_menu"
-    					android:src="@android:drawable/ic_input_get"
-    					android:layout_width="wrap_content"
-    					android:layout_height="wrap_content"
-    					android:layout_marginTop="2dip"
-    					android:layout_marginRight="2dip"
-    					android:layout_marginBottom="2dip"
-    					android:padding="5dip"
-    				/>
-        	</LinearLayout>
-		    <!-- Empty dummy to prevent AutoCompleteTextView from receiving focus -->
-		    <LinearLayout
-		        android:focusable="true" android:focusableInTouchMode="true"
-		        android:layout_width="0px" android:layout_height="0px"
-		    />
-    		<LinearLayout 
-    		    android:gravity="center_vertical"
-    		    android:layout_width="fill_parent" 
-    		    android:layout_height="wrap_content">
-    		    <AutoCompleteTextView 
-    		    	android:id="@+id/to"
-    				android:hint="@string/to"
-    				android:dropDownWidth="fill_parent"
-    				android:layout_width="wrap_content"
-    				android:layout_height="wrap_content"
-    				android:singleLine="true"
-    				android:layout_weight="1"
-                    android:imeOptions="actionDone"
-    				/>
-    				<ImageButton
-    					android:id="@+id/to_menu"
-    					android:src="@android:drawable/ic_input_get"
-    					android:layout_width="wrap_content"
-    					android:layout_height="wrap_content"
-    					android:layout_marginTop="2dip"
-    					android:layout_marginRight="2dip"
-    					android:layout_marginBottom="2dip"
-    					android:padding="5dip"
-    				/>
-    		</LinearLayout>
+                    android:lines="1"
+                    android:inputType="text"
+                    android:background="@drawable/textfield_search"
+                    />
+                <ImageButton
+                        android:id="@+id/to_menu"
+                        android:src="@android:drawable/ic_input_get"
+                        android:layout_width="wrap_content"
+                        android:layout_height="fill_parent"
+                        android:paddingLeft="5dip"
+                        android:paddingRight="5dip"
+                        android:background="@drawable/btn_search_dialog"
+                        />
+            </LinearLayout>
+
             <RadioGroup
                 android:id="@+id/planner_choose_time_group"
                 android:orientation="horizontal"
