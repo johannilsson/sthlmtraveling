@@ -1107,6 +1107,8 @@ public class RoutesActivity extends ListActivity
 
             this.setPadding(10, 10, 10, 10);
 
+            LinearLayout timeLayout = new LinearLayout(context);
+
             TextView routeDetail = new TextView(context);
             routeDetail.setText(trip.toText());
             routeDetail.setTextColor(Color.WHITE);
@@ -1114,12 +1116,21 @@ public class RoutesActivity extends ListActivity
             routeDetail.setPadding(0, 2, 0, 2);
             //routeDetail.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
 
+            timeLayout.addView(routeDetail);
+            if (trip.mt6MessageExist || trip.remarksMessageExist || trip.rtuMessageExist) {
+                ImageView warning = new ImageView(context);
+                warning.setImageResource(R.drawable.trip_message_warning);
+                warning.setPadding(8, 7, 0, 0);
+
+                timeLayout.addView(warning);
+            }
+
             TextView startAndEndPoint = new TextView(context);
             startAndEndPoint.setText(trip.origin.name + " - " + trip.destination.name);
             startAndEndPoint.setTextColor(Color.WHITE);
             startAndEndPoint.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
             startAndEndPoint.setPadding(0, 2, 0, 2);
-
+            
             LinearLayout routeChanges = new LinearLayout(context);
             routeChanges.setPadding(0, 5, 0, 0);
 
@@ -1165,7 +1176,7 @@ public class RoutesActivity extends ListActivity
                 currentTransportCount++;
             }
 
-            this.addView(routeDetail);
+            this.addView(timeLayout);
             this.addView(startAndEndPoint);
             this.addView(routeChanges);
         }
