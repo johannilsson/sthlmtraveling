@@ -35,7 +35,7 @@
 	        android:addStatesFromChildren="true"
 	        android:gravity="center_vertical"
 	        android:paddingTop="5dip"
-	        android:paddingBottom="5dip"
+	        android:paddingBottom="10dip"
 	        android:paddingLeft="3dip"
 	        android:paddingRight="3dip">
 	        <AutoCompleteTextView 
