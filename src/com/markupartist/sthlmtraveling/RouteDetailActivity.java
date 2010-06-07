@@ -26,6 +26,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -321,20 +322,25 @@ public class RouteDetailActivity extends ListActivity {
 
             transportImage.setImageResource(subTrip.transport.getImageResource());
             
-            String description;
+            CharSequence description;
             if ("Walk".equals(subTrip.transport.type)) {
-                description = String.format("%s - %s Gå från <b>%s</b> till <b>%s</b>",
-                        subTrip.departureTime, subTrip.arrivalTime,
-                        subTrip.origin.name, subTrip.destination.name);
+                description = getString(R.string.trip_description_walk,
+                        "<b>" + subTrip.departureTime + "</b>",
+                        "<b>" + subTrip.arrivalTime + "</b>",
+                        "<b>" + subTrip.origin.name + "</b>",
+                        "<b>" + subTrip.destination.name + "</b>");
             } else {
-                description = String.format(
-                        "%s - %s <b>%s</b> från <b>%s</b> mot <b>%s</b>. Kliv av vid <b>%s</b>",
+                description = getString(R.string.trip_description_normal,
                         subTrip.departureTime, subTrip.arrivalTime,
-                        subTrip.transport.name, subTrip.origin.name,
-                        subTrip.transport.towards, subTrip.destination.name);                 
+                        "<b>" + subTrip.transport.name + "</b>",
+                        "<b>" + subTrip.origin.name + "</b>",
+                        "<b>" + subTrip.transport.towards + "</b>",
+                        "<b>" + subTrip.destination.name + "</b>");
             }
 
-            descriptionView.setText(android.text.Html.fromHtml(description));
+            Log.d(TAG, "desc: " + description);
+            descriptionView.setText(android.text.Html.fromHtml(description.toString()));
+            //descriptionView.setText(description);
             
             LinearLayout messagesLayout = (LinearLayout) convertView.findViewById(R.id.routes_messages);
             if (!subTrip.remarks.isEmpty()) {
