@@ -51,7 +51,7 @@
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:paddingTop="2dip"
+                        android:layout_gravity="center_vertical"
                         android:src="@drawable/bullet_white"
                         />
                     <TextView
@@ -79,7 +79,7 @@
                     <ImageView 
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:paddingTop="2dip"
+                        android:layout_gravity="center_vertical"
                         android:src="@drawable/bullet_black"
                         />
                     <TextView
@@ -99,7 +99,7 @@
             android:id="@+id/route_favorite"
             android:src="@android:drawable/star_big_off"
             android:background="@android:color/transparent"
-            android:layout_gravity="right"
+            android:layout_gravity="right|center_vertical"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="0dip"
