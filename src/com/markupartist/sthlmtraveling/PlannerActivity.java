@@ -262,7 +262,7 @@ public class PlannerActivity extends Activity implements OnCheckedChangeListener
     private AutoCompleteTextView createAutoCompleteTextView(int id, final Stop stop) {
         final AutoCompleteTextView autoCompleteTextView = (AutoCompleteTextView) findViewById(id);
         AutoCompleteStopAdapter stopAdapter = new AutoCompleteStopAdapter(this,
-                android.R.layout.simple_dropdown_item_1line, Planner.getInstance());
+                R.layout.simple_dropdown_item_1line, Planner.getInstance());
         autoCompleteTextView.setAdapter(stopAdapter);
         autoCompleteTextView.setSelectAllOnFocus(true);
 

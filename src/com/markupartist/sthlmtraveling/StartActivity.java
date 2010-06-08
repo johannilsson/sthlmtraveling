@@ -18,6 +18,7 @@ package com.markupartist.sthlmtraveling;
 
 import android.app.TabActivity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.widget.TabHost;
 
@@ -33,6 +34,8 @@ public class StartActivity extends TabActivity {
         reporter.checkErrorAndReport(this);
 
         final TabHost tabHost = getTabHost();
+        tabHost.setBackgroundColor(Color.WHITE);
+        tabHost.getTabWidget().setBackgroundColor(Color.BLACK);
 
         tabHost.addTab(tabHost.newTabSpec("search")
                .setIndicator(getText(R.string.search_label), 

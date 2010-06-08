@@ -66,7 +66,7 @@ public class SearchDeparturesActivity extends ListActivity {
 
         mSiteTextView = (AutoCompleteTextView) findViewById(R.id.sites); 
         AutoCompleteStopAdapter stopAdapter = new AutoCompleteStopAdapter(this,
-                android.R.layout.simple_dropdown_item_1line, Planner.getInstance());
+                R.layout.simple_dropdown_item_1line, Planner.getInstance());
         mSiteTextView.setSelectAllOnFocus(true);
         mSiteTextView.setAdapter(stopAdapter);
 
