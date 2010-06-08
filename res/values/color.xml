@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+    <color name="search_plate">#D1EEEE</color>
+    <color name="plate_background">#2c82c0</color>
+    <color name="plate_extra_background">#e4e4e4</color>
+    <color name="stroke">#807e77</color>
+    <color name="stroke_light">#ffffff</color>
+</resources>

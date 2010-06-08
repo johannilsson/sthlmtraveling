@@ -24,14 +24,14 @@
     <include layout="@layout/route_header" />
     <ImageView
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:src="@drawable/stroke"
+        android:layout_height="1px"
+        android:src="@drawable/stroke_light"
         />
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:background="#e4e4e4"
+        android:background="@color/plate_extra_background"
         android:layout_marginBottom="0dip"
         android:padding="10dip"
         >
@@ -41,7 +41,7 @@
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:text="17:54 - approx. 19:51 (1.57)"
-			android:textAppearance="?android:attr/textAppearanceSmallInverse"
+			android:textAppearance="?android:attr/textAppearanceSmall"
         />
         <TextView
             android:id="@+id/route_zones"
@@ -58,6 +58,11 @@
             android:textColor="#fff"
         />
     </LinearLayout>
+    <ImageView
+        android:layout_width="fill_parent"
+        android:layout_height="1px"
+        android:src="@drawable/stroke"
+        />
     <ListView 
 		android:id="@+id/android:list"
 		android:layout_width="fill_parent"

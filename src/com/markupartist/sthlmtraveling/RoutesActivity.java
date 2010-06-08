@@ -1111,7 +1111,7 @@ public class RoutesActivity extends ListActivity
 
             TextView routeDetail = new TextView(context);
             routeDetail.setText(trip.toText());
-            routeDetail.setTextColor(Color.WHITE);
+            routeDetail.setTextColor(Color.BLACK);
             routeDetail.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
             routeDetail.setPadding(0, 2, 0, 2);
             //routeDetail.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
@@ -1127,7 +1127,7 @@ public class RoutesActivity extends ListActivity
 
             TextView startAndEndPoint = new TextView(context);
             startAndEndPoint.setText(trip.origin.name + " - " + trip.destination.name);
-            startAndEndPoint.setTextColor(Color.WHITE);
+            startAndEndPoint.setTextColor(Color.GRAY);
             startAndEndPoint.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
             startAndEndPoint.setPadding(0, 2, 0, 2);
             
@@ -1155,7 +1155,7 @@ public class RoutesActivity extends ListActivity
                 lineNumbers = DeviationStore.extractLineNumbers(subTrip.transport.name, lineNumbers);
                 if (!lineNumbers.isEmpty()) {
                     TextView lineNumberView = new TextView(context);
-                    lineNumberView.setTextColor(Color.WHITE);
+                    lineNumberView.setTextColor(Color.BLACK);
                     lineNumberView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
                     //lineNumberView.setBackgroundDrawable(ds);
                     //lineNumberView.setText(transport.getShortName());
