@@ -1127,7 +1127,7 @@ public class RoutesActivity extends ListActivity
 
             TextView startAndEndPoint = new TextView(context);
             startAndEndPoint.setText(trip.origin.name + " - " + trip.destination.name);
-            startAndEndPoint.setTextColor(Color.GRAY);
+            startAndEndPoint.setTextColor(0xFF444444); // Dark gray
             startAndEndPoint.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
             startAndEndPoint.setPadding(0, 2, 0, 2);
             
