@@ -34,7 +34,6 @@
         android:padding="10dip"
         android:textColor="?android:attr/textColorPrimary"
         android:text="@string/no_favorites"
-        android:textSize="16dip"
         />
 </LinearLayout>
 
