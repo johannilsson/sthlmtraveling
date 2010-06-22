@@ -103,20 +103,22 @@ public class RouteDetailActivity extends ListActivity {
     protected void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
 
-        /*
-        RouteDetail detail = mTrip.subTrips.get(position);
-        if (detail.getSite().getLocation() != null) {
-            //String uri = "geo:"+ detail.getSite().getLocation().getLatitude() + "," + detail.getSite().getLocation().getLongitude() + "?q=" + detail.getSite().getName();  
-            //startActivity(new Intent(android.content.Intent.ACTION_VIEW, Uri.parse(uri)));
-            Intent i = new Intent(this, ViewOnMapActivity.class);
-            i.putExtra(ViewOnMapActivity.EXTRA_LOCATION, detail.getSite().getLocation());
-            i.putExtra(ViewOnMapActivity.EXTRA_MARKER_TEXT, detail.getSite().getName());
-            startActivity(i);
+        Planner.Location location;
+        // Detects the footer view.
+        if (position + 1 > mSubTripAdapter.getCount()) {
+            int numSubTrips = mTrip.subTrips.size();
+            SubTrip subTrip = mTrip.subTrips.get(numSubTrips - 1);
+            location = subTrip.destination;
+        } else {
+            SubTrip subTrip = mSubTripAdapter.getItem(position);
+            location = subTrip.origin;
+        }
+
+        if (location.hasLocation()) {
+            startActivity(createViewOnMapIntent(location));
         } else {
             Toast.makeText(this, "Missing geo data", Toast.LENGTH_LONG).show();
         }
-        */
-        Toast.makeText(this, "Missing geo data", Toast.LENGTH_LONG).show();
     }
 
     /**
@@ -204,10 +206,22 @@ public class RouteDetailActivity extends ListActivity {
      * @param details the route details
      */
     public void onRouteDetailsResult(Trip2 trip) {
-        
         mSubTripAdapter = new SubTripAdapter(this, trip.subTrips);
 
+        int numSubTrips = trip.subTrips.size();
+        SubTrip lastSubTrip = trip.subTrips.get(numSubTrips - 1); 
+
+        View footerView = getLayoutInflater().inflate(R.layout.route_details_row, null);
+        TextView message = (TextView) footerView.findViewById(R.id.routes_row);
+        message.setText(lastSubTrip.destination.name);
+
+        ImageView image = (ImageView) footerView.findViewById(R.id.routes_row_transport);
+        image.setImageResource(R.drawable.bullet_black);
+
+        getListView().addFooterView(footerView);
+
         setListAdapter(mSubTripAdapter);
+
         mTrip = trip;
 
         // Add zones
@@ -301,6 +315,18 @@ public class RouteDetailActivity extends ListActivity {
         return true;
     }
 
+    private Intent createViewOnMapIntent(Planner.Location location) {
+        Location l = new Location("sthlmtraveling");
+        l.setLatitude(location.latitude / 1E6);
+        l.setLongitude(location.longitude / 1E6);
+
+        Intent intent = new Intent(this, ViewOnMapActivity.class);
+        intent.putExtra(ViewOnMapActivity.EXTRA_LOCATION, l);
+        intent.putExtra(ViewOnMapActivity.EXTRA_MARKER_TEXT, location.name);
+
+        return intent;
+    }
+
     private class SubTripAdapter extends ArrayAdapter<SubTrip> {
 
         private LayoutInflater mInflater;
@@ -338,7 +364,6 @@ public class RouteDetailActivity extends ListActivity {
                         "<b>" + subTrip.destination.name + "</b>");
             }
 
-            Log.d(TAG, "desc: " + description);
             descriptionView.setText(android.text.Html.fromHtml(description.toString()));
             //descriptionView.setText(description);
             
