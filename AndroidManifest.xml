@@ -49,7 +49,9 @@
                   android:configChanges="locale"></activity>
         <activity android:name=".RoutesActivity"
                   android:label="@string/routes_label"
-                  android:configChanges="locale">
+                  android:configChanges="locale"
+                  android:theme="@android:style/Theme.Light.NoTitleBar"
+                  >
                   
             <intent-filter>
 	            <action android:name="android.intent.action.VIEW"/>
@@ -77,7 +79,9 @@
         </activity>
         <activity android:name=".RouteDetailActivity"
                   android:label="@string/route_details_label"
-                  android:configChanges="locale"></activity>
+                  android:configChanges="locale"
+                  android:theme="@android:style/Theme.Light.NoTitleBar"
+                  ></activity>
         <activity android:name=".ChangeRouteTimeActivity"
                   android:label="@string/change_date_and_time"
                   android:configChanges="locale"></activity>
