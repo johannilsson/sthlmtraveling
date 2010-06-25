@@ -6,46 +6,36 @@ STHLM Traveling
 Travel in Stockholm with your Android phone.
 
 STHLM Traveling helps you plan your journeys using data from Stockholm Public 
-Transport (SL, Stockholms Lokaltrafik). 
+Transport (SL, Stockholms Lokaltrafik).
 
 More about this project at <http://markupartist.com/sthlmtraveling> or follow 
 me on [twitter](http://twitter.com/johanni) where I announce new versions.
 
-Some screen shots is available on my [Flickr](http://www.flickr.com/photos/johannilsson/tags/sthlmtraveling/).
+Some screen shots can be found at [Flickr](http://www.flickr.com/photos/johannilsson/tags/sthlmtraveling/).
 
-The app is powered by two backend services. The journey planner in the app is
-written in php and screen scrapes sl.se. The other one is written is Java and
-hosted on Googles AppEnginge and is used for deviations and real time data.
+The app is powered by a backend service written i Java and hosted at Google
+app engine. Unfortunately that application is not open source since it's using
+closed API's that is provided by SL. 
 
 Credits
 -------
 * App icon, concepts & ideas Olof Brickarp
-* Patches by [Morgan Christiansson, Screen Interaction AB](http://screeninteraction.com)
 * Icons by [Fredrik Broman](http://fredrikbroman.com)
-* Icons by [FatCow](http://www.fatcow.com/free-icons)
+* Patches by [Morgan Christiansson, Screen Interaction AB](http://screeninteraction.com)
 * Feedback, suggestions & test by [Swedroid users](http://swedroid.se)
 * Also great thanks to my Twitter and Flickr followers for their suggestions 
   and feedback
 
-Setting up the project
-----------------------
+Developers
+----------
 
-Once forked and imported to eclipse you need to run "Fix Project Properties".
-This is found under Android Tools. 
+If you want to contribute to this project just send me a email, tweet or just
+fork the app. I will do my best help you out if you have any problems.
 
-You then need to add the following class that holds the api endpoint and point 
-out where the api is located.
+### Run tests
 
-    public class ApiSettings {
-        public static String STHLM_TRAVELING_API_ENDPOINT = "";
-    }
-
-Run tests
----------
-
-To be able to run the tests from Eclipse follow these instructions. These 
-instructions assume that you alrady have STHLM Traveling setup as a project and
-deployed. 
+To be able to run the tests from Eclipse follow these instructions. Assumes
+that you already have STHLM Traveling setup as a project and deployed.
 
 * Create a new Android Project.
 * Choose create project from existing source. Choose tests/src as project root.
@@ -54,7 +44,7 @@ deployed.
 * If necessary run Fix Project Properties under Android Tools.
 * Now you should be able to run the tests. Choose Run As Android JUnit Test.
 
-To run the tests from a terminal just type in. Note, you must have both the 
+To run the tests from a terminal: Note, you must have both the 
 application and the tests application deployed before.
 
     adb shell am instrument -w com.markupartist.sthlmtraveling.tests/android.test.InstrumentationTestRunner
@@ -66,14 +56,23 @@ STHLM Traveling is open source and licensed under
 
 ### Exceptions
 
+* Transport icons is copyright Storstockholms Lokaltrafik and used with their
+  permission.
+* Icons by Olof Brickarp is copyright Olof Brickarp
 * Icons by Fredrik Broman is licensed under [CC Attribution 3.0](http://creativecommons.org/licenses/by/3.0/)
 * SectionedAdapter released under [GNU General Public License](http://www.gnu.org/licenses/gpl.html)
 * LabelMarker released under [GNU General Public License](http://www.gnu.org/licenses/gpl.html)
   Originally from Johan Walles [SL app](https://launchpad.net/sl),
-* App icon by Olof Brickarp is copyright Olof Brickarp
 
 Changelog
 ---------
+* 2.0.0
+    * Complete rewrite of the journey planner, new backend etc
+    * Various icons has been replaced creds to Olof Brickarp
+    * Changed to use SL standard icons for transports (with their permission)
+    * Switched to use the light theme
+* 1.8.1
+    * Reverted version of 1.8.0, just upped version to be able to release it
 * 1.8.0
     * Reworked detailed view
     * Added buy sms-ticket from the detailed view
