@@ -50,7 +50,7 @@
     <string name="no_location_title">Location Problem</string>
     <string name="no_location_message">Failed to determine your location.</string>
     <string name="network_problem_label">Network problem</string>
-    <string name="network_problem_message">A network problem occurred</string>
+    <string name="network_problem_message">Possible overload, a network problem or could not contact SL.</string>
     <string name="activity_create_shortcut">Routes</string>
     <string name="activity_create_departure_shortcut">Departures</string>
     <string name="name_of_shortcut">Name of shortcut</string>
