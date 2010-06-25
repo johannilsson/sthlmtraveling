@@ -1,6 +1,6 @@
 ![Logo for STHLM Traveling for Android](http://markupartist.com/sthlmtraveling/logo.png) 
 
-![STHLM Traveling for Android](http://farm2.static.flickr.com/1138/4733261898_3b86cf4d78.jpg)![STHLM Traveling for Android](http://farm5.static.flickr.com/4014/4684984048_76f128fd4d.jpg)![STHLM Traveling for Android](http://farm2.static.flickr.com/1424/4733261924_fb72fac10d.jpg)
+![STHLM Traveling for Android](http://farm2.static.flickr.com/1138/4733261898_3b86cf4d78.jpg) ![STHLM Traveling for Android](http://farm5.static.flickr.com/4014/4684984048_76f128fd4d.jpg)
 
 STHLM Traveling
 ===============
