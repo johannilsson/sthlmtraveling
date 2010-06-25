@@ -1,7 +1,7 @@
 STHLM Traveling
 ===============
 
-![Logo for STHLM Traveling for Android](http://markupartist.com/sthlmtraveling/logo.png)
+![Logo for STHLM Traveling for Android](http://markupartist.com/sthlmtraveling/logo.png) ![Logo for STHLM Traveling for Android](http://farm5.static.flickr.com/4014/4684984048_76f128fd4d.jpg)
 
 Travel in Stockholm with your Android phone.
 
