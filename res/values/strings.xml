@@ -24,8 +24,8 @@
     <string name="search_label">Search</string>
     <string name="departing">Departing</string>
     <string name="arriving">Arriving</string>
-    <string name="no_routes_found_label">Unfortunately no routes were found</string>
-    <string name="no_routes_found_message">Please try entering another station/stop.</string>
+    <string name="no_routes_found_label">Unfortunately there was no route found</string>
+    <string name="no_routes_found_message">Perhaps your start or destination is not served at all or with the selected modes of transport on the required date/time (e. g. sometimes stations/stops are not served on weekends).</string>
     <string name="routes_label">Routes</string>
     <string name="route_alternatives_label">Alternatives</string>
     <string name="route_details_label">Route details</string>

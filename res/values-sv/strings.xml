@@ -24,8 +24,8 @@
     <string name="search_label">Sök</string>
     <string name="departing">Avgår</string>
     <string name="arriving">Ankommer</string>
-    <string name="no_routes_found_label">Inga resvägar hittades</string>
-    <string name="no_routes_found_message">Var god ange en annan hållplats.</string>
+    <string name="no_routes_found_label">Ingen resa kunde hittas</string>
+    <string name="no_routes_found_message">Någon av de hållplatser du angav kanske inte trafikeras av de färdmedelsslag du valt. Vissa hållplatser trafikeras inte hela dygnet alla dagar.</string>
     <string name="routes_label">Resvägar</string>
     <string name="route_alternatives_label">Alternativ</string>
     <string name="route_details_label">Detaljerad beskrivning</string> 
