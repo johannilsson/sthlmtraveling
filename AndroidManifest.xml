@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="com.markupartist.sthlmtraveling"
-      android:versionCode="51" android:versionName="2.0.0RC3">
+      android:versionCode="52" android:versionName="2.0.0RC4">
     <supports-screens
         android:largeScreens="true"
         android:normalScreens="true"
@@ -52,11 +52,18 @@
                   android:configChanges="locale"
                   android:theme="@android:style/Theme.Light.NoTitleBar"
                   >
-                  
             <intent-filter>
 	            <action android:name="android.intent.action.VIEW"/>
 	            <category android:name="android.intent.category.DEFAULT"/>
 	            <data android:scheme="journeyplanner" android:host="routes" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".TrafficStatusActivity"
+                  android:label="@string/deviations_label"
+                  android:configChanges="locale">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity android:name=".DeviationsActivity"

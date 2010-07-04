@@ -57,7 +57,7 @@ public class StartActivity extends TabActivity {
         tabHost.addTab(tabHost.newTabSpec("deviations")
                 .setIndicator(getText(R.string.deviations_label), 
                         getResources().getDrawable(R.drawable.tab_deviations))
-                .setContent(new Intent(this, DeviationsActivity.class)
+                .setContent(new Intent(this, TrafficStatusActivity.class)
                 .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)));
 
         // Start background service.
