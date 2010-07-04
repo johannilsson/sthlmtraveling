@@ -28,9 +28,8 @@
         android:id="@+id/about_dialog_text"
 		android:layout_width="wrap_content"
 		android:layout_height="fill_parent"
-		android:textColor="?android:attr/textColorPrimary"
-		android:autoLink="all"
-        android:textColorLink="?android:attr/textColorPrimary"
+		android:textColor="?android:attr/textColorPrimaryInverse"
+        android:textColorLink="?android:attr/textColorPrimaryInverse"
 		android:text="@string/about_this_app"
 		/>
 </LinearLayout>
