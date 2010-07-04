@@ -8,6 +8,8 @@ Travel in Stockholm with your Android phone.
 STHLM Traveling helps you plan your journeys using data from Stockholm Public 
 Transport (SL, Stockholms Lokaltrafik).
 
+Vote for features at http://bit.ly/sthlmt
+
 More about this project at <http://markupartist.com/sthlmtraveling> or follow 
 me on [twitter](http://twitter.com/johanni) where I announce new versions.
 
@@ -66,7 +68,10 @@ STHLM Traveling is open source and licensed under
 
 Changelog
 ---------
-* 2.0.0
+* 2.0.0RC4
+    * New traffic status view
+    * Fixed my location bug
+* 2.0.0RC3
     * Complete rewrite of the journey planner, new backend etc
     * Various icons has been replaced creds to Olof Brickarp
     * Changed to use SL standard icons for transports (with their permission)
