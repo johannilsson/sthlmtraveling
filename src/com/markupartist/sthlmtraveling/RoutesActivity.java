@@ -703,6 +703,9 @@ public class RoutesActivity extends ListActivity
                 i.putExtra(PointOnMapActivity.EXTRA_HELP_TEXT,
                         getString(R.string.tap_your_location_on_map));
                 startActivityForResult(i, REQUEST_CODE_POINT_ON_MAP_START);
+            } else {
+                startPoint.latitude = (int) (location.getLatitude() * 1E6);
+                startPoint.longitude = (int) (location.getLongitude() * 1E6);
             }
         }
         if (endPoint.isMyLocation()) {
@@ -712,6 +715,9 @@ public class RoutesActivity extends ListActivity
                 i.putExtra(PointOnMapActivity.EXTRA_HELP_TEXT,
                         getString(R.string.tap_your_location_on_map));
                 startActivityForResult(i, REQUEST_CODE_POINT_ON_MAP_END);
+            } else {
+                endPoint.latitude = (int) (location.getLatitude() * 1E6);
+                endPoint.longitude = (int) (location.getLongitude() * 1E6);
             }
         }
 
