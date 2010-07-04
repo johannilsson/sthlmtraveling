@@ -1,0 +1,27 @@
+body {
+    background-image:url('../images/bg.png');
+    background-repeat:repeat-x;
+    text-align: center;
+}
+    
+div#container {
+	margin-left: 10%;
+	margin-right: 10%;
+}
+
+img#toplogo {
+    position: relative;
+    left: 0px;
+    top: 10px;
+}
+
+img#phone {
+    position: relative;
+    left: 0px;
+    top: 23px;
+}
+
+#top br {
+    margin: 0;
+    padding: 0;
+}
