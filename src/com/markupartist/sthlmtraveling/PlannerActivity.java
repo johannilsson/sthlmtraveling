@@ -16,11 +16,15 @@
 
 package com.markupartist.sthlmtraveling;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -52,7 +56,9 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.SimpleAdapter;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 
@@ -65,8 +71,6 @@ public class PlannerActivity extends Activity implements OnCheckedChangeListener
     private static final int DIALOG_START_POINT = 0;
     private static final int DIALOG_END_POINT = 1;
     private static final int DIALOG_ABOUT = 2;
-    private static final int DIALOG_START_POINT_HISTORY = 3;
-    private static final int DIALOG_END_POINT_HISTORY = 4;
     private static final int DIALOG_NO_LOCATION = 5;
     private static final int DIALOG_DIALOG_DATE = 6;
     private static final int DIALOG_TIME = 7;
@@ -379,25 +383,29 @@ public class PlannerActivity extends Activity implements OnCheckedChangeListener
         case DIALOG_START_POINT:
             AlertDialog.Builder startPointDialogBuilder = new AlertDialog.Builder(this);
             startPointDialogBuilder.setTitle(getText(R.string.choose_start_point_label));
-            // TODO: Investigate to use an adapter instead the list of items.
-            startPointDialogBuilder.setItems(getDialogSelectPointItems(),
-                    new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int item) {
-                    switch(item) {
+            final Cursor historyOriginCursor = mHistoryDbAdapter.fetchAllStartPoints();
+            startManagingCursor(historyOriginCursor);
+            final SelectPointAdapter startPointAdapter = new SelectPointAdapter(this, historyOriginCursor);
+            stopManagingCursor(historyOriginCursor);
+            startPointDialogBuilder.setAdapter(startPointAdapter, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Log.d(TAG, "which: " + which);
+                    switch (which) {
                     case 0:
                         mStartPoint.setName(Stop.TYPE_MY_LOCATION);
                         mStartPointAutoComplete.setText(getText(R.string.my_location));
                         break;
                     case 1:
-                        showDialog(DIALOG_START_POINT_HISTORY);
-                        break;
-                    case 2:
                         Intent i = new Intent(PlannerActivity.this, PointOnMapActivity.class);
                         i.putExtra(PointOnMapActivity.EXTRA_STOP, mStartPoint);
                         i.putExtra(PointOnMapActivity.EXTRA_HELP_TEXT,
                                 getString(R.string.tap_your_start_point_on_map));
                         startActivityForResult(i, REQUEST_CODE_POINT_ON_MAP_START);
                         break;
+                    default:
+                        mStartPointAutoComplete.setText(
+                                (String) startPointAdapter.getItem(which));
                     }
                 }
             });
@@ -406,24 +414,31 @@ public class PlannerActivity extends Activity implements OnCheckedChangeListener
         case DIALOG_END_POINT:
             AlertDialog.Builder endPointDialogBuilder = new AlertDialog.Builder(this);
             endPointDialogBuilder.setTitle(getText(R.string.choose_end_point_label));
-            endPointDialogBuilder.setItems(getDialogSelectPointItems(), 
-                    new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int item) {
-                    switch(item) {
+            
+            final Cursor historyDestinationCursor = mHistoryDbAdapter.fetchAllEndPoints();
+            startManagingCursor(historyDestinationCursor);
+            final SelectPointAdapter endPointAdapter =
+                new SelectPointAdapter(this, historyDestinationCursor);
+            stopManagingCursor(historyDestinationCursor);
+            endPointDialogBuilder.setAdapter(endPointAdapter, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Log.d(TAG, "which: " + which);
+                    switch (which) {
                     case 0:
                         mEndPoint.setName(Stop.TYPE_MY_LOCATION);
                         mEndPointAutoComplete.setText(getText(R.string.my_location));
                         break;
                     case 1:
-                        showDialog(DIALOG_END_POINT_HISTORY);
-                        break;
-                    case 2:
                         Intent i = new Intent(PlannerActivity.this, PointOnMapActivity.class);
                         i.putExtra(PointOnMapActivity.EXTRA_STOP, mEndPoint);
                         i.putExtra(PointOnMapActivity.EXTRA_HELP_TEXT,
                                 getString(R.string.tap_your_end_point_on_map));
                         startActivityForResult(i, REQUEST_CODE_POINT_ON_MAP_END);
                         break;
+                    default:
+                        mEndPointAutoComplete.setText(
+                                (String) endPointAdapter.getItem(which));
                     }
                 }
             });
@@ -470,32 +485,6 @@ public class PlannerActivity extends Activity implements OnCheckedChangeListener
                                 getText(R.string.send_email)));
                     }
                 })
-                .create();
-        case DIALOG_START_POINT_HISTORY:
-            final Cursor startPointCursor = mHistoryDbAdapter.fetchAllStartPoints();
-            startManagingCursor(startPointCursor);
-            return new AlertDialog.Builder(this)
-                .setTitle(getText(R.string.history_label))
-                .setCursor(startPointCursor, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        int index = startPointCursor.getColumnIndex(HistoryDbAdapter.KEY_NAME);
-                        mStartPointAutoComplete.setText(startPointCursor.getString(index));
-                    }
-                }, HistoryDbAdapter.KEY_NAME)
-                .create();
-        case DIALOG_END_POINT_HISTORY:
-            final Cursor endPointCursor = mHistoryDbAdapter.fetchAllEndPoints();
-            startManagingCursor(endPointCursor);
-            return new AlertDialog.Builder(this)
-                .setTitle(getText(R.string.history_label))
-                .setCursor(endPointCursor, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        int index = endPointCursor.getColumnIndex(HistoryDbAdapter.KEY_NAME);
-                        mEndPointAutoComplete.setText(endPointCursor.getString(index));
-                    }
-                }, HistoryDbAdapter.KEY_NAME)
                 .create();
         case DIALOG_NO_LOCATION:
             return new AlertDialog.Builder(this)
@@ -620,7 +609,7 @@ public class PlannerActivity extends Activity implements OnCheckedChangeListener
         super.onDestroy();
         mHistoryDbAdapter.close();
     }
-
+    
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         // We only check the state for later radio button.
@@ -698,5 +687,57 @@ public class PlannerActivity extends Activity implements OnCheckedChangeListener
                 mViewToWatch.setTextColor(0xFF4F94CD);
             }
 		}
+    }
+
+    private class SelectPointAdapter extends MultipleListAdapter {
+        private SectionedAdapter mHistoryWrapperAdapter = new SectionedAdapter() {
+            @Override
+            protected View getHeaderView(Section section, int index, View convertView,
+                    ViewGroup parent) {
+                TextView result = (TextView) convertView;
+                if (convertView == null)
+                    result = (TextView) getLayoutInflater().inflate(R.layout.header, null);
+                result.setText(section.caption);
+                return (result);
+            }
+        };
+
+        public SelectPointAdapter(Context context, Cursor historyCursor) {
+            ArrayList<HashMap<String,String>> items = new ArrayList<HashMap<String,String>>(); 
+
+            HashMap<String, String> myLocationItem = new HashMap<String, String>();
+            myLocationItem.put("item", getString(R.string.my_location));
+            items.add(myLocationItem);
+
+            HashMap<String, String> pointOnMapItem = new HashMap<String, String>();
+            pointOnMapItem.put("item", getString(R.string.point_on_map));
+            items.add(pointOnMapItem);
+
+            SimpleAdapter itemsAdapter = new SimpleAdapter(
+                    context,
+                    items,
+                    android.R.layout.simple_list_item_1,
+                    new String[] { "item" },
+                    new int[] { android.R.id.text1 } );
+
+            ArrayList<String> historyList = new ArrayList<String>();
+            historyCursor.moveToFirst();
+            for (int i=0; i< historyCursor.getCount(); i++) {
+                int index = historyCursor.getColumnIndex(
+                        HistoryDbAdapter.KEY_NAME);
+                historyList.add(historyCursor.getString(index));
+                historyCursor.moveToNext();
+            }
+            historyCursor.close();
+            ArrayAdapter<String> historyAdapter =
+                new ArrayAdapter<String>(context,
+                        android.R.layout.simple_list_item_1, historyList);
+
+            mHistoryWrapperAdapter.addSection(0,
+                    getString(R.string.history_label), historyAdapter);
+
+            addAdapter(0, itemsAdapter);
+            addAdapter(1, mHistoryWrapperAdapter);
+        }
     }
 }
