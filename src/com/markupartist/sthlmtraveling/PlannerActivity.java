@@ -463,6 +463,7 @@ public class PlannerActivity extends Activity implements OnCheckedChangeListener
                 .setIcon(android.R.drawable.ic_dialog_info)
                 .setView(aboutLayout)
                 .setCancelable(true)
+                .setInverseBackgroundForced(true)
                 .setPositiveButton(getText(android.R.string.ok), null)
                 .setNeutralButton(getText(R.string.donate), new DialogInterface.OnClickListener() {
                     @Override
