@@ -84,8 +84,8 @@ public class TrafficStatusActivity extends Activity {
         ImageView status = (ImageView) v.findViewById(R.id.traffic_status_status);
         status.setImageResource(getImageResourceForStatus(tt.status));
         
-        //ImageView transportImage = (ImageView) v.findViewById(R.id.traffic_status_type_transport_image);
-        //transportImage.setImageResource(getImageResourceForTransport(tt.type));
+        ImageView transportImage = (ImageView) v.findViewById(R.id.traffic_status_type_transport_image);
+        transportImage.setImageResource(getImageResourceForTransport(tt.type));
 
         LinearLayout events = (LinearLayout) v.findViewById(R.id.traffic_status_type_events);
         events.removeAllViews();
@@ -121,11 +121,11 @@ public class TrafficStatusActivity extends Activity {
 
     private int getImageResourceForTransport(String transport) {
         if ("MET".equals(transport)) {
-            return R.drawable.transport_metro_red;
+            return R.drawable.transport_metro;
         } else if ("TRN".equals(transport)) {
             return R.drawable.transport_train;
         } else if ("TRM".equals(transport)) {
-            return R.drawable.transport_train;
+            return R.drawable.transport_lokalbana;
         } else {
             return R.drawable.transport_bus;
         }
