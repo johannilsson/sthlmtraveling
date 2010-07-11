@@ -369,7 +369,7 @@ public class DeparturesActivity extends ListActivity {
         switch(id) {
         case DIALOG_SITE_ALTERNATIVES:
             ArrayAdapter<Site> siteAdapter =
-                new ArrayAdapter<Site>(this, android.R.layout.simple_dropdown_item_1line,
+                new ArrayAdapter<Site>(this, R.layout.simple_dropdown_item_1line,
                         mSiteAlternatives);
             return new AlertDialog.Builder(this)
                 .setTitle(R.string.did_you_mean)
