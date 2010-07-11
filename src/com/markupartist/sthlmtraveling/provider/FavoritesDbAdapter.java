@@ -30,7 +30,6 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import com.markupartist.sthlmtraveling.provider.planner.Planner;
-import com.markupartist.sthlmtraveling.provider.planner.Stop;
 
 public class FavoritesDbAdapter {
     public static final String KEY_ROWID = "_id";
@@ -149,6 +148,14 @@ public class FavoritesDbAdapter {
      */
     public boolean delete(long id) {
         return mDb.delete(DATABASE_TABLE, KEY_ROWID + "=" + id, null) > 0;
+    }
+
+    /**
+     * Deletes all entries.
+     * @return true if deleted, false otherwise
+     */
+    public boolean deleteAll() {
+        return mDb.delete(DATABASE_TABLE, null, null) > 0;
     }
 
     /**
