@@ -27,14 +27,17 @@ import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.location.Address;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -43,9 +46,12 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -54,20 +60,24 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.SimpleAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 
+import com.markupartist.sthlmtraveling.AutoCompleteStopAdapter.FilterListener;
 import com.markupartist.sthlmtraveling.provider.HistoryDbAdapter;
 import com.markupartist.sthlmtraveling.provider.planner.Planner;
 import com.markupartist.sthlmtraveling.provider.planner.Stop;
+import com.markupartist.sthlmtraveling.utils.LocationUtils;
 
 public class PlannerActivity extends Activity implements OnCheckedChangeListener {
-    private static final String TAG = "Search";
+    private static final String TAG = "PlannerActivity";
     private static final int DIALOG_START_POINT = 0;
     private static final int DIALOG_END_POINT = 1;
     private static final int DIALOG_ABOUT = 2;
@@ -103,8 +113,8 @@ public class PlannerActivity extends Activity implements OnCheckedChangeListener
             mCreateShortcut = true;
         }
 
-        mStartPointAutoComplete = createAutoCompleteTextView(R.id.from, mStartPoint);
-        mEndPointAutoComplete = createAutoCompleteTextView(R.id.to, mEndPoint);
+        mStartPointAutoComplete = createAutoCompleteTextView(R.id.from, R.id.from_progress, mStartPoint);
+        mEndPointAutoComplete = createAutoCompleteTextView(R.id.to, R.id.to_progress, mEndPoint);
 
         try {
             mHistoryDbAdapter = new HistoryDbAdapter(this).open();
@@ -200,6 +210,9 @@ public class PlannerActivity extends Activity implements OnCheckedChangeListener
     View.OnClickListener mGetSearchListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            
+            Log.d(TAG, "startpoint: " + mStartPoint.toString());
+            
             //if (!mStartPoint.hasName()) {
             if (TextUtils.isEmpty(mStartPointAutoComplete.getText())) {
                 mStartPointAutoComplete.setError(getText(R.string.empty_value));
@@ -229,9 +242,12 @@ public class PlannerActivity extends Activity implements OnCheckedChangeListener
             // Check for my location.
             return stop;
         } else if (auTextView.getText().toString().equals(getString(R.string.point_on_map))) {
-                // Check for point-on-map.
-                return stop;
+            // Check for point-on-map.
+            return stop;
         }
+        
+        Log.d(TAG, "no match: " + stop.toString() + " " + auTextView.getText().toString());
+        
         stop.setName(auTextView.getText().toString());
         stop.setLocation(null);
         return stop;
@@ -263,21 +279,90 @@ public class PlannerActivity extends Activity implements OnCheckedChangeListener
         }
     }
 
-    private AutoCompleteTextView createAutoCompleteTextView(int id, final Stop stop) {
-        final AutoCompleteTextView autoCompleteTextView = (AutoCompleteTextView) findViewById(id);
-        AutoCompleteStopAdapter stopAdapter = new AutoCompleteStopAdapter(this,
-                R.layout.simple_dropdown_item_1line, Planner.getInstance());
+    private AutoCompleteTextView createAutoCompleteTextView(
+            int autoCompleteResId, int progressResId, final Stop stop) {
+        // TODO: Wrap the auto complete view in a custom view...
+
+        SharedPreferences sharedPreferences =
+            PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        boolean searchAddresses = sharedPreferences.getBoolean(
+                "search_address_enabled", true);
+
+        final AutoCompleteTextView autoCompleteTextView =
+            (AutoCompleteTextView) findViewById(autoCompleteResId);
+        final AutoCompleteStopAdapter stopAdapter = new AutoCompleteStopAdapter(this,
+                R.layout.autocomplete_item_2line, Planner.getInstance(),
+                searchAddresses);
+        final ProgressBar progress = (ProgressBar) findViewById(progressResId);
+
+        stopAdapter.setFilterListener(new FilterListener() {
+            @Override
+            public void onPublishFiltering() {
+                progress.setVisibility(View.GONE);
+            }
+            @Override
+            public void onPerformFiltering() {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        progress.setVisibility(View.VISIBLE);
+                    }
+                });
+            }
+        });
+
         autoCompleteTextView.setAdapter(stopAdapter);
         autoCompleteTextView.setSelectAllOnFocus(true);
 
-        autoCompleteTextView.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				if (autoCompleteTextView.hasSelection()) {
+        autoCompleteTextView.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?>  parent, View  view, int position, long id) {
+                Log.d(TAG, "Item clicked: " + position);
+                Object value = stopAdapter.getValue(position);
+                if (value instanceof String) {
+                    stop.setLocation(null);
+                    stop.setName((String) value);
+                } else if (value instanceof Address) {
+                    Address address = (Address) value;
+
+                    Log.d(TAG, "address: " + address);
+
+                    stop.setLocation(
+                            (int)(address.getLatitude() * 1E6),
+                            (int) (address.getLongitude() * 1E6));
+                    String addressLine = LocationUtils.getAddressLine(address);
+                    //autoCompleteTextView.focusSearch(View.FOCUS_UP);
+                    
+                    //autoCompleteTextView.setText(addressLine);
+                    stop.setName(addressLine);
+                    //autoCompleteTextView.clearFocus();
+
+                    Log.d(TAG, stop.toString() + " location " + stop.getLocation());
+                    
+                }
+            }
+        });
+
+       // autoCompleteTextView.setOnClickListener(new OnClickListener() {
+       //	@Override
+       //public void onClick(View v) {
+				/*if (autoCompleteTextView.hasSelection()) {
 					autoCompleteTextView.setTextKeepState(autoCompleteTextView.getText());
-				}
-			}
-		});
+				}*/
+			    //autoCompleteTextView.selectAll();
+		//	    int stop = autoCompleteTextView.getText().length();
+		//	    autoCompleteTextView.setSelection(0, stop);
+		//	}
+		//});
+		
+        autoCompleteTextView.setOnTouchListener(new OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                int stop = autoCompleteTextView.getText().length();
+                autoCompleteTextView.setSelection(0, stop);
+                return false;
+            }
+        });
 
         autoCompleteTextView.addTextChangedListener(
                 new ReservedNameTextWatcher(getText(R.string.my_location), autoCompleteTextView));
@@ -329,9 +414,9 @@ public class PlannerActivity extends Activity implements OnCheckedChangeListener
         // TODO: We should not handle point-on-map this way. But for now we just
         // want it to work.
         if (!mStartPointAutoComplete.getText().toString().equals(getString(R.string.point_on_map)))
-            mHistoryDbAdapter.create(HistoryDbAdapter.TYPE_START_POINT, startPoint.getName());
+            mHistoryDbAdapter.create(HistoryDbAdapter.TYPE_START_POINT, startPoint);
         if (!mEndPointAutoComplete.getText().toString().equals(getString(R.string.point_on_map)))
-            mHistoryDbAdapter.create(HistoryDbAdapter.TYPE_END_POINT, endPoint.getName());
+            mHistoryDbAdapter.create(HistoryDbAdapter.TYPE_END_POINT, endPoint);
 
         boolean isTimeDeparture = mWhenSpinner.getSelectedItemId() == 0 ? true : false;
 
@@ -390,11 +475,11 @@ public class PlannerActivity extends Activity implements OnCheckedChangeListener
             startPointDialogBuilder.setAdapter(startPointAdapter, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    Log.d(TAG, "which: " + which);
                     switch (which) {
                     case 0:
                         mStartPoint.setName(Stop.TYPE_MY_LOCATION);
                         mStartPointAutoComplete.setText(getText(R.string.my_location));
+                        mStartPointAutoComplete.clearFocus();
                         break;
                     case 1:
                         Intent i = new Intent(PlannerActivity.this, PointOnMapActivity.class);
@@ -404,8 +489,9 @@ public class PlannerActivity extends Activity implements OnCheckedChangeListener
                         startActivityForResult(i, REQUEST_CODE_POINT_ON_MAP_START);
                         break;
                     default:
-                        mStartPointAutoComplete.setText(
-                                (String) startPointAdapter.getItem(which));
+                        mStartPoint = (Stop) startPointAdapter.getItem(which);
+                        mStartPointAutoComplete.setText(mStartPoint.getName());
+                        mStartPointAutoComplete.clearFocus();
                     }
                 }
             });
@@ -428,6 +514,7 @@ public class PlannerActivity extends Activity implements OnCheckedChangeListener
                     case 0:
                         mEndPoint.setName(Stop.TYPE_MY_LOCATION);
                         mEndPointAutoComplete.setText(getText(R.string.my_location));
+                        mEndPointAutoComplete.clearFocus();
                         break;
                     case 1:
                         Intent i = new Intent(PlannerActivity.this, PointOnMapActivity.class);
@@ -437,8 +524,9 @@ public class PlannerActivity extends Activity implements OnCheckedChangeListener
                         startActivityForResult(i, REQUEST_CODE_POINT_ON_MAP_END);
                         break;
                     default:
-                        mEndPointAutoComplete.setText(
-                                (String) endPointAdapter.getItem(which));
+                        mEndPoint = (Stop) endPointAdapter.getItem(which);
+                        mEndPointAutoComplete.setText(mEndPoint.getName());
+                        mEndPointAutoComplete.clearFocus();
                     }
                 }
             });
@@ -610,7 +698,7 @@ public class PlannerActivity extends Activity implements OnCheckedChangeListener
         super.onDestroy();
         mHistoryDbAdapter.close();
     }
-    
+
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         // We only check the state for later radio button.
@@ -635,7 +723,7 @@ public class PlannerActivity extends Activity implements OnCheckedChangeListener
             if (!getString(R.string.my_location).equals(s.toString())
                     || getString(R.string.point_on_map).equals(s.toString())) {
                 mStop.setName(s.toString());
-                //mStop.setLocation(null);
+                mStop.setLocation(null);
             }
         }
 
@@ -721,17 +809,23 @@ public class PlannerActivity extends Activity implements OnCheckedChangeListener
                     new String[] { "item" },
                     new int[] { android.R.id.text1 } );
 
-            ArrayList<String> historyList = new ArrayList<String>();
+            ArrayList<Stop> historyList = new ArrayList<Stop>();
             historyCursor.moveToFirst();
             for (int i=0; i< historyCursor.getCount(); i++) {
-                int index = historyCursor.getColumnIndex(
-                        HistoryDbAdapter.KEY_NAME);
-                historyList.add(historyCursor.getString(index));
+                Stop stop = new Stop();
+
+                stop.setName(historyCursor.getString(HistoryDbAdapter.INDEX_NAME));
+                stop.setLocation(
+                        historyCursor.getInt(HistoryDbAdapter.INDEX_LATITUDE),
+                        historyCursor.getInt(HistoryDbAdapter.INDEX_LONGITUDE));
+                stop.setSiteId(historyCursor.getInt(HistoryDbAdapter.INDEX_SITE_ID));
+
+                historyList.add(stop);
                 historyCursor.moveToNext();
             }
             historyCursor.close();
-            ArrayAdapter<String> historyAdapter =
-                new ArrayAdapter<String>(context,
+            ArrayAdapter<Stop> historyAdapter =
+                new ArrayAdapter<Stop>(context,
                         android.R.layout.simple_list_item_1, historyList);
 
             mHistoryWrapperAdapter.addSection(0,
