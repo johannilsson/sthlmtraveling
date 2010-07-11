@@ -66,7 +66,7 @@ public class SearchDeparturesActivity extends ListActivity {
 
         mSiteTextView = (AutoCompleteTextView) findViewById(R.id.sites); 
         AutoCompleteStopAdapter stopAdapter = new AutoCompleteStopAdapter(this,
-                R.layout.simple_dropdown_item_1line, Planner.getInstance());
+                R.layout.simple_dropdown_item_1line, Planner.getInstance(), false);
         mSiteTextView.setSelectAllOnFocus(true);
         mSiteTextView.setAdapter(stopAdapter);
 
@@ -135,7 +135,9 @@ public class SearchDeparturesActivity extends ListActivity {
     }
 
     private void onSearchDepartures(String siteName) {
-        mHistoryDbAdapter.create(HistoryDbAdapter.TYPE_DEPARTURE_SITE, siteName);
+        Stop stop = new Stop();
+        stop.setName(siteName);
+        mHistoryDbAdapter.create(HistoryDbAdapter.TYPE_DEPARTURE_SITE, stop);
 
         Intent i = new Intent(getApplicationContext(), DeparturesActivity.class);
         i.putExtra(DeparturesActivity.EXTRA_SITE_NAME, siteName);
