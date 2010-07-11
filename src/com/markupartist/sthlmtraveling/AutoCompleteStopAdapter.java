@@ -19,24 +19,50 @@ package com.markupartist.sthlmtraveling;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import android.content.Context;
+import android.location.Address;
+import android.location.Geocoder;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.markupartist.sthlmtraveling.provider.planner.Planner;
+import com.markupartist.sthlmtraveling.utils.LocationUtils;
 
 public class AutoCompleteStopAdapter extends ArrayAdapter<String> implements Filterable {
-    @SuppressWarnings("unused")
     private static String TAG = "AutoCompleteStopAdapter";
     private final Object mLock = new Object();
     private Planner mPlanner;
+    private Geocoder mGeocoder;
+    private List<Object> mValues;
+    private boolean mIncludeAddresses = true;
+    private LayoutInflater mInflater;
+    private FilterListener mFilterListener;
 
-    public AutoCompleteStopAdapter(Context context, int textViewResourceId, Planner planner) {
+    public AutoCompleteStopAdapter(Context context, int textViewResourceId,
+            Planner planner, boolean includeAddresses) {
         super(context, textViewResourceId);
-        this.mPlanner = planner;
+        mPlanner = planner;
+        mIncludeAddresses = includeAddresses;
+        mGeocoder = new Geocoder(context, new Locale("sv"));
+        mInflater = (LayoutInflater) context.getSystemService(
+                Context.LAYOUT_INFLATER_SERVICE);
+    }
+
+    public Object getValue(int position) {
+        if (mValues != null && mValues.size() > 0) {
+            return mValues.get(position);
+        }
+        Log.d(TAG, "value was null");
+        return null;
     }
 
     @Override
@@ -46,6 +72,10 @@ public class AutoCompleteStopAdapter extends ArrayAdapter<String> implements Fil
 
             @Override
             protected FilterResults performFiltering(CharSequence constraint) {
+                if (mFilterListener != null) {
+                    mFilterListener.onPerformFiltering();
+                }
+
                 FilterResults filterResults = new FilterResults();
 
                 // TODO: Remove hard coded strings here.
@@ -54,17 +84,40 @@ public class AutoCompleteStopAdapter extends ArrayAdapter<String> implements Fil
                         && !constraint.equals("Min position")
                         && !constraint.equals("Välj en plats på kartan")
                         && !constraint.equals("Point on map")) {
-                    //Log.d(TAG, "Searching for " + constraint);
-                    ArrayList<String> list;
+
+                    List<Object> values = new ArrayList<Object>();
+
+                    ArrayList<String> list = null;
                     try {
-                        synchronized (mLock) {
-                            list = mPlanner.findStop(constraint.toString());
-                            filterResults.values = list;
-                            filterResults.count = list.size();
-                        }
+                        list = mPlanner.findStop(constraint.toString());
                     } catch (IOException e) {
                         mWasSuccess = false;
                     }
+                    if (list != null) {
+                        values.addAll(list);
+                    }
+
+                    if (mIncludeAddresses) {
+                        List<Address> addresses = null;
+                        try {
+                            double lowerLeftLatitude = 58.7369;
+                            double lowerLeftLongitude = 17.2449;
+                            double upperRightLatitude = 60.2548;
+                            double upperRightLongitude = 19.5089;
+
+                            addresses = mGeocoder.getFromLocationName(constraint.toString(),
+                                    10, lowerLeftLatitude, lowerLeftLongitude,
+                                    upperRightLatitude, upperRightLongitude);
+                        } catch (IOException e) {
+                            mWasSuccess = false;
+                        }
+                        if (addresses != null) {
+                            values.addAll(addresses);
+                        }
+                    }
+
+                    filterResults.values = values;
+                    filterResults.count = values.size();
                 }
 
                 return filterResults;
@@ -73,11 +126,21 @@ public class AutoCompleteStopAdapter extends ArrayAdapter<String> implements Fil
             @SuppressWarnings("unchecked") // For the list used in the for each statement
             @Override
             protected void publishResults(CharSequence constraint, FilterResults results) {
+                if (mFilterListener != null) {
+                    mFilterListener.onPublishFiltering();
+                }
+
                 if (results != null && results.count > 0) {
                     clear();
+                    mValues = (List<Object>)results.values;
                     synchronized (mLock) {
-                        for (String value : (List<String>)results.values) {
-                            add(value);
+                        for (Object value : mValues) {
+                            if (value instanceof String) {
+                                add((String) value);
+                            } else {
+                                Address address = (Address) value;
+                                add(LocationUtils.getAddressLine(address));
+                            }
                         }
                     }
                     notifyDataSetChanged();
@@ -91,4 +154,38 @@ public class AutoCompleteStopAdapter extends ArrayAdapter<String> implements Fil
         return nameFilter;
     }
 
+    /* (non-Javadoc)
+     * @see android.widget.ArrayAdapter#getView(int, android.view.View, android.view.ViewGroup)
+     */
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+        if(convertView == null) {
+            convertView = mInflater.inflate(R.layout.autocomplete_item_2line, null);
+            // TODO: use a holder here...
+        }
+
+        TextView text1 = (TextView) convertView.findViewById(R.id.text1);
+        TextView text2 = (TextView) convertView.findViewById(R.id.text2);
+
+        Object value = getValue(position);
+        if (value instanceof String) {
+            text1.setText((String) value);
+            text2.setText("");
+        } else if (value instanceof Address) {
+            Address address = (Address) value;
+            text1.setText(address.getAddressLine(0) != null ? address.getAddressLine(0) : "");
+            text2.setText(address.getAddressLine(1) != null ? address.getAddressLine(1) : "");
+        }
+
+        return convertView;
+    }
+
+    public void setFilterListener(FilterListener listener) {
+        mFilterListener = listener;
+    }
+
+    public static interface FilterListener {
+        public void onPerformFiltering();
+        public void onPublishFiltering();
+    }
 }
