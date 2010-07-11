@@ -71,6 +71,52 @@ public class PointOnMapActivity extends MapActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.point_on_map);
 
+        Log.d(TAG, "init point on map...");
+        /*
+        final AutoCompleteTextView locationSearch = (AutoCompleteTextView) findViewById(R.id.location_search);
+        ImageButton locationSearchButton = (ImageButton) findViewById(R.id.location_search_btn);
+        locationSearchButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // TODO: Move to async task...
+                
+                Log.d(TAG, "on click search for location..");
+                
+                Geocoder geocoder = new Geocoder(PointOnMapActivity.this);
+                List<Address> addresses = null;
+                try {
+                    //addresses = geocoder.getFromLocationName(locationSearch.getText().toString(), 10);
+
+                    double lowerLeftLatitude = 58.87;
+                    double lowerLeftLongitude = 17.1754;
+                    double upperRightLatitude = 59.8307;
+                    double upperRightLongitude = 19.1907;
+
+                    addresses = geocoder.getFromLocationName(locationSearch.getText().toString(), 10, lowerLeftLatitude, lowerLeftLongitude, upperRightLatitude, upperRightLongitude);
+                    
+                } catch (IOException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+                if (addresses != null && !addresses.isEmpty()) {
+                    
+                    Log.d(TAG, "Setting the geo point...");
+                    
+                    Address address = addresses.get(0);
+
+                    mGeoPoint = new GeoPoint(
+                            (int) (address.getLatitude() * 1E6),
+                            (int) (address.getLongitude() * 1E6));
+                    mapController.animateTo(mGeoPoint);
+                    mapController.setZoom(16);
+                    // Show the text balloon from start.
+                    showBalloon(mMapView, mGeoPoint);
+                }
+            }
+        });
+        */
+        
+        
         Bundle extras = getIntent().getExtras();
         mStop = (Stop) extras.getParcelable(EXTRA_STOP);
         String helpText = extras.getString(EXTRA_HELP_TEXT);
