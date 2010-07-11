@@ -21,19 +21,19 @@
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:padding="5dip"
     >
     <Spinner 
         android:id="@+id/departure_arrival_choice"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:drawSelectorOnTop="true"
-        android:layout_marginBottom="6dip"
+        android:layout_margin="5dip"
     />
 	<LinearLayout
 	    android:orientation="horizontal"
 	    android:layout_width="fill_parent"
 	    android:layout_height="wrap_content"
+	    android:layout_marginLeft="5dip"
 	    >
 	    <Button
 	        android:id="@+id/change_route_time"
