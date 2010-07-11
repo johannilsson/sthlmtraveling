@@ -14,6 +14,25 @@
                 android:dialogTitle="@string/dialog_title_language_preference" />
     </PreferenceCategory>
     <PreferenceCategory
+            android:title="@string/search_label">
+        <CheckBoxPreference
+            android:key="search_address_enabled"
+            android:defaultValue="true"
+            android:title="@string/search_include_addresses_preference"
+            android:summary="@string/search_include_addresses_summary_preference"
+            />
+        <Preference
+            android:key="clear_search_history"
+            android:title="@string/search_clear_history_preference"
+            android:summary="@string/search_clear_history_summary_preference"
+            />
+        <Preference
+            android:key="clear_favorites"
+            android:title="@string/search_clear_favorites_preference"
+            android:summary="@string/search_clear_favorites_summary_preference"
+            />
+    </PreferenceCategory>
+    <PreferenceCategory
             android:title="@string/dialog_notification_preferences">
         <CheckBoxPreference
             android:key="notification_deviations_enabled"
