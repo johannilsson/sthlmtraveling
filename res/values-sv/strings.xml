@@ -126,4 +126,15 @@
     <string name="deviation_lines_preference">Linjer</string>
     <string name="deviation_lines_summary_preference">Kommaseparerad lista över linjenummer du vill bevaka. Ex: \'42,28,707\'.</string>
     <string name="deviation_lines_dialog_message_preference">Separera linjenummer med ett komma. Ex: \'42,28,707\'.</string>
+    <string name="search_include_addresses_preference">Inkludera adresser för autokomplettering</string>
+    <string name="search_include_addresses_summary_preference">Kan ta längre tid att göra sökningar påslaget.</string>
+    <string name="search_clear_history_preference">Radera sökhistorik</string>
+    <string name="search_clear_history_summary_preference">Radera all sökhistorik.</string>
+    <string name="search_clear_history_confirm">Är du säker på att du vill radera all sökhistorik?</string>
+    <string name="search_history_cleared">Sökhistorik raderad</string>
+    <string name="search_clear_favorites_preference">Radera favoriter</string>
+    <string name="search_clear_favorites_summary_preference">Radera alla favoriter</string>
+    <string name="search_clear_favorites_confirm">Är du säker på att du vill radera alla favoriter?</string>
+    <string name="search_favorites_cleared">Favoriter raderade</string>
+
 </resources>
