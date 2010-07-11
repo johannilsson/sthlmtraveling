@@ -35,6 +35,17 @@ public class HistoryDbAdapter {
     public static final String KEY_TYPE = "type";
     public static final String KEY_NAME = "name";
     public static final String KEY_CREATED = "created";
+    public static final String KEY_LATITUDE = "latitude";
+    public static final String KEY_LONGITUDE = "longitude";
+    public static final String KEY_SITE_ID = "site_id";
+
+    public static final int INDEX_ROWID = 0;
+    public static final int INDEX_TYPE = 1;
+    public static final int INDEX_NAME = 2;
+    public static final int INDEX_CREATED = 3;
+    public static final int INDEX_LATITUDE = 4;
+    public static final int INDEX_LONGITUDE = 5;
+    public static final int INDEX_SITE_ID = 6;
 
     public static final int TYPE_START_POINT = 0;
     public static final int TYPE_END_POINT = 1;
@@ -42,7 +53,7 @@ public class HistoryDbAdapter {
 
     private static final String DATABASE_NAME = "history";
     private static final String DATABASE_TABLE = "history";
-    private static final int DATABASE_VERSION = 5;
+    private static final int DATABASE_VERSION = 6;
 
     private static final String TAG = "HistoryDbAdapter";
 
@@ -59,7 +70,9 @@ public class HistoryDbAdapter {
                 + ", type INTEGER NOT NULL" 
                 + ", name TEXT NOT NULL"
                 + ", created date"
-                //+ ", UNIQUE (name)" 
+                + ", latitude INTEGER NULL"
+                + ", longitude INTEGER NULL"
+                + ", site_id INTEGER NULL"
                 + ");";
 
     /**
@@ -102,8 +115,8 @@ public class HistoryDbAdapter {
      * @return the row id associated with the created entry or -1 of an error
      * occurred
      */
-    public long create(int type, String name) {
-        if (name.equals(Stop.TYPE_MY_LOCATION)) {
+    public long create(int type, Stop stop) {
+        if (stop.isMyLocation()) {
             return -1;
         }
 
@@ -113,10 +126,20 @@ public class HistoryDbAdapter {
 
         ContentValues initialValues = new ContentValues();
         initialValues.put(KEY_TYPE, type);
-        initialValues.put(KEY_NAME, name);
+        initialValues.put(KEY_NAME, stop.getName());
+        if (stop.getLocation() != null) {
+            initialValues.put(KEY_LATITUDE,
+                    (int)(stop.getLocation().getLatitude() * 1E6));
+            initialValues.put(KEY_LONGITUDE,
+                    (int)(stop.getLocation().getLongitude() * 1E6));
+        }
+        if (stop.getSiteId() > 0) {
+            initialValues.put(KEY_SITE_ID, stop.getSiteId());
+        }
+
         initialValues.put(KEY_CREATED, dateFormat.format(date));
 
-        Cursor rowCursor = fetchByName(type, name);
+        Cursor rowCursor = fetchByName(type, stop.getName());
         if (rowCursor.getCount() >= 1) {
             initialValues.put(KEY_ROWID, 
                     rowCursor.getInt(rowCursor.getColumnIndex(KEY_ROWID)));
@@ -167,10 +190,16 @@ public class HistoryDbAdapter {
      */
     public Cursor fetchByType(int type) {
         Cursor mCursor =
-            mDb.query(true, DATABASE_TABLE, new String[] {KEY_ROWID,
-                    KEY_TYPE, KEY_NAME}, KEY_TYPE + "=" + type, null,
-                    null, null, KEY_CREATED + " DESC", "10");
+            mDb.query(true, DATABASE_TABLE, new String[] {
+                    KEY_ROWID, KEY_TYPE, KEY_NAME, KEY_CREATED,
+                    KEY_LATITUDE, KEY_LONGITUDE, KEY_SITE_ID},
+                    KEY_TYPE + "=" + type, null, null, null,
+                    KEY_CREATED + " DESC", "10");
         return mCursor;        
+    }
+
+    public void deleteAll() {
+        mDb.delete(DATABASE_TABLE, null, null);
     }
 
     /**
@@ -190,9 +219,44 @@ public class HistoryDbAdapter {
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
             Log.w(TAG, "Upgrading database from version " + oldVersion + " to "
-                    + newVersion + ", which will destroy all old data");
+                    + newVersion + "");
+
+            db.beginTransaction();
+            boolean success = true;
+
+            for (int i = oldVersion ; i < newVersion ; ++i) {
+                int nextVersion = i + 1;
+                switch (nextVersion) {
+                    case 1:
+                    case 2:
+                    case 3:
+                    case 4:
+                    case 5:
+                        success = upgradeToVersion5(db);
+                        break;
+                    case 6:
+                        success = upgradeToVersion6(db);
+                        break;
+                }
+            }
+
+            if (success) {
+                db.setTransactionSuccessful();
+            }
+            db.endTransaction();
+        }
+
+        private boolean upgradeToVersion6(SQLiteDatabase db) {
+            db.execSQL("ALTER TABLE history ADD COLUMN latitude INTEGER NULL;");
+            db.execSQL("ALTER TABLE history ADD COLUMN longitude INTEGER NULL;");
+            db.execSQL("ALTER TABLE history ADD COLUMN site_id INTEGER NULL;");
+            return true;
+        }
+
+        private boolean upgradeToVersion5(SQLiteDatabase db) {
             db.execSQL("DROP TABLE IF EXISTS history");
             onCreate(db);
+            return true;
         }
     }
 }
