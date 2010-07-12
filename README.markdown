@@ -68,6 +68,11 @@ STHLM Traveling is open source and licensed under
 
 Changelog
 ---------
+* 2.0.0
+    * Search history is visible in the "get" dialog direct
+    * Address search integrated in auto completion
+    * Reworked history to allow storage of latitude and longitude
+    * Various layout fixes 
 * 2.0.0RC4
     * New traffic status view
     * Fixed my location bug
