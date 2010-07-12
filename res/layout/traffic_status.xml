@@ -33,7 +33,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dip"
-            android:text="Show all"
+            android:text="@string/show_all"
             />
        </RelativeLayout>
 	<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"

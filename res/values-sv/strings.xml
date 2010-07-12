@@ -111,6 +111,7 @@
     <string name="sms_ticket_notice_message">Den här funtionen är experimentell. Dubbelkolla detaljerna innan du köper din biljett. STHLM Traveling lämnar inga garantier för att biljetten stämmer med resan.</string>
     <string name="trip_description_walk">%s - %s Gå från %s till %s</string>
     <string name="trip_description_normal">%s - %s %s från %s mot %s. Kliv av vid %s</string>
+    <string name="show_all">Show all</string>
     <!-- Preferences -->
     <string name="restart_app_for_full_effect">Starta om appen för att ändringen ska slå igenom fullt.</string>
     <string name="dialog_general_preferences">Grundläggande</string>

@@ -111,6 +111,7 @@
     <string name="sms_ticket_notice_message">This function is experimental, please verify the details before you buy your ticket. STHLM Traveling can\'t garantuee that the ticket is valid for your journey.</string>
     <string name="trip_description_walk">%s - %s Walk from %s to %s</string>
     <string name="trip_description_normal">%s - %s %s from %s towards %s. Get off at %s</string>
+    <string name="show_all">Show all</string>
     <!-- Preferences -->
     <string name="restart_app_for_full_effect">Restart the app for full effect.</string>
     <string name="dialog_general_preferences">Basics</string>
