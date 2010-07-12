@@ -87,6 +87,24 @@ public class AutoCompleteStopAdapter extends ArrayAdapter<String> implements Fil
 
                     List<Object> values = new ArrayList<Object>();
 
+                    if (mIncludeAddresses) {
+                        List<Address> addresses = null;
+                        try {
+                            double lowerLeftLatitude = 58.9074;
+                            double lowerLeftLongitude = 17.1002;
+                            double upperRightLatitude = 59.8751;
+                            double upperRightLongitude = 19.0722;
+                            addresses = mGeocoder.getFromLocationName(constraint.toString(),
+                                    5, lowerLeftLatitude, lowerLeftLongitude,
+                                    upperRightLatitude, upperRightLongitude);
+                        } catch (IOException e) {
+                            //mWasSuccess = false;
+                        }
+                        if (addresses != null) {
+                            values.addAll(addresses);
+                        }
+                    }
+
                     ArrayList<String> list = null;
                     try {
                         list = mPlanner.findStop(constraint.toString());
@@ -95,25 +113,6 @@ public class AutoCompleteStopAdapter extends ArrayAdapter<String> implements Fil
                     }
                     if (list != null) {
                         values.addAll(list);
-                    }
-
-                    if (mIncludeAddresses) {
-                        List<Address> addresses = null;
-                        try {
-                            double lowerLeftLatitude = 58.7369;
-                            double lowerLeftLongitude = 17.2449;
-                            double upperRightLatitude = 60.2548;
-                            double upperRightLongitude = 19.5089;
-
-                            addresses = mGeocoder.getFromLocationName(constraint.toString(),
-                                    10, lowerLeftLatitude, lowerLeftLongitude,
-                                    upperRightLatitude, upperRightLongitude);
-                        } catch (IOException e) {
-                            mWasSuccess = false;
-                        }
-                        if (addresses != null) {
-                            values.addAll(addresses);
-                        }
                     }
 
                     filterResults.values = values;
@@ -170,7 +169,7 @@ public class AutoCompleteStopAdapter extends ArrayAdapter<String> implements Fil
         Object value = getValue(position);
         if (value instanceof String) {
             text1.setText((String) value);
-            text2.setText("");
+            text2.setText(R.string.stop_label);
         } else if (value instanceof Address) {
             Address address = (Address) value;
             text1.setText(address.getAddressLine(0) != null ? address.getAddressLine(0) : "");
