@@ -468,6 +468,7 @@ public class PlannerActivity extends Activity implements OnCheckedChangeListener
         case DIALOG_START_POINT:
             AlertDialog.Builder startPointDialogBuilder = new AlertDialog.Builder(this);
             startPointDialogBuilder.setTitle(getText(R.string.choose_start_point_label));
+
             final Cursor historyOriginCursor = mHistoryDbAdapter.fetchAllStartPoints();
             startManagingCursor(historyOriginCursor);
             final SelectPointAdapter startPointAdapter = new SelectPointAdapter(this, historyOriginCursor);
@@ -489,7 +490,8 @@ public class PlannerActivity extends Activity implements OnCheckedChangeListener
                         startActivityForResult(i, REQUEST_CODE_POINT_ON_MAP_START);
                         break;
                     default:
-                        mStartPoint = (Stop) startPointAdapter.getItem(which);
+                        Stop startPoint = (Stop) startPointAdapter.getItem(which);
+                        mStartPoint = new Stop(startPoint);
                         mStartPointAutoComplete.setText(mStartPoint.getName());
                         mStartPointAutoComplete.clearFocus();
                     }
@@ -500,7 +502,6 @@ public class PlannerActivity extends Activity implements OnCheckedChangeListener
         case DIALOG_END_POINT:
             AlertDialog.Builder endPointDialogBuilder = new AlertDialog.Builder(this);
             endPointDialogBuilder.setTitle(getText(R.string.choose_end_point_label));
-            
             final Cursor historyDestinationCursor = mHistoryDbAdapter.fetchAllEndPoints();
             startManagingCursor(historyDestinationCursor);
             final SelectPointAdapter endPointAdapter =
@@ -509,7 +510,6 @@ public class PlannerActivity extends Activity implements OnCheckedChangeListener
             endPointDialogBuilder.setAdapter(endPointAdapter, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    Log.d(TAG, "which: " + which);
                     switch (which) {
                     case 0:
                         mEndPoint.setName(Stop.TYPE_MY_LOCATION);
@@ -524,7 +524,8 @@ public class PlannerActivity extends Activity implements OnCheckedChangeListener
                         startActivityForResult(i, REQUEST_CODE_POINT_ON_MAP_END);
                         break;
                     default:
-                        mEndPoint = (Stop) endPointAdapter.getItem(which);
+                        Stop endPoint = (Stop) endPointAdapter.getItem(which);
+                        mEndPoint = new Stop(endPoint);
                         mEndPointAutoComplete.setText(mEndPoint.getName());
                         mEndPointAutoComplete.clearFocus();
                     }
