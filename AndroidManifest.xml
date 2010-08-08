@@ -9,13 +9,13 @@
         android:anyDensity="true" />
     <application android:icon="@drawable/icon"
                  android:label="@string/app_name"
-                 android:debuggable="false"
+                 android:debuggable="true"
                  android:name="MyApplication"
                  android:theme="@android:style/Theme.Light">
         <uses-library android:name="com.google.android.maps" />
         <activity android:name=".StartActivity"
                   android:label="@string/app_name"
-                  android:configChanges="locale"
+                  android:configChanges="locale|orientation"
                   android:theme="@android:style/Theme.Light.NoTitleBar"
                   >
             <intent-filter>
@@ -49,7 +49,7 @@
                   android:configChanges="locale"></activity>
         <activity android:name=".RoutesActivity"
                   android:label="@string/routes_label"
-                  android:configChanges="locale"
+                  android:configChanges="locale|orientation"
                   android:theme="@android:style/Theme.Light.NoTitleBar"
                   >
             <intent-filter>
@@ -68,7 +68,7 @@
         </activity>
         <activity android:name=".DeviationsActivity"
                   android:label="@string/deviations_label"
-                  android:configChanges="locale">
+                  android:configChanges="locale|orientation">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
                 <action android:name="com.markupartist.sthlmtraveling.action.DEVIATION_FILTER"/>
@@ -86,7 +86,7 @@
         </activity>
         <activity android:name=".RouteDetailActivity"
                   android:label="@string/route_details_label"
-                  android:configChanges="locale"
+                  android:configChanges="locale|orientation"
                   android:theme="@android:style/Theme.Light.NoTitleBar"
                   ></activity>
         <activity android:name=".ChangeRouteTimeActivity"
@@ -94,13 +94,13 @@
                   android:configChanges="locale"></activity>
         <activity android:name=".PointOnMapActivity"
                   android:label="@string/point_on_map"
-                  android:configChanges="locale"></activity>
+                  android:configChanges="locale|orientation"></activity>
         <activity android:name=".ViewOnMapActivity"
                   android:label="@string/stop_label"
-                  android:configChanges="locale"></activity>
+                  android:configChanges="locale|orientation"></activity>
         <activity android:name=".SearchDeparturesActivity"
                   android:label="@string/departures"
-                  android:configChanges="locale"></activity>
+                  android:configChanges="locale|orientation"></activity>
         <activity-alias android:name="CreateDepartureShortcutActivity"
 			            android:targetActivity="SearchDeparturesActivity"
 			            android:label="@string/activity_create_departure_shortcut"
@@ -112,7 +112,7 @@
         </activity-alias>
         <activity android:name=".DeparturesActivity"
                   android:label="@string/departures"
-                  android:configChanges="locale">
+                  android:configChanges="locale|orientation">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
                 <category android:name="android.intent.category.DEFAULT"/>
