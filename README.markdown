@@ -68,6 +68,13 @@ STHLM Traveling is open source and licensed under
 
 Changelog
 ---------
+* NEXT
+    * Make sure tasks are canceled when user leaves the RoutesActivity, closes #27
+    * Also fixed bug when restoring GetEarlierRoutesTask, closes #17
+    * Fixed issue with MY_LOCATION being added to the text input when selecting
+      an item from the history, thanks droidgren. Closes #25
+    * Improved error handling when the DeparturesActivity got restored after an
+      orientation change. This closes #16 and as a side effect is also closes #11.  
 * 2.0.0
     * Search history is visible in the "get" dialog direct
     * Address search integrated in auto completion
