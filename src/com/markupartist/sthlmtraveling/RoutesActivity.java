@@ -45,9 +45,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Adapter;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -68,7 +66,6 @@ import com.markupartist.sthlmtraveling.provider.planner.Trip;
 import com.markupartist.sthlmtraveling.provider.planner.Planner.Response;
 import com.markupartist.sthlmtraveling.provider.planner.Planner.SubTrip;
 import com.markupartist.sthlmtraveling.provider.planner.Planner.Trip2;
-import com.markupartist.sthlmtraveling.provider.site.Site;
 
 /**
  * Routes activity
