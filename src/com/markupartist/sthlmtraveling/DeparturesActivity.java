@@ -59,6 +59,8 @@ public class DeparturesActivity extends ListActivity {
         "com.markupartist.sthlmtraveling.getsites.inprogress";
     private static final String STATE_GET_DEPARTURES_IN_PROGRESS =
         "com.markupartist.sthlmtraveling.getdepartures.inprogress";
+    private static final String STATE_SITE =
+        "com.markupartist.sthlmtraveling.site";
 
     static String TAG = "DeparturesActivity";
     
@@ -66,7 +68,7 @@ public class DeparturesActivity extends ListActivity {
     private static final int DIALOG_GET_SITES_NETWORK_PROBLEM = 1;
     private static final int DIALOG_GET_DEPARTURES_NETWORK_PROBLEM = 3;
 
-    private static Site mSite;
+    private Site mSite;
     private static ArrayList<Site> mSiteAlternatives;
 
     private ProgressDialog mProgress;
@@ -96,8 +98,20 @@ public class DeparturesActivity extends ListActivity {
 
         Bundle extras = getIntent().getExtras();
         mSiteName = extras.getString(EXTRA_SITE_NAME);
+        
+        //loadDepartures();
+    }
 
+    /**
+     * We need to call loadDeapartures after restoreLocalState that's
+     * why we need to override this method. Only needed for 1.5 devices though.
+     * @see android.app.Activity#onPostCreate(android.os.Bundle)
+     */
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
         loadDepartures();
+
+        super.onPostCreate(savedInstanceState);
     }
 
     private void loadDepartures() {
@@ -106,6 +120,9 @@ public class DeparturesActivity extends ListActivity {
             (HashMap<String, DepartureList>) getLastNonConfigurationInstance();
         if (departureResult != null) {
             fillData(departureResult);
+        } else if (mSite != null) {
+            mGetDeparturesTask = new GetDeparturesTask();
+            mGetDeparturesTask.execute(mSite);
         } else {
             mGetSitesTask = new GetSitesTask();
             mGetSitesTask.execute(mSiteName);
@@ -257,8 +274,14 @@ public class DeparturesActivity extends ListActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+
+        if (mSite != null) {
+            outState.putParcelable(STATE_SITE, mSite);
+        }
+
         saveGetSitesTask(outState);
         saveGetDeparturesTask(outState);
+
         mSavedState = outState;
     }
 
@@ -274,6 +297,10 @@ public class DeparturesActivity extends ListActivity {
      * @param savedInstanceState the bundle containing the saved state
      */
     private void restoreLocalState(Bundle savedInstanceState) {
+        if (savedInstanceState.containsKey(STATE_SITE)) {
+            mSite = savedInstanceState.getParcelable(STATE_SITE);
+        }
+
         restoreGetSitesTask(savedInstanceState);
         restoreGetDeparturesTask(savedInstanceState);
     }
@@ -282,8 +309,8 @@ public class DeparturesActivity extends ListActivity {
      * Cancels the {@link GetSitesTask} if it is running.
      */
     private void onCancelGetSitesTask() {
-        if (mGetSitesTask != null/* &&
-                mGetSitesTask.getStatus() == AsyncTask.Status.RUNNING*/) {
+        if (mGetSitesTask != null &&
+                mGetSitesTask.getStatus() == AsyncTask.Status.RUNNING) {
             Log.i(TAG, "Cancels GetSitesTask.");
             mGetSitesTask.cancel(true);
             mGetSitesTask = null;
@@ -353,7 +380,6 @@ public class DeparturesActivity extends ListActivity {
             task.cancel(true);
             mGetSitesTask = null;
             outState.putBoolean(STATE_GET_DEPARTURES_IN_PROGRESS, true);
-            //outState.putParcelable(STATE_SITE, mSite);
         }
     }
 
@@ -443,7 +469,11 @@ public class DeparturesActivity extends ListActivity {
      */
     private void dismissProgress() {
         if (mProgress != null) {
-            mProgress.dismiss();
+            try {
+                mProgress.dismiss();
+            } catch (Exception e) {
+                Log.d(TAG, "Could not dismiss progress; " + e.getMessage());
+            }
             mProgress = null;
         }
     }
