@@ -390,6 +390,8 @@ public class RoutesActivity extends ListActivity
         onCancelGetLaterRoutesTask();
 
         mMyLocationManager.removeUpdates();
+
+        dismissProgress();
     }
 
     /**
