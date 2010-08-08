@@ -74,6 +74,7 @@ public class DeparturesActivity extends ListActivity {
     private GetDeparturesTask mGetDeparturesTask;
     private String mSiteName;
     private HashMap<String, DepartureList> mDepartureResult;
+    private Bundle mSavedState;
 
     SectionedAdapter mSectionedAdapter = new SectionedAdapter() {
         protected View getHeaderView(Section section, int index, 
@@ -234,6 +235,18 @@ public class DeparturesActivity extends ListActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
+        if (mSavedState != null) restoreLocalState(mSavedState);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        onCancelGetDeparturesTask();
+        onCancelGetSitesTask();
+
+        dismissProgress();
     }
 
     @Override
@@ -246,12 +259,14 @@ public class DeparturesActivity extends ListActivity {
         super.onSaveInstanceState(outState);
         saveGetSitesTask(outState);
         saveGetDeparturesTask(outState);
+        mSavedState = outState;
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         restoreLocalState(savedInstanceState);
+        mSavedState = null;
     }
 
     /**
