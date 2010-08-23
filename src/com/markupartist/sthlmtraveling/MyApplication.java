@@ -32,6 +32,7 @@ public class MyApplication extends Application {
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
+
         reloadLocaleForApplication();
     }
 
