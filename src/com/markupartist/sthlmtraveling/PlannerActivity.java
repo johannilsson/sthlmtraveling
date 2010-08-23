@@ -697,7 +697,9 @@ public class PlannerActivity extends Activity implements OnCheckedChangeListener
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mHistoryDbAdapter.close();
+        if (mHistoryDbAdapter != null) {
+            mHistoryDbAdapter.close();
+        }
     }
 
     @Override
