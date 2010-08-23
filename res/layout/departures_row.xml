@@ -21,7 +21,11 @@
     android:orientation="horizontal"
     android:layout_width="fill_parent" 
     android:layout_height="wrap_content"
-    android:padding="5dip">
+    android:paddingTop="10dip"
+    android:paddingBottom="10dip"
+    android:paddingLeft="5dip"
+    android:paddingRight="5dip"
+    >
         <View
             android:id="@+id/departure_color"
             android:layout_width="8dip"
@@ -35,6 +39,7 @@
 	        android:textStyle="bold"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
+	        android:textAppearance="@android:style/TextAppearance.Medium"
 	        android:textColor="?android:attr/textColorPrimary"
 	        />
            <TextView
@@ -44,6 +49,7 @@
                android:layout_width="fill_parent"
                android:layout_height="wrap_content"
                android:layout_weight="1"
+               android:textAppearance="@android:style/TextAppearance.Medium"
                android:textColor="?android:attr/textColorPrimary"
                />
            <!--
@@ -82,6 +88,7 @@
                android:paddingRight="5dip"
                android:layout_width="wrap_content"
                android:layout_height="wrap_content"
+               android:textAppearance="@android:style/TextAppearance.Medium"
                android:textColor="?android:attr/textColorPrimary"
                />
 </LinearLayout>
