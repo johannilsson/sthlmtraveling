@@ -74,7 +74,7 @@
     <string name="tap_your_start_point_on_map">Välj avgångspunkt på kartan</string>
     <string name="tap_your_location_on_map">Misslyckades med att bestämma din position. Välj denna på kartan.</string>
     <string name="departing_on">Avgår tidigast <xliff:g id="time">%s</xliff:g> den <xliff:g id="date">%s</xliff:g></string>
-    <string name="arriving_by">Anländer tidigast <xliff:g id="time">%s</xliff:g> den <xliff:g id="date">%s</xliff:g></string>
+    <string name="arriving_by">Anländer senast <xliff:g id="time">%s</xliff:g> den <xliff:g id="date">%s</xliff:g></string>
     <string name="departures">Avgångar</string>
     <string name="departures_for">Avgångar för <xliff:g id="site_name">%s</xliff:g></string>
     <string name="no_departures"><b>Inga avgångar hittades</b>\nEnbart avgångar inom 10 minuter listas. Uppdatera via menyn om ett tag.</string>
