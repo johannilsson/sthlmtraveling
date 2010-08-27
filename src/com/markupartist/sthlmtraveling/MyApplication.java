@@ -32,7 +32,6 @@ public class MyApplication extends Application {
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-
         reloadLocaleForApplication();
     }
 
@@ -47,6 +46,8 @@ public class MyApplication extends Application {
         Locale locale = null;
         if ("sv".equals(language)) {
             locale = new Locale("sv", "SE");
+        } else if ("es".equals(language)) {
+            locale = new Locale("es", "ES");
         } else if ("en".equals(language)) {
             locale = Locale.ENGLISH;
         }

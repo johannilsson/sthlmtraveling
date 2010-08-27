@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<resources>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
     <color name="search_plate">#D1EEEE</color>
     <color name="plate_background">#2c82c0</color>
     <color name="plate_extra_background">#e4e4e4</color>

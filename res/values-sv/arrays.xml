@@ -17,7 +17,7 @@
 */
 -->
 
-<resources>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
     <string-array name="when_choice">
         <item>Avgång</item>
         <item>Ankomst</item>
@@ -28,10 +28,12 @@
         <item>Systemets Locale</item>
         <item>Svenska</item><!-- Do not translate -->
         <item>English</item><!-- Do not translate -->
+        <item>Castellaño</item><!-- Do not translate -->
     </string-array>
     <string-array name="entryvalues_language_preference">
         <item>system</item><!-- Do not translate -->
         <item>sv</item><!-- Do not translate -->
         <item>en</item><!-- Do not translate -->
+        <item>es</item><!-- Do not translate -->
     </string-array>
 </resources>

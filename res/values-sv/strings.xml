@@ -40,7 +40,7 @@
     <string name="change_date_and_time">Ändra datum &amp; tid</string>
     <string name="reverse_start_end">Ändra ordning på från &amp; till</string>
     <string name="about">Om</string>
-    <string name="about_this_app">STHLM Traveling är utvecklat av Johan Nilsson. Kontakta honom om du har idéer på vidare förbättringar eller vid problem via Feedback-knappen.\n\nAll data är hämtad från AB Storstockholms Lokaltrafik.\n\n<b>Credits</b>\n<li>Programikon &amp; idéer av Olof Brickarp\nhttp://www.yay.se</li>\n<li>Svensk översättning Jean Diarbakerli</li>\n<li>Patchar av Morgan Christiansson\nhttp://screeninteraction.com</li>\n<li>Ikoner av Fredrik Broman\nhttp://fredrikbroman.com</li>\n<li>Ikoner av Android Icons\nhttp://androidicons.com</li>\n<li>Feedback från Swedroid\nhttp://swedroid.se</li></string>
+    <string name="about_this_app">STHLM Traveling är utvecklat av Johan Nilsson. Kontakta honom om du har idéer på vidare förbättringar eller vid problem via Feedback-knappen.\n\nAll data är hämtad från AB Storstockholms Lokaltrafik.\n\n<b>Credits</b>\n<li>Programikon &amp; idéer av Olof Brickarp\nhttp://www.yay.se</li>\n<li>Svensk översättning Jean Diarbakerli</li>\n<li>Spansk översättning Valeria Padilla</li>\n<li>Patchar av Morgan Christiansson\nhttp://screeninteraction.com</li>\n<li>Ikoner av Fredrik Broman\nhttp://fredrikbroman.com</li>\n<li>Ikoner av Android Icons\nhttp://androidicons.com</li>\n<li>Feedback från Swedroid\nhttp://swedroid.se</li></string>
     <string name="donate">Donera</string>
     <string name="donate_url">http://pledgie.com/campaigns/6527</string>
     <string name="feedback">Feedback</string>
@@ -74,7 +74,7 @@
     <string name="tap_your_start_point_on_map">Välj avgångspunkt på kartan</string>
     <string name="tap_your_location_on_map">Misslyckades med att bestämma din position. Välj denna på kartan.</string>
     <string name="departing_on">Avgår tidigast <xliff:g id="time">%s</xliff:g> den <xliff:g id="date">%s</xliff:g></string>
-    <string name="arriving_by">Anländer tidigast <xliff:g id="time">%s</xliff:g> den <xliff:g id="date">%s</xliff:g></string>
+    <string name="arriving_by">Anländer senast <xliff:g id="time">%s</xliff:g> den <xliff:g id="date">%s</xliff:g></string>
     <string name="departures">Avgångar</string>
     <string name="departures_for">Avgångar för <xliff:g id="site_name">%s</xliff:g></string>
     <string name="no_departures"><b>Inga avgångar hittades</b>\nEnbart avgångar inom 10 minuter listas. Uppdatera via menyn om ett tag.</string>
@@ -111,7 +111,7 @@
     <string name="sms_ticket_notice_message">Den här funtionen är experimentell. Dubbelkolla detaljerna innan du köper din biljett. STHLM Traveling lämnar inga garantier för att biljetten stämmer med resan.</string>
     <string name="trip_description_walk">%s - %s Gå från %s till %s</string>
     <string name="trip_description_normal">%s - %s %s från %s mot %s. Kliv av vid %s</string>
-    <string name="show_all">Show all</string>
+    <string name="show_all">Visa alla</string>
     <!-- Preferences -->
     <string name="restart_app_for_full_effect">Starta om appen för att ändringen ska slå igenom fullt.</string>
     <string name="dialog_general_preferences">Grundläggande</string>

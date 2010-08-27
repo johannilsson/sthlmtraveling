@@ -19,13 +19,13 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
     <string-array name="when_choice">
-        <item>Departure time</item>
-        <item>Arrival time</item>
+        <item>Salida</item>
+        <item>Llegada</item>
     </string-array>
 
     <!-- Preferences -->
     <string-array name="entries_language_preference">
-        <item>System Locale</item>
+        <item>Locale de la sistem</item>
         <item>Svenska</item><!-- Do not translate -->
         <item>English</item><!-- Do not translate -->
         <item>Castellaño</item><!-- Do not translate -->
@@ -35,19 +35,5 @@
         <item>sv</item><!-- Do not translate -->
         <item>en</item><!-- Do not translate -->
         <item>es</item><!-- Do not translate -->
-    </string-array>
-    <string-array name="entries_deviations_preference">
-        <item>10 min</item>
-        <item>15 min</item>
-        <item>30 min</item>
-        <item>45 min</item>
-        <item>1 h</item>
-    </string-array>
-    <string-array name="entryvalues_deviations_preference">
-        <item>600000</item><!-- Do not translate -->
-        <item>900000</item><!-- Do not translate -->
-        <item>1800000</item><!-- Do not translate -->
-        <item>2700000</item><!-- Do not translate -->
-        <item>3600000</item><!-- Do not translate -->
     </string-array>
 </resources>
