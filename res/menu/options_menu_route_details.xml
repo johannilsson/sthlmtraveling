@@ -27,11 +27,12 @@
         android:id="@+id/menu_sms_ticket"
         android:title="@string/sms_ticket_label"
         android:icon="@android:drawable/ic_menu_send"
-        />
+        android:enabled="false"/>
     <item
         android:id="@+id/menu_share"
         android:title="@string/share_label"
         android:icon="@android:drawable/ic_menu_share"
+        android:enabled="false"
         />
 	<item
 		android:id="@+id/new_search"
