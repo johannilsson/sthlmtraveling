@@ -222,14 +222,9 @@ public class RouteDetailActivity extends ListActivity {
 
         setListAdapter(mSubTripAdapter);
 
-        mTrip = trip;
-
-        // Add zones
-        /*
-        String zones = RouteDetail.getZones(mTrip);
-        if (zones.length() > 0) {
+        if (trip.canBuySmsTicket()) {
             TextView zoneView = (TextView) findViewById(R.id.route_zones);
-            zoneView.setText(zones);
+            zoneView.setText(trip.tariffZones);
             zoneView.setVisibility(View.VISIBLE);
             zoneView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -238,7 +233,17 @@ public class RouteDetailActivity extends ListActivity {
                 }
             });
         }
-        */
+
+        mTrip = trip;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        MenuItem buySmsTicketItem = menu.findItem(R.id.menu_sms_ticket);
+        if (mTrip.canBuySmsTicket()) {
+            buySmsTicketItem.setEnabled(true);
+        }
+        return super.onPrepareOptionsMenu(menu);
     }
 
     @Override
@@ -290,21 +295,17 @@ public class RouteDetailActivity extends ListActivity {
      * @param reducedPrice True if the price is reduced, false otherwise. 
      */
     public void sendSms(boolean reducedPrice) {
-        Toast.makeText(this, "SMS-Tickets temporally disabled.",
-                Toast.LENGTH_LONG).show();
-        /*
         final Intent intent = new Intent(Intent.ACTION_VIEW);
 
         String price = reducedPrice ? "R" : "H";
         intent.setType("vnd.android-dir/mms-sms");
         intent.putExtra("address", "72150");
-        intent.putExtra("sms_body", price + RouteDetail.getZones(mTrip));
+        intent.putExtra("sms_body", price + mTrip.tariffZones);
 
         Toast.makeText(this, R.string.sms_ticket_notice_message,
                 Toast.LENGTH_LONG).show();
 
         startActivity(intent);
-        */
     }
 
     @Override
