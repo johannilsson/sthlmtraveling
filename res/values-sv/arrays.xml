@@ -28,7 +28,7 @@
         <item>Systemets Locale</item>
         <item>Svenska</item><!-- Do not translate -->
         <item>English</item><!-- Do not translate -->
-        <item>Castellaño</item><!-- Do not translate -->
+        <item>Español</item><!-- Do not translate -->
     </string-array>
     <string-array name="entryvalues_language_preference">
         <item>system</item><!-- Do not translate -->
