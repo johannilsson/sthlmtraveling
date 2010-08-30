@@ -258,7 +258,8 @@ public class Planner {
         public String arrivalTime;
         public int changes;
         public String duration;
-        public String priceInfo;
+        public String tariffZones;
+        public int tariffRemark;
         public String co2;
         public boolean mt6MessageExist;
         public boolean rtuMessageExist;
@@ -276,13 +277,21 @@ public class Planner {
             arrivalTime = parcel.readString();
             changes = parcel.readInt();
             duration = parcel.readString();
-            priceInfo = parcel.readString();
+            tariffZones = parcel.readString();
+            tariffRemark = parcel.readInt();
             co2 = parcel.readString();
             mt6MessageExist = (parcel.readInt() == 1) ? true : false;
             rtuMessageExist = (parcel.readInt() == 1) ? true : false;
             remarksMessageExist = (parcel.readInt() == 1) ? true : false;
             subTrips = new ArrayList<SubTrip>();
             parcel.readTypedList(subTrips, SubTrip.CREATOR);
+        }
+
+        /**
+         * @return returns true if this trip can be purchased with SMS.
+         */
+        public boolean canBuySmsTicket() {
+            return tariffRemark == 2 || tariffRemark == 3 || tariffRemark == 4;
         }
 
         @Override
@@ -300,7 +309,8 @@ public class Planner {
             dest.writeString(arrivalTime);
             dest.writeInt(changes);
             dest.writeString(duration);
-            dest.writeString(priceInfo);
+            dest.writeString(tariffZones);
+            dest.writeInt(tariffRemark);
             dest.writeString(co2);
             dest.writeInt((mt6MessageExist == true) ? 1 : 0);
             dest.writeInt((rtuMessageExist == true) ? 1 : 0);
@@ -334,7 +344,12 @@ public class Planner {
             trip.duration = json.getString("duration");
             trip.mt6MessageExist = json.getBoolean("mt6MessageExist");
             trip.origin = Location.fromJson(json.getJSONObject("origin"));
-            trip.priceInfo = json.getString("priceInfo");
+            if (json.has("tariffZones")) {
+                trip.tariffZones = json.getString("tariffZones");
+            }
+            if (json.has("tariffRemark")) {
+                trip.tariffRemark = json.getInt("tariffRemark");
+            }
             trip.remarksMessageExist = json.getBoolean("remarksMessageExist");
             trip.rtuMessageExist = json.getBoolean("rtuMessageExist");
 
@@ -352,7 +367,8 @@ public class Planner {
                     ", arrivalTime='" + arrivalTime + '\'' +
                     ", changes=" + changes +
                     ", duration='" + duration + '\'' +
-                    ", priceInfo='" + priceInfo + '\'' +
+                    ", tariffZones='" + tariffZones + '\'' +
+                    ", tariffRemark='" + tariffRemark + '\'' +
                     ", co2='" + co2 + '\'' +
                     ", mt6MessageExist=" + mt6MessageExist +
                     ", rtuMessageExist=" + rtuMessageExist +

@@ -27,6 +27,7 @@
         android:id="@+id/menu_share"
         android:title="@string/share_label"
         android:icon="@android:drawable/ic_menu_share"
+        android:enabled="false"
         />
     <!--
     Commented out the QR code, see if anyone will miss it.
