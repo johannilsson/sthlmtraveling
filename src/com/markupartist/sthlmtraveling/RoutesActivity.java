@@ -17,11 +17,7 @@
 package com.markupartist.sthlmtraveling;
 
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -1190,25 +1186,6 @@ public class RoutesActivity extends ListActivity
                 currentTransportCount++;
             }
 
-            try {
-	            DateFormat df = new SimpleDateFormat("dd.MM.yy");
-	            Date date = new Date();
-            	Date now = df.parse(df.format(date));
-	            Date tripDate = df.parse(trip.departureDate);
-	            
-	            if (tripDate.before(now) || tripDate.after(now)) {
-	                TextView dateChanged = new TextView(context);
-	                dateChanged.setTextColor(0xFF444444); // Dark gray
-	                dateChanged.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
-	                dateChanged.setPadding(0, 2, 0, 2);
-		            dateChanged.setText(trip.departureDate);
-		            this.addView(dateChanged);
-	            }
-	            
-            } catch (ParseException e) {
-            	Log.e(TAG, "Error parsing date, " + e.getMessage());
-			}
-            
             this.addView(timeLayout);
             this.addView(startAndEndPoint);
             this.addView(routeChanges);

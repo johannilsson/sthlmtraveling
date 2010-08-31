@@ -24,7 +24,11 @@ import static com.markupartist.sthlmtraveling.provider.ApiConf.plannerEndpoint;
 import java.io.IOException;
 import java.io.StringReader;
 import java.net.URLEncoder;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -378,7 +382,24 @@ public class Planner {
         }
 
         public String toText() {
-            return departureTime + " - " + arrivalTime + " (" + duration + ")";
+        	String durationInMinutes = duration;
+        	try {
+	            DateFormat df = new SimpleDateFormat("H:mm");
+	            Date tripDate = df.parse(duration);
+	            if (tripDate.getHours() == 0) {
+	            	int start = duration.indexOf(":") + 1;
+	            	if (duration.substring(start).startsWith("0")) {
+	            		start++;
+	            	}
+	            	durationInMinutes = duration.substring(start) + " min";
+	            }
+        	} catch (ParseException e) {
+        	}
+        	
+        	int end = departureDate.lastIndexOf(".");
+        	String sDepartureDate = departureDate.substring(0, end).replace(".", "/");
+
+            return departureTime + " - " + arrivalTime + " (" + durationInMinutes + ") " + sDepartureDate;
         }
 
         public static final Creator<Trip2> CREATOR = new Creator<Trip2>() {
