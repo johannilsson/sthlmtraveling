@@ -420,8 +420,7 @@ public class PlannerActivity extends Activity implements OnCheckedChangeListener
 
         boolean isTimeDeparture = mWhenSpinner.getSelectedItemId() == 0 ? true : false;
 
-        Uri routesUri = RoutesActivity.createRoutesUri(
-        		startPoint, endPoint, time, isTimeDeparture);
+        Uri routesUri = RoutesActivity.createRoutesUri(startPoint, endPoint, time, isTimeDeparture);
         Intent i = new Intent(Intent.ACTION_VIEW, routesUri, this, RoutesActivity.class);
         startActivity(i);
     }

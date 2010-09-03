@@ -27,8 +27,8 @@ import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.DialogInterface.OnClickListener;
+import android.content.Intent;
 import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
@@ -50,9 +50,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.SimpleAdapter.ViewBinder;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.SimpleAdapter.ViewBinder;
 
 import com.markupartist.sthlmtraveling.MyLocationManager.MyLocationFoundListener;
 import com.markupartist.sthlmtraveling.SectionedAdapter.Section;
@@ -60,12 +60,12 @@ import com.markupartist.sthlmtraveling.provider.FavoritesDbAdapter;
 import com.markupartist.sthlmtraveling.provider.deviation.DeviationStore;
 import com.markupartist.sthlmtraveling.provider.planner.JourneyQuery;
 import com.markupartist.sthlmtraveling.provider.planner.Planner;
-import com.markupartist.sthlmtraveling.provider.planner.Route;
-import com.markupartist.sthlmtraveling.provider.planner.Stop;
-import com.markupartist.sthlmtraveling.provider.planner.Trip;
 import com.markupartist.sthlmtraveling.provider.planner.Planner.Response;
 import com.markupartist.sthlmtraveling.provider.planner.Planner.SubTrip;
 import com.markupartist.sthlmtraveling.provider.planner.Planner.Trip2;
+import com.markupartist.sthlmtraveling.provider.planner.Route;
+import com.markupartist.sthlmtraveling.provider.planner.Stop;
+import com.markupartist.sthlmtraveling.provider.planner.Trip;
 
 /**
  * Routes activity
@@ -182,8 +182,7 @@ public class RoutesActivity extends ListActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.routes_list);
 
-        LocationManager locationManager =
-            (LocationManager)getSystemService(LOCATION_SERVICE);
+        LocationManager locationManager = (LocationManager)getSystemService(LOCATION_SERVICE);
 
         mMyLocationManager = new MyLocationManager(locationManager);
 
@@ -540,7 +539,7 @@ public class RoutesActivity extends ListActivity
 
     private void createSections() {
         // Date and time adapter.
-        mDateAdapterData = new ArrayList<HashMap<String,String>>(1); 
+    	mDateAdapterData = new ArrayList<HashMap<String,String>>(1);
         HashMap<String, String> item = new HashMap<String, String>();
         item.put("title", buildDateString());
         mDateAdapterData.add(item);
@@ -569,8 +568,7 @@ public class RoutesActivity extends ListActivity
     }
 
     SectionedAdapter mSectionedAdapter = new SectionedAdapter() {
-        protected View getHeaderView(Section section, int index, 
-                View convertView, ViewGroup parent) {
+        protected View getHeaderView(Section section, int index, View convertView, ViewGroup parent) {
             TextView result = (TextView) convertView;
 
             if (convertView == null)
@@ -580,7 +578,7 @@ public class RoutesActivity extends ListActivity
             return (result);
         }
     };
-
+    
     /**
      * Helper to create earlier or later adapter.
      * @param resource the image resource to show in the list
@@ -1111,7 +1109,7 @@ public class RoutesActivity extends ListActivity
     }
 
     private class RouteAdapterView extends LinearLayout {
-
+    	private boolean hasTime = false;
         public RouteAdapterView(Context context, Trip2 trip) {
             super(context);
             this.setOrientation(VERTICAL);
@@ -1128,6 +1126,7 @@ public class RoutesActivity extends ListActivity
             //routeDetail.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
 
             timeLayout.addView(routeDetail);
+            
             if (trip.mt6MessageExist || trip.remarksMessageExist || trip.rtuMessageExist) {
                 ImageView warning = new ImageView(context);
                 warning.setImageResource(R.drawable.trip_message_warning);
