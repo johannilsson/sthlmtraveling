@@ -2,11 +2,14 @@ body {
     background-image:url('../images/bg.png');
     background-repeat:repeat-x;
     text-align: center;
+    font-family: Arial, Trebuchet MS, Tahoma, Verdana, sans-serif;
+    color: #000;
 }
     
 div#container {
 	margin-left: 10%;
 	margin-right: 10%;
+    width:1024px;
 }
 
 img#toplogo {
@@ -24,4 +27,41 @@ img#phone {
 #top br {
     margin: 0;
     padding: 0;
+}
+
+blockquote {
+
+    /*
+    display:block !important;
+    height:98px !important;
+    margin:0 10% 0 !important;
+    padding:0 !important;
+    position:absolute !important;
+    top:120px !important;
+    width:150px !important;
+    z-index:-1 !important;
+    right:0;
+    */
+    
+    left:648px;
+    position:relative;
+    text-align:center;
+    top:-180px;
+    width:250px;
+    
+    color: #fff;
+    font-size: 1.7em;
+}
+
+div#content {
+    margin-top: -50px;
+}
+
+p {
+    text-align: left;
+}
+
+p.large {
+    font-size:1.6em;
+    text-align: center;
 }
