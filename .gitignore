@@ -7,3 +7,4 @@ src/com/markupartist/sthlmtraveling/planner/ApiSettings.java
 src/com/markupartist/sthlmtraveling/ApiSettings.java
 src/com/markupartist/sthlmtraveling/provider/EndpointConf.java
 src/com/markupartist/sthlmtraveling/provider/ApiConf.java
+*.DS_Store
