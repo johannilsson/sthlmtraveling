@@ -26,7 +26,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -251,8 +250,8 @@ public class RouteDetailActivity extends ListActivity {
         switch(id) {
         case DIALOG_BUY_SMS_TICKET:
             CharSequence[] smsOptions = {
-                    getText(R.string.sms_ticket_price_full), 
-                    getText(R.string.sms_ticket_price_reduced)
+                    getText(R.string.sms_ticket_price_full) + " " + getFullPrice(), 
+                    getText(R.string.sms_ticket_price_reduced) + " " + getReducedPrice()
                 };
             return new AlertDialog.Builder(this)
                 .setTitle(getText(R.string.sms_ticket_label))
@@ -272,7 +271,17 @@ public class RouteDetailActivity extends ListActivity {
         return null;
     }
 
-    /**
+	private CharSequence getFullPrice() {
+    	final int[] PRICE = new int[] {30, 45, 60};
+		return PRICE[mTrip.tariffZones.length() - 1] + " kr";
+	}
+
+    private CharSequence getReducedPrice() {
+    	final int[] PRICE = new int[] {18, 27, 36};
+		return PRICE[mTrip.tariffZones.length() - 1] + " kr";
+	}
+
+	/**
      * Share a {@link Route} with others.
      * @param route the route to share
      */
