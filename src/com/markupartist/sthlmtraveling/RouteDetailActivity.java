@@ -271,17 +271,17 @@ public class RouteDetailActivity extends ListActivity {
         return null;
     }
 
-	private CharSequence getFullPrice() {
-    	final int[] PRICE = new int[] {30, 45, 60};
-		return PRICE[mTrip.tariffZones.length() - 1] + " kr";
-	}
+    private CharSequence getFullPrice() {
+        final int[] PRICE = new int[] { 30, 45, 60 };
+        return PRICE[mTrip.tariffZones.length() - 1] + " kr";
+    }
 
     private CharSequence getReducedPrice() {
-    	final int[] PRICE = new int[] {18, 27, 36};
-		return PRICE[mTrip.tariffZones.length() - 1] + " kr";
-	}
+        final int[] PRICE = new int[] { 18, 27, 36 };
+        return PRICE[mTrip.tariffZones.length() - 1] + " kr";
+    }
 
-	/**
+    /**
      * Share a {@link Route} with others.
      * @param route the route to share
      */

@@ -375,24 +375,26 @@ public class Planner {
         }
 
         public String toText() {
-        	String durationInMinutes = duration;
-        	try {
-	            DateFormat df = new SimpleDateFormat("H:mm");
-	            Date tripDate = df.parse(duration);
-	            if (tripDate.getHours() == 0) {
-	            	int start = duration.indexOf(":") + 1;
-	            	if (duration.substring(start).startsWith("0")) {
-	            		start++;
-	            	}
-	            	durationInMinutes = duration.substring(start) + " min";
-	            }
-        	} catch (ParseException e) {
-        	}
-        	
-        	int end = departureDate.lastIndexOf(".");
-        	String sDepartureDate = departureDate.substring(0, end).replace(".", "/");
+            String durationInMinutes = duration;
+            try {
+                DateFormat df = new SimpleDateFormat("H:mm");
+                Date tripDate = df.parse(duration);
+                if (tripDate.getHours() == 0) {
+                    int start = duration.indexOf(":") + 1;
+                    if (duration.substring(start).startsWith("0")) {
+                        start++;
+                    }
+                    durationInMinutes = duration.substring(start) + " min";
+                }
+            } catch (ParseException e) {
+            }
 
-            return departureTime + " - " + arrivalTime + " (" + durationInMinutes + ") " + sDepartureDate;
+            int end = departureDate.lastIndexOf(".");
+            String departureDateString =
+                departureDate.substring(0, end).replace(".", "/");
+
+            return String.format("%s - %s (%s) %s",
+                    departureTime, arrivalTime, durationInMinutes, departureDateString);
         }
 
         public static final Creator<Trip2> CREATOR = new Creator<Trip2>() {
