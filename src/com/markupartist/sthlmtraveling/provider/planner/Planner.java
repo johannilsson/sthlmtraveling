@@ -19,11 +19,8 @@ package com.markupartist.sthlmtraveling.provider.planner;
 import static com.markupartist.sthlmtraveling.provider.ApiConf.KEY;
 import static com.markupartist.sthlmtraveling.provider.ApiConf.apiEndpoint;
 import static com.markupartist.sthlmtraveling.provider.ApiConf.get;
-import static com.markupartist.sthlmtraveling.provider.ApiConf.plannerEndpoint;
 
 import java.io.IOException;
-import java.io.StringReader;
-import java.net.URLEncoder;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -33,18 +30,14 @@ import java.util.Date;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
-import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.xml.sax.InputSource;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.os.Parcelable.Creator;
 import android.util.Log;
 
 import com.markupartist.sthlmtraveling.R;
