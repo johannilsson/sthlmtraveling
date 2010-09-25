@@ -234,9 +234,9 @@ public class PointOnMapActivity extends MapActivity {
 
     private void myLocationOverlay() {
         mMyLocationOverlay = new FixedMyLocationOverlay(this, mMapView);
-        if (mMyLocationOverlay.isMyLocationEnabled()) {
+        //if (mMyLocationOverlay.isMyLocationEnabled()) {
             mMyLocationOverlay.enableMyLocation();
-        }
+        //}
         if (mMyLocationOverlay.isCompassEnabled()) {
             mMyLocationOverlay.enableCompass();
         }
