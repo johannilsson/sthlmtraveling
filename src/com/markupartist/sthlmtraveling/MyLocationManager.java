@@ -28,9 +28,9 @@ import android.util.Log;
  */
 public class MyLocationManager {
     private static final String TAG = "MyLocationManager";
-    private static final long FIND_LOCATION_TIME_OUT_MILLIS = 6000;
-    private static final int ACCEPTED_LOCATION_ACCURACY_METERS = 100;
-    private static final int ACCEPTED_LOCATION_AGE_MILLIS = 150000;
+    private static final long FIND_LOCATION_TIME_OUT_MILLIS = 8000;
+    private static final int ACCEPTED_LOCATION_ACCURACY_METERS = 300;
+    private static final int ACCEPTED_LOCATION_AGE_MILLIS = 600000;
     private LocationRequestTimeOut mLocationRequestTimeOut;
     private LocationManager mLocationManager;
     private MyLocationFoundListener mMyLocationFoundListener;
@@ -54,14 +54,23 @@ public class MyLocationManager {
     public void requestLocationUpdates(MyLocationFoundListener myLocationFoundListener) {
         mMyLocationFoundListener = myLocationFoundListener;
 
-        mGpsLocationListener = new MyLocationListener();
-        mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
-                0, 0, mGpsLocationListener);
-        mNetworkLocationListener = new MyLocationListener();
-        mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
-                0, 0, mNetworkLocationListener);
+        if (mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            mGpsLocationListener = new MyLocationListener();
+            mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
+                    0, 0, mGpsLocationListener);
+        }
 
-        mLocationRequestTimeOut.start();
+        if (mLocationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
+            mNetworkLocationListener = new MyLocationListener();
+            mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
+                    0, 0, mNetworkLocationListener);
+        }
+
+        if (mNetworkLocationListener != null || mGpsLocationListener != null) {
+            mLocationRequestTimeOut.start();
+        } else {
+            reportLocationFound(getLastKnownLocation());
+        }
     }
 
     /**
@@ -105,9 +114,12 @@ public class MyLocationManager {
         } else if (location1 == null) {
             return location2;
         } else {
-            float location1Score = location1.getTime() + location1.getAccuracy();
-            float location2Score = location2.getTime() + location2.getAccuracy();
-            if (location1Score < location2Score) {
+            int location1Score =
+                (int) (getLocationAge(location1) + location1.getAccuracy());
+            int location2Score =
+                (int) (getLocationAge(location2) + location2.getAccuracy());
+
+            if (location1Score <= location2Score) {
                 Log.d(TAG, location1.getProvider() + " won");
                 return location1;
             }
@@ -137,6 +149,10 @@ public class MyLocationManager {
             return true;
         }
         return false;
+    }
+
+    public int getLocationAge(Location location) {
+        return (int) ((System.currentTimeMillis() - location.getTime()) / 1000);
     }
 
     /**
