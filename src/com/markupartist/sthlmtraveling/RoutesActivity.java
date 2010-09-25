@@ -773,6 +773,8 @@ public class RoutesActivity extends ListActivity
         case REQUEST_CODE_POINT_ON_MAP_START:
             if (resultCode == RESULT_CANCELED) {
                 Log.d(TAG, "action canceled");
+                finish();
+                return;
             } else {
                 Stop startPoint = data.getParcelableExtra(PointOnMapActivity.EXTRA_STOP);
                 Log.d(TAG, "Got Stop " + startPoint);
@@ -792,6 +794,8 @@ public class RoutesActivity extends ListActivity
         case REQUEST_CODE_POINT_ON_MAP_END:
             if (resultCode == RESULT_CANCELED) {
                 Log.d(TAG, "action canceled");
+                finish();
+                return;
             } else {
                 Stop endPoint = data.getParcelableExtra(PointOnMapActivity.EXTRA_STOP);
                 Log.d(TAG, "Got Stop " + endPoint);
