@@ -73,7 +73,7 @@
     <string name="tap_your_end_point_on_map">Tap your end point on the map</string>
     <string name="tap_your_start_point_on_map">Tap your start point on the map</string>
     <string name="tap_your_location_on_map">Failed to determine your location. Tap your location on the map</string>
-    <string name="departing_on">Departing after<xliff:g id="time">%s</xliff:g> on <xliff:g id="date">%s</xliff:g></string>
+    <string name="departing_on">Departing after <xliff:g id="time">%s</xliff:g> on <xliff:g id="date">%s</xliff:g></string>
     <string name="arriving_by">Arriving latest <xliff:g id="time">%s</xliff:g> on <xliff:g id="date">%s</xliff:g></string>
     <string name="departures">Departures</string>
     <string name="departures_for">Departures for <xliff:g id="site_name">%s</xliff:g></string>
