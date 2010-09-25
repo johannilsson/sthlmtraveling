@@ -1,5 +1,8 @@
 package com.markupartist.sthlmtraveling.provider.site;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.location.Location;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -83,4 +86,11 @@ public class Site implements Parcelable {
             return new Site[size];
         }
     };
+
+    public static Site fromJson(JSONObject json) throws JSONException {
+        Site site = new Site();
+        site.setId(json.getInt("siteId"));
+        site.setName(json.getString("name"));
+        return site;
+    }
 }
