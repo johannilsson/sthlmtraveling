@@ -389,12 +389,12 @@ public class Planner {
             } catch (ParseException e) {
             }
 
-            int end = departureDate.lastIndexOf(".");
+            /*int end = departureDate.lastIndexOf(".");
             String departureDateString =
-                departureDate.substring(0, end).replace(".", "/");
+                departureDate.substring(0, end).replace(".", "/");*/
 
-            return String.format("%s - %s (%s) %s",
-                    departureTime, arrivalTime, durationInMinutes, departureDateString);
+            return String.format("%s - %s (%s)",
+                    departureTime, arrivalTime, durationInMinutes);
         }
 
         public static final Creator<Trip2> CREATOR = new Creator<Trip2>() {
