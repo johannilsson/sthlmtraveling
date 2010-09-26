@@ -23,7 +23,9 @@
     android:layout_height="wrap_content"
     android:addStatesFromChildren="true"
     android:gravity="center_vertical"
-    android:paddingRight="0dip"
+    android:paddingTop="20dip"
+    android:paddingRight="15dip"
+    android:paddingBottom="20dip"
     >
 	<TextView
         android:id="@+id/date_time"
@@ -33,16 +35,17 @@
         android:singleLine="true"
         android:layout_weight="1"
         android:textColor="?android:attr/textColorPrimary"
+        android:textAppearance="?android:attr/textAppearanceMedium"
         android:textStyle="normal"
-        android:padding="10dip"
+
+        android:paddingLeft="10dip"
         />
 	<ImageView 
-        android:src="@drawable/ic_dialog_time"
+        android:src="@drawable/ic_list_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="2dip"
         android:layout_marginRight="5dip"
         android:layout_marginBottom="2dip"
-        android:padding="5dip"
         />
 </LinearLayout>

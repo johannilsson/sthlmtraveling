@@ -551,10 +551,10 @@ public class RoutesActivity extends ListActivity
                 new int[] { R.id.date_time } );
 
         // Earlier routes
-        SimpleAdapter earlierAdapter = createEarlierLaterAdapter(android.R.drawable.arrow_up_float);
+        SimpleAdapter earlierAdapter = createEarlierLaterAdapter(R.drawable.arrow_up_float);
 
         // Later routes
-        SimpleAdapter laterAdapter = createEarlierLaterAdapter(android.R.drawable.arrow_down_float);
+        SimpleAdapter laterAdapter = createEarlierLaterAdapter(R.drawable.arrow_down_float);
 
         mMultipleListAdapter = new MultipleListAdapter();
         mMultipleListAdapter.addAdapter(ADAPTER_EARLIER, earlierAdapter);
@@ -1114,19 +1114,22 @@ public class RoutesActivity extends ListActivity
 
     private class RouteAdapterView extends LinearLayout {
     	private boolean hasTime = false;
+    	// TODO: Replace this hack with a proper layout defined in XML.
         public RouteAdapterView(Context context, Trip2 trip) {
             super(context);
             this.setOrientation(VERTICAL);
 
-            this.setPadding(10, 10, 10, 10);
+            float scale = getResources().getDisplayMetrics().density;
+
+            this.setPadding((int)(5 * scale), (int)(10 * scale), (int)(5 * scale), (int)(10 * scale));
 
             LinearLayout timeLayout = new LinearLayout(context);
 
             TextView routeDetail = new TextView(context);
             routeDetail.setText(trip.toText());
             routeDetail.setTextColor(Color.BLACK);
-            routeDetail.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
-            routeDetail.setPadding(0, 2, 0, 2);
+            routeDetail.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
+            routeDetail.setPadding((int)(5 * scale), (int)(2 * scale), 0, (int)(2 * scale));
             //routeDetail.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
 
             timeLayout.addView(routeDetail);
@@ -1134,7 +1137,7 @@ public class RoutesActivity extends ListActivity
             if (trip.mt6MessageExist || trip.remarksMessageExist || trip.rtuMessageExist) {
                 ImageView warning = new ImageView(context);
                 warning.setImageResource(R.drawable.trip_message_warning);
-                warning.setPadding(8, 7, 0, 0);
+                warning.setPadding((int)(8 * scale), (int)(7 * scale), 0, 0);
 
                 timeLayout.addView(warning);
             }
@@ -1142,11 +1145,11 @@ public class RoutesActivity extends ListActivity
             TextView startAndEndPoint = new TextView(context);
             startAndEndPoint.setText(trip.origin.name + " - " + trip.destination.name);
             startAndEndPoint.setTextColor(0xFF444444); // Dark gray
-            startAndEndPoint.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
-            startAndEndPoint.setPadding(0, 2, 0, 2);
+            startAndEndPoint.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
+            startAndEndPoint.setPadding((int)(5 * scale), (int)(2 * scale), 0, (int)(2 * scale));
             
             LinearLayout routeChanges = new LinearLayout(context);
-            routeChanges.setPadding(0, 5, 0, 0);
+            routeChanges.setPadding((int)(5 * scale), (int)(10 * scale), 0, 0);
 
             int currentTransportCount = 1;
 
@@ -1154,7 +1157,7 @@ public class RoutesActivity extends ListActivity
             for (SubTrip subTrip : trip.subTrips) {
                 ImageView change = new ImageView(context);
                 change.setImageResource(subTrip.transport.getImageResource());
-                change.setPadding(0, 0, 5, 0);
+                change.setPadding(0, 0, (int)(5 * scale), 0);
                 routeChanges.addView(change);
 
                 /*
@@ -1175,7 +1178,7 @@ public class RoutesActivity extends ListActivity
                     //lineNumberView.setText(transport.getShortName());
                     lineNumberView.setText(Integer.toString(lineNumbers.get(0)));
                     //lineNumberView.setPadding(7, 2, 7, 2);
-                    lineNumberView.setPadding(2, 2, 2, 2);
+                    lineNumberView.setPadding((int)(2 * scale), (int)(2 * scale), (int)(2 * scale), (int)(2 * scale));
                     routeChanges.addView(lineNumberView);
                 }
 
@@ -1183,7 +1186,7 @@ public class RoutesActivity extends ListActivity
                     ImageView separator = new ImageView(context);
                     separator.setImageResource(R.drawable.transport_separator);
                     //separator.setPadding(9, 7, 9, 0);
-                    separator.setPadding(5, 7, 5, 0);
+                    separator.setPadding((int)(5 * scale), (int)(7 * scale), (int)(5 * scale), 0);
                     routeChanges.addView(separator);
                 }
 

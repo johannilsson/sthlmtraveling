@@ -70,7 +70,7 @@
 	    android:text="@string/history_label"
         android:padding="3dip"
         android:textStyle="bold"  
-	    android:background="?android:attr/listDivider" />        
+	    android:background="@color/header_background" />        
     <ListView
         android:id="@+id/android:list"
         android:layout_width="fill_parent" 

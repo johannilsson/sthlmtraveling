@@ -23,4 +23,4 @@
 	android:layout_height="wrap_content"
 	android:padding="3dip"
 	android:textStyle="bold"
-	android:background="?android:attr/listDivider" />
+	android:background="@color/header_background" />
