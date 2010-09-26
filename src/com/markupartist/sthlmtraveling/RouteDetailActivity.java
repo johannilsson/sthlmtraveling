@@ -16,6 +16,9 @@
 
 package com.markupartist.sthlmtraveling;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import android.app.AlertDialog;
@@ -86,8 +89,22 @@ public class RouteDetailActivity extends ListActivity {
             endPointView.setText(getMyLocationString(mJourneyQuery.destination));
         }
 
-        TextView dateTimeView = (TextView) findViewById(R.id.route_date_time);
-        dateTimeView.setText(mTrip.toText());
+        // TODO: We should parse the date when getting the results and store a
+        // Time object instead.
+        SimpleDateFormat format = new SimpleDateFormat("dd.MM.yy");
+        Date date = null;
+        try {
+            date = format.parse(mTrip.departureDate);
+        } catch (ParseException e) {
+            ;
+        }
+        SimpleDateFormat otherFormat = new SimpleDateFormat("yyyy-MM-dd");
+        TextView dateView = (TextView) findViewById(R.id.route_date_of_trip);
+        if (date != null) {
+            dateView.setText(getString(R.string.date_of_trip, otherFormat.format(date)));
+        } else {
+            dateView.setVisibility(View.GONE);
+        }
 
         FavoriteButtonHelper favoriteButtonHelper = new FavoriteButtonHelper(
                 this, mFavoritesDbAdapter, mJourneyQuery.origin,
