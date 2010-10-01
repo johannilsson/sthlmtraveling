@@ -74,7 +74,7 @@
 	            </LinearLayout>
 	            <ImageButton
 	                    android:id="@+id/from_menu"
-	                    android:src="@android:drawable/ic_input_get"
+	                    android:src="@drawable/ic_input_get"
 	                    android:layout_width="wrap_content"
 	                    android:layout_height="fill_parent"
 	                    android:paddingLeft="5dip"
@@ -124,7 +124,7 @@
                 </LinearLayout>
                 <ImageButton
                         android:id="@+id/to_menu"
-                        android:src="@android:drawable/ic_input_get"
+                        android:src="@drawable/ic_input_get"
                         android:layout_width="wrap_content"
                         android:layout_height="fill_parent"
                         android:paddingLeft="5dip"
