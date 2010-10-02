@@ -34,6 +34,9 @@ Developers
 If you want to contribute to this project just send me a email, tweet or just
 fork the app. I will do my best help you out if you have any problems.
 
+Please follow the [Code Style Guidelines for Contributors](http://source.android.com/source/code-style.html)
+for Android except for line length that should be kept to 80 colums where possible.  
+
 ### Run tests
 
 To be able to run the tests from Eclipse follow these instructions. Assumes
@@ -69,8 +72,18 @@ STHLM Traveling is open source and licensed under
 Changelog
 ---------
 * NEXT
-    * Make sure tasks are canceled when user leaves the RoutesActivity, closes #27
-    * Also fixed bug when restoring GetEarlierRoutesTask, closes #17
+    * Date of Trip added to the detailed view.
+    * New icons in the journey planner by Sara Smedman.
+    * Spanish translation by Fredrik Jönsson.
+    * SMS tickets is back, now with price and extra information. Patch by Adam Nybäck.
+    * Increased text sizes and margins.
+    * Invalid encoding for origin and destination name in the detailed
+      result, closes #25.
+    * Replaced the token MY_LOCATION with a localized string in the detailed
+      result, closes #35. 
+    * Possibility to change install location (Install on SD card), closes #34.
+    * Make sure tasks are canceled when user leaves the RoutesActivity, closes #27.
+    * Fixed bug when restoring GetEarlierRoutesTask, closes #17.
     * Fixed issue with MY_LOCATION being added to the text input when selecting
       an item from the history, thanks droidgren. Closes #25
     * Improved error handling when the DeparturesActivity got restored after an
