@@ -36,6 +36,7 @@ public class MyLocationManager {
     private MyLocationFoundListener mMyLocationFoundListener;
     private MyLocationListener mGpsLocationListener;
     private MyLocationListener mNetworkLocationListener;
+    private LocationListener mLocationListener;
 
     /**
      * Constructs a new MyLocationManager.
@@ -44,6 +45,10 @@ public class MyLocationManager {
     public MyLocationManager(LocationManager locationManager) {
         mLocationManager = locationManager;
         mLocationRequestTimeOut = new LocationRequestTimeOut();
+    }
+
+    public void setLocationListener(LocationListener locationListener) {
+        mLocationListener = locationListener;
     }
 
     /**
@@ -163,6 +168,10 @@ public class MyLocationManager {
 
         @Override
         public void onLocationChanged(Location location) {
+            if (mLocationListener != null) {
+                mLocationListener.onLocationChanged(location);
+            }
+            
             if (shouldAcceptLocation(location)) {
                 reportLocationFound(location);
                 removeUpdates();
