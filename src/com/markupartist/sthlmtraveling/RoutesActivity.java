@@ -183,7 +183,6 @@ public class RoutesActivity extends ListActivity
         setContentView(R.layout.routes_list);
 
         LocationManager locationManager = (LocationManager)getSystemService(LOCATION_SERVICE);
-
         mMyLocationManager = new MyLocationManager(locationManager);
 
         // Parse data URI       
