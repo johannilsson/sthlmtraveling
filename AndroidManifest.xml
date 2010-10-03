@@ -123,7 +123,9 @@
         </activity>
         <activity android:name=".SettingsActivity"
                   android:label="@string/title_settings"
-                  android:configChanges="locale"></activity>
+                  android:configChanges="locale"
+                  android:theme="@style/android:style/Theme"
+                  ></activity>
         <receiver android:name=".receivers.OnBootReceiver"
                   android:enabled="true" 
                   android:exported="false">
