@@ -6,5 +6,6 @@
     <color name="plate_extra_background">#e4e4e4</color>
     <color name="stroke">#807e77</color>
     <color name="stroke_light">#ffffff</color>
+    <color name="list_divider">#DBDBDB</color>
     <color name="header_background">#CFCFCF</color>
 </resources>

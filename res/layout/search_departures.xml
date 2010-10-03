@@ -72,6 +72,7 @@
         android:textStyle="bold"  
 	    android:background="@color/header_background" />        
     <ListView
+        style="@style/AppListView"
         android:id="@+id/android:list"
         android:layout_width="fill_parent" 
         android:layout_height="fill_parent"

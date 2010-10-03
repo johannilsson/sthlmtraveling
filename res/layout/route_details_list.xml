@@ -81,9 +81,10 @@
     <ImageView
         android:layout_width="fill_parent"
         android:layout_height="1px"
-        android:src="@drawable/stroke"
+        android:src="@color/list_divider"
         />
     <ListView 
+        style="@style/AppListView"
 		android:id="@+id/android:list"
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
