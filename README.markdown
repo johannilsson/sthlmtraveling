@@ -79,16 +79,16 @@ Changelog
     * SMS tickets is back, now with price and extra information. Patch by [Adam Nybäck](http://anyro.se/).
     * Increased text sizes and margins.
     * Invalid encoding for origin and destination name in the detailed
-      result, closes #25.
+      result, closes [#25](http://github.com/johannilsson/sthlmtraveling/issues#issue/25).
     * Replaced the token MY_LOCATION with a localized string in the detailed
-      result, closes #35. 
-    * Possibility to change install location (Install on SD card), closes #34.
-    * Make sure tasks are canceled when user leaves the RoutesActivity, closes #27.
-    * Fixed bug when restoring GetEarlierRoutesTask, closes #17.
+      result, closes [#35](http://github.com/johannilsson/sthlmtraveling/issues#issue/35). 
+    * Possibility to change install location (Install on SD card), closes [#34](http://github.com/johannilsson/sthlmtraveling/issues#issue/34).
+    * Make sure tasks are canceled when user leaves the RoutesActivity, closes [#27](http://github.com/johannilsson/sthlmtraveling/issues#issue/27).
+    * Fixed bug when restoring GetEarlierRoutesTask, closes [#17](http://github.com/johannilsson/sthlmtraveling/issues#issue/17).
     * Fixed issue with MY_LOCATION being added to the text input when selecting
-      an item from the history, thanks droidgren. Closes #25
+      an item from the history, thanks droidgren. Closes [#25](http://github.com/johannilsson/sthlmtraveling/issues#issue/25)
     * Improved error handling when the DeparturesActivity got restored after an
-      orientation change. This closes #16 and as a side effect is also closes #11.  
+      orientation change. This closes #16 and as a side effect is also closes [#11](http://github.com/johannilsson/sthlmtraveling/issues#issue/11).  
 * 2.0.0
     * Search history is visible in the "get" dialog direct
     * Address search integrated in auto completion
