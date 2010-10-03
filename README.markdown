@@ -71,11 +71,12 @@ STHLM Traveling is open source and licensed under
 
 Changelog
 ---------
-* NEXT
+* 2.1.0
+    * Using default Theme in preferences because [issue](http://twitter.com/johanni/status/26117527135) with Sony Ericsson devices.
     * Date of Trip added to the detailed view.
-    * New icons in the journey planner by Sara Smedman.
+    * New arrows and clock icons in the journey planner by [Sara Smedman](http://joforik.net/).
     * Spanish translation by Fredrik Jönsson.
-    * SMS tickets is back, now with price and extra information. Patch by Adam Nybäck.
+    * SMS tickets is back, now with price and extra information. Patch by [Adam Nybäck](http://anyro.se/).
     * Increased text sizes and margins.
     * Invalid encoding for origin and destination name in the detailed
       result, closes #25.
@@ -93,10 +94,8 @@ Changelog
     * Address search integrated in auto completion
     * Reworked history to allow storage of latitude and longitude
     * Various layout fixes 
-* 2.0.0RC4
     * New traffic status view
     * Fixed my location bug
-* 2.0.0RC3
     * Complete rewrite of the journey planner, new backend etc
     * Various icons has been replaced creds to Olof Brickarp
     * Changed to use SL standard icons for transports (with their permission)
