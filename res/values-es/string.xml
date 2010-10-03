@@ -86,7 +86,8 @@
     <string name="metros">Metros</string>
     <string name="buses">Buses</string>
     <string name="trains">Trains</string>
-    <string name="trams">Trams</string>
+    <string name="trams">Lokalbana</string>
+    <string name="tram_cars">Tram Cars</string>
     <string name="now">ahora</string>
     <string name="journey_planner_label">Planear viaje</string>
     <string name="crash_report_mail_subject">STHLM Traveling Crash Report</string>

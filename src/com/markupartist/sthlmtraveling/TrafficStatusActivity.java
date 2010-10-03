@@ -114,6 +114,8 @@ public class TrafficStatusActivity extends Activity {
             return R.string.trains;
         } else if ("TRM".equals(transport)) {
             return R.string.trams;
+        } else if ("TRC".equals(transport)) {
+            return R.string.tram_cars;
         } else {
             return R.string.buses;
         }
@@ -126,6 +128,8 @@ public class TrafficStatusActivity extends Activity {
             return R.drawable.transport_train;
         } else if ("TRM".equals(transport)) {
             return R.drawable.transport_lokalbana;
+        } else if ("TRC".equals(transport)) {
+            return R.drawable.transport_tram_car;
         } else {
             return R.drawable.transport_bus;
         }
