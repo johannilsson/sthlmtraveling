@@ -88,7 +88,7 @@ Changelog
     * Fixed issue with MY_LOCATION being added to the text input when selecting
       an item from the history, thanks droidgren. Closes [#25](http://github.com/johannilsson/sthlmtraveling/issues#issue/25)
     * Improved error handling when the DeparturesActivity got restored after an
-      orientation change. This closes #16 and as a side effect is also closes [#11](http://github.com/johannilsson/sthlmtraveling/issues#issue/11).  
+      orientation change. This closes [#16](http://github.com/johannilsson/sthlmtraveling/issues#issue/16) and as a side effect is also closes [#11](http://github.com/johannilsson/sthlmtraveling/issues#issue/11).  
 * 2.0.0
     * Search history is visible in the "get" dialog direct
     * Address search integrated in auto completion
