@@ -132,6 +132,7 @@ public class PlannerActivity extends Activity implements OnCheckedChangeListener
         fromDialog.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+            	mStartPointAutoComplete.setError(null);
                 showDialog(DIALOG_START_POINT);
             }
         });
@@ -140,6 +141,7 @@ public class PlannerActivity extends Activity implements OnCheckedChangeListener
         toDialog.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+            	mEndPointAutoComplete.setError(null);
                 showDialog(DIALOG_END_POINT);
             }
         });
