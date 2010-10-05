@@ -72,7 +72,8 @@ STHLM Traveling is open source and licensed under
 Changelog
 ---------
 * 2.1.0
-    * 
+    * Added Flurry Analytics v1.24. We need analytics to be able to improve
+      the application and know how users use it.
     * Using default Theme in preferences because [issue](http://twitter.com/johanni/status/26117527135) with Sony Ericsson devices.
     * Date of Trip added to the detailed view.
     * New arrows and clock icons in the journey planner by [Sara Smedman](http://joforik.net/).
