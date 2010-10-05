@@ -256,7 +256,7 @@ public class Planner {
         public int changes;
         public String duration;
         public String tariffZones;
-        public int tariffRemark;
+        public String tariffRemark;
         public String co2;
         public boolean mt6MessageExist;
         public boolean rtuMessageExist;
@@ -275,7 +275,7 @@ public class Planner {
             changes = parcel.readInt();
             duration = parcel.readString();
             tariffZones = parcel.readString();
-            tariffRemark = parcel.readInt();
+            tariffRemark = parcel.readString();
             co2 = parcel.readString();
             mt6MessageExist = (parcel.readInt() == 1) ? true : false;
             rtuMessageExist = (parcel.readInt() == 1) ? true : false;
@@ -288,7 +288,9 @@ public class Planner {
          * @return returns true if this trip can be purchased with SMS.
          */
         public boolean canBuySmsTicket() {
-            return tariffRemark == 2 || tariffRemark == 3 || tariffRemark == 4;
+            return "2".equals(tariffRemark) ||
+                   "3".equals(tariffRemark) ||
+                   "4".equals(tariffRemark);
         }
 
         @Override
@@ -307,7 +309,7 @@ public class Planner {
             dest.writeInt(changes);
             dest.writeString(duration);
             dest.writeString(tariffZones);
-            dest.writeInt(tariffRemark);
+            dest.writeString(tariffRemark);
             dest.writeString(co2);
             dest.writeInt((mt6MessageExist == true) ? 1 : 0);
             dest.writeInt((rtuMessageExist == true) ? 1 : 0);
@@ -345,7 +347,7 @@ public class Planner {
                 trip.tariffZones = json.getString("tariffZones");
             }
             if (json.has("tariffRemark")) {
-                trip.tariffRemark = json.getInt("tariffRemark");
+                trip.tariffRemark = json.getString("tariffRemark");
             }
             trip.remarksMessageExist = json.getBoolean("remarksMessageExist");
             trip.rtuMessageExist = json.getBoolean("rtuMessageExist");
