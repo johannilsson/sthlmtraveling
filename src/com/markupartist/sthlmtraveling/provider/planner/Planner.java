@@ -389,6 +389,7 @@ public class Planner {
                     durationInMinutes = duration.substring(start) + " min";
                 }
             } catch (ParseException e) {
+                Log.e(TAG, "Error parsing duration, " + e.getMessage());
             }
 
             /*int end = departureDate.lastIndexOf(".");
