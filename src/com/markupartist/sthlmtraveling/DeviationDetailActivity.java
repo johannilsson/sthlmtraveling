@@ -16,9 +16,6 @@
 
 package com.markupartist.sthlmtraveling;
 
-import com.markupartist.sthlmtraveling.provider.deviation.Deviation;
-
-import android.app.Activity;
 import android.app.NotificationManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -26,8 +23,10 @@ import android.text.format.Time;
 import android.util.Log;
 import android.widget.TextView;
 
+import com.markupartist.sthlmtraveling.provider.deviation.Deviation;
 
-public class DeviationDetailActivity extends Activity {
+
+public class DeviationDetailActivity extends BaseActivity {
     static String TAG = "DeviationDetailActivity";
     //public static final String EXTRA_DEVIATION_NOTIFICATION_ID = "com.markupartist.sthlmtraveling.deviation.notificationId";
     //public static final String EXTRA_DEVIATION = "com.markupartist.sthlmtraveling.deviation";

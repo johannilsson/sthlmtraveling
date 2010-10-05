@@ -9,7 +9,6 @@ import android.content.DialogInterface.OnClickListener;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
 import android.preference.Preference;
-import android.preference.PreferenceActivity;
 import android.preference.PreferenceScreen;
 import android.widget.Toast;
 
@@ -17,7 +16,7 @@ import com.markupartist.sthlmtraveling.provider.FavoritesDbAdapter;
 import com.markupartist.sthlmtraveling.provider.HistoryDbAdapter;
 import com.markupartist.sthlmtraveling.service.DeviationService;
 
-public class SettingsActivity extends PreferenceActivity
+public class SettingsActivity extends BasePreferenceActivity
         implements OnSharedPreferenceChangeListener {
     private static final String TAG = "SettingsActivity";
     private static final int DIALOG_CLEAR_SEARCH_HISTORY = 0;

@@ -13,7 +13,7 @@ import android.util.Log;
 import com.markupartist.sthlmtraveling.utils.ErrorReporter;
 
 public class MyApplication extends Application {
-
+    public static String ANALYTICS_KEY = "JUSQKB45DEN62VRQVBU9";
     static String TAG = "StApplication";
 
     @Override

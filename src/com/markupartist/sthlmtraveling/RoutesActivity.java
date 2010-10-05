@@ -23,12 +23,11 @@ import java.util.Map;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
+import android.content.DialogInterface.OnClickListener;
 import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
@@ -50,9 +49,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
-import android.widget.SimpleAdapter.ViewBinder;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.SimpleAdapter.ViewBinder;
 
 import com.markupartist.sthlmtraveling.MyLocationManager.MyLocationFoundListener;
 import com.markupartist.sthlmtraveling.SectionedAdapter.Section;
@@ -60,12 +59,12 @@ import com.markupartist.sthlmtraveling.provider.FavoritesDbAdapter;
 import com.markupartist.sthlmtraveling.provider.deviation.DeviationStore;
 import com.markupartist.sthlmtraveling.provider.planner.JourneyQuery;
 import com.markupartist.sthlmtraveling.provider.planner.Planner;
-import com.markupartist.sthlmtraveling.provider.planner.Planner.Response;
-import com.markupartist.sthlmtraveling.provider.planner.Planner.SubTrip;
-import com.markupartist.sthlmtraveling.provider.planner.Planner.Trip2;
 import com.markupartist.sthlmtraveling.provider.planner.Route;
 import com.markupartist.sthlmtraveling.provider.planner.Stop;
 import com.markupartist.sthlmtraveling.provider.planner.Trip;
+import com.markupartist.sthlmtraveling.provider.planner.Planner.Response;
+import com.markupartist.sthlmtraveling.provider.planner.Planner.SubTrip;
+import com.markupartist.sthlmtraveling.provider.planner.Planner.Trip2;
 
 /**
  * Routes activity
@@ -79,7 +78,7 @@ import com.markupartist.sthlmtraveling.provider.planner.Trip;
  * All parameters needs to be url encoded. Time is optional, but if provided it must be in
  * RFC 2445 format.
  */
-public class RoutesActivity extends ListActivity
+public class RoutesActivity extends BaseListActivity
         implements MyLocationFoundListener {
     /**
      * The Journey

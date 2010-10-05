@@ -16,7 +16,6 @@
 
 package com.markupartist.sthlmtraveling;
 
-import android.app.ListActivity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -30,7 +29,7 @@ import android.widget.SimpleCursorAdapter.ViewBinder;
 import com.markupartist.sthlmtraveling.provider.FavoritesDbAdapter;
 import com.markupartist.sthlmtraveling.provider.planner.Stop;
 
-public class FavoritesActivity extends ListActivity {
+public class FavoritesActivity extends BaseListActivity {
 
     private FavoritesDbAdapter mFavoritesDbAdapter;
 

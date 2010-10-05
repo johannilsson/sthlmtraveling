@@ -34,7 +34,6 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.Toast;
 
 import com.google.android.maps.GeoPoint;
-import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 import com.google.android.maps.MyLocationOverlay;
@@ -49,7 +48,7 @@ import de.android1.overlaymanager.ManagedOverlayItem;
 import de.android1.overlaymanager.OverlayManager;
 import de.android1.overlaymanager.ZoomEvent;
 
-public class PointOnMapActivity extends MapActivity {
+public class PointOnMapActivity extends BaseMapActivity {
     private static final String TAG = "PointOnMapActivity";
 
     public static String EXTRA_STOP = "com.markupartist.sthlmtraveling.pointonmap.stop";

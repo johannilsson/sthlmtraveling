@@ -3,7 +3,6 @@ package com.markupartist.sthlmtraveling;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import android.app.ListActivity;
 import android.content.Intent;
 import android.location.Location;
 import android.location.LocationListener;
@@ -22,7 +21,7 @@ import com.markupartist.sthlmtraveling.MyLocationManager.MyLocationFoundListener
 import com.markupartist.sthlmtraveling.provider.site.SitesStore;
 import com.markupartist.sthlmtraveling.provider.site.StopPoint;
 
-public class NearbyActivity extends ListActivity implements LocationListener {
+public class NearbyActivity extends BaseListActivity implements LocationListener {
     private static String TAG = "NearbyActivity";
     private MyLocationManager mMyLocationManager;
     private TextView mCurrentLocationText;

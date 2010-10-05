@@ -23,7 +23,6 @@ import java.util.List;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.ListActivity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -49,7 +48,7 @@ import com.markupartist.sthlmtraveling.provider.planner.Route;
 import com.markupartist.sthlmtraveling.provider.planner.Planner.SubTrip;
 import com.markupartist.sthlmtraveling.provider.planner.Planner.Trip2;
 
-public class RouteDetailActivity extends ListActivity {
+public class RouteDetailActivity extends BaseListActivity {
     public static final String TAG = "RouteDetailActivity";
     
     public static final String EXTRA_JOURNEY_TRIP =

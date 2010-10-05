@@ -24,7 +24,6 @@ import java.util.Map.Entry;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -52,7 +51,7 @@ import com.markupartist.sthlmtraveling.provider.site.Site;
 import com.markupartist.sthlmtraveling.provider.site.SitesStore;
 
 
-public class DeparturesActivity extends ListActivity {
+public class DeparturesActivity extends BaseListActivity {
     static String EXTRA_SITE_NAME = "com.markupartist.sthlmtraveling.siteName";
 
     private static final String STATE_GET_SITES_IN_PROGRESS =

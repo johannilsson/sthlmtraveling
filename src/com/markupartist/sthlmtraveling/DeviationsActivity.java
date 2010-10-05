@@ -22,7 +22,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import android.app.Dialog;
-import android.app.ListActivity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -47,7 +46,7 @@ import com.markupartist.sthlmtraveling.provider.departure.Departure;
 import com.markupartist.sthlmtraveling.provider.deviation.Deviation;
 import com.markupartist.sthlmtraveling.provider.deviation.DeviationStore;
 
-public class DeviationsActivity extends ListActivity {
+public class DeviationsActivity extends BaseListActivity {
     private static final String STATE_GET_DEVIATIONS_IN_PROGRESS =
         "com.markupartist.sthlmtraveling.getdeviations.inprogress";
     public static final String DEVIATION_FILTER_ACTION =

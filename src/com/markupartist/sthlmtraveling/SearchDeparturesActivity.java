@@ -16,33 +16,23 @@
 
 package com.markupartist.sthlmtraveling;
 
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.ListActivity;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AutoCompleteTextView;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
-import android.widget.TextView;
-import android.widget.SimpleCursorAdapter.ViewBinder;
 
-import com.markupartist.sthlmtraveling.provider.FavoritesDbAdapter;
 import com.markupartist.sthlmtraveling.provider.HistoryDbAdapter;
 import com.markupartist.sthlmtraveling.provider.planner.Planner;
 import com.markupartist.sthlmtraveling.provider.planner.Stop;
 
 
-public class SearchDeparturesActivity extends ListActivity {
+public class SearchDeparturesActivity extends BaseListActivity {
     static String TAG = "SearchDeparturesActivity";
     private static final int DIALOG_HISTORY = 0;
     private static final int DIALOG_MORE = 1;
