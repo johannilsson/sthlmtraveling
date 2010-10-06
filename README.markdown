@@ -72,6 +72,7 @@ STHLM Traveling is open source and licensed under
 Changelog
 ---------
 * 2.1.0
+    * Changed to use json instead of xml for getting site data from the backend.
     * Mapped the bus icon for närtrafiken.  
     * Added Flurry Analytics v1.24. We need analytics to be able to improve
       the application and know how users use it.
