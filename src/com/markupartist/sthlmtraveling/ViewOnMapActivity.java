@@ -60,6 +60,8 @@ public class ViewOnMapActivity extends BaseMapActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.point_on_map);
 
+        registerEvent("View on map");
+
         Bundle extras = getIntent().getExtras();
         Location location = (Location) extras.getParcelable(EXTRA_LOCATION);
         String markerText = extras.getString(EXTRA_MARKER_TEXT);

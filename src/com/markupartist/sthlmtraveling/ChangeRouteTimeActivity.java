@@ -16,7 +16,6 @@
 
 package com.markupartist.sthlmtraveling;
 
-import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
@@ -32,9 +31,8 @@ import android.widget.Spinner;
 import android.widget.TimePicker;
 
 import com.markupartist.sthlmtraveling.provider.planner.JourneyQuery;
-import com.markupartist.sthlmtraveling.provider.planner.Stop;
 
-public class ChangeRouteTimeActivity extends Activity {
+public class ChangeRouteTimeActivity extends BaseActivity {
     static final String TAG = "ChangeRouteTimeActivity"; 
     static final int DIALOG_DATE = 0;
     static final int DIALOG_TIME = 1;
@@ -47,6 +45,9 @@ public class ChangeRouteTimeActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.change_route_time);
+        
+        registerEvent("Change route time");
+        
         setTitle(getText(R.string.change_date_and_time));
 
         Bundle extras = getIntent().getExtras();

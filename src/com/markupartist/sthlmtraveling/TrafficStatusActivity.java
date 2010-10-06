@@ -47,6 +47,8 @@ public class TrafficStatusActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.traffic_status);
 
+        registerEvent("Traffic status");
+
         Button allDeviations = (Button) findViewById(R.id.traffic_status_btn_all_deviations);
         allDeviations.setOnClickListener(new OnClickListener() {
             @Override

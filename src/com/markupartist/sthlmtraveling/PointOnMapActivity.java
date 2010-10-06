@@ -70,7 +70,7 @@ public class PointOnMapActivity extends BaseMapActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.point_on_map);
 
-        Log.d(TAG, "init point on map...");
+        registerEvent("Point on map");
         /*
         final AutoCompleteTextView locationSearch = (AutoCompleteTextView) findViewById(R.id.location_search);
         ImageButton locationSearchButton = (ImageButton) findViewById(R.id.location_search_btn);

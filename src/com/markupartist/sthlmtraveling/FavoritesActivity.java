@@ -38,6 +38,7 @@ public class FavoritesActivity extends BaseListActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.favorites_list);
 
+        registerEvent("Favorites");
         mFavoritesDbAdapter = new FavoritesDbAdapter(this).open();
 
         fillData();

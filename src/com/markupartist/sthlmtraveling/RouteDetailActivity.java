@@ -69,6 +69,8 @@ public class RouteDetailActivity extends BaseListActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.route_details_list);
 
+        registerEvent("Route details");
+
         Bundle extras = getIntent().getExtras();
 
         mTrip = extras.getParcelable(EXTRA_JOURNEY_TRIP);

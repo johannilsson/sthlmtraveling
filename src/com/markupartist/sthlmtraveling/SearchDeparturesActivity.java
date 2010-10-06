@@ -49,6 +49,9 @@ public class SearchDeparturesActivity extends BaseListActivity {
         // remember this to change the behavior upon a search.
         if (Intent.ACTION_CREATE_SHORTCUT.equals(getIntent().getAction())) {
             mCreateShortcut = true;
+            registerEvent("Create departure shortcut");
+        } else {
+            registerEvent("Search departures");
         }
 
 

@@ -181,10 +181,13 @@ public class PlannerActivity extends BaseActivity implements OnCheckedChangeList
 
         // Handle create shortcut.
         if (mCreateShortcut) {
+            registerEvent("Planner create shortcut");
             setTitle(R.string.create_shortcut_label);
             search.setText(getText(R.string.create_shortcut_label));
             RadioGroup chooseTimeGroup = (RadioGroup) findViewById(R.id.planner_choose_time_group);
             chooseTimeGroup.setVisibility(View.GONE);
+        } else {
+            registerEvent("Planner");
         }
     }
 

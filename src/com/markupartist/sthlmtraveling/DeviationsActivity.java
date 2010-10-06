@@ -65,6 +65,8 @@ public class DeviationsActivity extends BaseListActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.deviations_list);
 
+        registerEvent("Deviations");
+
         mProgress = (LinearLayout) findViewById(R.id.search_progress);
         mProgress.setVisibility(View.GONE);
 

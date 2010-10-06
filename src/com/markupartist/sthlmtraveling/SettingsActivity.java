@@ -12,6 +12,7 @@ import android.preference.Preference;
 import android.preference.PreferenceScreen;
 import android.widget.Toast;
 
+import com.flurry.android.FlurryAgent;
 import com.markupartist.sthlmtraveling.provider.FavoritesDbAdapter;
 import com.markupartist.sthlmtraveling.provider.HistoryDbAdapter;
 import com.markupartist.sthlmtraveling.service.DeviationService;
@@ -30,6 +31,8 @@ public class SettingsActivity extends BasePreferenceActivity
         super.onCreate(savedInstanceState);
 
         addPreferencesFromResource(R.xml.preferences);
+
+        registerEvent("Settings");
 
         mHistoryDbAdapter = new HistoryDbAdapter(this).open();
         mFavoritesDbAdapter = new FavoritesDbAdapter(this).open();
@@ -51,6 +54,12 @@ public class SettingsActivity extends BasePreferenceActivity
             Toast.makeText(this, R.string.restart_app_for_full_effect,
                     Toast.LENGTH_LONG).show();
         } else if (key.equals("notification_deviations_enabled")) {
+            boolean enabled = sharedPreferences.getBoolean("notification_deviations_enabled", false);
+            if (enabled) {
+                registerEvent("Starting deviation service");
+            } else {
+                registerEvent("Disabled deviation service");
+            }
             DeviationService.startAsRepeating(SettingsActivity.this);
         }
 

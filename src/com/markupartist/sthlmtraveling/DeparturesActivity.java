@@ -95,6 +95,8 @@ public class DeparturesActivity extends BaseListActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.departures_list);
 
+        registerEvent("Departures");
+
         Bundle extras = getIntent().getExtras();
         mSiteName = extras.getString(EXTRA_SITE_NAME);
         
