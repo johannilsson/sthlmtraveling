@@ -631,7 +631,7 @@ public class Planner {
         }
 
         public int getImageResource() {
-            if ("BUS".equals(type)) {
+            if ("BUS".equals(type) || "NAR".equals(type)) {
                 return R.drawable.transport_bus;
             } else if ("MET".equals(type)) {
                 if (name.contains("grön")) {
@@ -651,6 +651,7 @@ public class Planner {
                 return R.drawable.transport_boat;
             }
 
+            Log.d(TAG, "Unknown transport type " + type);
             return R.drawable.transport_unkown;
         }
 
