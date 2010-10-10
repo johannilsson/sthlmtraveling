@@ -324,6 +324,8 @@ public class RouteDetailActivity extends BaseListActivity {
      * @param reducedPrice True if the price is reduced, false otherwise. 
      */
     public void sendSms(boolean reducedPrice) {
+        registerEvent("Buy SMS Ticket");
+
         final Intent intent = new Intent(Intent.ACTION_VIEW);
 
         String price = reducedPrice ? "R" : "H";
