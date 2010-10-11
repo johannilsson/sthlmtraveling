@@ -114,6 +114,11 @@ public class PlannerActivity extends BaseActivity implements OnCheckedChangeList
 
         mStartPointAutoComplete = createAutoCompleteTextView(R.id.from, R.id.from_progress, mStartPoint);
         mEndPointAutoComplete = createAutoCompleteTextView(R.id.to, R.id.to_progress, mEndPoint);
+        
+        // Set "my location" as default start point
+        mStartPoint.setName(Stop.TYPE_MY_LOCATION);
+        mStartPointAutoComplete.setText(getText(R.string.my_location));
+
 
         try {
             mHistoryDbAdapter = new HistoryDbAdapter(this).open();
@@ -195,13 +200,16 @@ public class PlannerActivity extends BaseActivity implements OnCheckedChangeList
     protected void onResume() {
         super.onResume();
 
-        if (mTime != null) {
-            mTime.setToNow();
-            onTimeChanged();
-        }
+//        if (mTime != null) {
+//            mTime.setToNow();
+//            onTimeChanged();
+//        }
         if (!mStartPoint.hasName()) {
-            mStartPointAutoComplete.setText("");
+            mStartPoint.setName(Stop.TYPE_MY_LOCATION);
+            mStartPointAutoComplete.setText(getText(R.string.my_location));
+//            mStartPointAutoComplete.setText("");
         }
+        
         if (!mEndPoint.hasName()) {
             mEndPointAutoComplete.setText("");
         }
