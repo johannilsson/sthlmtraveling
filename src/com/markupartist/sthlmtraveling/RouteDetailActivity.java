@@ -16,6 +16,7 @@
 
 package com.markupartist.sthlmtraveling;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -28,6 +29,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -86,6 +88,32 @@ public class RouteDetailActivity extends BaseListActivity {
         startPointView.setText(getLocationName(mJourneyQuery.origin));
         endPointView.setText(getLocationName(mJourneyQuery.destination));
 
+        String durationInMinutes = mTrip.duration;
+        try {
+            DateFormat df = new SimpleDateFormat("H:mm");
+            Date tripDate = df.parse(mTrip.duration);
+            if (tripDate.getHours() == 0) {
+                int start = mTrip.duration.indexOf(":") + 1;
+                if (mTrip.duration.substring(start).startsWith("0")) {
+                    start++;
+                }
+                durationInMinutes = mTrip.duration.substring(start) + " min";
+            }
+        } catch (ParseException e) {
+            Log.e(TAG, "Error parsing duration, " + e.getMessage());
+        }
+        
+        StringBuilder timeBuilder = new StringBuilder();
+        timeBuilder.append(mTrip.departureTime);
+        timeBuilder.append(" - ");
+        timeBuilder.append(mTrip.arrivalTime);
+        timeBuilder.append(" (");
+        timeBuilder.append(durationInMinutes);
+        timeBuilder.append(")");
+        
+        TextView timeView = (TextView) findViewById(R.id.route_date_time);
+        timeView.setText(timeBuilder.toString());
+        
         // TODO: We should parse the date when getting the results and store a
         // Time object instead.
         SimpleDateFormat format = new SimpleDateFormat("dd.MM.yy");
