@@ -37,7 +37,6 @@ public class DeparturesStore {
                 + "/dpsdepartures/" + site.getId()
                 + "/?key=" + get(KEY));
 
-        HttpEntity entity = null;
         final HttpResponse response = HttpManager.execute(get);
 
         if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
@@ -46,19 +45,22 @@ public class DeparturesStore {
             throw new IOException("A remote server error occurred when getting departures.");
         }
 
-        entity = response.getEntity();
+        HttpEntity entity = response.getEntity();
+    	if (entity == null) {
+            Log.w(TAG, "HttpEntity is null");
+    		throw new IllegalArgumentException(TAG + ", HttpEntity is null"); // TODO IllegalArgumentException???
+    	}
 
         HashMap<String, DepartureList> departures =
             new HashMap<String, DepartureList>();
         parseResponse(entity.getContent(), departures);
 
-        if (filter == null) {
-            return departures;
+        if (filter != null) {
+	        for (Entry<String, DepartureList> entry : departures.entrySet()) {
+	            entry.getValue().filter(filter);
+	        }
         }
-
-        for (Entry<String, DepartureList> entry : departures.entrySet()) {
-            entry.getValue().filter(filter);
-        }
+        
         return departures;
     }
 
