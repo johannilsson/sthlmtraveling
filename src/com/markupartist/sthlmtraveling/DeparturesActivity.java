@@ -554,6 +554,9 @@ public class DeparturesActivity extends BaseListActivity {
                 mSite = params[0];
                 DeparturesStore departures = new DeparturesStore();
                 return departures.find(params[0], null);
+            } catch (IllegalArgumentException e) {
+                mWasSuccess = false;
+                return null;
             } catch (IOException e) {
                 mWasSuccess = false;
                 return null;

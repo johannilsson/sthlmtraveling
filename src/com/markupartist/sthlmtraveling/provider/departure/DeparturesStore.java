@@ -31,7 +31,12 @@ public class DeparturesStore {
     }
 
     public HashMap<String, DepartureList> find(Site site,
-            DepartureFilter filter) throws IOException {
+            DepartureFilter filter) throws IllegalArgumentException, IOException {
+    	if (site == null) {
+            Log.w(TAG, "Site is null");
+    		throw new IllegalArgumentException(TAG + ", Site is null");
+    	}
+    	
         Log.d(TAG, "About to get departures for " + site.getName());
         final HttpGet get = new HttpGet(apiEndpoint()
                 + "/dpsdepartures/" + site.getId()
