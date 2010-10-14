@@ -86,7 +86,7 @@
     <string name="metros">Metros</string>
     <string name="buses">Autobuses</string>
     <string name="trains">Trenes</string>
-    <string name="trams">Lokalbana</string>
+    <string name="trams">Tram</string>
     <string name="tram_cars">Tranvía</string>
     <string name="now">ahora</string>
     <string name="journey_planner_label">Planear viaje</string>
