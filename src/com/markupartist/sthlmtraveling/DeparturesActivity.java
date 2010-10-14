@@ -247,7 +247,7 @@ public class DeparturesActivity extends BaseListActivity {
         } else if ("TRAMS".equals(transport)) {
             return getString(R.string.trams);
         }
-        throw new IllegalArgumentException("Unkown transport");
+        throw new IllegalArgumentException("Unknown transport");
     }
 
     @Override
