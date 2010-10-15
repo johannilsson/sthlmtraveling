@@ -40,10 +40,10 @@
     <string name="change_date_and_time">Cambiar la fecha y hora</string>
     <string name="reverse_start_end">Buscar ruta para el trayecto inverso</string>
     <string name="about">Acerca de</string>
-    <string name="about_this_app">STHLM Traveling ha sido desarrollado por by Johan Nilsson, por favor, contacte con el si tiene ideas o ha experimentado problemas usando el botón Comentarios.\n\nToda la información es almacenada con el consentimiento de SL - Stockholm Public Transport.\n\nPara mejorar más la aplicación, información anónima es almacenada usando Flurry, http://flurry.com.\n\n<b>Créditos</b>\n<li>Icono de aplicación &amp; ideas Olof Brickarp\nhttp://www.yay.se</li>\n<li>Traducción al sueco por Jean Diarbakerli</li>\n<li>Traducción al español por Valeria Padilla y Miguel Ángel Domínguez Coloma</li>\n<li>Parches por Fredrik Jönsson\nhttp://github.com/lk95jofr</li>\n<li>Parches por Adam Nybäck\nhttp://anyro.se</li>\n<li>Parches por Morgan Christiansson\nhttp://screeninteraction.com</li>\n<li>Iconos por Fredrik Broman\nhttp://fredrikbroman.com</li>\n<li>Iconos por Android Icons\nhttp://androidicons.com</li>\n<li>Comentarios por Swedroid\nhttp://swedroid.se</li>\n\nCódigo fuente http://github.com/johannilsson/sthlmtraveling</string>
+    <string name="about_this_app">STHLM Traveling ha sido desarrollado por by Johan Nilsson, por favor, contacte con el si tiene ideas o ha experimentado problemas usando el botón Comentar.\n\nToda la información es almacenada con el consentimiento de SL - Stockholm Public Transport.\n\nPara mejorar más la aplicación, información anónima es almacenada usando Flurry, http://flurry.com.\n\n<b>Créditos</b>\n<li>Icono de aplicación &amp; ideas Olof Brickarp\nhttp://www.yay.se</li>\n<li>Traducción al sueco por Jean Diarbakerli</li>\n<li>Traducción al español por Valeria Padilla y Miguel Ángel Domínguez Coloma</li>\n<li>Parches por Fredrik Jönsson\nhttp://github.com/lk95jofr</li>\n<li>Parches por Adam Nybäck\nhttp://anyro.se</li>\n<li>Parches por Morgan Christiansson\nhttp://screeninteraction.com</li>\n<li>Iconos por Fredrik Broman\nhttp://fredrikbroman.com</li>\n<li>Iconos por Android Icons\nhttp://androidicons.com</li>\n<li>Comentarios por Swedroid\nhttp://swedroid.se</li>\n\nCódigo fuente http://github.com/johannilsson/sthlmtraveling</string>
     <string name="donate">Donar</string>
     <string name="donate_url">http://pledgie.com/campaigns/6527</string>
-    <string name="feedback">Comentarios</string>
+    <string name="feedback">Comentar</string>
     <string name="send_email">Enviar un e-mail</string>
     <string name="favorites_label">Favoritos</string>
     <string name="no_favorites"><b>No hay favoritos aún...</b>\nAñade o borra favoritos pulsando el botón en forma de estrella después de una búsqueda.</string>
@@ -76,13 +76,13 @@
     <string name="departing_on">Salida a las <xliff:g id="time">%s</xliff:g> en <xliff:g id="date">%s</xliff:g></string>
     <string name="arriving_by">Llegada a las <xliff:g id="time">%s</xliff:g> en <xliff:g id="date">%s</xliff:g></string>
     <string name="departures">Salidas</string>
-    <string name="departures_for">Salidas para <xliff:g id="site_name">%s</xliff:g></string>
+    <string name="departures_for">Salidas desde <xliff:g id="site_name">%s</xliff:g></string>
     <string name="date_of_trip">Fecha del viaje: <xliff:g id="date">%s</xliff:g></string>
     <string name="no_departures"><b>No hay salidas en este momento</b>\nSe muestran salidas dentro de 10 minutos. Por favor, vuelva a actualizar usando la opción del menú en un segundos.</string>
     <string name="site_name">Ubicación</string>
-    <string name="stop_label">Parar</string>
+    <string name="stop_label">Parada</string>
     <string name="refresh">Actualizar</string>
-    <string name="show_departures_for_start">Dep. for start</string>
+    <string name="show_departures_for_start">Sal. desde el inicio</string>
     <string name="metros">Metros</string>
     <string name="buses">Autobuses</string>
     <string name="trains">Trenes</string>
@@ -116,7 +116,7 @@
     <string name="show_all">Mostrar todo</string>
     <!-- Preferences -->
     <string name="restart_app_for_full_effect">Reinicie la aplicación para la que los cambios surjan efecto.</string>
-    <string name="dialog_general_preferences">Básicos</string>
+    <string name="dialog_general_preferences">Básico</string>
     <string name="dialog_notification_preferences">Notificación</string>
     <string name="title_language_preference">Idioma</string>
     <string name="summary_language_preference">Escoja su idioma preferido.</string>
@@ -138,5 +138,5 @@
     <string name="search_clear_favorites_preference">Borrar favoritos</string>
     <string name="search_clear_favorites_summary_preference">Borrar todos los favoritos.</string>
     <string name="search_clear_favorites_confirm">¿Está seguro que desea borrar todos los favoritos?</string>
-    <string name="search_favorites_cleared">Favoritos borrado</string>
+    <string name="search_favorites_cleared">Favoritos borrados</string>
 </resources>
