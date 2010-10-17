@@ -247,7 +247,7 @@ public class DeparturesActivity extends BaseListActivity {
         } else if ("TRAMS".equals(transport)) {
             return getString(R.string.trams);
         }
-        throw new IllegalArgumentException("Unkown transport");
+        throw new IllegalArgumentException("Unknown transport");
     }
 
     @Override
@@ -554,6 +554,9 @@ public class DeparturesActivity extends BaseListActivity {
                 mSite = params[0];
                 DeparturesStore departures = new DeparturesStore();
                 return departures.find(params[0], null);
+            } catch (IllegalArgumentException e) {
+                mWasSuccess = false;
+                return null;
             } catch (IOException e) {
                 mWasSuccess = false;
                 return null;

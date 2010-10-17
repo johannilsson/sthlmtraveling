@@ -212,7 +212,7 @@ public class HistoryDbAdapter {
         }
 
         @Override
-        public void onCreate(SQLiteDatabase db) {
+        public void onCreate(SQLiteDatabase db) throws SQLException {
             db.execSQL(DATABASE_CREATE);
         }
 
@@ -247,15 +247,27 @@ public class HistoryDbAdapter {
         }
 
         private boolean upgradeToVersion6(SQLiteDatabase db) {
-            db.execSQL("ALTER TABLE history ADD COLUMN latitude INTEGER NULL;");
-            db.execSQL("ALTER TABLE history ADD COLUMN longitude INTEGER NULL;");
-            db.execSQL("ALTER TABLE history ADD COLUMN site_id INTEGER NULL;");
+        	try {
+	            db.execSQL("ALTER TABLE history ADD COLUMN latitude INTEGER NULL;");
+	            db.execSQL("ALTER TABLE history ADD COLUMN longitude INTEGER NULL;");
+	            db.execSQL("ALTER TABLE history ADD COLUMN site_id INTEGER NULL;");
+        	} catch (SQLException e) {
+        		Log.e(TAG, "Upgrade to version 6 failed, " + e.getMessage());
+        		return false;
+        	}
+        	
             return true;
         }
 
         private boolean upgradeToVersion5(SQLiteDatabase db) {
-            db.execSQL("DROP TABLE IF EXISTS history");
-            onCreate(db);
+        	try {
+	            db.execSQL("DROP TABLE IF EXISTS history");
+	            onCreate(db);
+        	} catch (SQLException e) {
+        		Log.e(TAG, "Upgrade to version 5 failed, " + e.getMessage());
+        		return false;
+        	}
+        	
             return true;
         }
     }
