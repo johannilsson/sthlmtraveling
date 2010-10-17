@@ -62,6 +62,7 @@ import com.markupartist.sthlmtraveling.provider.planner.Planner;
 import com.markupartist.sthlmtraveling.provider.planner.Route;
 import com.markupartist.sthlmtraveling.provider.planner.Stop;
 import com.markupartist.sthlmtraveling.provider.planner.Trip;
+import com.markupartist.sthlmtraveling.provider.planner.Planner.BadResponse;
 import com.markupartist.sthlmtraveling.provider.planner.Planner.Response;
 import com.markupartist.sthlmtraveling.provider.planner.Planner.SubTrip;
 import com.markupartist.sthlmtraveling.provider.planner.Planner.Trip2;
@@ -131,6 +132,7 @@ public class RoutesActivity extends BaseListActivity
     private static final int DIALOG_SEARCH_ROUTES_NO_RESULT = 5;
     private static final int DIALOG_START_POINT_ALTERNATIVES = 6;
     private static final int DIALOG_END_POINT_ALTERNATIVES = 7;
+    private static final int DIALOG_SEARCH_ROUTES_ERROR = 8;
 
     private static final int ADAPTER_EARLIER = 0;
     private static final int ADAPTER_ROUTES = 1;
@@ -152,7 +154,9 @@ public class RoutesActivity extends BaseListActivity
         "com.markupartist.sthlmtraveling.getearlierroutes.inprogress";
     private static final String STATE_GET_LATER_ROUTES_IN_PROGRESS =
         "com.markupartist.sthlmtraveling.getlaterroutes.inprogress";
-
+    private static final String STATE_ROUTE_ERROR_CODE =
+        "com.markupartist.sthlmtraveling.state.routeerrorcode";
+    
     private RoutesAdapter mRouteAdapter;
     private MultipleListAdapter mMultipleListAdapter;
     private TextView mFromView;
@@ -173,6 +177,7 @@ public class RoutesActivity extends BaseListActivity
     //private Trip mTrip;
     private Response mPlannerResponse;
     private JourneyQuery mJourneyQuery;
+    private String mRouteErrorCode;
 
     private Bundle mSavedState;
 
@@ -343,6 +348,10 @@ public class RoutesActivity extends BaseListActivity
         restoreSearchRoutesTask(savedInstanceState);
         restoreGetEarlierRoutesTask(savedInstanceState);
         restoreGetLaterRoutesTask(savedInstanceState);
+
+        if (savedInstanceState.containsKey(STATE_ROUTE_ERROR_CODE)) {
+            mRouteErrorCode = savedInstanceState.getString(STATE_ROUTE_ERROR_CODE);
+        }
     }
 
     @Override
@@ -352,6 +361,11 @@ public class RoutesActivity extends BaseListActivity
         saveSearchRoutesTask(outState);
         saveGetEarlierRoutesTask(outState);
         saveGetLaterRoutesTask(outState);
+
+        if (!TextUtils.isEmpty(mRouteErrorCode)) {
+            outState.putString(STATE_ROUTE_ERROR_CODE, mRouteErrorCode);
+        }
+
         mSavedState = outState;
     }
 
@@ -928,6 +942,18 @@ public class RoutesActivity extends BaseListActivity
             })
             .setNegativeButton(getText(R.string.cancel), null)
             .create();
+        case DIALOG_SEARCH_ROUTES_ERROR:
+            return new AlertDialog.Builder(this)
+            .setTitle(mRouteErrorCode)
+            .setMessage(mRouteErrorCode)
+            .setPositiveButton(getText(R.string.back), new OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    finish();
+                }
+            })
+            .setNegativeButton(getText(R.string.cancel), null)
+            .create();
         case DIALOG_START_POINT_ALTERNATIVES:
             /*
             ArrayAdapter<Site> startAlternativesAdapter =
@@ -1253,6 +1279,7 @@ public class RoutesActivity extends BaseListActivity
      */
     private class SearchRoutesTask extends AsyncTask<JourneyQuery, Void, Planner.Response> {
         private boolean mWasSuccess = true;
+        private String mErrorCode;
 
         @Override
         public void onPreExecute() {
@@ -1267,6 +1294,10 @@ public class RoutesActivity extends BaseListActivity
                 mWasSuccess = false;
                 // TODO: We should return the Trip here as well.
                 return null;
+            } catch (BadResponse e) {
+                mWasSuccess = false;
+                mErrorCode = e.errorCode;
+                return null;
             }
         }
 
@@ -1277,7 +1308,12 @@ public class RoutesActivity extends BaseListActivity
             if (result != null && !result.trips.isEmpty()) {
                 onSearchRoutesResult(result);
             } else if (!mWasSuccess) {
-                showDialog(DIALOG_SEARCH_ROUTES_NETWORK_PROBLEM);
+                if (TextUtils.isEmpty(mErrorCode)) {
+                    showDialog(DIALOG_SEARCH_ROUTES_NETWORK_PROBLEM);
+                } else {
+                    mRouteErrorCode = mErrorCode;
+                    showDialog(DIALOG_SEARCH_ROUTES_ERROR);
+                }
             }/* else if (result.hasAlternatives()) {
                 onSiteAlternatives(result);
             }*/ else {
@@ -1291,6 +1327,7 @@ public class RoutesActivity extends BaseListActivity
      */
     private class GetEarlierRoutesTask extends AsyncTask<JourneyQuery, Void, Planner.Response> {
         private boolean mWasSuccess = true;
+        private String mErrorCode;
 
         @Override
         public void onPreExecute() {
@@ -1303,6 +1340,9 @@ public class RoutesActivity extends BaseListActivity
                 return Planner.getInstance().findPreviousJourney(params[0]);
             } catch (IOException e) {
                 mWasSuccess = false;
+            } catch (BadResponse e) {
+                mWasSuccess = false;
+                mErrorCode = e.errorCode;
             }
             return null;
         }
@@ -1314,7 +1354,12 @@ public class RoutesActivity extends BaseListActivity
                 //mTrip.setRoutes(result);
                 onSearchRoutesResult(result);
             } else if (!mWasSuccess) {
-                showDialog(DIALOG_GET_EARLIER_ROUTES_NETWORK_PROBLEM);
+                if (TextUtils.isEmpty(mErrorCode)) {
+                    showDialog(DIALOG_GET_EARLIER_ROUTES_NETWORK_PROBLEM);
+                } else {
+                    mRouteErrorCode = mErrorCode;
+                    showDialog(DIALOG_SEARCH_ROUTES_ERROR);
+                }
             } else {
                 showDialog(DIALOG_GET_ROUTES_SESSION_TIMEOUT);
             }
@@ -1326,6 +1371,7 @@ public class RoutesActivity extends BaseListActivity
      */
     private class GetLaterRoutesTask extends AsyncTask<JourneyQuery, Void, Planner.Response> {
         private boolean mWasSuccess = true;
+        private String mErrorCode;
 
         @Override
         public void onPreExecute() {
@@ -1338,6 +1384,9 @@ public class RoutesActivity extends BaseListActivity
                 return Planner.getInstance().findNextJourney(params[0]);
             } catch (IOException e) {
                 mWasSuccess = false;
+            } catch (BadResponse e) {
+                mWasSuccess = false;
+                mErrorCode = e.errorCode;
             }
             return null;
         }
@@ -1349,7 +1398,12 @@ public class RoutesActivity extends BaseListActivity
                 //mTrip.setRoutes(result);
                 onSearchRoutesResult(result);
             } else if (!mWasSuccess) {
-                showDialog(DIALOG_GET_EARLIER_ROUTES_NETWORK_PROBLEM);
+                if (TextUtils.isEmpty(mErrorCode)) {
+                    showDialog(DIALOG_GET_EARLIER_ROUTES_NETWORK_PROBLEM);                    
+                } else {
+                    mRouteErrorCode = mErrorCode;
+                    showDialog(DIALOG_SEARCH_ROUTES_ERROR);
+                }
             } else {
                 showDialog(DIALOG_GET_ROUTES_SESSION_TIMEOUT);
             }
