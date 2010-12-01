@@ -28,7 +28,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.DialogInterface.OnClickListener;
-import android.database.SQLException;
 import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
@@ -197,6 +196,7 @@ public class RoutesActivity extends BaseListActivity
 
         Log.d(TAG, "dest: " + mJourneyQuery.destination.name);
         
+
         if (mJourneyQuery.origin.name == null
                 || mJourneyQuery.destination.name == null) {
             showDialog(DIALOG_ILLEGAL_PARAMETERS);
@@ -204,9 +204,15 @@ public class RoutesActivity extends BaseListActivity
             return;
         }
 
+        mFavoritesDbAdapter = new FavoritesDbAdapter(this).open();
+
         mFromView = (TextView) findViewById(R.id.route_from);
         mToView = (TextView) findViewById(R.id.route_to);
         updateStartAndEndPointViews(mJourneyQuery.origin, mJourneyQuery.destination);
+
+        mFavoriteButtonHelper = new FavoriteButtonHelper(this, mFavoritesDbAdapter, 
+                mJourneyQuery.origin, mJourneyQuery.destination);
+        mFavoriteButtonHelper.loadImage();
 
         initRoutes(mJourneyQuery);
     }
@@ -364,32 +370,30 @@ public class RoutesActivity extends BaseListActivity
     }
 
     @Override
-    protected void onStart() {
-    	super.onStart();
-    	
-        try {
-        	mFavoritesDbAdapter = new FavoritesDbAdapter(this).open();
-            mFavoriteButtonHelper = new FavoriteButtonHelper(this, mFavoritesDbAdapter, mJourneyQuery.origin, mJourneyQuery.destination);
-        } catch (SQLException e) {
-        	// TODO Initilize a new DB? Restart app? Send report?
-        }
-
-    }
-    
-    @Override
     protected void onResume() {
         super.onResume();
-        
         // Could be null if bad parameters was passed to the search.
         if (mFavoriteButtonHelper != null) {
             mFavoriteButtonHelper.loadImage();
         }
-        
-        if (mSavedState != null) {
-        	restoreLocalState(mSavedState);
-        }
+        if (mSavedState != null) restoreLocalState(mSavedState);
     }
-    
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        onCancelSearchRoutesTask();
+        onCancelGetEarlierRoutesTask();
+        onCancelGetLaterRoutesTask();
+
+        if (mFavoritesDbAdapter != null) {
+            mFavoritesDbAdapter.close();
+        }
+        mMyLocationManager.removeUpdates();
+        dismissProgress();
+    }
+
     @Override
     protected void onPause() {
         super.onPause();
@@ -401,20 +405,6 @@ public class RoutesActivity extends BaseListActivity
         mMyLocationManager.removeUpdates();
 
         dismissProgress();
-    }
-
-    @Override
-    protected void onStop() {
-    	super.onStop();
-    	
-        if (mFavoritesDbAdapter != null) {
-            mFavoritesDbAdapter.close();
-        }
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
     }
 
     /**
