@@ -10,7 +10,7 @@ import com.flurry.android.FlurryAgent;
 public class BaseActivity extends Activity {
 
     @Override
-    public void onStart() {
+    protected void onStart() {
        super.onStart();
        FlurryAgent.onStartSession(this, MyApplication.ANALYTICS_KEY);
     }
@@ -22,7 +22,7 @@ public class BaseActivity extends Activity {
     }
 
     @Override
-    public void onStop() {
+    protected void onStop() {
        super.onStop();
        FlurryAgent.onEndSession(this);
     }

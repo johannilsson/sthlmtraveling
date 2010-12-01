@@ -9,7 +9,7 @@ import com.google.android.maps.MapActivity;
 
 public abstract class BaseMapActivity extends MapActivity {
     @Override
-    public void onStart() {
+    protected void onStart() {
         super.onStart();
         FlurryAgent.onStartSession(this, MyApplication.ANALYTICS_KEY);
     }
@@ -21,7 +21,7 @@ public abstract class BaseMapActivity extends MapActivity {
     }
 
     @Override
-    public void onStop() {
+    protected void onStop() {
         super.onStop();
         FlurryAgent.onEndSession(this);
      }
