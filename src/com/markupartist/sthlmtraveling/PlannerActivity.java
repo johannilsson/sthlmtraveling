@@ -114,11 +114,6 @@ public class PlannerActivity extends BaseActivity implements OnCheckedChangeList
 
         mStartPointAutoComplete = createAutoCompleteTextView(R.id.from, R.id.from_progress, mStartPoint);
         mEndPointAutoComplete = createAutoCompleteTextView(R.id.to, R.id.to_progress, mEndPoint);
-        
-        // Set "my location" as default start point
-        mStartPoint.setName(Stop.TYPE_MY_LOCATION);
-        mStartPointAutoComplete.setText(getText(R.string.my_location));
-
 
         try {
             mHistoryDbAdapter = new HistoryDbAdapter(this).open();
@@ -167,11 +162,6 @@ public class PlannerActivity extends BaseActivity implements OnCheckedChangeList
             }
         });
 
-        // Set time to now, and notify buttons about the new time.
-        mTime = new Time();
-        mTime.setToNow();
-        onTimeChanged();
-
         // Views for radio buttons
         RadioButton nowRadioButton = (RadioButton) findViewById(R.id.planner_check_now);
         nowRadioButton.setOnCheckedChangeListener(this);
@@ -200,16 +190,10 @@ public class PlannerActivity extends BaseActivity implements OnCheckedChangeList
     protected void onResume() {
         super.onResume();
 
-//        if (mTime != null) {
-//            mTime.setToNow();
-//            onTimeChanged();
-//        }
         if (!mStartPoint.hasName()) {
-            mStartPoint.setName(Stop.TYPE_MY_LOCATION);
-            mStartPointAutoComplete.setText(getText(R.string.my_location));
-//            mStartPointAutoComplete.setText("");
+            mStartPointAutoComplete.setText("");
         }
-        
+
         if (!mEndPoint.hasName()) {
             mEndPointAutoComplete.setText("");
         }
@@ -420,7 +404,7 @@ public class PlannerActivity extends BaseActivity implements OnCheckedChangeList
      * Start the search.
      * @param startPoint the start point
      * @param endPoint the end point
-     * @param time the departure time
+     * @param time the departure time or null to use current time
      */
     private void onSearchRoutes(Stop startPoint, Stop endPoint, Time time) {
         // TODO: We should not handle point-on-map this way. But for now we just
@@ -430,7 +414,16 @@ public class PlannerActivity extends BaseActivity implements OnCheckedChangeList
         if (!mEndPointAutoComplete.getText().toString().equals(getString(R.string.point_on_map)))
             mHistoryDbAdapter.create(HistoryDbAdapter.TYPE_END_POINT, endPoint);
 
-        boolean isTimeDeparture = mWhenSpinner.getSelectedItemId() == 0 ? true : false;
+        RadioGroup chooseTimeGroup = (RadioGroup) findViewById(R.id.planner_choose_time_group);
+        boolean isTimeDeparture = true;
+        int checkedId = chooseTimeGroup.getCheckedRadioButtonId();
+        if (checkedId == R.id.planner_check_later) {
+            isTimeDeparture = mWhenSpinner.getSelectedItemId() == 0 ? true : false;
+        } else {
+            // User has checked the "now" checkbox, this forces the time to
+            // be set in the RoutesActivity upon search.
+            time = null;
+        }
 
         Uri routesUri = RoutesActivity.createRoutesUri(startPoint, endPoint, time, isTimeDeparture);
         Intent i = new Intent(Intent.ACTION_VIEW, routesUri, this, RoutesActivity.class);
@@ -717,11 +710,16 @@ public class PlannerActivity extends BaseActivity implements OnCheckedChangeList
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         // We only check the state for later radio button.
         if (isChecked && buttonView.getId() == R.id.planner_check_later) {
+            // Set time to now, and notify buttons about the new time.
+            if (mTime == null) {
+                mTime = new Time();
+                mTime.setToNow();
+                onTimeChanged();
+            }
+
             mChangeTimeLayout.setVisibility(View.VISIBLE);
         } else if (!isChecked && buttonView.getId() == R.id.planner_check_later) {
             mChangeTimeLayout.setVisibility(View.GONE);
-            mTime.setToNow();
-            onTimeChanged();
         }
     }
 
