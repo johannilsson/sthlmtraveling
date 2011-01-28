@@ -78,7 +78,7 @@
     <string name="departures">Salidas</string>
     <string name="departures_for">Salidas desde <xliff:g id="site_name">%s</xliff:g></string>
     <string name="date_of_trip">Fecha del viaje: <xliff:g id="date">%s</xliff:g></string>
-    <string name="no_departures"><b>No hay salidas en este momento</b>\nSe muestran salidas dentro de 10 minutos. Por favor, vuelva a actualizar usando la opción del menú en un segundos.</string>
+    <string name="no_departures">No hay salidas en este momento.</string>
     <string name="site_name">Ubicación</string>
     <string name="stop_label">Parada</string>
     <string name="refresh">Actualizar</string>

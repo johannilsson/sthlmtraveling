@@ -78,7 +78,7 @@
     <string name="departures">Avgångar</string>
     <string name="departures_for">Avgångar för <xliff:g id="site_name">%s</xliff:g></string>
     <string name="date_of_trip">Datum för resa: <xliff:g id="date">%s</xliff:g></string>
-    <string name="no_departures"><b>Inga avgångar hittades</b>\nEnbart avgångar inom 10 minuter listas. Uppdatera via menyn om ett tag.</string>
+    <string name="no_departures">Inga avgångar hittades för valt färdslag just nu.</string>
     <string name="site_name">Hållplatsnamn</string>
     <string name="stop_label">Hållplats</string>
     <string name="refresh">Uppdatera</string>
