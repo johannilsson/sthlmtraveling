@@ -30,7 +30,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.markupartist.sthlmtraveling.provider.departure.Departure;
 import com.markupartist.sthlmtraveling.provider.deviation.DeviationStore;
 import com.markupartist.sthlmtraveling.provider.deviation.DeviationStore.TrafficEvent;
 import com.markupartist.sthlmtraveling.provider.deviation.DeviationStore.TrafficStatus;
@@ -157,7 +156,7 @@ public class TrafficStatusActivity extends BaseActivity {
     }
 
     /**
-     * Background job for getting {@link Departure}s.
+     * Background job for getting {@link TrafficStatus}s.
      */
     private class GetTrafficStatusTask extends AsyncTask<Void, Void, TrafficStatus> {
         private boolean mWasSuccess = true;
