@@ -618,15 +618,6 @@ public class PlannerActivity extends BaseActivity implements OnCheckedChangeList
         return dialog;
     }
 
-    private CharSequence[] getDialogSelectPointItems() {
-        CharSequence[] items = {
-                getText(R.string.my_location), 
-                getText(R.string.history_label),
-                getText(R.string.point_on_map)
-            };
-        return items;
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
