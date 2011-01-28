@@ -42,7 +42,6 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.SimpleAdapter.ViewBinder;
 
-import com.markupartist.sthlmtraveling.provider.departure.Departure;
 import com.markupartist.sthlmtraveling.provider.deviation.Deviation;
 import com.markupartist.sthlmtraveling.provider.deviation.DeviationStore;
 
@@ -221,12 +220,12 @@ public class DeviationsActivity extends BaseListActivity {
     }
 
     /**
-     * Cancels the {@link GetDeparturesTask} if it is running.
+     * Cancels the {@link GetDeviationsTask} if it is running.
      */
     private void onCancelGetDeviationsTask() {
         if (mGetDeviationsTask != null &&
                 mGetDeviationsTask.getStatus() == AsyncTask.Status.RUNNING) {
-            Log.i(TAG, "Cancels GetDeparturesTask.");
+            Log.i(TAG, "Cancels GetDeviationsTask.");
             mGetDeviationsTask.cancel(true);
             mGetDeviationsTask= null;
         }
@@ -318,7 +317,7 @@ public class DeviationsActivity extends BaseListActivity {
     }
 
     /**
-     * Background job for getting {@link Departure}s.
+     * Background job for getting {@link Deviation}s.
      */
     private class GetDeviationsTask extends AsyncTask<Void, Void, ArrayList<Deviation>> {
         private boolean mWasSuccess = true;
