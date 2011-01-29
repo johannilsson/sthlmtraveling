@@ -26,13 +26,6 @@
     android:paddingLeft="5dip"
     android:paddingRight="5dip"
     >
-        <View
-            android:id="@+id/departure_color"
-            android:layout_width="8dip"
-            android:background="#ffff0000"
-            android:layout_height="fill_parent"
-            android:layout_marginRight="5dip"
-            />
 	    <TextView
 	        android:id="@+id/departure_line"
 	        android:text="14"

@@ -78,7 +78,8 @@
     <string name="departures">Departures</string>
     <string name="departures_for">Departures for <xliff:g id="site_name">%s</xliff:g></string>
     <string name="date_of_trip">Date of Trip: <xliff:g id="date">%s</xliff:g></string>
-    <string name="no_departures">No departures for the selected transport type at the moment.</string>
+    <string name="no_departures_for_transport_type">No departures for the selected transport type at the moment.</string>
+    <string name="no_departures">No departures right now.</string>
     <string name="site_name">Location</string>
     <string name="stop_label">Stop</string>
     <string name="refresh">Refresh</string>
