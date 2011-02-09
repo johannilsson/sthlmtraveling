@@ -80,10 +80,10 @@ public class RouteDetailActivity extends BaseListActivity {
 
         mFavoritesDbAdapter = new FavoritesDbAdapter(this).open();
 
-        TextView startPointView = (TextView) findViewById(R.id.route_from);
-        startPointView.setText(mJourneyQuery.origin.name);
-        TextView endPointView = (TextView) findViewById(R.id.route_to);
-        endPointView.setText(mJourneyQuery.destination.name);
+        View headerView = getLayoutInflater().inflate(R.layout.route_header, null);
+        TextView startPointView = (TextView) headerView.findViewById(R.id.route_from);
+        TextView endPointView = (TextView) headerView.findViewById(R.id.route_to);
+        getListView().addHeaderView(headerView, null, false);
 
         startPointView.setText(getLocationName(mJourneyQuery.origin));
         endPointView.setText(getLocationName(mJourneyQuery.destination));
@@ -102,7 +102,10 @@ public class RouteDetailActivity extends BaseListActivity {
         } catch (ParseException e) {
             Log.e(TAG, "Error parsing duration, " + e.getMessage());
         }
-        
+
+        View headerDetailView = getLayoutInflater().inflate(
+                R.layout.route_header_details, null);
+
         StringBuilder timeBuilder = new StringBuilder();
         timeBuilder.append(mTrip.departureTime);
         timeBuilder.append(" - ");
@@ -111,7 +114,8 @@ public class RouteDetailActivity extends BaseListActivity {
         timeBuilder.append(durationInMinutes);
         timeBuilder.append(")");
         
-        TextView timeView = (TextView) findViewById(R.id.route_date_time);
+        //TextView timeView = (TextView) findViewById(R.id.route_date_time);
+        TextView timeView = (TextView) headerDetailView.findViewById(R.id.route_date_time);
         timeView.setText(timeBuilder.toString());
         
         // TODO: We should parse the date when getting the results and store a
@@ -124,12 +128,15 @@ public class RouteDetailActivity extends BaseListActivity {
             ;
         }
         SimpleDateFormat otherFormat = new SimpleDateFormat("yyyy-MM-dd");
-        TextView dateView = (TextView) findViewById(R.id.route_date_of_trip);
+        //TextView dateView = (TextView) findViewById(R.id.route_date_of_trip);
+        TextView dateView = (TextView) headerDetailView.findViewById(R.id.route_date_of_trip);
         if (date != null) {
             dateView.setText(getString(R.string.date_of_trip, otherFormat.format(date)));
         } else {
             dateView.setVisibility(View.GONE);
         }
+
+        getListView().addHeaderView(headerDetailView, null, false);
 
         FavoriteButtonHelper favoriteButtonHelper = new FavoriteButtonHelper(
                 this, mFavoritesDbAdapter, mJourneyQuery.origin,
@@ -143,6 +150,10 @@ public class RouteDetailActivity extends BaseListActivity {
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
+
+        int headerViewsCount = getListView().getHeaderViewsCount();
+        // Compensate for the added header views. Is this how we do it?
+        position -= headerViewsCount;
 
         Planner.Location location;
         // Detects the footer view.

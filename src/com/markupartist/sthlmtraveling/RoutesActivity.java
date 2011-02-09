@@ -206,8 +206,11 @@ public class RoutesActivity extends BaseListActivity
 
         mFavoritesDbAdapter = new FavoritesDbAdapter(this).open();
 
-        mFromView = (TextView) findViewById(R.id.route_from);
-        mToView = (TextView) findViewById(R.id.route_to);
+        View headerView = getLayoutInflater().inflate(R.layout.route_header, null);
+        mFromView = (TextView) headerView.findViewById(R.id.route_from);
+        mToView = (TextView) headerView.findViewById(R.id.route_to);
+        getListView().addHeaderView(headerView, null, false);
+
         updateStartAndEndPointViews(mJourneyQuery.origin, mJourneyQuery.destination);
 
         mFavoriteButtonHelper = new FavoriteButtonHelper(this, mFavoritesDbAdapter, 
@@ -631,6 +634,10 @@ public class RoutesActivity extends BaseListActivity
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
+
+        int headerViewsCount = getListView().getHeaderViewsCount();
+        // Compensate for the added header views. Is this how we do it?
+        position -= headerViewsCount;
 
         Section section = mSectionedAdapter.getSection(position);
         int sectionId = section.id;

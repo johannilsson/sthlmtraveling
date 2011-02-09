@@ -21,7 +21,6 @@
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
-    <include layout="@layout/route_header" />
     <ImageView
         android:layout_width="fill_parent"
         android:layout_height="1px"
@@ -33,22 +32,5 @@
 	    android:layout_width="fill_parent" 
 	    android:layout_height="fill_parent"
         />
-	<!--
-    <ListView 
-        android:id="@+id/earlier_later_routes"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        />
-    <TextView
-        style="?android:attr/listSeparatorTextViewStyle"
-        android:text="Routes"
-        android:layout_marginTop="0dip"
-        />
-    <ListView 
-    	android:id="@+id/android:list"
-		android:layout_width="fill_parent"
-		android:layout_height="wrap_content"
-		/>
-	-->
 </LinearLayout>
 
