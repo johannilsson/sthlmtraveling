@@ -119,6 +119,30 @@
     <string name="trip_description_walk" formatted="false">%s - %s Walk from %s to %s</string>
     <string name="trip_description_normal" formatted="false">%s - %s %s from %s towards %s. Get off at %s</string>
     <string name="show_all">Show all</string>
+
+    <!-- Planner error messages -->
+    <string name="planner_error_title">Felmeddelande</string>
+    <string name="planner_error_unknown">Sökningen misslyckades.</string>
+    <string name="planner_error_H9300">Tyvärr kan din resa inte beräknas. Försök igen.</string>
+    <string name="planner_error_H9360">Fel i datumfältet.</string>
+    <string name="planner_error_H9380">Start, mål eller via är samma hållplats eller ligger för nära varandra.</string>
+    <string name="planner_error_H9320">Hållplatsnamnet finns inte.</string>
+    <string name="planner_error_H9280">Hållplatsnamnet finns inte.</string>
+    <string name="planner_error_H9260">Hållplatsnamnet finns inte.</string>
+    <string name="planner_error_H9250">Sökningen avbröts.</string>
+    <string name="planner_error_H9240">Inget svar kunde hittas.</string>
+    <string name="planner_error_H9230">Försök igen.</string>
+    <string name="planner_error_H9220">Det finns ingen hållplats i närheten av den angivna adressen.</string>
+    <string name="planner_error_H900">Det finns ingen aktuell tidtabell för den sökta resan.</string>
+    <string name="planner_error_H892">Resan blev för lång, prova att välja bort viahållplatsen.</string>
+    <string name="planner_error_H891">Ingen resa hittades, prova att välja en viahållplats.</string>
+    <string name="planner_error_H890">Ingen resa hittades.</string>
+    <string name="planner_error_H500">Ingen resa hittades.</string>
+    <string name="planner_error_H455">Förlängt uppehåll.</string>
+    <string name="planner_error_H410">Uppgifterna kan vara ofullständiga på grund av tidtabellsbyte.</string>
+    <string name="planner_error_H390">Start- eller målhållplatsen ersattes av en närbelägen hållplats.</string>
+    <string name="planner_error_H895">Start och mål ligger för nära varandra.</string>
+
     <!-- Preferences -->
     <string name="restart_app_for_full_effect">Restart the app for full effect.</string>
     <string name="dialog_general_preferences">Basics</string>

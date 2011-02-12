@@ -59,6 +59,51 @@ public class Planner {
     private Planner() {
     }
 
+    public static int plannerErrorCodeToStringRes(String errorCode) {
+        // Make sure to have the common error codes as high as possible.
+        if ("H9220".equals(errorCode)) {
+            return R.string.planner_error_H9220;
+        } else if ("H895".equals(errorCode)) {
+            return R.string.planner_error_H895;
+        } else if ("H9300".equals(errorCode)) {
+            return R.string.planner_error_H9300;
+        } else if ("H9360".equals(errorCode)) {
+            return R.string.planner_error_H9360;
+        } else if ("H9380".equals(errorCode)) {
+            return R.string.planner_error_H9380;
+        } else if ("H9320".equals(errorCode)) {
+            return R.string.planner_error_H9320;
+        } else if ("H9280".equals(errorCode)) {
+            return R.string.planner_error_H9280;
+        } else if ("H9260".equals(errorCode)) {
+            return R.string.planner_error_H9260;
+        } else if ("H9250".equals(errorCode)) {
+            return R.string.planner_error_H9250;
+        } else if ("H9240".equals(errorCode)) {
+            return R.string.planner_error_H9240;
+        } else if ("H9230".equals(errorCode)) {
+            return R.string.planner_error_H9230;
+        } else if ("H900".equals(errorCode)) {
+            return R.string.planner_error_H900;
+        } else if ("H892".equals(errorCode)) {
+            return R.string.planner_error_H892;
+        } else if ("H891".equals(errorCode)) {
+            return R.string.planner_error_H891;
+        } else if ("H890".equals(errorCode)) {
+            return R.string.planner_error_H890;
+        } else if ("H500".equals(errorCode)) {
+            return R.string.planner_error_H500;
+        } else if ("H455".equals(errorCode)) {
+            return R.string.planner_error_H455;
+        } else if ("H410".equals(errorCode)) {
+            return R.string.planner_error_H410;
+        } else if ("H390".equals(errorCode)) {
+            return R.string.planner_error_H390;
+        }
+
+        return R.string.planner_error_unknown;
+    }
+
     /**
      * Find stops that matches the provided name
      * @param name the name

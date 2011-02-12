@@ -950,9 +950,10 @@ public class RoutesActivity extends BaseListActivity
             .setNegativeButton(getText(R.string.cancel), null)
             .create();
         case DIALOG_SEARCH_ROUTES_ERROR:
+
             return new AlertDialog.Builder(this)
-            .setTitle(mRouteErrorCode)
-            .setMessage(mRouteErrorCode)
+            .setTitle(R.string.planner_error_title)
+            .setMessage(Planner.plannerErrorCodeToStringRes(mRouteErrorCode))
             .setPositiveButton(getText(R.string.back), new OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
