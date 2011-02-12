@@ -26,7 +26,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="1px"
         android:orientation="horizontal"
-	    android:background="@color/header_background"
+	    android:background="@color/plate_extra_background"
 	    android:paddingLeft="5dip"
 	    android:paddingRight="5dip"
 	    android:paddingTop="10dip"
