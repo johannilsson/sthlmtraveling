@@ -89,6 +89,10 @@
     <string name="trains">Pendeltåg</string>
     <string name="trams">Lokalbana</string>
     <string name="tram_cars">Spårvagn</string>
+    <string name="departure_metro">Tunnelb.</string>
+    <string name="departure_bus">Buss</string>
+    <string name="departure_train">Tåg</string>
+    <string name="departure_tram">Lokalb.</string>
     <string name="now">Nu</string>
     <string name="journey_planner_label">Reseplanerare</string>
     <string name="crash_report_mail_subject">STHLM Traveling Crash Report</string><!-- Do not translate -->

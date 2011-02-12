@@ -38,7 +38,7 @@
             android:layout_weight="1"
             android:background="@drawable/sub_menu_btn_left"
             android:button="@null"
-            android:text="T-bana"
+            android:text="@string/departure_metro"
             android:paddingTop="0dip"
             android:paddingRight="0dip"
             android:paddingBottom="0dip"
@@ -60,7 +60,7 @@
             android:paddingRight="0dip"
             android:paddingBottom="0dip"
             android:paddingLeft="0dip"
-            android:text="Buss"
+            android:text="@string/departure_bus"
         />
         <RadioButton
             android:id="@+id/radio_trains"
@@ -77,7 +77,7 @@
             android:paddingRight="0dip"
             android:paddingBottom="0dip"
             android:paddingLeft="0dip"
-            android:text="Tåg"
+            android:text="@string/departure_train"
         />
         <RadioButton
             android:id="@+id/radio_trams"
@@ -94,7 +94,7 @@
             android:paddingRight="0dip"
             android:paddingBottom="0dip"
             android:paddingLeft="0dip"
-            android:text="L-bana"
+            android:text="@string/departure_tram"
         />
     </RadioGroup>
 
