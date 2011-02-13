@@ -84,7 +84,7 @@ public class DeparturesActivity extends BaseListActivity {
 
         mSectionedAdapter = new DepartureAdapter(this);
         
-        setupFilterButtons();
+        //setupFilterButtons();
         //loadDepartures();
     }
 
@@ -160,16 +160,20 @@ public class DeparturesActivity extends BaseListActivity {
         }
         setListAdapter(mSectionedAdapter);
     }
-    
+
     public void setupFilterButtons() {
         RadioButton radioMetros = (RadioButton) findViewById(R.id.radio_metros);
         radioMetros.setOnCheckedChangeListener(mOnTransportTypeChange);
+        radioMetros.setEnabled(true);
         RadioButton radioBuses = (RadioButton) findViewById(R.id.radio_buses);
         radioBuses.setOnCheckedChangeListener(mOnTransportTypeChange);
+        radioBuses.setEnabled(true);
         RadioButton radioTrains = (RadioButton) findViewById(R.id.radio_trains);
         radioTrains.setOnCheckedChangeListener(mOnTransportTypeChange);
+        radioTrains.setEnabled(true);
         RadioButton radioTrams = (RadioButton) findViewById(R.id.radio_trams);
         radioTrams.setOnCheckedChangeListener(mOnTransportTypeChange);
+        radioTrams.setEnabled(true);
     }
 
     private void loadDepartures() {
@@ -192,6 +196,9 @@ public class DeparturesActivity extends BaseListActivity {
         mDepartureResult = result;
 
         RadioGroup transportGroup = (RadioGroup) findViewById(R.id.transport_group);
+
+        setupFilterButtons();
+
         int checkedId = transportGroup.getCheckedRadioButtonId();
         handleCheckedTransportType(checkedId);
         /*mSectionedAdapter.fillDepartures(result,

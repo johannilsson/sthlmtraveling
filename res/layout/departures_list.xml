@@ -44,6 +44,7 @@
             android:paddingBottom="0dip"
             android:paddingLeft="5dip"
             android:layout_margin="0dip"
+            android:enabled="false"
             />
         <RadioButton
             android:id="@+id/radio_buses"
@@ -61,6 +62,7 @@
             android:paddingBottom="0dip"
             android:paddingLeft="0dip"
             android:text="@string/departure_bus"
+            android:enabled="false"
         />
         <RadioButton
             android:id="@+id/radio_trains"
@@ -78,6 +80,7 @@
             android:paddingBottom="0dip"
             android:paddingLeft="0dip"
             android:text="@string/departure_train"
+            android:enabled="false"
         />
         <RadioButton
             android:id="@+id/radio_trams"
@@ -95,6 +98,7 @@
             android:paddingBottom="0dip"
             android:paddingLeft="0dip"
             android:text="@string/departure_tram"
+            android:enabled="false"
         />
     </RadioGroup>
 
