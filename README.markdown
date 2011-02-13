@@ -71,7 +71,10 @@ STHLM Traveling is open source and licensed under
 
 Changelog
 ---------
-* NEXT
+* 2.2.1
+    * Fixed bug that crashed the app when changing transport type in the
+      departure activity before the data was loaded.
+* 2.2.0
     * New departures view. Departures are now grouped by transport type.
     * Departures for metros are pulled from a separate api and should now be
       based on realtime data.
@@ -80,6 +83,7 @@ Changelog
     * Fixed bug when "Now" was not respected in the journey planner.
     * Added traffic line to the traffic status view.
     * The detailed journey view now displays the correct time in the header.
+    * UI tweaks.
 * 2.1.0
     * Changed to use json instead of xml for getting site data from the backend.
     * Mapped the bus icon for närtrafiken.  
