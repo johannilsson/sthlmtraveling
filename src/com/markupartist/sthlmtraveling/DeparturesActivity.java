@@ -41,8 +41,8 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 
-import com.markupartist.sthlmtraveling.provider.SitesContentProvider;
-import com.markupartist.sthlmtraveling.provider.SitesContentProvider.Site.Sites;
+import com.markupartist.sthlmtraveling.provider.PlacesProvider;
+import com.markupartist.sthlmtraveling.provider.PlacesProvider.Place.Places;
 import com.markupartist.sthlmtraveling.provider.departure.DeparturesStore;
 import com.markupartist.sthlmtraveling.provider.departure.DeparturesStore.Departure;
 import com.markupartist.sthlmtraveling.provider.departure.DeparturesStore.Departures;
@@ -261,17 +261,17 @@ public class DeparturesActivity extends BaseListActivity {
         // TODO: Do in background thread.
         if (mPlaceId == -1) {
             ContentValues values = new ContentValues();
-            values.put(Sites.NAME, mSite.getName());
-            values.put(Sites.TRAFFIC_SITE_ID, mSite.getId());
-            values.put(Sites.PREFERRED_TRANSPORT_MODE, preferredTransportType);
-            Uri uri = getContentResolver().insert(Sites.CONTENT_URI, values);
+            values.put(Places.NAME, mSite.getName());
+            values.put(Places.SITE_ID, mSite.getId());
+            values.put(Places.PREFERRED_TRANSPORT_MODE, preferredTransportType);
+            Uri uri = getContentResolver().insert(Places.CONTENT_URI, values);
         } else {
             ContentValues values = new ContentValues();
-            values.put(Sites.NAME, mSite.getName());
-            values.put(Sites.TRAFFIC_SITE_ID, mSite.getId());
-            values.put(Sites.PREFERRED_TRANSPORT_MODE, preferredTransportType);
-            int updated = getContentResolver().update(Sites.CONTENT_URI, values,
-                    Sites.TRAFFIC_SITE_ID + "= ?",
+            values.put(Places.NAME, mSite.getName());
+            values.put(Places.SITE_ID, mSite.getId());
+            values.put(Places.PREFERRED_TRANSPORT_MODE, preferredTransportType);
+            int updated = getContentResolver().update(Places.CONTENT_URI, values,
+                    Places.SITE_ID + "= ?",
                     new String[] {String.valueOf(mSite.getId())});            
         }
     }
@@ -552,19 +552,19 @@ public class DeparturesActivity extends BaseListActivity {
                 mSite = params[0];
                 
                 String[] projection = new String[] {
-                                             Sites._ID,
-                                             Sites.NAME,
-                                             Sites.PREFERRED_TRANSPORT_MODE,
-                                             Sites.TRAFFIC_SITE_ID
+                                             Places._ID,
+                                             Places.NAME,
+                                             Places.PREFERRED_TRANSPORT_MODE,
+                                             Places.SITE_ID
                                           };
-                Uri sitesUri =  Sites.CONTENT_URI;
+                Uri sitesUri =  Places.CONTENT_URI;
                 Cursor sitesCursor = managedQuery(sitesUri, projection,
-                        Sites.TRAFFIC_SITE_ID + "= ?",
+                        Places.SITE_ID + "= ?",
                         new String[] {String.valueOf(mSite.getId())},
-                        Sites.NAME + " asc");
+                        Places.NAME + " asc");
                 if (sitesCursor.moveToFirst()) {
-                    mPlaceId = sitesCursor.getInt(sitesCursor.getColumnIndex(Sites._ID));
-                    mPreferredTrafficMode = sitesCursor.getInt(sitesCursor.getColumnIndex(Sites.PREFERRED_TRANSPORT_MODE));
+                    mPlaceId = sitesCursor.getInt(sitesCursor.getColumnIndex(Places._ID));
+                    mPreferredTrafficMode = sitesCursor.getInt(sitesCursor.getColumnIndex(Places.PREFERRED_TRANSPORT_MODE));
                 }
 
                 DeparturesStore departures = new DeparturesStore();

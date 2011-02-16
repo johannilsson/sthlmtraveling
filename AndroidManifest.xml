@@ -139,8 +139,8 @@
                   android:enabled="true" 
                   android:exported="false"
          />
-        <provider android:name=".provider.SitesContentProvider"
-                  android:authorities="com.markupartist.sthlmtraveling.sitesprovider"
+        <provider android:name=".provider.PlacesProvider"
+                  android:authorities="com.markupartist.sthlmtraveling.placesprovider"
                   />
 
 </application>
