@@ -27,7 +27,6 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
-        android:checkedButton="@+id/radio_metros"
         >
         <RadioButton
             android:id="@+id/radio_metros"

@@ -22,9 +22,13 @@ import java.util.ArrayList;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.ContentUris;
+import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.DialogInterface.OnClickListener;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -37,6 +41,8 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 
+import com.markupartist.sthlmtraveling.provider.SitesContentProvider;
+import com.markupartist.sthlmtraveling.provider.SitesContentProvider.Site.Sites;
 import com.markupartist.sthlmtraveling.provider.departure.DeparturesStore;
 import com.markupartist.sthlmtraveling.provider.departure.DeparturesStore.Departure;
 import com.markupartist.sthlmtraveling.provider.departure.DeparturesStore.Departures;
@@ -71,6 +77,10 @@ public class DeparturesActivity extends BaseListActivity {
     private Bundle mSavedState;
 
     private DepartureAdapter mSectionedAdapter;
+
+    // TODO: Hacks for now...
+    private int mPreferredTrafficMode = 2;
+    private int mPlaceId = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -162,18 +172,23 @@ public class DeparturesActivity extends BaseListActivity {
     }
 
     public void setupFilterButtons() {
+        // TODO: Fix hard coded values for preferred traffic mode.
         RadioButton radioMetros = (RadioButton) findViewById(R.id.radio_metros);
         radioMetros.setOnCheckedChangeListener(mOnTransportTypeChange);
         radioMetros.setEnabled(true);
+        radioMetros.setChecked(mPreferredTrafficMode == 2 ? true : false);
         RadioButton radioBuses = (RadioButton) findViewById(R.id.radio_buses);
         radioBuses.setOnCheckedChangeListener(mOnTransportTypeChange);
         radioBuses.setEnabled(true);
+        radioBuses.setChecked(mPreferredTrafficMode == 1 ? true : false);
         RadioButton radioTrains = (RadioButton) findViewById(R.id.radio_trains);
         radioTrains.setOnCheckedChangeListener(mOnTransportTypeChange);
         radioTrains.setEnabled(true);
+        radioTrains.setChecked(mPreferredTrafficMode == 3 ? true : false);
         RadioButton radioTrams = (RadioButton) findViewById(R.id.radio_trams);
         radioTrams.setOnCheckedChangeListener(mOnTransportTypeChange);
         radioTrams.setEnabled(true);
+        radioTrams.setChecked(mPreferredTrafficMode == 4 ? true : false);
     }
 
     private void loadDepartures() {
@@ -223,6 +238,42 @@ public class DeparturesActivity extends BaseListActivity {
         onCancelGetSitesTask();
 
         dismissProgress();
+
+        // TODO: Fix hard coded values for transport type.
+        int preferredTransportType = -1;
+        RadioGroup transportGroup = (RadioGroup) findViewById(R.id.transport_group);
+        int checkedId = transportGroup.getCheckedRadioButtonId();
+        switch (checkedId) {
+            case R.id.radio_buses:
+                preferredTransportType = 1;
+                break;
+            case R.id.radio_metros:
+                preferredTransportType = 2;
+                break;
+            case R.id.radio_trains:
+                preferredTransportType = 3;
+                break;
+            case R.id.radio_trams:
+                preferredTransportType = 4;
+                break;
+        }
+        
+        // TODO: Do in background thread.
+        if (mPlaceId == -1) {
+            ContentValues values = new ContentValues();
+            values.put(Sites.NAME, mSite.getName());
+            values.put(Sites.TRAFFIC_SITE_ID, mSite.getId());
+            values.put(Sites.PREFERRED_TRANSPORT_MODE, preferredTransportType);
+            Uri uri = getContentResolver().insert(Sites.CONTENT_URI, values);
+        } else {
+            ContentValues values = new ContentValues();
+            values.put(Sites.NAME, mSite.getName());
+            values.put(Sites.TRAFFIC_SITE_ID, mSite.getId());
+            values.put(Sites.PREFERRED_TRANSPORT_MODE, preferredTransportType);
+            int updated = getContentResolver().update(Sites.CONTENT_URI, values,
+                    Sites.TRAFFIC_SITE_ID + "= ?",
+                    new String[] {String.valueOf(mSite.getId())});            
+        }
     }
 
     @Override
@@ -499,6 +550,23 @@ public class DeparturesActivity extends BaseListActivity {
         protected Departures doInBackground(Site... params) {
             try {
                 mSite = params[0];
+                
+                String[] projection = new String[] {
+                                             Sites._ID,
+                                             Sites.NAME,
+                                             Sites.PREFERRED_TRANSPORT_MODE,
+                                             Sites.TRAFFIC_SITE_ID
+                                          };
+                Uri sitesUri =  Sites.CONTENT_URI;
+                Cursor sitesCursor = managedQuery(sitesUri, projection,
+                        Sites.TRAFFIC_SITE_ID + "= ?",
+                        new String[] {String.valueOf(mSite.getId())},
+                        Sites.NAME + " asc");
+                if (sitesCursor.moveToFirst()) {
+                    mPlaceId = sitesCursor.getInt(sitesCursor.getColumnIndex(Sites._ID));
+                    mPreferredTrafficMode = sitesCursor.getInt(sitesCursor.getColumnIndex(Sites.PREFERRED_TRANSPORT_MODE));
+                }
+
                 DeparturesStore departures = new DeparturesStore();
                 return departures.find(params[0]);
             } catch (IllegalArgumentException e) {
