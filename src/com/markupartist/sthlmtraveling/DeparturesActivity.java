@@ -259,20 +259,22 @@ public class DeparturesActivity extends BaseListActivity {
         }
         
         // TODO: Do in background thread.
-        if (mPlaceId == -1) {
-            ContentValues values = new ContentValues();
-            values.put(Places.NAME, mSite.getName());
-            values.put(Places.SITE_ID, mSite.getId());
-            values.put(Places.PREFERRED_TRANSPORT_MODE, preferredTransportType);
-            Uri uri = getContentResolver().insert(Places.CONTENT_URI, values);
-        } else {
-            ContentValues values = new ContentValues();
-            values.put(Places.NAME, mSite.getName());
-            values.put(Places.SITE_ID, mSite.getId());
-            values.put(Places.PREFERRED_TRANSPORT_MODE, preferredTransportType);
-            int updated = getContentResolver().update(Places.CONTENT_URI, values,
-                    Places.SITE_ID + "= ?",
-                    new String[] {String.valueOf(mSite.getId())});            
+        if (mSite != null) {
+            if (mPlaceId == -1) {
+                ContentValues values = new ContentValues();
+                values.put(Places.NAME, mSite.getName());
+                values.put(Places.SITE_ID, mSite.getId());
+                values.put(Places.PREFERRED_TRANSPORT_MODE, preferredTransportType);
+                Uri uri = getContentResolver().insert(Places.CONTENT_URI, values);
+            } else {
+                ContentValues values = new ContentValues();
+                values.put(Places.NAME, mSite.getName());
+                values.put(Places.SITE_ID, mSite.getId());
+                values.put(Places.PREFERRED_TRANSPORT_MODE, preferredTransportType);
+                int updated = getContentResolver().update(Places.CONTENT_URI, values,
+                        Places.SITE_ID + "= ?",
+                        new String[] {String.valueOf(mSite.getId())});
+            }
         }
     }
 
