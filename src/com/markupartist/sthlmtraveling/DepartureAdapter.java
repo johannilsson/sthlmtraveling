@@ -127,7 +127,7 @@ public class DepartureAdapter extends SectionedAdapter {
             if (!TextUtils.isEmpty(displayRow.expectedDateTime)) {
                 // Naive check to see if it's a time. If it's a time we choose
                 // that instead cause that means that the time is not based on
-                // realtime data.
+                // real-time data.
                 if (!displayTime.contains(":")) {
                     Time expectedDateTime = new Time();
                     expectedDateTime.parse3339(displayRow.expectedDateTime);
@@ -146,7 +146,7 @@ public class DepartureAdapter extends SectionedAdapter {
 
         SimpleAdapter adapter = new SimpleAdapter(mContext, list, 
                 R.layout.departures_row,
-                new String[] { "line", "destination", "timeToDisplay"},
+                new String[] {"line", "destination", "timeToDisplay"},
                 new int[] { 
                     R.id.departure_line,
                     R.id.departure_destination,
