@@ -66,11 +66,12 @@ STHLM Traveling is open source and licensed under
 * Icons by Olof Brickarp is copyright Olof Brickarp
 * Icons by Fredrik Broman is licensed under [CC Attribution 3.0](http://creativecommons.org/licenses/by/3.0/)
 * SectionedAdapter released under [GNU General Public License](http://www.gnu.org/licenses/gpl.html)
-* LabelMarker released under [GNU General Public License](http://www.gnu.org/licenses/gpl.html)
-  Originally from Johan Walles [SL app](https://launchpad.net/sl),
 
 Changelog
 ---------
+* 2.2.2
+    * Last selected transport mode for a specific site is now automatically
+      selected for Departures.
 * 2.2.1
     * Fixed bug that crashed the app when changing transport type in the
       departure activity before the data was loaded.
