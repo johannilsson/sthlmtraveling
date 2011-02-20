@@ -14,6 +14,7 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.SimpleAdapter.ViewBinder;
 
+import com.markupartist.sthlmtraveling.provider.TransportMode;
 import com.markupartist.sthlmtraveling.provider.departure.DeparturesStore.BusDeparture;
 import com.markupartist.sthlmtraveling.provider.departure.DeparturesStore.Departures;
 import com.markupartist.sthlmtraveling.provider.departure.DeparturesStore.DisplayRow;
@@ -23,11 +24,6 @@ import com.markupartist.sthlmtraveling.provider.departure.DeparturesStore.TrainD
 import com.markupartist.sthlmtraveling.provider.departure.DeparturesStore.TramDeparture;
 
 public class DepartureAdapter extends SectionedAdapter {
-
-    public final static int TRANSPORT_TYPE_METRO = 0;
-    public final static int TRANSPORT_TYPE_BUS = 1;
-    public final static int TRANSPORT_TYPE_TRAIN = 2;
-    public final static int TRANSPORT_TYPE_TRAM = 3;
 
     private Context mContext;
 
@@ -56,7 +52,7 @@ public class DepartureAdapter extends SectionedAdapter {
         this.clear();
 
         switch (transportType) {
-        case TRANSPORT_TYPE_METRO:
+        case TransportMode.METRO:
             if (departures.metros.isEmpty()) {
                 //emptyResultView.setVisibility(View.VISIBLE);
             } else {
@@ -68,7 +64,7 @@ public class DepartureAdapter extends SectionedAdapter {
                 }
             }
             break;
-        case TRANSPORT_TYPE_BUS:
+        case TransportMode.BUS:
             if (departures.buses.isEmpty()) {
                 //emptyResultView.setVisibility(View.VISIBLE);
             } else {
@@ -77,7 +73,7 @@ public class DepartureAdapter extends SectionedAdapter {
                 }
             }
             break;
-        case TRANSPORT_TYPE_TRAIN:
+        case TransportMode.TRAIN:
             if (departures.trains.isEmpty()) {
                 //emptyResultView.setVisibility(View.VISIBLE);
             } else {
@@ -87,7 +83,7 @@ public class DepartureAdapter extends SectionedAdapter {
                 }
             }
             break;
-        case TRANSPORT_TYPE_TRAM:
+        case TransportMode.LOKALBANA:
             if (departures.trams.isEmpty()) {
                 //emptyResultView.setVisibility(View.VISIBLE);
             } else {
