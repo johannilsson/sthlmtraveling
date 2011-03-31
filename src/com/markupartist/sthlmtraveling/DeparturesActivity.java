@@ -34,12 +34,17 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 
+import com.markupartist.android.widget.ActionBar;
+import com.markupartist.android.widget.PullToRefreshListView;
+import com.markupartist.android.widget.PullToRefreshListView.OnRefreshListener;
+import com.markupartist.android.widget.actionbar.R;
 import com.markupartist.sthlmtraveling.provider.TransportMode;
 import com.markupartist.sthlmtraveling.provider.PlacesProvider.Place.Places;
 import com.markupartist.sthlmtraveling.provider.departure.DeparturesStore;
@@ -82,6 +87,8 @@ public class DeparturesActivity extends BaseListActivity {
     private int mPreferredTrafficMode = TransportMode.METRO;
     private int mPlaceId = -1;
 
+    private ActionBar mActionBar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -93,9 +100,34 @@ public class DeparturesActivity extends BaseListActivity {
         mSiteName = extras.getString(EXTRA_SITE_NAME);
 
         mSectionedAdapter = new DepartureAdapter(this);
-        
+
+        initActionBar();
         //setupFilterButtons();
         //loadDepartures();
+    }
+
+    @Override
+    public void setTitle(CharSequence title) {
+        mActionBar.setTitle(title);
+    }
+
+    private void initActionBar() {
+        mActionBar = (ActionBar) findViewById(R.id.actionbar);
+        mActionBar.setTitle(R.string.departures);
+        mActionBar.setDisplayHomeAsUpEnabled(true);
+        mActionBar.setHomeAction(new ActionBar.Action() {
+
+            @Override
+            public int getDrawable() {
+                return R.drawable.ic_actionbar_home_default;
+            }
+
+            @Override
+            public void performAction(View view) {
+                finish();
+            }
+
+        });
     }
 
     /**
@@ -192,7 +224,17 @@ public class DeparturesActivity extends BaseListActivity {
         int checkedId = transportGroup.getCheckedRadioButtonId();
         handleCheckedTransportMode(checkedId);
 
-        setTitle(getString(R.string.departures_for, mSite.getName()));
+        setTitle(mSite.getName());
+
+        ((PullToRefreshListView) getListView())
+                .setOnRefreshListener(new OnRefreshListener() {
+
+                    @Override
+                    public void onRefresh() {
+                        new RefreshDeparturesTask().execute(mSite);
+                    }
+
+                });
     }
 
     @Override
@@ -498,11 +540,32 @@ public class DeparturesActivity extends BaseListActivity {
         }
     }
 
+    private class RefreshDeparturesTask extends GetDeparturesTask{
+        @Override
+        public void onPreExecute() {
+        }
+
+        @Override
+        protected void onPostExecute(Departures result) {
+            ((PullToRefreshListView) getListView()).onRefreshComplete();
+
+            if (wasSuccess()) {
+                fillData(result);
+            } else {
+                showDialog(DIALOG_GET_DEPARTURES_NETWORK_PROBLEM);
+            }
+        }
+    }
+    
     /**
      * Background job for getting {@link Departure}s.
      */
     private class GetDeparturesTask extends AsyncTask<Site, Void, Departures> {
         private boolean mWasSuccess = true;
+
+        protected boolean wasSuccess() {
+            return mWasSuccess;
+        }
 
         @Override
         public void onPreExecute() {

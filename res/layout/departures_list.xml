@@ -20,7 +20,12 @@
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
-    
+
+    <com.markupartist.android.widget.ActionBar
+        android:id="@+id/actionbar"
+        style="@style/ActionBar"
+        />
+
     <RadioGroup
         android:id="@+id/transport_group"
         android:orientation="horizontal"
@@ -101,6 +106,7 @@
         />
     </RadioGroup>
 
+<!--
     <TextView android:id="@+id/android:empty"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
@@ -109,7 +115,8 @@
         android:text="@string/no_departures_for_transport_type"
         android:textSize="16dip"
         />
-	<ListView
+ -->
+	<com.markupartist.android.widget.PullToRefreshListView
 	    style="@style/AppListView"
 	    android:id="@+id/android:list"
 	    android:layout_width="fill_parent" 
