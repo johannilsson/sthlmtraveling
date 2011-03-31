@@ -113,6 +113,7 @@
         </activity-alias>
         <activity android:name=".DeparturesActivity"
                   android:label="@string/departures"
+                  android:theme="@android:style/Theme.Light.NoTitleBar"
                   android:configChanges="locale|orientation">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
