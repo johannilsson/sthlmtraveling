@@ -26,8 +26,8 @@ import android.view.View.OnClickListener;
 import android.widget.ImageButton;
 
 import com.markupartist.sthlmtraveling.provider.FavoritesDbAdapter;
-import com.markupartist.sthlmtraveling.provider.StarredJourneysProvider.StarredJourney;
-import com.markupartist.sthlmtraveling.provider.StarredJourneysProvider.StarredJourney.StarredJourneyColumns;
+import com.markupartist.sthlmtraveling.provider.JourneysProvider.Journey;
+import com.markupartist.sthlmtraveling.provider.JourneysProvider.Journey.Journeys;
 import com.markupartist.sthlmtraveling.provider.planner.JourneyQuery;
 
 public class FavoriteButtonHelper implements OnClickListener {
@@ -83,9 +83,9 @@ public class FavoriteButtonHelper implements OnClickListener {
                 json = "\"\"";
             }
             ContentValues values = new ContentValues();
-            values.put(StarredJourneyColumns.JOURNEY_DATA, json);
+            values.put(Journeys.JOURNEY_DATA, json);
             Uri uri = mContext.getContentResolver().insert(
-                    StarredJourney.CONTENT_URI, values);
+                    Journeys.CONTENT_URI, values);
         }
 
         mFavoriteButton.setImageResource(getImageResource());

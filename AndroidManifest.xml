@@ -143,8 +143,8 @@
         <provider android:name=".provider.PlacesProvider"
                   android:authorities="com.markupartist.sthlmtraveling.placesprovider"
                   />
-        <provider android:name=".provider.StarredJourneysProvider"
-                  android:authorities="com.markupartist.sthlmtraveling.starredjourneysprovider"
+        <provider android:name=".provider.JourneysProvider"
+                  android:authorities="com.markupartist.sthlmtraveling.journeysprovider"
                   />
 
 </application>

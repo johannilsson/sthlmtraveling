@@ -22,12 +22,17 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import org.json.JSONException;
+
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -37,13 +42,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.markupartist.sthlmtraveling.provider.FavoritesDbAdapter;
+import com.markupartist.sthlmtraveling.provider.JourneysProvider.Journey.Journeys;
 import com.markupartist.sthlmtraveling.provider.planner.JourneyQuery;
 import com.markupartist.sthlmtraveling.provider.planner.Planner;
 import com.markupartist.sthlmtraveling.provider.planner.Route;
@@ -61,10 +67,11 @@ public class RouteDetailActivity extends BaseListActivity {
 
     private static final int DIALOG_BUY_SMS_TICKET = 1;
 
-    private FavoritesDbAdapter mFavoritesDbAdapter;
     private Trip2 mTrip;
     private JourneyQuery mJourneyQuery;
     private SubTripAdapter mSubTripAdapter;
+
+    private ImageButton mFavoriteButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,8 +84,6 @@ public class RouteDetailActivity extends BaseListActivity {
 
         mTrip = extras.getParcelable(EXTRA_JOURNEY_TRIP);
         mJourneyQuery = extras.getParcelable(EXTRA_JOURNEY_QUERY);
-
-        mFavoritesDbAdapter = new FavoritesDbAdapter(this).open();
 
         View headerView = getLayoutInflater().inflate(R.layout.route_header, null);
         TextView startPointView = (TextView) headerView.findViewById(R.id.route_from);
@@ -138,9 +143,11 @@ public class RouteDetailActivity extends BaseListActivity {
 
         getListView().addHeaderView(headerDetailView, null, false);
 
-        FavoriteButtonHelper favoriteButtonHelper =
-            new FavoriteButtonHelper(this, mJourneyQuery);
-        favoriteButtonHelper.loadImage();
+        mFavoriteButton = (ImageButton) findViewById(R.id.route_favorite);
+        if (isStarredJourney(mJourneyQuery)) {
+            mFavoriteButton.setImageResource(android.R.drawable.star_big_on);
+        }
+        mFavoriteButton.setOnClickListener(new OnStarredJourneyButtonClickListener());
 
         //initRouteDetails(mRoute);
         onRouteDetailsResult(mTrip);
@@ -254,8 +261,6 @@ public class RouteDetailActivity extends BaseListActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
-        mFavoritesDbAdapter.close();
     }
 
     /**
@@ -469,6 +474,62 @@ public class RouteDetailActivity extends BaseListActivity {
             messageView.setText(message);
 
             return view;
+        }
+    }
+
+    private boolean isStarredJourney(JourneyQuery journeyQuery) {
+        String json;
+        try {
+            json = mJourneyQuery.toJson(false).toString();
+        } catch (JSONException e) {
+            Log.e(TAG, "Failed to convert journey to a json document.");
+            return false;
+        }
+
+        String[] projection = new String[] { Journeys.JOURNEY_DATA, };
+        Uri uri = Journeys.CONTENT_URI;
+        String selection = Journeys.STARRED + " = ? AND " + Journeys.JOURNEY_DATA + " = ?";
+        String[] selectionArgs = new String[] { "1", json };
+        Cursor cursor = managedQuery(uri, projection, selection, selectionArgs, null);
+
+        return cursor.getCount() > 0;
+    }
+
+    private class OnStarredJourneyButtonClickListener implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+            String json;
+            try {
+                json = mJourneyQuery.toJson(false).toString();
+            } catch (JSONException e) {
+                Log.e(TAG, "Failed to convert journey to a json document.");
+                return;
+            }
+
+            ContentValues values = new ContentValues();
+            values.put(Journeys.JOURNEY_DATA, json);
+            Uri uri = Journeys.CONTENT_URI;
+            String where = Journeys.JOURNEY_DATA + "= ?";
+            String[] selectionArgs = new String[] { json };
+            // TODO: Replace button with a checkbox and check with that instead?
+            if (isStarredJourney(mJourneyQuery)) {
+                values.put(Journeys.STARRED, "0");
+                getContentResolver().update(
+                        uri, values, where, selectionArgs);
+                mFavoriteButton.setImageResource(
+                        android.R.drawable.star_big_off);
+            } else {
+                values.put(Journeys.STARRED, "1");
+                int affectedRows = getContentResolver().update(
+                        uri, values, where, selectionArgs);
+                if (affectedRows <= 0) {
+                    values.put(Journeys.STARRED, "1");
+                    getContentResolver().insert(
+                            Journeys.CONTENT_URI, values);
+                }
+                mFavoriteButton.setImageResource(
+                        android.R.drawable.star_big_on);
+            }
         }
     }
 }

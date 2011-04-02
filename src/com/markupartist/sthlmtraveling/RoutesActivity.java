@@ -60,10 +60,7 @@ import android.widget.SimpleAdapter.ViewBinder;
 
 import com.markupartist.sthlmtraveling.MyLocationManager.MyLocationFoundListener;
 import com.markupartist.sthlmtraveling.SectionedAdapter.Section;
-import com.markupartist.sthlmtraveling.provider.FavoritesDbAdapter;
-import com.markupartist.sthlmtraveling.provider.PlacesProvider.Place.Places;
-import com.markupartist.sthlmtraveling.provider.StarredJourneysProvider.StarredJourney;
-import com.markupartist.sthlmtraveling.provider.StarredJourneysProvider.StarredJourney.StarredJourneyColumns;
+import com.markupartist.sthlmtraveling.provider.JourneysProvider.Journey.Journeys;
 import com.markupartist.sthlmtraveling.provider.deviation.DeviationStore;
 import com.markupartist.sthlmtraveling.provider.planner.JourneyQuery;
 import com.markupartist.sthlmtraveling.provider.planner.Planner;
@@ -165,19 +162,14 @@ public class RoutesActivity extends BaseListActivity
     private TextView mFromView;
     private TextView mToView;
     private ArrayList<HashMap<String, String>> mDateAdapterData;
-    //private Stop mStartPoint;
-    //private Stop mEndPoint;
-    //private Time mTime;
-    //private FavoritesDbAdapter mFavoritesDbAdapter;
-    //private FavoriteButtonHelper mFavoriteButtonHelper;
+
     private MyLocationManager mMyLocationManager;
     private SearchRoutesTask mSearchRoutesTask;
     private GetEarlierRoutesTask mGetEarlierRoutesTask;
     private GetLaterRoutesTask mGetLaterRoutesTask;
     private Toast mToast;
     private ProgressDialog mProgress;
-    //private boolean mIsTimeDeparture;
-    //private Trip mTrip;
+
     private Response mPlannerResponse;
     private JourneyQuery mJourneyQuery;
     private String mRouteErrorCode;
@@ -206,8 +198,6 @@ public class RoutesActivity extends BaseListActivity
             return;
         }
 
-        //mFavoritesDbAdapter = new FavoritesDbAdapter(this).open();
-
         View headerView = getLayoutInflater().inflate(R.layout.route_header, null);
         mFromView = (TextView) headerView.findViewById(R.id.route_from);
         mToView = (TextView) headerView.findViewById(R.id.route_to);
@@ -219,58 +209,9 @@ public class RoutesActivity extends BaseListActivity
         if (isStarredJourney(mJourneyQuery)) {
             mFavoriteButton.setImageResource(android.R.drawable.star_big_on);
         }
-
-        mFavoriteButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String json;
-                try {
-                    json = mJourneyQuery.toJson(false).toString();
-                } catch (JSONException e) {
-                    // TODO: Back of here?
-                    json = "\"\"";
-                }
-
-                if (isStarredJourney(mJourneyQuery)) {
-                    getContentResolver().delete(
-                            StarredJourney.CONTENT_URI,
-                            StarredJourneyColumns.JOURNEY_DATA + "= ?",
-                            new String[]{json});
-
-                    mFavoriteButton.setImageResource(android.R.drawable.star_big_off);
-                } else {
-                    ContentValues values = new ContentValues();
-                    values.put(StarredJourneyColumns.JOURNEY_DATA, json);
-                    Uri uri = getContentResolver().insert(
-                            StarredJourney.CONTENT_URI, values);
-
-                    mFavoriteButton.setImageResource(android.R.drawable.star_big_on);
-                }
-            }
-        });
-
-        //mFavoriteButtonHelper = new FavoriteButtonHelper(this, mJourneyQuery);
-        //mFavoriteButtonHelper.loadImage();
+        mFavoriteButton.setOnClickListener(new OnStarredJourneyButtonClickListener());
 
         initRoutes(mJourneyQuery);
-    }
-
-    private boolean isStarredJourney(JourneyQuery journeyQuery) {
-        String json;
-        try {
-            json = mJourneyQuery.toJson(false).toString();
-        } catch (JSONException e) {
-            // TODO: Back of here?
-            json = "\"\"";
-        }
-
-        String[] projection = new String[] { StarredJourneyColumns.JOURNEY_DATA, };
-        Uri uri = StarredJourney.CONTENT_URI;
-        String selection = StarredJourneyColumns.JOURNEY_DATA + " = ?";
-        String[] selectionArgs = new String[] { json };
-        Cursor cursor = managedQuery(uri, projection, selection, selectionArgs, null);
-
-        return cursor.getCount() > 0;
     }
 
     private JourneyQuery getJourneyQueryFromIntent(Intent intent) {
@@ -438,12 +379,7 @@ public class RoutesActivity extends BaseListActivity
     @Override
     protected void onResume() {
         super.onResume();
-        // Could be null if bad parameters was passed to the search.
-        /*
-        if (mFavoriteButtonHelper != null) {
-            mFavoriteButtonHelper.loadImage();
-        }
-        */
+
         if (mSavedState != null) restoreLocalState(mSavedState);
     }
 
@@ -455,11 +391,6 @@ public class RoutesActivity extends BaseListActivity
         onCancelGetEarlierRoutesTask();
         onCancelGetLaterRoutesTask();
 
-        /*
-        if (mFavoritesDbAdapter != null) {
-            mFavoritesDbAdapter.close();
-        }
-        */
         mMyLocationManager.removeUpdates();
         dismissProgress();
     }
@@ -936,7 +867,7 @@ public class RoutesActivity extends BaseListActivity
                 updateStartAndEndPointViews(
                         mJourneyQuery.origin, mJourneyQuery.destination);
 
-                // Update the favorite button
+                // TODO: Update the favorite button
                 /*
                 mFavoriteButtonHelper
                         .setJourneyQuery(mJourneyQuery)
@@ -1482,6 +1413,61 @@ public class RoutesActivity extends BaseListActivity
                 }
             } else {
                 showDialog(DIALOG_GET_ROUTES_SESSION_TIMEOUT);
+            }
+        }
+    }
+
+    private boolean isStarredJourney(JourneyQuery journeyQuery) {
+        String json;
+        try {
+            json = mJourneyQuery.toJson(false).toString();
+        } catch (JSONException e) {
+            Log.e(TAG, "Failed to convert journey to a json document.");
+            return false;
+        }
+
+        String[] projection = new String[] { Journeys.JOURNEY_DATA, };
+        Uri uri = Journeys.CONTENT_URI;
+        String selection = Journeys.STARRED + " = ? AND " + Journeys.JOURNEY_DATA + " = ?";
+        String[] selectionArgs = new String[] { "1", json };
+        Cursor cursor = managedQuery(uri, projection, selection, selectionArgs, null);
+
+        return cursor.getCount() > 0;
+    }
+
+    private class OnStarredJourneyButtonClickListener implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+            String json;
+            try {
+                json = mJourneyQuery.toJson(false).toString();
+            } catch (JSONException e) {
+                Log.e(TAG, "Failed to convert journey to a json document.");
+                return;
+            }
+
+            ContentValues values = new ContentValues();
+            values.put(Journeys.JOURNEY_DATA, json);
+            Uri uri = Journeys.CONTENT_URI;
+            String where = Journeys.JOURNEY_DATA + "= ?";
+            String[] selectionArgs = new String[] { json };
+            // TODO: Replace button with a checkbox and check with that instead?
+            if (isStarredJourney(mJourneyQuery)) {
+                values.put(Journeys.STARRED, "0");
+                getContentResolver().update(
+                        uri, values, where, selectionArgs);
+                mFavoriteButton.setImageResource(
+                        android.R.drawable.star_big_off);
+            } else {
+                values.put(Journeys.STARRED, "1");
+                int affectedRows = getContentResolver().update(
+                        uri, values, where, selectionArgs);
+                if (affectedRows <= 0) {
+                    getContentResolver().insert(
+                            Journeys.CONTENT_URI, values);
+                }
+                mFavoriteButton.setImageResource(
+                        android.R.drawable.star_big_on);
             }
         }
     }
