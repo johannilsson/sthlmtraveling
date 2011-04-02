@@ -120,38 +120,9 @@ public class Planner {
         return stops;
     }
 
-    private JSONObject createQuery(JourneyQuery query) throws JSONException {
-        JSONObject jsonQuery = new JSONObject();
-        JSONObject origin = new JSONObject();
-        origin.put("id", query.origin.id);
-        origin.put("name", query.origin.name);
-        origin.put("latitude", query.origin.latitude);
-        origin.put("longitude", query.origin.longitude);
-
-        JSONObject destination = new JSONObject();
-        destination.put("id", query.destination.id);
-        destination.put("name", query.destination.name);
-        destination.put("latitude", query.destination.latitude);
-        destination.put("longitude", query.destination.longitude);
-
-        if (query.transportModes != null) {
-            jsonQuery.put("transportModes", new JSONArray(query.transportModes));
-        }
-
-        jsonQuery.put("alternativeStops", query.alternativeStops);
-        jsonQuery.put("origin", origin);
-        jsonQuery.put("destination", destination);
-        jsonQuery.put("ident", query.ident);
-        jsonQuery.put("seqnr", query.seqnr);
-        jsonQuery.put("time", query.time.format("%F %R"));
-        jsonQuery.put("isTimeDeparture", query.isTimeDeparture);
-
-        return jsonQuery;
-    }
-
     public Response findPreviousJourney(JourneyQuery query) throws IOException, BadResponse {
         try {
-            JSONObject json = createQuery(query);
+            JSONObject json = query.toJson();
             json.put("isPreviousQuery", true);
             return doQuery(json);
         } catch (JSONException e) {
@@ -161,7 +132,7 @@ public class Planner {
 
     public Response findNextJourney(JourneyQuery query) throws IOException, BadResponse {
         try {
-            JSONObject json = createQuery(query);
+            JSONObject json = query.toJson();
             json.put("isNextQuery", true);
             return doQuery(json);
         } catch (JSONException e) {
@@ -171,7 +142,7 @@ public class Planner {
 
     public Response findJourney(JourneyQuery query) throws IOException, BadResponse {
         try {
-            return doQuery(createQuery(query));
+            return doQuery(query.toJson());
         } catch (JSONException e) {
             throw new IOException(e.getMessage());
         }

@@ -18,6 +18,10 @@ package com.markupartist.sthlmtraveling.provider.planner;
 
 import java.util.ArrayList;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.format.Time;
@@ -77,6 +81,44 @@ public class JourneyQuery implements Parcelable {
         }
     };
 
+    public JSONObject toJson() throws JSONException {
+        return toJson(true);
+    }
+
+    public JSONObject toJson(boolean all) throws JSONException {
+        JSONObject jsonOrigin = new JSONObject();
+        jsonOrigin.put("id", origin.id);
+        jsonOrigin.put("name", origin.name);
+        jsonOrigin.put("latitude", origin.latitude);
+        jsonOrigin.put("longitude", origin.longitude);
+
+        JSONObject jsonDestination = new JSONObject();
+        jsonDestination.put("id", destination.id);
+        jsonDestination.put("name", destination.name);
+        jsonDestination.put("latitude", destination.latitude);
+        jsonDestination.put("longitude", destination.longitude);
+
+        JSONObject jsonQuery = new JSONObject();
+
+        if (transportModes != null) {
+            jsonQuery.put("transportModes", new JSONArray(transportModes));
+        }
+
+        jsonQuery.put("alternativeStops", alternativeStops);
+        jsonQuery.put("origin", jsonOrigin);
+        jsonQuery.put("destination", jsonDestination);
+
+        if (all) {
+            jsonQuery.put("ident", ident);
+            jsonQuery.put("seqnr", seqnr);
+            jsonQuery.put("time", time.format("%F %R"));
+        }
+
+        jsonQuery.put("isTimeDeparture", this.isTimeDeparture);
+
+        return jsonQuery;
+    }
+    
     public static class Builder {
         private Planner.Location mOrigin;
         private Planner.Location mDestination;
