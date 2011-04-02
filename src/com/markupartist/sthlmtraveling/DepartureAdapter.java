@@ -52,7 +52,7 @@ public class DepartureAdapter extends SectionedAdapter {
         this.clear();
 
         switch (transportType) {
-        case TransportMode.METRO:
+        case TransportMode.METRO_INDEX:
             if (departures.metros.isEmpty()) {
                 //emptyResultView.setVisibility(View.VISIBLE);
             } else {
@@ -64,7 +64,7 @@ public class DepartureAdapter extends SectionedAdapter {
                 }
             }
             break;
-        case TransportMode.BUS:
+        case TransportMode.BUS_INDEX:
             if (departures.buses.isEmpty()) {
                 //emptyResultView.setVisibility(View.VISIBLE);
             } else {
@@ -73,7 +73,7 @@ public class DepartureAdapter extends SectionedAdapter {
                 }
             }
             break;
-        case TransportMode.TRAIN:
+        case TransportMode.TRAIN_INDEX:
             if (departures.trains.isEmpty()) {
                 //emptyResultView.setVisibility(View.VISIBLE);
             } else {
@@ -83,7 +83,7 @@ public class DepartureAdapter extends SectionedAdapter {
                 }
             }
             break;
-        case TransportMode.LOKALBANA:
+        case TransportMode.LOKALBANA_INDEX:
             if (departures.trams.isEmpty()) {
                 //emptyResultView.setVisibility(View.VISIBLE);
             } else {

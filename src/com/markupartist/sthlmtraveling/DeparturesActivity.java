@@ -84,7 +84,7 @@ public class DeparturesActivity extends BaseListActivity {
 
     private DepartureAdapter mSectionedAdapter;
 
-    private int mPreferredTrafficMode = TransportMode.METRO;
+    private int mPreferredTrafficMode = TransportMode.METRO_INDEX;
     private int mPlaceId = -1;
 
     private ActionBar mActionBar;
@@ -156,23 +156,23 @@ public class DeparturesActivity extends BaseListActivity {
         switch (id) {
         case R.id.radio_metros:
             mSectionedAdapter.fillDepartures(mDepartureResult,
-                    TransportMode.METRO);
-            mPreferredTrafficMode = TransportMode.METRO;
+                    TransportMode.METRO_INDEX);
+            mPreferredTrafficMode = TransportMode.METRO_INDEX;
             break;
         case R.id.radio_buses:
             mSectionedAdapter.fillDepartures(mDepartureResult,
-                    TransportMode.BUS);
-            mPreferredTrafficMode = TransportMode.BUS;
+                    TransportMode.BUS_INDEX);
+            mPreferredTrafficMode = TransportMode.BUS_INDEX;
             break;
         case R.id.radio_trains:
             mSectionedAdapter.fillDepartures(mDepartureResult,
-                    TransportMode.TRAIN);
-            mPreferredTrafficMode = TransportMode.TRAIN;
+                    TransportMode.TRAIN_INDEX);
+            mPreferredTrafficMode = TransportMode.TRAIN_INDEX;
             break;
         case R.id.radio_trams:
             mSectionedAdapter.fillDepartures(mDepartureResult,
-                    TransportMode.LOKALBANA);
-            mPreferredTrafficMode = TransportMode.LOKALBANA;
+                    TransportMode.LOKALBANA_INDEX);
+            mPreferredTrafficMode = TransportMode.LOKALBANA_INDEX;
             break;
         }
         setListAdapter(mSectionedAdapter);
@@ -183,19 +183,19 @@ public class DeparturesActivity extends BaseListActivity {
         RadioButton radioMetros = (RadioButton) findViewById(R.id.radio_metros);
         radioMetros.setOnCheckedChangeListener(mOnTransportModeChange);
         radioMetros.setEnabled(true);
-        radioMetros.setChecked(mPreferredTrafficMode == TransportMode.METRO ? true : false);
+        radioMetros.setChecked(mPreferredTrafficMode == TransportMode.METRO_INDEX ? true : false);
         RadioButton radioBuses = (RadioButton) findViewById(R.id.radio_buses);
         radioBuses.setOnCheckedChangeListener(mOnTransportModeChange);
         radioBuses.setEnabled(true);
-        radioBuses.setChecked(mPreferredTrafficMode == TransportMode.BUS ? true : false);
+        radioBuses.setChecked(mPreferredTrafficMode == TransportMode.BUS_INDEX ? true : false);
         RadioButton radioTrains = (RadioButton) findViewById(R.id.radio_trains);
         radioTrains.setOnCheckedChangeListener(mOnTransportModeChange);
         radioTrains.setEnabled(true);
-        radioTrains.setChecked(mPreferredTrafficMode == TransportMode.TRAIN ? true : false);
+        radioTrains.setChecked(mPreferredTrafficMode == TransportMode.TRAIN_INDEX ? true : false);
         RadioButton radioTrams = (RadioButton) findViewById(R.id.radio_trams);
         radioTrams.setOnCheckedChangeListener(mOnTransportModeChange);
         radioTrams.setEnabled(true);
-        radioTrams.setChecked(mPreferredTrafficMode == TransportMode.LOKALBANA ? true : false);
+        radioTrams.setChecked(mPreferredTrafficMode == TransportMode.LOKALBANA_INDEX ? true : false);
     }
 
     private void loadDepartures() {
