@@ -16,60 +16,51 @@
 
 package com.markupartist.sthlmtraveling;
 
+import org.json.JSONException;
+
 import android.app.Activity;
-import android.database.Cursor;
+import android.content.ContentValues;
+import android.net.Uri;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageButton;
 
 import com.markupartist.sthlmtraveling.provider.FavoritesDbAdapter;
-import com.markupartist.sthlmtraveling.provider.planner.Planner;
-import com.markupartist.sthlmtraveling.provider.planner.Stop;
+import com.markupartist.sthlmtraveling.provider.StarredJourneysProvider.StarredJourney;
+import com.markupartist.sthlmtraveling.provider.StarredJourneysProvider.StarredJourney.StarredJourneyColumns;
+import com.markupartist.sthlmtraveling.provider.planner.JourneyQuery;
 
 public class FavoriteButtonHelper implements OnClickListener {
     private ImageButton mFavoriteButton;
-    private Cursor mFavoriteCursor;
-    private Activity mActivity;
-    private FavoritesDbAdapter mFavoritesDbAdapter;
-    private Planner.Location mStartPoint;
-    private Planner.Location mEndPoint;
+    private Activity mContext;
+    private JourneyQuery mJourneyQuery;
     private static int STAR_ON_RESOURCE = android.R.drawable.star_big_on;
     private static int STAR_OFF_RESOURCE = android.R.drawable.star_big_off;
 
-    public FavoriteButtonHelper(Activity activity, 
-                                FavoritesDbAdapter favoritesDbAdapter, 
-                                Planner.Location startPoint, 
-                                Planner.Location endPoint) {
-        mActivity = activity;
-        mFavoritesDbAdapter = favoritesDbAdapter;
-        mStartPoint = startPoint;
-        mEndPoint = endPoint;
+    public FavoriteButtonHelper(Activity context, JourneyQuery journeyQuery) {
+        mContext = context;
+        mJourneyQuery = journeyQuery;
 
-        mFavoriteButton = (ImageButton) mActivity.findViewById(R.id.route_favorite);
+        mFavoriteButton = (ImageButton) mContext.findViewById(R.id.route_favorite);
         mFavoriteButton.setOnClickListener(this);
     }
 
-    public FavoriteButtonHelper setStartPoint(Planner.Location startPoint) {
-        mStartPoint = startPoint;
-        return this;
-    }
-
-    public FavoriteButtonHelper setEndPoint(Planner.Location endPoint) {
-        mEndPoint = endPoint;
+    public FavoriteButtonHelper setJourneyQuery(JourneyQuery journeyQuery) {
+        mJourneyQuery = journeyQuery;
         return this;
     }
 
     public FavoriteButtonHelper loadImage() {
         mFavoriteButton.setImageResource(getImageResource());
-
         return this;
     }
-    
-    private boolean isFavorite() {
-        mFavoriteCursor = mFavoritesDbAdapter.fetch(mStartPoint, mEndPoint);
-        mActivity.startManagingCursor(mFavoriteCursor);
 
-        return mFavoriteCursor.getCount() > 0;
+    private boolean isFavorite() {
+        //mFavoriteCursor = mFavoritesDbAdapter.fetch(mStartPoint, mEndPoint);
+        //mActivity.startManagingCursor(mFavoriteCursor);
+
+        //return mFavoriteCursor.getCount() > 0;
+        return false;
     }
 
     private int getImageResource() {
@@ -82,10 +73,19 @@ public class FavoriteButtonHelper implements OnClickListener {
     @Override
     public void onClick(View view) {
         if (isFavorite()) {
-            long id = mFavoriteCursor.getLong(FavoritesDbAdapter.INDEX_ROWID);
-            mFavoritesDbAdapter.delete(id);
+            //long id = mFavoriteCursor.getLong(FavoritesDbAdapter.INDEX_ROWID);
+            //mFavoritesDbAdapter.delete(id);
         } else {
-            mFavoritesDbAdapter.create(mStartPoint, mEndPoint);
+            String json;
+            try {
+                json = mJourneyQuery.toJson(false).toString();
+            } catch (JSONException e) {
+                json = "\"\"";
+            }
+            ContentValues values = new ContentValues();
+            values.put(StarredJourneyColumns.JOURNEY_DATA, json);
+            Uri uri = mContext.getContentResolver().insert(
+                    StarredJourney.CONTENT_URI, values);
         }
 
         mFavoriteButton.setImageResource(getImageResource());

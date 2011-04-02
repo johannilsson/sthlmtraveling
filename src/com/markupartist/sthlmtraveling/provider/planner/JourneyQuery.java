@@ -112,9 +112,8 @@ public class JourneyQuery implements Parcelable {
             jsonQuery.put("ident", ident);
             jsonQuery.put("seqnr", seqnr);
             jsonQuery.put("time", time.format("%F %R"));
+            jsonQuery.put("isTimeDeparture", this.isTimeDeparture);
         }
-
-        jsonQuery.put("isTimeDeparture", this.isTimeDeparture);
 
         return jsonQuery;
     }

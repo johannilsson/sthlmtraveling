@@ -138,9 +138,8 @@ public class RouteDetailActivity extends BaseListActivity {
 
         getListView().addHeaderView(headerDetailView, null, false);
 
-        FavoriteButtonHelper favoriteButtonHelper = new FavoriteButtonHelper(
-                this, mFavoritesDbAdapter, mJourneyQuery.origin,
-                mJourneyQuery.destination);
+        FavoriteButtonHelper favoriteButtonHelper =
+            new FavoriteButtonHelper(this, mJourneyQuery);
         favoriteButtonHelper.loadImage();
 
         //initRouteDetails(mRoute);
