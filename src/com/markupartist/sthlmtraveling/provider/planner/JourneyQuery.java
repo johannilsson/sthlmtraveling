@@ -16,6 +16,8 @@
 
 package com.markupartist.sthlmtraveling.provider.planner;
 
+import java.util.ArrayList;
+
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.format.Time;
@@ -27,6 +29,8 @@ public class JourneyQuery implements Parcelable {
     public Location destination;
     public Time time;
     public boolean isTimeDeparture;
+    public boolean alternativeStops;
+    public ArrayList<String> transportModes;
     public String ident;
     public String seqnr;
 
@@ -39,6 +43,9 @@ public class JourneyQuery implements Parcelable {
         time = new Time();
         time.parse(parcel.readString());
         isTimeDeparture = (parcel.readInt() == 1) ? true : false;
+        alternativeStops = (parcel.readInt() == 1) ? true : false;
+        transportModes = new ArrayList<String>();
+        parcel.readStringList(transportModes);
         ident = parcel.readString();
         seqnr = parcel.readString();
     }
@@ -54,6 +61,8 @@ public class JourneyQuery implements Parcelable {
         dest.writeParcelable(destination, 0);
         dest.writeString(time.format2445());
         dest.writeInt(isTimeDeparture ? 1 : 0);
+        dest.writeInt(alternativeStops ? 1 : 0);
+        dest.writeStringList(transportModes);
         dest.writeString(ident);
         dest.writeString(seqnr);
     }
@@ -67,4 +76,77 @@ public class JourneyQuery implements Parcelable {
             return new JourneyQuery[size];
         }
     };
+
+    public static class Builder {
+        private Planner.Location mOrigin;
+        private Planner.Location mDestination;
+        private Time mTime;
+        private boolean mIsTimeDeparture;
+        private boolean mAlternativeStops;
+        private ArrayList<String> mTransportModes;        
+
+        public Builder() {
+            
+        }
+
+        public Builder origin(Stop origin) {
+            mOrigin = buildLocationFromStop(origin);
+            return this;
+        }
+
+        public Builder destination(Stop destination) {
+            mDestination = buildLocationFromStop(destination);
+            return this;
+        }
+
+        public Builder time(Time time) {
+            mTime = time;
+            return this;
+        }
+
+        public Builder isTimeDeparture(boolean isTimeDeparture) {
+            mIsTimeDeparture = isTimeDeparture;
+            return this;
+        }
+
+        public Builder alternativeStops(boolean alternativeStops) {
+            mAlternativeStops = alternativeStops;
+            return this;
+        }
+
+        public Builder transportModes(ArrayList<String> transportModes) {
+            mTransportModes = transportModes;
+            return this;
+        }
+
+        public JourneyQuery create() {
+            JourneyQuery journeyQuery = new JourneyQuery();
+            journeyQuery.origin = mOrigin;
+            journeyQuery.destination = mDestination;
+
+            if (mTime == null) {
+                mTime = new Time();
+                mTime.setToNow();
+            }
+            journeyQuery.time = mTime;
+            journeyQuery.isTimeDeparture = mIsTimeDeparture;
+            journeyQuery.alternativeStops = mAlternativeStops;
+            journeyQuery.transportModes = mTransportModes;
+
+            return journeyQuery;
+        }
+
+        private Planner.Location buildLocationFromStop(Stop stop) {
+            Planner.Location location = new Planner.Location();
+            location.id = stop.getSiteId();
+            location.name = stop.getName();
+            if (stop.getLocation() != null) {
+                location.latitude =
+                    (int) (stop.getLocation().getLatitude() * 1E6);
+                location.longitude =
+                    (int) (stop.getLocation().getLongitude() * 1E6);
+            }    
+            return location;
+        }
+    }
 }

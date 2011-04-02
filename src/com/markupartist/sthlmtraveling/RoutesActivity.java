@@ -81,11 +81,6 @@ import com.markupartist.sthlmtraveling.provider.planner.Planner.Trip2;
  */
 public class RoutesActivity extends BaseListActivity
         implements MyLocationFoundListener {
-    /**
-     * The Journey
-     */
-    static final String EXTRA_JOURNEY =
-        "sthlmtraveling.intent.action.JOURNEY";
 
     /**
      * The Journey
@@ -191,11 +186,8 @@ public class RoutesActivity extends BaseListActivity
         LocationManager locationManager = (LocationManager)getSystemService(LOCATION_SERVICE);
         mMyLocationManager = new MyLocationManager(locationManager);
 
-        // Parse data URI       
-        mJourneyQuery = createQuery(getIntent().getData());
-
-        Log.d(TAG, "dest: " + mJourneyQuery.destination.name);
-        
+        // Get the journey query.
+        mJourneyQuery = getJourneyQueryFromIntent(getIntent());
 
         if (mJourneyQuery.origin.name == null
                 || mJourneyQuery.destination.name == null) {
@@ -220,7 +212,17 @@ public class RoutesActivity extends BaseListActivity
         initRoutes(mJourneyQuery);
     }
 
-    private JourneyQuery createQuery(Uri uri) {
+    private JourneyQuery getJourneyQueryFromIntent(Intent intent) {
+        JourneyQuery journeyQuery;
+        if (intent.hasExtra(EXTRA_JOURNEY_QUERY)) {
+            journeyQuery = intent.getExtras().getParcelable(EXTRA_JOURNEY_QUERY);
+        } else {
+            journeyQuery = getJourneyQueryFromUri(intent.getData());
+        }
+        return journeyQuery;
+    }
+
+    private JourneyQuery getJourneyQueryFromUri(Uri uri) {
         JourneyQuery jq = new JourneyQuery();
 
         jq.origin = new Planner.Location();        

@@ -156,70 +156,107 @@
                     />
             </RadioGroup>
             
-            <TableLayout
-                android:id="@+id/planner_change_time_layout"
-	            android:layout_width="wrap_content"
-	            android:layout_height="wrap_content"
-	            android:visibility="gone"
-                >
-                <TableRow>
-	                <Spinner 
-	                    android:id="@+id/departure_arrival_choice"
-	                    android:layout_width="wrap_content"
-	                    android:layout_height="wrap_content"
-	                    android:drawSelectorOnTop="true"
-	                />
-                </TableRow>
-                <TableRow>
-	                <Button
-	                    android:id="@+id/planner_route_time"
-	                    android:layout_width="wrap_content"
-	                    android:layout_height="wrap_content"
-	                    />
-	                <Button
-	                    android:id="@+id/planner_route_date"
-	                    android:layout_width="wrap_content"
-	                    android:layout_height="wrap_content"
-	                    />
-                </TableRow>
-                <!--
-                <TableRow>
-                    <CheckBox
-                        android:id="@+id/planner_alternative_stops"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Alternative stops"
-                        android:textColor="#000"
-                        />
-                </TableRow>
-                -->
-            </TableLayout>
-            <!-- 
             <LinearLayout
                 android:id="@+id/planner_change_time_layout"
-                android:orientation="horizontal"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:visibility="visible"
+                android:orientation="vertical"
+                android:visibility="gone"
                 >
                 <Spinner 
                     android:id="@+id/departure_arrival_choice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:drawSelectorOnTop="true"
-                />
-                <Button
-					android:id="@+id/planner_route_time"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
+                />                        
+	            <TableLayout
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                >
+	                <TableRow>
+	                    <Button
+	                        android:id="@+id/planner_route_time"
+	                        android:layout_width="wrap_content"
+	                        android:layout_height="wrap_content"
+	                        />
+	                    <Button
+	                        android:id="@+id/planner_route_date"
+	                        android:layout_width="wrap_content"
+	                        android:layout_height="wrap_content"
+	                        />
+	                </TableRow>
+	            </TableLayout>
+                <View
+                    android:layout_width="fill_parent"
+                    android:layout_height="1px"
+                    android:layout_marginTop="10dip"
+                    android:layout_marginBottom="10dip"
+                    android:background="@drawable/stroke"
                     />
-                <Button
-					android:id="@+id/planner_route_date"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
+                <CheckBox
+                    android:id="@+id/planner_alternative_stops"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Alternative stops"
+                    />
+				<View
+					android:layout_width="fill_parent"
+					android:layout_height="1px"
+                    android:layout_marginTop="10dip"
+                    android:layout_marginBottom="10dip"
+					android:background="@drawable/stroke"
 					/>
+					
+                <CheckBox
+                    android:id="@+id/planner_transport_metro"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/metros"
+                    android:checked="true"
+                    />
+                <CheckBox
+                    android:id="@+id/planner_transport_bus"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/buses"
+                    android:checked="true"
+                    />
+                <CheckBox
+                    android:id="@+id/planner_transport_tram"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/trams"
+                    android:checked="true"
+                    />
+                <CheckBox
+                    android:id="@+id/planner_transport_train"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/trains"
+                    android:checked="true"
+                    />
+                <CheckBox
+                    android:id="@+id/planner_transport_fly"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Flygbussar"
+                    android:checked="true"
+                    />
+                <CheckBox
+                    android:id="@+id/planner_transport_wax"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Waxholmsbolagets båttrafik"
+                    android:checked="true"
+                    />
+                <CheckBox
+                    android:id="@+id/planner_transport_nar"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Närtrafiken"
+                    android:checked="false"
+                    />
             </LinearLayout>
-             -->
             <Button
                 android:layout_marginTop="5dip"
 				android:id="@+id/search_route"

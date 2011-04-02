@@ -134,6 +134,11 @@ public class Planner {
         destination.put("latitude", query.destination.latitude);
         destination.put("longitude", query.destination.longitude);
 
+        if (query.transportModes != null) {
+            jsonQuery.put("transportModes", new JSONArray(query.transportModes));
+        }
+
+        jsonQuery.put("alternativeStops", query.alternativeStops);
         jsonQuery.put("origin", origin);
         jsonQuery.put("destination", destination);
         jsonQuery.put("ident", query.ident);

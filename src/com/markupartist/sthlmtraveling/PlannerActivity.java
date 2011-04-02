@@ -54,6 +54,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -71,6 +72,8 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 
 import com.markupartist.sthlmtraveling.AutoCompleteStopAdapter.FilterListener;
 import com.markupartist.sthlmtraveling.provider.HistoryDbAdapter;
+import com.markupartist.sthlmtraveling.provider.TransportMode;
+import com.markupartist.sthlmtraveling.provider.planner.JourneyQuery;
 import com.markupartist.sthlmtraveling.provider.planner.Planner;
 import com.markupartist.sthlmtraveling.provider.planner.Stop;
 import com.markupartist.sthlmtraveling.utils.LocationUtils;
@@ -328,7 +331,6 @@ public class PlannerActivity extends BaseActivity implements OnCheckedChangeList
                             (int) (address.getLongitude() * 1E6));
                     String addressLine = LocationUtils.getAddressLine(address);
                     //autoCompleteTextView.focusSearch(View.FOCUS_UP);
-                    
                     //autoCompleteTextView.setText(addressLine);
                     stop.setName(addressLine);
                     //autoCompleteTextView.clearFocus();
@@ -425,9 +427,62 @@ public class PlannerActivity extends BaseActivity implements OnCheckedChangeList
             time = null;
         }
 
-        Uri routesUri = RoutesActivity.createRoutesUri(startPoint, endPoint, time, isTimeDeparture);
+        // alternativeStop
+        // transportModes
+
+        JourneyQuery journeyQuery = new JourneyQuery.Builder()
+            .origin(startPoint)
+            .destination(endPoint)
+            .isTimeDeparture(isTimeDeparture)
+            .time(time)
+            .transportModes(getSelectedTransportModes())
+            .create();
+
+        Intent routesIntent = new Intent(this, RoutesActivity.class);
+        routesIntent.putExtra(RoutesActivity.EXTRA_JOURNEY_QUERY, journeyQuery);
+        startActivity(routesIntent);
+
+        /*
+        Uri routesUri = RoutesActivity.createRoutesUri(
+                startPoint, endPoint, time, isTimeDeparture);
         Intent i = new Intent(Intent.ACTION_VIEW, routesUri, this, RoutesActivity.class);
         startActivity(i);
+        */
+    }
+
+    private ArrayList<String> getSelectedTransportModes() {
+        CheckBox transportBus = (CheckBox) findViewById(R.id.planner_transport_bus);
+        CheckBox transportFly = (CheckBox) findViewById(R.id.planner_transport_fly);
+        CheckBox transportMetro = (CheckBox) findViewById(R.id.planner_transport_metro);
+        CheckBox transportNar = (CheckBox) findViewById(R.id.planner_transport_nar);
+        CheckBox transportTrain = (CheckBox) findViewById(R.id.planner_transport_train);
+        CheckBox transportTram = (CheckBox) findViewById(R.id.planner_transport_tram);
+        CheckBox transportWax = (CheckBox) findViewById(R.id.planner_transport_wax);
+
+        ArrayList<String> transportModes = new ArrayList<String>();
+        if (transportBus.isChecked()) {
+            transportModes.add(TransportMode.BUS);
+        }
+        if (transportFly.isChecked()) {
+            transportModes.add(TransportMode.FLY);
+        }
+        if (transportMetro.isChecked()) {
+            transportModes.add(TransportMode.METRO);
+        }
+        if (transportNar.isChecked()) {
+            transportModes.add(TransportMode.NAR);
+        }
+        if (transportTrain.isChecked()) {
+            transportModes.add(TransportMode.TRAIN);
+        }
+        if (transportTram.isChecked()) {
+            transportModes.add(TransportMode.TRAM);
+        }
+        if (transportWax.isChecked()) {
+            transportModes.add(TransportMode.WAX);
+        }
+
+        return transportModes;
     }
 
     /**
