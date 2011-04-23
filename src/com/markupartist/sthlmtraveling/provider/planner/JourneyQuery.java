@@ -32,8 +32,8 @@ public class JourneyQuery implements Parcelable {
     public Location origin;
     public Location destination;
     public Time time;
-    public boolean isTimeDeparture;
-    public boolean alternativeStops;
+    public boolean isTimeDeparture = true;
+    public boolean alternativeStops = false;
     public ArrayList<String> transportModes;
     public String ident;
     public String seqnr;
@@ -117,7 +117,29 @@ public class JourneyQuery implements Parcelable {
 
         return jsonQuery;
     }
-    
+
+    public static JourneyQuery fromJson(JSONObject jsonObject)
+            throws JSONException {
+        JourneyQuery journeyQuery = new JourneyQuery.Builder()
+            .origin(jsonObject.getJSONObject("origin"))
+            .destination(jsonObject.getJSONObject("destination"))
+            .transportModes(jsonObject.has("transportModes")
+                    ? jsonObject.getJSONArray("transportModes") : null)
+            .create();
+
+        if (jsonObject.has("isTimeDeparture")) {
+            journeyQuery.isTimeDeparture =
+                jsonObject.getBoolean("isTimeDeparture");
+        }
+        if (jsonObject.has("alternativeStops")) {
+            journeyQuery.alternativeStops =
+                jsonObject.getBoolean("alternativeStops");
+        }
+        
+                
+        return journeyQuery;
+    }
+
     public static class Builder {
         private Planner.Location mOrigin;
         private Planner.Location mDestination;
@@ -135,8 +157,42 @@ public class JourneyQuery implements Parcelable {
             return this;
         }
 
+        public Builder origin(String name, int latitude, int longitude) {
+            mOrigin = new Location();
+            mOrigin.name = name;
+            mOrigin.latitude = latitude;
+            mOrigin.longitude = longitude;
+            return this;
+        }
+
+        public Builder origin(JSONObject jsonObject) throws JSONException {
+            mOrigin = new Location();
+            mOrigin.id = jsonObject.getInt("id");
+            mOrigin.name = jsonObject.getString("name");
+            mOrigin.latitude = jsonObject.getInt("latitude");
+            mOrigin.longitude = jsonObject.getInt("longitude");
+            return this;
+        }
+        
         public Builder destination(Stop destination) {
             mDestination = buildLocationFromStop(destination);
+            return this;
+        }
+
+        public Builder destination(JSONObject jsonObject) throws JSONException {
+            mDestination = new Location();
+            mDestination.id = jsonObject.getInt("id");
+            mDestination.name = jsonObject.getString("name");
+            mDestination.latitude = jsonObject.getInt("latitude");
+            mDestination.longitude = jsonObject.getInt("longitude");
+            return this;
+        }
+        
+        public Builder destination(String name, int latitude, int longitude) {
+            mDestination = new Location();
+            mDestination.name = name;
+            mDestination.latitude = latitude;
+            mDestination.longitude = longitude;
             return this;
         }
 
@@ -157,6 +213,17 @@ public class JourneyQuery implements Parcelable {
 
         public Builder transportModes(ArrayList<String> transportModes) {
             mTransportModes = transportModes;
+            return this;
+        }
+
+        public Builder transportModes(JSONArray jsonArray) throws JSONException {
+            if (jsonArray == null) {
+                return this;
+            }
+            mTransportModes = new ArrayList<String>();
+            for (int i = 0; i < jsonArray.length(); i++) {
+                mTransportModes.add(jsonArray.getString(i));
+            }
             return this;
         }
 
@@ -190,4 +257,5 @@ public class JourneyQuery implements Parcelable {
             return location;
         }
     }
+
 }
