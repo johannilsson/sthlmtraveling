@@ -41,7 +41,7 @@ public class JourneysProvider extends ContentProvider {
     private static final String TAG = "JourneysProvider";
 
     private static final String DATABASE_NAME = "journeys.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
     private static final String JOURNEYS_TABLE_NAME = "journeys";
 
     public static final String AUTHORITY =
@@ -80,6 +80,7 @@ public class JourneysProvider extends ContentProvider {
         sJourneysProjectionMap.put(Journeys.POSITION, Journeys.POSITION);
         sJourneysProjectionMap.put(Journeys.STARRED, Journeys.STARRED);
         sJourneysProjectionMap.put(Journeys.CREATED_AT, Journeys.CREATED_AT);
+        sJourneysProjectionMap.put(Journeys.UPDATED_AT, Journeys.UPDATED_AT);
         sJourneysProjectionMap.put(Journeys.JOURNEY_DATA, Journeys.JOURNEY_DATA);
     }
 
@@ -145,11 +146,13 @@ public class JourneysProvider extends ContentProvider {
             values = new ContentValues();
         }
 
-        // TODO: This is not working...
         if (!values.containsKey(Journeys.CREATED_AT)) {
             DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             Date date = new Date();
-            initialValues.put(Journeys.CREATED_AT,
+
+            values.put(Journeys.CREATED_AT,
+                    dateFormat.format(date));
+            values.put(Journeys.UPDATED_AT,
                     dateFormat.format(date));
         }
 
@@ -202,6 +205,13 @@ public class JourneysProvider extends ContentProvider {
             String[] selectionArgs) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         String finalSelection;
+
+        if (!values.containsKey(Journeys.UPDATED_AT)) {
+            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            Date date = new Date();
+            values.put(Journeys.UPDATED_AT,
+                    dateFormat.format(date));
+        }
 
         int count;
 
@@ -263,6 +273,7 @@ public class JourneysProvider extends ContentProvider {
                     + Journeys.POSITION + " INTEGER, "
                     + Journeys.STARRED + " INTEGER, "
                     + Journeys.CREATED_AT + " DATE, "
+                    + Journeys.UPDATED_AT + " DATE, "
                     + Journeys.JOURNEY_DATA + " TEXT NOT NULL"
                     + ");"
                 );
@@ -314,6 +325,11 @@ public class JourneysProvider extends ContentProvider {
             public static final String CREATED_AT = "created_at";
 
             /**
+             * When the entry was updated.
+             */
+            public static final String UPDATED_AT = "updated_at";
+
+            /**
              * The journey data as json.
              */
             public static final String JOURNEY_DATA = "journey_data";
@@ -321,7 +337,7 @@ public class JourneysProvider extends ContentProvider {
             /**
              * The default sort order.
              */
-            public static final String DEFAULT_SORT_ORDER = "created_at DESC";
+            public static final String DEFAULT_SORT_ORDER = "position ASC, updated_at DESC, created_at DESC";
 
             private Journeys() {
             }
