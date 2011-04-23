@@ -213,7 +213,7 @@ public class FavoritesDbAdapter {
             mDb.query(true, DATABASE_TABLE, new String[] { KEY_ROWID,
                     KEY_START_POINT, KEY_START_POINT_LATITUDE,
                     KEY_START_POINT_LONGITUDE, KEY_END_POINT,
-                    KEY_END_POINT_LATITUDE, KEY_END_POINT_LONGITUDE },
+                    KEY_END_POINT_LATITUDE, KEY_END_POINT_LONGITUDE, KEY_CREATED },
                     null, null, null, null, KEY_CREATED + " DESC", null);
         return mCursor;        
     }

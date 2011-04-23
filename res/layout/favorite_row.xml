@@ -70,5 +70,55 @@
             android:text="T-Centralen"
             />
     </LinearLayout>
+    <LinearLayout
+            android:id="@+id/favorite_transport_modes"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:addStatesFromChildren="true"
+            android:gravity="center_vertical"
+            android:paddingRight="0dip"
+            android:layout_marginTop="8dip"
+        >
+        <ImageView
+            android:id="@+id/favorite_transport_mode_metro" 
+            android:src="@drawable/transport_metro"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:paddingRight="5dip"
+        />
+        <ImageView 
+            android:id="@+id/favorite_transport_mode_bus"
+            android:src="@drawable/transport_bus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:paddingRight="5dip"
+        />
+        <ImageView
+            android:id="@+id/favorite_transport_mode_train"
+            android:src="@drawable/transport_train"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:paddingRight="5dip"
+        />
+        <ImageView 
+            android:id="@+id/favorite_transport_mode_tram"
+            android:src="@drawable/transport_tram_car"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:paddingRight="5dip"
+        />
+        <ImageView
+            android:id="@+id/favorite_transport_mode_wax"
+            android:src="@drawable/transport_boat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:paddingRight="5dip"
+        />
+    </LinearLayout>
 </LinearLayout>
 
