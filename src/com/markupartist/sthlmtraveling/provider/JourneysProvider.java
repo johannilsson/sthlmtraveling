@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2011 Johan Nilsson <http://markupartist.com>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.markupartist.sthlmtraveling.provider;
 
 import java.text.DateFormat;
@@ -30,15 +46,33 @@ public class JourneysProvider extends ContentProvider {
 
     public static final String AUTHORITY =
         "com.markupartist.sthlmtraveling.journeysprovider";
-    private static final UriMatcher sJourneysUriMatcher;
+
+    /**
+     * A UriMatcher instance
+     */
+    private static final UriMatcher sUriMatcher;
+
+    /**
+     * The incoming URI matches the Journeys URI pattern.
+     */
     private static final int JOURNEYS = 1;
+
+    /**
+     * The incoming URI matches the Journey ID URI pattern
+     */
+    private static final int JOURNEY_ID = 2;
+
+    /**
+     * A projection map used to select columns from the database.
+     */
     private static HashMap<String, String> sJourneysProjectionMap;
 
     private DatabaseHelper dbHelper;
 
     static {
-        sJourneysUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
-        sJourneysUriMatcher.addURI(AUTHORITY, JOURNEYS_TABLE_NAME, JOURNEYS);
+        sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
+        sUriMatcher.addURI(AUTHORITY, "journeys", JOURNEYS);
+        sUriMatcher.addURI(AUTHORITY, "journeys/#", JOURNEY_ID);
 
         sJourneysProjectionMap = new HashMap<String, String>();
         sJourneysProjectionMap.put(Journeys.ID, Journeys.ID);
@@ -52,24 +86,45 @@ public class JourneysProvider extends ContentProvider {
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
+        String finalSelection;
+
         int count;
-        switch (sJourneysUriMatcher.match(uri)) {
+
+        switch (sUriMatcher.match(uri)) {
             case JOURNEYS:
                 count = db.delete(JOURNEYS_TABLE_NAME,
                         selection, selectionArgs);
                 break;
+            case JOURNEY_ID:
+                // Starts a final WHERE clause by restricting it to the
+                // desired journey ID.
+                finalSelection = Journeys._ID + " = " +
+                    uri.getPathSegments().get(Journeys.JOURNEY_ID_PATH_POSITION);
 
+                // If there were additional selection criteria, append them to
+                // the final WHERE clause.
+                if (selection != null) {
+                    finalSelection = finalSelection + " AND " + selection;
+                }
+
+                count = db.delete(
+                    JOURNEYS_TABLE_NAME,
+                    finalSelection,
+                    selectionArgs
+                );
+                break;
             default:
                 throw new IllegalArgumentException("Unknown URI " + uri);
         }
 
         getContext().getContentResolver().notifyChange(uri, null);
+
         return count;
     }
 
     @Override
     public String getType(Uri uri) {
-        switch (sJourneysUriMatcher.match(uri)) {
+        switch (sUriMatcher.match(uri)) {
         case JOURNEYS:
             return Journeys.CONTENT_TYPE;
         default:
@@ -79,7 +134,7 @@ public class JourneysProvider extends ContentProvider {
 
     @Override
     public Uri insert(Uri uri, ContentValues initialValues) {
-        if (sJourneysUriMatcher.match(uri) != JOURNEYS) {
+        if (sUriMatcher.match(uri) != JOURNEYS) {
             throw new IllegalArgumentException("Unknown URI " + uri);
         }
 
@@ -90,6 +145,7 @@ public class JourneysProvider extends ContentProvider {
             values = new ContentValues();
         }
 
+        // TODO: This is not working...
         if (!values.containsKey(Journeys.CREATED_AT)) {
             DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             Date date = new Date();
@@ -118,13 +174,17 @@ public class JourneysProvider extends ContentProvider {
     public Cursor query(Uri uri, String[] projection, String selection,
             String[] selectionArgs, String sortOrder) {
         SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
+        qb.setTables(JOURNEYS_TABLE_NAME);
 
-        switch (sJourneysUriMatcher.match(uri)) {
+        switch (sUriMatcher.match(uri)) {
             case JOURNEYS:
-                qb.setTables(JOURNEYS_TABLE_NAME);
                 qb.setProjectionMap(sJourneysProjectionMap);
                 break;
-
+            case JOURNEY_ID:
+                qb.setProjectionMap(sJourneysProjectionMap);
+                qb.appendWhere(Journeys._ID + "=" +
+                    uri.getPathSegments().get(Journeys.JOURNEY_ID_PATH_POSITION));
+                break;
             default:
                 throw new IllegalArgumentException("Unknown URI " + uri);
         }
@@ -141,13 +201,42 @@ public class JourneysProvider extends ContentProvider {
     public int update(Uri uri, ContentValues values, String selection,
             String[] selectionArgs) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
+        String finalSelection;
+
         int count;
-        switch (sJourneysUriMatcher.match(uri)) {
+
+        switch (sUriMatcher.match(uri)) {
             case JOURNEYS:
                 count = db.update(JOURNEYS_TABLE_NAME,
                         values, selection, selectionArgs);
                 break;
+            case JOURNEY_ID:
+                // Get the journey ID from the incoming URI.
+                //String noteId =
+                //    uri.getPathSegments().get(Journeys.JOURNEY_ID_PATH_POSITION);
 
+                // Starts creating the final WHERE clause by restricting it to
+                // the incoming ID.
+                finalSelection =
+                        Journeys._ID +
+                        " = " +
+                        uri.getPathSegments().
+                            get(Journeys.JOURNEY_ID_PATH_POSITION)
+                ;
+
+                // If there were additional selection criteria, append them to
+                // the final WHERE clause.
+                if (selection !=null) {
+                    finalSelection = finalSelection + " AND " + selection;
+                }
+
+                count = db.update(
+                    JOURNEYS_TABLE_NAME,
+                    values,
+                    finalSelection,
+                    selectionArgs
+                );
+                break;
             default:
                 throw new IllegalArgumentException("Unknown URI " + uri);
         }
@@ -200,8 +289,7 @@ public class JourneysProvider extends ContentProvider {
             public static final String CONTENT_TYPE =
                 "vnd.android.cursor.dir/vnd.sthlmtraveling.journeys";
             
-            private Journeys() {
-            }
+            public static final int JOURNEY_ID_PATH_POSITION = 1;
 
             public static final String ID = "_id";
 
@@ -230,6 +318,13 @@ public class JourneysProvider extends ContentProvider {
              */
             public static final String JOURNEY_DATA = "journey_data";
 
+            /**
+             * The default sort order.
+             */
+            public static final String DEFAULT_SORT_ORDER = "created_at DESC";
+
+            private Journeys() {
+            }
         }
 
     }
