@@ -42,6 +42,7 @@ import com.markupartist.sthlmtraveling.provider.FavoritesDbAdapter;
 import com.markupartist.sthlmtraveling.provider.TransportMode;
 import com.markupartist.sthlmtraveling.provider.JourneysProvider.Journey.Journeys;
 import com.markupartist.sthlmtraveling.provider.planner.JourneyQuery;
+import com.markupartist.sthlmtraveling.provider.planner.Planner.Location;
 
 public class FavoritesActivity extends BaseListActivity {
 
@@ -174,7 +175,7 @@ public class FavoritesActivity extends BaseListActivity {
         return true;
     }
 
-    private static class JourneyAdapter extends CursorAdapter {
+    private class JourneyAdapter extends CursorAdapter {
         
         public JourneyAdapter(Context context, Cursor c) {
             super(context, c);
@@ -186,10 +187,19 @@ public class FavoritesActivity extends BaseListActivity {
 
             TextView originText =
                 (TextView) view.findViewById(R.id.favorite_start_point);
-            originText.setText(journeyQuery.origin.name);
+            if (Location.TYPE_MY_LOCATION.equals(journeyQuery.origin.name)) {
+                originText.setText(getString(R.string.my_location));
+            } else {
+                originText.setText(journeyQuery.origin.name);
+            }
+
             TextView destinationText =
                 (TextView) view.findViewById(R.id.favorite_end_point);
-            destinationText.setText(journeyQuery.destination.name);
+            if (Location.TYPE_MY_LOCATION.equals(journeyQuery.destination.name)) {
+                destinationText.setText(getString(R.string.my_location));
+            } else {
+                destinationText.setText(journeyQuery.destination.name);
+            }
 
             addTransportModeViews(journeyQuery, view);;
         }
