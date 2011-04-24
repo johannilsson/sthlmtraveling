@@ -98,7 +98,11 @@ public class FavoritesActivity extends BaseListActivity {
         startActivity(routesIntent);
     }
 
+    /**
+     * Converts old favorites to the new journey table.
+     */
     private void convertFavorites() {
+
         SharedPreferences settings = getPreferences(MODE_PRIVATE);
         boolean isFavoritesConverted =
             settings.getBoolean("converted_favorites", false);
@@ -156,6 +160,7 @@ public class FavoritesActivity extends BaseListActivity {
 
         SharedPreferences.Editor editor = settings.edit();
         editor.putBoolean("converted_favorites", true);
+        editor.commit();
 
         stopManagingCursor(cursor);
         favoritesDbAdapter.close();
