@@ -58,6 +58,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.SimpleAdapter.ViewBinder;
 
+import com.markupartist.android.widget.ActionBar;
 import com.markupartist.sthlmtraveling.MyLocationManager.MyLocationFoundListener;
 import com.markupartist.sthlmtraveling.SectionedAdapter.Section;
 import com.markupartist.sthlmtraveling.provider.JourneysProvider.Journey.Journeys;
@@ -178,6 +179,8 @@ public class RoutesActivity extends BaseListActivity
 
     private ImageButton mFavoriteButton;
 
+    private ActionBar mActionBar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -198,6 +201,8 @@ public class RoutesActivity extends BaseListActivity
             return;
         }
 
+        mActionBar = initActionBar();
+
         View headerView = getLayoutInflater().inflate(R.layout.route_header, null);
         mFromView = (TextView) headerView.findViewById(R.id.route_from);
         mToView = (TextView) headerView.findViewById(R.id.route_to);
@@ -214,6 +219,26 @@ public class RoutesActivity extends BaseListActivity
         initRoutes(mJourneyQuery);
     }
 
+    @Override
+    protected ActionBar initActionBar() {
+        ActionBar actionBar = super.initActionBar();
+
+        actionBar.addAction(new ActionBar.Action() {
+
+            @Override
+            public void performAction(View view) {
+                reverseJourneyQuery();
+            }
+
+            @Override
+            public int getDrawable() {
+                return R.drawable.ic_actionbar_reverse;
+            }
+        });
+        
+        return actionBar;
+    }
+    
     private JourneyQuery getJourneyQueryFromIntent(Intent intent) {
         JourneyQuery journeyQuery;
         if (intent.hasExtra(EXTRA_JOURNEY_QUERY)) {
@@ -841,6 +866,32 @@ public class RoutesActivity extends BaseListActivity
         return true;
     }
 
+    protected void reverseJourneyQuery() {
+        Planner.Location tmpStartPoint = new Planner.Location(mJourneyQuery.destination);
+        Planner.Location tmpEndPoint = new Planner.Location(mJourneyQuery.origin);
+
+        mJourneyQuery.origin = tmpStartPoint;
+        mJourneyQuery.destination = tmpEndPoint;
+
+        /*
+         * Note: To launch a new intent won't work because sl.se would
+         * need to have a new ident generated to be able to search for
+         * route details in the next step.
+         */
+        mSearchRoutesTask = new SearchRoutesTask();
+        mSearchRoutesTask.execute(mJourneyQuery);
+
+        updateStartAndEndPointViews(
+                mJourneyQuery.origin, mJourneyQuery.destination);
+
+        // TODO: Update the favorite button
+        /*
+        mFavoriteButtonHelper
+                .setJourneyQuery(mJourneyQuery)
+                .loadImage();
+        */
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -850,29 +901,7 @@ public class RoutesActivity extends BaseListActivity
                 startActivity(i);
                 return true;
             case R.id.reverse_start_end :
-                Planner.Location tmpStartPoint = new Planner.Location(mJourneyQuery.destination);
-                Planner.Location tmpEndPoint = new Planner.Location(mJourneyQuery.origin);
-
-                mJourneyQuery.origin = tmpStartPoint;
-                mJourneyQuery.destination = tmpEndPoint;
-
-                /*
-                 * Note: To launch a new intent won't work because sl.se would
-                 * need to have a new ident generated to be able to search for
-                 * route details in the next step.
-                 */
-                mSearchRoutesTask = new SearchRoutesTask();
-                mSearchRoutesTask.execute(mJourneyQuery);
-
-                updateStartAndEndPointViews(
-                        mJourneyQuery.origin, mJourneyQuery.destination);
-
-                // TODO: Update the favorite button
-                /*
-                mFavoriteButtonHelper
-                        .setJourneyQuery(mJourneyQuery)
-                        .loadImage();
-                */
+                reverseJourneyQuery();
                 return true;
             case R.id.menu_share:
                 if (mRouteAdapter != null) {
@@ -1236,10 +1265,15 @@ public class RoutesActivity extends BaseListActivity
      * Show progress dialog.
      */
     private void showProgress() {
+        /*
         if (mProgress == null) {
             mProgress = new ProgressDialog(this);
             mProgress.setMessage(getText(R.string.loading));
             mProgress.show();   
+        }
+        */
+        if (mActionBar != null) {
+            mActionBar.setProgressBarVisibility(View.VISIBLE);
         }
     }
 
@@ -1247,9 +1281,14 @@ public class RoutesActivity extends BaseListActivity
      * Dismiss the progress dialog.
      */
     private void dismissProgress() {
+        /*
         if (mProgress != null) {
             mProgress.dismiss();
             mProgress = null;
+        }
+        */
+        if (mActionBar != null) {
+            mActionBar.setProgressBarVisibility(View.GONE);
         }
     }
 
@@ -1316,14 +1355,17 @@ public class RoutesActivity extends BaseListActivity
                 onSearchRoutesResult(result);
             } else if (!mWasSuccess) {
                 if (TextUtils.isEmpty(mErrorCode)) {
+                    getListView().getEmptyView().setVisibility(View.GONE);
                     showDialog(DIALOG_SEARCH_ROUTES_NETWORK_PROBLEM);
                 } else {
+                    getListView().getEmptyView().setVisibility(View.GONE);
                     mRouteErrorCode = mErrorCode;
                     showDialog(DIALOG_SEARCH_ROUTES_ERROR);
                 }
             }/* else if (result.hasAlternatives()) {
                 onSiteAlternatives(result);
             }*/ else {
+                getListView().getEmptyView().setVisibility(View.GONE);
                 showDialog(DIALOG_SEARCH_ROUTES_NO_RESULT);
             }
         }

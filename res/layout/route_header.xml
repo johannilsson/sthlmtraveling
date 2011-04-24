@@ -21,17 +21,16 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:background="@color/plate_background"
+    android:background="@drawable/route_header_background"
     android:layout_marginBottom="0dip"
-    android:paddingTop="15dip"
-    android:paddingRight="5dip"
-    android:paddingBottom="10dip"
-    android:paddingLeft="6dip"
     >
     <LinearLayout 
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:paddingRight="0dip"
+	    android:paddingTop="15dip"
+	    android:paddingRight="6dip"
+	    android:paddingBottom="10dip"
+	    android:paddingLeft="6dip"
         >
         <TableLayout
             android:layout_width="wrap_content"
@@ -59,10 +58,10 @@
                         android:lines="1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="?android:attr/textColorPrimaryInverse"
-                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:textColor="?android:attr/textColorPrimary"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
                         android:layout_marginLeft="2dip"
-                        android:textStyle="bold"
+                        android:textStyle="normal"
                         />
                 </LinearLayout>
             </TableRow>
@@ -87,10 +86,10 @@
                         android:lines="1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="?android:attr/textColorPrimaryInverse"
-                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:textColor="?android:attr/textColorPrimary"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
                         android:layout_marginLeft="2dip"
-                        android:textStyle="bold"
+                        android:textStyle="normal"
                         />
                 </LinearLayout>
             </TableRow>
@@ -105,7 +104,14 @@
             android:layout_marginTop="0dip"
             android:layout_marginRight="10dip"
             android:layout_marginBottom="2dip"
+            android:layout_marginLeft="5dip"
             android:paddingTop="5dip"
             />
     </LinearLayout>
+    <include layout="@layout/route_header_details"  />
+    <ImageView
+        android:layout_width="fill_parent"
+        android:layout_height="1px"
+        android:src="@color/list_divider"
+        />
 </LinearLayout>

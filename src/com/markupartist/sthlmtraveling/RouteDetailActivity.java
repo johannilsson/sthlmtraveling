@@ -49,6 +49,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.markupartist.android.widget.ActionBar;
 import com.markupartist.sthlmtraveling.provider.JourneysProvider.Journey.Journeys;
 import com.markupartist.sthlmtraveling.provider.planner.JourneyQuery;
 import com.markupartist.sthlmtraveling.provider.planner.Planner;
@@ -73,6 +74,8 @@ public class RouteDetailActivity extends BaseListActivity {
 
     private ImageButton mFavoriteButton;
 
+    private ActionBar mActionBar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,10 +88,12 @@ public class RouteDetailActivity extends BaseListActivity {
         mTrip = extras.getParcelable(EXTRA_JOURNEY_TRIP);
         mJourneyQuery = extras.getParcelable(EXTRA_JOURNEY_QUERY);
 
+        mActionBar = initActionBar();
+
         View headerView = getLayoutInflater().inflate(R.layout.route_header, null);
         TextView startPointView = (TextView) headerView.findViewById(R.id.route_from);
         TextView endPointView = (TextView) headerView.findViewById(R.id.route_to);
-        getListView().addHeaderView(headerView, null, false);
+        //getListView().addHeaderView(headerView, null, false);
 
         startPointView.setText(getLocationName(mJourneyQuery.origin));
         endPointView.setText(getLocationName(mJourneyQuery.destination));
@@ -108,9 +113,12 @@ public class RouteDetailActivity extends BaseListActivity {
             Log.e(TAG, "Error parsing duration, " + e.getMessage());
         }
 
-        View headerDetailView = getLayoutInflater().inflate(
-                R.layout.route_header_details, null);
+        /*View headerDetailView = getLayoutInflater().inflate(
+                R.layout.route_header_details, null);*/
 
+        LinearLayout headerDetailView = (LinearLayout) headerView.findViewById(R.id.header_details);
+        headerDetailView.setVisibility(View.VISIBLE);
+        
         StringBuilder timeBuilder = new StringBuilder();
         timeBuilder.append(mTrip.departureTime);
         timeBuilder.append(" - ");
@@ -120,7 +128,7 @@ public class RouteDetailActivity extends BaseListActivity {
         timeBuilder.append(")");
         
         //TextView timeView = (TextView) findViewById(R.id.route_date_time);
-        TextView timeView = (TextView) headerDetailView.findViewById(R.id.route_date_time);
+        TextView timeView = (TextView) headerView.findViewById(R.id.route_date_time);
         timeView.setText(timeBuilder.toString());
         
         // TODO: We should parse the date when getting the results and store a
@@ -134,14 +142,15 @@ public class RouteDetailActivity extends BaseListActivity {
         }
         SimpleDateFormat otherFormat = new SimpleDateFormat("yyyy-MM-dd");
         //TextView dateView = (TextView) findViewById(R.id.route_date_of_trip);
-        TextView dateView = (TextView) headerDetailView.findViewById(R.id.route_date_of_trip);
+        TextView dateView = (TextView) headerView.findViewById(R.id.route_date_of_trip);
         if (date != null) {
             dateView.setText(getString(R.string.date_of_trip, otherFormat.format(date)));
         } else {
             dateView.setVisibility(View.GONE);
         }
 
-        getListView().addHeaderView(headerDetailView, null, false);
+        //getListView().addHeaderView(headerDetailView, null, false);
+        getListView().addHeaderView(headerView, null, false);
 
         mFavoriteButton = (ImageButton) findViewById(R.id.route_favorite);
         if (isStarredJourney(mJourneyQuery)) {
@@ -153,6 +162,19 @@ public class RouteDetailActivity extends BaseListActivity {
         onRouteDetailsResult(mTrip);
     }
 
+    @Override
+    protected ActionBar initActionBar() {
+        ActionBar actionBar = super.initActionBar();
+
+        Intent departuresIntent = new Intent(this, DeparturesActivity.class);
+        departuresIntent.putExtra(DeparturesActivity.EXTRA_SITE_NAME,
+                mTrip.origin.name);
+        actionBar.addAction(new ActionBar.IntentAction(this,
+                departuresIntent, R.drawable.ic_actionbar_time));
+
+        return actionBar;
+    }
+    
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
@@ -285,15 +307,18 @@ public class RouteDetailActivity extends BaseListActivity {
         setListAdapter(mSubTripAdapter);
 
         if (trip.canBuySmsTicket()) {
-            TextView zoneView = (TextView) findViewById(R.id.route_zones);
-            zoneView.setText(trip.tariffZones);
-            zoneView.setVisibility(View.VISIBLE);
-            zoneView.setOnClickListener(new View.OnClickListener() {
+            mActionBar.addAction(new ActionBar.Action() {
+                
                 @Override
-                public void onClick(View v) {
+                public void performAction(View view) {
                     showDialog(DIALOG_BUY_SMS_TICKET);
                 }
-            });
+
+                @Override
+                public int getDrawable() {
+                    return R.drawable.ic_actionbar_sms;
+                }
+            }, 0); // Makes sure this is added first in the list of actions.
         }
 
         mTrip = trip;

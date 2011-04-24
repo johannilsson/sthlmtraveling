@@ -101,7 +101,8 @@ public class DeparturesActivity extends BaseListActivity {
 
         mSectionedAdapter = new DepartureAdapter(this);
 
-        initActionBar();
+        mActionBar = initActionBar();
+        mActionBar.setTitle(R.string.departures);
         //setupFilterButtons();
         //loadDepartures();
     }
@@ -109,25 +110,6 @@ public class DeparturesActivity extends BaseListActivity {
     @Override
     public void setTitle(CharSequence title) {
         mActionBar.setTitle(title);
-    }
-
-    private void initActionBar() {
-        mActionBar = (ActionBar) findViewById(R.id.actionbar);
-        mActionBar.setTitle(R.string.departures);
-        mActionBar.setDisplayHomeAsUpEnabled(true);
-        mActionBar.setHomeAction(new ActionBar.Action() {
-
-            @Override
-            public int getDrawable() {
-                return R.drawable.ic_actionbar_home_default;
-            }
-
-            @Override
-            public void performAction(View view) {
-                finish();
-            }
-
-        });
     }
 
     /**
@@ -175,7 +157,9 @@ public class DeparturesActivity extends BaseListActivity {
             mPreferredTrafficMode = TransportMode.LOKALBANA_INDEX;
             break;
         }
+
         setListAdapter(mSectionedAdapter);
+        //getListView().getEmptyView().setVisibility(View.GONE);
     }
 
     public void setupFilterButtons() {
@@ -461,17 +445,26 @@ public class DeparturesActivity extends BaseListActivity {
      * Show progress dialog.
      */
     private void showProgress() {
+        if (mActionBar != null) {
+            mActionBar.setProgressBarVisibility(View.VISIBLE);
+        }
+        /*
         if (mProgress == null) {
             mProgress = new ProgressDialog(this);
             mProgress.setMessage(getText(R.string.loading));
             mProgress.show();   
         }
+        */
     }
 
     /**
      * Dismiss the progress dialog.
      */
     private void dismissProgress() {
+        if (mActionBar != null) {
+            mActionBar.setProgressBarVisibility(View.GONE);
+        }
+        /*
         if (mProgress != null) {
             try {
                 mProgress.dismiss();
@@ -480,6 +473,7 @@ public class DeparturesActivity extends BaseListActivity {
             }
             mProgress = null;
         }
+        */
     }
 
     @Override
