@@ -8,7 +8,7 @@
     <color name="stroke_light">#ffffff</color>
     <color name="list_divider">#DBDBDB</color>
     <color name="header_background">#CFCFCF</color>
-    <color name="actionbar_separator">#303030</color>
+    <color name="actionbar_separator">#3D3D3D</color>
     <color name="actionbar_background_start">#212121</color>
     <color name="actionbar_background_end">#292929</color>
 </resources>
