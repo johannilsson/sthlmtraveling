@@ -677,8 +677,11 @@ public class Planner {
         }
 
         public int getImageResource() {
-            if ("BUS".equals(type) || "NAR".equals(type)) {
-                return R.drawable.transport_bus;
+            if ("BUS".equals(type)) {
+                if (name.contains("blå")) {
+                    return R.drawable.transport_bus_blue;
+                }
+                return R.drawable.transport_bus_red;
             } else if ("MET".equals(type)) {
                 if (name.contains("grön")) {
                     return R.drawable.transport_metro_green;
@@ -687,6 +690,8 @@ public class Planner {
                 } else if (name.contains("blå")) {
                     return R.drawable.transport_metro_blue;
                 }
+            } else if ("NAR".equals(type)) {
+                return R.drawable.transport_nar;
             } else if ("Walk".equals(type)) {
                 return R.drawable.transport_walk;
             } else if ("TRN".equals(type)) {
@@ -695,6 +700,8 @@ public class Planner {
                 return R.drawable.transport_lokalbana;
             } else if ("SHP".equals(type)) {
                 return R.drawable.transport_boat;
+            } else if ("FLY".equals(type)) {
+                return R.drawable.transport_fly;
             }
 
             Log.d(TAG, "Unknown transport type " + type);

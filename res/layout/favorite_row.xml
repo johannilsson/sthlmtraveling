@@ -105,7 +105,7 @@
         />
         <ImageView 
             android:id="@+id/favorite_transport_mode_tram"
-            android:src="@drawable/transport_tram_car"
+            android:src="@drawable/transport_lokalbana"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="gone"
@@ -114,6 +114,22 @@
         <ImageView
             android:id="@+id/favorite_transport_mode_wax"
             android:src="@drawable/transport_boat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:paddingRight="5dip"
+        />
+        <ImageView 
+            android:id="@+id/favorite_transport_mode_fly"
+            android:src="@drawable/transport_fly"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:paddingRight="5dip"
+        />
+        <ImageView 
+            android:id="@+id/favorite_transport_mode_nar"
+            android:src="@drawable/transport_nar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="gone"

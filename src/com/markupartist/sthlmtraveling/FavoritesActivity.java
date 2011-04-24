@@ -250,6 +250,14 @@ public class FavoritesActivity extends BaseListActivity {
                     ImageView transportView =
                         (ImageView) v.findViewById(R.id.favorite_transport_mode_wax);
                     transportView.setVisibility(View.VISIBLE);
+                } else if (transportMode.equals(TransportMode.FLY)) {
+                    ImageView transportView =
+                        (ImageView) v.findViewById(R.id.favorite_transport_mode_fly);
+                    transportView.setVisibility(View.VISIBLE);
+                } else if (transportMode.equals(TransportMode.NAR)) {
+                    ImageView transportView =
+                        (ImageView) v.findViewById(R.id.favorite_transport_mode_nar);
+                    transportView.setVisibility(View.VISIBLE);
                 }
             }
         }
