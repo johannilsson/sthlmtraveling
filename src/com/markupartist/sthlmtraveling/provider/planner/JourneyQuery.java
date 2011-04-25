@@ -92,11 +92,21 @@ public class JourneyQuery implements Parcelable {
         jsonOrigin.put("latitude", origin.latitude);
         jsonOrigin.put("longitude", origin.longitude);
 
+        if (!all && origin.isMyLocation()) {
+            jsonOrigin.put("latitude", 0);
+            jsonOrigin.put("longitude", 0);
+        }
+
         JSONObject jsonDestination = new JSONObject();
         jsonDestination.put("id", destination.id);
         jsonDestination.put("name", destination.name);
         jsonDestination.put("latitude", destination.latitude);
         jsonDestination.put("longitude", destination.longitude);
+
+        if (!all && destination.isMyLocation()) {
+            jsonDestination.put("latitude", 0);
+            jsonDestination.put("longitude", 0);
+        }
 
         JSONObject jsonQuery = new JSONObject();
 
