@@ -218,11 +218,19 @@ public class FavoritesActivity extends BaseListActivity {
 
             TextView originText =
                 (TextView) v.findViewById(R.id.favorite_start_point);
-            originText.setText(journeyQuery.origin.name);
+            if (Location.TYPE_MY_LOCATION.equals(journeyQuery.origin.name)) {
+                originText.setText(getString(R.string.my_location));
+            } else {
+                originText.setText(journeyQuery.origin.name);
+            }
+
             TextView destinationText =
                 (TextView) v.findViewById(R.id.favorite_end_point);
-            destinationText.setText(journeyQuery.destination.name);
-
+            if (Location.TYPE_MY_LOCATION.equals(journeyQuery.destination.name)) {
+                destinationText.setText(getString(R.string.my_location));
+            } else {
+                destinationText.setText(journeyQuery.destination.name);
+            }
             addTransportModeViews(journeyQuery, v);
 
             return v;
