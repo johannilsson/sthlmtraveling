@@ -100,7 +100,7 @@
     <string name="my_location_source_disabled">Lägg till "Min position" källa under systeminställningar.</string>
     <string name="title_settings">Inställningar</string>
     <string name="now_label">Nu</string>
-    <string name="later_label">Senare</string>
+    <string name="more_choices_label">Fler val</string>
     <string name="date_and_time_label">Sökt Datum &amp; Tid</string>
     <string name="determining_your_position">Fastställer din position</string>
     <string name="back">Tillbaka</string>

@@ -100,7 +100,7 @@
     <string name="my_location_source_disabled">Por favor habilita Mi Ubicación en la configuración del sistema</string>
     <string name="title_settings">Configuración</string>
     <string name="now_label">Ahora</string>
-    <string name="later_label">Después</string>
+    <string name="more_choices_label">More choices</string>
     <string name="date_and_time_label">Fecha y hora</string>
     <string name="determining_your_position">Determinando su posición</string>
     <string name="back">Volver</string>

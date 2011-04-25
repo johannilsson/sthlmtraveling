@@ -147,11 +147,11 @@
 		                android:textColor="#000"
 		                />
                     <RadioButton
-                        android:id="@+id/planner_check_later"
+                        android:id="@+id/planner_check_more_choices"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="15dip"
-                        android:text="@string/later_label"
+                        android:text="@string/more_choices_label"
                         android:textColor="#000"
                     />
             </RadioGroup>

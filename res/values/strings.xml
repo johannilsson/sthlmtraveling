@@ -100,7 +100,7 @@
     <string name="my_location_source_disabled">Please enable a My Location source in system settings</string>
     <string name="title_settings">Settings</string>
     <string name="now_label">Now</string>
-    <string name="later_label">Later</string>
+    <string name="more_choices_label">More choices</string>
     <string name="date_and_time_label">Date &amp; Time</string>
     <string name="determining_your_position">Determining your position</string>
     <string name="back">Back</string>

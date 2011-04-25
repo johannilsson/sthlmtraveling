@@ -166,14 +166,17 @@ public class PlannerActivity extends BaseActivity implements OnCheckedChangeList
         });
 
         // Views for radio buttons
-        RadioButton nowRadioButton = (RadioButton) findViewById(R.id.planner_check_now);
+        RadioButton nowRadioButton =
+            (RadioButton) findViewById(R.id.planner_check_now);
         nowRadioButton.setOnCheckedChangeListener(this);
-        RadioButton laterRadioButton = (RadioButton) findViewById(R.id.planner_check_later);
+        RadioButton laterRadioButton =
+            (RadioButton) findViewById(R.id.planner_check_more_choices);
         laterRadioButton.setOnCheckedChangeListener(this);
 
         mWhenSpinner = (Spinner) findViewById(R.id.departure_arrival_choice);
-        ArrayAdapter<CharSequence> whenChoiceAdapter = ArrayAdapter.createFromResource(
-                this, R.array.when_choice, android.R.layout.simple_spinner_item);
+        ArrayAdapter<CharSequence> whenChoiceAdapter =
+            ArrayAdapter.createFromResource(this,
+                    R.array.when_choice, android.R.layout.simple_spinner_item);
         whenChoiceAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mWhenSpinner.setAdapter(whenChoiceAdapter);
 
@@ -419,7 +422,7 @@ public class PlannerActivity extends BaseActivity implements OnCheckedChangeList
         RadioGroup chooseTimeGroup = (RadioGroup) findViewById(R.id.planner_choose_time_group);
         boolean isTimeDeparture = true;
         int checkedId = chooseTimeGroup.getCheckedRadioButtonId();
-        if (checkedId == R.id.planner_check_later) {
+        if (checkedId == R.id.planner_check_more_choices) {
             isTimeDeparture = mWhenSpinner.getSelectedItemId() == 0 ? true : false;
         } else {
             // User has checked the "now" checkbox, this forces the time to
@@ -755,7 +758,7 @@ public class PlannerActivity extends BaseActivity implements OnCheckedChangeList
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         // We only check the state for later radio button.
-        if (isChecked && buttonView.getId() == R.id.planner_check_later) {
+        if (isChecked && buttonView.getId() == R.id.planner_check_more_choices) {
             // Set time to now, and notify buttons about the new time.
             if (mTime == null) {
                 mTime = new Time();
@@ -764,7 +767,8 @@ public class PlannerActivity extends BaseActivity implements OnCheckedChangeList
             }
 
             mChangeTimeLayout.setVisibility(View.VISIBLE);
-        } else if (!isChecked && buttonView.getId() == R.id.planner_check_later) {
+        } else if (!isChecked && buttonView.getId()
+                == R.id.planner_check_more_choices) {
             mChangeTimeLayout.setVisibility(View.GONE);
         }
     }
