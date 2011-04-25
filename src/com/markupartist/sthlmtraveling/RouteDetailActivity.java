@@ -36,9 +36,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -250,37 +247,6 @@ public class RouteDetailActivity extends BaseListActivity {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.options_menu_route_details, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.new_search :
-                Intent i = new Intent(this, StartActivity.class);
-                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(i);
-                return true;
-            case R.id.menu_departures_for_start:
-                Intent departuresIntent = new Intent(this, DeparturesActivity.class);
-                departuresIntent.putExtra(DeparturesActivity.EXTRA_SITE_NAME,
-                        mTrip.origin.name);
-                startActivity(departuresIntent);
-                return true;
-            case R.id.menu_share:
-                share(mTrip);
-                return true;
-            case R.id.menu_sms_ticket:
-                showDialog(DIALOG_BUY_SMS_TICKET);
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
     protected void onDestroy() {
         super.onDestroy();
     }
@@ -322,15 +288,6 @@ public class RouteDetailActivity extends BaseListActivity {
         }
 
         mTrip = trip;
-    }
-
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        MenuItem buySmsTicketItem = menu.findItem(R.id.menu_sms_ticket);
-        if (mTrip.canBuySmsTicket()) {
-            buySmsTicketItem.setEnabled(true);
-        }
-        return super.onPrepareOptionsMenu(menu);
     }
 
     @Override

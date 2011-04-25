@@ -383,28 +383,6 @@ public class DeparturesActivity extends BaseListActivity {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.options_menu_departures, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.menu_refresh:
-                new GetDeparturesTask().execute(mSite);
-                return true;
-            case R.id.menu_journey_planner:
-                Intent i = new Intent(this, StartActivity.class);
-                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(i);
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
     protected Dialog onCreateDialog(int id) {
         switch(id) {
         case DIALOG_SITE_ALTERNATIVES:

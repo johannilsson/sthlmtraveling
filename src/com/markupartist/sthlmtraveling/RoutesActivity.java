@@ -42,9 +42,6 @@ import android.text.TextUtils;
 import android.text.format.Time;
 import android.util.Log;
 import android.util.TypedValue;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Adapter;
@@ -862,13 +859,6 @@ public class RoutesActivity extends BaseListActivity
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.options_menu_routes, menu);
-        return true;
-    }
-
     protected void reverseJourneyQuery() {
         Planner.Location tmpStartPoint = new Planner.Location(mJourneyQuery.destination);
         Planner.Location tmpEndPoint = new Planner.Location(mJourneyQuery.origin);
@@ -886,44 +876,6 @@ public class RoutesActivity extends BaseListActivity
 
         updateStartAndEndPointViews(
                 mJourneyQuery.origin, mJourneyQuery.destination);
-
-        // TODO: Update the favorite button
-        /*
-        mFavoriteButtonHelper
-                .setJourneyQuery(mJourneyQuery)
-                .loadImage();
-        */
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.new_search :
-                Intent i = new Intent(this, StartActivity.class);
-                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(i);
-                return true;
-            case R.id.reverse_start_end :
-                reverseJourneyQuery();
-                return true;
-            case R.id.menu_share:
-                if (mRouteAdapter != null) {
-                    //share(mRouteAdapter.mTrips);
-                }
-                return true;
-            /*
-            case R.id.show_qr_code :
-                Uri routesUri = createRoutesUri(
-                        mTrip.getStartPoint(), mTrip.getEndPoint(), null, true);
-                BarcodeScannerIntegrator.shareText(this, routesUri.toString(),
-                        R.string.install_barcode_scanner_title,
-                        R.string.requires_barcode_scanner_message,
-                        R.string.yes, R.string.no);
-
-                return true;
-            */
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     @Override
