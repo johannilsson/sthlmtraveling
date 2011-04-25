@@ -12,9 +12,8 @@ import android.preference.Preference;
 import android.preference.PreferenceScreen;
 import android.widget.Toast;
 
-import com.flurry.android.FlurryAgent;
-import com.markupartist.sthlmtraveling.provider.FavoritesDbAdapter;
 import com.markupartist.sthlmtraveling.provider.HistoryDbAdapter;
+import com.markupartist.sthlmtraveling.provider.JourneysProvider.Journey.Journeys;
 import com.markupartist.sthlmtraveling.service.DeviationService;
 
 public class SettingsActivity extends BasePreferenceActivity
@@ -24,7 +23,6 @@ public class SettingsActivity extends BasePreferenceActivity
     private static final int DIALOG_CLEAR_FAVORITES = 1;
 
     private HistoryDbAdapter mHistoryDbAdapter;
-    private FavoritesDbAdapter mFavoritesDbAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,14 +33,12 @@ public class SettingsActivity extends BasePreferenceActivity
         registerEvent("Settings");
 
         mHistoryDbAdapter = new HistoryDbAdapter(this).open();
-        mFavoritesDbAdapter = new FavoritesDbAdapter(this).open();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         mHistoryDbAdapter.close();
-        mFavoritesDbAdapter.close();
     }
 
     @Override
@@ -126,7 +122,7 @@ public class SettingsActivity extends BasePreferenceActivity
                 .setPositiveButton(R.string.yes, new OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        mFavoritesDbAdapter.deleteAll();
+                        getContentResolver().delete(Journeys.CONTENT_URI, null, null);
                         Toast.makeText(SettingsActivity.this,
                                 R.string.search_favorites_cleared,
                                 Toast.LENGTH_SHORT).show();
