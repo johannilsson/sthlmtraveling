@@ -337,7 +337,7 @@ public class JourneysProvider extends ContentProvider {
             /**
              * The default sort order.
              */
-            public static final String DEFAULT_SORT_ORDER = "position ASC, updated_at DESC, created_at DESC";
+            public static final String DEFAULT_SORT_ORDER = "position DESC, updated_at DESC, created_at DESC";
 
             private Journeys() {
             }
