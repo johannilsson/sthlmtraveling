@@ -211,9 +211,6 @@ public class RoutesActivity extends BaseListActivity
         updateStartAndEndPointViews(mJourneyQuery.origin, mJourneyQuery.destination);
 
         mFavoriteButton = (ImageButton) findViewById(R.id.route_favorite);
-        if (isStarredJourney(mJourneyQuery)) {
-            mFavoriteButton.setImageResource(android.R.drawable.star_big_on);
-        }
         mFavoriteButton.setOnClickListener(new OnStarredJourneyButtonClickListener());
 
         initRoutes(mJourneyQuery);
@@ -708,6 +705,12 @@ public class RoutesActivity extends BaseListActivity
         } else {
             mRouteAdapter.refill(response.trips);
             mSectionedAdapter.notifyDataSetChanged();
+        }
+
+        if (isStarredJourney(mJourneyQuery)) {
+            mFavoriteButton.setImageResource(android.R.drawable.star_big_on);
+        } else {
+            mFavoriteButton.setImageResource(android.R.drawable.star_big_off);
         }
     }
 
