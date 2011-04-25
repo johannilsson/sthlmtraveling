@@ -69,7 +69,7 @@ STHLM Traveling is open source and licensed under
 
 Changelog
 ---------
-* NEXT
+* 2.3.0
     * New journey provider that holds starred journey, including traffic modes
       and other seach criterias. This replaces the favorites database.
     * Added possibility to search for different transport modes and alternative
