@@ -74,6 +74,9 @@ Changelog
       and other seach criterias. This replaces the favorites database.
     * Added possibility to search for different transport modes and alternative
       stops.
+    * Added a action bar.
+    * Added a pull to refresh list view for departures.
+    * Updated icons.
 * 2.2.2
     * Last selected transport mode for a specific site is now automatically
       selected for Departures.
