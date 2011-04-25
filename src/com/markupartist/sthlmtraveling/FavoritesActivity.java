@@ -30,9 +30,12 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.CursorAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -42,6 +45,7 @@ import com.markupartist.sthlmtraveling.provider.FavoritesDbAdapter;
 import com.markupartist.sthlmtraveling.provider.TransportMode;
 import com.markupartist.sthlmtraveling.provider.JourneysProvider.Journey.Journeys;
 import com.markupartist.sthlmtraveling.provider.planner.JourneyQuery;
+import com.markupartist.sthlmtraveling.provider.planner.Planner;
 import com.markupartist.sthlmtraveling.provider.planner.Planner.Location;
 
 public class FavoritesActivity extends BaseListActivity {
@@ -57,12 +61,38 @@ public class FavoritesActivity extends BaseListActivity {
     private static final String[] PROJECTION = new String[] {
         Journeys._ID,          // 0
         Journeys.JOURNEY_DATA, // 1
+        Journeys.POSITION,     // 2
     };
 
     /**
      * The index of the journey data column
      */
     private static final int COLUMN_INDEX_JOURNEY_DATA = 1;
+
+    /**
+     * The index of the position column
+     */
+    private static final int COLUMN_INDEX_POSITION = 2;
+
+    /**
+     * The item id of the delete action. 
+     */
+    private static final int CONTEXT_MENU_DELETE = 1;
+
+    /**
+     * The item id of the reverse search action. 
+     */
+    private static final int CONTEXT_MENU_REVERSE_SEARCH = 2;
+
+    /**
+     * The item id of the increase priority action. 
+     */
+    private static final int CONTEXT_MENU_INCREASE_PRIO = 3;
+
+    /**
+     * The item id of the decrease priority action. 
+     */
+    private static final int CONTEXT_MENU_DECREASE_PRIO = 4;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,22 +112,97 @@ public class FavoritesActivity extends BaseListActivity {
             );
 
         setListAdapter(new JourneyAdapter(this, cursor));
+
+        registerForContextMenu(getListView());
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v,
+            ContextMenu.ContextMenuInfo menuInfo) {
+        menu.setHeaderTitle("Actions");
+        menu.add(ContextMenu.NONE, CONTEXT_MENU_DELETE,
+                ContextMenu.NONE, "Delete");
+        menu.add(ContextMenu.NONE, CONTEXT_MENU_REVERSE_SEARCH,
+                ContextMenu.NONE, "Reverse search");
+        // Disabled the possibility to prioritize journeys in the list for now.
+        // Not sure if this was the best way to do it. Figure we could test with
+        // labels like HIGH, LOW and have a colored marker indicate the priority
+        // to the left first.
+        /*
+        menu.add(ContextMenu.NONE, CONTEXT_MENU_INCREASE_PRIO,
+                ContextMenu.NONE, "Increase priority");
+        menu.add(ContextMenu.NONE, CONTEXT_MENU_DECREASE_PRIO,
+                ContextMenu.NONE, "Decrease priority");
+        */
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo menuInfo =
+            (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        switch (item.getItemId()) {
+        case CONTEXT_MENU_DELETE:
+            getContentResolver().delete(
+                    ContentUris.withAppendedId(Journeys.CONTENT_URI, menuInfo.id),
+                    null, null);
+            return true;
+        case CONTEXT_MENU_REVERSE_SEARCH:
+            doSearch(menuInfo.id, true);
+            return true;
+        case CONTEXT_MENU_INCREASE_PRIO:
+            updateListPosition(menuInfo.id, true);
+            return true;
+        case CONTEXT_MENU_DECREASE_PRIO:
+            updateListPosition(menuInfo.id, false);
+            return true;
+        }
+        return false;
     }
 
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
+        doSearch(id, false);
+    }
+
+    private void doSearch(long id, boolean reversed) {
         Uri uri = ContentUris.withAppendedId(Journeys.CONTENT_URI, id);
 
         Cursor cursor = managedQuery(uri, PROJECTION, null, null, null);
         cursor.moveToFirst();
         JourneyQuery journeyQuery = getJourneyQuery(cursor);
 
+        if (reversed) {
+            Planner.Location tmpStartPoint = new Location(journeyQuery.destination);
+            Planner.Location tmpEndPoint = new Location(journeyQuery.origin);
+            journeyQuery.origin = tmpStartPoint;
+            journeyQuery.destination = tmpEndPoint;
+        }
+
         Intent routesIntent = new Intent(this, RoutesActivity.class);
         routesIntent.putExtra(RoutesActivity.EXTRA_JOURNEY_QUERY,
                 journeyQuery);
         startActivity(routesIntent);
+
     }
 
+    private void updateListPosition(long id, boolean increase) {
+        Uri uri = ContentUris.withAppendedId(Journeys.CONTENT_URI, id);
+
+        Cursor cursor = managedQuery(uri, PROJECTION, null, null, null);
+        cursor.moveToFirst();
+
+        int position = cursor.getInt(COLUMN_INDEX_POSITION);
+        if (increase) {
+            position = position + 1;
+        } else {
+            position = position - 1;
+        }
+
+        ContentValues values = new ContentValues();
+        values.put(Journeys.POSITION, position);
+        getContentResolver().update(uri, values, null, null);
+    }
+    
     /**
      * Converts old favorites to the new journey table.
      */
@@ -270,7 +375,7 @@ public class FavoritesActivity extends BaseListActivity {
             }
         }
     }
-    
+
     private static JourneyQuery getJourneyQuery(Cursor cursor) {
         // TODO: Investigate if we can add some kind of caching here.
         String jsonJourneyQuery = cursor.getString(COLUMN_INDEX_JOURNEY_DATA);
