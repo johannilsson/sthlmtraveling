@@ -299,7 +299,8 @@ public class RouteDetailActivity extends BaseListActivity {
                     getText(R.string.sms_ticket_price_reduced) + " " + getReducedPrice()
                 };
             return new AlertDialog.Builder(this)
-                .setTitle(getText(R.string.sms_ticket_label))
+            .setTitle(String.format("%s (%s)",
+                    getText(R.string.sms_ticket_label), mTrip.tariffZones))
                 .setItems(smsOptions, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int item) {
                         switch(item) {
