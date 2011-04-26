@@ -47,6 +47,8 @@
     <string name="send_email">Skicka e-mail</string>
     <string name="favorites_label">Favoriter</string>
     <string name="no_favorites"><b>Du har inga favoriter</b>\nLägg till och ta bort favoriter genom att trycka på knappen med en stjärna efter en sökning.</string>
+    <string name="reverse_search">Sök omvänt</string>
+    <string name="delete">Radera</string>
     <string name="no_location_title">Lokaliseringsproblem</string>
     <string name="no_location_message">Misslyckades med att fastställa din position.</string>
     <string name="network_problem_label">Problem med nätverket</string>

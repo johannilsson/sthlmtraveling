@@ -121,9 +121,9 @@ public class FavoritesActivity extends BaseListActivity {
             ContextMenu.ContextMenuInfo menuInfo) {
         menu.setHeaderTitle("Actions");
         menu.add(ContextMenu.NONE, CONTEXT_MENU_DELETE,
-                ContextMenu.NONE, "Delete");
+                ContextMenu.NONE, R.string.delete);
         menu.add(ContextMenu.NONE, CONTEXT_MENU_REVERSE_SEARCH,
-                ContextMenu.NONE, "Reverse search");
+                ContextMenu.NONE, R.string.reverse_search);
         // Disabled the possibility to prioritize journeys in the list for now.
         // Not sure if this was the best way to do it. Figure we could test with
         // labels like HIGH, LOW and have a colored marker indicate the priority
@@ -182,7 +182,6 @@ public class FavoritesActivity extends BaseListActivity {
         routesIntent.putExtra(RoutesActivity.EXTRA_JOURNEY_QUERY,
                 journeyQuery);
         startActivity(routesIntent);
-
     }
 
     private void updateListPosition(long id, boolean increase) {

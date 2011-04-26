@@ -47,6 +47,8 @@
     <string name="send_email">Enviar un e-mail</string>
     <string name="favorites_label">Favoritos</string>
     <string name="no_favorites"><b>No hay favoritos aún...</b>\nAñade o borra favoritos pulsando el botón en forma de estrella después de una búsqueda.</string>
+    <string name="reverse_search">Reverse search</string>
+    <string name="delete">Delete</string>
     <string name="no_location_title">Problema de localización</string>
     <string name="no_location_message">Problema al determinar su localización.</string>
     <string name="network_problem_label">Problemas en la red</string>
