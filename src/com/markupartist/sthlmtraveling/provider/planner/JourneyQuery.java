@@ -154,7 +154,7 @@ public class JourneyQuery implements Parcelable {
         private Planner.Location mOrigin;
         private Planner.Location mDestination;
         private Time mTime;
-        private boolean mIsTimeDeparture;
+        private boolean mIsTimeDeparture = true;
         private boolean mAlternativeStops;
         private ArrayList<String> mTransportModes;        
 
