@@ -26,6 +26,7 @@ import org.json.JSONException;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -209,6 +210,8 @@ public class RoutesActivity extends BaseListActivity
 
         mFavoriteButton = (ImageButton) findViewById(R.id.route_favorite);
         mFavoriteButton.setOnClickListener(new OnStarredJourneyButtonClickListener());
+
+        updateJourneyHistory();
 
         initRoutes(mJourneyQuery);
     }
@@ -1430,6 +1433,43 @@ public class RoutesActivity extends BaseListActivity
         Cursor cursor = managedQuery(uri, projection, selection, selectionArgs, null);
 
         return cursor.getCount() > 0;
+    }
+
+    private void updateJourneyHistory() {
+        // Insert or update existing entry.
+        String json;
+        try {
+            json = mJourneyQuery.toJson(false).toString();
+        } catch (JSONException e) {
+            Log.e(TAG, "Failed to convert journey to a json document.");
+            return;
+        }
+        String[] projection = new String[] {
+                Journeys._ID,           // 0
+                Journeys.JOURNEY_DATA,  // 1
+                Journeys.STARRED,       // 2
+            };
+        String selection = Journeys.JOURNEY_DATA + " = ?";
+        Cursor cursor = managedQuery(Journeys.CONTENT_URI, projection,
+                selection, new String[] { json }, null);
+        ContentValues values = new ContentValues();
+        Uri journeyUri;
+        if (cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            journeyUri = ContentUris.withAppendedId(Journeys.CONTENT_URI, cursor.getInt(0));
+            getContentResolver().update(
+                    journeyUri, values, null, null);
+        } else {
+            values.put(Journeys.JOURNEY_DATA, json);
+            journeyUri = getContentResolver().insert(
+                    Journeys.CONTENT_URI, values);
+            // TODO: Remove old entries...
+        }
+
+        Log.d(TAG, "URI: " + journeyUri.toString());
+
+        // Store created id and work on that while toggling if starred or not.
+        
     }
 
     private class OnStarredJourneyButtonClickListener implements View.OnClickListener {
