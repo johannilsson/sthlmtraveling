@@ -159,9 +159,9 @@ public class JourneysProvider extends ContentProvider {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         long rowId = db.insert(JOURNEYS_TABLE_NAME, null, values);
         if (rowId > 0) {
-            Uri noteUri = ContentUris.withAppendedId(Journeys.CONTENT_URI, rowId);
-            getContext().getContentResolver().notifyChange(noteUri, null);
-            return noteUri;
+            Uri journeyUri = ContentUris.withAppendedId(Journeys.CONTENT_URI, rowId);
+            getContext().getContentResolver().notifyChange(journeyUri, null);
+            return journeyUri;
         }
 
         throw new SQLException("Failed to insert row into " + uri);
