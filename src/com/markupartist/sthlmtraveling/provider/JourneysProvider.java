@@ -302,6 +302,13 @@ public class JourneysProvider extends ContentProvider {
             
             public static final int JOURNEY_ID_PATH_POSITION = 1;
 
+            /**
+             * The default number of journeys to be saved in history.
+             * </p>
+             * Total number of journeys is history size + starred journeys.
+             */
+            public static final int DEFAULT_HISTORY_SIZE = 5;
+
             public static final String ID = "_id";
 
             /**
@@ -337,7 +344,15 @@ public class JourneysProvider extends ContentProvider {
             /**
              * The default sort order.
              */
-            public static final String DEFAULT_SORT_ORDER = "position DESC, updated_at DESC, created_at DESC";
+            public static final String DEFAULT_SORT_ORDER =
+                "position DESC, updated_at DESC, created_at DESC";
+
+            /**
+             * The history sort order, this also includes a limit.
+             */
+            public static final String HISTORY_SORT_ORDER =
+                "updated_at DESC, created_at DESC LIMIT " + DEFAULT_HISTORY_SIZE;
+
 
             private Journeys() {
             }

@@ -122,13 +122,19 @@ public class PlannerActivity extends BaseListActivity implements
         Journeys._ID,          // 0
         Journeys.JOURNEY_DATA, // 1
         Journeys.POSITION,     // 2
+        Journeys.STARRED,      // 3
     };
     
     /**
      * The index of the journey data column
      */
     private static final int COLUMN_INDEX_JOURNEY_DATA = 1;
-    
+
+    /**
+     * The index of the starred column
+     */
+    private static final int COLUMN_INDEX_STARRED = 3;
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.planner_list);
@@ -243,7 +249,7 @@ public class PlannerActivity extends BaseListActivity implements
                 PROJECTION,
                 null,
                 null,
-                "updated_at DESC, created_at DESC" // TODO: Make a constant.
+                Journeys.HISTORY_SORT_ORDER
             );
 
         setListAdapter(new JourneyAdapter(this, cursor));
@@ -1053,6 +1059,11 @@ public class PlannerActivity extends BaseListActivity implements
             }
 
             addTransportModeViews(journeyQuery, view);;
+            
+            //boolean isStarred = cursor.getInt(COLUMN_INDEX_STARRED) == 1 ? true : false;
+            //if (isStarred) {
+            //    view.setBackgroundColor(0xffFEF5CA);
+            //}
         }
 
         @Override
@@ -1079,6 +1090,10 @@ public class PlannerActivity extends BaseListActivity implements
             }
             addTransportModeViews(journeyQuery, v);
 
+            //boolean isStarred = cursor.getInt(COLUMN_INDEX_STARRED) == 1 ? true : false;
+            //if (isStarred) {
+            //    v.setBackgroundColor(0xffFEF5CA);
+            //}
             return v;
         }
 

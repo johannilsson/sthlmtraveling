@@ -1435,8 +1435,11 @@ public class RoutesActivity extends BaseListActivity
         return cursor.getCount() > 0;
     }
 
+    /**
+     * Updates the journey history.
+     */
     private void updateJourneyHistory() {
-        // Insert or update existing entry.
+        // TODO: Move to async task.
         String json;
         try {
             json = mJourneyQuery.toJson(false).toString();
@@ -1456,19 +1459,34 @@ public class RoutesActivity extends BaseListActivity
         Uri journeyUri;
         if (cursor.getCount() > 0) {
             cursor.moveToFirst();
-            journeyUri = ContentUris.withAppendedId(Journeys.CONTENT_URI, cursor.getInt(0));
+            journeyUri = ContentUris.withAppendedId(Journeys.CONTENT_URI,
+                    cursor.getInt(0));
             getContentResolver().update(
                     journeyUri, values, null, null);
+            stopManagingCursor(cursor);
         } else {
+            // Not sure if this is the best way to do it, but the lack limit and
+            // offset in on a content provider leaves us to fetch all and iterate.
             values.put(Journeys.JOURNEY_DATA, json);
             journeyUri = getContentResolver().insert(
                     Journeys.CONTENT_URI, values);
-            // TODO: Remove old entries...
+            Cursor notStarredCursor = managedQuery(Journeys.CONTENT_URI,
+                    projection,
+                    Journeys.STARRED + " = ? OR " + Journeys.STARRED + " IS NULL",
+                    new String[] { "0" },
+                    Journeys.DEFAULT_SORT_ORDER);
+            // +1 because the position is zero-based.
+            if (notStarredCursor.moveToPosition(Journeys.DEFAULT_HISTORY_SIZE + 1)) {
+                do {
+                    Uri deleteUri = ContentUris.withAppendedId(
+                            Journeys.CONTENT_URI, notStarredCursor.getInt(0));
+                    getContentResolver().delete(deleteUri, null, null);
+                } while (notStarredCursor.moveToNext());
+            }
+            stopManagingCursor(notStarredCursor);
         }
 
-        Log.d(TAG, "URI: " + journeyUri.toString());
-
-        // Store created id and work on that while toggling if starred or not.
+        // TODO: Store created id and work on that while toggling if starred or not.
         
     }
 
