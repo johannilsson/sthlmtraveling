@@ -21,56 +21,6 @@
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content">
-
-	<LinearLayout
-	    android:orientation="vertical"
-	    android:background="#e4e4e4"
-	    android:paddingTop="5dip"
-	    android:layout_width="fill_parent"
-	    android:layout_height="wrap_content">
-
-	    <LinearLayout 
-	        android:layout_width="fill_parent"
-	        android:layout_height="wrap_content"
-	        android:addStatesFromChildren="true"
-	        android:gravity="center_vertical"
-	        android:paddingTop="5dip"
-	        android:paddingBottom="10dip"
-	        android:paddingLeft="3dip"
-	        android:paddingRight="3dip">
-	        <AutoCompleteTextView 
-	            android:id="@+id/sites"
-	            android:hint="@string/site_name"
-	            android:dropDownWidth="fill_parent"
-	            android:layout_width="wrap_content"
-	            android:layout_height="fill_parent"
-	            android:textColor="#000"
-	            android:singleLine="true"
-	            android:layout_weight="1"
-	            android:imeOptions="actionSearch"
-	            android:lines="1"
-	            android:inputType="text"
-	            android:background="@drawable/textfield_search"
-	            />
-	        <ImageButton
-	                android:id="@+id/search_departure"
-	                android:src="@drawable/ic_search_category_default"
-	                android:layout_width="wrap_content"
-	                android:layout_height="fill_parent"
-	                android:paddingLeft="5dip"
-	                android:paddingRight="5dip"
-	                android:background="@drawable/btn_search_dialog"
-	                />
-	    </LinearLayout>
-    </LinearLayout>
-	<TextView
-	    xmlns:android="http://schemas.android.com/apk/res/android"  
-	    android:layout_width="fill_parent"
-	    android:layout_height="wrap_content"
-	    android:text="@string/history_label"
-        android:padding="3dip"
-        android:textStyle="bold"  
-	    android:background="@color/header_background" />        
     <ListView
         style="@style/AppListView"
         android:id="@+id/android:list"

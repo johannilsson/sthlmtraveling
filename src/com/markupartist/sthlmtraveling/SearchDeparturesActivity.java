@@ -55,15 +55,19 @@ public class SearchDeparturesActivity extends BaseListActivity {
         }
 
 
+        View searchHeader = getLayoutInflater().inflate(
+                R.layout.search_departures_header, null);
+        getListView().addHeaderView(searchHeader, null, false);
+        
         mHistoryDbAdapter = new HistoryDbAdapter(this).open();
 
-        mSiteTextView = (AutoCompleteTextView) findViewById(R.id.sites); 
+        mSiteTextView = (AutoCompleteTextView) searchHeader.findViewById(R.id.sites); 
         AutoCompleteStopAdapter stopAdapter = new AutoCompleteStopAdapter(this,
                 R.layout.simple_dropdown_item_1line, Planner.getInstance(), false);
         mSiteTextView.setSelectAllOnFocus(true);
         mSiteTextView.setAdapter(stopAdapter);
 
-        ImageButton searchButton = (ImageButton) findViewById(R.id.search_departure);
+        ImageButton searchButton = (ImageButton) searchHeader.findViewById(R.id.search_departure);
         if (mCreateShortcut) {
             //searchButton.setText(getText(R.string.create_shortcut_label));
             setTitle(R.string.create_shortcut_for_departure_label);
