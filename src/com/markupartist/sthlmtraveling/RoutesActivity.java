@@ -1431,8 +1431,13 @@ public class RoutesActivity extends BaseListActivity
         String selection = Journeys.STARRED + " = ? AND " + Journeys.JOURNEY_DATA + " = ?";
         String[] selectionArgs = new String[] { "1", json };
         Cursor cursor = managedQuery(uri, projection, selection, selectionArgs, null);
+        startManagingCursor(cursor);
 
-        return cursor.getCount() > 0;
+        boolean isStarred = cursor.getCount() > 0;
+
+        stopManagingCursor(cursor);
+
+        return isStarred;
     }
 
     /**
@@ -1453,8 +1458,11 @@ public class RoutesActivity extends BaseListActivity
                 Journeys.STARRED,       // 2
             };
         String selection = Journeys.JOURNEY_DATA + " = ?";
+
         Cursor cursor = managedQuery(Journeys.CONTENT_URI, projection,
                 selection, new String[] { json }, null);
+        startManagingCursor(cursor);
+
         ContentValues values = new ContentValues();
         Uri journeyUri;
         if (cursor.getCount() > 0) {
@@ -1463,7 +1471,6 @@ public class RoutesActivity extends BaseListActivity
                     cursor.getInt(0));
             getContentResolver().update(
                     journeyUri, values, null, null);
-            stopManagingCursor(cursor);
         } else {
             // Not sure if this is the best way to do it, but the lack limit and
             // offset in on a content provider leaves us to fetch all and iterate.
@@ -1475,6 +1482,7 @@ public class RoutesActivity extends BaseListActivity
                     Journeys.STARRED + " = ? OR " + Journeys.STARRED + " IS NULL",
                     new String[] { "0" },
                     Journeys.DEFAULT_SORT_ORDER);
+            startManagingCursor(notStarredCursor);
             // +1 because the position is zero-based.
             if (notStarredCursor.moveToPosition(Journeys.DEFAULT_HISTORY_SIZE + 1)) {
                 do {
@@ -1485,7 +1493,7 @@ public class RoutesActivity extends BaseListActivity
             }
             stopManagingCursor(notStarredCursor);
         }
-
+        stopManagingCursor(cursor);
         // TODO: Store created id and work on that while toggling if starred or not.
         
     }
