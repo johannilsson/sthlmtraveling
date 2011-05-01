@@ -77,6 +77,7 @@ Changelog
     * Added a action bar.
     * Added a pull to refresh list view for departures.
     * Updated icons.
+    * Added journey history, visible below the journey planner.
 * 2.2.2
     * Last selected transport mode for a specific site is now automatically
       selected for Departures.
