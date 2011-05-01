@@ -24,6 +24,8 @@ import java.util.Locale;
 import android.content.Context;
 import android.location.Address;
 import android.location.Geocoder;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,6 +40,8 @@ import com.markupartist.sthlmtraveling.provider.planner.Planner;
 import com.markupartist.sthlmtraveling.utils.LocationUtils;
 
 public class AutoCompleteStopAdapter extends ArrayAdapter<String> implements Filterable {
+    protected static final int WHAT_NOTIFY_PERFORM_FILTERING = 1;
+    protected static final int WHAT_NOTIFY_PUBLISH_FILTERING = 2;
     private static String TAG = "AutoCompleteStopAdapter";
     private final Object mLock = new Object();
     private Planner mPlanner;
@@ -46,6 +50,24 @@ public class AutoCompleteStopAdapter extends ArrayAdapter<String> implements Fil
     private boolean mIncludeAddresses = true;
     private LayoutInflater mInflater;
     private FilterListener mFilterListener;
+
+    private Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+            case WHAT_NOTIFY_PERFORM_FILTERING:
+                if (mFilterListener != null) {
+                    mFilterListener.onPerformFiltering();
+                }
+                break;
+            case WHAT_NOTIFY_PUBLISH_FILTERING:
+                if (mFilterListener != null) {
+                    mFilterListener.onPublishFiltering();
+                }
+                break;
+            }
+        }
+    };
 
     public AutoCompleteStopAdapter(Context context, int textViewResourceId,
             Planner planner, boolean includeAddresses) {
@@ -61,6 +83,7 @@ public class AutoCompleteStopAdapter extends ArrayAdapter<String> implements Fil
         if (mValues != null && mValues.size() > 0) {
             return mValues.get(position);
         }
+        
         Log.d(TAG, "value was null");
         return null;
     }
@@ -72,9 +95,8 @@ public class AutoCompleteStopAdapter extends ArrayAdapter<String> implements Fil
 
             @Override
             protected FilterResults performFiltering(CharSequence constraint) {
-                if (mFilterListener != null) {
-                    mFilterListener.onPerformFiltering();
-                }
+
+                mHandler.sendEmptyMessage(WHAT_NOTIFY_PERFORM_FILTERING);
 
                 FilterResults filterResults = new FilterResults();
 
@@ -125,9 +147,7 @@ public class AutoCompleteStopAdapter extends ArrayAdapter<String> implements Fil
             @SuppressWarnings("unchecked") // For the list used in the for each statement
             @Override
             protected void publishResults(CharSequence constraint, FilterResults results) {
-                if (mFilterListener != null) {
-                    mFilterListener.onPublishFiltering();
-                }
+                mHandler.sendEmptyMessage(WHAT_NOTIFY_PUBLISH_FILTERING);
 
                 if (results != null && results.count > 0) {
                     clear();
@@ -150,6 +170,7 @@ public class AutoCompleteStopAdapter extends ArrayAdapter<String> implements Fil
                 }
             }
         };
+        
         return nameFilter;
     }
 
