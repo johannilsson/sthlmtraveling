@@ -69,7 +69,7 @@
 				        android:layout_height="wrap_content"
 				        style="?android:attr/progressBarStyleSmall"
 				        android:layout_gravity="center_vertical"
-				        android:visibility="gone"
+				        android:visibility="invisible"
 				        />
 	            </LinearLayout>
 	            <ImageButton
@@ -119,7 +119,7 @@
                         android:layout_height="wrap_content"
                         style="?android:attr/progressBarStyleSmall"
                         android:layout_gravity="center_vertical"
-                        android:visibility="gone"
+                        android:visibility="invisible"
                         />
                 </LinearLayout>
                 <ImageButton
