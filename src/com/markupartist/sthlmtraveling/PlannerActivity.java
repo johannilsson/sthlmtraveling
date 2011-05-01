@@ -27,6 +27,7 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.ContentUris;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -50,11 +51,9 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
-import android.view.View.OnTouchListener;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -114,6 +113,7 @@ public class PlannerActivity extends BaseListActivity implements
     private LinearLayout mChangeTimeLayout;
     private Spinner mWhenSpinner;
     private View mSearchView;
+    private JourneyAdapter mAdapter;
 
     /**
      * The columns needed by the cursor adapter
@@ -124,7 +124,12 @@ public class PlannerActivity extends BaseListActivity implements
         Journeys.POSITION,     // 2
         Journeys.STARRED,      // 3
     };
-    
+
+    /**
+     * The index of the id column
+     */
+    private static final int COLUMN_INDEX_ID = 0;
+
     /**
      * The index of the journey data column
      */
@@ -252,16 +257,14 @@ public class PlannerActivity extends BaseListActivity implements
                 Journeys.HISTORY_SORT_ORDER
             );
 
-        setListAdapter(new JourneyAdapter(this, cursor));
-    }
+        mAdapter = new JourneyAdapter(this, cursor);
+        setListAdapter(mAdapter);
 
+    }
+    
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
-        Uri uri = ContentUris.withAppendedId(Journeys.CONTENT_URI, id);
-
-        Cursor cursor = managedQuery(uri, PROJECTION, null, null, null);
-        cursor.moveToFirst();
-        JourneyQuery journeyQuery = getJourneyQuery(cursor);
+        JourneyQuery journeyQuery = getJourneyQuery(mAdapter.getCursor());
 
         Intent routesIntent = new Intent(this, RoutesActivity.class);
         routesIntent.putExtra(RoutesActivity.EXTRA_JOURNEY_QUERY,
@@ -361,43 +364,40 @@ public class PlannerActivity extends BaseListActivity implements
             }
         }
     }
-
+    
     private AutoCompleteTextView createAutoCompleteTextView(
             int autoCompleteResId, int progressResId, final Stop stop) {
         // TODO: Wrap the auto complete view in a custom view...
+        SharedPreferences sharedPreferences =
+            PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        boolean searchAddresses =
+            sharedPreferences.getBoolean("search_address_enabled", true);
 
-        SharedPreferences sharedPreferences = PreferenceManager
-                .getDefaultSharedPreferences(getApplicationContext());
-        boolean searchAddresses = sharedPreferences.getBoolean(
-                "search_address_enabled", true);
+        
+        final AutoCompleteTextView autoCompleteTextView =
+            (AutoCompleteTextView) mSearchView.findViewById(autoCompleteResId);
+        final ProgressBar progress =
+            (ProgressBar) mSearchView.findViewById(progressResId);
 
-        final AutoCompleteTextView autoCompleteTextView = (AutoCompleteTextView) mSearchView
-                .findViewById(autoCompleteResId);
-        final AutoCompleteStopAdapter stopAdapter = new AutoCompleteStopAdapter(
-                this, R.layout.autocomplete_item_2line, Planner.getInstance(),
-                searchAddresses);
-        final ProgressBar progress = (ProgressBar) mSearchView.findViewById(progressResId);
+        final AutoCompleteStopAdapter stopAdapter =
+            new AutoCompleteStopAdapter(this, R.layout.simple_dropdown_item_1line,
+                    Planner.getInstance(), searchAddresses);
 
         stopAdapter.setFilterListener(new FilterListener() {
             @Override
             public void onPublishFiltering() {
-                progress.setVisibility(View.GONE);
+                progress.setVisibility(View.INVISIBLE);
             }
 
             @Override
             public void onPerformFiltering() {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        progress.setVisibility(View.VISIBLE);
-                    }
-                });
+                progress.setVisibility(View.VISIBLE);
             }
         });
 
-        autoCompleteTextView.setAdapter(stopAdapter);
         autoCompleteTextView.setSelectAllOnFocus(true);
-
+        autoCompleteTextView.setAdapter(stopAdapter);
+        
         autoCompleteTextView.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
@@ -415,10 +415,7 @@ public class PlannerActivity extends BaseListActivity implements
                     stop.setLocation((int) (address.getLatitude() * 1E6),
                             (int) (address.getLongitude() * 1E6));
                     String addressLine = LocationUtils.getAddressLine(address);
-                    // autoCompleteTextView.focusSearch(View.FOCUS_UP);
-                    // autoCompleteTextView.setText(addressLine);
                     stop.setName(addressLine);
-                    // autoCompleteTextView.clearFocus();
 
                     Log.d(TAG, stop.toString() + " location "
                             + stop.getLocation());
@@ -427,20 +424,7 @@ public class PlannerActivity extends BaseListActivity implements
             }
         });
 
-        // autoCompleteTextView.setOnClickListener(new OnClickListener() {
-        // @Override
-        // public void onClick(View v) {
         /*
-         * if (autoCompleteTextView.hasSelection()) {
-         * autoCompleteTextView.setTextKeepState
-         * (autoCompleteTextView.getText()); }
-         */
-        // autoCompleteTextView.selectAll();
-        // int stop = autoCompleteTextView.getText().length();
-        // autoCompleteTextView.setSelection(0, stop);
-        // }
-        // });
-
         autoCompleteTextView.setOnTouchListener(new OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -449,6 +433,7 @@ public class PlannerActivity extends BaseListActivity implements
                 return false;
             }
         });
+        */
 
         autoCompleteTextView
                 .addTextChangedListener(new ReservedNameTextWatcher(
@@ -1035,44 +1020,27 @@ public class PlannerActivity extends BaseListActivity implements
     private class JourneyAdapter extends CursorAdapter {
         
         public JourneyAdapter(Context context, Cursor c) {
-            super(context, c);
+            super(context, c, false);
         }
 
         @Override
         public void bindView(View view, Context context, Cursor cursor) {
             JourneyQuery journeyQuery = getJourneyQuery(cursor);
-
-            TextView originText =
-                (TextView) view.findViewById(R.id.favorite_start_point);
-            if (Location.TYPE_MY_LOCATION.equals(journeyQuery.origin.name)) {
-                originText.setText(getString(R.string.my_location));
-            } else {
-                originText.setText(journeyQuery.origin.name);
-            }
-
-            TextView destinationText =
-                (TextView) view.findViewById(R.id.favorite_end_point);
-            if (Location.TYPE_MY_LOCATION.equals(journeyQuery.destination.name)) {
-                destinationText.setText(getString(R.string.my_location));
-            } else {
-                destinationText.setText(journeyQuery.destination.name);
-            }
-
-            addTransportModeViews(journeyQuery, view);;
-            
-            //boolean isStarred = cursor.getInt(COLUMN_INDEX_STARRED) == 1 ? true : false;
-            //if (isStarred) {
-            //    view.setBackgroundColor(0xffFEF5CA);
-            //}
+            inflateView(view, journeyQuery, cursor);
         }
 
         @Override
         public View newView(Context context, Cursor cursor, ViewGroup parent) {
             final LayoutInflater inflater = LayoutInflater.from(context);
-            View v = inflater.inflate(R.layout.favorite_row, parent, false);
+            View v = inflater.inflate(R.layout.journey_history_row, parent, false);
 
             JourneyQuery journeyQuery = getJourneyQuery(cursor);
+            inflateView(v, journeyQuery, cursor);
 
+            return v;
+        }
+
+        private View inflateView(View v, JourneyQuery journeyQuery, Cursor c) {
             TextView originText =
                 (TextView) v.findViewById(R.id.favorite_start_point);
             if (Location.TYPE_MY_LOCATION.equals(journeyQuery.origin.name)) {
@@ -1088,15 +1056,35 @@ public class PlannerActivity extends BaseListActivity implements
             } else {
                 destinationText.setText(journeyQuery.destination.name);
             }
+
             addTransportModeViews(journeyQuery, v);
 
-            //boolean isStarred = cursor.getInt(COLUMN_INDEX_STARRED) == 1 ? true : false;
-            //if (isStarred) {
-            //    v.setBackgroundColor(0xffFEF5CA);
-            //}
+            CheckBox starred = (CheckBox) v.findViewById(R.id.journey_star_check);
+            boolean isStarred = c.getInt(COLUMN_INDEX_STARRED) == 1 ? true : false;
+            if (isStarred) {
+                starred.setChecked(true);
+            }
+
+            final int id = c.getInt(COLUMN_INDEX_ID);
+            starred.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    Uri uri = ContentUris.withAppendedId(Journeys.CONTENT_URI, id);
+                    ContentValues values = new ContentValues();
+                    if (isChecked) {
+                        values.put(Journeys.STARRED, 1);
+                    } else {
+                        values.put(Journeys.STARRED, 0);
+                    }
+                    Log.d(TAG, "updating: " + uri);
+
+                    getContentResolver().update(uri, values, null, null);
+                }
+            });
+
             return v;
         }
-
+        
         private void addTransportModeViews(JourneyQuery journeyQuery, View v) {
             for (String transportMode : journeyQuery.transportModes) {
                 if (transportMode.equals(TransportMode.METRO)) {
@@ -1145,4 +1133,5 @@ public class PlannerActivity extends BaseListActivity implements
         }
         return journeyQuery;
     }
+
 }
