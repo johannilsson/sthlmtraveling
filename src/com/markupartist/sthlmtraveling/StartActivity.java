@@ -40,7 +40,8 @@ public class StartActivity extends TabActivity {
         tabHost.addTab(tabHost.newTabSpec("search")
                .setIndicator(getText(R.string.search_label), 
                        getResources().getDrawable(R.drawable.tab_planner))
-               .setContent(new Intent(this, PlannerActivity.class)));
+               .setContent(new Intent(this, PlannerActivity.class)
+               .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)));
 
         tabHost.addTab(tabHost.newTabSpec("favorites")
                 .setIndicator(getText(R.string.favorites_label), 
