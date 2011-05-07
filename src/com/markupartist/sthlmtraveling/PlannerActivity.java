@@ -248,7 +248,6 @@ public class PlannerActivity extends BaseListActivity implements
             registerEvent("Planner");
         }
 
-
         Cursor cursor = managedQuery(
                 Journeys.CONTENT_URI,
                 PROJECTION,
@@ -259,9 +258,8 @@ public class PlannerActivity extends BaseListActivity implements
 
         mAdapter = new JourneyAdapter(this, cursor);
         setListAdapter(mAdapter);
-
     }
-    
+
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
         JourneyQuery journeyQuery = getJourneyQuery(mAdapter.getCursor());
@@ -1016,11 +1014,11 @@ public class PlannerActivity extends BaseListActivity implements
             addAdapter(1, mHistoryWrapperAdapter);
         }
     }
-    
+
     private class JourneyAdapter extends CursorAdapter {
         
         public JourneyAdapter(Context context, Cursor c) {
-            super(context, c, false);
+            super(context, c);
         }
 
         @Override
@@ -1063,12 +1061,20 @@ public class PlannerActivity extends BaseListActivity implements
             boolean isStarred = c.getInt(COLUMN_INDEX_STARRED) == 1 ? true : false;
             if (isStarred) {
                 starred.setChecked(true);
+            } else {
+                starred.setChecked(false);
             }
 
             final int id = c.getInt(COLUMN_INDEX_ID);
-            starred.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+
+            // TODO: Refactor so we can re-use the same click listener.
+            // We're using a click listener instead of an checked listener to
+            // avoid callbacks if the list is modified from code.
+            starred.setOnClickListener(new View.OnClickListener() {
+
                 @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                public void onClick(View v) {
+                    boolean isChecked = ((CheckBox)v).isChecked();
                     Uri uri = ContentUris.withAppendedId(Journeys.CONTENT_URI, id);
                     ContentValues values = new ContentValues();
                     if (isChecked) {
@@ -1076,9 +1082,8 @@ public class PlannerActivity extends BaseListActivity implements
                     } else {
                         values.put(Journeys.STARRED, 0);
                     }
-                    Log.d(TAG, "updating: " + uri);
-
                     getContentResolver().update(uri, values, null, null);
+
                 }
             });
 
@@ -1086,35 +1091,46 @@ public class PlannerActivity extends BaseListActivity implements
         }
         
         private void addTransportModeViews(JourneyQuery journeyQuery, View v) {
+            // This looks crazy! But we need to reset all transport views so
+            // they don't get recycled and then enable them again if they're
+            // selected for the journey.
+            ImageView metroView =
+                (ImageView) v.findViewById(R.id.favorite_transport_mode_metro);
+            metroView.setVisibility(View.GONE);
+            ImageView busView =
+                (ImageView) v.findViewById(R.id.favorite_transport_mode_bus);
+            busView.setVisibility(View.GONE);
+            ImageView trainView =
+                (ImageView) v.findViewById(R.id.favorite_transport_mode_train);
+            trainView.setVisibility(View.GONE);
+            ImageView tramView =
+                (ImageView) v.findViewById(R.id.favorite_transport_mode_tram);
+            tramView.setVisibility(View.GONE);
+            ImageView waxView =
+                (ImageView) v.findViewById(R.id.favorite_transport_mode_wax);
+            waxView.setVisibility(View.GONE);
+            ImageView flyView =
+                (ImageView) v.findViewById(R.id.favorite_transport_mode_fly);
+            flyView.setVisibility(View.GONE);
+            ImageView narView =
+                (ImageView) v.findViewById(R.id.favorite_transport_mode_nar);
+            narView.setVisibility(View.GONE);
+
             for (String transportMode : journeyQuery.transportModes) {
                 if (transportMode.equals(TransportMode.METRO)) {
-                    ImageView transportView =
-                        (ImageView) v.findViewById(R.id.favorite_transport_mode_metro);
-                    transportView.setVisibility(View.VISIBLE);
+                    metroView.setVisibility(View.VISIBLE);
                 } else if (transportMode.equals(TransportMode.BUS)) {
-                    ImageView transportView =
-                        (ImageView) v.findViewById(R.id.favorite_transport_mode_bus);
-                    transportView.setVisibility(View.VISIBLE);
+                    busView.setVisibility(View.VISIBLE);
                 } else if (transportMode.equals(TransportMode.TRAIN)) {
-                    ImageView transportView =
-                        (ImageView) v.findViewById(R.id.favorite_transport_mode_train);
-                    transportView.setVisibility(View.VISIBLE);
+                    trainView.setVisibility(View.VISIBLE);
                 } else if (transportMode.equals(TransportMode.TRAM)) {
-                    ImageView transportView =
-                        (ImageView) v.findViewById(R.id.favorite_transport_mode_tram);
-                    transportView.setVisibility(View.VISIBLE);
+                    tramView.setVisibility(View.VISIBLE);
                 } else if (transportMode.equals(TransportMode.WAX)) {
-                    ImageView transportView =
-                        (ImageView) v.findViewById(R.id.favorite_transport_mode_wax);
-                    transportView.setVisibility(View.VISIBLE);
+                    waxView.setVisibility(View.VISIBLE);
                 } else if (transportMode.equals(TransportMode.FLY)) {
-                    ImageView transportView =
-                        (ImageView) v.findViewById(R.id.favorite_transport_mode_fly);
-                    transportView.setVisibility(View.VISIBLE);
+                    flyView.setVisibility(View.VISIBLE);
                 } else if (transportMode.equals(TransportMode.NAR)) {
-                    ImageView transportView =
-                        (ImageView) v.findViewById(R.id.favorite_transport_mode_nar);
-                    transportView.setVisibility(View.VISIBLE);
+                    narView.setVisibility(View.VISIBLE);
                 }
             }
         }
