@@ -71,13 +71,13 @@ Changelog
 ---------
 * 2.3.0
     * New journey provider that holds starred journey, including traffic modes
-      and other seach criterias. This replaces the favorites database.
+      and other search criterias. This replaces the favorites database.
     * Added possibility to search for different transport modes and alternative
       stops.
     * Added a action bar.
-    * Added a pull to refresh list view for departures.
     * Updated icons.
     * Added journey history, visible below the journey planner.
+    * Changed target sdk version to 10 (2.3.3) and min sdk version to 4 (1.6).
 * 2.2.2
     * Last selected transport mode for a specific site is now automatically
       selected for Departures.
