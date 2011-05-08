@@ -103,6 +103,7 @@
     <string name="title_settings">Settings</string>
     <string name="now_label">Now</string>
     <string name="more_choices_label">More choices</string>
+    <string name="alternative_stops_label">Alternative stops</string>
     <string name="date_and_time_label">Date &amp; Time</string>
     <string name="determining_your_position">Determining your position</string>
     <string name="back">Back</string>

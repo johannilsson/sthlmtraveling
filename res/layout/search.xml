@@ -197,7 +197,7 @@
                     android:id="@+id/planner_alternative_stops"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:text="Alternative stops"
+                    android:text="@string/alternative_stops_label"
                     />
 				<View
 					android:layout_width="fill_parent"
