@@ -116,7 +116,8 @@
         android:textSize="16dip"
         />
  -->
-	<com.markupartist.android.widget.PullToRefreshListView
+    <include layout="@layout/progress_bar" android:id="@id/android:empty" />
+	<ListView
 	    style="@style/AppListView"
 	    android:id="@+id/android:list"
 	    android:layout_width="fill_parent" 

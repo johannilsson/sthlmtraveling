@@ -30,16 +30,23 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.format.Time;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.LinearLayout.LayoutParams;
 
 import com.markupartist.android.widget.ActionBar;
 import com.markupartist.android.widget.PullToRefreshListView;
@@ -103,10 +110,23 @@ public class DeparturesActivity extends BaseListActivity {
 
         mActionBar = initActionBar();
         mActionBar.setTitle(R.string.departures);
-        //setupFilterButtons();
-        //loadDepartures();
     }
 
+    private ActionBar.Action mRefreshAction = new ActionBar.Action() {
+
+        @Override
+        public void performAction(View view) {
+            if (mSite != null) {
+                new GetDeparturesTask().execute(mSite);
+            }
+        }
+
+        @Override
+        public int getDrawable() {
+            return R.drawable.ic_actionbar_refresh_default;
+        }
+    };
+    
     @Override
     public void setTitle(CharSequence title) {
         mActionBar.setTitle(title);
@@ -210,15 +230,34 @@ public class DeparturesActivity extends BaseListActivity {
 
         setTitle(mSite.getName());
 
-        ((PullToRefreshListView) getListView())
-                .setOnRefreshListener(new OnRefreshListener() {
+        Time now = new Time();
+        now.setToNow();
 
-                    @Override
-                    public void onRefresh() {
-                        new RefreshDeparturesTask().execute(mSite);
-                    }
+        // Adjust the empty view.
+        LinearLayout emptyView = (LinearLayout) getListView().getEmptyView();
+        TextView text = (TextView) emptyView.findViewById(R.id.search_progress_text);
+        text.setText(R.string.no_departures_for_transport_type);
+        ProgressBar progressBar = (ProgressBar) emptyView.findViewById(R.id.search_progress_bar);
+        progressBar.setVisibility(View.GONE);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT);
+        params.gravity = Gravity.TOP|Gravity.LEFT;
+        emptyView.setLayoutParams(params);
+        getListView().setEmptyView(emptyView);
+        
 
-                });
+        /*
+        PullToRefreshListView listView = (PullToRefreshListView) getListView();
+        listView.setLastUpdated("Updated at " + now.format("%H:%M"));
+        listView.setOnRefreshListener(new OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                new RefreshDeparturesTask().execute(mSite);
+            }
+
+        });
+        */
     }
 
     @Override
@@ -425,14 +464,8 @@ public class DeparturesActivity extends BaseListActivity {
     private void showProgress() {
         if (mActionBar != null) {
             mActionBar.setProgressBarVisibility(View.VISIBLE);
+            mActionBar.removeAction(mRefreshAction);
         }
-        /*
-        if (mProgress == null) {
-            mProgress = new ProgressDialog(this);
-            mProgress.setMessage(getText(R.string.loading));
-            mProgress.show();   
-        }
-        */
     }
 
     /**
@@ -441,17 +474,8 @@ public class DeparturesActivity extends BaseListActivity {
     private void dismissProgress() {
         if (mActionBar != null) {
             mActionBar.setProgressBarVisibility(View.GONE);
+            mActionBar.addAction(mRefreshAction);
         }
-        /*
-        if (mProgress != null) {
-            try {
-                mProgress.dismiss();
-            } catch (Exception e) {
-                Log.d(TAG, "Could not dismiss progress; " + e.getMessage());
-            }
-            mProgress = null;
-        }
-        */
     }
 
     @Override
@@ -512,6 +536,7 @@ public class DeparturesActivity extends BaseListActivity {
         }
     }
 
+    /*
     private class RefreshDeparturesTask extends GetDeparturesTask{
         @Override
         public void onPreExecute() {
@@ -519,8 +544,8 @@ public class DeparturesActivity extends BaseListActivity {
 
         @Override
         protected void onPostExecute(Departures result) {
-            ((PullToRefreshListView) getListView()).onRefreshComplete();
-
+            PullToRefreshListView listView = (PullToRefreshListView) getListView();
+            listView.onRefreshComplete();
             if (wasSuccess()) {
                 fillData(result);
             } else {
@@ -528,6 +553,7 @@ public class DeparturesActivity extends BaseListActivity {
             }
         }
     }
+    */
     
     /**
      * Background job for getting {@link Departure}s.
