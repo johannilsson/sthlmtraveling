@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="com.markupartist.sthlmtraveling"
       android:installLocation="auto"
-      android:versionName="2.3.0RC2" android:versionCode="63">
+      android:versionName="2.3.0RC3" android:versionCode="64">
     <supports-screens
         android:largeScreens="true"
         android:normalScreens="true"
