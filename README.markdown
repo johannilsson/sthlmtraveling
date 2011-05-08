@@ -78,6 +78,8 @@ Changelog
     * Updated icons.
     * Added journey history, visible below the journey planner.
     * Changed target sdk version to 10 (2.3.3) and min sdk version to 4 (1.6).
+    * Moved files from the assets directory (that shouldn't be there) into the
+      extras directory.
 * 2.2.2
     * Last selected transport mode for a specific site is now automatically
       selected for Departures.
