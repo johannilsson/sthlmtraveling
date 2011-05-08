@@ -37,6 +37,7 @@ import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 import com.google.android.maps.MyLocationOverlay;
+import com.markupartist.android.widget.ActionBar;
 import com.markupartist.sthlmtraveling.graphics.BalloonOverlayView;
 import com.markupartist.sthlmtraveling.graphics.FixedMyLocationOverlay;
 import com.markupartist.sthlmtraveling.graphics.BalloonOverlayView.OnTapBallonListener;
@@ -126,6 +127,9 @@ public class PointOnMapActivity extends BaseMapActivity {
         if (markerText == null) {
             markerText = getString(R.string.tap_to_select_this_point);
         }
+
+        ActionBar actionBar = (ActionBar) findViewById(R.id.actionbar);
+        actionBar.setTitle(R.string.point_on_map);
 
         mMapView = (MapView) findViewById(R.id.mapview);
         mMapView.setBuiltInZoomControls(true);
