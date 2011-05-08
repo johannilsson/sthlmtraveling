@@ -164,7 +164,7 @@
     <string name="search_include_addresses_preference">Inkludera adresser för autokomplettering</string>
     <string name="search_include_addresses_summary_preference">Kan ta längre tid att göra sökningar påslaget.</string>
     <string name="search_clear_history_preference">Radera sökhistorik</string>
-    <string name="search_clear_history_summary_preference">Radera all sökhistorik.</string>
+    <string name="search_clear_history_summary_preference">Raderar all sökhistorik for hållplatser och resor.</string>
     <string name="search_clear_history_confirm">Är du säker på att du vill radera all sökhistorik?</string>
     <string name="search_history_cleared">Sökhistorik raderad</string>
     <string name="search_clear_favorites_preference">Radera favoriter</string>

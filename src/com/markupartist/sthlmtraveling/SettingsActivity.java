@@ -101,6 +101,11 @@ public class SettingsActivity extends BasePreferenceActivity
                 .setPositiveButton(R.string.yes, new OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        getContentResolver().delete(Journeys.CONTENT_URI,
+                                Journeys.STARRED + " = 0 OR " +
+                                Journeys.STARRED + " IS NULL",
+                                null);
+
                         mHistoryDbAdapter.deleteAll();
                         Toast.makeText(SettingsActivity.this,
                                 R.string.search_history_cleared,
@@ -122,7 +127,8 @@ public class SettingsActivity extends BasePreferenceActivity
                 .setPositiveButton(R.string.yes, new OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        getContentResolver().delete(Journeys.CONTENT_URI, null, null);
+                        getContentResolver().delete(Journeys.CONTENT_URI,
+                                Journeys.STARRED + " = 1", null);
                         Toast.makeText(SettingsActivity.this,
                                 R.string.search_favorites_cleared,
                                 Toast.LENGTH_SHORT).show();

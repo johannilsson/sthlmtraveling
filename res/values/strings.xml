@@ -164,7 +164,7 @@
     <string name="search_include_addresses_preference">Include addresses in auto completion</string>
     <string name="search_include_addresses_summary_preference">May take longer to receive suggestions when enabled.</string>
     <string name="search_clear_history_preference">Clear search history</string>
-    <string name="search_clear_history_summary_preference">Clears all search history.</string>
+    <string name="search_clear_history_summary_preference">Clears search history for stops and journeys.</string>
     <string name="search_clear_history_confirm">Are you sure you want to clear all search history?</string>
     <string name="search_history_cleared">History cleared</string>
     <string name="search_clear_favorites_preference">Clear favorites</string>
