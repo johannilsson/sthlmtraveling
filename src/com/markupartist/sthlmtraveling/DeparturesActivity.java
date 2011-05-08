@@ -103,6 +103,7 @@ public class DeparturesActivity extends BaseListActivity {
 
         mActionBar = initActionBar();
         mActionBar.setTitle(R.string.departures);
+        mActionBar.addAction(mRefreshAction);
     }
 
     private ActionBar.Action mRefreshAction = new ActionBar.Action() {
@@ -457,7 +458,6 @@ public class DeparturesActivity extends BaseListActivity {
     private void showProgress() {
         if (mActionBar != null) {
             mActionBar.setProgressBarVisibility(View.VISIBLE);
-            mActionBar.removeAction(mRefreshAction);
         }
     }
 
@@ -467,7 +467,6 @@ public class DeparturesActivity extends BaseListActivity {
     private void dismissProgress() {
         if (mActionBar != null) {
             mActionBar.setProgressBarVisibility(View.GONE);
-            mActionBar.addAction(mRefreshAction);
         }
     }
 
