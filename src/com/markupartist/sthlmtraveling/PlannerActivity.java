@@ -1116,22 +1116,31 @@ public class PlannerActivity extends BaseListActivity implements
                 (ImageView) v.findViewById(R.id.favorite_transport_mode_nar);
             narView.setVisibility(View.GONE);
 
-            for (String transportMode : journeyQuery.transportModes) {
-                if (transportMode.equals(TransportMode.METRO)) {
-                    metroView.setVisibility(View.VISIBLE);
-                } else if (transportMode.equals(TransportMode.BUS)) {
-                    busView.setVisibility(View.VISIBLE);
-                } else if (transportMode.equals(TransportMode.TRAIN)) {
-                    trainView.setVisibility(View.VISIBLE);
-                } else if (transportMode.equals(TransportMode.TRAM)) {
-                    tramView.setVisibility(View.VISIBLE);
-                } else if (transportMode.equals(TransportMode.WAX)) {
-                    waxView.setVisibility(View.VISIBLE);
-                } else if (transportMode.equals(TransportMode.FLY)) {
-                    flyView.setVisibility(View.VISIBLE);
-                } else if (transportMode.equals(TransportMode.NAR)) {
-                    narView.setVisibility(View.VISIBLE);
+            if (journeyQuery.transportModes != null) {
+                for (String transportMode : journeyQuery.transportModes) {
+                    if (transportMode.equals(TransportMode.METRO)) {
+                        metroView.setVisibility(View.VISIBLE);
+                    } else if (transportMode.equals(TransportMode.BUS)) {
+                        busView.setVisibility(View.VISIBLE);
+                    } else if (transportMode.equals(TransportMode.TRAIN)) {
+                        trainView.setVisibility(View.VISIBLE);
+                    } else if (transportMode.equals(TransportMode.TRAM)) {
+                        tramView.setVisibility(View.VISIBLE);
+                    } else if (transportMode.equals(TransportMode.WAX)) {
+                        waxView.setVisibility(View.VISIBLE);
+                    } else if (transportMode.equals(TransportMode.FLY)) {
+                        flyView.setVisibility(View.VISIBLE);
+                    } else if (transportMode.equals(TransportMode.NAR)) {
+                        narView.setVisibility(View.VISIBLE);
+                    }
                 }
+            } else {
+                metroView.setVisibility(View.VISIBLE);
+                busView.setVisibility(View.VISIBLE);
+                trainView.setVisibility(View.VISIBLE);
+                tramView.setVisibility(View.VISIBLE);
+                waxView.setVisibility(View.VISIBLE);
+                flyView.setVisibility(View.VISIBLE);                
             }
         }
     }
