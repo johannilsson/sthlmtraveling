@@ -129,6 +129,10 @@ public class PointOnMapActivity extends BaseMapActivity {
         }
 
         ActionBar actionBar = (ActionBar) findViewById(R.id.actionbar);
+        getMenuInflater().inflate(R.menu.actionbar_map, actionBar.asMenu());
+        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+        actionBar.setDisplayShowHomeEnabled(true);
+        actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setTitle(R.string.point_on_map);
 
         mMapView = (MapView) findViewById(R.id.mapview);
@@ -191,6 +195,9 @@ public class PointOnMapActivity extends BaseMapActivity {
                 } else {
                     toastMissingMyLocationSource();
                 }
+                return true;
+            case R.id.actionbar_item_home:
+                finish();
                 return true;
         }
         return super.onOptionsItemSelected(item);

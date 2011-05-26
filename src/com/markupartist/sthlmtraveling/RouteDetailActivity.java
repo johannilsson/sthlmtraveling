@@ -36,6 +36,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -47,6 +48,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.markupartist.android.widget.ActionBar;
+import com.markupartist.android.widget.actionbar.R;
 import com.markupartist.sthlmtraveling.provider.JourneysProvider.Journey.Journeys;
 import com.markupartist.sthlmtraveling.provider.planner.JourneyQuery;
 import com.markupartist.sthlmtraveling.provider.planner.Planner;
@@ -85,7 +87,7 @@ public class RouteDetailActivity extends BaseListActivity {
         mTrip = extras.getParcelable(EXTRA_JOURNEY_TRIP);
         mJourneyQuery = extras.getParcelable(EXTRA_JOURNEY_QUERY);
 
-        mActionBar = initActionBar();
+        mActionBar = initActionBar(R.menu.actionbar_route_detail);
 
         View headerView = getLayoutInflater().inflate(R.layout.route_header, null);
         TextView startPointView = (TextView) headerView.findViewById(R.id.route_from);
@@ -160,18 +162,21 @@ public class RouteDetailActivity extends BaseListActivity {
     }
 
     @Override
-    protected ActionBar initActionBar() {
-        ActionBar actionBar = super.initActionBar();
-
-        Intent departuresIntent = new Intent(this, DeparturesActivity.class);
-        departuresIntent.putExtra(DeparturesActivity.EXTRA_SITE_NAME,
-                mTrip.origin.name);
-        actionBar.addAction(new ActionBar.IntentAction(this,
-                departuresIntent, R.drawable.ic_actionbar_time));
-
-        return actionBar;
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+        case R.id.actionbar_item_time:
+            Intent departuresIntent = new Intent(this, DeparturesActivity.class);
+            departuresIntent.putExtra(DeparturesActivity.EXTRA_SITE_NAME,
+                    mTrip.origin.name);
+            startActivity(departuresIntent);
+            return true;
+        case R.id.actionbar_item_sms:
+            showDialog(DIALOG_BUY_SMS_TICKET);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
-    
+
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
@@ -273,18 +278,10 @@ public class RouteDetailActivity extends BaseListActivity {
         setListAdapter(mSubTripAdapter);
 
         if (trip.canBuySmsTicket()) {
-            mActionBar.addAction(new ActionBar.Action() {
-                
-                @Override
-                public void performAction(View view) {
-                    showDialog(DIALOG_BUY_SMS_TICKET);
-                }
-
-                @Override
-                public int getDrawable() {
-                    return R.drawable.ic_actionbar_sms;
-                }
-            }, 0); // Makes sure this is added first in the list of actions.
+            mActionBar.addAction(
+                mActionBar.newAction(R.id.actionbar_item_sms)
+                    .setIcon(R.drawable.ic_actionbar_sms)
+            );
         }
 
         mTrip = trip;

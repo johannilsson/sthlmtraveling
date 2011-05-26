@@ -32,8 +32,6 @@ import android.preference.PreferenceManager;
 import android.text.format.Time;
 import android.util.Log;
 import android.view.ContextMenu;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -74,23 +72,19 @@ public class DeviationsActivity extends BaseListActivity {
         loadDeviations();
         registerForContextMenu(getListView());
 
-        mActionBar = initActionBar();
-        mActionBar.addAction(mRefreshAction);
+        mActionBar = initActionBar(R.menu.actionbar_deviations);
     }
 
-    private ActionBar.Action mRefreshAction = new ActionBar.Action() {
-
-        @Override
-        public void performAction(View view) {
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+        case R.id.actionbar_item_refresh:
             mGetDeviationsTask = new GetDeviationsTask();
             mGetDeviationsTask.execute();
+            return true;
         }
-
-        @Override
-        public int getDrawable() {
-            return R.drawable.ic_actionbar_refresh_default;
-        }
-    };
+        return super.onOptionsItemSelected(item);
+    }
 
     private void loadDeviations() {
         @SuppressWarnings("unchecked")

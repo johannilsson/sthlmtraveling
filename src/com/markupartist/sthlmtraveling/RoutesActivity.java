@@ -43,6 +43,7 @@ import android.text.TextUtils;
 import android.text.format.Time;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Adapter;
@@ -57,6 +58,7 @@ import android.widget.Toast;
 import android.widget.SimpleAdapter.ViewBinder;
 
 import com.markupartist.android.widget.ActionBar;
+import com.markupartist.android.widget.actionbar.R;
 import com.markupartist.sthlmtraveling.MyLocationManager.MyLocationFoundListener;
 import com.markupartist.sthlmtraveling.SectionedAdapter.Section;
 import com.markupartist.sthlmtraveling.provider.JourneysProvider.Journey.Journeys;
@@ -199,7 +201,7 @@ public class RoutesActivity extends BaseListActivity
             return;
         }
 
-        mActionBar = initActionBar();
+        mActionBar = initActionBar(R.menu.actionbar_routes);
 
         View headerView = getLayoutInflater().inflate(R.layout.route_header, null);
         mFromView = (TextView) headerView.findViewById(R.id.route_from);
@@ -217,25 +219,15 @@ public class RoutesActivity extends BaseListActivity
     }
 
     @Override
-    protected ActionBar initActionBar() {
-        ActionBar actionBar = super.initActionBar();
-
-        actionBar.addAction(new ActionBar.Action() {
-
-            @Override
-            public void performAction(View view) {
-                reverseJourneyQuery();
-            }
-
-            @Override
-            public int getDrawable() {
-                return R.drawable.ic_actionbar_reverse;
-            }
-        });
-        
-        return actionBar;
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+        case R.id.actionbar_item_reverse:
+            reverseJourneyQuery();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
-    
+
     private JourneyQuery getJourneyQueryFromIntent(Intent intent) {
         JourneyQuery journeyQuery;
         if (intent.hasExtra(EXTRA_JOURNEY_QUERY)) {

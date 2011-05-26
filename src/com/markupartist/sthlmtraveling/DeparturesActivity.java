@@ -27,12 +27,14 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.DialogInterface.OnClickListener;
 import android.database.Cursor;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.format.Time;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
@@ -101,29 +103,23 @@ public class DeparturesActivity extends BaseListActivity {
 
         mSectionedAdapter = new DepartureAdapter(this);
 
-        mActionBar = initActionBar();
+        mActionBar = initActionBar(R.menu.actionbar_departures);
         mActionBar.setTitle(R.string.departures);
-        mActionBar.addAction(mRefreshAction);
     }
 
-    private ActionBar.Action mRefreshAction = new ActionBar.Action() {
-
-        @Override
-        public void performAction(View view) {
-            if (mSite != null) {
-                new GetDeparturesTask().execute(mSite);
-            }
-        }
-
-        @Override
-        public int getDrawable() {
-            return R.drawable.ic_actionbar_refresh_default;
-        }
-    };
-    
     @Override
     public void setTitle(CharSequence title) {
         mActionBar.setTitle(title);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+        case R.id.actionbar_item_refresh:
+            new GetDeparturesTask().execute(mSite);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     /**

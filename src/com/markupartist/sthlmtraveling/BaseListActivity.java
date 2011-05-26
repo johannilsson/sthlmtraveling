@@ -5,7 +5,7 @@ import java.util.Map;
 import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
+import android.view.MenuItem;
 
 import com.flurry.android.FlurryAgent;
 import com.markupartist.android.widget.ActionBar;
@@ -39,21 +39,23 @@ public class BaseListActivity extends ListActivity {
         FlurryAgent.onEvent(event, parameters);
     }
 
-    protected ActionBar initActionBar() {
+    protected ActionBar initActionBar(int menuResource) {
         ActionBar actionBar = (ActionBar) findViewById(R.id.actionbar);
-        
-        /*actionBar.setHomeAction(new IntentAction(this,
-                new Intent(this, StartActivity.class),
-                R.drawable.ic_actionbar_home_default));*/
-        final Intent startIntent = new Intent(this, StartActivity.class);
-        startIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        actionBar.setOnTitleClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(startIntent);
-            }
-        });
-
+        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+        actionBar.setDisplayShowHomeEnabled(true);
+        getMenuInflater().inflate(menuResource, actionBar.asMenu());
         return actionBar;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+        case R.id.actionbar_item_home:
+            final Intent startIntent = new Intent(this, StartActivity.class);
+            startIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(startIntent);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
