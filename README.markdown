@@ -72,6 +72,7 @@ Changelog
 * 2.3.0
     * New journey provider that holds starred journey, including traffic modes
       and other search criterias. This replaces the favorites database.
+    * Added support for via to the journey planner.
     * Added possibility to search for different transport modes and alternative
       stops.
     * Added a action bar.
