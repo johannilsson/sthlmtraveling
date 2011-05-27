@@ -294,32 +294,18 @@ public class FavoritesActivity extends BaseListActivity {
         public void bindView(View view, Context context, Cursor cursor) {
             JourneyQuery journeyQuery = getJourneyQuery(cursor);
 
-            TextView originText =
-                (TextView) view.findViewById(R.id.favorite_start_point);
-            if (Location.TYPE_MY_LOCATION.equals(journeyQuery.origin.name)) {
-                originText.setText(getString(R.string.my_location));
-            } else {
-                originText.setText(journeyQuery.origin.name);
-            }
-
-            TextView destinationText =
-                (TextView) view.findViewById(R.id.favorite_end_point);
-            if (Location.TYPE_MY_LOCATION.equals(journeyQuery.destination.name)) {
-                destinationText.setText(getString(R.string.my_location));
-            } else {
-                destinationText.setText(journeyQuery.destination.name);
-            }
-
-            addTransportModeViews(journeyQuery, view);;
+            inflate(view, journeyQuery);
         }
 
         @Override
         public View newView(Context context, Cursor cursor, ViewGroup parent) {
             final LayoutInflater inflater = LayoutInflater.from(context);
             View v = inflater.inflate(R.layout.favorite_row, parent, false);
-
             JourneyQuery journeyQuery = getJourneyQuery(cursor);
+            return inflate(v, journeyQuery);
+        }
 
+        private View inflate(View v, JourneyQuery journeyQuery) {
             TextView originText =
                 (TextView) v.findViewById(R.id.favorite_start_point);
             if (Location.TYPE_MY_LOCATION.equals(journeyQuery.origin.name)) {
@@ -335,6 +321,16 @@ public class FavoritesActivity extends BaseListActivity {
             } else {
                 destinationText.setText(journeyQuery.destination.name);
             }
+
+            View viaView = v.findViewById(R.id.favorite_via_row);
+            if (journeyQuery.hasVia()) {
+                viaView.setVisibility(View.VISIBLE);
+                TextView viaText = (TextView) v.findViewById(R.id.favorite_via_point);
+                viaText.setText(journeyQuery.via.name);
+            } else {
+                viaView.setVisibility(View.GONE);
+            }
+
             addTransportModeViews(journeyQuery, v);
 
             return v;

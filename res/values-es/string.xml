@@ -21,6 +21,7 @@
     <string name="app_name">STHLM Traveling</string>
     <string name="from">Origen</string>
     <string name="to">Destino</string>
+    <string name="to">Via</string> <!-- TODO: Needs translation -->
     <string name="search_label">Buscar</string>
     <string name="departing">Salida</string>
     <string name="arriving">Llegada</string>

@@ -93,6 +93,35 @@
                 </LinearLayout>
             </TableRow>
             <TableRow
+                android:id="@+id/via_row"
+                android:layout_marginTop="2dip"
+                android:layout_marginBottom="2dip"
+                >
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    >
+                    <ImageView 
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:src="@drawable/ic_via"
+                        />
+                    <TextView
+                        android:id="@+id/favorite_via_point"
+                        android:lines="1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="?android:attr/textColorPrimary"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:layout_marginLeft="2dip"
+                        android:textStyle="normal"
+                        />
+                </LinearLayout>
+            </TableRow>
+            <TableRow
                 android:layout_marginTop="2dip"
                 android:layout_marginBottom="2dip"
                 >

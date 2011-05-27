@@ -97,6 +97,12 @@ public class RouteDetailActivity extends BaseListActivity {
         startPointView.setText(getLocationName(mJourneyQuery.origin));
         endPointView.setText(getLocationName(mJourneyQuery.destination));
 
+        if (mJourneyQuery.hasVia()) {
+            headerView.findViewById(R.id.via_row).setVisibility(View.VISIBLE);
+            TextView viaTextView = (TextView) headerView.findViewById(R.id.route_via);
+            viaTextView.setText(mJourneyQuery.via.name);
+        }
+
         String durationInMinutes = mTrip.duration;
         try {
             DateFormat df = new SimpleDateFormat("H:mm");

@@ -71,6 +71,28 @@
             />
     </LinearLayout>
     <LinearLayout
+        android:id="@+id/favorite_via_row"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        >
+        <ImageView 
+            android:id="@+id/favorite_via_point_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/ic_via"
+            />
+        <TextView
+            android:id="@+id/favorite_via_point"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="?android:attr/textColorPrimary"
+            android:padding="2dip"
+            />
+    </LinearLayout>
+    <LinearLayout
             android:id="@+id/favorite_transport_modes"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"

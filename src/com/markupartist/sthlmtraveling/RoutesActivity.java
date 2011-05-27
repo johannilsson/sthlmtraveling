@@ -162,6 +162,7 @@ public class RoutesActivity extends BaseListActivity
     private MultipleListAdapter mMultipleListAdapter;
     private TextView mFromView;
     private TextView mToView;
+    private TextView mViaView;
     private ArrayList<HashMap<String, String>> mDateAdapterData;
 
     private MyLocationManager mMyLocationManager;
@@ -206,6 +207,13 @@ public class RoutesActivity extends BaseListActivity
         View headerView = getLayoutInflater().inflate(R.layout.route_header, null);
         mFromView = (TextView) headerView.findViewById(R.id.route_from);
         mToView = (TextView) headerView.findViewById(R.id.route_to);
+
+        if (mJourneyQuery.hasVia()) {
+            headerView.findViewById(R.id.via_row).setVisibility(View.VISIBLE);
+            mViaView = (TextView) headerView.findViewById(R.id.route_via);
+            mViaView.setText(mJourneyQuery.via.name);
+        }
+
         getListView().addHeaderView(headerView, null, false);
 
         updateStartAndEndPointViews(mJourneyQuery.origin, mJourneyQuery.destination);

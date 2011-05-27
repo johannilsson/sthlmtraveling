@@ -49,6 +49,7 @@ public class HistoryDbAdapter {
 
     public static final int TYPE_START_POINT = 0;
     public static final int TYPE_END_POINT = 1;
+    public static final int TYPE_VIA_POINT = 2;
     public static final int TYPE_DEPARTURE_SITE = 2;
 
     private static final String DATABASE_NAME = "history";

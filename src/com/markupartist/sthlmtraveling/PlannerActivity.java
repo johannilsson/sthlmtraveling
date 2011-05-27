@@ -98,13 +98,16 @@ public class PlannerActivity extends BaseListActivity implements
     private static final int DIALOG_TIME = 7;
     private static final int DIALOG_CREATE_SHORTCUT_NAME = 8;
     private static final int DIALOG_REINSTALL_APP = 9;
+    private static final int DIALOG_VIA_POINT = 10;
     protected static final int REQUEST_CODE_POINT_ON_MAP_START = 0;
     protected static final int REQUEST_CODE_POINT_ON_MAP_END = 1;
 
     private AutoCompleteTextView mStartPointAutoComplete;
     private AutoCompleteTextView mEndPointAutoComplete;
+    private AutoCompleteTextView mViaPointAutoComplete;
     private Stop mStartPoint = new Stop();
     private Stop mEndPoint = new Stop();
+    private Stop mViaPoint = new Stop();
     private HistoryDbAdapter mHistoryDbAdapter;
     private boolean mCreateShortcut;
     private Time mTime;
@@ -163,6 +166,8 @@ public class PlannerActivity extends BaseListActivity implements
                 R.id.from_progress, mStartPoint);
         mEndPointAutoComplete = createAutoCompleteTextView(R.id.to,
                 R.id.to_progress, mEndPoint);
+        mViaPointAutoComplete = createAutoCompleteTextView(R.id.via,
+                R.id.via_progress, mViaPoint, false);
 
         try {
             mHistoryDbAdapter = new HistoryDbAdapter(this).open();
@@ -186,7 +191,6 @@ public class PlannerActivity extends BaseListActivity implements
                 showDialog(DIALOG_START_POINT);
             }
         });
-
         final ImageButton toDialog = (ImageButton) mSearchView
                 .findViewById(R.id.to_menu);
         toDialog.setOnClickListener(new View.OnClickListener() {
@@ -196,7 +200,15 @@ public class PlannerActivity extends BaseListActivity implements
                 showDialog(DIALOG_END_POINT);
             }
         });
-
+        final ImageButton viaDialog = (ImageButton) mSearchView
+                .findViewById(R.id.via_menu);
+        viaDialog.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mViaPointAutoComplete.setError(null);
+                showDialog(DIALOG_VIA_POINT);
+            }
+        });
         // Views for date and time
         mChangeTimeLayout = (LinearLayout) mSearchView
                 .findViewById(R.id.planner_change_time_layout);
@@ -281,6 +293,10 @@ public class PlannerActivity extends BaseListActivity implements
         if (!mEndPoint.hasName()) {
             mEndPointAutoComplete.setText("");
         }
+
+        if (!mViaPoint.hasName()) {
+            mViaPointAutoComplete.setText("");
+        }
     }
 
     /**
@@ -303,12 +319,15 @@ public class PlannerActivity extends BaseListActivity implements
             } else {
                 mStartPoint = buildStop(mStartPoint, mStartPointAutoComplete);
                 mEndPoint = buildStop(mEndPoint, mEndPointAutoComplete);
+                if (TextUtils.isEmpty(mViaPointAutoComplete.getText())) {
+                    mViaPoint = buildStop(mViaPoint, mViaPointAutoComplete);
+                }
 
                 if (mCreateShortcut) {
                     showDialog(DIALOG_CREATE_SHORTCUT_NAME);
                     // onCreateShortCut(mStartPoint, mEndPoint);
                 } else {
-                    onSearchRoutes(mStartPoint, mEndPoint, mTime);
+                    onSearchRoutes(mStartPoint, mEndPoint, mViaPoint, mTime);
                 }
             }
         }
@@ -346,6 +365,9 @@ public class PlannerActivity extends BaseListActivity implements
         if (mEndPoint != null) {
             outState.putParcelable("endPoint", mEndPoint);
         }
+        if (mViaPoint != null) {
+            outState.putParcelable("viaPoint", mViaPoint);
+        }
     }
 
     private void restoreState(Bundle state) {
@@ -354,24 +376,41 @@ public class PlannerActivity extends BaseListActivity implements
         if (state != null) {
             Stop startPoint = state.getParcelable("startPoint");
             Stop endPoint = state.getParcelable("endPoint");
+            Stop viaPoint = state.getParcelable("endPoint");
             if (startPoint != null) {
                 mStartPoint = startPoint;
             }
             if (endPoint != null) {
                 mEndPoint = endPoint;
             }
+            if (viaPoint != null) {
+                mViaPoint = viaPoint;
+            }
         }
     }
-    
+
     private AutoCompleteTextView createAutoCompleteTextView(
             int autoCompleteResId, int progressResId, final Stop stop) {
-        // TODO: Wrap the auto complete view in a custom view...
         SharedPreferences sharedPreferences =
             PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         boolean searchAddresses =
             sharedPreferences.getBoolean("search_address_enabled", true);
 
-        
+        return createAutoCompleteTextView(autoCompleteResId, progressResId, stop, searchAddresses);
+    }
+
+    /**
+     * Creates a new {@link AutoCompleteTextView}.
+     * 
+     * @param autoCompleteResId The {@link AutoCompleteTextView} resource id.
+     * @param progressResId The {@link ProgressBar} resource id.
+     * @param stop The stop.
+     * @param includeAddresses If addresses should be included.
+     * @return
+     */
+    private AutoCompleteTextView createAutoCompleteTextView(
+            int autoCompleteResId, int progressResId, final Stop stop, boolean includeAddresses) {
+        // TODO: Wrap the auto complete view in a custom view...
         final AutoCompleteTextView autoCompleteTextView =
             (AutoCompleteTextView) mSearchView.findViewById(autoCompleteResId);
         final ProgressBar progress =
@@ -379,7 +418,7 @@ public class PlannerActivity extends BaseListActivity implements
 
         final AutoCompleteStopAdapter stopAdapter =
             new AutoCompleteStopAdapter(this, R.layout.simple_dropdown_item_1line,
-                    Planner.getInstance(), searchAddresses);
+                    Planner.getInstance(), includeAddresses);
 
         stopAdapter.setFilterListener(new FilterListener() {
             @Override
@@ -483,7 +522,7 @@ public class PlannerActivity extends BaseListActivity implements
      * @param time
      *            the departure time or null to use current time
      */
-    private void onSearchRoutes(Stop startPoint, Stop endPoint, Time time) {
+    private void onSearchRoutes(Stop startPoint, Stop endPoint, Stop viaPoint, Time time) {
         // TODO: We should not handle point-on-map this way. But for now we just
         // want it to work.
         if (!mStartPointAutoComplete.getText().toString().equals(
@@ -494,6 +533,10 @@ public class PlannerActivity extends BaseListActivity implements
                 getString(R.string.point_on_map)))
             mHistoryDbAdapter.create(HistoryDbAdapter.TYPE_END_POINT, endPoint);
 
+        if (!TextUtils.isEmpty(mViaPointAutoComplete.getText().toString())) {
+            mHistoryDbAdapter.create(HistoryDbAdapter.TYPE_VIA_POINT, endPoint);   
+        }
+        
         RadioGroup chooseTimeGroup = (RadioGroup) mSearchView.findViewById(R.id.planner_choose_time_group);
         boolean isTimeDeparture = true;
         int checkedId = chooseTimeGroup.getCheckedRadioButtonId();
@@ -509,10 +552,14 @@ public class PlannerActivity extends BaseListActivity implements
         // alternativeStop
         // transportModes
 
-        JourneyQuery journeyQuery = new JourneyQuery.Builder().origin(
-                startPoint).destination(endPoint).isTimeDeparture(
-                isTimeDeparture).time(time).transportModes(
-                getSelectedTransportModes()).create();
+        JourneyQuery journeyQuery = new JourneyQuery.Builder()
+            .origin(startPoint)
+            .destination(endPoint)
+            .via(viaPoint)
+            .isTimeDeparture(isTimeDeparture)
+            .time(time)
+            .transportModes(getSelectedTransportModes())
+            .create();
 
         Intent routesIntent = new Intent(this, RoutesActivity.class);
         routesIntent.putExtra(RoutesActivity.EXTRA_JOURNEY_QUERY, journeyQuery);
@@ -614,7 +661,7 @@ public class PlannerActivity extends BaseListActivity implements
                     .fetchAllStartPoints();
             startManagingCursor(historyOriginCursor);
             final SelectPointAdapter startPointAdapter = new SelectPointAdapter(
-                    this, historyOriginCursor);
+                    this, historyOriginCursor, false);
             stopManagingCursor(historyOriginCursor);
             startPointDialogBuilder.setAdapter(startPointAdapter,
                     new DialogInterface.OnClickListener() {
@@ -660,7 +707,7 @@ public class PlannerActivity extends BaseListActivity implements
                     .fetchAllEndPoints();
             startManagingCursor(historyDestinationCursor);
             final SelectPointAdapter endPointAdapter = new SelectPointAdapter(
-                    this, historyDestinationCursor);
+                    this, historyDestinationCursor, false);
             stopManagingCursor(historyDestinationCursor);
             endPointDialogBuilder.setAdapter(endPointAdapter,
                     new DialogInterface.OnClickListener() {
@@ -696,6 +743,34 @@ public class PlannerActivity extends BaseListActivity implements
                         }
                     });
             dialog = endPointDialogBuilder.create();
+            break;
+        case DIALOG_VIA_POINT:
+            AlertDialog.Builder viaPointDialogBuilder = new AlertDialog.Builder(
+                    this);
+            viaPointDialogBuilder
+                    .setTitle(getText(R.string.via));
+            final Cursor historyViaCursor = mHistoryDbAdapter
+                    .fetchAllEndPoints(); // TODO: All history should probably be shared.
+            startManagingCursor(historyViaCursor);
+            final SelectPointAdapter viaPointAdapter = new SelectPointAdapter(
+                    this, historyViaCursor, true);
+            stopManagingCursor(historyViaCursor);
+            viaPointDialogBuilder.setAdapter(viaPointAdapter,
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            switch (which) {
+                            default:
+                                Stop viaPoint = (Stop) viaPointAdapter
+                                        .getItem(which);
+                                mViaPoint = new Stop(viaPoint);
+                                mViaPointAutoComplete.setText(mViaPoint
+                                        .getName());
+                                mViaPointAutoComplete.clearFocus();
+                            }
+                        }
+                    });
+            dialog = viaPointDialogBuilder.create();
             break;
         case DIALOG_ABOUT:
             PackageManager pm = getPackageManager();
@@ -881,6 +956,8 @@ public class PlannerActivity extends BaseListActivity implements
             mChangeTimeLayout.setVisibility(View.VISIBLE);
         } else if (!isChecked
                 && buttonView.getId() == R.id.planner_check_more_choices) {
+            mViaPoint = new Stop();
+            mViaPointAutoComplete.setText("");
             mChangeTimeLayout.setVisibility(View.GONE);
         }
     }
@@ -972,20 +1049,24 @@ public class PlannerActivity extends BaseListActivity implements
             }
         };
 
-        public SelectPointAdapter(Context context, Cursor historyCursor) {
-            ArrayList<HashMap<String, String>> items = new ArrayList<HashMap<String, String>>();
+        public SelectPointAdapter(Context context, Cursor historyCursor, boolean onlyHistory) {
+            if (!onlyHistory) {
+                ArrayList<HashMap<String, String>> items = new ArrayList<HashMap<String, String>>();
 
-            HashMap<String, String> myLocationItem = new HashMap<String, String>();
-            myLocationItem.put("item", getString(R.string.my_location));
-            items.add(myLocationItem);
+                HashMap<String, String> myLocationItem = new HashMap<String, String>();
+                myLocationItem.put("item", getString(R.string.my_location));
+                items.add(myLocationItem);
 
-            HashMap<String, String> pointOnMapItem = new HashMap<String, String>();
-            pointOnMapItem.put("item", getString(R.string.point_on_map));
-            items.add(pointOnMapItem);
+                HashMap<String, String> pointOnMapItem = new HashMap<String, String>();
+                pointOnMapItem.put("item", getString(R.string.point_on_map));
+                items.add(pointOnMapItem);
 
-            SimpleAdapter itemsAdapter = new SimpleAdapter(context, items,
-                    android.R.layout.simple_list_item_1,
-                    new String[] { "item" }, new int[] { android.R.id.text1 });
+                SimpleAdapter itemsAdapter = new SimpleAdapter(context, items,
+                        android.R.layout.simple_list_item_1,
+                        new String[] { "item" }, new int[] { android.R.id.text1 });
+
+                addAdapter(0, itemsAdapter);
+            }
 
             ArrayList<Stop> historyList = new ArrayList<Stop>();
             historyCursor.moveToFirst();
@@ -1010,7 +1091,6 @@ public class PlannerActivity extends BaseListActivity implements
             mHistoryWrapperAdapter.addSection(0,
                     getString(R.string.history_label), historyAdapter);
 
-            addAdapter(0, itemsAdapter);
             addAdapter(1, mHistoryWrapperAdapter);
         }
     }
@@ -1053,6 +1133,15 @@ public class PlannerActivity extends BaseListActivity implements
                 destinationText.setText(getString(R.string.my_location));
             } else {
                 destinationText.setText(journeyQuery.destination.name);
+            }
+
+            View viaView = v.findViewById(R.id.via_row);
+            if (journeyQuery.hasVia()) {
+                TextView viaText = (TextView) v.findViewById(R.id.favorite_via_point);
+                viaText.setText(journeyQuery.via.name);
+                viaView.setVisibility(View.VISIBLE);
+            } else {
+                viaView.setVisibility(View.GONE);
             }
 
             addTransportModeViews(journeyQuery, v);

@@ -38,6 +38,7 @@ import org.json.JSONObject;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.markupartist.sthlmtraveling.R;
@@ -636,6 +637,10 @@ public class Planner {
                 return new Location[size];
             }
         };
+
+        public boolean hasName() {
+            return !TextUtils.isEmpty(name);
+        }
     }
 
     public static class TransportType implements Parcelable {
