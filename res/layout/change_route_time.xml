@@ -26,7 +26,6 @@
     <com.markupartist.android.widget.ActionBar
         android:id="@+id/actionbar"
         style="@style/ActionBar"
-        app:title="@string/change_date_and_time"
         />
     <Spinner 
         android:id="@+id/departure_arrival_choice"
