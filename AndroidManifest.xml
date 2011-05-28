@@ -17,7 +17,7 @@
         <activity android:name=".StartActivity"
                   android:label="@string/app_name"
                   android:configChanges="locale|orientation"
-                  android:theme="@android:style/Theme.Light.NoTitleBar"
+                  android:theme="@style/AppThemeActionBar"
                   >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -51,7 +51,7 @@
         <activity android:name=".RoutesActivity"
                   android:label="@string/routes_label"
                   android:configChanges="locale|orientation"
-                  android:theme="@android:style/Theme.Light.NoTitleBar"
+                  android:theme="@style/AppThemeActionBar"
                   >
             <intent-filter>
 	            <action android:name="android.intent.action.VIEW"/>
@@ -68,7 +68,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".DeviationsActivity"
-                  android:theme="@android:style/Theme.Light.NoTitleBar"
+                  android:theme="@style/AppThemeActionBar"
                   android:label="@string/deviations_label"
                   android:configChanges="locale|orientation">
             <intent-filter>
@@ -89,18 +89,18 @@
         <activity android:name=".RouteDetailActivity"
                   android:label="@string/route_details_label"
                   android:configChanges="locale|orientation"
-                  android:theme="@android:style/Theme.Light.NoTitleBar"
+                  android:theme="@style/AppThemeActionBar"
                   ></activity>
         <activity android:name=".ChangeRouteTimeActivity"
-                  android:theme="@android:style/Theme.Light.NoTitleBar"
+                  android:theme="@style/AppThemeActionBar"
                   android:label="@string/change_date_and_time"
                   android:configChanges="locale"></activity>
         <activity android:name=".PointOnMapActivity"
-                  android:theme="@android:style/Theme.Light.NoTitleBar"
+                  android:theme="@style/AppThemeActionBar"
                   android:label="@string/point_on_map"
                   android:configChanges="locale|orientation"></activity>
         <activity android:name=".ViewOnMapActivity"
-                  android:theme="@android:style/Theme.Light.NoTitleBar"
+                  android:theme="@style/AppThemeActionBar"
                   android:label="@string/stop_label"
                   android:configChanges="locale|orientation"></activity>
         <activity android:name=".SearchDeparturesActivity"
@@ -117,7 +117,7 @@
         </activity-alias>
         <activity android:name=".DeparturesActivity"
                   android:label="@string/departures"
-                  android:theme="@android:style/Theme.Light.NoTitleBar"
+                  android:theme="@style/AppThemeActionBar"
                   android:configChanges="locale|orientation">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
