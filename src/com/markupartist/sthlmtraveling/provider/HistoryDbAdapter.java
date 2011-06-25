@@ -173,7 +173,8 @@ public class HistoryDbAdapter {
      * @return a Cursor object
      */
     public Cursor fetchAllStartPoints() {
-        return fetchByType(TYPE_START_POINT);        
+        //return fetchByType(TYPE_START_POINT);
+        return fetchLatest();
     }
 
     /**
@@ -181,7 +182,8 @@ public class HistoryDbAdapter {
      * @return a Cursor object
      */
     public Cursor fetchAllEndPoints() {
-        return fetchByType(TYPE_END_POINT);        
+        //return fetchByType(TYPE_END_POINT);
+        return fetchLatest();
     }
 
     /**
@@ -199,6 +201,22 @@ public class HistoryDbAdapter {
         return mCursor;        
     }
 
+    /**
+     * Fetch all entries for a specific type.
+     * @param type the type
+     * @return a Cursor object
+     */
+    public Cursor fetchLatest() {
+        Cursor mCursor =
+            mDb.query(true, DATABASE_TABLE, new String[] {
+                    KEY_ROWID, KEY_TYPE, KEY_NAME, KEY_CREATED,
+                    KEY_LATITUDE, KEY_LONGITUDE, KEY_SITE_ID},
+                    null, null, null, null,
+                    KEY_CREATED + " DESC", "10");
+        return mCursor;        
+    }
+
+    
     public void deleteAll() {
         mDb.delete(DATABASE_TABLE, null, null);
     }
