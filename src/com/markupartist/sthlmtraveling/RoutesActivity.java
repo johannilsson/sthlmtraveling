@@ -46,6 +46,7 @@ import android.util.TypedValue;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager.BadTokenException;
 import android.widget.Adapter;
 import android.widget.BaseAdapter;
 import android.widget.ImageButton;
@@ -1314,17 +1315,29 @@ public class RoutesActivity extends BaseListActivity
             } else if (!mWasSuccess) {
                 if (TextUtils.isEmpty(mErrorCode)) {
                     getListView().getEmptyView().setVisibility(View.GONE);
-                    showDialog(DIALOG_SEARCH_ROUTES_NETWORK_PROBLEM);
+                    try {
+                        showDialog(DIALOG_SEARCH_ROUTES_NETWORK_PROBLEM);
+                    } catch (BadTokenException e) {
+                        Log.w(TAG, "Caught BadTokenException when trying to show network error dialog.");
+                    }
                 } else {
                     getListView().getEmptyView().setVisibility(View.GONE);
                     mRouteErrorCode = mErrorCode;
-                    showDialog(DIALOG_SEARCH_ROUTES_ERROR);
+                    try {
+                        showDialog(DIALOG_SEARCH_ROUTES_ERROR);
+                    } catch (BadTokenException e) {
+                        Log.w(TAG, "Caught BadTokenException when trying to show routes error dialog.");
+                    }
                 }
             }/* else if (result.hasAlternatives()) {
                 onSiteAlternatives(result);
             }*/ else {
                 getListView().getEmptyView().setVisibility(View.GONE);
-                showDialog(DIALOG_SEARCH_ROUTES_NO_RESULT);
+                try {
+                    showDialog(DIALOG_SEARCH_ROUTES_NO_RESULT);
+                } catch (BadTokenException e) {
+                    Log.w(TAG, "Caught BadTokenException when trying to no results dialog.");
+                }
             }
         }
     }
@@ -1362,13 +1375,25 @@ public class RoutesActivity extends BaseListActivity
                 onSearchRoutesResult(result);
             } else if (!mWasSuccess) {
                 if (TextUtils.isEmpty(mErrorCode)) {
-                    showDialog(DIALOG_GET_EARLIER_ROUTES_NETWORK_PROBLEM);
+                    try {
+                        showDialog(DIALOG_GET_EARLIER_ROUTES_NETWORK_PROBLEM);
+                    } catch (BadTokenException e) {
+                        Log.w(TAG, "Caught BadTokenException when trying to show network error dialog.");
+                    }
                 } else {
                     mRouteErrorCode = mErrorCode;
-                    showDialog(DIALOG_SEARCH_ROUTES_ERROR);
+                    try {
+                        showDialog(DIALOG_SEARCH_ROUTES_ERROR);
+                    } catch (BadTokenException e) {
+                        Log.w(TAG, "Caught BadTokenException when trying to show routes error dialog.");
+                    }
                 }
             } else {
-                showDialog(DIALOG_GET_ROUTES_SESSION_TIMEOUT);
+                try {
+                    showDialog(DIALOG_GET_ROUTES_SESSION_TIMEOUT);
+                } catch (BadTokenException e) {
+                    Log.w(TAG, "Caught BadTokenException when trying to show session timeout dialog.");
+                }
             }
         }
     }
@@ -1406,13 +1431,25 @@ public class RoutesActivity extends BaseListActivity
                 onSearchRoutesResult(result);
             } else if (!mWasSuccess) {
                 if (TextUtils.isEmpty(mErrorCode)) {
-                    showDialog(DIALOG_GET_EARLIER_ROUTES_NETWORK_PROBLEM);                    
+                    try {
+                        showDialog(DIALOG_GET_EARLIER_ROUTES_NETWORK_PROBLEM);
+                    } catch (BadTokenException e) {
+                        Log.w(TAG, "Caught BadTokenException when trying to show network error dialog.");
+                    }
                 } else {
                     mRouteErrorCode = mErrorCode;
-                    showDialog(DIALOG_SEARCH_ROUTES_ERROR);
+                    try {
+                        showDialog(DIALOG_SEARCH_ROUTES_ERROR);
+                    } catch (BadTokenException e) {
+                        Log.w(TAG, "Caught BadTokenException when trying to show routes error dialog.");
+                    }
                 }
             } else {
-                showDialog(DIALOG_GET_ROUTES_SESSION_TIMEOUT);
+                try {
+                    showDialog(DIALOG_GET_ROUTES_SESSION_TIMEOUT);
+                } catch (BadTokenException e) {
+                    Log.w(TAG, "Caught BadTokenException when trying to show session timeout dialog.");
+                }
             }
         }
     }
