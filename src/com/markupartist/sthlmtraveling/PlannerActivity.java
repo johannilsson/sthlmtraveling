@@ -307,9 +307,6 @@ public class PlannerActivity extends BaseListActivity implements
     View.OnClickListener mGetSearchListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-
-            Log.d(TAG, "startpoint: " + mStartPoint.toString());
-
             // if (!mStartPoint.hasName()) {
             if (TextUtils.isEmpty(mStartPointAutoComplete.getText())) {
                 mStartPointAutoComplete.setError(getText(R.string.empty_value));
@@ -439,7 +436,6 @@ public class PlannerActivity extends BaseListActivity implements
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                     int position, long id) {
-                Log.d(TAG, "Item clicked: " + position);
                 Object value = stopAdapter.getValue(position);
                 if (value instanceof String) {
                     stop.setLocation(null);
@@ -447,16 +443,10 @@ public class PlannerActivity extends BaseListActivity implements
                 } else if (value instanceof Address) {
                     Address address = (Address) value;
 
-                    Log.d(TAG, "address: " + address);
-
                     stop.setLocation((int) (address.getLatitude() * 1E6),
                             (int) (address.getLongitude() * 1E6));
                     String addressLine = LocationUtils.getAddressLine(address);
                     stop.setName(addressLine);
-
-                    Log.d(TAG, stop.toString() + " location "
-                            + stop.getLocation());
-
                 }
             }
         });
