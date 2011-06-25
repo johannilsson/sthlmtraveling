@@ -27,7 +27,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.DialogInterface.OnClickListener;
 import android.database.Cursor;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -36,6 +35,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager.BadTokenException;
 import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
@@ -514,34 +514,23 @@ public class DeparturesActivity extends BaseListActivity {
                     new GetDeparturesTask().execute(result.get(0));
                 } else {
                     mSiteAlternatives = result;
-                    showDialog(DIALOG_SITE_ALTERNATIVES);
+                    try {
+                        showDialog(DIALOG_SITE_ALTERNATIVES);
+                    } catch (BadTokenException e) {
+                        Log.w(TAG, "Caught BadTokenException when trying to show sites dialog.");
+                    }
                 }
             } else if (!mWasSuccess) {
-                showDialog(DIALOG_GET_SITES_NETWORK_PROBLEM);
+                try {
+                    showDialog(DIALOG_GET_SITES_NETWORK_PROBLEM);
+                } catch (BadTokenException e) {
+                    Log.w(TAG, "Caught BadTokenException when trying to show network error dialog.");
+                }
             } else {
             //    onNoRoutesDetailsResult();
             }
         }
     }
-
-    /*
-    private class RefreshDeparturesTask extends GetDeparturesTask{
-        @Override
-        public void onPreExecute() {
-        }
-
-        @Override
-        protected void onPostExecute(Departures result) {
-            PullToRefreshListView listView = (PullToRefreshListView) getListView();
-            listView.onRefreshComplete();
-            if (wasSuccess()) {
-                fillData(result);
-            } else {
-                showDialog(DIALOG_GET_DEPARTURES_NETWORK_PROBLEM);
-            }
-        }
-    }
-    */
     
     /**
      * Background job for getting {@link Departure}s.
@@ -599,7 +588,11 @@ public class DeparturesActivity extends BaseListActivity {
             if (mWasSuccess) {
                 fillData(result);
             } else {
-                showDialog(DIALOG_GET_DEPARTURES_NETWORK_PROBLEM);
+                try {
+                    showDialog(DIALOG_GET_DEPARTURES_NETWORK_PROBLEM);
+                } catch (BadTokenException e) {
+                    Log.w(TAG, "Caught BadTokenException when trying to show network error dialog.");
+                }
             }
         }
     }
