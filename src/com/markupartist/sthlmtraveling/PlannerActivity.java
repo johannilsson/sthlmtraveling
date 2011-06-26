@@ -1094,16 +1094,23 @@ public class PlannerActivity extends BaseListActivity implements
         @Override
         public void bindView(View view, Context context, Cursor cursor) {
             JourneyQuery journeyQuery = getJourneyQuery(cursor);
-            inflateView(view, journeyQuery, cursor);
+            if (journeyQuery != null) {
+                inflateView(view, journeyQuery, cursor);
+            }
         }
 
         @Override
         public View newView(Context context, Cursor cursor, ViewGroup parent) {
             final LayoutInflater inflater = LayoutInflater.from(context);
-            View v = inflater.inflate(R.layout.journey_history_row, parent, false);
 
             JourneyQuery journeyQuery = getJourneyQuery(cursor);
-            inflateView(v, journeyQuery, cursor);
+            View v;
+            if (journeyQuery != null) {
+                v = inflater.inflate(R.layout.journey_history_row, parent, false);
+                inflateView(v, journeyQuery, cursor);
+            } else {
+                v = new View(PlannerActivity.this);
+            }
 
             return v;
         }
@@ -1225,10 +1232,16 @@ public class PlannerActivity extends BaseListActivity implements
     }
 
     private static JourneyQuery getJourneyQuery(Cursor cursor) {
-        // TODO: Investigate if we can add some kind of caching here.
-        String jsonJourneyQuery = cursor.getString(COLUMN_INDEX_JOURNEY_DATA);
-        JourneyQuery journeyQuery = null;
+        String jsonJourneyQuery;
+        try {
+            // TODO: Investigate if we can add some kind of caching here.
+            jsonJourneyQuery = cursor.getString(COLUMN_INDEX_JOURNEY_DATA);
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to retrieve journey data from the cursor.");
+            return null;
+        }
 
+        JourneyQuery journeyQuery = null;
         try {
             journeyQuery = JourneyQuery.fromJson(
                     new JSONObject(jsonJourneyQuery));
