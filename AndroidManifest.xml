@@ -144,6 +144,10 @@
                   android:enabled="true" 
                   android:exported="false"
          />
+        <service android:name=".service.DataMigrationService"
+                 android:enabled="true" 
+                 android:exported="false"
+        />
         <provider android:name=".provider.PlacesProvider"
                   android:authorities="com.markupartist.sthlmtraveling.placesprovider"
                   />

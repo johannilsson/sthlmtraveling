@@ -16,15 +16,15 @@
 
 package com.markupartist.sthlmtraveling;
 
-import java.util.ArrayList;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.content.BroadcastReceiver;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
@@ -40,8 +40,8 @@ import android.widget.CursorAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.markupartist.sthlmtraveling.provider.FavoritesDbAdapter;
 import com.markupartist.sthlmtraveling.provider.TransportMode;
 import com.markupartist.sthlmtraveling.provider.JourneysProvider.Journey.Journeys;
 import com.markupartist.sthlmtraveling.provider.planner.JourneyQuery;
@@ -94,6 +94,16 @@ public class FavoritesActivity extends BaseListActivity {
      */
     private static final int CONTEXT_MENU_DECREASE_PRIO = 4;
 
+    private BroadcastReceiver mUpdateUIReceiver = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.hasExtra("sthlmtraveling.intent.extra.FAVORITES_UPDATED")) {
+                initListAdapter();
+            }
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -101,8 +111,12 @@ public class FavoritesActivity extends BaseListActivity {
 
         registerEvent("Favorites");
 
-        convertFavorites();
+        registerReceiver(mUpdateUIReceiver, new IntentFilter("sthlmtraveling.intent.action.UPDATE_UI"));
 
+        maybeInitListAdapter();        
+    }
+
+    private void initListAdapter() {
         Cursor cursor = managedQuery(
                 Journeys.CONTENT_URI,
                 PROJECTION,
@@ -112,7 +126,6 @@ public class FavoritesActivity extends BaseListActivity {
             );
 
         setListAdapter(new JourneyAdapter(this, cursor));
-
         registerForContextMenu(getListView());
     }
 
@@ -205,8 +218,23 @@ public class FavoritesActivity extends BaseListActivity {
     /**
      * Converts old favorites to the new journey table.
      */
-    private void convertFavorites() {
+    private void maybeInitListAdapter() {
+        // This for legacy resons.
+        SharedPreferences localSettings = getPreferences(MODE_PRIVATE);
+        boolean isFavoritesConvertedLegacy =
+            localSettings.getBoolean("converted_favorites", false);
+        // This is the new settings.
+        SharedPreferences settings =
+            getSharedPreferences("sthlmtraveling", MODE_PRIVATE);
+        boolean isFavoritesConverted =
+            settings.getBoolean("converted_favorites", false);
+        if (isFavoritesConvertedLegacy || isFavoritesConverted) {
+            initListAdapter();
+            return;
+        }
+        Toast.makeText(this, "Converting Favorites...", Toast.LENGTH_SHORT).show();
 
+        /*
         SharedPreferences settings = getPreferences(MODE_PRIVATE);
         boolean isFavoritesConverted =
             settings.getBoolean("converted_favorites", false);
@@ -268,6 +296,7 @@ public class FavoritesActivity extends BaseListActivity {
 
         stopManagingCursor(cursor);
         favoritesDbAdapter.close();
+        */
     }
 
     @Override

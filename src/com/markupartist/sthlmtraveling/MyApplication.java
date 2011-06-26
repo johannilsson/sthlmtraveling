@@ -3,6 +3,7 @@ package com.markupartist.sthlmtraveling;
 import java.util.Locale;
 
 import android.app.Application;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -10,6 +11,7 @@ import android.preference.PreferenceManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
 
+import com.markupartist.sthlmtraveling.service.DataMigrationService;
 import com.markupartist.sthlmtraveling.utils.ErrorReporter;
 
 public class MyApplication extends Application {
@@ -22,8 +24,10 @@ public class MyApplication extends Application {
 
         final ErrorReporter reporter = ErrorReporter.getInstance();
         reporter.init(getApplicationContext());
-        
+
         reloadLocaleForApplication();
+
+        DataMigrationService.startService(this);
     }
 
     /* (non-Javadoc)
