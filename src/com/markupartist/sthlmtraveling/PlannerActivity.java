@@ -147,8 +147,6 @@ public class PlannerActivity extends BaseListActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.planner_list);
 
-        restoreState(savedInstanceState);
-
         // If the activity was started with the "create shortcut" action, we
         // remember this to change the behavior upon a search.
         if (Intent.ACTION_CREATE_SHORTCUT.equals(getIntent().getAction())) {
@@ -168,6 +166,8 @@ public class PlannerActivity extends BaseListActivity implements
                 R.id.to_progress, mEndPoint);
         mViaPointAutoComplete = createAutoCompleteTextView(R.id.via,
                 R.id.via_progress, mViaPoint, false);
+
+        restoreState(savedInstanceState);
 
         try {
             mHistoryDbAdapter = new HistoryDbAdapter(this).open();
@@ -286,15 +286,15 @@ public class PlannerActivity extends BaseListActivity implements
     protected void onResume() {
         super.onResume();
 
-        if (!mStartPoint.hasName()) {
+        if (mStartPoint != null && !mStartPoint.hasName()) {
             mStartPointAutoComplete.setText("");
         }
 
-        if (!mEndPoint.hasName()) {
+        if (mEndPoint != null && !mEndPoint.hasName()) {
             mEndPointAutoComplete.setText("");
         }
 
-        if (!mViaPoint.hasName()) {
+        if (mViaPoint != null && !mViaPoint.hasName()) {
             mViaPointAutoComplete.setText("");
         }
     }
@@ -316,7 +316,8 @@ public class PlannerActivity extends BaseListActivity implements
             } else {
                 mStartPoint = buildStop(mStartPoint, mStartPointAutoComplete);
                 mEndPoint = buildStop(mEndPoint, mEndPointAutoComplete);
-                if (TextUtils.isEmpty(mViaPointAutoComplete.getText())) {
+
+                if (!TextUtils.isEmpty(mViaPointAutoComplete.getText())) {
                     mViaPoint = buildStop(mViaPoint, mViaPointAutoComplete);
                 }
 
@@ -356,6 +357,7 @@ public class PlannerActivity extends BaseListActivity implements
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+        /*
         if (mStartPoint != null) {
             outState.putParcelable("startPoint", mStartPoint);
         }
@@ -365,25 +367,32 @@ public class PlannerActivity extends BaseListActivity implements
         if (mViaPoint != null) {
             outState.putParcelable("viaPoint", mViaPoint);
         }
+        */
     }
 
     private void restoreState(Bundle state) {
+        /*
         mStartPoint = new Stop();
         mEndPoint = new Stop();
+        mViaPoint = new Stop();
         if (state != null) {
             Stop startPoint = state.getParcelable("startPoint");
             Stop endPoint = state.getParcelable("endPoint");
-            Stop viaPoint = state.getParcelable("endPoint");
+            Stop viaPoint = state.getParcelable("viaPoint");
             if (startPoint != null) {
                 mStartPoint = startPoint;
+                mStartPointAutoComplete.setText(startPoint.getName());
             }
             if (endPoint != null) {
                 mEndPoint = endPoint;
+                mEndPointAutoComplete.setText(endPoint.getName());
             }
             if (viaPoint != null) {
                 mViaPoint = viaPoint;
+                mViaPointAutoComplete.setText(viaPoint.getName());
             }
         }
+        */
     }
 
     private AutoCompleteTextView createAutoCompleteTextView(
@@ -447,6 +456,11 @@ public class PlannerActivity extends BaseListActivity implements
                             (int) (address.getLongitude() * 1E6));
                     String addressLine = LocationUtils.getAddressLine(address);
                     stop.setName(addressLine);
+                    
+                    
+                    Log.d(TAG, "On auto complete item click "
+                            + stop.toString() + ", loc=" + stop.getLocation()
+                            + ". For text view " + autoCompleteTextView.getText());
                 }
             }
         });
@@ -551,6 +565,8 @@ public class PlannerActivity extends BaseListActivity implements
             .transportModes(getSelectedTransportModes())
             .create();
 
+        Log.d(TAG, "JQ: " + journeyQuery.toString());
+        
         Intent routesIntent = new Intent(this, RoutesActivity.class);
         routesIntent.putExtra(RoutesActivity.EXTRA_JOURNEY_QUERY, journeyQuery);
         startActivity(routesIntent);
