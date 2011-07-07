@@ -366,6 +366,10 @@ public class FavoritesActivity extends BaseListActivity {
         }
 
         private void addTransportModeViews(JourneyQuery journeyQuery, View v) {
+            if (journeyQuery.transportModes == null) {
+                journeyQuery.transportModes = TransportMode.getDefaultTransportModes();
+            }
+
             for (String transportMode : journeyQuery.transportModes) {
                 if (transportMode.equals(TransportMode.METRO)) {
                     ImageView transportView =
