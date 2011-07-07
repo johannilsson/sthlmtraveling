@@ -175,6 +175,22 @@ public class JourneyQuery implements Parcelable {
         return journeyQuery;
     }
 
+    
+    
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+        return "JourneyQuery [alternativeStops=" + alternativeStops
+                + ", destination=" + destination + ", ident=" + ident
+                + ", isTimeDeparture=" + isTimeDeparture + ", origin=" + origin
+                + ", seqnr=" + seqnr + ", time=" + time + ", transportModes="
+                + transportModes + ", via=" + via + "]";
+    }
+
+
+
     public static class Builder {
         private Planner.Location mOrigin;
         private Planner.Location mDestination;
