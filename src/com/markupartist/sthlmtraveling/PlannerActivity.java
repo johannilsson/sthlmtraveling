@@ -531,22 +531,21 @@ public class PlannerActivity extends BaseListActivity implements
         // want it to work.
         if (!mStartPointAutoComplete.getText().toString().equals(
                 getString(R.string.point_on_map)))
-            mHistoryDbAdapter.create(HistoryDbAdapter.TYPE_START_POINT,
+            mHistoryDbAdapter.create(HistoryDbAdapter.TYPE_JOURNEY_PLANNER_SITE,
                     startPoint);
         if (!mEndPointAutoComplete.getText().toString().equals(
                 getString(R.string.point_on_map)))
-            mHistoryDbAdapter.create(HistoryDbAdapter.TYPE_END_POINT, endPoint);
+            mHistoryDbAdapter.create(HistoryDbAdapter.TYPE_JOURNEY_PLANNER_SITE, endPoint);
 
         if (!TextUtils.isEmpty(mViaPointAutoComplete.getText().toString())) {
-            mHistoryDbAdapter.create(HistoryDbAdapter.TYPE_VIA_POINT, endPoint);   
+            mHistoryDbAdapter.create(HistoryDbAdapter.TYPE_JOURNEY_PLANNER_SITE, endPoint);   
         }
-        
-        RadioGroup chooseTimeGroup = (RadioGroup) mSearchView.findViewById(R.id.planner_choose_time_group);
+
         boolean isTimeDeparture = true;
+        RadioGroup chooseTimeGroup = (RadioGroup) mSearchView.findViewById(R.id.planner_choose_time_group);
         int checkedId = chooseTimeGroup.getCheckedRadioButtonId();
         if (checkedId == R.id.planner_check_more_choices) {
-            isTimeDeparture = mWhenSpinner.getSelectedItemId() == 0 ? true
-                    : false;
+            isTimeDeparture = mWhenSpinner.getSelectedItemId() == 0 ? true : false;
         } else {
             // User has checked the "now" checkbox, this forces the time to
             // be set in the RoutesActivity upon search.
@@ -664,7 +663,7 @@ public class PlannerActivity extends BaseListActivity implements
                     .setTitle(getText(R.string.choose_start_point_label));
 
             final Cursor historyOriginCursor = mHistoryDbAdapter
-                    .fetchAllStartPoints();
+                    .fetchLatest();
             startManagingCursor(historyOriginCursor);
             final SelectPointAdapter startPointAdapter = new SelectPointAdapter(
                     this, historyOriginCursor, false);
@@ -683,12 +682,9 @@ public class PlannerActivity extends BaseListActivity implements
                             case 1:
                                 Intent i = new Intent(PlannerActivity.this,
                                         PointOnMapActivity.class);
-                                i.putExtra(PointOnMapActivity.EXTRA_STOP,
-                                        mStartPoint);
-                                i
-                                        .putExtra(
-                                                PointOnMapActivity.EXTRA_HELP_TEXT,
-                                                getString(R.string.tap_your_start_point_on_map));
+                                i.putExtra(PointOnMapActivity.EXTRA_STOP,mStartPoint);
+                                i.putExtra(PointOnMapActivity.EXTRA_HELP_TEXT,
+                                        getString(R.string.tap_your_start_point_on_map));
                                 startActivityForResult(i,
                                         REQUEST_CODE_POINT_ON_MAP_START);
                                 break;
@@ -707,10 +703,8 @@ public class PlannerActivity extends BaseListActivity implements
         case DIALOG_END_POINT:
             AlertDialog.Builder endPointDialogBuilder = new AlertDialog.Builder(
                     this);
-            endPointDialogBuilder
-                    .setTitle(getText(R.string.choose_end_point_label));
-            final Cursor historyDestinationCursor = mHistoryDbAdapter
-                    .fetchAllEndPoints();
+            endPointDialogBuilder.setTitle(getText(R.string.choose_end_point_label));
+            final Cursor historyDestinationCursor = mHistoryDbAdapter.fetchLatest();
             startManagingCursor(historyDestinationCursor);
             final SelectPointAdapter endPointAdapter = new SelectPointAdapter(
                     this, historyDestinationCursor, false);
@@ -729,21 +723,16 @@ public class PlannerActivity extends BaseListActivity implements
                             case 1:
                                 Intent i = new Intent(PlannerActivity.this,
                                         PointOnMapActivity.class);
-                                i.putExtra(PointOnMapActivity.EXTRA_STOP,
-                                        mEndPoint);
-                                i
-                                        .putExtra(
-                                                PointOnMapActivity.EXTRA_HELP_TEXT,
-                                                getString(R.string.tap_your_end_point_on_map));
+                                i.putExtra(PointOnMapActivity.EXTRA_STOP,mEndPoint);
+                                i.putExtra(PointOnMapActivity.EXTRA_HELP_TEXT,
+                                        getString(R.string.tap_your_end_point_on_map));
                                 startActivityForResult(i,
                                         REQUEST_CODE_POINT_ON_MAP_END);
                                 break;
                             default:
-                                Stop endPoint = (Stop) endPointAdapter
-                                        .getItem(which);
+                                Stop endPoint = (Stop) endPointAdapter.getItem(which);
                                 mEndPoint = new Stop(endPoint);
-                                mEndPointAutoComplete.setText(mEndPoint
-                                        .getName());
+                                mEndPointAutoComplete.setText(mEndPoint.getName());
                                 mEndPointAutoComplete.clearFocus();
                             }
                         }
@@ -751,15 +740,12 @@ public class PlannerActivity extends BaseListActivity implements
             dialog = endPointDialogBuilder.create();
             break;
         case DIALOG_VIA_POINT:
-            AlertDialog.Builder viaPointDialogBuilder = new AlertDialog.Builder(
-                    this);
-            viaPointDialogBuilder
-                    .setTitle(getText(R.string.via));
-            final Cursor historyViaCursor = mHistoryDbAdapter
-                    .fetchAllEndPoints(); // TODO: All history should probably be shared.
+            AlertDialog.Builder viaPointDialogBuilder = new AlertDialog.Builder(this);
+            viaPointDialogBuilder.setTitle(getText(R.string.via));
+            final Cursor historyViaCursor = mHistoryDbAdapter.fetchAllViaPoints();
             startManagingCursor(historyViaCursor);
-            final SelectPointAdapter viaPointAdapter = new SelectPointAdapter(
-                    this, historyViaCursor, true);
+            final SelectPointAdapter viaPointAdapter =
+                new SelectPointAdapter(this, historyViaCursor, true);
             stopManagingCursor(historyViaCursor);
             viaPointDialogBuilder.setAdapter(viaPointAdapter,
                     new DialogInterface.OnClickListener() {
@@ -767,11 +753,9 @@ public class PlannerActivity extends BaseListActivity implements
                         public void onClick(DialogInterface dialog, int which) {
                             switch (which) {
                             default:
-                                Stop viaPoint = (Stop) viaPointAdapter
-                                        .getItem(which);
+                                Stop viaPoint = (Stop) viaPointAdapter.getItem(which);
                                 mViaPoint = new Stop(viaPoint);
-                                mViaPointAutoComplete.setText(mViaPoint
-                                        .getName());
+                                mViaPointAutoComplete.setText(mViaPoint.getName());
                                 mViaPointAutoComplete.clearFocus();
                             }
                         }
