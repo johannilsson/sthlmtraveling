@@ -34,6 +34,7 @@ import android.util.Log;
 import android.view.ContextMenu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager.BadTokenException;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.SimpleAdapter;
@@ -332,7 +333,11 @@ public class DeviationsActivity extends BaseListActivity {
             if (mWasSuccess) {
                 fillData(result);
             } else {
-                showDialog(DIALOG_GET_DEVIATIONS_NETWORK_PROBLEM);
+                try {
+                    showDialog(DIALOG_GET_DEVIATIONS_NETWORK_PROBLEM);
+                } catch (BadTokenException e) {
+                    Log.w(TAG, "Caught BadTokenException when trying to show network error dialog.");
+                }
             }
         }
     }
