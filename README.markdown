@@ -69,6 +69,14 @@ STHLM Traveling is open source and licensed under
 
 Changelog
 ---------
+* 2.3.2
+    * Fixed crash in Deviations that could occurr during network problems.
+    * Possible fix for not finding any routes.
+    * Excluded sites with geo data for the via field.
+    * Fixed problem with via site history being mixed with the departure site
+      history.
+    * Fixed crash in favorites that occured when favoriting a journey with no
+      transports.
 * 2.3.1
     * Fixed crash related to migration of favorites to the new format.
 * 2.3.0
