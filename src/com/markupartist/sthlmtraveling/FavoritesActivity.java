@@ -16,6 +16,8 @@
 
 package com.markupartist.sthlmtraveling;
 
+import java.util.ArrayList;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -367,7 +369,7 @@ public class FavoritesActivity extends BaseListActivity {
 
         private void addTransportModeViews(JourneyQuery journeyQuery, View v) {
             if (journeyQuery.transportModes == null) {
-                journeyQuery.transportModes = TransportMode.getDefaultTransportModes();
+                journeyQuery.transportModes = new ArrayList<String>();
             }
 
             for (String transportMode : journeyQuery.transportModes) {
