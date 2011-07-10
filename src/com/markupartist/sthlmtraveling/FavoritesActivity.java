@@ -235,76 +235,11 @@ public class FavoritesActivity extends BaseListActivity {
             return;
         }
         Toast.makeText(this, "Converting Favorites...", Toast.LENGTH_SHORT).show();
-
-        /*
-        SharedPreferences settings = getPreferences(MODE_PRIVATE);
-        boolean isFavoritesConverted =
-            settings.getBoolean("converted_favorites", false);
-        if (isFavoritesConverted) {
-            return;
-        }
-
-        FavoritesDbAdapter favoritesDbAdapter = new FavoritesDbAdapter(this);
-        favoritesDbAdapter.open();
-
-        Cursor cursor = favoritesDbAdapter.fetch();
-        startManagingCursor(cursor);
-
-        if (cursor.moveToFirst()) {
-            ArrayList<String> transportModes = new ArrayList<String>();
-            transportModes.add(TransportMode.BUS);
-            transportModes.add(TransportMode.FLY);
-            transportModes.add(TransportMode.METRO);
-            transportModes.add(TransportMode.TRAIN);
-            transportModes.add(TransportMode.TRAM);
-            transportModes.add(TransportMode.WAX);
-            do {
-                JourneyQuery journeyQuery = new JourneyQuery.Builder()
-                    .transportModes(transportModes)
-                    .origin(
-                            cursor.getString(FavoritesDbAdapter.INDEX_START_POINT),
-                            cursor.getInt(FavoritesDbAdapter.INDEX_START_POINT_LATITUDE),
-                            cursor.getInt(FavoritesDbAdapter.INDEX_START_POINT_LONGITUDE))
-                    .destination(
-                            cursor.getString(FavoritesDbAdapter.INDEX_END_POINT),
-                            cursor.getInt(FavoritesDbAdapter.INDEX_END_POINT_LATITUDE),
-                            cursor.getInt(FavoritesDbAdapter.INDEX_END_POINT_LONGITUDE))
-                    .create();
-
-                // Store new journey
-                String json;
-                try {
-                    json = journeyQuery.toJson(false).toString();
-                } catch (JSONException e) {
-                    Log.e(TAG, "Failed to convert journey to a json document.");
-                    return;
-                }
-
-                ContentValues values = new ContentValues();
-                values.put(Journeys.JOURNEY_DATA, json);
-                values.put(Journeys.STARRED, "1");
-                values.put(Journeys.CREATED_AT,
-                        cursor.getString(FavoritesDbAdapter.INDEX_CREATED));
-                getContentResolver().insert(Journeys.CONTENT_URI, values);
-
-                Log.d(TAG, String.format("Converted favorite journey %s -> %s.",
-                        journeyQuery.origin.name, journeyQuery.destination.name));
-            } while (cursor.moveToNext());
-        }
-
-        SharedPreferences.Editor editor = settings.edit();
-        editor.putBoolean("converted_favorites", true);
-        editor.commit();
-
-        stopManagingCursor(cursor);
-        favoritesDbAdapter.close();
-        */
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        //mFavoritesDbAdapter.close();
     }
 
     @Override
