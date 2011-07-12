@@ -69,6 +69,9 @@ STHLM Traveling is open source and licensed under
 
 Changelog
 ---------
+* 2.3.3
+    * Fixed bug with alternative stops not being accepted even if it was
+      checked.
 * 2.3.2
     * Fixed crash in Deviations that could occurr during network problems.
     * Possible fix for not finding any routes.
