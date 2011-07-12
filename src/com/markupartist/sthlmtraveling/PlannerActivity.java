@@ -541,19 +541,20 @@ public class PlannerActivity extends BaseListActivity implements
             mHistoryDbAdapter.create(HistoryDbAdapter.TYPE_JOURNEY_PLANNER_SITE, endPoint);   
         }
 
+        boolean alternativeStops = false;
         boolean isTimeDeparture = true;
         RadioGroup chooseTimeGroup = (RadioGroup) mSearchView.findViewById(R.id.planner_choose_time_group);
         int checkedId = chooseTimeGroup.getCheckedRadioButtonId();
         if (checkedId == R.id.planner_check_more_choices) {
             isTimeDeparture = mWhenSpinner.getSelectedItemId() == 0 ? true : false;
+
+            CheckBox alternativeCheckBox = (CheckBox) findViewById(R.id.planner_alternative_stops);
+            alternativeStops = alternativeCheckBox.isChecked();
         } else {
             // User has checked the "now" checkbox, this forces the time to
             // be set in the RoutesActivity upon search.
             time = null;
         }
-
-        // alternativeStop
-        // transportModes
 
         JourneyQuery journeyQuery = new JourneyQuery.Builder()
             .origin(startPoint)
@@ -562,6 +563,7 @@ public class PlannerActivity extends BaseListActivity implements
             .isTimeDeparture(isTimeDeparture)
             .time(time)
             .transportModes(getSelectedTransportModes())
+            .alternativeStops(alternativeStops)
             .create();
 
         Log.d(TAG, "JQ: " + journeyQuery.toString());
