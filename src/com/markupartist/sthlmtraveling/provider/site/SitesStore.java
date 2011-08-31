@@ -89,11 +89,11 @@ public class SitesStore {
         return sites;
     }
 
-    public ArrayList<StopPoint> nearby(Location location) throws IOException {
-        final HttpGet get = new HttpGet(apiEndpoint() + "/stoppoint/"
+    public ArrayList<Site> nearby(Location location) throws IOException {
+        final HttpGet get = new HttpGet(apiEndpoint() + "/site/"
                 + "?lat=" + location.getLatitude()
                 + "&lon=" + location.getLongitude()
-                + "&maxDistance=200"
+                + "&maxDistance=500"
                 + "&maxResults=20"
                 + "&key=" + get(KEY));
 
@@ -112,18 +112,18 @@ public class SitesStore {
 
         entity = response.getEntity();
         String rawContent = StreamUtils.toString(entity.getContent());
-        ArrayList<StopPoint> stopPoints = new ArrayList<StopPoint>();
+        ArrayList<Site> stopPoints = new ArrayList<Site>();
         try {
             JSONArray jsonStops = new JSONArray(rawContent);
             for (int i = 0; i < jsonStops.length(); i++) {
                 try {
                     JSONObject jsonStop = jsonStops.getJSONObject(i);
-                    StopPoint stopPoint = new StopPoint();
-                    //stopPoint.site = Site.fromJson(jsonStop.getJSONObject("site"));
-                    stopPoint.name = jsonStop.getString("name");
-                    stopPoint.distance = jsonStop.getInt("distance");
 
-                    stopPoints.add(stopPoint);
+                    Site site = new Site();
+                    site.setName(jsonStop.getString("name"));
+                    site.setId(jsonStop.getInt("siteId"));
+
+                    stopPoints.add(site);
                 } catch (JSONException e) {
                     // Ignore errors here.
                 }

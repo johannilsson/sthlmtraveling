@@ -124,6 +124,28 @@
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
+        
+        <activity android:name=".NearbyActivity"
+                  android:label="Nearby"
+                  android:theme="@style/AppThemeActionBar"
+                  android:configChanges="locale|orientation">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+        <activity-alias android:name="NearbyShortcutActivity"
+            android:targetActivity="NearbyActivity"
+            android:label="Nearby"
+            android:configChanges="locale"
+            android:theme="@style/AppThemeActionBar"
+            >
+            <intent-filter>
+                <action android:name="android.intent.action.CREATE_SHORTCUT" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity-alias>
+        
         <activity android:name=".SettingsActivity"
                   android:label="@string/title_settings"
                   android:configChanges="locale"

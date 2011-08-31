@@ -16,35 +16,29 @@
 ** limitations under the License.
 */
 -->
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res/com.markupartist.sthlmtraveling"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
+    android:orientation="vertical"
     >
-    <!-- include layout="@layout/progress_bar" /-->
-    <RelativeLayout 
-        android:layout_width="fill_parent"
+    <com.markupartist.android.widget.ActionBar
+        android:id="@+id/actionbar"
+        style="@style/ActionBar"
+        app:title="Nearby"
+        />
+    <TextView
+        android:id="@+id/current_location"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:background="#333"
-        >
-        <TextView
-            android:id="@+id/current_location"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:text="Current location"
-            />
-    </RelativeLayout>
+        android:padding="10dip"
+        android:background="#FDFCDC"
+        android:text="Note: This function is experimental and might change at any time. Feedback is welcomed."
+        />
     <ListView
         android:id="@+id/android:list"
         android:layout_width="fill_parent" 
         android:layout_height="fill_parent"
         />
-    <TextView android:id="@+id/android:empty"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="10dip"
-        android:textColor="?android:attr/textColorPrimary"
-        android:text="Loading..."
-        />
-</RelativeLayout>
+</LinearLayout>
 

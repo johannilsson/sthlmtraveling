@@ -11,20 +11,24 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.markupartist.android.widget.ActionBar;
+import com.markupartist.android.widget.actionbar.R;
 import com.markupartist.sthlmtraveling.MyLocationManager.MyLocationFoundListener;
+import com.markupartist.sthlmtraveling.provider.site.Site;
 import com.markupartist.sthlmtraveling.provider.site.SitesStore;
-import com.markupartist.sthlmtraveling.provider.site.StopPoint;
 
 public class NearbyActivity extends BaseListActivity implements LocationListener {
     private static String TAG = "NearbyActivity";
     private MyLocationManager mMyLocationManager;
     private TextView mCurrentLocationText;
+    private ActionBar mActionBar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,7 +40,26 @@ public class NearbyActivity extends BaseListActivity implements LocationListener
         }
 
         setContentView(R.layout.nearby);
+        
+        mActionBar = initActionBar(R.menu.actionbar_nearby);
 
+        requestUpdate();
+
+        mCurrentLocationText = (TextView) findViewById(R.id.current_location);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+        case R.id.actionbar_item_refresh:
+            requestUpdate();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void requestUpdate() {
+        mActionBar.setProgressBarVisibility(View.VISIBLE);
         LocationManager locationManager = (LocationManager)getSystemService(LOCATION_SERVICE);
         mMyLocationManager = new MyLocationManager(locationManager);
         mMyLocationManager.requestLocationUpdates(new MyLocationFoundListener() {
@@ -47,9 +70,7 @@ public class NearbyActivity extends BaseListActivity implements LocationListener
                 
             }
         });
-        mMyLocationManager.setLocationListener(this);
-        
-        mCurrentLocationText = (TextView) findViewById(R.id.current_location);
+        mMyLocationManager.setLocationListener(this);        
     }
 
     @Override
@@ -82,28 +103,26 @@ public class NearbyActivity extends BaseListActivity implements LocationListener
         finish();
     }
     
-    private void fill(ArrayList<StopPoint> stopPoints) {
-        Log.d(TAG, "Got points " + stopPoints);
-        
-        
-        ArrayAdapter<StopPoint> adapter =
-            new ArrayAdapter<StopPoint>(this, android.R.layout.simple_list_item_1, stopPoints);
+    private void fill(ArrayList<Site> stopPoints) {
+        mActionBar.setProgressBarVisibility(View.GONE);
+
+        ArrayAdapter<Site> adapter =
+            new ArrayAdapter<Site>(this, android.R.layout.simple_list_item_1, stopPoints);
         setListAdapter(adapter);
     }
 
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
-        StopPoint stopPoint = (StopPoint) getListAdapter().getItem(position);
+        Site stopPoint = (Site) getListAdapter().getItem(position);
         Intent i = new Intent(this, DeparturesActivity.class);
-        i.putExtra(DeparturesActivity.EXTRA_SITE_NAME, stopPoint.site.getName());
+        i.putExtra(DeparturesActivity.EXTRA_SITE_NAME, stopPoint.getName());
         startActivity(i);
-
     }
 
-    private class FindNearbyStopAsyncTask extends AsyncTask<Location, Void, ArrayList<StopPoint>> {
+    private class FindNearbyStopAsyncTask extends AsyncTask<Location, Void, ArrayList<Site>> {
 
         @Override
-        protected ArrayList<StopPoint> doInBackground(Location... params) {
+        protected ArrayList<Site> doInBackground(Location... params) {
             try {
                 return SitesStore.getInstance().nearby(params[0]);
             } catch (IOException e) {
@@ -113,7 +132,7 @@ public class NearbyActivity extends BaseListActivity implements LocationListener
         }
 
         @Override
-        protected void onPostExecute(ArrayList<StopPoint> result) {
+        protected void onPostExecute(ArrayList<Site> result) {
             if (result != null) {
                 fill(result);
             } else {
@@ -126,7 +145,7 @@ public class NearbyActivity extends BaseListActivity implements LocationListener
 
     @Override
     public void onLocationChanged(Location location) {
-        mCurrentLocationText.setText("(" + location.getAccuracy() + "");
+        mActionBar.setTitle("Nearby ("+ location.getAccuracy() +"m)");
         new FindNearbyStopAsyncTask().execute(location);
     }
 
