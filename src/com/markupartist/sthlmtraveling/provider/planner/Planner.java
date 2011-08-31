@@ -335,9 +335,12 @@ public class Planner {
          * @return returns true if this trip can be purchased with SMS.
          */
         public boolean canBuySmsTicket() {
-            return "2".contains(tariffRemark) ||
-                   "3".contains(tariffRemark) ||
-                   "4".contains(tariffRemark);
+            if (TextUtils.isEmpty(tariffRemark)) {
+                return false;
+            }
+            return tariffRemark.startsWith("2") ||
+                tariffRemark.startsWith("3") ||
+                tariffRemark.startsWith("4");
         }
 
         @Override
