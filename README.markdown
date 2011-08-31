@@ -17,7 +17,10 @@ Some screen shots can be found at [Flickr](http://www.flickr.com/photos/johannil
 
 The app is powered by a backend service written i Java and hosted at Google
 app engine. Unfortunately that application is not open source since it's using
-closed API's that is provided by SL. 
+closed API's that is provided by SL.
+
+<a href="http://flattr.com/thing/332993/STHLM-Traveling" target="_blank">
+<img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" border="0" /></a> 
 
 Credits
 -------
@@ -53,19 +56,6 @@ To run the tests from a terminal: Note, you must have both the
 application and the tests application deployed before.
 
     adb shell am instrument -w com.markupartist.sthlmtraveling.tests/android.test.InstrumentationTestRunner
-
-License
--------
-STHLM Traveling is open source and licensed under 
-[Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.html).
-
-### Exceptions
-
-* Transport icons is copyright Storstockholms Lokaltrafik and used with their
-  permission.
-* Icons by Olof Brickarp is copyright Olof Brickarp
-* Icons by Fredrik Broman is licensed under [CC Attribution 3.0](http://creativecommons.org/licenses/by/3.0/)
-* SectionedAdapter released under [GNU General Public License](http://www.gnu.org/licenses/gpl.html)
 
 Changelog
 ---------
@@ -268,3 +258,17 @@ Changelog
     * Made the search button bigger
 * 0.1
     * Initial release
+
+License
+-------
+STHLM Traveling is open source and licensed under 
+[Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.html).
+
+### Exceptions
+
+* Transport icons is copyright Storstockholms Lokaltrafik and used with their
+  permission.
+* Icons by Olof Brickarp is copyright Olof Brickarp
+* Icons by Fredrik Broman is licensed under [CC Attribution 3.0](http://creativecommons.org/licenses/by/3.0/)
+* SectionedAdapter released under [GNU General Public License](http://www.gnu.org/licenses/gpl.html)
+    
