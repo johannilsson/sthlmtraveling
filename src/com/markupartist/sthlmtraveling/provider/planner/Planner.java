@@ -335,9 +335,9 @@ public class Planner {
          * @return returns true if this trip can be purchased with SMS.
          */
         public boolean canBuySmsTicket() {
-            return "2".equals(tariffRemark) ||
-                   "3".equals(tariffRemark) ||
-                   "4".equals(tariffRemark);
+            return "2".contains(tariffRemark) ||
+                   "3".contains(tariffRemark) ||
+                   "4".contains(tariffRemark);
         }
 
         @Override
