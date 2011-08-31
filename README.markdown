@@ -69,6 +69,11 @@ STHLM Traveling is open source and licensed under
 
 Changelog
 ---------
+* 2.3.4
+    * New SMS prices
+    * Fixed issue with SMS now showing
+    * Enabled nearby sites as an experimental function, available through a
+      shortcut.
 * 2.3.3
     * Fixed bug with alternative stops not being accepted even if it was
       checked.
