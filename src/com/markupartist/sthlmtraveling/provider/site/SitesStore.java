@@ -93,7 +93,7 @@ public class SitesStore {
         final HttpGet get = new HttpGet(apiEndpoint() + "/stoppoint/"
                 + "?lat=" + location.getLatitude()
                 + "&lon=" + location.getLongitude()
-                + "&maxDistance=1000"
+                + "&maxDistance=200"
                 + "&maxResults=20"
                 + "&key=" + get(KEY));
 
@@ -119,7 +119,7 @@ public class SitesStore {
                 try {
                     JSONObject jsonStop = jsonStops.getJSONObject(i);
                     StopPoint stopPoint = new StopPoint();
-                    stopPoint.site = Site.fromJson(jsonStop.getJSONObject("site"));
+                    //stopPoint.site = Site.fromJson(jsonStop.getJSONObject("site"));
                     stopPoint.name = jsonStop.getString("name");
                     stopPoint.distance = jsonStop.getInt("distance");
 
