@@ -321,12 +321,12 @@ public class RouteDetailActivity extends BaseListActivity {
     }
 
     private CharSequence getFullPrice() {
-        final int[] PRICE = new int[] { 30, 45, 60 };
+        final int[] PRICE = new int[] { 36, 54, 72 };
         return PRICE[mTrip.tariffZones.length() - 1] + " kr";
     }
 
     private CharSequence getReducedPrice() {
-        final int[] PRICE = new int[] { 18, 27, 36 };
+        final int[] PRICE = new int[] { 20, 30, 40 };
         return PRICE[mTrip.tariffZones.length() - 1] + " kr";
     }
 
