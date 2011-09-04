@@ -26,6 +26,7 @@ import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.DialogInterface.OnClickListener;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -35,6 +36,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup.MarginLayoutParams;
 import android.view.WindowManager.BadTokenException;
 import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
@@ -42,9 +44,11 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 
+import com.google.ads.AdView;
 import com.markupartist.android.widget.ActionBar;
 import com.markupartist.android.widget.actionbar.R;
 import com.markupartist.sthlmtraveling.provider.TransportMode;
@@ -54,6 +58,7 @@ import com.markupartist.sthlmtraveling.provider.departure.DeparturesStore.Depart
 import com.markupartist.sthlmtraveling.provider.departure.DeparturesStore.Departures;
 import com.markupartist.sthlmtraveling.provider.site.Site;
 import com.markupartist.sthlmtraveling.provider.site.SitesStore;
+import com.markupartist.sthlmtraveling.utils.AdRequestFactory;
 
 
 public class DeparturesActivity extends BaseListActivity {
@@ -91,6 +96,8 @@ public class DeparturesActivity extends BaseListActivity {
 
     private ActionBar mActionBar;
 
+    private AdView mAdView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -105,11 +112,33 @@ public class DeparturesActivity extends BaseListActivity {
 
         mActionBar = initActionBar(R.menu.actionbar_departures);
         mActionBar.setTitle(R.string.departures);
+
+        mAdView = (AdView) findViewById(R.id.ad_view);
+        mAdView.loadAd(AdRequestFactory.createRequest());
     }
 
     @Override
     public void setTitle(CharSequence title) {
         mActionBar.setTitle(title);
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        onRotationChange(newConfig);
+
+        super.onConfigurationChanged(newConfig);
+    }
+
+    private void onRotationChange(Configuration newConfig) {
+        if (newConfig.orientation == newConfig.ORIENTATION_LANDSCAPE) {
+            if (mAdView != null) {
+                mAdView.setVisibility(View.GONE);
+            }
+        } else {
+            if (mAdView != null) {
+                mAdView.setVisibility(View.VISIBLE);
+            }
+        }        
     }
 
     @Override
@@ -224,6 +253,7 @@ public class DeparturesActivity extends BaseListActivity {
         now.setToNow();
 
         // Adjust the empty view.
+        /*
         LinearLayout emptyView = (LinearLayout) getListView().getEmptyView();
         TextView text = (TextView) emptyView.findViewById(R.id.search_progress_text);
         text.setText(R.string.no_departures_for_transport_type);
@@ -235,7 +265,13 @@ public class DeparturesActivity extends BaseListActivity {
         params.gravity = Gravity.TOP|Gravity.LEFT;
         emptyView.setLayoutParams(params);
         getListView().setEmptyView(emptyView);
-        
+        */
+        View emptyView = getListView().getEmptyView();
+        TextView text = (TextView) emptyView.findViewById(R.id.search_progress_text);
+        text.setText(R.string.no_departures_for_transport_type);
+        ProgressBar progressBar = (ProgressBar) emptyView.findViewById(R.id.search_progress_bar);
+        progressBar.setVisibility(View.GONE);
+        getListView().setEmptyView(emptyView);
 
         /*
         PullToRefreshListView listView = (PullToRefreshListView) getListView();
@@ -468,6 +504,10 @@ public class DeparturesActivity extends BaseListActivity {
 
     @Override
     protected void onDestroy() {
+        if (mAdView != null) {
+            mAdView.destroy();
+        }
+
         super.onDestroy();
 
         onCancelGetSitesTask();

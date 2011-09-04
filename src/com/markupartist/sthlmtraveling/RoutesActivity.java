@@ -32,6 +32,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.DialogInterface.OnClickListener;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.location.Location;
@@ -58,6 +59,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.SimpleAdapter.ViewBinder;
 
+import com.google.ads.AdRequest;
+import com.google.ads.AdView;
 import com.markupartist.android.widget.ActionBar;
 import com.markupartist.android.widget.actionbar.R;
 import com.markupartist.sthlmtraveling.MyLocationManager.MyLocationFoundListener;
@@ -73,6 +76,7 @@ import com.markupartist.sthlmtraveling.provider.planner.Planner.BadResponse;
 import com.markupartist.sthlmtraveling.provider.planner.Planner.Response;
 import com.markupartist.sthlmtraveling.provider.planner.Planner.SubTrip;
 import com.markupartist.sthlmtraveling.provider.planner.Planner.Trip2;
+import com.markupartist.sthlmtraveling.utils.AdRequestFactory;
 
 /**
  * Routes activity
@@ -183,6 +187,8 @@ public class RoutesActivity extends BaseListActivity
 
     private ActionBar mActionBar;
 
+    private AdView mAdView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -204,6 +210,9 @@ public class RoutesActivity extends BaseListActivity
         }
 
         mActionBar = initActionBar(R.menu.actionbar_routes);
+        mAdView = (AdView) findViewById(R.id.ad_view);
+        mAdView.loadAd(AdRequestFactory.createRequest());
+        
 
         View headerView = getLayoutInflater().inflate(R.layout.route_header, null);
         mFromView = (TextView) headerView.findViewById(R.id.route_from);
@@ -408,6 +417,10 @@ public class RoutesActivity extends BaseListActivity
 
     @Override
     protected void onDestroy() {
+        if (mAdView != null) {
+            mAdView.destroy();
+        }
+
         super.onDestroy();
 
         onCancelSearchRoutesTask();
@@ -1279,6 +1292,25 @@ public class RoutesActivity extends BaseListActivity
         startActivity(Intent.createChooser(intent, getText(R.string.share_label)));
     }
 
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        onRotationChange(newConfig);
+
+        super.onConfigurationChanged(newConfig);
+    }
+
+    private void onRotationChange(Configuration newConfig) {
+        if (newConfig.orientation == newConfig.ORIENTATION_LANDSCAPE) {
+            if (mAdView != null) {
+                mAdView.setVisibility(View.GONE);
+            }
+        } else {
+            if (mAdView != null) {
+                mAdView.setVisibility(View.VISIBLE);
+            }
+        }        
+    }
+    
     /**
      * Background task for searching for routes.
      */

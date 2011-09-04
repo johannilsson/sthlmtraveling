@@ -16,7 +16,7 @@
 ** limitations under the License.
 */
 -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
@@ -25,9 +25,17 @@
         android:id="@+id/actionbar"
         style="@style/ActionBar"
         />
-
+    <RelativeLayout
+        android:id="@+id/ad_holder"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        >
+        <include layout="@layout/ad"/>
+    </RelativeLayout>
     <RadioGroup
         android:id="@+id/transport_group"
+        android:layout_below="@id/actionbar"
         android:orientation="horizontal"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -105,23 +113,13 @@
             android:enabled="false"
         />
     </RadioGroup>
-
-<!--
-    <TextView android:id="@+id/android:empty"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:padding="10dip"
-        android:textColor="?android:attr/textColorPrimary"
-        android:text="@string/no_departures_for_transport_type"
-        android:textSize="16dip"
-        />
- -->
-    <include layout="@layout/progress_bar" android:id="@id/android:empty" />
 	<ListView
+	    android:layout_below="@id/transport_group"
+	    android:layout_above="@id/ad_holder"
 	    style="@style/AppListView"
 	    android:id="@+id/android:list"
 	    android:layout_width="fill_parent" 
 	    android:layout_height="fill_parent"
         />
-    
-</LinearLayout>
+    <include layout="@layout/progress_bar" android:id="@id/android:empty" />
+</RelativeLayout>
