@@ -95,7 +95,9 @@ public class RouteDetailActivity extends BaseListActivity {
         mActionBar = initActionBar(R.menu.actionbar_route_detail);
 
         mAdView = (AdView) findViewById(R.id.ad_view);
-        mAdView.loadAd(AdRequestFactory.createRequest());
+        if (AppConfig.ADS_ENABLED) {
+            mAdView.loadAd(AdRequestFactory.createRequest());
+        }
 
         View headerView = getLayoutInflater().inflate(R.layout.route_header, null);
         TextView startPointView = (TextView) headerView.findViewById(R.id.route_from);

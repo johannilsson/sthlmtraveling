@@ -211,7 +211,9 @@ public class RoutesActivity extends BaseListActivity
 
         mActionBar = initActionBar(R.menu.actionbar_routes);
         mAdView = (AdView) findViewById(R.id.ad_view);
-        mAdView.loadAd(AdRequestFactory.createRequest());
+        if (AppConfig.ADS_ENABLED) { 
+            mAdView.loadAd(AdRequestFactory.createRequest());
+        }
         
 
         View headerView = getLayoutInflater().inflate(R.layout.route_header, null);

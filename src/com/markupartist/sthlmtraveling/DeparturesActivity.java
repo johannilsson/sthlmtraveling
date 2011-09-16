@@ -114,7 +114,9 @@ public class DeparturesActivity extends BaseListActivity {
         mActionBar.setTitle(R.string.departures);
 
         mAdView = (AdView) findViewById(R.id.ad_view);
-        mAdView.loadAd(AdRequestFactory.createRequest());
+        if (AppConfig.ADS_ENABLED) {
+            mAdView.loadAd(AdRequestFactory.createRequest());
+        }
     }
 
     @Override
