@@ -35,31 +35,11 @@ public class SitesStore {
     }
 
     public ArrayList<Site> getSite(String name) throws IOException {
-        /*
-        ArrayList<Site> sites = new ArrayList<Site>();
-
-        final HttpGet get = new HttpGet(apiEndpoint() + "/sites/"
-                + "?q=" + URLEncoder.encode(name)
-                + "&key=" + get(KEY));
-
-        HttpEntity entity = null;
-        final HttpResponse response = HttpManager.execute(get);
-
-        if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
-            throw new IOException("A remote server error occurred when getting sites.");
-        }
-
-        entity = response.getEntity();
-        SiteParser.parseResponse(entity.getContent(), sites);
-        */
-
-        ArrayList<Site> sites = getSiteV2(name);
-
-        return sites;
+        return getSiteV2(name);
     }
 
     public ArrayList<Site> getSiteV2(String name) throws IOException {
-        final HttpGet get = new HttpGet(apiEndpoint() + "/site/"
+        final HttpGet get = new HttpGet(apiEndpoint() + "/semistatic/site/"
                 + "?q=" + URLEncoder.encode(name)
                 + "&key=" + get(KEY));
 
@@ -74,7 +54,11 @@ public class SitesStore {
         String rawContent = StreamUtils.toString(entity.getContent());
         ArrayList<Site> sites = new ArrayList<Site>();
         try {
-            JSONArray jsonSites = new JSONArray(rawContent);
+            JSONObject jsonResponse = new JSONObject(rawContent);
+            if (!jsonResponse.has("sites")) {
+                throw new IOException("Invalid input.");
+            }
+            JSONArray jsonSites = jsonResponse.getJSONArray("sites");
             for (int i = 0; i < jsonSites.length(); i++) {
                 try {
                     sites.add(Site.fromJson(jsonSites.getJSONObject(i)));
@@ -91,10 +75,10 @@ public class SitesStore {
 
     public ArrayList<Site> nearby(Location location) throws IOException {
         final HttpGet get = new HttpGet(apiEndpoint() + "/site/"
-                + "?lat=" + location.getLatitude()
-                + "&lon=" + location.getLongitude()
-                + "&maxDistance=500"
-                + "&maxResults=20"
+                + "?latitude=" + location.getLatitude()
+                + "&longitude=" + location.getLongitude()
+                + "&max_distance=0.5"
+                + "&max_results=20"
                 + "&key=" + get(KEY));
 
         HttpEntity entity = null;

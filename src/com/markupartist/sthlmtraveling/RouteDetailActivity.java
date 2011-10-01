@@ -410,8 +410,8 @@ public class RouteDetailActivity extends BaseListActivity {
 
     private Intent createViewOnMapIntent(Planner.Location location) {
         Location l = new Location("sthlmtraveling");
-        l.setLatitude(location.latitude / 1E6);
-        l.setLongitude(location.longitude / 1E6);
+        l.setLatitude(location.latitude);
+        l.setLongitude(location.longitude);
 
         Intent intent = new Intent(this, ViewOnMapActivity.class);
         intent.putExtra(ViewOnMapActivity.EXTRA_LOCATION, l);

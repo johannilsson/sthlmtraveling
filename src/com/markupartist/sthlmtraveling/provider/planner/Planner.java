@@ -21,21 +21,30 @@ import static com.markupartist.sthlmtraveling.provider.ApiConf.apiEndpoint;
 import static com.markupartist.sthlmtraveling.provider.ApiConf.get;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.utils.URIUtils;
+import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
@@ -122,40 +131,60 @@ public class Planner {
     }
 
     public Response findPreviousJourney(JourneyQuery query) throws IOException, BadResponse {
-        try {
-            JSONObject json = query.toJson();
-            json.put("isPreviousQuery", true);
-            return doQuery(json);
-        } catch (JSONException e) {
-            throw new IOException(e.getMessage());
-        }
+        return doQuery(query, 2);
     }
 
     public Response findNextJourney(JourneyQuery query) throws IOException, BadResponse {
-        try {
-            JSONObject json = query.toJson();
-            json.put("isNextQuery", true);
-            return doQuery(json);
-        } catch (JSONException e) {
-            throw new IOException(e.getMessage());
-        }
+        return doQuery(query, 1);
     }
 
     public Response findJourney(JourneyQuery query) throws IOException, BadResponse {
-        try {
-            return doQuery(query.toJson());
-        } catch (JSONException e) {
-            throw new IOException(e.getMessage());
-        }
+        return doQuery(query, -1);
     }
 
-    private Response doQuery(JSONObject jsonQuery) throws IOException, BadResponse {
-        final HttpPost post = new HttpPost(apiEndpoint()
-                + "/journeyplanner/?key=" + get(KEY));
+    private Response doQuery(JourneyQuery query, int scrollDirection) throws IOException, BadResponse {
 
-        post.setEntity(new StringEntity(jsonQuery.toString()));
+        Uri u = Uri.parse(apiEndpoint());
+        Uri.Builder b = u.buildUpon();
+        b.appendEncodedPath("journey/v1/");
 
-        final HttpResponse response = HttpManager.execute(post);
+        if (scrollDirection > -1) {
+            b.appendQueryParameter("dir", String.valueOf(scrollDirection));
+            b.appendQueryParameter("ident", query.ident);
+            b.appendQueryParameter("seq", query.seqnr);
+        } else {
+            b.appendQueryParameter("origin", query.origin.name);
+            if (query.origin.hasLocation()) {
+                b.appendQueryParameter("origin_latitude", String.valueOf(query.origin.latitude));
+                b.appendQueryParameter("origin_longitude", String.valueOf(query.origin.longitude));
+            }
+            b.appendQueryParameter("destination", query.destination.name);
+            if (query.destination.hasLocation()) {
+                b.appendQueryParameter("destination_latitude", String.valueOf(query.destination.latitude));
+                b.appendQueryParameter("destination_longitude", String.valueOf(query.destination.longitude));
+            }
+            for (String transportMode : query.transportModes) {
+                b.appendQueryParameter("transport", transportMode);
+            }
+            if (query.time != null) {
+                b.appendQueryParameter("date", query.time.format("%d.%m.%Y"));
+                b.appendQueryParameter("time", query.time.format("%H:%M"));
+            }
+            if (!query.isTimeDeparture) {
+                b.appendQueryParameter("arrival", "1");
+            }
+            if (query.hasVia()) {
+                b.appendQueryParameter("via", query.via.name);
+            }
+            if (query.alternativeStops) {
+                b.appendQueryParameter("alternative", "1");
+            }
+        }
+
+        u = b.build();
+
+        final HttpGet get = new HttpGet(u.toString());
+        final HttpResponse response = HttpManager.execute(get);
 
         HttpEntity entity;
         Response r = null;
@@ -166,7 +195,14 @@ public class Planner {
             entity = response.getEntity();
             rawContent = StreamUtils.toString(entity.getContent());
             try {
-                r = Response.fromJson(new JSONObject(rawContent));
+                JSONObject baseResponse = new JSONObject(rawContent);
+                if (baseResponse.has("journey")) {
+                    r = Response.fromJson(baseResponse.getJSONObject("journey"));
+                } else {
+                    Log.w(TAG, "Invalid response");
+                    // TODO: Parse errors.
+                }
+                
             } catch (JSONException e) {
                 Log.d(TAG, "Could not parse the reponse...");
                 throw new IOException("Could not parse the response.");
@@ -220,7 +256,7 @@ public class Planner {
             return br;
         }
     }
-
+    
     public static class Response implements Parcelable {
         // TODO: Parse out the ident.
         public String ident;
@@ -371,9 +407,9 @@ public class Planner {
             //parseLocation(json.getJSONObject("origin"));
 
             Trip2 trip = new Trip2();
-            trip.departureDate = json.getString("departureDate");
+            trip.departureDate = json.getString("departure_date");
 
-            JSONArray jsonSubTrips = json.getJSONArray("subTrips");
+            JSONArray jsonSubTrips = json.getJSONArray("sub_trips");
             for (int i = 0; i < jsonSubTrips.length(); i++) {
                 try {
                     trip.subTrips.add(SubTrip.fromJson(jsonSubTrips.getJSONObject(i)));
@@ -383,24 +419,24 @@ public class Planner {
                 }
             }
 
-            trip.arrivalDate = json.getString("arrivalDate");
-            trip.arrivalTime = json.getString("arrivalTime");
+            trip.arrivalDate = json.getString("arrival_date");
+            trip.arrivalTime = json.getString("arrival_time");
             trip.changes = json.getInt("changes");
             trip.co2 = json.getString("co2");
-            trip.departureDate = json.getString("departureDate");
-            trip.departureTime = json.getString("departureTime");
+            trip.departureDate = json.getString("departure_date");
+            trip.departureTime = json.getString("departure_time");
             trip.destination = Location.fromJson(json.getJSONObject("destination"));
             trip.duration = json.getString("duration");
-            trip.mt6MessageExist = json.getBoolean("mt6MessageExist");
+            trip.mt6MessageExist = json.getBoolean("mt6_messages_exist");
             trip.origin = Location.fromJson(json.getJSONObject("origin"));
             if (json.has("tariffZones")) {
-                trip.tariffZones = json.getString("tariffZones");
+                trip.tariffZones = json.getString("tariff_zones");
             }
             if (json.has("tariffRemark")) {
-                trip.tariffRemark = json.getString("tariffRemark");
+                trip.tariffRemark = json.getString("tariff_remark");
             }
-            trip.remarksMessageExist = json.getBoolean("remarksMessageExist");
-            trip.rtuMessageExist = json.getBoolean("rtuMessageExist");
+            trip.remarksMessageExist = json.getBoolean("remark_messages_exist");
+            trip.rtuMessageExist = json.getBoolean("rtu_messages_exist");
 
             return trip;
         }
@@ -516,20 +552,20 @@ public class Planner {
 
             st.origin = Location.fromJson(json.getJSONObject("origin"));
             st.destination = Location.fromJson(json.getJSONObject("destination"));
-            st.departureDate = json.getString("departureDate");
-            st.departureTime = json.getString("departureTime");
-            st.arrivalDate = json.getString("arrivalDate");
-            st.arrivalTime = json.getString("arrivalTime");
+            st.departureDate = json.getString("departure_date");
+            st.departureTime = json.getString("departure_time");
+            st.arrivalDate = json.getString("arrival_date");
+            st.arrivalTime = json.getString("arrival_time");
             st.transport = TransportType.fromJson(json.getJSONObject("transport"));
 
             if (json.has("remarks")) {
                 fromJsonArray(json.getJSONArray("remarks"), st.remarks);
             }
             if (json.has("rtuMessages")) {
-                fromJsonArray(json.getJSONArray("rtuMessages"), st.rtuMessages);
+                fromJsonArray(json.getJSONArray("rtu_messages"), st.rtuMessages);
             }
             if (json.has("mt6Messages")) {
-                fromJsonArray(json.getJSONArray("mt6Messages"), st.mt6Messages);
+                fromJsonArray(json.getJSONArray("mt6_messages"), st.mt6Messages);
             }
 
             return st;
@@ -571,8 +607,8 @@ public class Planner {
         public static String TYPE_MY_LOCATION = "MY_LOCATION";
         public int id = 0;
         public String name;
-        public int latitude;
-        public int longitude;
+        public double latitude;
+        public double longitude;
 
         public Location() {}
 
@@ -586,8 +622,8 @@ public class Planner {
         public Location(Parcel parcel) {
             id = parcel.readInt();
             name = parcel.readString();
-            latitude = parcel.readInt();
-            longitude = parcel.readInt();
+            latitude = parcel.readDouble();
+            longitude = parcel.readDouble();
         }
 
         public boolean isMyLocation() {
@@ -600,10 +636,10 @@ public class Planner {
 
         public static Location fromJson(JSONObject json) throws JSONException {
             Location l = new Location();
-            l.id = json.getInt("id");
+            //l.id = json.getInt("id");
             l.name = json.getString("name");
-            l.longitude = json.getInt("longitude");
-            l.latitude = json.getInt("latitude");
+            l.longitude = json.getDouble("longitude");
+            l.latitude = json.getDouble("latitude");
             return l;
         }
 
@@ -627,8 +663,8 @@ public class Planner {
         public void writeToParcel(Parcel dest, int flags) {
             dest.writeInt(id);
             dest.writeString(name);
-            dest.writeInt(latitude);
-            dest.writeInt(longitude);
+            dest.writeDouble(latitude);
+            dest.writeDouble(longitude);
         }
 
         public static final Creator<Location> CREATOR = new Creator<Location>() {
