@@ -17,7 +17,7 @@
 package com.markupartist.sthlmtraveling.provider.planner;
 
 import static com.markupartist.sthlmtraveling.provider.ApiConf.KEY;
-import static com.markupartist.sthlmtraveling.provider.ApiConf.apiEndpoint;
+import static com.markupartist.sthlmtraveling.provider.ApiConf.apiEndpoint2;
 import static com.markupartist.sthlmtraveling.provider.ApiConf.get;
 
 import java.io.IOException;
@@ -51,6 +51,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.markupartist.sthlmtraveling.R;
+import com.markupartist.sthlmtraveling.provider.ApiConf;
 import com.markupartist.sthlmtraveling.provider.site.Site;
 import com.markupartist.sthlmtraveling.provider.site.SitesStore;
 import com.markupartist.sthlmtraveling.utils.HttpManager;
@@ -144,10 +145,9 @@ public class Planner {
 
     private Response doQuery(JourneyQuery query, int scrollDirection) throws IOException, BadResponse {
 
-        Uri u = Uri.parse(apiEndpoint());
+        Uri u = Uri.parse(apiEndpoint2());
         Uri.Builder b = u.buildUpon();
         b.appendEncodedPath("journey/v1/");
-
         if (scrollDirection > -1) {
             b.appendQueryParameter("dir", String.valueOf(scrollDirection));
             b.appendQueryParameter("ident", query.ident);
@@ -184,6 +184,7 @@ public class Planner {
         u = b.build();
 
         final HttpGet get = new HttpGet(u.toString());
+        get.addHeader("X-STHLMTraveling-API-Key", get(KEY));
         final HttpResponse response = HttpManager.execute(get);
 
         HttpEntity entity;
