@@ -59,6 +59,10 @@ application and the tests application deployed before.
 
 Changelog
 ---------
+* 2.3.6
+    * Removed ads
+* 2.3.5
+    * Added ads
 * 2.3.4
     * New SMS prices
     * Fixed issue with SMS now showing
