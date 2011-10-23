@@ -21,25 +21,16 @@ import static com.markupartist.sthlmtraveling.provider.ApiConf.apiEndpoint2;
 import static com.markupartist.sthlmtraveling.provider.ApiConf.get;
 
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
-import org.apache.http.NameValuePair;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.utils.URIUtils;
-import org.apache.http.client.utils.URLEncodedUtils;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -51,7 +42,6 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.markupartist.sthlmtraveling.R;
-import com.markupartist.sthlmtraveling.provider.ApiConf;
 import com.markupartist.sthlmtraveling.provider.site.Site;
 import com.markupartist.sthlmtraveling.provider.site.SitesStore;
 import com.markupartist.sthlmtraveling.utils.HttpManager;
@@ -155,13 +145,13 @@ public class Planner {
         } else {
             b.appendQueryParameter("origin", query.origin.name);
             if (query.origin.hasLocation()) {
-                b.appendQueryParameter("origin_latitude", String.valueOf(query.origin.latitude));
-                b.appendQueryParameter("origin_longitude", String.valueOf(query.origin.longitude));
+                b.appendQueryParameter("origin_latitude", String.valueOf(query.origin.latitude / 1E6));
+                b.appendQueryParameter("origin_longitude", String.valueOf(query.origin.longitude / 1E6));
             }
             b.appendQueryParameter("destination", query.destination.name);
             if (query.destination.hasLocation()) {
-                b.appendQueryParameter("destination_latitude", String.valueOf(query.destination.latitude));
-                b.appendQueryParameter("destination_longitude", String.valueOf(query.destination.longitude));
+                b.appendQueryParameter("destination_latitude", String.valueOf(query.destination.latitude / 1E6));
+                b.appendQueryParameter("destination_longitude", String.valueOf(query.destination.longitude / 1E6));
             }
             for (String transportMode : query.transportModes) {
                 b.appendQueryParameter("transport", transportMode);
@@ -608,8 +598,8 @@ public class Planner {
         public static String TYPE_MY_LOCATION = "MY_LOCATION";
         public int id = 0;
         public String name;
-        public double latitude;
-        public double longitude;
+        public int latitude;
+        public int longitude;
 
         public Location() {}
 
@@ -623,8 +613,8 @@ public class Planner {
         public Location(Parcel parcel) {
             id = parcel.readInt();
             name = parcel.readString();
-            latitude = parcel.readDouble();
-            longitude = parcel.readDouble();
+            latitude = parcel.readInt();
+            longitude = parcel.readInt();
         }
 
         public boolean isMyLocation() {
@@ -639,8 +629,8 @@ public class Planner {
             Location l = new Location();
             //l.id = json.getInt("id");
             l.name = json.getString("name");
-            l.longitude = json.getDouble("longitude");
-            l.latitude = json.getDouble("latitude");
+            l.longitude = (int) (json.getDouble("longitude") * 1E6);
+            l.latitude = (int) (json.getDouble("latitude") * 1E6);
             return l;
         }
 
@@ -664,8 +654,8 @@ public class Planner {
         public void writeToParcel(Parcel dest, int flags) {
             dest.writeInt(id);
             dest.writeString(name);
-            dest.writeDouble(latitude);
-            dest.writeDouble(longitude);
+            dest.writeInt(latitude);
+            dest.writeInt(longitude);
         }
 
         public static final Creator<Location> CREATOR = new Creator<Location>() {
