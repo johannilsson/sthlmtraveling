@@ -34,13 +34,16 @@ import android.content.res.Configuration;
 import android.database.Cursor;
 import android.location.Location;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -52,6 +55,7 @@ import com.google.ads.AdView;
 import com.markupartist.android.widget.ActionBar;
 import com.markupartist.android.widget.actionbar.R;
 import com.markupartist.sthlmtraveling.provider.JourneysProvider.Journey.Journeys;
+import com.markupartist.sthlmtraveling.provider.avvikelse.Avvikelse;
 import com.markupartist.sthlmtraveling.provider.planner.JourneyQuery;
 import com.markupartist.sthlmtraveling.provider.planner.Planner;
 import com.markupartist.sthlmtraveling.provider.planner.Route;
@@ -69,6 +73,8 @@ public class RouteDetailActivity extends BaseListActivity {
         "sthlmtraveling.intent.action.JOURNEY_QUERY";
 
     private static final int DIALOG_BUY_SMS_TICKET = 1;
+
+    private static final int DIALOG_REPORT_DEVIATION = 2;
 
     private Trip2 mTrip;
     private JourneyQuery mJourneyQuery;
@@ -348,6 +354,16 @@ public class RouteDetailActivity extends BaseListActivity {
                         }
                     }
                 }).create();
+        case DIALOG_REPORT_DEVIATION:
+            /*
+            return new AlertDialog.Builder(this)
+            .setIcon(android.R.drawable.ic_dialog_alert)
+            .setTitle("Report Deviation")
+            .setMessage(activity.getText(R.string.network_problem_message))
+            .setPositiveButton(activity.getText(R.string.retry), onClickListener)
+            .setNegativeButton(activity.getText(android.R.string.cancel), null)
+            .create();
+            */
         }
         return null;
     }
@@ -420,9 +436,57 @@ public class RouteDetailActivity extends BaseListActivity {
         return intent;
     }
 
+    private class ReportDeviationTask extends AsyncTask<SubTrip, Void, Void> {
+
+        @Override
+        protected Void doInBackground(SubTrip... params) {
+            new Avvikelse(params[0]).report(params[0]);
+            return null;
+        }
+    }
+
+    private class GetDeviationStatusTask extends AsyncTask<SubTrip, Void, Integer> {
+        private Button mButton;
+        public GetDeviationStatusTask(Button deviationButton) {
+            mButton = deviationButton;
+        }
+
+        @Override
+        protected Integer doInBackground(SubTrip... params) {
+            return new Avvikelse(params[0]).status(params[0]);
+        }
+
+        @Override
+        protected void onPostExecute(Integer affects) {
+            Log.d(TAG, "Got affects " + affects);
+            mButton.setText(String.format("Report deviations (%s)", affects));
+        }
+        
+        
+    }
+
+    
     private class SubTripAdapter extends ArrayAdapter<SubTrip> {
 
         private LayoutInflater mInflater;
+        private OnClickListener reportDeviationListener = new OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                Object tag = v.getTag();
+                if (tag instanceof SubTrip) {
+                    SubTrip subTrip = (SubTrip) tag;
+                    Log.d(TAG, subTrip.toString());
+                    
+                    
+                    
+                    new ReportDeviationTask().execute(subTrip);
+                    Toast.makeText(RouteDetailActivity.this, "Thank you", Toast.LENGTH_SHORT).show();
+                } else {
+                    Log.w(TAG, "Unknown...");
+                }
+            }
+        };
 
         public SubTripAdapter(Context context, List<SubTrip> objects) {
             super(context, R.layout.route_details_row, objects);
@@ -438,6 +502,11 @@ public class RouteDetailActivity extends BaseListActivity {
             convertView = mInflater.inflate(R.layout.route_details_row, null);
             ImageView transportImage = (ImageView) convertView.findViewById(R.id.routes_row_transport);
             TextView descriptionView = (TextView) convertView.findViewById(R.id.routes_row);
+            Button deviationButton = (Button) convertView.findViewById(R.id.report_deviation);
+            deviationButton.setTag(subTrip);
+            deviationButton.setOnClickListener(reportDeviationListener);
+
+            new GetDeviationStatusTask(deviationButton).execute(subTrip);
 
             transportImage.setImageResource(subTrip.transport.getImageResource());
             

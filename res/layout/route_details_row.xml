@@ -53,6 +53,23 @@
 	    android:textSize="16dip"
 	    />
     </LinearLayout>
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="30dip"
+        >
+	    <Button
+	        android:id="@+id/report_deviation"
+	        android:layout_weight="1"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="Report deviation"
+	        android:background="@drawable/deviation_report_background"
+	        android:textColor="#949494"
+	        android:padding="3dip"
+	        />
+    </LinearLayout>
 	<LinearLayout
 	    android:id="@+id/routes_messages"
 	    android:orientation="vertical"
