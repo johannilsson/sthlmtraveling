@@ -421,9 +421,8 @@ public class PlannerActivity extends BaseListActivity implements
             (AutoCompleteTextView) mSearchView.findViewById(autoCompleteResId);
         final ProgressBar progress =
             (ProgressBar) mSearchView.findViewById(progressResId);
-
         final AutoCompleteStopAdapter stopAdapter =
-            new AutoCompleteStopAdapter(this, R.layout.simple_dropdown_item_1line,
+            new AutoCompleteStopAdapter(this, R.layout.autocomplete_item_2line,
                     Planner.getInstance(), includeAddresses);
 
         stopAdapter.setFilterListener(new FilterListener() {
@@ -466,6 +465,7 @@ public class PlannerActivity extends BaseListActivity implements
         });
 
         /*
+         * OLD
         autoCompleteTextView.setOnTouchListener(new OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
