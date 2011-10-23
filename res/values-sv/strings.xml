@@ -53,7 +53,7 @@
     <string name="no_location_title">Lokaliseringsproblem</string>
     <string name="no_location_message">Misslyckades med att fastställa din position.</string>
     <string name="network_problem_label">Problem med nätverket</string>
-    <string name="network_problem_message">Ett nätverksfel inträffade eller anslutningen till SL kunde upprättas.</string>
+    <string name="network_problem_message">Ett nätverksfel inträffade eller anslutningen till SL kunde inte upprättas.</string>
     <string name="activity_create_shortcut">Resvägar</string>
     <string name="activity_create_departure_shortcut">Avgångar</string>
     <string name="name_of_shortcut">Namn på genväg</string>
