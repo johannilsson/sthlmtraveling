@@ -60,7 +60,26 @@
 	    android:layout_height="wrap_content"
 	    android:layout_marginLeft="20dip"
 	    android:paddingTop="2dip"
-	    >   
-    </LinearLayout>
+	    />
+    <ToggleButton
+	    android:id="@+id/show_hide_intermediate_stops"
+        android:visibility="gone"
+        android:checked="false"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawableLeft="@drawable/expander_intermediate_stops"
+        android:textOn="Hide intermediate stops"
+        android:textOff="Show intermediate stops"
+        android:background="@null"
+        android:layout_margin="0dp"
+        android:padding="0dp"
+        />
+    <LinearLayout
+        android:id="@+id/intermediate_stops"
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        />
 </LinearLayout>
 

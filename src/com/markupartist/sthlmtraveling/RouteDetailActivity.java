@@ -41,12 +41,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 
 import com.google.ads.AdView;
 import com.markupartist.android.widget.ActionBar;
@@ -55,6 +58,7 @@ import com.markupartist.sthlmtraveling.provider.JourneysProvider.Journey.Journey
 import com.markupartist.sthlmtraveling.provider.planner.JourneyQuery;
 import com.markupartist.sthlmtraveling.provider.planner.Planner;
 import com.markupartist.sthlmtraveling.provider.planner.Route;
+import com.markupartist.sthlmtraveling.provider.planner.Planner.IntermediateStop;
 import com.markupartist.sthlmtraveling.provider.planner.Planner.SubTrip;
 import com.markupartist.sthlmtraveling.provider.planner.Planner.Trip2;
 import com.markupartist.sthlmtraveling.utils.AdRequestFactory;
@@ -479,8 +483,43 @@ public class RouteDetailActivity extends BaseListActivity {
                                     messagesLayout, position));
                 }
             }
-            
+
+            final LinearLayout intermediateStopLayout =
+                (LinearLayout) convertView.findViewById(R.id.intermediate_stops);
+            ToggleButton showHideIntermediateStops =
+                (ToggleButton) convertView.findViewById(
+                        R.id.show_hide_intermediate_stops);
+            showHideIntermediateStops.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if (isChecked) {
+                        intermediateStopLayout.setVisibility(View.VISIBLE);
+                    } else {
+                        intermediateStopLayout.setVisibility(View.GONE);
+                    }
+                }
+            });
+            if (!subTrip.intermediateStop.isEmpty()) {
+                showHideIntermediateStops.setVisibility(View.VISIBLE);
+                for (IntermediateStop is : subTrip.intermediateStop) {
+                    intermediateStopLayout.addView(
+                            inflateIntermediateStop(is, intermediateStopLayout));
+                }
+            } else {
+                showHideIntermediateStops.setVisibility(View.GONE);
+            }
+
             return convertView;
+        }
+
+        private View inflateIntermediateStop(IntermediateStop stop,
+                ViewGroup layout) {
+            View view = mInflater.inflate(R.layout.intermediate_stop, layout, false);
+            TextView descView =
+                (TextView) view.findViewById(R.id.intermediate_stop_description);
+            descView.setText(String.format("%s %s",
+                    stop.arrivalTime, stop.location.name));
+            return view;
         }
 
         private View inflateMessage(String messageType, String message,

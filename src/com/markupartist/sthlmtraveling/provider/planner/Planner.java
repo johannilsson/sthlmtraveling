@@ -171,6 +171,9 @@ public class Planner {
             }
         }
 
+        // Include intermediate stops.
+        b.appendQueryParameter("intermediate_stops", "1");
+
         u = b.build();
 
         final HttpGet get = new HttpGet(u.toString());
@@ -488,6 +491,63 @@ public class Planner {
         };
     }
 
+    /**
+     * Representation of a intermediate stop.
+     */
+    public static class IntermediateStop implements Parcelable {
+
+        public String arrivalDate;
+        public String arrivalTime;
+        public Location location;
+
+        public IntermediateStop(Parcel parcel) {
+            arrivalDate = parcel.readString();
+            arrivalTime = parcel.readString();
+            location = parcel.readParcelable(Location.class.getClassLoader());
+        }
+
+        public IntermediateStop() {
+        }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeString(arrivalDate);
+            dest.writeString(arrivalTime);
+            dest.writeParcelable(location, 0);
+        }
+
+        public static IntermediateStop fromJson(JSONObject json)
+                throws JSONException {
+            IntermediateStop is = new IntermediateStop();
+            is.arrivalDate = json.getString("arrival_date");
+            is.arrivalTime = json.getString("arrival_time");
+            is.location = Location.fromJson(json.getJSONObject("location"));
+            return is;
+        }
+
+        @Override
+        public String toString() {
+            return "IntermediateStop [arrivalDate=" + arrivalDate
+                    + ", arrivalTime=" + arrivalTime + ", location=" + location
+                    + "]";
+        }
+
+        public static final Creator<IntermediateStop> CREATOR = new Creator<IntermediateStop>() {
+            public IntermediateStop createFromParcel(Parcel parcel) {
+                return new IntermediateStop(parcel);
+            }
+
+            public IntermediateStop[] newArray(int size) {
+                return new IntermediateStop[size];
+            }
+        };
+    }
+
     public static class SubTrip implements Parcelable {
         public Location origin;
         public Location destination;
@@ -499,6 +559,9 @@ public class Planner {
         public ArrayList<String> remarks = new ArrayList<String>();
         public ArrayList<String> rtuMessages = new ArrayList<String>();
         public ArrayList<String> mt6Messages = new ArrayList<String>();
+        public String reference;
+        public ArrayList<IntermediateStop> intermediateStop =
+            new ArrayList<IntermediateStop>();
 
         public SubTrip() {}
 
@@ -516,11 +579,13 @@ public class Planner {
             parcel.readStringList(rtuMessages);
             mt6Messages = new ArrayList<String>();
             parcel.readStringList(mt6Messages);
+            reference = parcel.readString();
+            intermediateStop = new ArrayList<IntermediateStop>();
+            parcel.readList(intermediateStop, Location.class.getClassLoader());
         }
 
         @Override
         public int describeContents() {
-            // TODO Auto-generated method stub
             return 0;
         }
 
@@ -536,6 +601,8 @@ public class Planner {
             dest.writeStringList(remarks);
             dest.writeStringList(rtuMessages);
             dest.writeStringList(mt6Messages);
+            dest.writeString(reference);
+            dest.writeList(intermediateStop);
         }
 
         public static SubTrip fromJson(JSONObject json) throws JSONException {
@@ -549,14 +616,22 @@ public class Planner {
             st.arrivalTime = json.getString("arrival_time");
             st.transport = TransportType.fromJson(json.getJSONObject("transport"));
 
-            if (json.has("remarks")) {
-                fromJsonArray(json.getJSONArray("remarks"), st.remarks);
+            if (json.has("remark_messages")) {
+                fromJsonArray(json.getJSONArray("remark_messages"), st.remarks);
             }
-            if (json.has("rtuMessages")) {
+            if (json.has("rtu_messages")) {
                 fromJsonArray(json.getJSONArray("rtu_messages"), st.rtuMessages);
             }
-            if (json.has("mt6Messages")) {
+            if (json.has("mt6_messages")) {
                 fromJsonArray(json.getJSONArray("mt6_messages"), st.mt6Messages);
+            }
+            st.reference = json.getString("reference");
+            if (json.has("intermediate_stops") && !json.isNull("intermediate_stops")) {
+                JSONArray intermediateStopJsonArray = json.getJSONArray("intermediate_stops");
+                for (int i = 0; i < intermediateStopJsonArray.length(); i++) {
+                    st.intermediateStop.add(IntermediateStop.fromJson(
+                            intermediateStopJsonArray.getJSONObject(i)));
+                }
             }
 
             return st;
@@ -574,13 +649,12 @@ public class Planner {
             return "SubTrip [arrivalDate=" + arrivalDate + ", arrivalTime="
                     + arrivalTime + ", departureDate=" + departureDate
                     + ", departureTime=" + departureTime + ", destination="
-                    + destination + ", mt6Messages=" + mt6Messages
-                    + ", origin=" + origin + ", remarks=" + remarks
+                    + destination + ", intermediateStop=" + intermediateStop
+                    + ", mt6Messages=" + mt6Messages + ", origin=" + origin
+                    + ", reference=" + reference + ", remarks=" + remarks
                     + ", rtuMessages=" + rtuMessages + ", transport="
                     + transport + "]";
         }
-
-
 
         public static final Creator<SubTrip> CREATOR = new Creator<SubTrip>() {
             public SubTrip createFromParcel(Parcel parcel) {
