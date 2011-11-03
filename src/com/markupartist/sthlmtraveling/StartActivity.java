@@ -18,10 +18,13 @@ package com.markupartist.sthlmtraveling;
 
 import android.app.TabActivity;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TabHost;
+import android.widget.TextView;
 
+import com.markupartist.android.widget.ActionBar;
 import com.markupartist.sthlmtraveling.service.DeviationService;
 import com.markupartist.sthlmtraveling.utils.ErrorReporter;
 
@@ -30,38 +33,63 @@ public class StartActivity extends TabActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        setContentView(R.layout.start);
+
+        ActionBar ab = (ActionBar) findViewById(R.id.actionbar);
+        ab.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+        ab.setDisplayShowHomeEnabled(true);
+        ab.setDisplayUseLogoEnabled(true);
+        ab.setHomeLogo(R.drawable.logo);
+        ab.setTitle(R.string.app_name);
+
         final ErrorReporter reporter = ErrorReporter.getInstance();
         reporter.checkErrorAndReport(this);
 
         final TabHost tabHost = getTabHost();
-        tabHost.setBackgroundColor(Color.WHITE);
-        tabHost.getTabWidget().setBackgroundColor(Color.BLACK);
+        tabHost.setup();
+        //tabHost.setBackgroundColor(Color.WHITE);
+        //tabHost.getTabWidget().setBackgroundColor(Color.BLACK);
 
         tabHost.addTab(tabHost.newTabSpec("search")
-               .setIndicator(getText(R.string.search_label), 
-                       getResources().getDrawable(R.drawable.tab_planner))
+               .setIndicator(buildIndicator(R.string.search_label)/*, 
+                       getResources().getDrawable(R.drawable.tab_planner)*/)
                .setContent(new Intent(this, PlannerActivity.class)
                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)));
 
         tabHost.addTab(tabHost.newTabSpec("favorites")
-                .setIndicator(getText(R.string.favorites_label), 
-                        getResources().getDrawable(R.drawable.tab_favorites))
+                .setIndicator(buildIndicator(R.string.favorites_label)/*,
+                        getResources().getDrawable(R.drawable.tab_favorites)*/)
                 .setContent(new Intent(this, FavoritesActivity.class)
                 .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)));
 
         tabHost.addTab(tabHost.newTabSpec("departures")
-                .setIndicator(getText(R.string.departures), 
-                        getResources().getDrawable(R.drawable.tab_departures))
+                .setIndicator(buildIndicator(R.string.departures)/*, 
+                        getResources().getDrawable(R.drawable.tab_departures)*/)
                 .setContent(new Intent(this, SearchDeparturesActivity.class)
                 .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)));
 
         tabHost.addTab(tabHost.newTabSpec("deviations")
-                .setIndicator(getText(R.string.deviations_label), 
-                        getResources().getDrawable(R.drawable.tab_deviations))
+                .setIndicator(buildIndicator(R.string.deviations_label)/*, 
+                        getResources().getDrawable(R.drawable.tab_deviations)*/)
                 .setContent(new Intent(this, TrafficStatusActivity.class)
                 .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)));
 
         // Start background service.
         DeviationService.startAsRepeating(getApplicationContext());
+    }
+    
+    /**
+     * Build a {@link View} to be used as a tab indicator, setting the requested string resource as
+     * its label.
+     *
+     * @param textRes
+     * @return View
+     */
+    private View buildIndicator(int textRes) {
+        final TextView indicator = (TextView) getLayoutInflater()
+                .inflate(R.layout.tab_indicator,
+                        (ViewGroup) findViewById(android.R.id.tabs), false);
+        indicator.setText(getString(textRes).toUpperCase());
+        return indicator;
     }
 }
