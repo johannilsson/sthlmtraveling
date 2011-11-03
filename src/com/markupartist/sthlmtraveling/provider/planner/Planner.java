@@ -172,7 +172,7 @@ public class Planner {
         }
 
         // Include intermediate stops.
-        b.appendQueryParameter("intermediate_stops", "1");
+        //b.appendQueryParameter("intermediate_stops", "1");
 
         u = b.build();
 
