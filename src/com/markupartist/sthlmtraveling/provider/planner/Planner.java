@@ -423,10 +423,10 @@ public class Planner {
             trip.duration = json.getString("duration");
             trip.mt6MessageExist = json.getBoolean("mt6_messages_exist");
             trip.origin = Location.fromJson(json.getJSONObject("origin"));
-            if (json.has("tariffZones")) {
+            if (json.has("tariff_zones")) {
                 trip.tariffZones = json.getString("tariff_zones");
             }
-            if (json.has("tariffRemark")) {
+            if (json.has("tariff_remark")) {
                 trip.tariffRemark = json.getString("tariff_remark");
             }
             trip.remarksMessageExist = json.getBoolean("remark_messages_exist");
