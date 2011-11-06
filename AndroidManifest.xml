@@ -45,7 +45,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity-alias>
-        <activity android:name=".FavoritesActivity"
+        <activity android:name=".FavoritesFragmentActivity"
                   android:label="@string/favorites_label"
                   android:configChanges="locale"></activity>
         <activity android:name=".RoutesActivity"

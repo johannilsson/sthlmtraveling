@@ -59,7 +59,7 @@ public class StartActivity extends TabActivity {
         tabHost.addTab(tabHost.newTabSpec("favorites")
                 .setIndicator(buildIndicator(R.string.favorites_label)/*,
                         getResources().getDrawable(R.drawable.tab_favorites)*/)
-                .setContent(new Intent(this, FavoritesActivity.class)
+                .setContent(new Intent(this, FavoritesFragmentActivity.class)
                 .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)));
 
         tabHost.addTab(tabHost.newTabSpec("departures")
