@@ -31,13 +31,13 @@
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </activity-alias>
-        <activity android:name=".PlannerActivity"
+        <activity android:name=".PlannerFragmentActivity"
                   android:label="@string/search_label"
                   android:configChanges="locale"></activity>
         <!-- Alias activity used to create shortcuts on Home. The alias is used
              simply to have a different label. -->
         <activity-alias android:name="SearchShortcutActivity"
-            android:targetActivity="PlannerActivity"
+            android:targetActivity="PlannerFragmentActivity"
             android:label="@string/activity_create_shortcut"
             android:configChanges="locale">
             <intent-filter>
