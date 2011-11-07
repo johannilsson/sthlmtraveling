@@ -70,8 +70,8 @@ public class StartActivity extends FragmentActivity {
                 FavoritesFragment.class, null);
         mTabsAdapter.addTab(mTabHost.newTabSpec("departures").setIndicator(buildIndicator(R.string.departures)),
                 SearchDeparturesFragment.class, null);
-//        mTabsAdapter.addTab(mTabHost.newTabSpec("throttle").setIndicator("Throttle"),
-//                LoaderThrottleSupport.ThrottledLoaderListFragment.class, null);
+        mTabsAdapter.addTab(mTabHost.newTabSpec("deviations").setIndicator(buildIndicator(R.string.deviations_label)),
+                TrafficStatusFragment.class, null);
 
         if (savedInstanceState != null) {
             mTabHost.setCurrentTabByTag(savedInstanceState.getString("tab"));
