@@ -76,6 +76,7 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.ScrollView;
 import android.widget.SimpleAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -173,6 +174,11 @@ public class PlannerFragment extends BaseListFragment implements
 
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
+		// TODO Reset list adapter to avoid IllegalStateException: Cannot add
+		// header view to list -- setAdapter has already been called. Better way?
+
+		setListAdapter(null);
+
 		mSearchView = getActivity().getLayoutInflater().inflate(
 				R.layout.search, null);
 		getListView().addHeaderView(mSearchView, null, false);
@@ -671,8 +677,10 @@ public class PlannerFragment extends BaseListFragment implements
 		// DialogFragment.show() will take care of adding the fragment
 		// in a transaction. We also want to remove any currently showing
 		// dialog, so make our own transaction and take care of that here.
-		FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-		Fragment prev = getActivity().getSupportFragmentManager().findFragmentByTag("dialog");
+		FragmentTransaction ft = getActivity().getSupportFragmentManager()
+				.beginTransaction();
+		Fragment prev = getActivity().getSupportFragmentManager()
+				.findFragmentByTag("dialog");
 		if (prev != null) {
 			ft.remove(prev);
 		}
@@ -702,127 +710,133 @@ public class PlannerFragment extends BaseListFragment implements
 			int id = getArguments().getInt("id");
 			Dialog dialog = null;
 			switch (id) {
-//			case DIALOG_START_POINT:
-//				AlertDialog.Builder startPointDialogBuilder = new AlertDialog.Builder(
-//						getActivity());
-//				startPointDialogBuilder
-//						.setTitle(getText(R.string.choose_start_point_label));
-//
-//				final Cursor historyOriginCursor = mHistoryDbAdapter
-//						.fetchLatest();
-//				getActivity().startManagingCursor(historyOriginCursor);
-//				final SelectPointAdapter startPointAdapter = new SelectPointAdapter(
-//						getActivity(), historyOriginCursor, false);
-//				getActivity().stopManagingCursor(historyOriginCursor);
-//				startPointDialogBuilder.setAdapter(startPointAdapter,
-//						new DialogInterface.OnClickListener() {
-//							@Override
-//							public void onClick(DialogInterface dialog,
-//									int which) {
-//								switch (which) {
-//								case 0:
-//									mStartPoint.setName(Stop.TYPE_MY_LOCATION);
-//									mStartPointAutoComplete
-//											.setText(getText(R.string.my_location));
-//									mStartPointAutoComplete.clearFocus();
-//									break;
-//								case 1:
-//									Intent i = new Intent(getActivity(),
-//											PointOnMapActivity.class);
-//									i.putExtra(PointOnMapActivity.EXTRA_STOP,
-//											mStartPoint);
-//									i.putExtra(
-//											PointOnMapActivity.EXTRA_HELP_TEXT,
-//											getString(R.string.tap_your_start_point_on_map));
-//									startActivityForResult(i,
-//											REQUEST_CODE_POINT_ON_MAP_START);
-//									break;
-//								default:
-//									Stop startPoint = (Stop) startPointAdapter
-//											.getItem(which);
-//									mStartPoint = new Stop(startPoint);
-//									mStartPointAutoComplete.setText(mStartPoint
-//											.getName());
-//									mStartPointAutoComplete.clearFocus();
-//								}
-//							}
-//						});
-//				dialog = startPointDialogBuilder.create();
-//				break;
-//			case DIALOG_END_POINT:
-//				AlertDialog.Builder endPointDialogBuilder = new AlertDialog.Builder(
-//						getActivity());
-//				endPointDialogBuilder
-//						.setTitle(getText(R.string.choose_end_point_label));
-//				final Cursor historyDestinationCursor = mHistoryDbAdapter
-//						.fetchLatest();
-//				getActivity().startManagingCursor(historyDestinationCursor);
-//				final SelectPointAdapter endPointAdapter = new SelectPointAdapter(
-//						getActivity(), historyDestinationCursor, false);
-//				getActivity().stopManagingCursor(historyDestinationCursor);
-//				endPointDialogBuilder.setAdapter(endPointAdapter,
-//						new DialogInterface.OnClickListener() {
-//							@Override
-//							public void onClick(DialogInterface dialog,
-//									int which) {
-//								switch (which) {
-//								case 0:
-//									mEndPoint.setName(Stop.TYPE_MY_LOCATION);
-//									mEndPointAutoComplete
-//											.setText(getText(R.string.my_location));
-//									mEndPointAutoComplete.clearFocus();
-//									break;
-//								case 1:
-//									Intent i = new Intent(getActivity(),
-//											PointOnMapActivity.class);
-//									i.putExtra(PointOnMapActivity.EXTRA_STOP,
-//											mEndPoint);
-//									i.putExtra(
-//											PointOnMapActivity.EXTRA_HELP_TEXT,
-//											getString(R.string.tap_your_end_point_on_map));
-//									startActivityForResult(i,
-//											REQUEST_CODE_POINT_ON_MAP_END);
-//									break;
-//								default:
-//									Stop endPoint = (Stop) endPointAdapter
-//											.getItem(which);
-//									mEndPoint = new Stop(endPoint);
-//									mEndPointAutoComplete.setText(mEndPoint
-//											.getName());
-//									mEndPointAutoComplete.clearFocus();
-//								}
-//							}
-//						});
-//				dialog = endPointDialogBuilder.create();
-//				break;
-//			case DIALOG_VIA_POINT:
-//				AlertDialog.Builder viaPointDialogBuilder = new AlertDialog.Builder(
-//						getActivity());
-//				viaPointDialogBuilder.setTitle(getText(R.string.via));
-//				final Cursor historyViaCursor = mHistoryDbAdapter
-//						.fetchAllViaPoints();
-//				getActivity().startManagingCursor(historyViaCursor);
-//				final SelectPointAdapter viaPointAdapter = new SelectPointAdapter(
-//						getActivity(), historyViaCursor, true);
-//				getActivity().stopManagingCursor(historyViaCursor);
-//				viaPointDialogBuilder.setAdapter(viaPointAdapter,
-//						new DialogInterface.OnClickListener() {
-//							@Override
-//							public void onClick(DialogInterface dialog,
-//									int which) {
-//								switch (which) {
-//								default:
-//									Stop viaPoint = (Stop) viaPointAdapter
-//											.getItem(which);
-//									mViaPoint = new Stop(viaPoint);
-//									mViaPointAutoComplete.setText(mViaPoint
-//											.getName());
-//									mViaPointAutoComplete.clearFocus();
-//								}
-//							}
-//						});
-//				dialog = viaPointDialogBuilder.create();
-//				break;
+			// case DIALOG_START_POINT:
+			// AlertDialog.Builder startPointDialogBuilder = new
+			// AlertDialog.Builder(
+			// getActivity());
+			// startPointDialogBuilder
+			// .setTitle(getText(R.string.choose_start_point_label));
+			//
+			// final Cursor historyOriginCursor = mHistoryDbAdapter
+			// .fetchLatest();
+			// getActivity().startManagingCursor(historyOriginCursor);
+			// final SelectPointAdapter startPointAdapter = new
+			// SelectPointAdapter(
+			// getActivity(), historyOriginCursor, false);
+			// getActivity().stopManagingCursor(historyOriginCursor);
+			// startPointDialogBuilder.setAdapter(startPointAdapter,
+			// new DialogInterface.OnClickListener() {
+			// @Override
+			// public void onClick(DialogInterface dialog,
+			// int which) {
+			// switch (which) {
+			// case 0:
+			// mStartPoint.setName(Stop.TYPE_MY_LOCATION);
+			// mStartPointAutoComplete
+			// .setText(getText(R.string.my_location));
+			// mStartPointAutoComplete.clearFocus();
+			// break;
+			// case 1:
+			// Intent i = new Intent(getActivity(),
+			// PointOnMapActivity.class);
+			// i.putExtra(PointOnMapActivity.EXTRA_STOP,
+			// mStartPoint);
+			// i.putExtra(
+			// PointOnMapActivity.EXTRA_HELP_TEXT,
+			// getString(R.string.tap_your_start_point_on_map));
+			// startActivityForResult(i,
+			// REQUEST_CODE_POINT_ON_MAP_START);
+			// break;
+			// default:
+			// Stop startPoint = (Stop) startPointAdapter
+			// .getItem(which);
+			// mStartPoint = new Stop(startPoint);
+			// mStartPointAutoComplete.setText(mStartPoint
+			// .getName());
+			// mStartPointAutoComplete.clearFocus();
+			// }
+			// }
+			// });
+			// dialog = startPointDialogBuilder.create();
+			// break;
+			// case DIALOG_END_POINT:
+			// AlertDialog.Builder endPointDialogBuilder = new
+			// AlertDialog.Builder(
+			// getActivity());
+			// endPointDialogBuilder
+			// .setTitle(getText(R.string.choose_end_point_label));
+			// final Cursor historyDestinationCursor = mHistoryDbAdapter
+			// .fetchLatest();
+			// getActivity().startManagingCursor(historyDestinationCursor);
+			// final SelectPointAdapter endPointAdapter = new
+			// SelectPointAdapter(
+			// getActivity(), historyDestinationCursor, false);
+			// getActivity().stopManagingCursor(historyDestinationCursor);
+			// endPointDialogBuilder.setAdapter(endPointAdapter,
+			// new DialogInterface.OnClickListener() {
+			// @Override
+			// public void onClick(DialogInterface dialog,
+			// int which) {
+			// switch (which) {
+			// case 0:
+			// mEndPoint.setName(Stop.TYPE_MY_LOCATION);
+			// mEndPointAutoComplete
+			// .setText(getText(R.string.my_location));
+			// mEndPointAutoComplete.clearFocus();
+			// break;
+			// case 1:
+			// Intent i = new Intent(getActivity(),
+			// PointOnMapActivity.class);
+			// i.putExtra(PointOnMapActivity.EXTRA_STOP,
+			// mEndPoint);
+			// i.putExtra(
+			// PointOnMapActivity.EXTRA_HELP_TEXT,
+			// getString(R.string.tap_your_end_point_on_map));
+			// startActivityForResult(i,
+			// REQUEST_CODE_POINT_ON_MAP_END);
+			// break;
+			// default:
+			// Stop endPoint = (Stop) endPointAdapter
+			// .getItem(which);
+			// mEndPoint = new Stop(endPoint);
+			// mEndPointAutoComplete.setText(mEndPoint
+			// .getName());
+			// mEndPointAutoComplete.clearFocus();
+			// }
+			// }
+			// });
+			// dialog = endPointDialogBuilder.create();
+			// break;
+			// case DIALOG_VIA_POINT:
+			// AlertDialog.Builder viaPointDialogBuilder = new
+			// AlertDialog.Builder(
+			// getActivity());
+			// viaPointDialogBuilder.setTitle(getText(R.string.via));
+			// final Cursor historyViaCursor = mHistoryDbAdapter
+			// .fetchAllViaPoints();
+			// getActivity().startManagingCursor(historyViaCursor);
+			// final SelectPointAdapter viaPointAdapter = new
+			// SelectPointAdapter(
+			// getActivity(), historyViaCursor, true);
+			// getActivity().stopManagingCursor(historyViaCursor);
+			// viaPointDialogBuilder.setAdapter(viaPointAdapter,
+			// new DialogInterface.OnClickListener() {
+			// @Override
+			// public void onClick(DialogInterface dialog,
+			// int which) {
+			// switch (which) {
+			// default:
+			// Stop viaPoint = (Stop) viaPointAdapter
+			// .getItem(which);
+			// mViaPoint = new Stop(viaPoint);
+			// mViaPointAutoComplete.setText(mViaPoint
+			// .getName());
+			// mViaPointAutoComplete.clearFocus();
+			// }
+			// }
+			// });
+			// dialog = viaPointDialogBuilder.create();
+			// break;
 			case DIALOG_ABOUT:
 				PackageManager pm = getActivity().getPackageManager();
 				String version = "";
@@ -884,36 +898,37 @@ public class PlannerFragment extends BaseListFragment implements
 						.setTitle(getText(R.string.no_location_title))
 						.setMessage(getText(R.string.no_location_message))
 						.setPositiveButton(android.R.string.ok, null).create();
-//			case DIALOG_DIALOG_DATE:
-//				((DatePickerDialog) dialog).updateDate(mTime.year, mTime.month,
-//						mTime.monthDay);
-//				return new DatePickerDialog(getActivity(), mDateSetListener,
-//						mTime.year, mTime.month, mTime.monthDay);
-//			case DIALOG_TIME:
-//				// TODO: Base 24 hour on locale, same with the format.
-//				((TimePickerDialog) dialog)
-//						.updateTime(mTime.hour, mTime.minute);
-//				return new TimePickerDialog(getActivity(), mTimeSetListener,
-//						mTime.hour, mTime.minute, true);
-//			case DIALOG_CREATE_SHORTCUT_NAME:
-//				final View chooseShortcutName = getActivity()
-//						.getLayoutInflater().inflate(
-//								R.layout.create_shortcut_name, null);
-//				final EditText shortCutName = (EditText) chooseShortcutName
-//						.findViewById(R.id.shortcut_name);
-//				return new AlertDialog.Builder(getActivity())
-//						.setTitle(R.string.create_shortcut_label)
-//						.setView(chooseShortcutName)
-//						.setPositiveButton(android.R.string.ok,
-//								new DialogInterface.OnClickListener() {
-//									@Override
-//									public void onClick(DialogInterface dialog,
-//											int which) {
-//										onCreateShortCut(mStartPoint,
-//												mEndPoint, shortCutName
-//														.getText().toString());
-//									}
-//								}).create();
+				// case DIALOG_DIALOG_DATE:
+				// ((DatePickerDialog) dialog).updateDate(mTime.year,
+				// mTime.month,
+				// mTime.monthDay);
+				// return new DatePickerDialog(getActivity(), mDateSetListener,
+				// mTime.year, mTime.month, mTime.monthDay);
+				// case DIALOG_TIME:
+				// // TODO: Base 24 hour on locale, same with the format.
+				// ((TimePickerDialog) dialog)
+				// .updateTime(mTime.hour, mTime.minute);
+				// return new TimePickerDialog(getActivity(), mTimeSetListener,
+				// mTime.hour, mTime.minute, true);
+				// case DIALOG_CREATE_SHORTCUT_NAME:
+				// final View chooseShortcutName = getActivity()
+				// .getLayoutInflater().inflate(
+				// R.layout.create_shortcut_name, null);
+				// final EditText shortCutName = (EditText) chooseShortcutName
+				// .findViewById(R.id.shortcut_name);
+				// return new AlertDialog.Builder(getActivity())
+				// .setTitle(R.string.create_shortcut_label)
+				// .setView(chooseShortcutName)
+				// .setPositiveButton(android.R.string.ok,
+				// new DialogInterface.OnClickListener() {
+				// @Override
+				// public void onClick(DialogInterface dialog,
+				// int which) {
+				// onCreateShortCut(mStartPoint,
+				// mEndPoint, shortCutName
+				// .getText().toString());
+				// }
+				// }).create();
 			case DIALOG_REINSTALL_APP:
 				return new AlertDialog.Builder(getActivity())
 						.setIcon(android.R.drawable.ic_dialog_alert)

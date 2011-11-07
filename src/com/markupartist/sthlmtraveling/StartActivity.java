@@ -68,8 +68,8 @@ public class StartActivity extends FragmentActivity {
                 PlannerFragment.class, null);
         mTabsAdapter.addTab(mTabHost.newTabSpec("favorites").setIndicator(buildIndicator(R.string.favorites_label)),
                 FavoritesFragment.class, null);
-//        mTabsAdapter.addTab(mTabHost.newTabSpec("custom").setIndicator("Custom"),
-//                LoaderCustomSupport.AppListFragment.class, null);
+        mTabsAdapter.addTab(mTabHost.newTabSpec("departures").setIndicator(buildIndicator(R.string.departures)),
+                SearchDeparturesFragment.class, null);
 //        mTabsAdapter.addTab(mTabHost.newTabSpec("throttle").setIndicator("Throttle"),
 //                LoaderThrottleSupport.ThrottledLoaderListFragment.class, null);
 
