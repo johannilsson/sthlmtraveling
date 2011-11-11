@@ -154,6 +154,11 @@ public class PlannerFragment extends BaseListFragment implements
 		if (savedInstanceState != null) {
 			mStackLevel = savedInstanceState.getInt("level");
 		}
+		
+		Cursor cursor = getActivity().managedQuery(Journeys.CONTENT_URI,
+				PROJECTION, null, null, Journeys.HISTORY_SORT_ORDER);
+
+		mAdapter = new JourneyAdapter(getActivity(), cursor);
 	}
 
 	@Override
@@ -165,17 +170,13 @@ public class PlannerFragment extends BaseListFragment implements
 
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
-		// TODO Reset list adapter to avoid IllegalStateException: Cannot add
-		// header view to list -- setAdapter has already been called. Better
-		// way?
-
-		setListAdapter(null);
+		Log.d(TAG, "PlannerFragment.onActivityCreated()");
 
 		mSearchView = getActivity().getLayoutInflater().inflate(
 				R.layout.search, null);
 		getListView().addHeaderView(mSearchView, null, false);
 
-		TextView historyView = (TextView) getActivity().getLayoutInflater()
+		final TextView historyView = (TextView) getActivity().getLayoutInflater()
 				.inflate(R.layout.header, null);
 		historyView.setText(R.string.history_label);
 		getListView().addHeaderView(historyView);
@@ -187,11 +188,9 @@ public class PlannerFragment extends BaseListFragment implements
 		mViaPointAutoComplete = createAutoCompleteTextView(R.id.via,
 				R.id.via_progress, mViaPoint, false);
 
-		restoreState(savedInstanceState);
-
 		try {
 			mHistoryDbAdapter = new HistoryDbAdapter(getActivity()).open();
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			showDialog(createDialogReinstallApp());
 			return;
 		}
@@ -206,7 +205,7 @@ public class PlannerFragment extends BaseListFragment implements
 				.findViewById(R.id.from_menu);
 		fromDialog.setOnClickListener(new View.OnClickListener() {
 			@Override
-			public void onClick(View v) {
+			public void onClick(final View v) {
 				mStartPointAutoComplete.setError(null);
 				showDialog(createDialogStartPoint());
 			}
@@ -215,7 +214,7 @@ public class PlannerFragment extends BaseListFragment implements
 				.findViewById(R.id.to_menu);
 		toDialog.setOnClickListener(new View.OnClickListener() {
 			@Override
-			public void onClick(View v) {
+			public void onClick(final View v) {
 				mEndPointAutoComplete.setError(null);
 				showDialog(createDialogEndPoint());
 			}
@@ -224,7 +223,7 @@ public class PlannerFragment extends BaseListFragment implements
 				.findViewById(R.id.via_menu);
 		viaDialog.setOnClickListener(new View.OnClickListener() {
 			@Override
-			public void onClick(View v) {
+			public void onClick(final View v) {
 				mViaPointAutoComplete.setError(null);
 				showDialog(createDialogViaPoint());
 			}
@@ -237,7 +236,7 @@ public class PlannerFragment extends BaseListFragment implements
 				.findViewById(R.id.planner_route_date);
 		mDateButton.setOnClickListener(new OnClickListener() {
 			@Override
-			public void onClick(View v) {
+			public void onClick(final View v) {
 				showDialog(createDialogDate());
 			}
 		});
@@ -246,22 +245,22 @@ public class PlannerFragment extends BaseListFragment implements
 				.findViewById(R.id.planner_route_time);
 		mTimeButton.setOnClickListener(new OnClickListener() {
 			@Override
-			public void onClick(View v) {
+			public void onClick(final View v) {
 				showDialog(createDialogTime());
 			}
 		});
 
 		// Views for radio buttons
-		RadioButton nowRadioButton = (RadioButton) mSearchView
+		final RadioButton nowRadioButton = (RadioButton) mSearchView
 				.findViewById(R.id.planner_check_now);
 		nowRadioButton.setOnCheckedChangeListener(this);
-		RadioButton laterRadioButton = (RadioButton) mSearchView
+		final RadioButton laterRadioButton = (RadioButton) mSearchView
 				.findViewById(R.id.planner_check_more_choices);
 		laterRadioButton.setOnCheckedChangeListener(this);
 
 		mWhenSpinner = (Spinner) mSearchView
 				.findViewById(R.id.departure_arrival_choice);
-		ArrayAdapter<CharSequence> whenChoiceAdapter = ArrayAdapter
+		final ArrayAdapter<CharSequence> whenChoiceAdapter = ArrayAdapter
 				.createFromResource(getActivity(), R.array.when_choice,
 						android.R.layout.simple_spinner_item);
 		whenChoiceAdapter
@@ -280,15 +279,19 @@ public class PlannerFragment extends BaseListFragment implements
 			registerEvent("Planner");
 		}
 
-		Cursor cursor = getActivity().managedQuery(Journeys.CONTENT_URI,
-				PROJECTION, null, null, Journeys.HISTORY_SORT_ORDER);
-
-		mAdapter = new JourneyAdapter(getActivity(), cursor);
 		setListAdapter(mAdapter);
 
 		super.onActivityCreated(savedInstanceState);
 	}
 
+	@Override
+	public void onDestroyView() {
+		Log.d(TAG, "PlannerFragment.onDestroyView()");
+		setListAdapter(null);
+		mHistoryDbAdapter.close();
+		super.onDestroyView();
+	}
+		
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
 		JourneyQuery journeyQuery = getJourneyQuery(mAdapter.getCursor());
@@ -688,7 +691,7 @@ public class PlannerFragment extends BaseListFragment implements
 		private static Dialog mDialog;
 
 		static PlannerDialogFragment newInstance(Dialog dialog) {
-			mDialog =dialog;
+			mDialog = dialog;
 			PlannerDialogFragment f = new PlannerDialogFragment();
 			return f;
 		}
@@ -699,36 +702,34 @@ public class PlannerFragment extends BaseListFragment implements
 			return mDialog;
 		}
 	}
-	
+
 	private Dialog createDialogReinstallApp() {
 		return new AlertDialog.Builder(getActivity())
-		.setIcon(android.R.drawable.ic_dialog_alert)
-		.setTitle(getText(R.string.attention_label))
-		.setMessage(getText(R.string.reinstall_app_message))
-		.setPositiveButton(android.R.string.ok, null).create();
+				.setIcon(android.R.drawable.ic_dialog_alert)
+				.setTitle(getText(R.string.attention_label))
+				.setMessage(getText(R.string.reinstall_app_message))
+				.setPositiveButton(android.R.string.ok, null).create();
 	}
 
 	private Dialog createDialogShortcutName() {
-		 final View chooseShortcutName = getActivity()
-				 .getLayoutInflater().inflate(
-				 R.layout.create_shortcut_name, null);
-				 final EditText shortCutName = (EditText) chooseShortcutName
-				 .findViewById(R.id.shortcut_name);
-				 return new AlertDialog.Builder(getActivity())
-				 .setTitle(R.string.create_shortcut_label)
-				 .setView(chooseShortcutName)
-				 .setPositiveButton(android.R.string.ok,
-				 new DialogInterface.OnClickListener() {
-				 @Override
-				 public void onClick(DialogInterface dialog,
-				 int which) {
-				 onCreateShortCut(mStartPoint,
-				 mEndPoint, shortCutName
-				 .getText().toString());
-				 }
-				 }).create();
+		final View chooseShortcutName = getActivity().getLayoutInflater()
+				.inflate(R.layout.create_shortcut_name, null);
+		final EditText shortCutName = (EditText) chooseShortcutName
+				.findViewById(R.id.shortcut_name);
+		return new AlertDialog.Builder(getActivity())
+				.setTitle(R.string.create_shortcut_label)
+				.setView(chooseShortcutName)
+				.setPositiveButton(android.R.string.ok,
+						new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog,
+									int which) {
+								onCreateShortCut(mStartPoint, mEndPoint,
+										shortCutName.getText().toString());
+							}
+						}).create();
 	}
-	
+
 	private Dialog createDialogTime() {
 		// TODO: Base 24 hour on locale, same with the format.
 		return new TimePickerDialog(getActivity(), mTimeSetListener,
@@ -986,10 +987,8 @@ public class PlannerFragment extends BaseListFragment implements
 
 	@Override
 	public void onDestroy() {
+		Log.d(TAG, "PlannerFragment.onDestroy()");
 		super.onDestroy();
-		if (mHistoryDbAdapter != null) {
-			mHistoryDbAdapter.close();
-		}
 	}
 
 	@Override

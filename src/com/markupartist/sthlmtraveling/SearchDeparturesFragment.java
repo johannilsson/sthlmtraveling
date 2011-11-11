@@ -45,20 +45,7 @@ public class SearchDeparturesFragment extends BaseListFragment {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-	}
-
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
-		return inflater.inflate(R.layout.search_departures, container, false);
-	}
-
-	@Override
-	public void onActivityCreated(Bundle savedInstanceState) {
-		// TODO Reset list adapter to avoid IllegalStateException: Cannot add
-		// header view to list -- setAdapter has already been called. Better way?
-		setListAdapter(null);
-
+		
 		// If the activity was started with the "create shortcut" action, we
 		// remember this to change the behavior upon a search.
 		if (Intent.ACTION_CREATE_SHORTCUT.equals(getActivity().getIntent()
@@ -68,12 +55,27 @@ public class SearchDeparturesFragment extends BaseListFragment {
 		} else {
 			registerEvent("Search departures");
 		}
+		mHistoryDbAdapter = new HistoryDbAdapter(getActivity()).open();
+	}
 
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
+		return inflater.inflate(R.layout.search_departures_fragment, container, false);
+	}
+
+	@Override
+	public void onActivityCreated(Bundle savedInstanceState) {
+		findViews();
+		fillData();
+		super.onActivityCreated(savedInstanceState);
+	}
+
+	private void findViews() {
 		View searchHeader = getActivity().getLayoutInflater().inflate(
 				R.layout.search_departures_header, null);
 		getListView().addHeaderView(searchHeader, null, false);
 
-		mHistoryDbAdapter = new HistoryDbAdapter(getActivity()).open();
 
 		mSiteTextView = (AutoCompleteTextView) searchHeader
 				.findViewById(R.id.sites);
@@ -104,10 +106,12 @@ public class SearchDeparturesFragment extends BaseListFragment {
 				}
 			}
 		});
-
-		fillData();
-
-		super.onActivityCreated(savedInstanceState);
+	}
+	
+	@Override
+	public void onDestroyView() {
+		setListAdapter(null);
+		super.onDestroyView();
 	}
 
 	@Override
