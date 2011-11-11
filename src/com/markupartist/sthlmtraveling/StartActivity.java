@@ -77,33 +77,6 @@ public class StartActivity extends FragmentActivity {
             mTabHost.setCurrentTabByTag(savedInstanceState.getString("tab"));
         }
 
-        //tabHost.setBackgroundColor(Color.WHITE);
-        //tabHost.getTabWidget().setBackgroundColor(Color.BLACK);
-
-//        mTabHost.addTab(mTabHost.newTabSpec("search")
-//               .setIndicator(buildIndicator(R.string.search_label)/*, 
-//                       getResources().getDrawable(R.drawable.tab_planner)*/)
-//               .setContent(new Intent(this, PlannerFragmentActivity.class)
-//               .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)), );
-//
-//        mTabHost.addTab(mTabHost.newTabSpec("favorites")
-//                .setIndicator(buildIndicator(R.string.favorites_label)/*,
-//                        getResources().getDrawable(R.drawable.tab_favorites)*/)
-//                .setContent(new Intent(this, FavoritesFragmentActivity.class)
-//                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)));
-//
-//        mTabHost.addTab(mTabHost.newTabSpec("departures")
-//                .setIndicator(buildIndicator(R.string.departures)/*, 
-//                        getResources().getDrawable(R.drawable.tab_departures)*/)
-//                .setContent(new Intent(this, SearchDeparturesActivity.class)
-//                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)));
-//
-//        mTabHost.addTab(mTabHost.newTabSpec("deviations")
-//                .setIndicator(buildIndicator(R.string.deviations_label)/*, 
-//                        getResources().getDrawable(R.drawable.tab_deviations)*/)
-//                .setContent(new Intent(this, TrafficStatusActivity.class)
-//                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)));
-
         // Start background service.
         DeviationService.startAsRepeating(getApplicationContext());
     }
