@@ -60,9 +60,7 @@ application and the tests application deployed before.
 Changelog
 ---------
 * NEXT
-    * New API for sites and journey planner.
-    * Initial support for intermediate stops (not available yet).
-    * Restyled tabs on the front activities.
+    * New API for sites and journey planner
 * 2.3.6
     * Removed ads
 * 2.3.5
