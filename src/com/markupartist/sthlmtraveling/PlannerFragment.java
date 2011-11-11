@@ -731,16 +731,11 @@ public class PlannerFragment extends BaseListFragment implements
 	
 	private Dialog createDialogTime() {
 		// TODO: Base 24 hour on locale, same with the format.
-		Dialog dialog = new Dialog(getActivity());
-		((TimePickerDialog) dialog).updateTime(mTime.hour, mTime.minute);
 		return new TimePickerDialog(getActivity(), mTimeSetListener,
 				mTime.hour, mTime.minute, true);
 	}
 
 	private Dialog createDialogDate() {
-		Dialog dialog = new Dialog(getActivity());
-		((DatePickerDialog) dialog).updateDate(mTime.year, mTime.month,
-				mTime.monthDay);
 		return new DatePickerDialog(getActivity(), mDateSetListener,
 				mTime.year, mTime.month, mTime.monthDay);
 	}
