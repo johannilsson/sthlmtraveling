@@ -53,7 +53,7 @@ public class TrafficStatusFragment extends BaseFragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		return inflater.inflate(R.layout.traffic_status, container, false);
+		return inflater.inflate(R.layout.traffic_status_fragment, container, false);
 	}
 
 	@Override
@@ -75,6 +75,12 @@ public class TrafficStatusFragment extends BaseFragment {
 		mGetTrafficStatusTask = new GetTrafficStatusTask();
 		mGetTrafficStatusTask.execute();
 		super.onActivityCreated(savedInstanceState);
+	}
+	
+	@Override
+	public void onDestroyView() {
+		mGetTrafficStatusTask.cancel(true);
+		super.onDestroyView();
 	}
 
 	private void inflateViews(TrafficStatus ts) {
