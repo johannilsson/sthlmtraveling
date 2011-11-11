@@ -103,11 +103,11 @@
                   android:theme="@style/AppThemeActionBar"
                   android:label="@string/stop_label"
                   android:configChanges="locale|orientation"></activity>
-        <activity android:name=".SearchDeparturesActivity"
+        <activity android:name=".SearchDeparturesFragmentActivity"
                   android:label="@string/departures"
                   android:configChanges="locale|orientation"></activity>
         <activity-alias android:name="CreateDepartureShortcutActivity"
-			            android:targetActivity="SearchDeparturesActivity"
+			            android:targetActivity="SearchDeparturesFragmentActivity"
 			            android:label="@string/activity_create_departure_shortcut"
 			            android:configChanges="locale">
             <intent-filter>
