@@ -80,9 +80,12 @@ public class TrafficStatusFragment extends BaseFragment {
 	private void inflateViews(TrafficStatus ts) {
 		LinearLayout typeView = (LinearLayout) getActivity().findViewById(
 				R.id.traffic_status_types);
-		typeView.removeAllViews();
-		for (TrafficType tt : ts.trafficTypes) {
-			typeView.addView(inflateTrafficType(tt, typeView));
+		if (typeView != null) {
+			typeView.removeAllViews();
+
+			for (TrafficType tt : ts.trafficTypes) {
+				typeView.addView(inflateTrafficType(tt, typeView));
+			}
 		}
 	}
 
