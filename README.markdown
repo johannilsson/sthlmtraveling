@@ -59,6 +59,11 @@ application and the tests application deployed before.
 
 Changelog
 ---------
+* 2.3.9
+    * Adapted departures to new API.
+    * Time displayed for departures now comes directly from SL which should
+      give more accurate times.
+    * Removed red indicator in departures for "now" because it did not work.
 * 2.3.8
     * Renamed transport types for TRAIN and TRAM to work with the new API.
 * 2.3.7
