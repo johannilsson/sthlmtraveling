@@ -59,6 +59,8 @@ application and the tests application deployed before.
 
 Changelog
 ---------
+* 2.3.8
+    * Renamed transport types for TRAIN and TRAM to work with the new API.
 * 2.3.7
     * New API for sites and journey planner.
     * Initial support for intermediate stops (not available yet).
