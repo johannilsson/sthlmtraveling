@@ -1,7 +1,7 @@
 package com.markupartist.sthlmtraveling.provider.departure;
 
 import static com.markupartist.sthlmtraveling.provider.ApiConf.KEY;
-import static com.markupartist.sthlmtraveling.provider.ApiConf.apiEndpoint;
+import static com.markupartist.sthlmtraveling.provider.ApiConf.apiEndpoint2;
 import static com.markupartist.sthlmtraveling.provider.ApiConf.get;
 
 import java.io.IOException;
@@ -34,10 +34,10 @@ public class DeparturesStore {
     	}
     	
         Log.d(TAG, "About to get departures for " + site.getName());
-        final HttpGet get = new HttpGet(apiEndpoint()
+        final HttpGet get = new HttpGet(apiEndpoint2()
                 + "/v1/departures/" + site.getId()
-                + "/?key=" + get(KEY)
-                + "&timewindow=20");
+                + "?key=" + get(KEY)
+                + "&timewindow=30");
 
         final HttpResponse response = HttpManager.execute(get);
 
@@ -77,24 +77,32 @@ public class DeparturesStore {
         public static Departures fromJson(JSONObject json) throws JSONException {
             Departures d = new Departures();
 
-            JSONArray jsonMetros = json.getJSONArray("metros");
-            for (int i = 0; i < jsonMetros.length(); i++) {
-                d.metros.add(MetroDeparture.fromJson(jsonMetros.getJSONObject(i)));
+            if (!json.isNull("metros")) {
+                JSONObject jsonMetros = json.getJSONObject("metros");
+                if (jsonMetros.has("group_of_lines")) {
+                    d.metros.add(MetroDeparture.fromJson(jsonMetros));
+                }
             }
 
-            JSONArray jsonBuses = json.getJSONArray("buses");
-            for (int i = 0; i < jsonBuses.length(); i++) {
-                d.buses.add(BusDeparture.fromJson(jsonBuses.getJSONObject(i)));
+            if (!json.isNull("buses")) {
+                JSONArray jsonBuses = json.getJSONArray("buses");
+                for (int i = 0; i < jsonBuses.length(); i++) {
+                    d.buses.add(BusDeparture.fromJson(jsonBuses.getJSONObject(i)));
+                }
             }
 
-            JSONArray jsonTrams = json.getJSONArray("trams");
-            for (int i = 0; i < jsonTrams.length(); i++) {
-                d.trams.add(TramDeparture.fromJson(jsonTrams.getJSONObject(i)));
+            if (!json.isNull("trams")) {
+                JSONArray jsonTrams = json.getJSONArray("trams");
+                for (int i = 0; i < jsonTrams.length(); i++) {
+                    d.trams.add(TramDeparture.fromJson(jsonTrams.getJSONObject(i)));
+                }                
             }
 
-            JSONArray jsonTrains = json.getJSONArray("trains");
-            for (int i = 0; i < jsonTrains.length(); i++) {
-                d.trains.add(TrainDeparture.fromJson(jsonTrains.getJSONObject(i)));
+            if (!json.isNull("trains")) {
+                JSONArray jsonTrains = json.getJSONArray("trains");
+                for (int i = 0; i < jsonTrains.length(); i++) {
+                    d.trains.add(TrainDeparture.fromJson(jsonTrains.getJSONObject(i)));
+                }
             }
 
             return d;
@@ -111,8 +119,7 @@ public class DeparturesStore {
 
         public static MetroDeparture fromJson(JSONObject json) throws JSONException {
             MetroDeparture md = new MetroDeparture();
-
-            JSONArray jsonGroupOfLines = json.getJSONArray("groupOfLines");
+            JSONArray jsonGroupOfLines = json.getJSONArray("group_of_lines");
             for (int i = 0; i < jsonGroupOfLines.length(); i++) {
                 try {
                     md.groupOfLines.add(GroupOfLine.fromJson(jsonGroupOfLines.getJSONObject(i)));
@@ -130,8 +137,8 @@ public class DeparturesStore {
 
         public static BusDeparture fromJson(JSONObject jsonObject) throws JSONException {
             BusDeparture bd = new BusDeparture();
-            bd.stopAreaName = jsonObject.getString("stopAreaName");
-            bd.stopAreaNumber = jsonObject.getString("stopAreaNumber");
+            bd.stopAreaName = jsonObject.getString("stop_area_name");
+            bd.stopAreaNumber = jsonObject.getString("stop_area_number");
             JSONArray jsonObjects = jsonObject.getJSONArray("departures");
             for (int i = 0; i < jsonObjects.length(); i++) {
                 bd.departures.add(DisplayRow.fromJson(jsonObjects.getJSONObject(i)));
@@ -145,8 +152,8 @@ public class DeparturesStore {
         public ArrayList<DisplayRow> direction2 = new ArrayList<DisplayRow>();
         public static TramDeparture fromJson(JSONObject jsonObject) throws JSONException {
             TramDeparture td = new TramDeparture();
-            td.stopAreaName = jsonObject.getString("stopAreaName");
-            td.stopAreaNumber = jsonObject.getString("stopAreaNumber");
+            td.stopAreaName = jsonObject.getString("stop_area_name");
+            td.stopAreaNumber = jsonObject.getString("stop_area_number");
 
             JSONArray jsonDirection1 = jsonObject.getJSONArray("direction1");
             for (int i = 0; i < jsonDirection1.length(); i++) {
@@ -168,8 +175,8 @@ public class DeparturesStore {
         
         public static TrainDeparture fromJson(JSONObject jsonObject) throws JSONException {
             TrainDeparture td = new TrainDeparture();
-            td.stopAreaName = jsonObject.getString("stopAreaName");
-            td.stopAreaNumber = jsonObject.getString("stopAreaNumber");
+            td.stopAreaName = jsonObject.getString("stop_area_name");
+            td.stopAreaNumber = jsonObject.getString("stop_area_number");
 
             JSONArray jsonDirection1 = jsonObject.getJSONArray("direction1");
             for (int i = 0; i < jsonDirection1.length(); i++) {
@@ -232,20 +239,22 @@ public class DeparturesStore {
             if (json.has("destination")) {
                 dr.destination = json.getString("destination");
             }
-            if (json.has("lineNumber")) {
-                dr.lineNumber = json.getString("lineNumber");
+            if (json.has("line_number")) {
+                dr.lineNumber = json.getString("line_number");
             }
-            if (json.has("displayTime")) {
-                dr.displayTime = json.getString("displayTime");
+            if (json.has("display_time")) {
+                dr.displayTime = json.isNull("display_time") ?
+                        null : json.getString("display_time");
             }
-            if (json.has("timeTabledDateTime")) {
-                dr.timeTabledDateTime = json.getString("timeTabledDateTime");
+            if (json.has("time_tabled_date_time")) {
+                dr.timeTabledDateTime = json.getString("time_tabled_date_time");
             }
-            if (json.has("expectedDateTime")) {
-                dr.expectedDateTime = json.getString("expectedDateTime");
+            if (json.has("expected_date_time")) {
+                dr.expectedDateTime = json.getString("expected_date_time");
             }
             if (json.has("message")) {
-                dr.message = json.getString("message");
+                dr.message = json.isNull("message") ?
+                        null : json.getString("message");
             }
 
             return dr;

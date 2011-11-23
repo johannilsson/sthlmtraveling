@@ -124,6 +124,7 @@ public class DepartureAdapter extends SectionedAdapter {
             //map.put("timeToDisplay", humanTimeUntil(now, displayRow.getExpectedDateTime()));
 
             String displayTime = displayRow.displayTime;
+            /*
             if (!TextUtils.isEmpty(displayRow.expectedDateTime)) {
                 // Naive check to see if it's a time. If it's a time we choose
                 // that instead cause that means that the time is not based on
@@ -134,10 +135,14 @@ public class DepartureAdapter extends SectionedAdapter {
                     displayTime = humanTimeUntil(now, expectedDateTime);
                 }
             }
-            if (TextUtils.isEmpty(displayTime) &&
-                    TextUtils.isEmpty(displayRow.message)) {
+            */
+            
+            if (TextUtils.isEmpty(displayTime)
+                    && TextUtils.isEmpty(displayRow.message)
+                    || TextUtils.equals(displayTime, "0 min")) {
                 displayTime = mContext.getString(R.string.now);
             }
+            
             map.put("timeToDisplay", displayTime);
 
             //map.put("groupOfLine", displayRow.getGroupOfLine());
@@ -166,9 +171,13 @@ public class DepartureAdapter extends SectionedAdapter {
                 case R.id.departure_timeToDisplay:
                     TextView textView = (TextView) view;
                     textView.setText(textRepresentation);
+                    // TODO: Setting the color like this does not work because
+                    // the views get recycled.
+                    /*
                     if (textRepresentation.equals(mContext.getString(R.string.now))) {
                         textView.setTextColor(0xFFEE4000);
                     }
+                    */
                     return true;
                 }
                 return false;
