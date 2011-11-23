@@ -196,7 +196,6 @@ public class Planner {
                     Log.w(TAG, "Invalid response");
                     // TODO: Parse errors.
                 }
-                
             } catch (JSONException e) {
                 Log.d(TAG, "Could not parse the reponse...");
                 throw new IOException("Could not parse the response.");
@@ -237,8 +236,8 @@ public class Planner {
 
         public static BadResponse fromJson(JSONObject json) throws JSONException {
             BadResponse br = new BadResponse();
-            if (json.has("errorCode")) {
-                br.errorCode = json.getString("errorCode");
+            if (json.has("code")) {
+                br.errorCode = json.getString("code");
             } else {
                 br.errorCode = "-1";
             }
