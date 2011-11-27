@@ -123,6 +123,7 @@
     <string name="trip_description_walk" formatted="false">%s - %s Gå från %s till %s</string>
     <string name="trip_description_normal" formatted="false">%s - %s %s från %s mot %s. Kliv av vid %s</string>
     <string name="show_all">Visa alla</string>
+    <string name="platform">Plattform</string>
 
     <!-- Planner error messages -->
     <string name="planner_error_title">Felmeddelande</string>
