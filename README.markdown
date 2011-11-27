@@ -59,6 +59,11 @@ application and the tests application deployed before.
 
 Changelog
 ---------
+* 2.3.10
+    * Adapted deviation to new API.
+    * Adapted traffic status to new API.
+    * Fixed loading indicator in deviation.
+    * Fixed some translations.
 * 2.3.9
     * Adapted departures to new API.
     * Time displayed for departures now comes directly from SL which should
