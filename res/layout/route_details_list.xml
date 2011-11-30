@@ -17,21 +17,29 @@
 */
 -->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res/com.markupartist.sthlmtraveling"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
     <com.markupartist.android.widget.ActionBar
         android:id="@+id/actionbar"
         style="@style/ActionBar"
-        app:title="@string/journey_planner_label"
         />
+    <RelativeLayout
+        android:id="@+id/ad_holder"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        >
+        <include layout="@layout/ad"/>
+    </RelativeLayout>
     <ListView 
+        android:layout_below="@id/actionbar"
+        android:layout_above="@id/ad_holder"
         style="@style/AppListView"
-		android:id="@+id/android:list"
-		android:layout_width="fill_parent"
-		android:layout_height="wrap_content"
+        android:id="@id/android:list"
+        android:layout_width="fill_parent" 
+        android:layout_height="fill_parent"
     />
 	<TextView 
         android:id="@+id/route_details_no_result"
@@ -44,5 +52,5 @@
 		android:textSize="16dip"
 		android:text="@string/no_route_details"
     />
-</LinearLayout>
+</RelativeLayout>
 

@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <style name="AppThemeActionBar" parent="@style/Theme.ActionBar.Light">
+
+    </style>
     <style name="AppListView" parent="@android:style/Widget.ListView.White">
         <item name="android:divider">@color/list_divider</item>
         <item name="android:dividerHeight">1px</item>

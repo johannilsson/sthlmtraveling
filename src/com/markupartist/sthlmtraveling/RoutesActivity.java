@@ -32,6 +32,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.DialogInterface.OnClickListener;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.location.Location;
@@ -43,8 +44,10 @@ import android.text.TextUtils;
 import android.text.format.Time;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager.BadTokenException;
 import android.widget.Adapter;
 import android.widget.BaseAdapter;
 import android.widget.ImageButton;
@@ -56,7 +59,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.SimpleAdapter.ViewBinder;
 
+import com.google.ads.AdRequest;
+import com.google.ads.AdView;
 import com.markupartist.android.widget.ActionBar;
+import com.markupartist.android.widget.actionbar.R;
 import com.markupartist.sthlmtraveling.MyLocationManager.MyLocationFoundListener;
 import com.markupartist.sthlmtraveling.SectionedAdapter.Section;
 import com.markupartist.sthlmtraveling.provider.JourneysProvider.Journey.Journeys;
@@ -70,6 +76,7 @@ import com.markupartist.sthlmtraveling.provider.planner.Planner.BadResponse;
 import com.markupartist.sthlmtraveling.provider.planner.Planner.Response;
 import com.markupartist.sthlmtraveling.provider.planner.Planner.SubTrip;
 import com.markupartist.sthlmtraveling.provider.planner.Planner.Trip2;
+import com.markupartist.sthlmtraveling.utils.AdRequestFactory;
 
 /**
  * Routes activity
@@ -160,6 +167,7 @@ public class RoutesActivity extends BaseListActivity
     private MultipleListAdapter mMultipleListAdapter;
     private TextView mFromView;
     private TextView mToView;
+    private TextView mViaView;
     private ArrayList<HashMap<String, String>> mDateAdapterData;
 
     private MyLocationManager mMyLocationManager;
@@ -178,6 +186,8 @@ public class RoutesActivity extends BaseListActivity
     private ImageButton mFavoriteButton;
 
     private ActionBar mActionBar;
+
+    private AdView mAdView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -199,11 +209,23 @@ public class RoutesActivity extends BaseListActivity
             return;
         }
 
-        mActionBar = initActionBar();
+        mActionBar = initActionBar(R.menu.actionbar_routes);
+        mAdView = (AdView) findViewById(R.id.ad_view);
+        if (AppConfig.ADS_ENABLED) { 
+            mAdView.loadAd(AdRequestFactory.createRequest());
+        }
+        
 
         View headerView = getLayoutInflater().inflate(R.layout.route_header, null);
         mFromView = (TextView) headerView.findViewById(R.id.route_from);
         mToView = (TextView) headerView.findViewById(R.id.route_to);
+
+        if (mJourneyQuery.hasVia()) {
+            headerView.findViewById(R.id.via_row).setVisibility(View.VISIBLE);
+            mViaView = (TextView) headerView.findViewById(R.id.route_via);
+            mViaView.setText(mJourneyQuery.via.name);
+        }
+
         getListView().addHeaderView(headerView, null, false);
 
         updateStartAndEndPointViews(mJourneyQuery.origin, mJourneyQuery.destination);
@@ -217,25 +239,15 @@ public class RoutesActivity extends BaseListActivity
     }
 
     @Override
-    protected ActionBar initActionBar() {
-        ActionBar actionBar = super.initActionBar();
-
-        actionBar.addAction(new ActionBar.Action() {
-
-            @Override
-            public void performAction(View view) {
-                reverseJourneyQuery();
-            }
-
-            @Override
-            public int getDrawable() {
-                return R.drawable.ic_actionbar_reverse;
-            }
-        });
-        
-        return actionBar;
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+        case R.id.actionbar_item_reverse:
+            reverseJourneyQuery();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
-    
+
     private JourneyQuery getJourneyQueryFromIntent(Intent intent) {
         JourneyQuery journeyQuery;
         if (intent.hasExtra(EXTRA_JOURNEY_QUERY)) {
@@ -407,6 +419,10 @@ public class RoutesActivity extends BaseListActivity
 
     @Override
     protected void onDestroy() {
+        if (mAdView != null) {
+            mAdView.destroy();
+        }
+
         super.onDestroy();
 
         onCancelSearchRoutesTask();
@@ -1278,6 +1294,25 @@ public class RoutesActivity extends BaseListActivity
         startActivity(Intent.createChooser(intent, getText(R.string.share_label)));
     }
 
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        onRotationChange(newConfig);
+
+        super.onConfigurationChanged(newConfig);
+    }
+
+    private void onRotationChange(Configuration newConfig) {
+        if (newConfig.orientation == newConfig.ORIENTATION_LANDSCAPE) {
+            if (mAdView != null) {
+                mAdView.setVisibility(View.GONE);
+            }
+        } else {
+            if (mAdView != null) {
+                mAdView.setVisibility(View.VISIBLE);
+            }
+        }        
+    }
+    
     /**
      * Background task for searching for routes.
      */
@@ -1314,17 +1349,29 @@ public class RoutesActivity extends BaseListActivity
             } else if (!mWasSuccess) {
                 if (TextUtils.isEmpty(mErrorCode)) {
                     getListView().getEmptyView().setVisibility(View.GONE);
-                    showDialog(DIALOG_SEARCH_ROUTES_NETWORK_PROBLEM);
+                    try {
+                        showDialog(DIALOG_SEARCH_ROUTES_NETWORK_PROBLEM);
+                    } catch (BadTokenException e) {
+                        Log.w(TAG, "Caught BadTokenException when trying to show network error dialog.");
+                    }
                 } else {
                     getListView().getEmptyView().setVisibility(View.GONE);
                     mRouteErrorCode = mErrorCode;
-                    showDialog(DIALOG_SEARCH_ROUTES_ERROR);
+                    try {
+                        showDialog(DIALOG_SEARCH_ROUTES_ERROR);
+                    } catch (BadTokenException e) {
+                        Log.w(TAG, "Caught BadTokenException when trying to show routes error dialog.");
+                    }
                 }
             }/* else if (result.hasAlternatives()) {
                 onSiteAlternatives(result);
             }*/ else {
                 getListView().getEmptyView().setVisibility(View.GONE);
-                showDialog(DIALOG_SEARCH_ROUTES_NO_RESULT);
+                try {
+                    showDialog(DIALOG_SEARCH_ROUTES_NO_RESULT);
+                } catch (BadTokenException e) {
+                    Log.w(TAG, "Caught BadTokenException when trying to no results dialog.");
+                }
             }
         }
     }
@@ -1362,13 +1409,25 @@ public class RoutesActivity extends BaseListActivity
                 onSearchRoutesResult(result);
             } else if (!mWasSuccess) {
                 if (TextUtils.isEmpty(mErrorCode)) {
-                    showDialog(DIALOG_GET_EARLIER_ROUTES_NETWORK_PROBLEM);
+                    try {
+                        showDialog(DIALOG_GET_EARLIER_ROUTES_NETWORK_PROBLEM);
+                    } catch (BadTokenException e) {
+                        Log.w(TAG, "Caught BadTokenException when trying to show network error dialog.");
+                    }
                 } else {
                     mRouteErrorCode = mErrorCode;
-                    showDialog(DIALOG_SEARCH_ROUTES_ERROR);
+                    try {
+                        showDialog(DIALOG_SEARCH_ROUTES_ERROR);
+                    } catch (BadTokenException e) {
+                        Log.w(TAG, "Caught BadTokenException when trying to show routes error dialog.");
+                    }
                 }
             } else {
-                showDialog(DIALOG_GET_ROUTES_SESSION_TIMEOUT);
+                try {
+                    showDialog(DIALOG_GET_ROUTES_SESSION_TIMEOUT);
+                } catch (BadTokenException e) {
+                    Log.w(TAG, "Caught BadTokenException when trying to show session timeout dialog.");
+                }
             }
         }
     }
@@ -1406,13 +1465,25 @@ public class RoutesActivity extends BaseListActivity
                 onSearchRoutesResult(result);
             } else if (!mWasSuccess) {
                 if (TextUtils.isEmpty(mErrorCode)) {
-                    showDialog(DIALOG_GET_EARLIER_ROUTES_NETWORK_PROBLEM);                    
+                    try {
+                        showDialog(DIALOG_GET_EARLIER_ROUTES_NETWORK_PROBLEM);
+                    } catch (BadTokenException e) {
+                        Log.w(TAG, "Caught BadTokenException when trying to show network error dialog.");
+                    }
                 } else {
                     mRouteErrorCode = mErrorCode;
-                    showDialog(DIALOG_SEARCH_ROUTES_ERROR);
+                    try {
+                        showDialog(DIALOG_SEARCH_ROUTES_ERROR);
+                    } catch (BadTokenException e) {
+                        Log.w(TAG, "Caught BadTokenException when trying to show routes error dialog.");
+                    }
                 }
             } else {
-                showDialog(DIALOG_GET_ROUTES_SESSION_TIMEOUT);
+                try {
+                    showDialog(DIALOG_GET_ROUTES_SESSION_TIMEOUT);
+                } catch (BadTokenException e) {
+                    Log.w(TAG, "Caught BadTokenException when trying to show session timeout dialog.");
+                }
             }
         }
     }
@@ -1431,8 +1502,13 @@ public class RoutesActivity extends BaseListActivity
         String selection = Journeys.STARRED + " = ? AND " + Journeys.JOURNEY_DATA + " = ?";
         String[] selectionArgs = new String[] { "1", json };
         Cursor cursor = managedQuery(uri, projection, selection, selectionArgs, null);
+        startManagingCursor(cursor);
 
-        return cursor.getCount() > 0;
+        boolean isStarred = cursor.getCount() > 0;
+
+        stopManagingCursor(cursor);
+
+        return isStarred;
     }
 
     /**
@@ -1453,8 +1529,11 @@ public class RoutesActivity extends BaseListActivity
                 Journeys.STARRED,       // 2
             };
         String selection = Journeys.JOURNEY_DATA + " = ?";
+
         Cursor cursor = managedQuery(Journeys.CONTENT_URI, projection,
                 selection, new String[] { json }, null);
+        startManagingCursor(cursor);
+
         ContentValues values = new ContentValues();
         Uri journeyUri;
         if (cursor.getCount() > 0) {
@@ -1463,7 +1542,6 @@ public class RoutesActivity extends BaseListActivity
                     cursor.getInt(0));
             getContentResolver().update(
                     journeyUri, values, null, null);
-            stopManagingCursor(cursor);
         } else {
             // Not sure if this is the best way to do it, but the lack limit and
             // offset in on a content provider leaves us to fetch all and iterate.
@@ -1475,6 +1553,7 @@ public class RoutesActivity extends BaseListActivity
                     Journeys.STARRED + " = ? OR " + Journeys.STARRED + " IS NULL",
                     new String[] { "0" },
                     Journeys.DEFAULT_SORT_ORDER);
+            startManagingCursor(notStarredCursor);
             // +1 because the position is zero-based.
             if (notStarredCursor.moveToPosition(Journeys.DEFAULT_HISTORY_SIZE + 1)) {
                 do {
@@ -1485,7 +1564,7 @@ public class RoutesActivity extends BaseListActivity
             }
             stopManagingCursor(notStarredCursor);
         }
-
+        stopManagingCursor(cursor);
         // TODO: Store created id and work on that while toggling if starred or not.
         
     }

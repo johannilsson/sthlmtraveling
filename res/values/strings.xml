@@ -21,6 +21,7 @@
 	<string name="app_name">STHLM Traveling</string>
     <string name="from">From</string>
     <string name="to">To</string>
+    <string name="via">Via</string>
     <string name="search_label">Search</string>
     <string name="departing">Departing</string>
     <string name="arriving">Arriving</string>
@@ -103,6 +104,7 @@
     <string name="title_settings">Settings</string>
     <string name="now_label">Now</string>
     <string name="more_choices_label">More choices</string>
+    <string name="alternative_stops_label">Alternative stops</string>
     <string name="date_and_time_label">Date &amp; Time</string>
     <string name="determining_your_position">Determining your position</string>
     <string name="back">Back</string>
@@ -121,6 +123,7 @@
     <string name="trip_description_walk" formatted="false">%s - %s Walk from %s to %s</string>
     <string name="trip_description_normal" formatted="false">%s - %s %s from %s towards %s. Get off at %s</string>
     <string name="show_all">Show all</string>
+    <string name="platform">Platform</string>
 
     <!-- Planner error messages -->
     <string name="planner_error_title">Felmeddelande</string>
@@ -163,7 +166,7 @@
     <string name="search_include_addresses_preference">Include addresses in auto completion</string>
     <string name="search_include_addresses_summary_preference">May take longer to receive suggestions when enabled.</string>
     <string name="search_clear_history_preference">Clear search history</string>
-    <string name="search_clear_history_summary_preference">Clears all search history.</string>
+    <string name="search_clear_history_summary_preference">Clears search history for stops and journeys.</string>
     <string name="search_clear_history_confirm">Are you sure you want to clear all search history?</string>
     <string name="search_history_cleared">History cleared</string>
     <string name="search_clear_favorites_preference">Clear favorites</string>

@@ -26,7 +26,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:background="#e4e4e4"
-            android:paddingTop="5dip"
+            android:padding="5dip"
             >
             <LinearLayout
                 android:focusable="true" android:focusableInTouchMode="true"
@@ -69,7 +69,7 @@
 				        android:layout_height="wrap_content"
 				        style="?android:attr/progressBarStyleSmall"
 				        android:layout_gravity="center_vertical"
-				        android:visibility="gone"
+				        android:visibility="invisible"
 				        />
 	            </LinearLayout>
 	            <ImageButton
@@ -119,7 +119,7 @@
                         android:layout_height="wrap_content"
                         style="?android:attr/progressBarStyleSmall"
                         android:layout_gravity="center_vertical"
-                        android:visibility="gone"
+                        android:visibility="invisible"
                         />
                 </LinearLayout>
                 <ImageButton
@@ -186,18 +186,64 @@
 	                        />
 	                </TableRow>
 	            </TableLayout>
-                <View
+
+                <!-- Via -->
+                <LinearLayout 
                     android:layout_width="fill_parent"
-                    android:layout_height="1px"
-                    android:layout_marginTop="10dip"
-                    android:layout_marginBottom="10dip"
-                    android:background="@drawable/stroke"
-                    />
+                    android:layout_height="wrap_content"
+                    android:addStatesFromChildren="true"
+                    android:gravity="center_vertical"
+                    android:paddingTop="5dip"
+                    android:paddingBottom="10dip"
+                    android:paddingLeft="3dip"
+                    android:paddingRight="3dip">
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/textfield_search"
+                       >
+                        <AutoCompleteTextView 
+                            android:id="@+id/via"
+                            android:hint="@string/via"
+                            android:dropDownWidth="fill_parent"
+                            android:dropDownVerticalOffset="5dip"
+                            android:layout_width="wrap_content"
+                            android:layout_height="fill_parent"
+                            android:textColor="#000"
+                            android:singleLine="true"
+                            android:layout_weight="1"
+                            android:imeOptions="actionDone"
+                            android:lines="1"
+                            android:inputType="text"
+                            android:background="@null"
+                            />
+                        <ProgressBar
+                            android:id="@+id/via_progress"
+                            android:indeterminate="true"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            style="?android:attr/progressBarStyleSmall"
+                            android:layout_gravity="center_vertical"
+                            android:visibility="invisible"
+                            />
+                    </LinearLayout>
+                    <ImageButton
+                        android:id="@+id/via_menu"
+                        android:src="@drawable/ic_input_get"
+                        android:layout_width="wrap_content"
+                        android:layout_height="fill_parent"
+                        android:paddingLeft="5dip"
+                        android:paddingRight="5dip"
+                        android:background="@drawable/btn_search_dialog"
+                        />
+                </LinearLayout>
+
                 <CheckBox
                     android:id="@+id/planner_alternative_stops"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:text="Alternative stops"
+                    android:text="@string/alternative_stops_label"
                     />
 				<View
 					android:layout_width="fill_parent"

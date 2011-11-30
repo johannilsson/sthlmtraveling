@@ -31,6 +31,7 @@ import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 import com.google.android.maps.MyLocationOverlay;
+import com.markupartist.android.widget.ActionBar;
 import com.markupartist.sthlmtraveling.graphics.BalloonOverlayView;
 import com.markupartist.sthlmtraveling.graphics.FixedMyLocationOverlay;
 
@@ -65,6 +66,13 @@ public class ViewOnMapActivity extends BaseMapActivity {
         Bundle extras = getIntent().getExtras();
         Location location = (Location) extras.getParcelable(EXTRA_LOCATION);
         String markerText = extras.getString(EXTRA_MARKER_TEXT);
+
+        ActionBar actionBar = (ActionBar) findViewById(R.id.actionbar);
+        getMenuInflater().inflate(R.menu.actionbar_map, actionBar.asMenu());
+        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+        actionBar.setDisplayShowHomeEnabled(true);
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setTitle(R.string.stop_label);
 
         mMapView = (MapView) findViewById(R.id.mapview);
         mMapView.setBuiltInZoomControls(true);
@@ -106,6 +114,9 @@ public class ViewOnMapActivity extends BaseMapActivity {
                 } else {
                     toastMissingMyLocationSource();
                 }
+                return true;
+            case R.id.actionbar_item_home:
+                finish();
                 return true;
         }
         return super.onOptionsItemSelected(item);

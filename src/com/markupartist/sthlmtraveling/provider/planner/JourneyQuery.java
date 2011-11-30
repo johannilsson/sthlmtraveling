@@ -31,10 +31,11 @@ import com.markupartist.sthlmtraveling.provider.planner.Planner.Location;
 public class JourneyQuery implements Parcelable {
     public Location origin;
     public Location destination;
+    public Location via;
     public Time time;
     public boolean isTimeDeparture = true;
     public boolean alternativeStops = false;
-    public ArrayList<String> transportModes;
+    public ArrayList<String> transportModes = new ArrayList<String>();
     public String ident;
     public String seqnr;
 
@@ -44,6 +45,7 @@ public class JourneyQuery implements Parcelable {
     public JourneyQuery(Parcel parcel) {
         origin = parcel.readParcelable(Location.class.getClassLoader());
         destination = parcel.readParcelable(Location.class.getClassLoader());
+        via = parcel.readParcelable(Location.class.getClassLoader());
         time = new Time();
         time.parse(parcel.readString());
         isTimeDeparture = (parcel.readInt() == 1) ? true : false;
@@ -63,12 +65,23 @@ public class JourneyQuery implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeParcelable(origin, 0);
         dest.writeParcelable(destination, 0);
+        dest.writeParcelable(via, 0);
         dest.writeString(time.format2445());
         dest.writeInt(isTimeDeparture ? 1 : 0);
         dest.writeInt(alternativeStops ? 1 : 0);
         dest.writeStringList(transportModes);
         dest.writeString(ident);
         dest.writeString(seqnr);
+    }
+
+    /**
+     * Checks if the query contains has via.
+     * 
+     * @return Returns <code>true</code> if a via location is set,
+     * <code>false</code> otherwise.
+     */
+    public boolean hasVia() {
+        return via != null && via.hasName();
     }
 
     public static final Creator<JourneyQuery> CREATOR = new Creator<JourneyQuery>() {
@@ -109,6 +122,13 @@ public class JourneyQuery implements Parcelable {
         }
 
         JSONObject jsonQuery = new JSONObject();
+        if (via != null) {
+            JSONObject jsonVia = new JSONObject();
+            jsonVia.put("id", via.id);
+            jsonVia.put("name", via.name);
+
+            jsonQuery.put("via", jsonVia);
+        }
 
         if (transportModes != null) {
             jsonQuery.put("transportModes", new JSONArray(transportModes));
@@ -145,14 +165,36 @@ public class JourneyQuery implements Parcelable {
             journeyQuery.alternativeStops =
                 jsonObject.getBoolean("alternativeStops");
         }
-        
-                
+        if (jsonObject.has("via")) {
+            JSONObject jsonVia = jsonObject.getJSONObject("via");
+            Location via = new Location();
+            via.name = jsonVia.getString("name");
+            journeyQuery.via = via;
+        }
+
         return journeyQuery;
     }
+
+    
+    
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+        return "JourneyQuery [alternativeStops=" + alternativeStops
+                + ", destination=" + destination + ", ident=" + ident
+                + ", isTimeDeparture=" + isTimeDeparture + ", origin=" + origin
+                + ", seqnr=" + seqnr + ", time=" + time + ", transportModes="
+                + transportModes + ", via=" + via + "]";
+    }
+
+
 
     public static class Builder {
         private Planner.Location mOrigin;
         private Planner.Location mDestination;
+        private Planner.Location mVia;
         private Time mTime;
         private boolean mIsTimeDeparture = true;
         private boolean mAlternativeStops;
@@ -206,6 +248,20 @@ public class JourneyQuery implements Parcelable {
             return this;
         }
 
+        public Builder via(Stop via) {
+            if (via != null && via.hasName()) {
+                mVia = buildLocationFromStop(via);
+            }
+            return this;
+        }
+
+        public Builder via(JSONObject jsonObject) throws JSONException {
+            mVia = new Location();
+            mVia.id = jsonObject.getInt("id");
+            mVia.name = jsonObject.getString("name");
+            return this;
+        }
+
         public Builder time(Time time) {
             mTime = time;
             return this;
@@ -241,6 +297,7 @@ public class JourneyQuery implements Parcelable {
             JourneyQuery journeyQuery = new JourneyQuery();
             journeyQuery.origin = mOrigin;
             journeyQuery.destination = mDestination;
+            journeyQuery.via = mVia;
 
             if (mTime == null) {
                 mTime = new Time();

@@ -32,16 +32,17 @@ import android.preference.PreferenceManager;
 import android.text.format.Time;
 import android.util.Log;
 import android.view.ContextMenu;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager.BadTokenException;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.SimpleAdapter.ViewBinder;
 
+import com.markupartist.android.widget.ActionBar;
+import com.markupartist.android.widget.actionbar.R;
 import com.markupartist.sthlmtraveling.provider.deviation.Deviation;
 import com.markupartist.sthlmtraveling.provider.deviation.DeviationStore;
 
@@ -54,10 +55,10 @@ public class DeviationsActivity extends BaseListActivity {
 
     private static final int DIALOG_GET_DEVIATIONS_NETWORK_PROBLEM = 1;
 
-    //private ProgressDialog mProgress;
     private GetDeviationsTask mGetDeviationsTask;
     private ArrayList<Deviation> mDeviationsResult;
     private LinearLayout mProgress;
+    private ActionBar mActionBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,8 +70,21 @@ public class DeviationsActivity extends BaseListActivity {
         mProgress = (LinearLayout) findViewById(R.id.search_progress);
         mProgress.setVisibility(View.GONE);
 
+        mActionBar = initActionBar(R.menu.actionbar_deviations);
+
         loadDeviations();
         registerForContextMenu(getListView());
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+        case R.id.actionbar_item_refresh:
+            mGetDeviationsTask = new GetDeviationsTask();
+            mGetDeviationsTask.execute();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void loadDeviations() {
@@ -178,23 +192,6 @@ public class DeviationsActivity extends BaseListActivity {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.options_menu_deviations, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.menu_refresh:
-                new GetDeviationsTask().execute();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
     public Object onRetainNonConfigurationInstance() {
         return mDeviationsResult;
     }
@@ -276,27 +273,18 @@ public class DeviationsActivity extends BaseListActivity {
      * Show progress dialog.
      */
     private void showProgress() {
-        mProgress.setVisibility(View.VISIBLE);
-        /*
-        if (mProgress == null) {
-            mProgress = new ProgressDialog(this);
-            mProgress.setMessage(getText(R.string.loading));
-            mProgress.show();   
+        if (mActionBar != null) {
+            mActionBar.setProgressBarVisibility(View.VISIBLE);
         }
-        */
     }
 
     /**
      * Dismiss the progress dialog.
      */
     private void dismissProgress() {
-        mProgress.setVisibility(View.GONE);
-        /*
-        if (mProgress != null) {
-            mProgress.dismiss();
-            mProgress = null;
+        if (mActionBar != null) {
+            mActionBar.setProgressBarVisibility(View.GONE);
         }
-        */
     }
 
     @Override
@@ -345,7 +333,11 @@ public class DeviationsActivity extends BaseListActivity {
             if (mWasSuccess) {
                 fillData(result);
             } else {
-                showDialog(DIALOG_GET_DEVIATIONS_NETWORK_PROBLEM);
+                try {
+                    showDialog(DIALOG_GET_DEVIATIONS_NETWORK_PROBLEM);
+                } catch (BadTokenException e) {
+                    Log.w(TAG, "Caught BadTokenException when trying to show network error dialog.");
+                }
             }
         }
     }

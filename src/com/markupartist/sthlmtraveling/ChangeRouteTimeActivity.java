@@ -22,6 +22,7 @@ import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.format.Time;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
@@ -30,6 +31,8 @@ import android.widget.DatePicker;
 import android.widget.Spinner;
 import android.widget.TimePicker;
 
+import com.markupartist.android.widget.ActionBar;
+import com.markupartist.android.widget.actionbar.R;
 import com.markupartist.sthlmtraveling.provider.planner.JourneyQuery;
 
 public class ChangeRouteTimeActivity extends BaseActivity {
@@ -48,7 +51,9 @@ public class ChangeRouteTimeActivity extends BaseActivity {
         
         registerEvent("Change route time");
         
-        setTitle(getText(R.string.change_date_and_time));
+        //setTitle(getText(R.string.change_date_and_time));
+        ActionBar actionBar = initActionBar(R.menu.actionbar_change_route_time);
+        actionBar.setDisplayHomeAsUpEnabled(true);
 
         Bundle extras = getIntent().getExtras();
         final JourneyQuery journeyQuery =
@@ -112,6 +117,16 @@ public class ChangeRouteTimeActivity extends BaseActivity {
         String formattedTime = mTime.format("%R");
         mDateButton.setText(formattedDate);
         mTimeButton.setText(formattedTime);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+        case R.id.actionbar_item_home:
+            finish();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

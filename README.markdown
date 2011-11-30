@@ -1,4 +1,4 @@
-![STHLM Traveling for Android](http://farm2.static.flickr.com/1138/4733261898_3b86cf4d78.jpg) ![STHLM Traveling for Android](http://farm5.static.flickr.com/4014/4684984048_76f128fd4d.jpg) ![Logo for STHLM Traveling for Android](http://markupartist.com/sthlmtraveling/logo.png)
+![Logo for STHLM Traveling for Android](http://markupartist.com/sthlmtraveling/logo.png)
 
 STHLM Traveling
 ===============
@@ -17,7 +17,10 @@ Some screen shots can be found at [Flickr](http://www.flickr.com/photos/johannil
 
 The app is powered by a backend service written i Java and hosted at Google
 app engine. Unfortunately that application is not open source since it's using
-closed API's that is provided by SL. 
+closed API's that is provided by SL.
+
+<a href="http://flattr.com/thing/332993/STHLM-Traveling" target="_blank">
+<img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" border="0" /></a> 
 
 Credits
 -------
@@ -54,29 +57,58 @@ application and the tests application deployed before.
 
     adb shell am instrument -w com.markupartist.sthlmtraveling.tests/android.test.InstrumentationTestRunner
 
-License
--------
-STHLM Traveling is open source and licensed under 
-[Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.html).
-
-### Exceptions
-
-* Transport icons is copyright Storstockholms Lokaltrafik and used with their
-  permission.
-* Icons by Olof Brickarp is copyright Olof Brickarp
-* Icons by Fredrik Broman is licensed under [CC Attribution 3.0](http://creativecommons.org/licenses/by/3.0/)
-* SectionedAdapter released under [GNU General Public License](http://www.gnu.org/licenses/gpl.html)
-
 Changelog
 ---------
+* 2.3.10
+    * Adapted deviation to new API.
+    * Adapted traffic status to new API.
+    * Fixed loading indicator in deviation.
+    * Fixed some translations.
+* 2.3.9
+    * Adapted departures to new API.
+    * Time displayed for departures now comes directly from SL which should
+      give more accurate times.
+    * Removed red indicator in departures for "now" because it did not work.
+* 2.3.8
+    * Renamed transport types for TRAIN and TRAM to work with the new API.
+* 2.3.7
+    * New API for sites and journey planner.
+    * Initial support for intermediate stops (not available yet).
+    * Restyled tabs on the front activities.
+* 2.3.6
+    * Removed ads
+* 2.3.5
+    * Added ads
+* 2.3.4
+    * New SMS prices
+    * Fixed issue with SMS now showing
+    * Enabled nearby sites as an experimental function, available through a
+      shortcut.
+* 2.3.3
+    * Fixed bug with alternative stops not being accepted even if it was
+      checked.
+* 2.3.2
+    * Fixed crash in Deviations that could occurr during network problems.
+    * Possible fix for not finding any routes.
+    * Excluded sites with geo data for the via field.
+    * Fixed problem with via site history being mixed with the departure site
+      history.
+    * Fixed crash in favorites that occured when favoriting a journey with no
+      transports.
+* 2.3.1
+    * Fixed crash related to migration of favorites to the new format.
 * 2.3.0
     * New journey provider that holds starred journey, including traffic modes
-      and other seach criterias. This replaces the favorites database.
+      and other search criterias. This replaces the favorites database.
+    * Added support for via to the journey planner.
     * Added possibility to search for different transport modes and alternative
       stops.
     * Added a action bar.
-    * Added a pull to refresh list view for departures.
     * Updated icons.
+    * Added journey history, visible below the journey planner.
+    * Changed target sdk version to 10 (2.3.3) and min sdk version to 4 (1.6).
+    * Moved files from the assets directory (that shouldn't be there) into the
+      extras directory.
 * 2.2.2
     * Last selected transport mode for a specific site is now automatically
       selected for Departures.
@@ -246,3 +278,17 @@ Changelog
     * Made the search button bigger
 * 0.1
     * Initial release
+
+License
+-------
+STHLM Traveling is open source and licensed under 
+[Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.html).
+
+### Exceptions
+
+* Transport icons is copyright Storstockholms Lokaltrafik and used with their
+  permission.
+* Icons by Olof Brickarp is copyright Olof Brickarp
+* Icons by Fredrik Broman is licensed under [CC Attribution 3.0](http://creativecommons.org/licenses/by/3.0/)
+* SectionedAdapter released under [GNU General Public License](http://www.gnu.org/licenses/gpl.html)
+    

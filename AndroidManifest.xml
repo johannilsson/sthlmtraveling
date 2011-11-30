@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="com.markupartist.sthlmtraveling"
       android:installLocation="auto"
-      android:versionCode="62" android:versionName="2.3.0-RC1">
+      android:versionCode="77" android:versionName="2.3.9">
     <supports-screens
         android:largeScreens="true"
         android:normalScreens="true"
@@ -17,7 +17,7 @@
         <activity android:name=".StartActivity"
                   android:label="@string/app_name"
                   android:configChanges="locale|orientation"
-                  android:theme="@android:style/Theme.Light.NoTitleBar"
+                  android:theme="@style/AppThemeActionBar"
                   >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -31,13 +31,13 @@
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </activity-alias>
-        <activity android:name=".PlannerActivity"
+        <activity android:name=".PlannerFragmentActivity"
                   android:label="@string/search_label"
                   android:configChanges="locale"></activity>
         <!-- Alias activity used to create shortcuts on Home. The alias is used
              simply to have a different label. -->
         <activity-alias android:name="SearchShortcutActivity"
-            android:targetActivity="PlannerActivity"
+            android:targetActivity="PlannerFragmentActivity"
             android:label="@string/activity_create_shortcut"
             android:configChanges="locale">
             <intent-filter>
@@ -45,13 +45,13 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity-alias>
-        <activity android:name=".FavoritesActivity"
+        <activity android:name=".FavoritesFragmentActivity"
                   android:label="@string/favorites_label"
                   android:configChanges="locale"></activity>
         <activity android:name=".RoutesActivity"
                   android:label="@string/routes_label"
                   android:configChanges="locale|orientation"
-                  android:theme="@android:style/Theme.Light.NoTitleBar"
+                  android:theme="@style/AppThemeActionBar"
                   >
             <intent-filter>
 	            <action android:name="android.intent.action.VIEW"/>
@@ -68,6 +68,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".DeviationsActivity"
+                  android:theme="@style/AppThemeActionBar"
                   android:label="@string/deviations_label"
                   android:configChanges="locale|orientation">
             <intent-filter>
@@ -88,22 +89,25 @@
         <activity android:name=".RouteDetailActivity"
                   android:label="@string/route_details_label"
                   android:configChanges="locale|orientation"
-                  android:theme="@android:style/Theme.Light.NoTitleBar"
+                  android:theme="@style/AppThemeActionBar"
                   ></activity>
         <activity android:name=".ChangeRouteTimeActivity"
+                  android:theme="@style/AppThemeActionBar"
                   android:label="@string/change_date_and_time"
                   android:configChanges="locale"></activity>
         <activity android:name=".PointOnMapActivity"
+                  android:theme="@style/AppThemeActionBar"
                   android:label="@string/point_on_map"
                   android:configChanges="locale|orientation"></activity>
         <activity android:name=".ViewOnMapActivity"
+                  android:theme="@style/AppThemeActionBar"
                   android:label="@string/stop_label"
                   android:configChanges="locale|orientation"></activity>
-        <activity android:name=".SearchDeparturesActivity"
+        <activity android:name=".SearchDeparturesFragmentActivity"
                   android:label="@string/departures"
                   android:configChanges="locale|orientation"></activity>
         <activity-alias android:name="CreateDepartureShortcutActivity"
-			            android:targetActivity="SearchDeparturesActivity"
+			            android:targetActivity="SearchDeparturesFragmentActivity"
 			            android:label="@string/activity_create_departure_shortcut"
 			            android:configChanges="locale">
             <intent-filter>
@@ -113,18 +117,42 @@
         </activity-alias>
         <activity android:name=".DeparturesActivity"
                   android:label="@string/departures"
-                  android:theme="@android:style/Theme.Light.NoTitleBar"
+                  android:theme="@style/AppThemeActionBar"
                   android:configChanges="locale|orientation">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
+        
+        <activity android:name=".NearbyActivity"
+                  android:label="Nearby"
+                  android:theme="@style/AppThemeActionBar"
+                  android:configChanges="locale|orientation">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+        <activity-alias android:name="NearbyShortcutActivity"
+            android:targetActivity="NearbyActivity"
+            android:label="Nearby"
+            android:configChanges="locale"
+            android:theme="@style/AppThemeActionBar"
+            >
+            <intent-filter>
+                <action android:name="android.intent.action.CREATE_SHORTCUT" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity-alias>
+
         <activity android:name=".SettingsActivity"
                   android:label="@string/title_settings"
                   android:configChanges="locale"
                   android:theme="@style/android:style/Theme"
                   ></activity>
+        <activity android:name="com.google.ads.AdActivity"
+                  android:configChanges="keyboard|keyboardHidden|orientation"/>
         <receiver android:name=".receivers.OnBootReceiver"
                   android:enabled="true" 
                   android:exported="false">
@@ -140,16 +168,23 @@
                   android:enabled="true" 
                   android:exported="false"
          />
+        <service android:name=".service.DataMigrationService"
+                 android:enabled="true" 
+                 android:exported="false"
+        />
         <provider android:name=".provider.PlacesProvider"
                   android:authorities="com.markupartist.sthlmtraveling.placesprovider"
+                  android:exported="false"
                   />
         <provider android:name=".provider.JourneysProvider"
                   android:authorities="com.markupartist.sthlmtraveling.journeysprovider"
+                  android:exported="false"
                   />
 
 </application>
-    <uses-sdk android:minSdkVersion="4" android:targetSdkVersion="8" />
+    <uses-sdk android:minSdkVersion="4" android:targetSdkVersion="10" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />

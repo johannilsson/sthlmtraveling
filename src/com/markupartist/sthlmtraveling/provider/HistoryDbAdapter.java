@@ -47,9 +47,26 @@ public class HistoryDbAdapter {
     public static final int INDEX_LONGITUDE = 5;
     public static final int INDEX_SITE_ID = 6;
 
+    /**
+     * @deprecated
+     */
     public static final int TYPE_START_POINT = 0;
+    /**
+     * @deprecated
+     */
     public static final int TYPE_END_POINT = 1;
+    /**
+     * Value for the departure type.
+     */
     public static final int TYPE_DEPARTURE_SITE = 2;
+    /**
+     * @deprecated
+     */
+    public static final int TYPE_VIA_POINT = 3;
+    /**
+     * Value for the journey planner site.
+     */
+    public static final int TYPE_JOURNEY_PLANNER_SITE = 4;
 
     private static final String DATABASE_NAME = "history";
     private static final String DATABASE_TABLE = "history";
@@ -167,20 +184,15 @@ public class HistoryDbAdapter {
         return mCursor;
     }
 
-    /**
-     * Fetch all entries for <code>TYPE_START_POINT</code>.
-     * @return a Cursor object
-     */
-    public Cursor fetchAllStartPoints() {
-        return fetchByType(TYPE_START_POINT);        
-    }
-
-    /**
-     * Fetch all entries for <code>TYPE_END_POINT</code>.
-     * @return a Cursor object
-     */
-    public Cursor fetchAllEndPoints() {
-        return fetchByType(TYPE_END_POINT);        
+    public Cursor fetchAllViaPoints() {
+        Cursor mCursor =
+            mDb.query(true, DATABASE_TABLE, new String[] {
+                    KEY_ROWID, KEY_TYPE, KEY_NAME, KEY_CREATED,
+                    KEY_LATITUDE, KEY_LONGITUDE, KEY_SITE_ID},
+                    "IFNULL(" + KEY_LATITUDE + ",0) = 0 ",
+                    null, null, null,
+                    KEY_CREATED + " DESC", "10");
+        return mCursor;    
     }
 
     /**
@@ -198,6 +210,22 @@ public class HistoryDbAdapter {
         return mCursor;        
     }
 
+    /**
+     * Fetch all entries for a specific type.
+     * @param type the type
+     * @return a Cursor object
+     */
+    public Cursor fetchLatest() {
+        Cursor mCursor =
+            mDb.query(true, DATABASE_TABLE, new String[] {
+                    KEY_ROWID, KEY_TYPE, KEY_NAME, KEY_CREATED,
+                    KEY_LATITUDE, KEY_LONGITUDE, KEY_SITE_ID},
+                    null, null, null, null,
+                    KEY_CREATED + " DESC", "10");
+        return mCursor;        
+    }
+
+    
     public void deleteAll() {
         mDb.delete(DATABASE_TABLE, null, null);
     }
@@ -271,4 +299,5 @@ public class HistoryDbAdapter {
             return true;
         }
     }
+
 }

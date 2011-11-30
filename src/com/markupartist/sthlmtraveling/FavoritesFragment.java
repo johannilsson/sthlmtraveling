@@ -21,10 +21,12 @@ import java.util.ArrayList;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.content.BroadcastReceiver;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
@@ -40,20 +42,20 @@ import android.widget.CursorAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.markupartist.sthlmtraveling.provider.FavoritesDbAdapter;
 import com.markupartist.sthlmtraveling.provider.TransportMode;
 import com.markupartist.sthlmtraveling.provider.JourneysProvider.Journey.Journeys;
 import com.markupartist.sthlmtraveling.provider.planner.JourneyQuery;
 import com.markupartist.sthlmtraveling.provider.planner.Planner;
 import com.markupartist.sthlmtraveling.provider.planner.Planner.Location;
 
-public class FavoritesActivity extends BaseListActivity {
+public class FavoritesFragment extends BaseListFragment {
 
     /**
      * Tag used for logging.
      */
-    public static final String TAG = "FavoritesActivity";
+    public static final String TAG = "FavoritesFragment";
 
     /**
      * The columns needed by the cursor adapter
@@ -94,16 +96,39 @@ public class FavoritesActivity extends BaseListActivity {
      */
     private static final int CONTEXT_MENU_DECREASE_PRIO = 4;
 
+    private BroadcastReceiver mUpdateUIReceiver = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.hasExtra("sthlmtraveling.intent.extra.FAVORITES_UPDATED")) {
+                initListAdapter();
+            }
+        }
+    };
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+	public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.favorites_list);
 
         registerEvent("Favorites");
 
-        convertFavorites();
+        getActivity().registerReceiver(mUpdateUIReceiver, new IntentFilter("sthlmtraveling.intent.action.UPDATE_UI"));        
+    }
+    
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    		Bundle savedInstanceState) {
+    	return inflater.inflate(R.layout.favorites_list_fragment, container, false);
+    }
+    
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+    	maybeInitListAdapter();
+    	super.onActivityCreated(savedInstanceState);
+    }
 
-        Cursor cursor = managedQuery(
+    private void initListAdapter() {
+        Cursor cursor = getActivity().managedQuery(
                 Journeys.CONTENT_URI,
                 PROJECTION,
                 Journeys.STARRED + " = ?",  // We only want the
@@ -111,8 +136,7 @@ public class FavoritesActivity extends BaseListActivity {
                 Journeys.DEFAULT_SORT_ORDER
             );
 
-        setListAdapter(new JourneyAdapter(this, cursor));
-
+        setListAdapter(new JourneyAdapter(getActivity(), cursor));
         registerForContextMenu(getListView());
     }
 
@@ -142,7 +166,7 @@ public class FavoritesActivity extends BaseListActivity {
             (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         switch (item.getItemId()) {
         case CONTEXT_MENU_DELETE:
-            getContentResolver().delete(
+        	getActivity().getContentResolver().delete(
                     ContentUris.withAppendedId(Journeys.CONTENT_URI, menuInfo.id),
                     null, null);
             return true;
@@ -160,14 +184,14 @@ public class FavoritesActivity extends BaseListActivity {
     }
 
     @Override
-    protected void onListItemClick(ListView l, View v, int position, long id) {
+	public void onListItemClick(ListView l, View v, int position, long id) {
         doSearch(id, false);
     }
 
     private void doSearch(long id, boolean reversed) {
         Uri uri = ContentUris.withAppendedId(Journeys.CONTENT_URI, id);
 
-        Cursor cursor = managedQuery(uri, PROJECTION, null, null, null);
+        Cursor cursor = getActivity().managedQuery(uri, PROJECTION, null, null, null);
         cursor.moveToFirst();
         JourneyQuery journeyQuery = getJourneyQuery(cursor);
 
@@ -178,7 +202,7 @@ public class FavoritesActivity extends BaseListActivity {
             journeyQuery.destination = tmpEndPoint;
         }
 
-        Intent routesIntent = new Intent(this, RoutesActivity.class);
+        Intent routesIntent = new Intent(getActivity(), RoutesActivity.class);
         routesIntent.putExtra(RoutesActivity.EXTRA_JOURNEY_QUERY,
                 journeyQuery);
         startActivity(routesIntent);
@@ -187,7 +211,7 @@ public class FavoritesActivity extends BaseListActivity {
     private void updateListPosition(long id, boolean increase) {
         Uri uri = ContentUris.withAppendedId(Journeys.CONTENT_URI, id);
 
-        Cursor cursor = managedQuery(uri, PROJECTION, null, null, null);
+        Cursor cursor = getActivity().managedQuery(uri, PROJECTION, null, null, null);
         cursor.moveToFirst();
 
         int position = cursor.getInt(COLUMN_INDEX_POSITION);
@@ -199,89 +223,32 @@ public class FavoritesActivity extends BaseListActivity {
 
         ContentValues values = new ContentValues();
         values.put(Journeys.POSITION, position);
-        getContentResolver().update(uri, values, null, null);
+        getActivity().getContentResolver().update(uri, values, null, null);
     }
     
     /**
      * Converts old favorites to the new journey table.
      */
-    private void convertFavorites() {
-
-        SharedPreferences settings = getPreferences(MODE_PRIVATE);
+    private void maybeInitListAdapter() {
+        // This for legacy resons.
+        SharedPreferences localSettings = getActivity().getPreferences(getActivity().MODE_PRIVATE);
+        boolean isFavoritesConvertedLegacy =
+            localSettings.getBoolean("converted_favorites", false);
+        // This is the new settings.
+        SharedPreferences settings =
+        		getActivity().getSharedPreferences("sthlmtraveling", getActivity().MODE_PRIVATE);
         boolean isFavoritesConverted =
             settings.getBoolean("converted_favorites", false);
-        if (isFavoritesConverted) {
+        if (isFavoritesConvertedLegacy || isFavoritesConverted) {
+            initListAdapter();
             return;
         }
-
-        FavoritesDbAdapter favoritesDbAdapter = new FavoritesDbAdapter(this);
-        favoritesDbAdapter.open();
-
-        Cursor cursor = favoritesDbAdapter.fetch();
-        startManagingCursor(cursor);
-
-        if (cursor.moveToFirst()) {
-            ArrayList<String> transportModes = new ArrayList<String>();
-            transportModes.add(TransportMode.BUS);
-            transportModes.add(TransportMode.FLY);
-            transportModes.add(TransportMode.METRO);
-            transportModes.add(TransportMode.TRAIN);
-            transportModes.add(TransportMode.TRAM);
-            transportModes.add(TransportMode.WAX);
-            do {
-                JourneyQuery journeyQuery = new JourneyQuery.Builder()
-                    .transportModes(transportModes)
-                    .origin(
-                            cursor.getString(FavoritesDbAdapter.INDEX_START_POINT),
-                            cursor.getInt(FavoritesDbAdapter.INDEX_START_POINT_LATITUDE),
-                            cursor.getInt(FavoritesDbAdapter.INDEX_START_POINT_LONGITUDE))
-                    .destination(
-                            cursor.getString(FavoritesDbAdapter.INDEX_END_POINT),
-                            cursor.getInt(FavoritesDbAdapter.INDEX_END_POINT_LATITUDE),
-                            cursor.getInt(FavoritesDbAdapter.INDEX_END_POINT_LONGITUDE))
-                    .create();
-
-                // Store new journey
-                String json;
-                try {
-                    json = journeyQuery.toJson(false).toString();
-                } catch (JSONException e) {
-                    Log.e(TAG, "Failed to convert journey to a json document.");
-                    return;
-                }
-
-                ContentValues values = new ContentValues();
-                values.put(Journeys.JOURNEY_DATA, json);
-                values.put(Journeys.STARRED, "1");
-                values.put(Journeys.CREATED_AT,
-                        cursor.getString(FavoritesDbAdapter.INDEX_CREATED));
-                getContentResolver().insert(Journeys.CONTENT_URI, values);
-
-                Log.d(TAG, String.format("Converted favorite journey %s -> %s.",
-                        journeyQuery.origin.name, journeyQuery.destination.name));
-            } while (cursor.moveToNext());
-        }
-
-        SharedPreferences.Editor editor = settings.edit();
-        editor.putBoolean("converted_favorites", true);
-        editor.commit();
-
-        stopManagingCursor(cursor);
-        favoritesDbAdapter.close();
+        Toast.makeText(getActivity(), "Converting Favorites...", Toast.LENGTH_SHORT).show();
     }
 
     @Override
-    protected void onDestroy() {
+	public void onDestroy() {
         super.onDestroy();
-        //mFavoritesDbAdapter.close();
-    }
-
-    @Override
-    public boolean onSearchRequested() {
-        Intent i = new Intent(this, StartActivity.class);
-        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(i);
-        return true;
     }
 
     private class JourneyAdapter extends CursorAdapter {
@@ -294,32 +261,18 @@ public class FavoritesActivity extends BaseListActivity {
         public void bindView(View view, Context context, Cursor cursor) {
             JourneyQuery journeyQuery = getJourneyQuery(cursor);
 
-            TextView originText =
-                (TextView) view.findViewById(R.id.favorite_start_point);
-            if (Location.TYPE_MY_LOCATION.equals(journeyQuery.origin.name)) {
-                originText.setText(getString(R.string.my_location));
-            } else {
-                originText.setText(journeyQuery.origin.name);
-            }
-
-            TextView destinationText =
-                (TextView) view.findViewById(R.id.favorite_end_point);
-            if (Location.TYPE_MY_LOCATION.equals(journeyQuery.destination.name)) {
-                destinationText.setText(getString(R.string.my_location));
-            } else {
-                destinationText.setText(journeyQuery.destination.name);
-            }
-
-            addTransportModeViews(journeyQuery, view);;
+            inflate(view, journeyQuery);
         }
 
         @Override
         public View newView(Context context, Cursor cursor, ViewGroup parent) {
             final LayoutInflater inflater = LayoutInflater.from(context);
             View v = inflater.inflate(R.layout.favorite_row, parent, false);
-
             JourneyQuery journeyQuery = getJourneyQuery(cursor);
+            return inflate(v, journeyQuery);
+        }
 
+        private View inflate(View v, JourneyQuery journeyQuery) {
             TextView originText =
                 (TextView) v.findViewById(R.id.favorite_start_point);
             if (Location.TYPE_MY_LOCATION.equals(journeyQuery.origin.name)) {
@@ -335,12 +288,26 @@ public class FavoritesActivity extends BaseListActivity {
             } else {
                 destinationText.setText(journeyQuery.destination.name);
             }
+
+            View viaView = v.findViewById(R.id.favorite_via_row);
+            if (journeyQuery.hasVia()) {
+                viaView.setVisibility(View.VISIBLE);
+                TextView viaText = (TextView) v.findViewById(R.id.favorite_via_point);
+                viaText.setText(journeyQuery.via.name);
+            } else {
+                viaView.setVisibility(View.GONE);
+            }
+
             addTransportModeViews(journeyQuery, v);
 
             return v;
         }
 
         private void addTransportModeViews(JourneyQuery journeyQuery, View v) {
+            if (journeyQuery.transportModes == null) {
+                journeyQuery.transportModes = new ArrayList<String>();
+            }
+
             for (String transportMode : journeyQuery.transportModes) {
                 if (transportMode.equals(TransportMode.METRO)) {
                     ImageView transportView =

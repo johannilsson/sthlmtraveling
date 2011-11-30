@@ -48,14 +48,25 @@
     
     on mapview: android:layout_below="@id/adress_search"
      -->
-
+    <LinearLayout
+        android:id="@+id/actionbar_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        >
+	    <com.markupartist.android.widget.ActionBar
+	        android:id="@+id/actionbar"
+	        style="@style/ActionBar"
+	        />
+    </LinearLayout>
     <com.google.android.maps.MapView
         android:id="@+id/mapview"
+        android:layout_below="@id/actionbar_layout"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent" 
         android:enabled="true"
         android:clickable="true" 
-        android:apiKey="0YNZJeHdJba3MYfIAGNUIy8758FUO-75zkW9BHA" />
+        android:apiKey="0YNZJeHdJba3AmWeKrEgX9JuZ108r4BOAX_1SwQ" />
 
 
     <!--

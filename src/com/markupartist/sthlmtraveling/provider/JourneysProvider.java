@@ -206,7 +206,8 @@ public class JourneysProvider extends ContentProvider {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         String finalSelection;
 
-        if (!values.containsKey(Journeys.UPDATED_AT)) {
+        if (!values.containsKey(Journeys.UPDATED_AT)
+                && !values.containsKey(Journeys.STARRED)) {
             DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             Date date = new Date();
             values.put(Journeys.UPDATED_AT,

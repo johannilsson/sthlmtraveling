@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
 /*
-** Copyright (C) 2009 Johan Nilsson <http://markupartist.com>
+** Copyright (C) 2011 Johan Nilsson <http://markupartist.com>
 **
 ** Licensed under the Apache License, Version 2.0 (the "License"); 
 ** you may not use this file except in compliance with the License. 
@@ -16,11 +16,13 @@
 ** limitations under the License.
 */
 -->
+<com.google.ads.AdView xmlns:android="http://schemas.android.com/apk/res/android"
+                       xmlns:ads="http://schemas.android.com/apk/lib/com.google.ads"
+    android:id="@+id/ad_view"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    ads:adUnitId="a14e5fce9c329eb"
+    ads:adSize="BANNER" 
+    />
+    <!--     ads:loadAdOnCreate="true" -->
 
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-	<item
-		android:id="@+id/menu_refresh"
-		android:title="@string/refresh"
-		android:icon="@drawable/ic_menu_refresh"
-		/>
-</menu>

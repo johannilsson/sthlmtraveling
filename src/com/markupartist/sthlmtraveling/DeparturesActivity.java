@@ -26,24 +26,26 @@ import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.DialogInterface.OnClickListener;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.format.Time;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager.BadTokenException;
 import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
+import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 
+import com.google.ads.AdView;
 import com.markupartist.android.widget.ActionBar;
-import com.markupartist.android.widget.PullToRefreshListView;
-import com.markupartist.android.widget.PullToRefreshListView.OnRefreshListener;
 import com.markupartist.android.widget.actionbar.R;
 import com.markupartist.sthlmtraveling.provider.TransportMode;
 import com.markupartist.sthlmtraveling.provider.PlacesProvider.Place.Places;
@@ -52,10 +54,12 @@ import com.markupartist.sthlmtraveling.provider.departure.DeparturesStore.Depart
 import com.markupartist.sthlmtraveling.provider.departure.DeparturesStore.Departures;
 import com.markupartist.sthlmtraveling.provider.site.Site;
 import com.markupartist.sthlmtraveling.provider.site.SitesStore;
+import com.markupartist.sthlmtraveling.utils.AdRequestFactory;
 
 
 public class DeparturesActivity extends BaseListActivity {
     static String EXTRA_SITE_NAME = "com.markupartist.sthlmtraveling.siteName";
+    static String EXTRA_SITE = "com.markupartist.sthlmtraveling.site";
 
     private static final String STATE_GET_SITES_IN_PROGRESS =
         "com.markupartist.sthlmtraveling.getsites.inprogress";
@@ -79,6 +83,7 @@ public class DeparturesActivity extends BaseListActivity {
     private GetSitesTask mGetSitesTask;
     private GetDeparturesTask mGetDeparturesTask;
     private String mSiteName;
+    private int mSiteId;
     private Departures mDepartureResult;
     private Bundle mSavedState;
 
@@ -89,6 +94,8 @@ public class DeparturesActivity extends BaseListActivity {
 
     private ActionBar mActionBar;
 
+    private AdView mAdView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -97,19 +104,59 @@ public class DeparturesActivity extends BaseListActivity {
         registerEvent("Departures");
 
         Bundle extras = getIntent().getExtras();
-        mSiteName = extras.getString(EXTRA_SITE_NAME);
+        
+        if (extras.containsKey(EXTRA_SITE)) {
+            mSite = extras.getParcelable(EXTRA_SITE);
+        } else if (extras.containsKey(EXTRA_SITE_NAME)) {
+            mSiteName = extras.getString(EXTRA_SITE_NAME);
+        } else {
+            Log.e(TAG, "Could not open activity, missing site id or name.");
+            finish();
+        }
 
         mSectionedAdapter = new DepartureAdapter(this);
 
-        mActionBar = initActionBar();
+        mActionBar = initActionBar(R.menu.actionbar_departures);
         mActionBar.setTitle(R.string.departures);
-        //setupFilterButtons();
-        //loadDepartures();
+
+        mAdView = (AdView) findViewById(R.id.ad_view);
+        if (AppConfig.ADS_ENABLED) {
+            mAdView.loadAd(AdRequestFactory.createRequest());
+        }
     }
 
     @Override
     public void setTitle(CharSequence title) {
         mActionBar.setTitle(title);
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        onRotationChange(newConfig);
+
+        super.onConfigurationChanged(newConfig);
+    }
+
+    private void onRotationChange(Configuration newConfig) {
+        if (newConfig.orientation == newConfig.ORIENTATION_LANDSCAPE) {
+            if (mAdView != null) {
+                mAdView.setVisibility(View.GONE);
+            }
+        } else {
+            if (mAdView != null) {
+                mAdView.setVisibility(View.VISIBLE);
+            }
+        }        
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+        case R.id.actionbar_item_refresh:
+            new GetDeparturesTask().execute(mSite);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     /**
@@ -210,15 +257,41 @@ public class DeparturesActivity extends BaseListActivity {
 
         setTitle(mSite.getName());
 
-        ((PullToRefreshListView) getListView())
-                .setOnRefreshListener(new OnRefreshListener() {
+        Time now = new Time();
+        now.setToNow();
 
-                    @Override
-                    public void onRefresh() {
-                        new RefreshDeparturesTask().execute(mSite);
-                    }
+        // Adjust the empty view.
+        /*
+        LinearLayout emptyView = (LinearLayout) getListView().getEmptyView();
+        TextView text = (TextView) emptyView.findViewById(R.id.search_progress_text);
+        text.setText(R.string.no_departures_for_transport_type);
+        ProgressBar progressBar = (ProgressBar) emptyView.findViewById(R.id.search_progress_bar);
+        progressBar.setVisibility(View.GONE);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT);
+        params.gravity = Gravity.TOP|Gravity.LEFT;
+        emptyView.setLayoutParams(params);
+        getListView().setEmptyView(emptyView);
+        */
+        View emptyView = getListView().getEmptyView();
+        TextView text = (TextView) emptyView.findViewById(R.id.search_progress_text);
+        text.setText(R.string.no_departures_for_transport_type);
+        ProgressBar progressBar = (ProgressBar) emptyView.findViewById(R.id.search_progress_bar);
+        progressBar.setVisibility(View.GONE);
+        getListView().setEmptyView(emptyView);
 
-                });
+        /*
+        PullToRefreshListView listView = (PullToRefreshListView) getListView();
+        listView.setLastUpdated("Updated at " + now.format("%H:%M"));
+        listView.setOnRefreshListener(new OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                new RefreshDeparturesTask().execute(mSite);
+            }
+
+        });
+        */
     }
 
     @Override
@@ -426,13 +499,6 @@ public class DeparturesActivity extends BaseListActivity {
         if (mActionBar != null) {
             mActionBar.setProgressBarVisibility(View.VISIBLE);
         }
-        /*
-        if (mProgress == null) {
-            mProgress = new ProgressDialog(this);
-            mProgress.setMessage(getText(R.string.loading));
-            mProgress.show();   
-        }
-        */
     }
 
     /**
@@ -442,20 +508,14 @@ public class DeparturesActivity extends BaseListActivity {
         if (mActionBar != null) {
             mActionBar.setProgressBarVisibility(View.GONE);
         }
-        /*
-        if (mProgress != null) {
-            try {
-                mProgress.dismiss();
-            } catch (Exception e) {
-                Log.d(TAG, "Could not dismiss progress; " + e.getMessage());
-            }
-            mProgress = null;
-        }
-        */
     }
 
     @Override
     protected void onDestroy() {
+        if (mAdView != null) {
+            mAdView.destroy();
+        }
+
         super.onDestroy();
 
         onCancelGetSitesTask();
@@ -502,29 +562,20 @@ public class DeparturesActivity extends BaseListActivity {
                     new GetDeparturesTask().execute(result.get(0));
                 } else {
                     mSiteAlternatives = result;
-                    showDialog(DIALOG_SITE_ALTERNATIVES);
+                    try {
+                        showDialog(DIALOG_SITE_ALTERNATIVES);
+                    } catch (BadTokenException e) {
+                        Log.w(TAG, "Caught BadTokenException when trying to show sites dialog.");
+                    }
                 }
             } else if (!mWasSuccess) {
-                showDialog(DIALOG_GET_SITES_NETWORK_PROBLEM);
+                try {
+                    showDialog(DIALOG_GET_SITES_NETWORK_PROBLEM);
+                } catch (BadTokenException e) {
+                    Log.w(TAG, "Caught BadTokenException when trying to show network error dialog.");
+                }
             } else {
             //    onNoRoutesDetailsResult();
-            }
-        }
-    }
-
-    private class RefreshDeparturesTask extends GetDeparturesTask{
-        @Override
-        public void onPreExecute() {
-        }
-
-        @Override
-        protected void onPostExecute(Departures result) {
-            ((PullToRefreshListView) getListView()).onRefreshComplete();
-
-            if (wasSuccess()) {
-                fillData(result);
-            } else {
-                showDialog(DIALOG_GET_DEPARTURES_NETWORK_PROBLEM);
             }
         }
     }
@@ -585,7 +636,11 @@ public class DeparturesActivity extends BaseListActivity {
             if (mWasSuccess) {
                 fillData(result);
             } else {
-                showDialog(DIALOG_GET_DEPARTURES_NETWORK_PROBLEM);
+                try {
+                    showDialog(DIALOG_GET_DEPARTURES_NETWORK_PROBLEM);
+                } catch (BadTokenException e) {
+                    Log.w(TAG, "Caught BadTokenException when trying to show network error dialog.");
+                }
             }
         }
     }

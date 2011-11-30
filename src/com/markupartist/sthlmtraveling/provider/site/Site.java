@@ -89,7 +89,7 @@ public class Site implements Parcelable {
 
     public static Site fromJson(JSONObject json) throws JSONException {
         Site site = new Site();
-        site.setId(json.getInt("siteId"));
+        site.setId(json.getInt("site_id"));
         site.setName(json.getString("name"));
         return site;
     }

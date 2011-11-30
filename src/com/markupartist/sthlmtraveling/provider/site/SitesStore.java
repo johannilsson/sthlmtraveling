@@ -1,7 +1,7 @@
 package com.markupartist.sthlmtraveling.provider.site;
 
 import static com.markupartist.sthlmtraveling.provider.ApiConf.KEY;
-import static com.markupartist.sthlmtraveling.provider.ApiConf.apiEndpoint;
+import static com.markupartist.sthlmtraveling.provider.ApiConf.apiEndpoint2;
 import static com.markupartist.sthlmtraveling.provider.ApiConf.get;
 
 import java.io.IOException;
@@ -17,6 +17,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.location.Location;
+import android.util.Log;
 
 import com.markupartist.sthlmtraveling.utils.HttpManager;
 import com.markupartist.sthlmtraveling.utils.StreamUtils;
@@ -35,34 +36,13 @@ public class SitesStore {
     }
 
     public ArrayList<Site> getSite(String name) throws IOException {
-        /*
-        ArrayList<Site> sites = new ArrayList<Site>();
-
-        final HttpGet get = new HttpGet(apiEndpoint() + "/sites/"
-                + "?q=" + URLEncoder.encode(name)
-                + "&key=" + get(KEY));
-
-        HttpEntity entity = null;
-        final HttpResponse response = HttpManager.execute(get);
-
-        if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
-            throw new IOException("A remote server error occurred when getting sites.");
-        }
-
-        entity = response.getEntity();
-        SiteParser.parseResponse(entity.getContent(), sites);
-        */
-
-        ArrayList<Site> sites = getSiteV2(name);
-
-        return sites;
+        return getSiteV2(name);
     }
 
     public ArrayList<Site> getSiteV2(String name) throws IOException {
-        final HttpGet get = new HttpGet(apiEndpoint() + "/site/"
-                + "?q=" + URLEncoder.encode(name)
-                + "&key=" + get(KEY));
-
+        final HttpGet get = new HttpGet(apiEndpoint2() + "site/v1/"
+                + "?q=" + URLEncoder.encode(name));
+        get.addHeader("X-STHLMTraveling-API-Key", get(KEY));
         HttpEntity entity = null;
         final HttpResponse response = HttpManager.execute(get);
 
@@ -74,7 +54,11 @@ public class SitesStore {
         String rawContent = StreamUtils.toString(entity.getContent());
         ArrayList<Site> sites = new ArrayList<Site>();
         try {
-            JSONArray jsonSites = new JSONArray(rawContent);
+            JSONObject jsonResponse = new JSONObject(rawContent);
+            if (!jsonResponse.has("sites")) {
+                throw new IOException("Invalid input.");
+            }
+            JSONArray jsonSites = jsonResponse.getJSONArray("sites");
             for (int i = 0; i < jsonSites.length(); i++) {
                 try {
                     sites.add(Site.fromJson(jsonSites.getJSONObject(i)));
@@ -89,97 +73,62 @@ public class SitesStore {
         return sites;
     }
 
-    public ArrayList<StopPoint> nearby(Location location) throws IOException {
-        final HttpGet get = new HttpGet(apiEndpoint() + "/stoppoint/"
-                + "?lat=" + location.getLatitude()
-                + "&lon=" + location.getLongitude()
-                + "&maxDistance=1000"
-                + "&maxResults=20"
-                + "&key=" + get(KEY));
-
+    /**
+     * Find nearby {@link Site}s.
+     * 
+     * @param location The location.
+     * @return A list of {@link Site}s.
+     * @throws IOException If failed to communicate with headend or if we can
+     * not parse the response.
+     */
+    public ArrayList<Site> nearby(Location location) throws IOException {
+        final HttpGet get = new HttpGet(apiEndpoint2() + "semistatic/site/near/"
+                + "?latitude=" + location.getLatitude()
+                + "&longitude=" + location.getLongitude()
+                + "&max_distance=0.8"
+                + "&max_results=20");
+        get.addHeader("X-STHLMTraveling-API-Key", get(KEY));
         HttpEntity entity = null;
         HttpResponse response;
         try {
             response = HttpManager.execute(get);
         } catch (Exception e) {
             response = HttpManager.execute(get);
-        }
-         
+        }         
 
         if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
+            Log.w("SiteStore", "Expected 200, got " + response.getStatusLine().getStatusCode());
             throw new IOException("A remote server error occurred when getting sites.");
         }
 
         entity = response.getEntity();
         String rawContent = StreamUtils.toString(entity.getContent());
-        ArrayList<StopPoint> stopPoints = new ArrayList<StopPoint>();
+        ArrayList<Site> stopPoints = new ArrayList<Site>();
         try {
-            JSONArray jsonStops = new JSONArray(rawContent);
-            for (int i = 0; i < jsonStops.length(); i++) {
-                try {
-                    JSONObject jsonStop = jsonStops.getJSONObject(i);
-                    StopPoint stopPoint = new StopPoint();
-                    stopPoint.site = Site.fromJson(jsonStop.getJSONObject("site"));
-                    stopPoint.name = jsonStop.getString("name");
-                    stopPoint.distance = jsonStop.getInt("distance");
+            JSONObject jsonSites = new JSONObject(rawContent);
+            if (jsonSites.has("sites")) {
+                JSONArray jsonSitesArray = jsonSites.getJSONArray("sites");
+                for (int i = 0; i < jsonSitesArray.length(); i++) {
+                    try {
+                        JSONObject jsonStop = jsonSitesArray.getJSONObject(i);
 
-                    stopPoints.add(stopPoint);
-                } catch (JSONException e) {
-                    // Ignore errors here.
+                        Site site = new Site();
+                        site.setName(jsonStop.getString("name"));
+                        site.setId(jsonStop.getInt("site_id"));
+
+                        stopPoints.add(site);
+                    } catch (JSONException e) {
+                        // Ignore errors here.
+                    }
                 }
+            } else {
+                throw new IOException("Sites is not present in response.");
             }
         } catch (JSONException e) {
-            throw new IOException("Invalid input.");
+            throw new IOException("Invalid response.");
         }
 
         return stopPoints;
     }
-    
-    /*
-    private static class SiteParser {
-        public static void parseResponse(InputStream in, ArrayList<Site> sites) throws IOException {
-            try {
-                XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
-                factory.setNamespaceAware(true);
-                XmlPullParser parser = factory.newPullParser();
-                parser.setInput(new InputStreamReader(in));
 
-                int eventType = parser.getEventType();
-                boolean inNumber = false;
-                int number = 0;
-                String name = "";
-                boolean inName = false;
-                while (eventType != XmlPullParser.END_DOCUMENT) {
-                    if (eventType == XmlPullParser.START_TAG) {
-                        if ("Name".equals(parser.getName())) {
-                            inName = true;
-                        } else if ("Number".equals(parser.getName())) {
-                            inNumber = true;
-                        }
-                    } else if (eventType == XmlPullParser.END_TAG) {
-                        if ("Name".equals(parser.getName())) {
-                            inName = false;
-                        } else if ("Number".equals(parser.getName())) {
-                            inNumber = false;
-                        } else if ("Site".equals(parser.getName())) {
-                            Site site = new Site();
-                            site.setId(number);
-                            site.setName(name);
-                            sites.add(site);
-                        }
-                    } else if (eventType == XmlPullParser.TEXT) {
-                        if (inNumber) {
-                            number = Integer.parseInt(parser.getText());
-                        } else if (inName) {
-                            name = parser.getText();
-                        }
-                    }
-                    eventType = parser.next();
-                }
-            } catch (XmlPullParserException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-    */
 }
