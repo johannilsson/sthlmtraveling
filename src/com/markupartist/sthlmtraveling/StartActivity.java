@@ -27,6 +27,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.TabHost;
 import android.widget.TabWidget;
 import android.widget.TextView;
@@ -206,5 +207,21 @@ public class StartActivity extends FragmentActivity {
         @Override
         public void onPageScrollStateChanged(int state) {
         }
+        
+
+    }
+    
+    @Override
+    public boolean onSearchRequested() {
+    	if(mTabHost.getCurrentTabTag().equals("departures"))
+    	{
+    		View editText = findViewById(R.id.sites);
+			editText.requestFocus();
+    		InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+    		imm.showSoftInput(editText, InputMethodManager.SHOW_IMPLICIT);
+    	} else {
+    		mTabHost.setCurrentTabByTag("search");
+    	}	
+    	return true;
     }
 }
