@@ -33,18 +33,14 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.format.Time;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup.MarginLayoutParams;
 import android.view.WindowManager.BadTokenException;
 import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 
@@ -63,6 +59,7 @@ import com.markupartist.sthlmtraveling.utils.AdRequestFactory;
 
 public class DeparturesActivity extends BaseListActivity {
     static String EXTRA_SITE_NAME = "com.markupartist.sthlmtraveling.siteName";
+    static String EXTRA_SITE = "com.markupartist.sthlmtraveling.site";
 
     private static final String STATE_GET_SITES_IN_PROGRESS =
         "com.markupartist.sthlmtraveling.getsites.inprogress";
@@ -86,6 +83,7 @@ public class DeparturesActivity extends BaseListActivity {
     private GetSitesTask mGetSitesTask;
     private GetDeparturesTask mGetDeparturesTask;
     private String mSiteName;
+    private int mSiteId;
     private Departures mDepartureResult;
     private Bundle mSavedState;
 
@@ -106,7 +104,15 @@ public class DeparturesActivity extends BaseListActivity {
         registerEvent("Departures");
 
         Bundle extras = getIntent().getExtras();
-        mSiteName = extras.getString(EXTRA_SITE_NAME);
+        
+        if (extras.containsKey(EXTRA_SITE)) {
+            mSite = extras.getParcelable(EXTRA_SITE);
+        } else if (extras.containsKey(EXTRA_SITE_NAME)) {
+            mSiteName = extras.getString(EXTRA_SITE_NAME);
+        } else {
+            Log.e(TAG, "Could not open activity, missing site id or name.");
+            finish();
+        }
 
         mSectionedAdapter = new DepartureAdapter(this);
 

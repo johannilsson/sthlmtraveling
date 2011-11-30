@@ -70,10 +70,10 @@ public class DeviationsActivity extends BaseListActivity {
         mProgress = (LinearLayout) findViewById(R.id.search_progress);
         mProgress.setVisibility(View.GONE);
 
+        mActionBar = initActionBar(R.menu.actionbar_deviations);
+
         loadDeviations();
         registerForContextMenu(getListView());
-
-        mActionBar = initActionBar(R.menu.actionbar_deviations);
     }
 
     @Override

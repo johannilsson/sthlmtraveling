@@ -251,14 +251,6 @@ public class FavoritesFragment extends BaseListFragment {
         super.onDestroy();
     }
 
-//    @Override
-//    public boolean onSearchRequested() {
-//        Intent i = new Intent(getActivity(), StartActivity.class);
-//        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//        startActivity(i);
-//        return true;
-//    }
-
     private class JourneyAdapter extends CursorAdapter {
         
         public JourneyAdapter(Context context, Cursor c) {

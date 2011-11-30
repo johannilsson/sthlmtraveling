@@ -59,8 +59,22 @@ application and the tests application deployed before.
 
 Changelog
 ---------
-* NEXT
-    * New API for sites and journey planner
+* 2.3.10
+    * Adapted deviation to new API.
+    * Adapted traffic status to new API.
+    * Fixed loading indicator in deviation.
+    * Fixed some translations.
+* 2.3.9
+    * Adapted departures to new API.
+    * Time displayed for departures now comes directly from SL which should
+      give more accurate times.
+    * Removed red indicator in departures for "now" because it did not work.
+* 2.3.8
+    * Renamed transport types for TRAIN and TRAM to work with the new API.
+* 2.3.7
+    * New API for sites and journey planner.
+    * Initial support for intermediate stops (not available yet).
+    * Restyled tabs on the front activities.
 * 2.3.6
     * Removed ads
 * 2.3.5
