@@ -31,6 +31,7 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -231,12 +232,13 @@ public class FavoritesFragment extends BaseListFragment {
      */
     private void maybeInitListAdapter() {
         // This for legacy resons.
-        SharedPreferences localSettings = getActivity().getPreferences(getActivity().MODE_PRIVATE);
+        SharedPreferences localSettings =
+            getActivity().getPreferences(FragmentActivity.MODE_PRIVATE);
         boolean isFavoritesConvertedLegacy =
             localSettings.getBoolean("converted_favorites", false);
         // This is the new settings.
         SharedPreferences settings =
-        		getActivity().getSharedPreferences("sthlmtraveling", getActivity().MODE_PRIVATE);
+            getActivity().getSharedPreferences("sthlmtraveling", FragmentActivity.MODE_PRIVATE);
         boolean isFavoritesConverted =
             settings.getBoolean("converted_favorites", false);
         if (isFavoritesConvertedLegacy || isFavoritesConverted) {
