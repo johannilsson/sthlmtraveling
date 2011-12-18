@@ -31,13 +31,13 @@
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </activity-alias>
-        <activity android:name=".PlannerActivity"
+        <activity android:name=".PlannerFragmentActivity"
                   android:label="@string/search_label"
                   android:configChanges="locale"></activity>
         <!-- Alias activity used to create shortcuts on Home. The alias is used
              simply to have a different label. -->
         <activity-alias android:name="SearchShortcutActivity"
-            android:targetActivity="PlannerActivity"
+            android:targetActivity="PlannerFragmentActivity"
             android:label="@string/activity_create_shortcut"
             android:configChanges="locale">
             <intent-filter>
@@ -45,7 +45,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity-alias>
-        <activity android:name=".FavoritesActivity"
+        <activity android:name=".FavoritesFragmentActivity"
                   android:label="@string/favorites_label"
                   android:configChanges="locale"></activity>
         <activity android:name=".RoutesActivity"
@@ -103,11 +103,11 @@
                   android:theme="@style/AppThemeActionBar"
                   android:label="@string/stop_label"
                   android:configChanges="locale|orientation"></activity>
-        <activity android:name=".SearchDeparturesActivity"
+        <activity android:name=".SearchDeparturesFragmentActivity"
                   android:label="@string/departures"
                   android:configChanges="locale|orientation"></activity>
         <activity-alias android:name="CreateDepartureShortcutActivity"
-			            android:targetActivity="SearchDeparturesActivity"
+			            android:targetActivity="SearchDeparturesFragmentActivity"
 			            android:label="@string/activity_create_departure_shortcut"
 			            android:configChanges="locale">
             <intent-filter>

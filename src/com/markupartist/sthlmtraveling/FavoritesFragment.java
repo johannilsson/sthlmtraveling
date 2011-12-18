@@ -31,6 +31,7 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -50,12 +51,12 @@ import com.markupartist.sthlmtraveling.provider.planner.JourneyQuery;
 import com.markupartist.sthlmtraveling.provider.planner.Planner;
 import com.markupartist.sthlmtraveling.provider.planner.Planner.Location;
 
-public class FavoritesActivity extends BaseListActivity {
+public class FavoritesFragment extends BaseListFragment {
 
     /**
      * Tag used for logging.
      */
-    public static final String TAG = "FavoritesActivity";
+    public static final String TAG = "FavoritesFragment";
 
     /**
      * The columns needed by the cursor adapter
@@ -107,19 +108,28 @@ public class FavoritesActivity extends BaseListActivity {
     };
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+	public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.favorites_list);
 
         registerEvent("Favorites");
 
-        registerReceiver(mUpdateUIReceiver, new IntentFilter("sthlmtraveling.intent.action.UPDATE_UI"));
-
-        maybeInitListAdapter();        
+        getActivity().registerReceiver(mUpdateUIReceiver, new IntentFilter("sthlmtraveling.intent.action.UPDATE_UI"));        
+    }
+    
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    		Bundle savedInstanceState) {
+    	return inflater.inflate(R.layout.favorites_list_fragment, container, false);
+    }
+    
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+    	maybeInitListAdapter();
+    	super.onActivityCreated(savedInstanceState);
     }
 
     private void initListAdapter() {
-        Cursor cursor = managedQuery(
+        Cursor cursor = getActivity().managedQuery(
                 Journeys.CONTENT_URI,
                 PROJECTION,
                 Journeys.STARRED + " = ?",  // We only want the
@@ -127,7 +137,7 @@ public class FavoritesActivity extends BaseListActivity {
                 Journeys.DEFAULT_SORT_ORDER
             );
 
-        setListAdapter(new JourneyAdapter(this, cursor));
+        setListAdapter(new JourneyAdapter(getActivity(), cursor));
         registerForContextMenu(getListView());
     }
 
@@ -157,7 +167,7 @@ public class FavoritesActivity extends BaseListActivity {
             (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         switch (item.getItemId()) {
         case CONTEXT_MENU_DELETE:
-            getContentResolver().delete(
+        	getActivity().getContentResolver().delete(
                     ContentUris.withAppendedId(Journeys.CONTENT_URI, menuInfo.id),
                     null, null);
             return true;
@@ -175,14 +185,14 @@ public class FavoritesActivity extends BaseListActivity {
     }
 
     @Override
-    protected void onListItemClick(ListView l, View v, int position, long id) {
+	public void onListItemClick(ListView l, View v, int position, long id) {
         doSearch(id, false);
     }
 
     private void doSearch(long id, boolean reversed) {
         Uri uri = ContentUris.withAppendedId(Journeys.CONTENT_URI, id);
 
-        Cursor cursor = managedQuery(uri, PROJECTION, null, null, null);
+        Cursor cursor = getActivity().managedQuery(uri, PROJECTION, null, null, null);
         cursor.moveToFirst();
         JourneyQuery journeyQuery = getJourneyQuery(cursor);
 
@@ -193,7 +203,7 @@ public class FavoritesActivity extends BaseListActivity {
             journeyQuery.destination = tmpEndPoint;
         }
 
-        Intent routesIntent = new Intent(this, RoutesActivity.class);
+        Intent routesIntent = new Intent(getActivity(), RoutesActivity.class);
         routesIntent.putExtra(RoutesActivity.EXTRA_JOURNEY_QUERY,
                 journeyQuery);
         startActivity(routesIntent);
@@ -202,7 +212,7 @@ public class FavoritesActivity extends BaseListActivity {
     private void updateListPosition(long id, boolean increase) {
         Uri uri = ContentUris.withAppendedId(Journeys.CONTENT_URI, id);
 
-        Cursor cursor = managedQuery(uri, PROJECTION, null, null, null);
+        Cursor cursor = getActivity().managedQuery(uri, PROJECTION, null, null, null);
         cursor.moveToFirst();
 
         int position = cursor.getInt(COLUMN_INDEX_POSITION);
@@ -214,7 +224,7 @@ public class FavoritesActivity extends BaseListActivity {
 
         ContentValues values = new ContentValues();
         values.put(Journeys.POSITION, position);
-        getContentResolver().update(uri, values, null, null);
+        getActivity().getContentResolver().update(uri, values, null, null);
     }
     
     /**
@@ -222,32 +232,25 @@ public class FavoritesActivity extends BaseListActivity {
      */
     private void maybeInitListAdapter() {
         // This for legacy resons.
-        SharedPreferences localSettings = getPreferences(MODE_PRIVATE);
+        SharedPreferences localSettings =
+            getActivity().getPreferences(FragmentActivity.MODE_PRIVATE);
         boolean isFavoritesConvertedLegacy =
             localSettings.getBoolean("converted_favorites", false);
         // This is the new settings.
         SharedPreferences settings =
-            getSharedPreferences("sthlmtraveling", MODE_PRIVATE);
+            getActivity().getSharedPreferences("sthlmtraveling", FragmentActivity.MODE_PRIVATE);
         boolean isFavoritesConverted =
             settings.getBoolean("converted_favorites", false);
         if (isFavoritesConvertedLegacy || isFavoritesConverted) {
             initListAdapter();
             return;
         }
-        Toast.makeText(this, "Converting Favorites...", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity(), "Converting Favorites...", Toast.LENGTH_SHORT).show();
     }
 
     @Override
-    protected void onDestroy() {
+	public void onDestroy() {
         super.onDestroy();
-    }
-
-    @Override
-    public boolean onSearchRequested() {
-        Intent i = new Intent(this, StartActivity.class);
-        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(i);
-        return true;
     }
 
     private class JourneyAdapter extends CursorAdapter {
