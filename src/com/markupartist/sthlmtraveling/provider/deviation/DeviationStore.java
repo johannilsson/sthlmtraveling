@@ -73,7 +73,7 @@ public class DeviationStore {
 
     private String retrieveDeviations() throws IOException {
         final HttpGet get = new HttpGet(apiEndpoint2()
-                + "/v1/deviation/");
+                + "v1/deviation/");
         get.addHeader("X-STHLMTraveling-API-Key", get(KEY));
         HttpEntity entity = null;
         final HttpResponse response = HttpManager.execute(get);
@@ -142,7 +142,7 @@ public class DeviationStore {
 
     public TrafficStatus getTrafficStatus() throws IOException {
         final HttpGet get = new HttpGet(apiEndpoint2()
-                + "/v1/trafficstatus/");
+                + "v1/trafficstatus/");
         get.addHeader("X-STHLMTraveling-API-Key", get(KEY));
 
         HttpEntity entity = null;
