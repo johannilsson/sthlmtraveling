@@ -122,18 +122,18 @@ public class Planner {
     }
 
     public Response findPreviousJourney(JourneyQuery query) throws IOException, BadResponse {
-        return doQuery(query, 2);
+        return doJourneyQuery(query, 2);
     }
 
     public Response findNextJourney(JourneyQuery query) throws IOException, BadResponse {
-        return doQuery(query, 1);
+        return doJourneyQuery(query, 1);
     }
 
     public Response findJourney(JourneyQuery query) throws IOException, BadResponse {
-        return doQuery(query, -1);
+        return doJourneyQuery(query, -1);
     }
 
-    private Response doQuery(JourneyQuery query, int scrollDirection) throws IOException, BadResponse {
+    private Response doJourneyQuery(JourneyQuery query, int scrollDirection) throws IOException, BadResponse {
 
         Uri u = Uri.parse(apiEndpoint2());
         Uri.Builder b = u.buildUpon();
