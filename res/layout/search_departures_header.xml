@@ -21,7 +21,6 @@
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content">
-
 	<LinearLayout
 	    android:orientation="vertical"
 	    android:background="#e4e4e4"
@@ -42,10 +41,9 @@
 	            android:id="@+id/sites"
 	            android:hint="@string/site_name"
 	            android:dropDownWidth="fill_parent"
-	            android:layout_width="wrap_content"
+	            android:layout_width="match_parent"
 	            android:layout_height="fill_parent"
 	            android:textColor="#000"
-	            android:singleLine="true"
 	            android:layout_weight="1"
 	            android:imeOptions="actionSearch"
 	            android:lines="1"
