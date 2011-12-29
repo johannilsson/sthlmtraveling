@@ -250,6 +250,7 @@ public class FavoritesFragment extends BaseListFragment {
 
     @Override
 	public void onDestroy() {
+        getActivity().unregisterReceiver(mUpdateUIReceiver);
         super.onDestroy();
     }
 
