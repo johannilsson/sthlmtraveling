@@ -19,7 +19,6 @@ package com.markupartist.sthlmtraveling;
 import java.util.ArrayList;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -33,11 +32,10 @@ import android.widget.TabWidget;
 import android.widget.TextView;
 
 import com.markupartist.android.widget.ActionBar;
-import com.markupartist.sthlmtraveling.StartActivity.TabsAdapter;
 import com.markupartist.sthlmtraveling.service.DeviationService;
 import com.markupartist.sthlmtraveling.utils.ErrorReporter;
 
-public class StartActivity extends FragmentActivity {
+public class StartActivity extends BaseFragmentActivity {
     private TabHost mTabHost;
 	private ViewPager mViewPager;
 	private TabsAdapter mTabsAdapter;
@@ -62,17 +60,20 @@ public class StartActivity extends FragmentActivity {
         mTabHost.setup();
         
         mViewPager = (ViewPager)findViewById(R.id.pager);
-        
-        mTabsAdapter = new TabsAdapter(this, mTabHost, mViewPager);
 
-        mTabsAdapter.addTab(mTabHost.newTabSpec("search").setIndicator(buildIndicator(R.string.search_label)),
-                PlannerFragment.class, null);
-        mTabsAdapter.addTab(mTabHost.newTabSpec("favorites").setIndicator(buildIndicator(R.string.favorites_label)),
-                FavoritesFragment.class, null);
-        mTabsAdapter.addTab(mTabHost.newTabSpec("departures").setIndicator(buildIndicator(R.string.departures)),
-                SearchDeparturesFragment.class, null);
-        mTabsAdapter.addTab(mTabHost.newTabSpec("deviations").setIndicator(buildIndicator(R.string.deviations_label)),
-                TrafficStatusFragment.class, null);
+        mTabsAdapter = new TabsAdapter(this, mTabHost, mViewPager);
+        mTabsAdapter.addTab(mTabHost.newTabSpec("search")
+                .setIndicator(buildIndicator(R.string.search_label)),
+                    PlannerFragment.class, null);
+        mTabsAdapter.addTab(mTabHost.newTabSpec("favorites")
+                .setIndicator(buildIndicator(R.string.favorites_label)),
+                    FavoritesFragment.class, null);
+        mTabsAdapter.addTab(mTabHost.newTabSpec("departures")
+                .setIndicator(buildIndicator(R.string.departures)),
+                    SearchDeparturesFragment.class, null);
+        mTabsAdapter.addTab(mTabHost.newTabSpec("deviations")
+                .setIndicator(buildIndicator(R.string.deviations_label)),
+                    TrafficStatusFragment.class, null);
 
         if (savedInstanceState != null) {
             mTabHost.setCurrentTabByTag(savedInstanceState.getString("tab"));
@@ -81,11 +82,11 @@ public class StartActivity extends FragmentActivity {
         // Start background service.
         DeviationService.startAsRepeating(getApplicationContext());
     }
-    
+
     /**
-     * Build a {@link View} to be used as a tab indicator, setting the requested string resource as
-     * its label.
-     *
+     * Build a {@link View} to be used as a tab indicator, setting the requested
+     * string resource as its label.
+     * 
      * @param textRes
      * @return View
      */
