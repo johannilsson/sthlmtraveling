@@ -137,7 +137,7 @@ public class Planner {
 
         Uri u = Uri.parse(apiEndpoint2());
         Uri.Builder b = u.buildUpon();
-        b.appendEncodedPath("journey/v1/");
+        b.appendEncodedPath("v1/journey/");
         if (scrollDirection > -1) {
             b.appendQueryParameter("dir", String.valueOf(scrollDirection));
             b.appendQueryParameter("ident", query.ident);
