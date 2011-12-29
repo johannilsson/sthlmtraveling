@@ -35,7 +35,7 @@ public class DeparturesStore {
     	
         Log.d(TAG, "About to get departures for " + site.getName());
         final HttpGet get = new HttpGet(apiEndpoint2()
-                + "/v1/departures/" + site.getId()
+                + "v1/departures/" + site.getId()
                 + "?key=" + get(KEY)
                 + "&timewindow=30");
 
