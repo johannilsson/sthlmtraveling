@@ -70,7 +70,7 @@ public class SearchDeparturesFragment extends BaseListFragment {
 		fillData();
 		super.onActivityCreated(savedInstanceState);
 	}
-
+	
 	private void findViews() {
 		View searchHeader = getActivity().getLayoutInflater().inflate(
 				R.layout.search_departures_header, null);
@@ -82,6 +82,7 @@ public class SearchDeparturesFragment extends BaseListFragment {
 		AutoCompleteStopAdapter stopAdapter = new AutoCompleteStopAdapter(
 				getActivity(), R.layout.simple_dropdown_item_1line,
 				Planner.getInstance(), false);
+
 		mSiteTextView.setSelectAllOnFocus(true);
 		mSiteTextView.setAdapter(stopAdapter);
 
