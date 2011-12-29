@@ -40,10 +40,11 @@ public class SitesStore {
     }
 
     public ArrayList<Site> getSiteV2(String name) throws IOException {
-        final HttpGet get = new HttpGet(apiEndpoint2() + "site/v1/"
+        final HttpGet get = new HttpGet(apiEndpoint2() + "v1/site/"
                 + "?q=" + URLEncoder.encode(name));
         get.addHeader("X-STHLMTraveling-API-Key", get(KEY));
         HttpEntity entity = null;
+
         final HttpResponse response = HttpManager.execute(get);
 
         if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
