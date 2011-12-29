@@ -56,16 +56,14 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.CursorAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -76,20 +74,21 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.ScrollView;
 import android.widget.SimpleAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 
 import com.markupartist.sthlmtraveling.AutoCompleteStopAdapter.FilterListener;
 import com.markupartist.sthlmtraveling.provider.HistoryDbAdapter;
-import com.markupartist.sthlmtraveling.provider.JourneysProvider.Journey.Journeys;
 import com.markupartist.sthlmtraveling.provider.TransportMode;
+import com.markupartist.sthlmtraveling.provider.JourneysProvider.Journey.Journeys;
 import com.markupartist.sthlmtraveling.provider.planner.JourneyQuery;
 import com.markupartist.sthlmtraveling.provider.planner.Planner;
-import com.markupartist.sthlmtraveling.provider.planner.Planner.Location;
 import com.markupartist.sthlmtraveling.provider.planner.Stop;
+import com.markupartist.sthlmtraveling.provider.planner.Planner.Location;
 import com.markupartist.sthlmtraveling.utils.LocationUtils;
 
 public class PlannerFragment extends BaseListFragment implements
@@ -584,8 +583,6 @@ public class PlannerFragment extends BaseListFragment implements
 				.transportModes(getSelectedTransportModes())
 				.alternativeStops(alternativeStops).create();
 
-		Log.d(TAG, "JQ: " + journeyQuery.toString());
-
 		Intent routesIntent = new Intent(getActivity(), RoutesActivity.class);
 		routesIntent.putExtra(RoutesActivity.EXTRA_JOURNEY_QUERY, journeyQuery);
 		startActivity(routesIntent);
@@ -672,6 +669,8 @@ public class PlannerFragment extends BaseListFragment implements
 		// DialogFragment.show() will take care of adding the fragment
 		// in a transaction. We also want to remove any currently showing
 		// dialog, so make our own transaction and take care of that here.
+		
+		/*
 		FragmentTransaction ft = getActivity().getSupportFragmentManager()
 				.beginTransaction();
 		Fragment prev = getActivity().getSupportFragmentManager()
@@ -684,6 +683,13 @@ public class PlannerFragment extends BaseListFragment implements
 		// Create and show the dialog.
 		DialogFragment newFragment = PlannerDialogFragment.newInstance(dialog);
 		newFragment.show(ft, "dialog");
+		*/
+		// TODO: This resolves an issue that raises a IllegalStateException on
+		// ICS, Investigate if the above is really needed.
+		FragmentTransaction ft = getFragmentManager().beginTransaction();
+		DialogFragment newFragment = PlannerDialogFragment.newInstance(dialog);
+		ft.add(newFragment, null);
+		ft.commit();
 	}
 
 	private static class PlannerDialogFragment extends DialogFragment {
