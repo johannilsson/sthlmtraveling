@@ -16,6 +16,7 @@
 
 package com.markupartist.sthlmtraveling;
 
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -34,6 +35,7 @@ import android.content.res.Configuration;
 import android.database.Cursor;
 import android.location.Location;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -41,7 +43,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -49,7 +53,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;
 
 import com.google.ads.AdView;
 import com.markupartist.android.widget.ActionBar;
@@ -57,10 +60,10 @@ import com.markupartist.android.widget.actionbar.R;
 import com.markupartist.sthlmtraveling.provider.JourneysProvider.Journey.Journeys;
 import com.markupartist.sthlmtraveling.provider.planner.JourneyQuery;
 import com.markupartist.sthlmtraveling.provider.planner.Planner;
-import com.markupartist.sthlmtraveling.provider.planner.Route;
 import com.markupartist.sthlmtraveling.provider.planner.Planner.IntermediateStop;
 import com.markupartist.sthlmtraveling.provider.planner.Planner.SubTrip;
 import com.markupartist.sthlmtraveling.provider.planner.Planner.Trip2;
+import com.markupartist.sthlmtraveling.provider.planner.Route;
 import com.markupartist.sthlmtraveling.utils.AdRequestFactory;
 
 public class RouteDetailActivity extends BaseListActivity {
@@ -93,7 +96,11 @@ public class RouteDetailActivity extends BaseListActivity {
 
         Bundle extras = getIntent().getExtras();
 
-        mTrip = extras.getParcelable(EXTRA_JOURNEY_TRIP);
+        mTrip = (Trip2) getLastNonConfigurationInstance();
+        if (mTrip == null) {
+            mTrip = extras.getParcelable(EXTRA_JOURNEY_TRIP);
+        }
+
         mJourneyQuery = extras.getParcelable(EXTRA_JOURNEY_QUERY);
 
         mActionBar = initActionBar(R.menu.actionbar_route_detail);
@@ -189,7 +196,7 @@ public class RouteDetailActivity extends BaseListActivity {
     }
 
     private void onRotationChange(Configuration newConfig) {
-        if (newConfig.orientation == newConfig.ORIENTATION_LANDSCAPE) {
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             if (mAdView != null) {
                 mAdView.setVisibility(View.GONE);
             }
@@ -263,8 +270,10 @@ public class RouteDetailActivity extends BaseListActivity {
     }
 
     /**
-     * Called before this activity is destroyed, returns the previous details. This data is used 
-     * if the screen is rotated. Then we don't need to ask for the data again.
+     * Called before this activity is destroyed, returns the previous details.
+     * This data is used if the screen is rotated. Then we don't need to ask for
+     * the data again.
+     * 
      * @return route details
      */
     @Override
@@ -309,7 +318,9 @@ public class RouteDetailActivity extends BaseListActivity {
         SubTrip lastSubTrip = trip.subTrips.get(numSubTrips - 1); 
 
         View footerView = getLayoutInflater().inflate(R.layout.route_details_row, null);
-        TextView message = (TextView) footerView.findViewById(R.id.routes_row);
+        Button message = (Button) footerView.findViewById(R.id.routes_row);
+        message.setTag(lastSubTrip.destination);
+        message.setOnClickListener(mLocationClickListener);
         message.setText(lastSubTrip.destination.name);
 
         ImageView image = (ImageView) footerView.findViewById(R.id.routes_row_transport);
@@ -436,12 +447,20 @@ public class RouteDetailActivity extends BaseListActivity {
         }
 
         @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            SubTrip subTrip = getItem(position);
-            
+        public boolean areAllItemsEnabled() {
+            return false;
+        }
+
+        @Override
+        public View getView(final int position, View convertView, ViewGroup parent) {
+            final SubTrip subTrip = getItem(position);
+
             convertView = mInflater.inflate(R.layout.route_details_row, null);
+
             ImageView transportImage = (ImageView) convertView.findViewById(R.id.routes_row_transport);
-            TextView descriptionView = (TextView) convertView.findViewById(R.id.routes_row);
+            Button descriptionView = (Button) convertView.findViewById(R.id.routes_row);
+            descriptionView.setTag(subTrip.origin);
+            descriptionView.setOnClickListener(mLocationClickListener);
 
             transportImage.setImageResource(subTrip.transport.getImageResource());
             
@@ -468,19 +487,19 @@ public class RouteDetailActivity extends BaseListActivity {
             if (!subTrip.remarks.isEmpty()) {
                 for (String message : subTrip.remarks) {
                     messagesLayout.addView(inflateMessage("remark", message,
-                                    messagesLayout, position));
+                                    messagesLayout));
                 }
             }
             if (!subTrip.rtuMessages.isEmpty()) {
                 for (String message : subTrip.rtuMessages) {
                     messagesLayout.addView(inflateMessage("rtu", message,
-                                    messagesLayout, position));
+                                    messagesLayout));
                 }
             }
             if (!subTrip.mt6Messages.isEmpty()) {
                 for (String message : subTrip.mt6Messages) {
                     messagesLayout.addView(inflateMessage("mt6", message,
-                                    messagesLayout, position));
+                                    messagesLayout));
                 }
             }
 
@@ -489,25 +508,48 @@ public class RouteDetailActivity extends BaseListActivity {
             ToggleButton showHideIntermediateStops =
                 (ToggleButton) convertView.findViewById(
                         R.id.show_hide_intermediate_stops);
+            if (!"Walk".equals(subTrip.transport.type)) {
+                intermediateStopLayout.setVisibility(View.VISIBLE);
+                showHideIntermediateStops.setVisibility(View.VISIBLE);
+            }
+
             showHideIntermediateStops.setOnCheckedChangeListener(new OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     if (isChecked) {
+                        if (intermediateStopLayout.getChildCount() == 0
+                                && subTrip.intermediateStop.size() == 0) {
+                            new GetIntermediateStopTask(new GetIntermediateStopTask.OnResult() {
+                                @Override
+                                public void onResult(SubTrip st) {
+                                    if (st.intermediateStop.isEmpty()) {
+                                        intermediateStopLayout.addView(
+                                                inflateText(getText(
+                                                        R.string.no_intermediate_stops),
+                                                        intermediateStopLayout));
+                                    }
+                                    for (IntermediateStop is : st.intermediateStop) {
+                                        intermediateStopLayout.addView(
+                                                inflateIntermediateStop(
+                                                        is, intermediateStopLayout));
+                                    }
+                                    mTrip.subTrips.set(position, st);
+                                }
+                            }).execute(subTrip, mJourneyQuery);
+                        } else if (intermediateStopLayout.getChildCount() == 0
+                                && subTrip.intermediateStop.size() > 0) {
+                            for (IntermediateStop is : subTrip.intermediateStop) {
+                                intermediateStopLayout.addView(
+                                        inflateIntermediateStop(
+                                                is, intermediateStopLayout));
+                            }
+                        }
                         intermediateStopLayout.setVisibility(View.VISIBLE);
                     } else {
                         intermediateStopLayout.setVisibility(View.GONE);
                     }
                 }
             });
-            if (!subTrip.intermediateStop.isEmpty()) {
-                showHideIntermediateStops.setVisibility(View.VISIBLE);
-                for (IntermediateStop is : subTrip.intermediateStop) {
-                    intermediateStopLayout.addView(
-                            inflateIntermediateStop(is, intermediateStopLayout));
-                }
-            } else {
-                showHideIntermediateStops.setVisibility(View.GONE);
-            }
 
             return convertView;
         }
@@ -523,13 +565,20 @@ public class RouteDetailActivity extends BaseListActivity {
         }
 
         private View inflateMessage(String messageType, String message,
-                ViewGroup messagesLayout, int position) {
+                ViewGroup messagesLayout) {
             View view = mInflater.inflate(R.layout.route_details_message_row,
                     messagesLayout, false);
 
             TextView messageView = (TextView) view.findViewById(R.id.routes_warning_message);
             messageView.setText(message);
 
+            return view;
+        }
+
+        private View inflateText(CharSequence text, ViewGroup viewGroup) {
+            TextView view = (TextView) mInflater.inflate(R.layout.simple_text,
+                    viewGroup, false);
+            view.setText(text);
             return view;
         }
     }
@@ -551,6 +600,19 @@ public class RouteDetailActivity extends BaseListActivity {
 
         return cursor.getCount() > 0;
     }
+
+    private View.OnClickListener mLocationClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Planner.Location l = (Planner.Location) v.getTag();
+            if (l.hasLocation()) {
+                startActivity(createViewOnMapIntent(l));
+            } else {
+                Toast.makeText(RouteDetailActivity.this,
+                        "Missing geo data", Toast.LENGTH_LONG).show();
+            }
+        }
+    };
 
     private class OnStarredJourneyButtonClickListener implements View.OnClickListener {
         @Override
@@ -587,6 +649,34 @@ public class RouteDetailActivity extends BaseListActivity {
                 mFavoriteButton.setImageResource(
                         android.R.drawable.star_big_on);
             }
+        }
+    }
+
+    private static class GetIntermediateStopTask extends AsyncTask<Object, Void, SubTrip> {
+        GetIntermediateStopTask.OnResult mCallback;
+        public GetIntermediateStopTask(GetIntermediateStopTask.OnResult onResult) {
+            mCallback = onResult;
+        }
+
+        @Override
+        protected SubTrip doInBackground(Object... params) {
+            SubTrip subTrip = (SubTrip)params[0];
+            try {
+                Planner.getInstance().addIntermediateStops(
+                        subTrip, (JourneyQuery)params[1]);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return subTrip;
+        }
+
+        @Override
+        protected void onPostExecute(SubTrip result) {
+            mCallback.onResult(result);
+        }
+
+        private static interface OnResult {
+            public void onResult(SubTrip subTrip);
         }
     }
 }

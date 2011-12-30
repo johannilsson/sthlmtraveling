@@ -124,7 +124,10 @@
     <string name="trip_description_normal" formatted="false">%s - %s %s desde %s dirección %s. Bajar en %s</string>
     <string name="show_all">Mostrar todo</string>
     <string name="platform">Platform</string>
-
+    <string name="no_intermediate_stops">No indermediate stops were found.</string>
+    <string name="show_intermediate_stops">Show intermediate stops</string>
+    <string name="hide_intermediate_stops">Hide intermediate stops</string>
+    
     <!-- Planner error messages -->
     <string name="planner_error_title">Felmeddelande</string>
     <string name="planner_error_unknown">Sökningen misslyckades.</string>

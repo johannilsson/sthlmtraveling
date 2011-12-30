@@ -133,6 +133,59 @@ public class Planner {
         return doJourneyQuery(query, -1);
     }
 
+    public SubTrip addIntermediateStops(SubTrip subTrip, JourneyQuery query)
+            throws IOException {
+        Uri u = Uri.parse(apiEndpoint2());
+        Uri.Builder b = u.buildUpon();
+        b.appendEncodedPath("journey/v1/intermediate/");
+        b.appendQueryParameter("ident", query.ident);
+        b.appendQueryParameter("seqnr", query.seqnr);
+        b.appendQueryParameter("reference", subTrip.reference);
+
+        u = b.build();
+
+        final HttpGet get = new HttpGet(u.toString());
+        get.addHeader("X-STHLMTraveling-API-Key", get(KEY));
+        final HttpResponse response = HttpManager.execute(get);
+
+        HttpEntity entity;
+        String rawContent;
+        int statusCode = response.getStatusLine().getStatusCode();
+        switch (statusCode) {
+        case HttpStatus.SC_OK:
+            entity = response.getEntity();
+            rawContent = StreamUtils.toString(entity.getContent());
+            try {
+                JSONObject baseResponse = new JSONObject(rawContent);
+                if (baseResponse.has("stops")) {
+                    JSONArray intermediateStopJsonArray = baseResponse.getJSONArray("stops");
+                    for (int i = 0; i < intermediateStopJsonArray.length(); i++) {
+                        subTrip.intermediateStop.add(IntermediateStop.fromJson(
+                                intermediateStopJsonArray.getJSONObject(i)));
+                    }
+                } else {
+                    Log.w(TAG, "Invalid response when fetching intermediate stops.");
+                }
+            } catch (JSONException e) {
+                Log.w(TAG, "Could not parse the reponse for intermediate stops.");
+            }
+            break;
+        case HttpStatus.SC_BAD_REQUEST:
+            entity = response.getEntity();
+            rawContent = StreamUtils.toString(entity.getContent());
+            try {
+                BadResponse br = BadResponse.fromJson(new JSONObject(rawContent));
+                Log.e(TAG, "Invalid response for intermediate stops: " + br.toString());
+            } catch (JSONException e) {
+                Log.e(TAG, "Could not parse the reponse for intermediate stops.");
+            }
+        default:
+            Log.e(TAG, "Status code not OK from intermediate stops API, was " + statusCode);
+        }
+
+        return subTrip;
+    }
+
     private Response doJourneyQuery(JourneyQuery query, int scrollDirection) throws IOException, BadResponse {
 
         Uri u = Uri.parse(apiEndpoint2());
@@ -248,6 +301,13 @@ public class Planner {
             }
             return br;
         }
+
+        @Override
+        public String toString() {
+            return "BadResponse [description=" + description + ", errorCode="
+                    + errorCode + "]";
+        }
+
     }
     
     public static class Response implements Parcelable {

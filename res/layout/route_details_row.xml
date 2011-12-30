@@ -43,7 +43,7 @@
         android:paddingLeft="5dip"
         android:paddingRight="10dip"
 	    />
-	<TextView 
+	<Button 
 	    android:id="@+id/routes_row"
 	    android:text="sdsds sdksld dkjsldk slsdk ll dsk d lsdksl dskld ld  skd sl sdkld sk ldsdksdl sdl skdls dksl dkldk skd kd sl sl d kd skd ls"
 	    android:layout_width="fill_parent"
@@ -51,6 +51,8 @@
 	    android:paddingTop="4dip"
 	    android:textColor="?android:attr/textColorPrimary"
 	    android:textSize="16dip"
+	    android:gravity="left"
+	    android:background="@drawable/btn_subtle"
 	    />
     </LinearLayout>
 	<LinearLayout
@@ -68,8 +70,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:drawableLeft="@drawable/expander_intermediate_stops"
-        android:textOn="Hide intermediate stops"
-        android:textOff="Show intermediate stops"
+        android:textOn="@string/hide_intermediate_stops"
+        android:textOff="@string/show_intermediate_stops"
         android:background="@null"
         android:layout_margin="0dp"
         android:padding="0dp"
@@ -79,7 +81,7 @@
         android:orientation="vertical"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:visibility="gone"
+        android:visibility="visible"
         />
 </LinearLayout>
 
