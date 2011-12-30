@@ -113,7 +113,7 @@ public class FavoritesFragment extends BaseListFragment {
 
         registerEvent("Favorites");
 
-        getActivity().registerReceiver(mUpdateUIReceiver, new IntentFilter("sthlmtraveling.intent.action.UPDATE_UI"));        
+        getActivity().registerReceiver(mUpdateUIReceiver, new IntentFilter("sthlmtraveling.intent.action.UPDATE_UI"));
     }
     
     @Override
