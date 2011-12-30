@@ -11,4 +11,6 @@
     <color name="actionbar_divider">#1A1A1A</color>
     <color name="actionbar_background_start">#000000</color>
     <color name="actionbar_background_end">#000000</color>
+    <color name="actionbar_background_item_pressed_start">#ff33b5e5</color>
+    <color name="actionbar_background_item_pressed_end">#ff33b5e5</color>
 </resources>
