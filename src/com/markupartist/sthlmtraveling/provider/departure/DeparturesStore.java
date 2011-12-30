@@ -245,20 +245,24 @@ public class DeparturesStore {
         public static DisplayRow fromJson(JSONObject json) throws JSONException {
             DisplayRow dr = new DisplayRow();
             if (json.has("destination")) {
-                dr.destination = json.getString("destination");
+                dr.destination = json.isNull("destination") ?
+                        null : json.getString("destination");
             }
             if (json.has("line_number")) {
-                dr.lineNumber = json.getString("line_number");
+                dr.lineNumber = json.isNull("line_number") ?
+                        null : json.getString("line_number");
             }
             if (json.has("display_time")) {
                 dr.displayTime = json.isNull("display_time") ?
                         null : json.getString("display_time");
             }
             if (json.has("time_tabled_date_time")) {
-                dr.timeTabledDateTime = json.getString("time_tabled_date_time");
+                dr.timeTabledDateTime = json.isNull("time_tabled_date_time") ?
+                        null : json.getString("time_tabled_date_time");
             }
             if (json.has("expected_date_time")) {
-                dr.expectedDateTime = json.getString("expected_date_time");
+                dr.expectedDateTime = json.isNull("expected_date_time") ?
+                        null : json.getString("expected_date_time");
             }
             if (json.has("message")) {
                 dr.message = json.isNull("message") ?
