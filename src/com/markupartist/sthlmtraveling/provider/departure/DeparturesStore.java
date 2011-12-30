@@ -15,6 +15,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.markupartist.sthlmtraveling.provider.site.Site;
@@ -204,11 +205,17 @@ public class DeparturesStore {
 
             JSONArray jsonDirection1 = json.getJSONArray("direction1");
             for (int i = 0; i < jsonDirection1.length(); i++) {
-                gol.direction1.add(DisplayRow.fromJson(jsonDirection1.getJSONObject(i)));
+                DisplayRow dr = DisplayRow.fromJson(jsonDirection1.getJSONObject(i));
+                if (dr.looksValid()) {
+                    gol.direction1.add(dr);
+                }
             }
             JSONArray jsonDirection2 = json.getJSONArray("direction2");
             for (int i = 0; i < jsonDirection2.length(); i++) {
-                gol.direction2.add(DisplayRow.fromJson(jsonDirection2.getJSONObject(i)));
+                DisplayRow dr = DisplayRow.fromJson(jsonDirection2.getJSONObject(i));
+                if (dr.looksValid()) {
+                    gol.direction2.add(dr);
+                }
             }
 
             return gol;
@@ -234,6 +241,7 @@ public class DeparturesStore {
                     ", message='" + message + '\'' +
                     '}';
         }
+
         public static DisplayRow fromJson(JSONObject json) throws JSONException {
             DisplayRow dr = new DisplayRow();
             if (json.has("destination")) {
@@ -258,6 +266,11 @@ public class DeparturesStore {
             }
 
             return dr;
+        }
+
+        public boolean looksValid() {
+            return (!TextUtils.isEmpty(destination)
+                    || !TextUtils.isEmpty(message));
         }
     }
 }
