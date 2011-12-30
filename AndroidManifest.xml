@@ -91,7 +91,7 @@
         </activity>
         <activity android:name=".RouteDetailActivity"
                   android:label="@string/route_details_label"
-                  android:configChanges="locale|orientation"
+                  android:configChanges="locale"
                   android:theme="@style/AppThemeActionBar"
                   ></activity>
         <activity android:name=".ChangeRouteTimeActivity"
