@@ -21,14 +21,18 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.inputmethod.EditorInfo;
 import android.widget.AutoCompleteTextView;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
+import android.widget.TextView;
+import android.widget.TextView.OnEditorActionListener;
 
 import com.markupartist.sthlmtraveling.provider.HistoryDbAdapter;
 import com.markupartist.sthlmtraveling.provider.planner.Planner;
@@ -86,6 +90,18 @@ public class SearchDeparturesFragment extends BaseListFragment {
 		mSiteTextView.setSelectAllOnFocus(true);
 		mSiteTextView.setAdapter(stopAdapter);
 
+		mSiteTextView.setOnEditorActionListener(new OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                boolean isEnterKey = (null != event && event.getKeyCode() == KeyEvent.KEYCODE_ENTER);
+                if(actionId == EditorInfo.IME_ACTION_SEARCH || true == isEnterKey) {
+                    dispatchSearch();
+                    return true;
+                }
+                return false;
+            }
+        });
+
 		ImageButton searchButton = (ImageButton) searchHeader
 				.findViewById(R.id.search_departure);
 		if (mCreateShortcut) {
@@ -96,17 +112,10 @@ public class SearchDeparturesFragment extends BaseListFragment {
 		searchButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				if (mSiteTextView.getText().length() == 0) {
-					mSiteTextView.setError(getText(R.string.empty_value));
-				} else {
-					if (mCreateShortcut) {
-						onCreateShortCut(mSiteTextView.getText().toString());
-					} else {
-						onSearchDepartures(mSiteTextView.getText().toString());
-					}
-				}
+				dispatchSearch();
 			}
 		});
+
 	}
 	
 	@Override
@@ -156,6 +165,18 @@ public class SearchDeparturesFragment extends BaseListFragment {
 		}
 	}
 
+    private void dispatchSearch() {
+        if (mSiteTextView.getText().length() == 0) {
+            mSiteTextView.setError(getText(R.string.empty_value));
+        } else {
+            if (mCreateShortcut) {
+                onCreateShortCut(mSiteTextView.getText().toString());
+            } else {
+                onSearchDepartures(mSiteTextView.getText().toString());
+            }
+        }
+    }
+    
 	private void onSearchDepartures(String siteName) {
 		Stop stop = new Stop();
 		stop.setName(siteName);
