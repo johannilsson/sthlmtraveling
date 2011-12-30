@@ -317,9 +317,10 @@ public class PlannerFragment extends BaseListFragment implements
 		}
 	}
 
-	@Override
+    @Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		inflater.inflate(R.menu.options_menu_search, menu);
+		super.onCreateOptionsMenu(menu, inflater);
 	}
 
 	/**
