@@ -321,7 +321,7 @@ public class RouteDetailActivity extends BaseListActivity {
         Button message = (Button) footerView.findViewById(R.id.routes_row);
         message.setTag(lastSubTrip.destination);
         message.setOnClickListener(mLocationClickListener);
-        message.setText(lastSubTrip.destination.name);
+        message.setText(getLocationName(lastSubTrip.destination));
 
         ImageView image = (ImageView) footerView.findViewById(R.id.routes_row_transport);
         image.setImageResource(R.drawable.bullet_black);
