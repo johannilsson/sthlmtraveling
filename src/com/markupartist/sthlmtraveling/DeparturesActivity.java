@@ -24,6 +24,7 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
 import android.content.DialogInterface.OnClickListener;
 import android.content.res.Configuration;
@@ -469,6 +470,14 @@ public class DeparturesActivity extends BaseListActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         new GetDeparturesTask().execute(
                                 mSiteAlternatives.get(which));
+                    }
+                })
+                .setOnCancelListener(new OnCancelListener() {
+                    @Override
+                    public void onCancel(DialogInterface dialog) {
+                        // We need a site to proceed, finish the activity here
+                        // is most likely what the user intended.
+                        finish();
                     }
                 })
                 .create();
