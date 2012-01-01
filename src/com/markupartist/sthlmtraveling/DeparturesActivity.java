@@ -546,6 +546,7 @@ public class DeparturesActivity extends BaseListActivity {
      */
     private class GetSitesTask extends AsyncTask<String, Void, ArrayList<Site>> {
         private boolean mWasSuccess = true;
+        private String mSearchQuery;
 
         @Override
         public void onPreExecute() {
@@ -554,8 +555,9 @@ public class DeparturesActivity extends BaseListActivity {
 
         @Override
         protected ArrayList<Site> doInBackground(String... params) {
+            mSearchQuery = params[0];
             try {
-                return SitesStore.getInstance().getSite(params[0]);
+                return SitesStore.getInstance().getSite(mSearchQuery);
             } catch (IOException e) {
                 mWasSuccess = false;
                 return null;
@@ -570,6 +572,13 @@ public class DeparturesActivity extends BaseListActivity {
                 if (result.size() == 1) {
                     new GetDeparturesTask().execute(result.get(0));
                 } else {
+                    // Has exact match?
+                    for (Site site : result) {
+                        if (site.getName().equals(mSearchQuery)) {
+                            new GetDeparturesTask().execute(result.get(0));
+                            return;
+                        }
+                    }
                     mSiteAlternatives = result;
                     try {
                         showDialog(DIALOG_SITE_ALTERNATIVES);
