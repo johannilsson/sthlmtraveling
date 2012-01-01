@@ -617,7 +617,15 @@ public class DeparturesActivity extends BaseListActivity {
         protected Departures doInBackground(Site... params) {
             try {
                 mSite = params[0];
-                
+
+                DeparturesStore departures = new DeparturesStore();
+                Departures result = departures.find(params[0]);
+
+                if (mPreferredTrafficMode < 1 && !result.servesTypes.isEmpty()) {
+                    String transportMode = result.servesTypes.get(0);
+                    mPreferredTrafficMode = TransportMode.getIndex(transportMode);
+                }
+
                 if (mPlaceId == -1) {
                     String[] projection = new String[] {
                                                  Places._ID,
@@ -636,8 +644,7 @@ public class DeparturesActivity extends BaseListActivity {
                     }
                 }
 
-                DeparturesStore departures = new DeparturesStore();
-                return departures.find(params[0]);
+                return result;
             } catch (IllegalArgumentException e) {
                 mWasSuccess = false;
                 return null;

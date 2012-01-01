@@ -70,6 +70,7 @@ public class DeparturesStore {
 
     public static class Departures {
         public int siteId;
+        public ArrayList<String> servesTypes = new ArrayList<String>();
         public ArrayList<MetroDeparture> metros = new ArrayList<MetroDeparture>();
         public ArrayList<BusDeparture> buses = new ArrayList<BusDeparture>();
         public ArrayList<TramDeparture> trams = new ArrayList<TramDeparture>();
@@ -77,6 +78,13 @@ public class DeparturesStore {
 
         public static Departures fromJson(JSONObject json) throws JSONException {
             Departures d = new Departures();
+
+            if (!json.isNull("serves_types")) {
+                JSONArray jsonServesTypes = json.getJSONArray("serves_types");
+                for (int i = 0; i < jsonServesTypes.length(); i++) {
+                    d.servesTypes.add(jsonServesTypes.getString(i));
+                }
+            }
 
             if (!json.isNull("metros")) {
                 JSONObject jsonMetros = json.getJSONObject("metros");
