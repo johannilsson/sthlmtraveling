@@ -1,9 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="AppThemeActionBar" parent="@style/Theme.ActionBar.Light">
+        <item name="vpiCirclePageIndicatorStyle">@style/Widget.CirclePageIndicator</item>
+        <item name="vpiTitlePageIndicatorStyle">@style/Widget.TitlePageIndicator</item>
+        <item name="vpiTabPageIndicatorStyle">@style/VPI.TabPageIndicator</item>
+        <item name="vpiTabTextStyle">@style/VPI.TabPageIndicator.Text</item>
     </style>
     <style name="AppListView" parent="@android:style/Widget.ListView.White">
         <item name="android:divider">@color/list_divider</item>
         <item name="android:dividerHeight">1px</item>
+    </style>
+
+    <style name="VPI.TabPageIndicator" parent="Widget.TabPageIndicator">
+        <item name="android:background">@drawable/tab_indicator</item>
+        <item name="android:paddingLeft">17dip</item>
+        <item name="android:paddingRight">17dip</item>
+        <item name="android:paddingTop">10dp</item>
+        <item name="android:paddingBottom">10dp</item>
+    </style>
+    <style name="VPI.TabPageIndicator.Text" parent="Widget.TabPageIndicator.Text">
+        <item name="android:textAppearance">@style/TextAppearance.TabPageIndicator</item>
+        <item name="android:textColor">#EDEDED</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:maxLines">1</item>
     </style>
 </resources>
