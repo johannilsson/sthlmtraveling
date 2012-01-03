@@ -53,7 +53,11 @@ public class Stop implements Parcelable {
 
     public void setName(String name) {
         if (!TextUtils.isEmpty(name)) {
-            mName = name.trim().replaceAll(NAME_RE, "");
+            if (name.equals(TYPE_MY_LOCATION)) {
+                mName = name;
+            } else {
+                mName = name.trim().replaceAll(NAME_RE, "");
+            }
         }
     }
 
