@@ -28,6 +28,7 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.database.sqlite.SQLiteQueryBuilder;
 import android.util.Log;
 
 public class HistoryDbAdapter {
@@ -173,26 +174,15 @@ public class HistoryDbAdapter {
      * @return a Cursor object positioned at the first entry
      */
     public Cursor fetchByName(int type, String name) {
-        Cursor mCursor =
-            mDb.query(true, DATABASE_TABLE, new String[] {KEY_ROWID,
-                    KEY_TYPE, KEY_NAME}, KEY_NAME + "=\"" + name + "\"" 
-                        + " AND " + KEY_TYPE + "=" + type, 
-                    null, null, null, null, null);
-        if (mCursor != null) {
-            mCursor.moveToFirst();
+        String[] columns = new String[] {KEY_ROWID, KEY_TYPE, KEY_NAME};
+        String selection = KEY_NAME + "=? AND " + KEY_TYPE + "=?";
+        String[] selectionArgs = new String[] {name, String.valueOf(type)};
+        Cursor cursor = mDb.query(DATABASE_TABLE, columns, selection,
+                selectionArgs, null, null, null);
+        if (cursor != null) {
+            cursor.moveToFirst();
         }
-        return mCursor;
-    }
-
-    public Cursor fetchAllViaPoints() {
-        Cursor mCursor =
-            mDb.query(true, DATABASE_TABLE, new String[] {
-                    KEY_ROWID, KEY_TYPE, KEY_NAME, KEY_CREATED,
-                    KEY_LATITUDE, KEY_LONGITUDE, KEY_SITE_ID},
-                    "IFNULL(" + KEY_LATITUDE + ",0) = 0 ",
-                    null, null, null,
-                    KEY_CREATED + " DESC", "10");
-        return mCursor;    
+        return cursor;
     }
 
     /**
@@ -205,7 +195,8 @@ public class HistoryDbAdapter {
             mDb.query(true, DATABASE_TABLE, new String[] {
                     KEY_ROWID, KEY_TYPE, KEY_NAME, KEY_CREATED,
                     KEY_LATITUDE, KEY_LONGITUDE, KEY_SITE_ID},
-                    KEY_TYPE + "=" + type, null, null, null,
+                    KEY_TYPE + "= ?",
+                    new String[]{String.valueOf(type)}, null, null,
                     KEY_CREATED + " DESC", "10");
         return mCursor;        
     }

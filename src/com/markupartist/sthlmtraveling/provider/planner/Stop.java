@@ -7,6 +7,7 @@ import android.text.TextUtils;
 
 public class Stop implements Parcelable {
     public static String TYPE_MY_LOCATION = "MY_LOCATION";
+    private static String NAME_RE = "[^\\p{Alnum}\\(\\)\\s]";
     private String mName;
     private Location mLocation;
     private int mSiteId;
@@ -15,16 +16,16 @@ public class Stop implements Parcelable {
     }
 
     public Stop(String name) {
-        mName = name;
+        setName(name);
     }
 
     public Stop(String name, Location location) {
-        mName = name;
+        setName(name);
         mLocation = location;
     }
 
     public Stop(String name, double latitude, double longitude) {
-        mName = name;
+        setName(name);
         mLocation = new Location("sthlmtraveling");
         mLocation.setLatitude(latitude);
         mLocation.setLongitude(longitude);
@@ -51,7 +52,9 @@ public class Stop implements Parcelable {
     }
 
     public void setName(String name) {
-        mName = name;
+        if (!TextUtils.isEmpty(name)) {
+            mName = name.trim().replaceAll(NAME_RE, "");
+        }
     }
 
     public boolean hasName() {
@@ -82,6 +85,17 @@ public class Stop implements Parcelable {
 
     public int getSiteId() {
         return mSiteId;
+    }
+
+    public boolean looksValid() {
+        return hasName();
+    }
+
+    public static boolean looksValid(String name) {
+        if (TextUtils.isEmpty(name)) {
+            return false;
+        }
+        return !name.trim().matches(NAME_RE);
     }
 
     @Override

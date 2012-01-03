@@ -341,8 +341,24 @@ public class PlannerFragment extends BaseListFragment implements
                 mStartPoint = buildStop(mStartPoint, mStartPointAutoComplete);
                 mEndPoint = buildStop(mEndPoint, mEndPointAutoComplete);
 
+                boolean looksValid = true;
+                if (!mStartPoint.looksValid()) {
+                    mStartPointAutoComplete.setError(getText(R.string.empty_value));
+                    looksValid = false;
+                }
+                if (!mEndPoint.looksValid()) {
+                    mEndPointAutoComplete.setError(getText(R.string.empty_value));
+                    looksValid = false;
+                }
                 if (!TextUtils.isEmpty(mViaPointAutoComplete.getText())) {
                     mViaPoint = buildStop(mViaPoint, mViaPointAutoComplete);
+                    if (mViaPoint.looksValid()) {
+                        mViaPointAutoComplete.setError(getText(R.string.empty_value));
+                        looksValid = false;
+                    }
+                }
+                if (!looksValid) {
+                    return;
                 }
 
                 if (mCreateShortcut) {
@@ -369,9 +385,6 @@ public class PlannerFragment extends BaseListFragment implements
             // Check for point-on-map.
             return stop;
         }
-
-        Log.d(TAG, "no match: " + stop.toString() + " "
-                + auTextView.getText().toString());
 
         stop.setName(auTextView.getText().toString());
         stop.setLocation(null);
@@ -813,7 +826,7 @@ public class PlannerFragment extends BaseListFragment implements
         AlertDialog.Builder viaPointDialogBuilder = new AlertDialog.Builder(
                 getActivity());
         viaPointDialogBuilder.setTitle(getText(R.string.via));
-        final Cursor historyViaCursor = mHistoryDbAdapter.fetchAllViaPoints();
+        final Cursor historyViaCursor = mHistoryDbAdapter.fetchLatest();
         getActivity().startManagingCursor(historyViaCursor);
         final SelectPointAdapter viaPointAdapter = new SelectPointAdapter(
                 getActivity(), historyViaCursor, true);

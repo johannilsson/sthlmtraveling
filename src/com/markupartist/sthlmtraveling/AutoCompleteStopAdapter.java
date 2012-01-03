@@ -37,6 +37,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.markupartist.sthlmtraveling.provider.planner.Planner;
+import com.markupartist.sthlmtraveling.provider.planner.Stop;
 import com.markupartist.sthlmtraveling.utils.LocationUtils;
 
 public class AutoCompleteStopAdapter extends ArrayAdapter<String> implements Filterable {
@@ -129,7 +130,10 @@ public class AutoCompleteStopAdapter extends ArrayAdapter<String> implements Fil
 
                     ArrayList<String> list = null;
                     try {
-                        list = mPlanner.findStop(constraint.toString());
+                        String query = constraint.toString();
+                        if (Stop.looksValid(query)) {
+                            list = mPlanner.findStop(query);
+                        }
                     } catch (IOException e) {
                         mWasSuccess = false;
                     }
