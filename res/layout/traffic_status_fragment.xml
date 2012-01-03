@@ -35,7 +35,7 @@
             android:text="@string/show_all"
             />
        </RelativeLayout>
-	<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+	<ScrollView
 	    android:orientation="vertical"
 	    android:layout_width="fill_parent"
 	    android:layout_height="fill_parent"
@@ -46,6 +46,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
+            android:paddingTop="10dp"
             />
     </ScrollView>
 </RelativeLayout>

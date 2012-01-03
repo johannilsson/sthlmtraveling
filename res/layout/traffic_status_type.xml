@@ -24,9 +24,8 @@
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="1px"
+        android:layout_marginBottom="1dp"
         android:orientation="horizontal"
-	    android:background="@color/plate_extra_background"
 	    android:paddingLeft="5dip"
 	    android:paddingRight="5dip"
 	    android:paddingTop="10dip"
@@ -38,21 +37,23 @@
 	        android:layout_height="wrap_content"
 	        android:src="@drawable/transport_train"
 	        android:layout_marginRight="5dip"
+	        android:layout_gravity="center"
 	        />
 	    <TextView
 	        android:id="@+id/traffic_status_type_transport"
-	        android:layout_width="fill_parent" 
+	        android:layout_width="0dp" 
 	        android:layout_height="wrap_content"
 	        android:text="@string/metros"
-	        android:drawablePadding="10dip"
-	        android:textStyle="bold"
 	        android:layout_weight="1"
+	        android:layout_marginLeft="6dp"
+	        android:textAppearance="?android:attr/textAppearanceMedium"
+	        android:textColor="?android:attr/textColorPrimary"
 	        />
 	    <ImageView
 	        android:id="@+id/traffic_status_status"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
-	        android:paddingTop="2dip"
+	        android:layout_gravity="center"
 	        android:paddingRight="5dip"
 	        android:src="@drawable/traffic_status_minor"
 	        />
@@ -62,5 +63,12 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        />
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1px"
+        android:layout_marginTop="7dip"
+        android:layout_marginBottom="7dip"
+        android:background="@drawable/stroke"
         />
 </LinearLayout>
