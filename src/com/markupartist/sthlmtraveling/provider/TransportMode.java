@@ -19,6 +19,7 @@ public class TransportMode {
     public static final String FLY = "FLY";
     public static final String NAR = "NAR";
     public static final String WAX = "WAX";
+    public static final String AEX = "AEX";
 
     public static final ArrayList<String> getDefaultTransportModes() {
         ArrayList<String> transportModes = new ArrayList<String>();

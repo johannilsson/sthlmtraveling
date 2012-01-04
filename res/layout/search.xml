@@ -301,6 +301,13 @@
                     android:text="Närtrafiken"
                     android:checked="false"
                     />
+                <CheckBox
+                    android:id="@+id/planner_transport_aex"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Arlanda Express"
+                    android:checked="false"
+                    />
             </LinearLayout>
             <Button
                 android:layout_marginTop="5dip"

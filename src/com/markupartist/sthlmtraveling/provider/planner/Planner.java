@@ -870,6 +870,8 @@ public class Planner {
                 return R.drawable.transport_boat;
             } else if ("FLY".equals(type)) {
                 return R.drawable.transport_fly;
+            } else if ("AEX".equals(type)) {
+                return R.drawable.transport_aex;
             }
 
             Log.d(TAG, "Unknown transport type " + type);

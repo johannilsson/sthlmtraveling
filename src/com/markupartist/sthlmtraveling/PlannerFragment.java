@@ -623,6 +623,8 @@ public class PlannerFragment extends BaseListFragment implements
                 .findViewById(R.id.planner_transport_tram);
         CheckBox transportWax = (CheckBox) mSearchView
                 .findViewById(R.id.planner_transport_wax);
+        CheckBox transportAex = (CheckBox) mSearchView
+                .findViewById(R.id.planner_transport_aex);
 
         ArrayList<String> transportModes = new ArrayList<String>();
         if (transportBus.isChecked()) {
@@ -645,6 +647,9 @@ public class PlannerFragment extends BaseListFragment implements
         }
         if (transportWax.isChecked()) {
             transportModes.add(TransportMode.WAX);
+        }
+        if (transportAex.isChecked()) {
+            transportModes.add(TransportMode.AEX);
         }
 
         return transportModes;
@@ -1285,6 +1290,9 @@ public class PlannerFragment extends BaseListFragment implements
             ImageView narView = (ImageView) v
                     .findViewById(R.id.favorite_transport_mode_nar);
             narView.setVisibility(View.GONE);
+            ImageView aexView = (ImageView) v
+                    .findViewById(R.id.favorite_transport_mode_aex);
+            aexView.setVisibility(View.GONE);
 
             if (journeyQuery.transportModes != null) {
                 for (String transportMode : journeyQuery.transportModes) {
@@ -1302,6 +1310,8 @@ public class PlannerFragment extends BaseListFragment implements
                         flyView.setVisibility(View.VISIBLE);
                     } else if (transportMode.equals(TransportMode.NAR)) {
                         narView.setVisibility(View.VISIBLE);
+                    } else if (transportMode.equals(TransportMode.AEX)) {
+                        aexView.setVisibility(View.VISIBLE);
                     }
                 }
             } else {
