@@ -160,48 +160,50 @@ public class SearchDeparturesFragment extends BaseListFragment {
         String siteName = historyCursor.getString(index);
         getActivity().stopManagingCursor(historyCursor);
 
+        Stop stop = new Stop();
+        stop.setName(siteName);
         if (mCreateShortcut) {
-            onCreateShortCut(siteName);
+            onCreateShortCut(stop);
         } else {
-            onSearchDepartures(siteName);
+            onSearchDepartures(stop);
         }
     }
 
     private void dispatchSearch() {
-        if (mSiteTextView.getText().length() == 0) {
+        Stop stop = new Stop();
+        stop.setName(mSiteTextView.getText().toString());
+        if (!stop.looksValid()) {
             mSiteTextView.setError(getText(R.string.empty_value));
         } else {
             if (mCreateShortcut) {
-                onCreateShortCut(mSiteTextView.getText().toString());
+                onCreateShortCut(stop);
             } else {
-                onSearchDepartures(mSiteTextView.getText().toString());
+                onSearchDepartures(stop);
             }
         }
     }
 
-    private void onSearchDepartures(String siteName) {
-        Stop stop = new Stop();
-        stop.setName(siteName);
+    private void onSearchDepartures(Stop stop) {
         mHistoryDbAdapter.create(HistoryDbAdapter.TYPE_DEPARTURE_SITE, stop);
 
         Intent i = new Intent(getActivity().getApplicationContext(),
                 DeparturesActivity.class);
-        i.putExtra(DeparturesActivity.EXTRA_SITE_NAME, siteName);
+        i.putExtra(DeparturesActivity.EXTRA_SITE_NAME, stop.getName());
         startActivity(i);
     }
 
-    private void onCreateShortCut(String siteName) {
+    private void onCreateShortCut(Stop stop) {
         // Setup the intent to be launched
         Intent shortcutIntent = new Intent(getActivity()
                 .getApplicationContext(), DeparturesActivity.class);
         shortcutIntent.setAction(Intent.ACTION_VIEW);
-        shortcutIntent.putExtra(DeparturesActivity.EXTRA_SITE_NAME, siteName);
+        shortcutIntent.putExtra(DeparturesActivity.EXTRA_SITE_NAME, stop.getName());
         shortcutIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
         // Then, set up the container intent (the response to the caller)
         Intent intent = new Intent();
         intent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortcutIntent);
-        intent.putExtra(Intent.EXTRA_SHORTCUT_NAME, siteName);
+        intent.putExtra(Intent.EXTRA_SHORTCUT_NAME, stop.getName());
         Parcelable iconResource = Intent.ShortcutIconResource.fromContext(
                 getActivity(), R.drawable.shortcut_departures);
         intent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, iconResource);
