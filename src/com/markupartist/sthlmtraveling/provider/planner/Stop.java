@@ -96,10 +96,10 @@ public class Stop implements Parcelable {
     }
 
     public static boolean looksValid(String name) {
-        if (TextUtils.isEmpty(name)) {
+        if (TextUtils.isEmpty(name) || TextUtils.getTrimmedLength(name) == 0) {
             return false;
         }
-        return !name.trim().matches(NAME_RE);
+        return !name.matches(NAME_RE);
     }
 
     @Override
