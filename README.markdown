@@ -40,6 +40,11 @@ fork the app. I will do my best help you out if you have any problems.
 Please follow the [Code Style Guidelines for Contributors](http://source.android.com/source/code-style.html)
 for Android except for line length that should be kept to 80 colums where possible.  
 
+### Dependencies
+
+* [Android ActionBar](https://github.com/johannilsson/android-actionbar) - mimic-native-api
+* [View Pager Indicator](http://viewpagerindicator.com/) - v2.2.2
+
 ### Run tests
 
 To be able to run the tests from Eclipse follow these instructions. Assumes
