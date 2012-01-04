@@ -134,7 +134,7 @@ public class HistoryDbAdapter {
      * occurred
      */
     public long create(int type, Stop stop) {
-        if (stop.isMyLocation()) {
+        if (stop.isMyLocation() || !stop.looksValid()) {
             return -1;
         }
 
