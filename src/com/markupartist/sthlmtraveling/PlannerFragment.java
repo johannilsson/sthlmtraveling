@@ -352,7 +352,7 @@ public class PlannerFragment extends BaseListFragment implements
                 }
                 if (!TextUtils.isEmpty(mViaPointAutoComplete.getText())) {
                     mViaPoint = buildStop(mViaPoint, mViaPointAutoComplete);
-                    if (mViaPoint.looksValid()) {
+                    if (!mViaPoint.looksValid()) {
                         mViaPointAutoComplete.setError(getText(R.string.empty_value));
                         looksValid = false;
                     }
