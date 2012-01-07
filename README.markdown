@@ -65,7 +65,7 @@ application and the tests application deployed before.
 Changelog
 ---------
 * 2.4.0
-    * Add swipe between tabs and port to fragments (Robert Johansson).
+    * Add swipe between tabs and port to fragments by [Robert Johansson](https://twitter.com/#!/likebobby).
     * Add support for Arlanda Express.
     * Add support for intermediate stops.
     * Add Holo theme for API level 14+.
