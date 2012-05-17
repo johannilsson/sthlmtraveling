@@ -64,6 +64,8 @@ application and the tests application deployed before.
 
 Changelog
 ---------
+* NEXT
+    * Gzip API requests.
 * 2.4.0
     * Add swipe between tabs and port to fragments by [Robert Johansson](https://twitter.com/#!/likebobby).
     * Add support for Arlanda Express.
