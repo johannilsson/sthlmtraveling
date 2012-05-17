@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="AppThemeActionBar" parent="@style/Theme.ActionBar.Holo.Light">
+    <style name="AppThemeActionBar" parent="@style/Theme.ActionBar.Light">
         <item name="vpiCirclePageIndicatorStyle">@style/Widget.CirclePageIndicator</item>
         <item name="vpiTitlePageIndicatorStyle">@style/Widget.TitlePageIndicator</item>
         <item name="vpiTabPageIndicatorStyle">@style/VPI.TabPageIndicator</item>
