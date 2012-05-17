@@ -52,7 +52,7 @@ public class SitesStore {
         }
 
         entity = response.getEntity();
-        String rawContent = StreamUtils.toString(entity.getContent());
+        String rawContent = StreamUtils.toString(HttpManager.getUngzippedContent(entity));
         ArrayList<Site> sites = new ArrayList<Site>();
         try {
             JSONObject jsonResponse = new JSONObject(rawContent);
@@ -103,7 +103,7 @@ public class SitesStore {
         }
 
         entity = response.getEntity();
-        String rawContent = StreamUtils.toString(entity.getContent());
+        String rawContent = StreamUtils.toString(HttpManager.getUngzippedContent(entity));
         ArrayList<Site> stopPoints = new ArrayList<Site>();
         try {
             JSONObject jsonSites = new JSONObject(rawContent);

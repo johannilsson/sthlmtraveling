@@ -53,7 +53,7 @@ public class DeparturesStore {
         int statusCode = response.getStatusLine().getStatusCode();
         switch (statusCode) {
         case HttpStatus.SC_OK:
-            String rawContent = StreamUtils.toString(entity.getContent());
+            String rawContent = StreamUtils.toString(HttpManager.getUngzippedContent(entity));
 
             try {
                 departures = Departures.fromJson(new JSONObject(rawContent));

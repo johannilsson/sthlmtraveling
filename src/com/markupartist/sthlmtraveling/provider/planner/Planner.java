@@ -154,7 +154,7 @@ public class Planner {
         switch (statusCode) {
         case HttpStatus.SC_OK:
             entity = response.getEntity();
-            rawContent = StreamUtils.toString(entity.getContent());
+            rawContent = StreamUtils.toString(HttpManager.getUngzippedContent(entity));
             try {
                 JSONObject baseResponse = new JSONObject(rawContent);
                 if (baseResponse.has("stops")) {
@@ -240,7 +240,7 @@ public class Planner {
         switch (statusCode) {
         case HttpStatus.SC_OK:
             entity = response.getEntity();
-            rawContent = StreamUtils.toString(entity.getContent());
+            rawContent = StreamUtils.toString(HttpManager.getUngzippedContent(entity));
             try {
                 JSONObject baseResponse = new JSONObject(rawContent);
                 if (baseResponse.has("journey")) {

@@ -83,7 +83,7 @@ public class DeviationStore {
         }
 
         entity = response.getEntity();
-        return StreamUtils.toString(entity.getContent());
+        return StreamUtils.toString(HttpManager.getUngzippedContent(entity));
     }
 
     public static ArrayList<Deviation> filterByLineNumbers(
@@ -153,7 +153,7 @@ public class DeviationStore {
         }
 
         entity = response.getEntity();
-        String rawContent = StreamUtils.toString(entity.getContent());
+        String rawContent = StreamUtils.toString(HttpManager.getUngzippedContent(entity));
         //String rawContent = trafficStatusJson;
 
         TrafficStatus ts = null;

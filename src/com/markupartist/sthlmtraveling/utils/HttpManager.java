@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2008 Romain Guy, Johan Nilsson
+ * Copyright (C) 2007 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,26 +17,31 @@
 
 package com.markupartist.sthlmtraveling.utils;
 
-import org.apache.http.params.HttpParams;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpProtocolParams;
-import org.apache.http.params.HttpConnectionParams;
-import org.apache.http.HttpVersion;
-import org.apache.http.HttpResponse;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.zip.GZIPInputStream;
+
+import org.apache.http.Header;
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
-import org.apache.http.client.methods.HttpHead;
+import org.apache.http.HttpRequest;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpVersion;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpHead;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.params.HttpClientParams;
-import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.conn.scheme.SchemeRegistry;
-import org.apache.http.conn.scheme.Scheme;
-import org.apache.http.conn.scheme.PlainSocketFactory;
-import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.conn.ClientConnectionManager;
-
-import java.io.IOException;
+import org.apache.http.conn.scheme.PlainSocketFactory;
+import org.apache.http.conn.scheme.Scheme;
+import org.apache.http.conn.scheme.SchemeRegistry;
+import org.apache.http.conn.ssl.SSLSocketFactory;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
+import org.apache.http.params.HttpProtocolParams;
 
 public class HttpManager {
     private static final DefaultHttpClient sClient;
@@ -62,6 +68,7 @@ public class HttpManager {
     }
 
     private HttpManager() {
+
     }
 
     public static HttpResponse execute(HttpHead head) throws IOException {
@@ -73,6 +80,7 @@ public class HttpManager {
     }
 
     public static HttpResponse execute(HttpGet get) throws IOException {
+        modifyRequestToAcceptGzipResponse(get);
         return sClient.execute(get);
     }
 
@@ -82,5 +90,36 @@ public class HttpManager {
 
     public static HttpResponse execute(HttpPost post) throws IOException {
         return sClient.execute(post);
+    }
+
+    /**
+     * Modifies a request to indicate to the server that we would like a
+     * gzipped response.  (Uses the "Accept-Encoding" HTTP header.)
+     * @param request the request to modify
+     * @see #getUngzippedContent
+     */
+    public static void modifyRequestToAcceptGzipResponse(HttpRequest request) {
+        request.addHeader("Accept-Encoding", "gzip");
+    }
+
+    /**
+     * Gets the input stream from a response entity.  If the entity is gzipped
+     * then this will get a stream over the uncompressed data.
+     *
+     * @param entity the entity whose content should be read
+     * @return the input stream to read from
+     * @throws IOException
+     */
+    public static InputStream getUngzippedContent(HttpEntity entity)
+            throws IOException {
+        InputStream responseStream = entity.getContent();
+        if (responseStream == null) return responseStream;
+        Header header = entity.getContentEncoding();
+        if (header == null) return responseStream;
+        String contentEncoding = header.getValue();
+        if (contentEncoding == null) return responseStream;
+        if (contentEncoding.contains("gzip")) responseStream
+                = new GZIPInputStream(responseStream);
+        return responseStream;
     }
 }
