@@ -43,6 +43,8 @@ import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.params.HttpProtocolParams;
 
+import com.markupartist.sthlmtraveling.MyApplication;
+
 public class HttpManager {
     private static final DefaultHttpClient sClient;
     static {
@@ -57,7 +59,8 @@ public class HttpManager {
 
         HttpClientParams.setRedirecting(params, false);
 
-        HttpProtocolParams.setUserAgent(params, "sthlmtraveling android/1.1");
+        HttpProtocolParams.setUserAgent(params, String.format(
+                "sthlmtraveling android/%s", MyApplication.APP_VERSION));
 
         SchemeRegistry schemeRegistry = new SchemeRegistry();
         schemeRegistry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
@@ -95,6 +98,7 @@ public class HttpManager {
     /**
      * Modifies a request to indicate to the server that we would like a
      * gzipped response.  (Uses the "Accept-Encoding" HTTP header.)
+     * 
      * @param request the request to modify
      * @see #getUngzippedContent
      */
@@ -103,7 +107,7 @@ public class HttpManager {
     }
 
     /**
-     * Gets the input stream from a response entity.  If the entity is gzipped
+     * Gets the input stream from a response entity. If the entity is gzipped
      * then this will get a stream over the uncompressed data.
      *
      * @param entity the entity whose content should be read
@@ -113,13 +117,20 @@ public class HttpManager {
     public static InputStream getUngzippedContent(HttpEntity entity)
             throws IOException {
         InputStream responseStream = entity.getContent();
-        if (responseStream == null) return responseStream;
+        if (responseStream == null) {
+            return responseStream;
+        }
         Header header = entity.getContentEncoding();
-        if (header == null) return responseStream;
+        if (header == null) {
+            return responseStream;
+        }
         String contentEncoding = header.getValue();
-        if (contentEncoding == null) return responseStream;
-        if (contentEncoding.contains("gzip")) responseStream
-                = new GZIPInputStream(responseStream);
+        if (contentEncoding == null) {
+            return responseStream;
+        }
+        if (contentEncoding.contains("gzip")) {
+            responseStream  = new GZIPInputStream(responseStream);
+        }
         return responseStream;
     }
 }
