@@ -772,15 +772,7 @@ public class PlannerFragment extends BaseListFragment implements
     }
 
     private Dialog createDialogAbout() {
-        PackageManager pm = getActivity().getPackageManager();
-        String version = "";
-        try {
-            PackageInfo pi = pm.getPackageInfo(getActivity().getPackageName(),
-                    0);
-            version = pi.versionName;
-        } catch (NameNotFoundException e) {
-            Log.e(TAG, "Could not get the package info.");
-        }
+        String version = MyApplication.APP_VERSION;
 
         View aboutLayout = getActivity().getLayoutInflater().inflate(
                 R.layout.about_dialog,
