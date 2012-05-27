@@ -176,4 +176,6 @@
     <string name="search_clear_favorites_summary_preference">Borrar todos los favoritos.</string>
     <string name="search_clear_favorites_confirm">¿Está seguro que desea borrar todos los favoritos?</string>
     <string name="search_favorites_cleared">Favoritos borrados</string>
+    <string name="help">Help</string>
+    <string name="support">Support</string>
 </resources>

@@ -176,5 +176,6 @@
     <string name="search_clear_favorites_summary_preference">Radera alla favoriter</string>
     <string name="search_clear_favorites_confirm">Är du säker på att du vill radera alla favoriter?</string>
     <string name="search_favorites_cleared">Favoriter raderade</string>
-
+    <string name="help">Hjälp</string>
+    <string name="support">Support och hjälpforum</string>
 </resources>

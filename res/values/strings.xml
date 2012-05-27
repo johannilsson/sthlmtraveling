@@ -177,4 +177,6 @@
     <string name="search_clear_favorites_summary_preference">Clears all favorites.</string>
     <string name="search_clear_favorites_confirm">Are you sure you want to clear all favorites?</string>
     <string name="search_favorites_cleared">Favorites cleared</string>
+    <string name="help">Help</string>
+    <string name="support">Support</string>
 </resources>

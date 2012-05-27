@@ -154,6 +154,11 @@
                   android:configChanges="locale"
                   android:theme="@style/android:style/Theme"
                   ></activity>
+        <activity android:name=".AboutActivity"
+                  android:label="@string/about"
+                  android:configChanges="locale"
+                  android:theme="@style/AppThemeActionBar"
+                  />
         <activity android:name="com.google.ads.AdActivity"
                   android:configChanges="keyboard|keyboardHidden|orientation"/>
         <receiver android:name=".receivers.OnBootReceiver"

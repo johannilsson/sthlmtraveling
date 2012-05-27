@@ -3,10 +3,11 @@ package com.markupartist.sthlmtraveling;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.DialogInterface.OnClickListener;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceScreen;
@@ -70,6 +71,12 @@ public class SettingsActivity extends BasePreferenceActivity
         } else if (preference.getKey().equals("clear_favorites")) {
             showDialog(DIALOG_CLEAR_FAVORITES);
             return true;
+        } else if (preference.getKey().equals("about_legal")) {
+            Intent i = new Intent(this, AboutActivity.class);
+            startActivity(i);
+        } else if (preference.getKey().equals("help_support")) {
+            Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("http://kundo.se/mobile/sthlm-traveling/"));
+            startActivity(i);
         }
         return super.onPreferenceTreeClick(preferenceScreen, preference);
     }

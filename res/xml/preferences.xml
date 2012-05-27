@@ -57,4 +57,18 @@
             android:hint="4,42"
             />
     </PreferenceCategory>
+    <PreferenceCategory
+            android:title="@string/help">
+        <Preference
+            android:key="help_support"
+            android:title="@string/support"
+            />
+    </PreferenceCategory>
+    <PreferenceCategory
+            android:title="@string/about">
+        <Preference
+            android:key="about_legal"
+            android:title="Legal"
+            />
+    </PreferenceCategory>
 </PreferenceScreen>
