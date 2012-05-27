@@ -35,6 +35,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -131,6 +132,91 @@ public class Planner {
 
     public Response findJourney(JourneyQuery query) throws IOException, BadResponse {
         return doJourneyQuery(query, -1);
+    }
+
+    public Trip2 addIntermediateStops(Trip2 trip, JourneyQuery query)
+            throws IOException{
+        Uri u = Uri.parse(apiEndpoint2());
+        Uri.Builder b = u.buildUpon();
+        b.appendEncodedPath("journey/v1/intermediate/");
+        b.appendQueryParameter("ident", query.ident);
+        b.appendQueryParameter("seqnr", query.seqnr);
+        int references = 0;
+        String reference = null;
+        for (SubTrip st : trip.subTrips) {
+            if ((!TextUtils.isEmpty(st.reference))
+                    && st.intermediateStop.isEmpty()) {
+                b.appendQueryParameter("reference", st.reference);
+                references++;
+                reference = st.reference;
+            }
+        }
+        u = b.build();
+
+        if (references == 0) {
+            return trip;
+        }
+
+        final HttpGet get = new HttpGet(u.toString());
+        get.addHeader("X-STHLMTraveling-API-Key", get(KEY));
+        final HttpResponse response = HttpManager.execute(get);
+
+        HttpEntity entity;
+        String rawContent;
+        int statusCode = response.getStatusLine().getStatusCode();
+        switch (statusCode) {
+        case HttpStatus.SC_OK:
+            entity = response.getEntity();
+            rawContent = StreamUtils.toString(HttpManager.getUngzippedContent(entity));
+            try {
+                JSONObject baseResponse = new JSONObject(rawContent);
+                if (baseResponse.has("stops")) {
+                    if (baseResponse.isNull("stops")) {
+                        Log.d(TAG, "stops was null, ignoring.");
+                    } else if (references == 1) {
+                        JSONArray intermediateStopsJson = baseResponse.getJSONArray("stops");
+                        for (SubTrip st : trip.subTrips) {
+                            if (reference.equals(st.reference)) {
+                                for (int i = 0; i < intermediateStopsJson.length(); i++) {
+                                    st.intermediateStop.add(IntermediateStop.fromJson(
+                                            intermediateStopsJson.getJSONObject(i)));
+                                }
+                            }
+                        }
+                    } else {
+                        JSONObject intermediateStopsJson = baseResponse.getJSONObject("stops");
+                        for (SubTrip st : trip.subTrips) {
+                            if (intermediateStopsJson.has(st.reference)) {
+                                JSONArray jsonArray = intermediateStopsJson.getJSONArray(st.reference);
+                                for (int i = 0; i < jsonArray.length(); i++) {
+                                    st.intermediateStop.add(IntermediateStop.fromJson(
+                                            jsonArray.getJSONObject(i)));
+                                }
+                            }
+                        }
+                    }
+
+                } else {
+                    Log.w(TAG, "Invalid response when fetching intermediate stops.");
+                }
+            } catch (JSONException e) {
+                Log.w(TAG, "Could not parse the reponse for intermediate stops.");
+            }
+            break;
+        case HttpStatus.SC_BAD_REQUEST:
+            entity = response.getEntity();
+            rawContent = StreamUtils.toString(entity.getContent());
+            try {
+                BadResponse br = BadResponse.fromJson(new JSONObject(rawContent));
+                Log.e(TAG, "Invalid response for intermediate stops: " + br.toString());
+            } catch (JSONException e) {
+                Log.e(TAG, "Could not parse the reponse for intermediate stops.");
+            }
+        default:
+            Log.e(TAG, "Status code not OK from intermediate stops API, was " + statusCode);
+        }
+
+        return trip;
     }
 
     public SubTrip addIntermediateStops(SubTrip subTrip, JourneyQuery query)
@@ -684,7 +770,9 @@ public class Planner {
             if (json.has("mt6_messages")) {
                 fromJsonArray(json.getJSONArray("mt6_messages"), st.mt6Messages);
             }
-            st.reference = json.getString("reference");
+            if (!json.isNull("reference")) {
+                st.reference = json.getString("reference");
+            }
             if (json.has("intermediate_stops") && !json.isNull("intermediate_stops")) {
                 JSONArray intermediateStopJsonArray = json.getJSONArray("intermediate_stops");
                 for (int i = 0; i < intermediateStopJsonArray.length(); i++) {
@@ -876,6 +964,40 @@ public class Planner {
 
             Log.d(TAG, "Unknown transport type " + type);
             return R.drawable.transport_unkown;
+        }
+
+        public int getColor() {
+            if ("BUS".equals(type)) {
+                if (name.contains("blå")) {
+                    return 0xff007FC6;
+                }
+                return 0xffEE1D23;
+            } else if ("MET".equals(type)) {
+                if (name.contains("grön")) {
+                    return 0xff79C142;
+                } else if (name.contains("röd")) {
+                    return 0xffF25B21;
+                } else if (name.contains("blå")) {
+                    return 0xff1C378C;
+                }
+            } else if ("NAR".equals(type)) {
+                return Color.WHITE;
+            } else if ("Walk".equals(type)) {
+                return Color.DKGRAY;
+            } else if ("TRN".equals(type)) {
+                return Color.DKGRAY;
+            } else if ("TRM".equals(type)) {
+                return 0xffA8A9AD;
+            } else if ("SHP".equals(type)) {
+                return 0xff09693E;
+            } else if ("FLY".equals(type)) {
+                return Color.DKGRAY;
+            } else if ("AEX".equals(type)) {
+                return Color.YELLOW;
+            }
+
+            Log.d(TAG, "Unknown transport type " + type);
+            return Color.DKGRAY;
         }
 
         @Override
