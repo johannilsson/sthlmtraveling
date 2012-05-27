@@ -3,8 +3,10 @@ package com.markupartist.sthlmtraveling;
 import java.util.Locale;
 
 import android.app.Application;
-import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.preference.PreferenceManager;
@@ -16,6 +18,7 @@ import com.markupartist.sthlmtraveling.utils.ErrorReporter;
 
 public class MyApplication extends Application {
     public static String ANALYTICS_KEY = "JUSQKB45DEN62VRQVBU9";
+    public static String APP_VERSION;
     static String TAG = "StApplication";
 
     @Override
@@ -28,8 +31,23 @@ public class MyApplication extends Application {
         reloadLocaleForApplication();
 
         DataMigrationService.startService(this);
+
+        setAppVersion();
     }
 
+    protected void setAppVersion() {
+        if (APP_VERSION == null) {
+            PackageManager pm = getPackageManager();
+            try {
+                PackageInfo pi = pm.getPackageInfo(getPackageName(),
+                        0);
+                APP_VERSION = pi.versionName;
+            } catch (NameNotFoundException e) {
+                Log.e(TAG, "Could not get the package info.");
+            }
+        }        
+    }
+    
     /* (non-Javadoc)
      * @see android.app.Application#onConfigurationChanged(android.content.res.Configuration)
      */
