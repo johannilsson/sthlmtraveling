@@ -8,7 +8,7 @@ Travel in Stockholm with your Android phone.
 STHLM Traveling helps you plan your journeys using data from Stockholm Public 
 Transport (SL, Stockholms Lokaltrafik).
 
-Vote for features at http://bit.ly/sthlmt
+Kundo support forum, <http://kundo.se/org/sthlm-traveling/>.
 
 More about this project at <http://markupartist.com/sthlmtraveling> or follow 
 me on twitter at [@johanni](http://twitter.com/johanni) or [@sthlmtraveling](http://twitter.com/sthlmtraveling)
