@@ -59,15 +59,16 @@
 	        style="@style/ActionBar"
 	        />
     </LinearLayout>
-    <com.google.android.maps.MapView
+
+    <com.readystatesoftware.maps.TapControlledMapView
+        xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/mapview"
         android:layout_below="@id/actionbar_layout"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent" 
-        android:enabled="true"
-        android:clickable="true" 
-        android:apiKey="0YNZJeHdJba3AmWeKrEgX9JuZ108r4BOAX_1SwQ" />
-
+        android:layout_height="fill_parent"
+        android:clickable="true"
+	    android:apiKey="0YNZJeHdJba3EBAorjZe-3SOgx-AF7_Ju3580dw"
+	    />
 
     <!--
 	<LinearLayout android:id="@+id/bar" 

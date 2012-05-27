@@ -243,7 +243,8 @@ public class RouteDetailActivity extends BaseListActivity {
         }
 
         if (location.hasLocation()) {
-            startActivity(createViewOnMapIntent(location));
+            //startActivity(createViewOnMapIntent(location));
+            startActivity(createViewOnMapIntent(mTrip, mJourneyQuery, location));
         } else {
             Toast.makeText(this, "Missing geo data", Toast.LENGTH_LONG).show();
         }
@@ -423,14 +424,12 @@ public class RouteDetailActivity extends BaseListActivity {
         return true;
     }
 
-    private Intent createViewOnMapIntent(Planner.Location location) {
-        Location l = new Location("sthlmtraveling");
-        l.setLatitude(location.latitude / 1E6);
-        l.setLongitude(location.longitude / 1E6);
-
+    private Intent createViewOnMapIntent(Planner.Trip2 trip,
+            JourneyQuery query, Planner.Location location) {
         Intent intent = new Intent(this, ViewOnMapActivity.class);
-        intent.putExtra(ViewOnMapActivity.EXTRA_LOCATION, l);
-        intent.putExtra(ViewOnMapActivity.EXTRA_MARKER_TEXT, getLocationName(location));
+        intent.putExtra(ViewOnMapActivity.EXTRA_TRIP, trip);
+        intent.putExtra(ViewOnMapActivity.EXTRA_JOURNEY_QUERY, query);
+        intent.putExtra(ViewOnMapActivity.EXTRA_LOCATION, location);
 
         return intent;
     }
@@ -606,7 +605,7 @@ public class RouteDetailActivity extends BaseListActivity {
         public void onClick(View v) {
             Planner.Location l = (Planner.Location) v.getTag();
             if (l.hasLocation()) {
-                startActivity(createViewOnMapIntent(l));
+                startActivity(createViewOnMapIntent(mTrip, mJourneyQuery, l));
             } else {
                 Toast.makeText(RouteDetailActivity.this,
                         "Missing geo data", Toast.LENGTH_LONG).show();

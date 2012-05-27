@@ -37,34 +37,29 @@ import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 import com.google.android.maps.MyLocationOverlay;
+import com.google.android.maps.Projection;
 import com.markupartist.android.widget.ActionBar;
 import com.markupartist.sthlmtraveling.graphics.BalloonOverlayView;
 import com.markupartist.sthlmtraveling.graphics.FixedMyLocationOverlay;
 import com.markupartist.sthlmtraveling.graphics.BalloonOverlayView.OnTapBallonListener;
 import com.markupartist.sthlmtraveling.provider.planner.Stop;
+import com.readystatesoftware.maps.OnSingleTapListener;
+import com.readystatesoftware.maps.TapControlledMapView;
 
-import de.android1.overlaymanager.ManagedOverlay;
-import de.android1.overlaymanager.ManagedOverlayGestureDetector;
-import de.android1.overlaymanager.ManagedOverlayItem;
-import de.android1.overlaymanager.OverlayManager;
-import de.android1.overlaymanager.ZoomEvent;
-
-public class PointOnMapActivity extends BaseMapActivity {
+public class PointOnMapActivity extends BaseMapActivity implements OnSingleTapListener {
     private static final String TAG = "PointOnMapActivity";
 
     public static String EXTRA_STOP = "com.markupartist.sthlmtraveling.pointonmap.stop";
     public static String EXTRA_HELP_TEXT = "com.markupartist.sthlmtraveling.pointonmap.helptext";
     public static String EXTRA_MARKER_TEXT = "com.markupartist.sthlmtraveling.pointonmap.markertext";
 
-    private MapView mMapView;
+    private TapControlledMapView mMapView;
     private MapController mapController;
     private GeoPoint mGeoPoint;
-    private OverlayManager mOverlayManager;
-    private ManagedOverlayItem mManagedOverlayItem;
     private Stop mStop;
     private MyLocationOverlay mMyLocationOverlay;
 
-    private BalloonOverlayView balloonView;
+    private BalloonOverlayView mBalloonView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -72,51 +67,14 @@ public class PointOnMapActivity extends BaseMapActivity {
         setContentView(R.layout.point_on_map);
 
         registerEvent("Point on map");
-        /*
-        final AutoCompleteTextView locationSearch = (AutoCompleteTextView) findViewById(R.id.location_search);
-        ImageButton locationSearchButton = (ImageButton) findViewById(R.id.location_search_btn);
-        locationSearchButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // TODO: Move to async task...
-                
-                Log.d(TAG, "on click search for location..");
-                
-                Geocoder geocoder = new Geocoder(PointOnMapActivity.this);
-                List<Address> addresses = null;
-                try {
-                    //addresses = geocoder.getFromLocationName(locationSearch.getText().toString(), 10);
 
-                    double lowerLeftLatitude = 58.87;
-                    double lowerLeftLongitude = 17.1754;
-                    double upperRightLatitude = 59.8307;
-                    double upperRightLongitude = 19.1907;
+        ActionBar actionBar = (ActionBar) findViewById(R.id.actionbar);
+        getMenuInflater().inflate(R.menu.actionbar_map, actionBar.asMenu());
+        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+        actionBar.setDisplayShowHomeEnabled(true);
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setTitle(R.string.point_on_map);
 
-                    addresses = geocoder.getFromLocationName(locationSearch.getText().toString(), 10, lowerLeftLatitude, lowerLeftLongitude, upperRightLatitude, upperRightLongitude);
-                    
-                } catch (IOException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-                if (addresses != null && !addresses.isEmpty()) {
-                    
-                    Log.d(TAG, "Setting the geo point...");
-                    
-                    Address address = addresses.get(0);
-
-                    mGeoPoint = new GeoPoint(
-                            (int) (address.getLatitude() * 1E6),
-                            (int) (address.getLongitude() * 1E6));
-                    mapController.animateTo(mGeoPoint);
-                    mapController.setZoom(16);
-                    // Show the text balloon from start.
-                    showBalloon(mMapView, mGeoPoint);
-                }
-            }
-        });
-        */
-        
-        
         Bundle extras = getIntent().getExtras();
         mStop = (Stop) extras.getParcelable(EXTRA_STOP);
         String helpText = extras.getString(EXTRA_HELP_TEXT);
@@ -128,16 +86,12 @@ public class PointOnMapActivity extends BaseMapActivity {
             markerText = getString(R.string.tap_to_select_this_point);
         }
 
-        ActionBar actionBar = (ActionBar) findViewById(R.id.actionbar);
-        getMenuInflater().inflate(R.menu.actionbar_map, actionBar.asMenu());
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-        actionBar.setDisplayShowHomeEnabled(true);
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setTitle(R.string.point_on_map);
-
-        mMapView = (MapView) findViewById(R.id.mapview);
-        mMapView.setBuiltInZoomControls(true);
+        mMapView = (TapControlledMapView) findViewById(R.id.mapview);
         mapController = mMapView.getController();
+
+        mMapView.setBuiltInZoomControls(true);
+        mMapView.setOnSingleTapListener(this);
+
         myLocationOverlay();
 
         // Use stops location if present, otherwise set a geo point in 
@@ -148,7 +102,6 @@ public class PointOnMapActivity extends BaseMapActivity {
                     (int) (mStop.getLocation().getLongitude() * 1E6));
             mapController.setZoom(16);
         } else {
-            //mGeoPoint = mMyLocationOverlay.getMyLocation();
             mGeoPoint = new GeoPoint(
                     (int) (59.325309 * 1E6), 
                     (int) (18.069763 * 1E6));
@@ -158,22 +111,12 @@ public class PointOnMapActivity extends BaseMapActivity {
 
         // Show the text balloon from start.
         showBalloon(mMapView, mGeoPoint);
-
-        mOverlayManager = new OverlayManager(getApplication(), mMapView);
-
-        pointToSelectOverlay();
     }
 
     private void showHelpToast(String helpText) {
         if (helpText != null) {
             Toast.makeText(this, helpText, Toast.LENGTH_LONG).show();
         }
-    }
-    
-    @Override
-    public void onWindowFocusChanged(boolean b) {
-        //pointToSelectOverlay();
-        //myLocationOverlay();
     }
 
     @Override
@@ -253,69 +196,6 @@ public class PointOnMapActivity extends BaseMapActivity {
         mMapView.getOverlays().add(mMyLocationOverlay);
     }
 
-    private void pointToSelectOverlay() {
-        /*ManagedOverlay managedOverlay = mOverlayManager.createOverlay(
-                mLabelMarker.getMarker());*/
-        final ManagedOverlay managedOverlay = mOverlayManager.createOverlay(
-                getResources().getDrawable(R.drawable.marker));
-
-        mManagedOverlayItem = new ManagedOverlayItem(mGeoPoint, "title", "snippet");
-        managedOverlay.add(mManagedOverlayItem);
-
-        managedOverlay.setOnOverlayGestureListener(
-                new ManagedOverlayGestureDetector.OnOverlayGestureListener() {
-
-            @Override
-            public boolean onDoubleTap(MotionEvent motionEvent, ManagedOverlay managedOverlay,
-                    GeoPoint geoPoint, ManagedOverlayItem managedOverlayItem) {
-                mapController.zoomIn();
-                return true;
-            }
-
-            @Override
-            public void onLongPress(MotionEvent arg0, ManagedOverlay arg1) {
-                // Needed by interface, not used
-            }
-
-            @Override
-            public void onLongPressFinished(MotionEvent motionEvent,
-                                            ManagedOverlay managedOverlay,
-                                            GeoPoint geoPoint,
-                                            ManagedOverlayItem managedOverlayItem) {
-                // Needed by interface, not used
-            }
-
-            @Override
-            public boolean onScrolled(MotionEvent arg0, MotionEvent arg1,
-                    float arg2, float arg3, ManagedOverlay arg4) {
-                return false;
-            }
-
-            @Override
-            public boolean onSingleTap(MotionEvent motionEvent, 
-                                       ManagedOverlay managedOverlay,
-                                       GeoPoint geoPoint,
-                                       ManagedOverlayItem managedOverlayItem) {
-                managedOverlay.remove(mManagedOverlayItem);
-                mManagedOverlayItem = new ManagedOverlayItem(geoPoint, "title", "snippet");
-                managedOverlay.add(mManagedOverlayItem);
-
-                showBalloon(mMapView, geoPoint);
-                //mapController.animateTo(geoPoint);    
-                mMapView.invalidate();
-
-                return true;
-            }
-
-            @Override
-            public boolean onZoom(ZoomEvent zoomEvent, ManagedOverlay managedOverlay) {
-                return false;
-            }
-
-        });
-        mOverlayManager.populate();
-    }
-
     private String getStopName(Location location) {
         Geocoder geocoder = new Geocoder(this);
         String name = "Unkown";
@@ -344,23 +224,23 @@ public class PointOnMapActivity extends BaseMapActivity {
         boolean isRecycled;
         int viewOffset = 10;
         
-        if (balloonView == null) {
-            balloonView = new BalloonOverlayView(mapView.getContext(), viewOffset);
+        if (mBalloonView == null) {
+            mBalloonView = new BalloonOverlayView(mapView.getContext(), viewOffset);
             //View clickRegion = (View) balloonView.findViewById(R.id.balloon_inner_layout);
             isRecycled = false;
         } else {
             isRecycled = true;
         }
 
-        balloonView.setVisibility(View.GONE);
-        balloonView.setLabel(getString(R.string.tap_to_select_this_point));
+        mBalloonView.setVisibility(View.GONE);
+        mBalloonView.setLabel(getString(R.string.tap_to_select_this_point));
 
         MapView.LayoutParams params = new MapView.LayoutParams(
                 LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, point,
                 MapView.LayoutParams.BOTTOM_CENTER);
         params.mode = MapView.LayoutParams.MODE_MAP;
         
-        balloonView.setOnTapBalloonListener(new OnTapBallonListener() {
+        mBalloonView.setOnTapBalloonListener(new OnTapBallonListener() {
             @Override
             public void onTap() {
                 Toast.makeText(getApplicationContext(),
@@ -373,12 +253,22 @@ public class PointOnMapActivity extends BaseMapActivity {
             }
         });
 
-        balloonView.setVisibility(View.VISIBLE);
+        mBalloonView.setVisibility(View.VISIBLE);
 
         if (isRecycled) {
-            balloonView.setLayoutParams(params);
+            mBalloonView.setLayoutParams(params);
         } else {
-            mapView.addView(balloonView, params);
+            mapView.addView(mBalloonView, params);
         }
+    }
+
+    @Override
+    public boolean onSingleTap(MotionEvent e) {
+        Projection projection = mMapView.getProjection();
+        GeoPoint geoPoint = projection.fromPixels(
+                (int)e.getX(), (int)e.getY());
+
+        showBalloon(mMapView, geoPoint);
+        return true;
     }
 }

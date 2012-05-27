@@ -16,45 +16,60 @@
 
 package com.markupartist.sthlmtraveling;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 import android.content.Intent;
-import android.location.Location;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.DashPathEffect;
+import android.graphics.Paint;
+import android.graphics.Point;
+import android.graphics.RectF;
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.OvalShape;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup.LayoutParams;
 import android.widget.Toast;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 import com.google.android.maps.MyLocationOverlay;
+import com.google.android.maps.Overlay;
+import com.google.android.maps.OverlayItem;
+import com.google.android.maps.Projection;
 import com.markupartist.android.widget.ActionBar;
-import com.markupartist.sthlmtraveling.graphics.BalloonOverlayView;
+import com.markupartist.android.widget.actionbar.R;
 import com.markupartist.sthlmtraveling.graphics.FixedMyLocationOverlay;
-
-import de.android1.overlaymanager.ManagedOverlay;
-import de.android1.overlaymanager.ManagedOverlayGestureDetector;
-import de.android1.overlaymanager.ManagedOverlayItem;
-import de.android1.overlaymanager.OverlayManager;
-import de.android1.overlaymanager.ZoomEvent;
+import com.markupartist.sthlmtraveling.graphics.SimpleItemizedOverlay;
+import com.markupartist.sthlmtraveling.provider.planner.JourneyQuery;
+import com.markupartist.sthlmtraveling.provider.planner.Planner;
+import com.markupartist.sthlmtraveling.provider.planner.Planner.IntermediateStop;
+import com.markupartist.sthlmtraveling.provider.planner.Planner.SubTrip;
+import com.markupartist.sthlmtraveling.provider.planner.Planner.Trip2;
 
 public class ViewOnMapActivity extends BaseMapActivity {
     private static final String TAG = "ViewOnMapActivity";
 
-    public static String EXTRA_LOCATION = "com.markupartist.sthlmtraveling.pointonmap.location";
-    public static String EXTRA_MARKER_TEXT = "com.markupartist.sthlmtraveling.pointonmap.markertext";
+    public static String EXTRA_LOCATION = "com.markupartist.sthlmtraveling.extra.Location";
+    public static String EXTRA_JOURNEY_QUERY = "com.markupartist.sthlmtraveling.extra.JourneyQuery";
+    public static String EXTRA_TRIP = "com.markupartist.sthlmtraveling.extra.Trip";
+    
 
     private MapView mMapView;
     private MapController mapController;
-    private GeoPoint mGeoPoint;
-    private OverlayManager mOverlayManager;
-    private ManagedOverlayItem mManagedOverlayItem;
     private MyLocationOverlay mMyLocationOverlay;
+    private ShapeDrawable mDefaultMarker;
+    private SimpleItemizedOverlay mItemizedOverlay;
+    private ActionBar mActionBar;
 
-    private BalloonOverlayView balloonView;
+    private GeoPoint mFocusedGeoPoint;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -63,36 +78,143 @@ public class ViewOnMapActivity extends BaseMapActivity {
 
         registerEvent("View on map");
 
-        Bundle extras = getIntent().getExtras();
-        Location location = (Location) extras.getParcelable(EXTRA_LOCATION);
-        String markerText = extras.getString(EXTRA_MARKER_TEXT);
+        mActionBar = (ActionBar) findViewById(R.id.actionbar);
+        getMenuInflater().inflate(R.menu.actionbar_map, mActionBar.asMenu());
+        mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+        mActionBar.setDisplayShowHomeEnabled(true);
+        mActionBar.setDisplayHomeAsUpEnabled(true);
+        mActionBar.setTitle(R.string.stop_label);
 
-        ActionBar actionBar = (ActionBar) findViewById(R.id.actionbar);
-        getMenuInflater().inflate(R.menu.actionbar_map, actionBar.asMenu());
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-        actionBar.setDisplayShowHomeEnabled(true);
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setTitle(R.string.stop_label);
+        Bundle extras = getIntent().getExtras();
+
+        final Trip2 trip =
+                (Trip2) extras.getParcelable(EXTRA_TRIP);
+        final JourneyQuery journeyQuery =
+                (JourneyQuery) extras.getParcelable(EXTRA_JOURNEY_QUERY);
+        final Planner.Location focusedLocation =
+                (Planner.Location) extras.getParcelable(EXTRA_LOCATION);
+
+        mFocusedGeoPoint = new GeoPoint(
+                focusedLocation.latitude, focusedLocation.longitude);
 
         mMapView = (MapView) findViewById(R.id.mapview);
-        mMapView.setBuiltInZoomControls(true);
+        //mMapView.setBuiltInZoomControls(true);
         mapController = mMapView.getController();
+
+        // We draw our marker our self later on, fake for the first overlay.
+        mDefaultMarker = new ShapeDrawable(new OvalShape());
+        mDefaultMarker.getPaint().setColor(Color.TRANSPARENT);
+
         myLocationOverlay();
 
-
-        mGeoPoint = new GeoPoint(
-                (int) (location.getLatitude() * 1E6), 
-                (int) (location.getLongitude() * 1E6));
-
         mapController.setZoom(16);
-        mapController.animateTo(mGeoPoint); 
+        mapController.animateTo(mFocusedGeoPoint); 
 
-        // Show the text balloon from start.
-        showBalloon(mMapView, mGeoPoint, markerText);
+        mItemizedOverlay = new SimpleItemizedOverlay(mDefaultMarker, mMapView);
+        //mItemizedOverlay.addOverlay(new OverlayItem(mFocusedGeoPoint, "First", "Desc"));
 
-        mOverlayManager = new OverlayManager(getApplication(), mMapView);
+        fetchRoute(trip, journeyQuery);
+    }
 
-        locationOverlay();
+    public void fetchRoute(final Trip2 trip, final JourneyQuery journeyQuery) {
+        mActionBar.setProgressBarVisibility(View.VISIBLE);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Planner.getInstance().addIntermediateStops(
+                            trip, journeyQuery);
+                } catch (IOException e) {
+                    Log.e(TAG, e.getMessage());
+                }
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        // In the UI
+                        mActionBar.setProgressBarVisibility(View.GONE);
+                        addRoute(trip);
+                    }
+                });
+            }
+        }).start();
+    }
+
+    public void addRoute(Trip2 trip) {
+        List<Overlay> mapOverlays = mMapView.getOverlays();
+
+        RouteOverlay routeOverlay = new RouteOverlay(trip);
+        mapOverlays.add(routeOverlay);
+        mMapView.invalidate();
+
+        for (SubTrip subTrip : trip.subTrips) {
+            GeoPoint origin = new GeoPoint(subTrip.origin.latitude,
+                    subTrip.origin.longitude);
+            routeOverlay.addGeoPoint(origin);
+            
+            
+            OverlayItem originOverlayItem = new OverlayItem(
+                    origin, getLocationName(subTrip.origin), 
+                    getRouteDescription(subTrip));
+            mItemizedOverlay.addOverlay(originOverlayItem);
+            if (origin.equals(mFocusedGeoPoint)) {
+                mItemizedOverlay.setFocus(originOverlayItem);
+            }
+
+            for (IntermediateStop stop : subTrip.intermediateStop) {
+                GeoPoint intermediateStop = new GeoPoint(stop.location.latitude,
+                        stop.location.longitude);
+                routeOverlay.addGeoPoint(intermediateStop);
+
+                mItemizedOverlay.addOverlay(new OverlayItem(
+                        intermediateStop, getLocationName(stop.location), 
+                        String.format("%s", stop.arrivalTime)));
+            }
+
+            GeoPoint destination = new GeoPoint(subTrip.destination.latitude,
+                    subTrip.destination.longitude);
+            routeOverlay.addGeoPoint(destination);
+            
+            OverlayItem destinationOverlayItem = new OverlayItem(
+                    destination, getLocationName(subTrip.destination), 
+                    String.format("%s", subTrip.arrivalTime));
+            mItemizedOverlay.addOverlay(destinationOverlayItem);
+            if (destination.equals(mFocusedGeoPoint)) {
+                mItemizedOverlay.setFocus(destinationOverlayItem);
+            }
+        }
+
+        mapOverlays.add(mItemizedOverlay);
+    }
+
+    public String getRouteDescription(SubTrip subTrip) {
+        // TODO: Copied from RouteDetailActivity, centralize please!
+        String description;
+        if ("Walk".equals(subTrip.transport.type)) {
+            description = getString(R.string.trip_description_walk,
+                    subTrip.departureTime,
+                    subTrip.arrivalTime,
+                    getLocationName(subTrip.origin),
+                    getLocationName(subTrip.destination));
+        } else {
+            description = getString(R.string.trip_description_normal,
+                    subTrip.departureTime, subTrip.arrivalTime,
+                    subTrip.transport.name,
+                    getLocationName(subTrip.origin),
+                    subTrip.transport.towards,
+                    getLocationName(subTrip.destination));
+        }
+        return description;
+    }
+
+    private String getLocationName(Planner.Location location) {
+        // TODO: Copied from RouteDetailActivity, centralize please!
+        if (location == null) {
+            return "Unknown";
+        }
+        if (location.isMyLocation()) {
+            return getString(R.string.my_location);
+        }
+        return location.name;
     }
 
     @Override
@@ -172,61 +294,6 @@ public class ViewOnMapActivity extends BaseMapActivity {
         mMapView.getOverlays().add(mMyLocationOverlay);
     }
 
-    private void locationOverlay() {
-        /*ManagedOverlay managedOverlay = mOverlayManager.createOverlay(
-                mLabelMarker.getMarker());*/
-        final ManagedOverlay managedOverlay = mOverlayManager.createOverlay(
-                getResources().getDrawable(R.drawable.marker));
-
-        mManagedOverlayItem = new ManagedOverlayItem(mGeoPoint, "title", "snippet");
-        managedOverlay.add(mManagedOverlayItem);
-
-        managedOverlay.setOnOverlayGestureListener(
-                new ManagedOverlayGestureDetector.OnOverlayGestureListener() {
-
-            @Override
-            public boolean onDoubleTap(MotionEvent motionEvent, ManagedOverlay managedOverlay,
-                    GeoPoint geoPoint, ManagedOverlayItem managedOverlayItem) {
-                mapController.zoomIn();
-                return true;
-            }
-
-            @Override
-            public void onLongPress(MotionEvent arg0, ManagedOverlay arg1) {
-                // Needed by interface, not used
-            }
-
-            @Override
-            public void onLongPressFinished(MotionEvent motionEvent,
-                                            ManagedOverlay managedOverlay,
-                                            GeoPoint geoPoint,
-                                            ManagedOverlayItem managedOverlayItem) {
-                // Needed by interface, not used
-            }
-
-            @Override
-            public boolean onScrolled(MotionEvent arg0, MotionEvent arg1,
-                    float arg2, float arg3, ManagedOverlay arg4) {
-                return false;
-            }
-
-            @Override
-            public boolean onSingleTap(MotionEvent motionEvent, 
-                                       ManagedOverlay managedOverlay,
-                                       GeoPoint geoPoint,
-                                       ManagedOverlayItem managedOverlayItem) {
-                return false;
-            }
-
-            @Override
-            public boolean onZoom(ZoomEvent zoomEvent, ManagedOverlay managedOverlay) {
-                return false;
-            }
-
-        });
-        mOverlayManager.populate();
-    }
-
     @Override
     public boolean onSearchRequested() {
         Intent i = new Intent(this, StartActivity.class);
@@ -235,32 +302,131 @@ public class ViewOnMapActivity extends BaseMapActivity {
         return true;
     }
 
-    public void showBalloon(final MapView mapView, final GeoPoint point,
-            String markerText) {
-        boolean isRecycled;
-        int viewOffset = 10;
-        
-        if (balloonView == null) {
-            balloonView = new BalloonOverlayView(mapView.getContext(), viewOffset);
-            isRecycled = false;
-        } else {
-            isRecycled = true;
+    /**
+     * Converts the passed trip to a visual route. 
+     */
+    class RouteOverlay extends Overlay {
+
+        private Paint mMarkerPaint;
+        private static final int markerRadius = 8;
+        private ArrayList<GeoPoint> mPoints;
+        private Trip2 mTrip;
+
+        public RouteOverlay(Trip2 trip) {
+            mTrip = trip;
+            mMarkerPaint = new Paint();
+            mMarkerPaint.setColor(Color.DKGRAY);
+            mMarkerPaint.setAntiAlias(true);
         }
 
-        balloonView.setVisibility(View.GONE);
-        balloonView.setLabel(markerText);
+        public void addGeoPoint(GeoPoint geoPoint) {
+            if (mPoints == null) {
+                mPoints = new ArrayList<GeoPoint>();
+            }
+            mPoints.add(geoPoint);
+        }
 
-        MapView.LayoutParams params = new MapView.LayoutParams(
-                LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, point,
-                MapView.LayoutParams.BOTTOM_CENTER);
-        params.mode = MapView.LayoutParams.MODE_MAP;
+        protected Paint createPaint(SubTrip subTrip) {
+            Paint paint = new Paint();
+            paint.setAntiAlias(true);
+            paint.setColor(subTrip.transport.getColor());
+            paint.setStrokeWidth(6);
 
-        balloonView.setVisibility(View.VISIBLE);
+            if (subTrip.transport.type.equalsIgnoreCase("walk")) {
+                DashPathEffect dashPath = new DashPathEffect(new float[]{6,2}, 1);
+                paint.setPathEffect(dashPath);
+            }
 
-        if (isRecycled) {
-            balloonView.setLayoutParams(params);
-        } else {
-            mapView.addView(balloonView, params);
+            return paint;
+        }
+
+        protected void drawStopMarker(SubTrip subTrip, Canvas canvas, Point point) {
+            RectF oval = new RectF(point.x-markerRadius,
+                    point.y-markerRadius,
+                    point.x+markerRadius,
+                    point.y+markerRadius);
+            mMarkerPaint.setColor(subTrip.transport.getColor());
+            canvas.drawOval(oval, mMarkerPaint);
+            oval.inset(4, 4);
+        }
+
+        @Override
+        public void draw(Canvas canvas, MapView mapView, boolean shadow) {
+            Projection projection = mapView.getProjection();
+            if (shadow == false) {
+
+                GeoPoint lastGeoPoint = null;
+                for (SubTrip subTrip : mTrip.subTrips) {
+                    GeoPoint originGeoPoint = new GeoPoint(subTrip.origin.latitude,
+                            subTrip.origin.longitude);
+                    
+                    Paint paint = createPaint(subTrip); 
+
+                    Point originPoint = new Point();
+                    projection.toPixels(originGeoPoint, originPoint);
+                    drawStopMarker(subTrip, canvas, originPoint);
+
+                    if (lastGeoPoint != null) {
+                        Point point2 = new Point();
+                        projection.toPixels(lastGeoPoint, point2);
+                        Paint connectionPaint = new Paint(paint);
+                        connectionPaint.setColor(Color.DKGRAY);
+                        DashPathEffect dashPath = new DashPathEffect(new float[]{6,2}, 1);
+                        connectionPaint.setPathEffect(dashPath);
+                        canvas.drawLine((float) originPoint.x,
+                                (float) originPoint.y,
+                                (float) point2.x,
+                                (float) point2.y, connectionPaint);
+                    }
+
+                    GeoPoint lastIntermediateGeoPoint = null;
+                    for (IntermediateStop stop : subTrip.intermediateStop) {
+                        GeoPoint intermediateStopGeoPoint = new GeoPoint(stop.location.latitude,
+                                stop.location.longitude);
+                        
+                        Point intermediatePoint = new Point();
+                        projection.toPixels(intermediateStopGeoPoint, intermediatePoint);
+                        drawStopMarker(subTrip, canvas, intermediatePoint);
+                        if (lastIntermediateGeoPoint != null) {
+                            Point point2 = new Point();
+                            projection.toPixels(lastIntermediateGeoPoint, point2);
+                            canvas.drawLine((float) intermediatePoint.x,
+                                    (float) intermediatePoint.y,
+                                    (float) point2.x,
+                                    (float) point2.y, paint);
+                        } else {
+                            canvas.drawLine((float) originPoint.x, (float) originPoint.y, (float) intermediatePoint.x,(float) intermediatePoint.y, paint);
+                        }
+
+                        lastIntermediateGeoPoint = intermediateStopGeoPoint;
+                    }
+
+                    GeoPoint destinationGeoPoint = new GeoPoint(subTrip.destination.latitude,
+                            subTrip.destination.longitude);
+                    Point destinationPoint = new Point();
+                    projection.toPixels(destinationGeoPoint, destinationPoint);
+                    drawStopMarker(subTrip, canvas, destinationPoint);
+                    if (lastIntermediateGeoPoint != null) {
+                        Point lastPoint = new Point();
+                        projection.toPixels(lastIntermediateGeoPoint, lastPoint);
+                        canvas.drawLine((float) lastPoint.x,
+                                (float) lastPoint.y,
+                                (float) destinationPoint.x,
+                                (float) destinationPoint.y, paint);
+                    } else {
+                        // Assume origin
+                        canvas.drawLine((float) originPoint.x,
+                                (float) originPoint.y,
+                                (float) destinationPoint.x,
+                                (float) destinationPoint.y, paint);
+                    }
+
+                    lastGeoPoint = destinationGeoPoint;
+                }
+            }
+
+            super.draw(canvas, mapView, shadow);
         }
     }
+
 }
