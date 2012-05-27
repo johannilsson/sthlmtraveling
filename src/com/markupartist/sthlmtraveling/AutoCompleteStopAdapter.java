@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.regex.Pattern;
 
 import android.content.Context;
 import android.location.Address;
@@ -110,7 +111,11 @@ public class AutoCompleteStopAdapter extends ArrayAdapter<String> implements Fil
 
                     List<Object> values = new ArrayList<Object>();
 
-                    if (mIncludeAddresses) {
+                    // Address search more or less requires a house number to be
+                    // accurate, so skip adress search if it's not present.
+                    // TODO: Add configuration option for this
+                    if (mIncludeAddresses
+                            && Pattern.compile("[0-9]").matcher(constraint).find()) {
                         List<Address> addresses = null;
                         try {
                             double lowerLeftLatitude = 58.9074;
@@ -156,6 +161,7 @@ public class AutoCompleteStopAdapter extends ArrayAdapter<String> implements Fil
                 if (results != null && results.count > 0) {
                     clear();
                     mValues = (List<Object>)results.values;
+
                     synchronized (mLock) {
                         for (Object value : mValues) {
                             if (value instanceof String) {
