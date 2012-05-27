@@ -16,8 +16,8 @@ where new versions is announced.
 
 Some screen shots can be found at [Flickr](http://www.flickr.com/photos/johannilsson/tags/sthlmtraveling/).
 
-The app is powered by a backend service written i Java and hosted at Google
-app engine. Unfortunately that application is not open source since it's using
+The app is powered by a backend service written in <strike>Java and hosted at Google
+app engine</strike> python. Unfortunately that application is not open source since it's using
 closed API's that is provided by SL.
 
 <a href="http://flattr.com/thing/332993/STHLM-Traveling" target="_blank">
