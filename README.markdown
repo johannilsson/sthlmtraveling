@@ -64,8 +64,11 @@ application and the tests application deployed before.
 
 Changelog
 ---------
-* NEXT
-    * Gzip API requests.
+* 2.5.0
+    * Add Gzip support for API request/response.
+    * Add map of a selected route.
+    * Add link to Kundo support forum.
+    * Change to not autocomplete addresses if a number is not provided. 
 * 2.4.0
     * Add swipe between tabs and port to fragments by [Robert Johansson](https://twitter.com/#!/likebobby).
     * Add support for Arlanda Express.
