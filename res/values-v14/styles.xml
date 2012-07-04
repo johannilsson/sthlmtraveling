@@ -1,11 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Because of an bug in the Samsung Galaxy S2 ICS update when rendering
+    	 dialogs we must extend the Holo theme direct to workaround this. -->
+    <style name="AppThemeActionBar" parent="@style/Theme.Holo.Light.NoActionBar">
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="actionBarStyle">@style/ActionBar.Container</item>
+        <item name="actionBarTitleTextStyle">@style/ActionBar.TitleText</item>
+        <item name="actionBarSubtitleTextStyle">@style/ActionBar.SubtitleText</item>
+        <item name="actionBarItemStyle">@style/ActionBar.Item</item>
+        <item name="actionBarHomeItemStyle">@style/ActionBar.HomeItem</item>
+        <item name="actionBarHomeLogoStyle">@style/ActionBar.HomeLogo</item>
+        <item name="actionBarProgressBarStyle">@style/ActionBar.ProgressBar</item>
+        <item name="actionBarTabBarStyle">@style/ActionBar.TabBar</item>
+        <item name="actionBarTabViewStyle">@style/ActionBar.TabView</item>
+        <item name="actionBarTabTextStyle">@style/ActionBar.TabText</item>
+        <item name="actionBarItemDivider">@color/actionbar_divider</item>
+        <item name="vpiCirclePageIndicatorStyle">@style/Widget.CirclePageIndicator</item>
+        <item name="vpiTitlePageIndicatorStyle">@style/Widget.TitlePageIndicator</item>
+        <item name="vpiTabPageIndicatorStyle">@style/VPI.TabPageIndicator</item>
+        <item name="vpiTabTextStyle">@style/VPI.TabPageIndicator.Text</item>
+    </style>
+
+    <!--
     <style name="AppThemeActionBar" parent="@style/Theme.ActionBar.Light">
         <item name="vpiCirclePageIndicatorStyle">@style/Widget.CirclePageIndicator</item>
         <item name="vpiTitlePageIndicatorStyle">@style/Widget.TitlePageIndicator</item>
         <item name="vpiTabPageIndicatorStyle">@style/VPI.TabPageIndicator</item>
         <item name="vpiTabTextStyle">@style/VPI.TabPageIndicator.Text</item>
     </style>
+    -->
     <style name="AppListView" parent="@android:style/Widget.ListView.White">
         <item name="android:divider">@color/list_divider</item>
         <item name="android:dividerHeight">1px</item>
