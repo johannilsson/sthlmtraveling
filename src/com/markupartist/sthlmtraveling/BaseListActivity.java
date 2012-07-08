@@ -40,6 +40,7 @@ public class BaseListActivity extends SherlockListActivity {
 
     protected ActionBar initActionBar() {
         ActionBar actionBar = getSupportActionBar();
+        actionBar.setHomeButtonEnabled(true);
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
         actionBar.setDisplayShowHomeEnabled(true);
         return actionBar;

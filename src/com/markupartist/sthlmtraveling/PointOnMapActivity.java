@@ -70,7 +70,7 @@ public class PointOnMapActivity extends BaseMapActivity implements OnSingleTapLi
         registerEvent("Point on map");
 
         ActionBar actionBar = getSupportActionBar();
-        //getMenuInflater().inflate(R.menu.actionbar_map, actionBar.asMenu());
+        actionBar.setHomeButtonEnabled(true);
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
         actionBar.setDisplayShowHomeEnabled(true);
         actionBar.setDisplayHomeAsUpEnabled(true);

@@ -81,7 +81,7 @@ public class ViewOnMapActivity extends BaseMapActivity {
         registerEvent("View on map");
 
         mActionBar = getSupportActionBar();
-        //getMenuInflater().inflate(R.menu.actionbar_map, mActionBar.asMenu());
+        mActionBar.setHomeButtonEnabled(true);
         mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
         mActionBar.setDisplayShowHomeEnabled(true);
         mActionBar.setDisplayHomeAsUpEnabled(true);

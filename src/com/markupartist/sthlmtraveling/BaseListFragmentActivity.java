@@ -46,6 +46,7 @@ public class BaseListFragmentActivity extends SherlockFragmentActivity implement
 
     protected ActionBar initActionBar(int menuResource) {
         ActionBar actionBar = getSupportActionBar();
+        actionBar.setHomeButtonEnabled(true);
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
         actionBar.setDisplayShowHomeEnabled(true);
         return actionBar;

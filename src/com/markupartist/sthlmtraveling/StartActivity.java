@@ -43,6 +43,7 @@ public class StartActivity extends BaseFragmentActivity {
         setContentView(R.layout.start);
 
         ActionBar ab = getSupportActionBar();
+        ab.setHomeButtonEnabled(false);
         ab.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
         ab.setDisplayShowHomeEnabled(true);
         ab.setDisplayUseLogoEnabled(true);
