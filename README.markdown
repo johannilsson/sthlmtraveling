@@ -64,6 +64,9 @@ application and the tests application deployed before.
 
 Changelog
 ---------
+* 2.5.1
+	* Fix issue with black text on black background in dialogs on Samsung
+	  Galaxy S2 devices that has been updated to ICS. 
 * 2.5.0
     * Add Gzip support for API request/response.
     * Add map of a selected route.
