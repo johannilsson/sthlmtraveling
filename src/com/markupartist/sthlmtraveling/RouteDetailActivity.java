@@ -39,7 +39,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -54,9 +53,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 import com.google.ads.AdView;
-import com.markupartist.android.widget.ActionBar;
-import com.markupartist.android.widget.actionbar.R;
 import com.markupartist.sthlmtraveling.provider.JourneysProvider.Journey.Journeys;
 import com.markupartist.sthlmtraveling.provider.planner.JourneyQuery;
 import com.markupartist.sthlmtraveling.provider.planner.Planner;
@@ -103,7 +104,7 @@ public class RouteDetailActivity extends BaseListActivity {
 
         mJourneyQuery = extras.getParcelable(EXTRA_JOURNEY_QUERY);
 
-        mActionBar = initActionBar(R.menu.actionbar_route_detail);
+        mActionBar = initActionBar();
 
         mAdView = (AdView) findViewById(R.id.ad_view);
         if (AppConfig.ADS_ENABLED) {
@@ -189,6 +190,13 @@ public class RouteDetailActivity extends BaseListActivity {
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getSupportMenuInflater();
+        inflater.inflate(R.menu.actionbar_route_detail, menu);
+        return true;
+    }
+
+    @Override
     public void onConfigurationChanged(Configuration newConfig) {
         onRotationChange(newConfig);
 
@@ -217,7 +225,11 @@ public class RouteDetailActivity extends BaseListActivity {
             startActivity(departuresIntent);
             return true;
         case R.id.actionbar_item_sms:
-            showDialog(DIALOG_BUY_SMS_TICKET);
+            if (mTrip.canBuySmsTicket()) {
+                showDialog(DIALOG_BUY_SMS_TICKET);
+            } else {
+                Toast.makeText(this, R.string.sms_ticket_notice_disabled, Toast.LENGTH_LONG).show();
+            }
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -331,12 +343,15 @@ public class RouteDetailActivity extends BaseListActivity {
 
         setListAdapter(mSubTripAdapter);
 
+        // TODO: Add action, or toggle disable/enable instead.
+        /*
         if (trip.canBuySmsTicket()) {
             mActionBar.addAction(
                 mActionBar.newAction(R.id.actionbar_item_sms)
                     .setIcon(R.drawable.ic_actionbar_sms)
             );
         }
+        */
 
         mTrip = trip;
     }

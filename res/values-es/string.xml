@@ -120,6 +120,7 @@
     <string name="sms_ticket_price_reduced">Tarifa reducida</string>
     <string name="sms_ticket_price_full">Tarifa general</string>
     <string name="sms_ticket_notice_message">Esta función es experimental, por favor compruebe los detalles antes de comprar su ticket. STHLM Traveling no puede garantizar que el ticket sea válido para su trayecto.</string>
+    <string name="sms_ticket_notice_disabled">SMS tickets is not available for this route.</string>
     <string name="trip_description_walk" formatted="false">%s - %s Andando desde %s hasta %s</string>
     <string name="trip_description_normal" formatted="false">%s - %s %s desde %s dirección %s. Bajar en %s</string>
     <string name="show_all">Mostrar todo</string>

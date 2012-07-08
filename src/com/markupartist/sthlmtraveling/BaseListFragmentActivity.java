@@ -4,18 +4,17 @@ import java.util.Map;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ListView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ListView;
 
+import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.view.MenuItem;
 import com.flurry.android.FlurryAgent;
-import com.markupartist.android.widget.ActionBar;
-import com.markupartist.android.widget.actionbar.R;
 
-public class BaseListFragmentActivity extends FragmentActivity implements OnItemClickListener {
+public class BaseListFragmentActivity extends SherlockFragmentActivity implements OnItemClickListener {
 
     private ListView mListView;
 
@@ -46,17 +45,16 @@ public class BaseListFragmentActivity extends FragmentActivity implements OnItem
     }
 
     protected ActionBar initActionBar(int menuResource) {
-        ActionBar actionBar = (ActionBar) findViewById(R.id.actionbar);
+        ActionBar actionBar = getSupportActionBar();
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
         actionBar.setDisplayShowHomeEnabled(true);
-        getMenuInflater().inflate(menuResource, actionBar.asMenu());
         return actionBar;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-        case R.id.actionbar_item_home:
+        case android.R.id.home:
             final Intent startIntent = new Intent(this, StartActivity.class);
             startIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(startIntent);

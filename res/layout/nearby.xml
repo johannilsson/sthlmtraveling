@@ -22,11 +22,6 @@
     android:layout_height="fill_parent"
     android:orientation="vertical"
     >
-    <com.markupartist.android.widget.ActionBar
-        android:id="@+id/actionbar"
-        style="@style/ActionBar"
-        app:title="Nearby"
-        />
     <TextView
         android:id="@+id/current_location"
         android:layout_width="wrap_content"

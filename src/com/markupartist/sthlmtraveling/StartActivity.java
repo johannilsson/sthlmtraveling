@@ -25,11 +25,11 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 
-import com.markupartist.android.widget.ActionBar;
+import com.actionbarsherlock.app.ActionBar;
 import com.markupartist.sthlmtraveling.service.DeviationService;
 import com.markupartist.sthlmtraveling.utils.ErrorReporter;
 import com.viewpagerindicator.TabPageIndicator;
-import com.viewpagerindicator.TitleProvider;
+//import com.viewpagerindicator.TitleProvider;
 
 public class StartActivity extends BaseFragmentActivity {
     private PageFragmentAdapter mPageAdapter;
@@ -42,11 +42,11 @@ public class StartActivity extends BaseFragmentActivity {
 
         setContentView(R.layout.start);
 
-        ActionBar ab = (ActionBar) findViewById(R.id.actionbar);
+        ActionBar ab = getSupportActionBar();
         ab.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
         ab.setDisplayShowHomeEnabled(true);
         ab.setDisplayUseLogoEnabled(true);
-        ab.setHomeLogo(R.drawable.logo);
+        //ab.setHomeLogo(R.drawable.logo);
         ab.setTitle(R.string.app_name);
 
         final ErrorReporter reporter = ErrorReporter.getInstance();
@@ -73,7 +73,7 @@ public class StartActivity extends BaseFragmentActivity {
         DeviationService.startAsRepeating(getApplicationContext());
     }
 
-    public class PageFragmentAdapter extends FragmentPagerAdapter implements TitleProvider {
+    public class PageFragmentAdapter extends FragmentPagerAdapter /*implements TitleProvider*/ {
 
         private ArrayList<PageInfo> mPages = new ArrayList<PageInfo>();
         private FragmentActivity mContext;
@@ -100,7 +100,7 @@ public class StartActivity extends BaseFragmentActivity {
         }
 
         @Override
-        public String getTitle(int position) {
+        public CharSequence getPageTitle(int position) {
             return mPages.get(position).getTextResource().toUpperCase();
         }
 

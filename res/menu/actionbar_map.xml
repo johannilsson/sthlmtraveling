@@ -18,8 +18,10 @@
 -->
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item
-        android:id="@+id/actionbar_item_home"
-        android:icon="@drawable/logo"
-        />
+	<item
+		android:id="@+id/menu_my_location"
+		android:title="@string/my_location"
+		android:icon="@drawable/ic_actionbar_location"
+		android:showAsAction="always"
+		/>
 </menu>

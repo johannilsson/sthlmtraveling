@@ -22,7 +22,6 @@ import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.format.Time;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
@@ -31,8 +30,10 @@ import android.widget.DatePicker;
 import android.widget.Spinner;
 import android.widget.TimePicker;
 
-import com.markupartist.android.widget.ActionBar;
-import com.markupartist.android.widget.actionbar.R;
+import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 import com.markupartist.sthlmtraveling.provider.planner.JourneyQuery;
 
 public class ChangeRouteTimeActivity extends BaseActivity {
@@ -52,7 +53,7 @@ public class ChangeRouteTimeActivity extends BaseActivity {
         registerEvent("Change route time");
         
         //setTitle(getText(R.string.change_date_and_time));
-        ActionBar actionBar = initActionBar(R.menu.actionbar_change_route_time);
+        ActionBar actionBar = initActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
 
         Bundle extras = getIntent().getExtras();
@@ -109,6 +110,13 @@ public class ChangeRouteTimeActivity extends BaseActivity {
         updateDisplay();
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getSupportMenuInflater();
+        inflater.inflate(R.menu.actionbar_change_route_time, menu);
+        return true;
+    }
+
     /**
      * Update time on the buttons.
      */
@@ -122,7 +130,7 @@ public class ChangeRouteTimeActivity extends BaseActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-        case R.id.actionbar_item_home:
+        case android.R.id.home:
             finish();
             return true;
         }

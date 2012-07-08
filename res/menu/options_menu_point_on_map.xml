@@ -22,5 +22,6 @@
 		android:id="@+id/menu_my_location"
 		android:title="@string/my_location"
 		android:icon="@drawable/ic_menu_mylocation"
+		android:showAsAction="always"
 		/>
 </menu>

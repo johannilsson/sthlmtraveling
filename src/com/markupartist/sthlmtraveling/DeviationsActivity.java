@@ -23,26 +23,27 @@ import java.util.Map;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.DialogInterface.OnClickListener;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.format.Time;
 import android.util.Log;
 import android.view.ContextMenu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager.BadTokenException;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.SimpleAdapter;
-import android.widget.TextView;
 import android.widget.SimpleAdapter.ViewBinder;
+import android.widget.TextView;
 
-import com.markupartist.android.widget.ActionBar;
-import com.markupartist.android.widget.actionbar.R;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
+import com.actionbarsherlock.view.Window;
 import com.markupartist.sthlmtraveling.provider.deviation.Deviation;
 import com.markupartist.sthlmtraveling.provider.deviation.DeviationStore;
 
@@ -58,11 +59,13 @@ public class DeviationsActivity extends BaseListActivity {
     private GetDeviationsTask mGetDeviationsTask;
     private ArrayList<Deviation> mDeviationsResult;
     private LinearLayout mProgress;
-    private ActionBar mActionBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+
         setContentView(R.layout.deviations_list);
 
         registerEvent("Deviations");
@@ -70,10 +73,17 @@ public class DeviationsActivity extends BaseListActivity {
         mProgress = (LinearLayout) findViewById(R.id.search_progress);
         mProgress.setVisibility(View.GONE);
 
-        mActionBar = initActionBar(R.menu.actionbar_deviations);
+        initActionBar();
 
         loadDeviations();
         registerForContextMenu(getListView());
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getSupportMenuInflater();
+        inflater.inflate(R.menu.actionbar_deviations, menu);
+        return true;
     }
 
     @Override
@@ -183,7 +193,7 @@ public class DeviationsActivity extends BaseListActivity {
     }
 
     @Override
-    public boolean onContextItemSelected(MenuItem item) {
+    public boolean onContextItemSelected(android.view.MenuItem item) {
         AdapterView.AdapterContextMenuInfo menuInfo =
             (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         Deviation deviation = mDeviationsResult.get(menuInfo.position);
@@ -273,18 +283,14 @@ public class DeviationsActivity extends BaseListActivity {
      * Show progress dialog.
      */
     private void showProgress() {
-        if (mActionBar != null) {
-            mActionBar.setProgressBarVisibility(View.VISIBLE);
-        }
+        setSupportProgressBarIndeterminateVisibility(true);
     }
 
     /**
      * Dismiss the progress dialog.
      */
     private void dismissProgress() {
-        if (mActionBar != null) {
-            mActionBar.setProgressBarVisibility(View.GONE);
-        }
+        setSupportProgressBarIndeterminateVisibility(false);
     }
 
     @Override

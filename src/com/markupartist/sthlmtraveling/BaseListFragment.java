@@ -2,11 +2,10 @@ package com.markupartist.sthlmtraveling;
 
 import java.util.Map;
 
-import android.support.v4.app.ListFragment;
-
+import com.actionbarsherlock.app.SherlockListFragment;
 import com.flurry.android.FlurryAgent;
 
-public class BaseListFragment extends ListFragment {
+public class BaseListFragment extends SherlockListFragment {
 
 
     protected void registerEvent(String event) {

@@ -19,11 +19,13 @@
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/actionbar_item_home"
-        android:icon="@drawable/logo"
+        android:id="@+id/actionbar_item_sms"
+        android:icon="@drawable/ic_actionbar_sms"
+        android:showAsAction="always"
         />
     <item
         android:id="@+id/actionbar_item_time"
         android:icon="@drawable/ic_actionbar_time"
+        android:showAsAction="always"
         />
 </menu>

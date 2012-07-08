@@ -11,15 +11,16 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.markupartist.android.widget.ActionBar;
-import com.markupartist.android.widget.actionbar.R;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
+import com.actionbarsherlock.view.Window;
 import com.markupartist.sthlmtraveling.MyLocationManager.MyLocationFoundListener;
 import com.markupartist.sthlmtraveling.provider.site.Site;
 import com.markupartist.sthlmtraveling.provider.site.SitesStore;
@@ -28,24 +29,28 @@ public class NearbyActivity extends BaseListActivity implements LocationListener
     private static String TAG = "NearbyActivity";
     private MyLocationManager mMyLocationManager;
     private TextView mCurrentLocationText;
-    private ActionBar mActionBar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         // If the activity was started with the "create shortcut" action, we
         // remember this to change the behavior upon a search.
         if (Intent.ACTION_CREATE_SHORTCUT.equals(getIntent().getAction())) {
             onCreateShortCut();
         }
 
+        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         setContentView(R.layout.nearby);
-        
-        mActionBar = initActionBar(R.menu.actionbar_nearby);
-
+        initActionBar();
         requestUpdate();
-
         mCurrentLocationText = (TextView) findViewById(R.id.current_location);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getSupportMenuInflater();
+        inflater.inflate(R.menu.actionbar_nearby, menu);
+        return true;
     }
 
     @Override
@@ -59,7 +64,7 @@ public class NearbyActivity extends BaseListActivity implements LocationListener
     }
 
     private void requestUpdate() {
-        mActionBar.setProgressBarVisibility(View.VISIBLE);
+        setSupportProgressBarIndeterminateVisibility(true);
         LocationManager locationManager = (LocationManager)getSystemService(LOCATION_SERVICE);
         mMyLocationManager = new MyLocationManager(locationManager);
         mMyLocationManager.requestLocationUpdates(new MyLocationFoundListener() {
@@ -104,7 +109,7 @@ public class NearbyActivity extends BaseListActivity implements LocationListener
     }
     
     private void fill(ArrayList<Site> stopPoints) {
-        mActionBar.setProgressBarVisibility(View.GONE);
+        setSupportProgressBarIndeterminateVisibility(false);
 
         ArrayAdapter<Site> adapter =
             new ArrayAdapter<Site>(this, android.R.layout.simple_list_item_1, stopPoints);
@@ -145,7 +150,8 @@ public class NearbyActivity extends BaseListActivity implements LocationListener
 
     @Override
     public void onLocationChanged(Location location) {
-        mActionBar.setTitle("Nearby ("+ location.getAccuracy() +"m)");
+        //mActionBar.setTitle("Nearby ("+ location.getAccuracy() +"m)");
+        setTitle("Nearby ("+ location.getAccuracy() +"m)");
         new FindNearbyStopAsyncTask().execute(location);
     }
 

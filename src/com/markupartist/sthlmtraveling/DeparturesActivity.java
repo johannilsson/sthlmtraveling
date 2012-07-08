@@ -25,8 +25,8 @@ import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
-import android.content.Intent;
 import android.content.DialogInterface.OnClickListener;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.net.Uri;
@@ -34,22 +34,24 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.format.Time;
 import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager.BadTokenException;
 import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
-import android.widget.CompoundButton.OnCheckedChangeListener;
 
+import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
+import com.actionbarsherlock.view.Window;
 import com.google.ads.AdView;
-import com.markupartist.android.widget.ActionBar;
-import com.markupartist.android.widget.actionbar.R;
-import com.markupartist.sthlmtraveling.provider.TransportMode;
 import com.markupartist.sthlmtraveling.provider.PlacesProvider.Place.Places;
+import com.markupartist.sthlmtraveling.provider.TransportMode;
 import com.markupartist.sthlmtraveling.provider.departure.DeparturesStore;
 import com.markupartist.sthlmtraveling.provider.departure.DeparturesStore.Departure;
 import com.markupartist.sthlmtraveling.provider.departure.DeparturesStore.Departures;
@@ -100,6 +102,9 @@ public class DeparturesActivity extends BaseListActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+
         setContentView(R.layout.departures_list);
 
         registerEvent("Departures");
@@ -117,13 +122,20 @@ public class DeparturesActivity extends BaseListActivity {
 
         mSectionedAdapter = new DepartureAdapter(this);
 
-        mActionBar = initActionBar(R.menu.actionbar_departures);
+        mActionBar = initActionBar();
         mActionBar.setTitle(R.string.departures);
 
         mAdView = (AdView) findViewById(R.id.ad_view);
         if (AppConfig.ADS_ENABLED) {
             mAdView.loadAd(AdRequestFactory.createRequest());
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getSupportMenuInflater();
+        inflater.inflate(R.menu.actionbar_departures, menu);
+        return true;
     }
 
     @Override
@@ -505,18 +517,14 @@ public class DeparturesActivity extends BaseListActivity {
      * Show progress dialog.
      */
     private void showProgress() {
-        if (mActionBar != null) {
-            mActionBar.setProgressBarVisibility(View.VISIBLE);
-        }
+        setSupportProgressBarIndeterminateVisibility(true);
     }
 
     /**
      * Dismiss the progress dialog.
      */
     private void dismissProgress() {
-        if (mActionBar != null) {
-            mActionBar.setProgressBarVisibility(View.GONE);
-        }
+        setSupportProgressBarIndeterminateVisibility(false);
     }
 
     @Override

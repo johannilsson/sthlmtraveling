@@ -3,89 +3,12 @@
 	android:id="@+id/main" 
 	android:layout_width="fill_parent"
 	android:layout_height="fill_parent">
-
-    <!--
-    <LinearLayout
-        android:id="@+id/adress_search"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        >
-        <LinearLayout 
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:addStatesFromChildren="true"
-            android:gravity="center_vertical"
-            android:paddingTop="5dip"
-            android:paddingBottom="10dip"
-            android:paddingLeft="3dip"
-            android:paddingRight="3dip">
-            <AutoCompleteTextView 
-                android:id="@+id/location_search"
-                android:hint="@string/site_name"
-                android:dropDownWidth="fill_parent"
-                android:layout_width="wrap_content"
-                android:layout_height="fill_parent"
-                android:textColor="#000"
-                android:singleLine="true"
-                android:layout_weight="1"
-                android:imeOptions="actionSearch"
-                android:lines="1"
-                android:inputType="text"
-                android:background="@drawable/textfield_search"
-                />
-            <ImageButton
-                    android:id="@+id/location_search_btn"
-                    android:src="@drawable/ic_search_category_default"
-                    android:layout_width="wrap_content"
-                    android:layout_height="fill_parent"
-                    android:paddingLeft="5dip"
-                    android:paddingRight="5dip"
-                    android:background="@drawable/btn_search_dialog"
-                    />
-        </LinearLayout>
-    </LinearLayout>
-    
-    on mapview: android:layout_below="@id/adress_search"
-     -->
-    <LinearLayout
-        android:id="@+id/actionbar_layout"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        >
-	    <com.markupartist.android.widget.ActionBar
-	        android:id="@+id/actionbar"
-	        style="@style/ActionBar"
-	        />
-    </LinearLayout>
-
     <com.readystatesoftware.maps.TapControlledMapView
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/mapview"
-        android:layout_below="@id/actionbar_layout"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:clickable="true"
 	    android:apiKey="0YNZJeHdJba3EBAorjZe-3SOgx-AF7_Ju3580dw"
 	    />
-
-    <!--
-	<LinearLayout android:id="@+id/bar" 
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content" 
-		android:paddingRight="15px"
-		android:paddingBottom="15px"
-		android:layout_alignParentBottom="true"
-		android:layout_alignParentRight="true">
-		<ImageView android:id="@+id/loader" 
-			android:visibility="invisible"
-			android:layout_width="25px"
-			android:layout_height="26px" 
-			android:layout_alignParentBottom="true"
-			android:layout_alignParentRight="true"
-			/>
-	</LinearLayout>
-     -->
-
 </RelativeLayout>

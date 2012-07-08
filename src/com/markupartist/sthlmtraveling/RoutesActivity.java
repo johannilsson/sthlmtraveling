@@ -25,13 +25,12 @@ import org.json.JSONException;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.DialogInterface.OnClickListener;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.graphics.Color;
@@ -44,7 +43,6 @@ import android.text.TextUtils;
 import android.text.format.Time;
 import android.util.Log;
 import android.util.TypedValue;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager.BadTokenException;
@@ -55,27 +53,28 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.SimpleAdapter.ViewBinder;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.SimpleAdapter.ViewBinder;
 
-import com.google.ads.AdRequest;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
+import com.actionbarsherlock.view.Window;
 import com.google.ads.AdView;
-import com.markupartist.android.widget.ActionBar;
-import com.markupartist.android.widget.actionbar.R;
 import com.markupartist.sthlmtraveling.MyLocationManager.MyLocationFoundListener;
 import com.markupartist.sthlmtraveling.SectionedAdapter.Section;
 import com.markupartist.sthlmtraveling.provider.JourneysProvider.Journey.Journeys;
 import com.markupartist.sthlmtraveling.provider.deviation.DeviationStore;
 import com.markupartist.sthlmtraveling.provider.planner.JourneyQuery;
 import com.markupartist.sthlmtraveling.provider.planner.Planner;
-import com.markupartist.sthlmtraveling.provider.planner.Route;
-import com.markupartist.sthlmtraveling.provider.planner.Stop;
-import com.markupartist.sthlmtraveling.provider.planner.Trip;
 import com.markupartist.sthlmtraveling.provider.planner.Planner.BadResponse;
 import com.markupartist.sthlmtraveling.provider.planner.Planner.Response;
 import com.markupartist.sthlmtraveling.provider.planner.Planner.SubTrip;
 import com.markupartist.sthlmtraveling.provider.planner.Planner.Trip2;
+import com.markupartist.sthlmtraveling.provider.planner.Route;
+import com.markupartist.sthlmtraveling.provider.planner.Stop;
+import com.markupartist.sthlmtraveling.provider.planner.Trip;
 import com.markupartist.sthlmtraveling.utils.AdRequestFactory;
 
 /**
@@ -175,7 +174,6 @@ public class RoutesActivity extends BaseListActivity
     private GetEarlierRoutesTask mGetEarlierRoutesTask;
     private GetLaterRoutesTask mGetLaterRoutesTask;
     private Toast mToast;
-    private ProgressDialog mProgress;
 
     private Response mPlannerResponse;
     private JourneyQuery mJourneyQuery;
@@ -185,13 +183,14 @@ public class RoutesActivity extends BaseListActivity
 
     private ImageButton mFavoriteButton;
 
-    private ActionBar mActionBar;
-
     private AdView mAdView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+
         setContentView(R.layout.routes_list);
 
         registerEvent("Routes");
@@ -209,7 +208,7 @@ public class RoutesActivity extends BaseListActivity
             return;
         }
 
-        mActionBar = initActionBar(R.menu.actionbar_routes);
+        initActionBar();
         mAdView = (AdView) findViewById(R.id.ad_view);
         if (AppConfig.ADS_ENABLED) { 
             mAdView.loadAd(AdRequestFactory.createRequest());
@@ -236,6 +235,13 @@ public class RoutesActivity extends BaseListActivity
         updateJourneyHistory();
 
         initRoutes(mJourneyQuery);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getSupportMenuInflater();
+        inflater.inflate(R.menu.actionbar_routes, menu);
+        return true;
     }
 
     @Override
@@ -1239,31 +1245,14 @@ public class RoutesActivity extends BaseListActivity
      * Show progress dialog.
      */
     private void showProgress() {
-        /*
-        if (mProgress == null) {
-            mProgress = new ProgressDialog(this);
-            mProgress.setMessage(getText(R.string.loading));
-            mProgress.show();   
-        }
-        */
-        if (mActionBar != null) {
-            mActionBar.setProgressBarVisibility(View.VISIBLE);
-        }
+        setSupportProgressBarIndeterminateVisibility(true);
     }
 
     /**
      * Dismiss the progress dialog.
      */
     private void dismissProgress() {
-        /*
-        if (mProgress != null) {
-            mProgress.dismiss();
-            mProgress = null;
-        }
-        */
-        if (mActionBar != null) {
-            mActionBar.setProgressBarVisibility(View.GONE);
-        }
+        setSupportProgressBarIndeterminateVisibility(false);
     }
 
     /**

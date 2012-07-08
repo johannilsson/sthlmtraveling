@@ -25,23 +25,23 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.Toast;
 
+import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 import com.google.android.maps.MyLocationOverlay;
 import com.google.android.maps.Projection;
-import com.markupartist.android.widget.ActionBar;
 import com.markupartist.sthlmtraveling.graphics.BalloonOverlayView;
-import com.markupartist.sthlmtraveling.graphics.FixedMyLocationOverlay;
 import com.markupartist.sthlmtraveling.graphics.BalloonOverlayView.OnTapBallonListener;
+import com.markupartist.sthlmtraveling.graphics.FixedMyLocationOverlay;
 import com.markupartist.sthlmtraveling.provider.planner.Stop;
 import com.readystatesoftware.maps.OnSingleTapListener;
 import com.readystatesoftware.maps.TapControlledMapView;
@@ -64,12 +64,13 @@ public class PointOnMapActivity extends BaseMapActivity implements OnSingleTapLi
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.point_on_map);
 
         registerEvent("Point on map");
 
-        ActionBar actionBar = (ActionBar) findViewById(R.id.actionbar);
-        getMenuInflater().inflate(R.menu.actionbar_map, actionBar.asMenu());
+        ActionBar actionBar = getSupportActionBar();
+        //getMenuInflater().inflate(R.menu.actionbar_map, actionBar.asMenu());
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
         actionBar.setDisplayShowHomeEnabled(true);
         actionBar.setDisplayHomeAsUpEnabled(true);
@@ -121,8 +122,8 @@ public class PointOnMapActivity extends BaseMapActivity implements OnSingleTapLi
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.options_menu_point_on_map, menu);
+        MenuInflater inflater = getSupportMenuInflater();
+        inflater.inflate(R.menu.actionbar_map, menu);
         return true;
     }
 
@@ -139,7 +140,7 @@ public class PointOnMapActivity extends BaseMapActivity implements OnSingleTapLi
                     toastMissingMyLocationSource();
                 }
                 return true;
-            case R.id.actionbar_item_home:
+            case android.R.id.home:
                 finish();
                 return true;
         }

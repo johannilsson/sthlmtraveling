@@ -4,10 +4,10 @@ import java.util.Map;
 
 import android.os.Bundle;
 
+import com.actionbarsherlock.app.SherlockMapActivity;
 import com.flurry.android.FlurryAgent;
-import com.google.android.maps.MapActivity;
 
-public abstract class BaseMapActivity extends MapActivity {
+public abstract class BaseMapActivity extends SherlockMapActivity {
     @Override
     protected void onStart() {
         super.onStart();

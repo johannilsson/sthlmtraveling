@@ -21,10 +21,7 @@
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
-    <com.markupartist.android.widget.ActionBar
-        android:id="@+id/actionbar"
-        style="@style/ActionBar"
-        />
+
     <!-- <ImageView
         android:layout_width="fill_parent"
         android:layout_height="1px"
@@ -39,7 +36,6 @@
         <include layout="@layout/ad"/>
     </RelativeLayout>
     <ListView
-        android:layout_below="@id/actionbar"
         android:layout_above="@id/ad_holder"
         style="@style/AppListView"
         android:id="@id/android:list"

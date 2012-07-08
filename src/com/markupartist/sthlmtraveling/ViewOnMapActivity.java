@@ -31,12 +31,13 @@ import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
 import android.widget.Toast;
 
+import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
+import com.actionbarsherlock.view.Window;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
@@ -44,8 +45,6 @@ import com.google.android.maps.MyLocationOverlay;
 import com.google.android.maps.Overlay;
 import com.google.android.maps.OverlayItem;
 import com.google.android.maps.Projection;
-import com.markupartist.android.widget.ActionBar;
-import com.markupartist.android.widget.actionbar.R;
 import com.markupartist.sthlmtraveling.graphics.FixedMyLocationOverlay;
 import com.markupartist.sthlmtraveling.graphics.SimpleItemizedOverlay;
 import com.markupartist.sthlmtraveling.provider.planner.JourneyQuery;
@@ -74,12 +73,15 @@ public class ViewOnMapActivity extends BaseMapActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+
         setContentView(R.layout.point_on_map);
 
         registerEvent("View on map");
 
-        mActionBar = (ActionBar) findViewById(R.id.actionbar);
-        getMenuInflater().inflate(R.menu.actionbar_map, mActionBar.asMenu());
+        mActionBar = getSupportActionBar();
+        //getMenuInflater().inflate(R.menu.actionbar_map, mActionBar.asMenu());
         mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
         mActionBar.setDisplayShowHomeEnabled(true);
         mActionBar.setDisplayHomeAsUpEnabled(true);
@@ -117,7 +119,8 @@ public class ViewOnMapActivity extends BaseMapActivity {
     }
 
     public void fetchRoute(final Trip2 trip, final JourneyQuery journeyQuery) {
-        mActionBar.setProgressBarVisibility(View.VISIBLE);
+        //mActionBar.setProgressBarVisibility(View.VISIBLE);
+        setSupportProgressBarIndeterminateVisibility(true);
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -131,7 +134,8 @@ public class ViewOnMapActivity extends BaseMapActivity {
                     @Override
                     public void run() {
                         // In the UI
-                        mActionBar.setProgressBarVisibility(View.GONE);
+                        //mActionBar.setProgressBarVisibility(View.GONE);
+                        setSupportProgressBarIndeterminateVisibility(false);
                         addRoute(trip);
                     }
                 });
@@ -219,8 +223,8 @@ public class ViewOnMapActivity extends BaseMapActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.options_menu_point_on_map, menu);
+        MenuInflater inflater = getSupportMenuInflater();
+        inflater.inflate(R.menu.actionbar_map, menu);
         return true;
     }
 
@@ -237,7 +241,7 @@ public class ViewOnMapActivity extends BaseMapActivity {
                     toastMissingMyLocationSource();
                 }
                 return true;
-            case R.id.actionbar_item_home:
+            case android.R.id.home:
                 finish();
                 return true;
         }
