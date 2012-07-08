@@ -51,7 +51,7 @@ public class BaseListActivity extends SherlockListActivity {
         switch (item.getItemId()) {
         case android.R.id.home:
             final Intent startIntent = new Intent(this, StartActivity.class);
-            startIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(startIntent);
             return true;
         }
