@@ -1,9 +1,10 @@
 package com.markupartist.sthlmtraveling;
 
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 
-public class PlannerFragmentActivity extends FragmentActivity {
+import com.actionbarsherlock.app.SherlockFragmentActivity;
+
+public class PlannerFragmentActivity extends SherlockFragmentActivity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

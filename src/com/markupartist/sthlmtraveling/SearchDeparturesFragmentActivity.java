@@ -16,24 +16,12 @@
 
 package com.markupartist.sthlmtraveling;
 
-import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
-import android.os.Parcelable;
-import android.support.v4.app.FragmentActivity;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.AutoCompleteTextView;
-import android.widget.ImageButton;
-import android.widget.ListView;
-import android.widget.SimpleCursorAdapter;
 
-import com.markupartist.sthlmtraveling.provider.HistoryDbAdapter;
-import com.markupartist.sthlmtraveling.provider.planner.Planner;
-import com.markupartist.sthlmtraveling.provider.planner.Stop;
+import com.actionbarsherlock.app.SherlockFragmentActivity;
 
 
-public class SearchDeparturesFragmentActivity extends FragmentActivity {
+public class SearchDeparturesFragmentActivity extends SherlockFragmentActivity {
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
