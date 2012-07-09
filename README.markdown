@@ -67,7 +67,7 @@ Changelog
 * 2.5.2
 	* Add ActionBarSherlock.
 	* Update ViewPagerIndicator to latest version.
-	* Add launcher icon for xhdpi.
+	* Add new logo from [Olof Brickarp](http://www.yay.se).
 * 2.5.1
 	* Fix issue with black text on black background in dialogs on Samsung
 	  Galaxy S2 devices that has been updated to ICS. 
