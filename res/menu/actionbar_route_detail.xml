@@ -20,12 +20,14 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/actionbar_item_sms"
-        android:icon="@drawable/ic_actionbar_sms"
+        android:icon="@drawable/ic_action_sms"
         android:showAsAction="always"
+        android:title="@string/sms_ticket_label"
         />
     <item
         android:id="@+id/actionbar_item_time"
-        android:icon="@drawable/ic_actionbar_time"
+        android:icon="@drawable/ic_action_time"
+        android:title="@string/departures"
         android:showAsAction="always"
         />
 </menu>

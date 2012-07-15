@@ -20,7 +20,8 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/actionbar_item_refresh"
-        android:icon="@drawable/ic_actionbar_refresh_default"
+        android:icon="@drawable/ic_action_refresh"
+        android:title="@string/refresh"
         android:showAsAction="always"
         />
 </menu>

@@ -20,7 +20,8 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/actionbar_item_reverse"
-        android:icon="@drawable/ic_actionbar_reverse"
+        android:icon="@drawable/ic_action_reverse"
+        android:title="@string/reverse_start_end"
         android:showAsAction="always"
         />
 </menu>
