@@ -64,6 +64,8 @@ application and the tests application deployed before.
 
 Changelog
 ---------
+* 2.5.3
+	* Fix issue with shortcuts.
 * 2.5.2
 	* Add ActionBarSherlock.
 	* Update ViewPagerIndicator to latest version.
