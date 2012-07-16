@@ -34,6 +34,7 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+import com.actionbarsherlock.view.Window;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
@@ -65,11 +66,14 @@ public class PointOnMapActivity extends BaseMapActivity implements OnSingleTapLi
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        requestWindowFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
+
         setContentView(R.layout.point_on_map);
 
         registerEvent("Point on map");
 
         ActionBar actionBar = getSupportActionBar();
+        actionBar.setBackgroundDrawable(getResources().getDrawable(R.drawable.ab_bg_black));
         actionBar.setHomeButtonEnabled(true);
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
         actionBar.setDisplayShowHomeEnabled(true);
@@ -157,7 +161,6 @@ public class PointOnMapActivity extends BaseMapActivity implements OnSingleTapLi
         super.onResume();
  
         if (mMyLocationOverlay != null) {
-            mMyLocationOverlay.enableCompass();
             mMyLocationOverlay.enableMyLocation();
         }
     }

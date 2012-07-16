@@ -75,12 +75,14 @@ public class ViewOnMapActivity extends BaseMapActivity {
         super.onCreate(savedInstanceState);
 
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+        requestWindowFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
 
         setContentView(R.layout.point_on_map);
 
         registerEvent("View on map");
 
         mActionBar = getSupportActionBar();
+        mActionBar.setBackgroundDrawable(getResources().getDrawable(R.drawable.ab_bg_black));
         mActionBar.setHomeButtonEnabled(true);
         mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
         mActionBar.setDisplayShowHomeEnabled(true);
@@ -258,7 +260,6 @@ public class ViewOnMapActivity extends BaseMapActivity {
         super.onResume();
  
         if (mMyLocationOverlay != null) {
-            mMyLocationOverlay.enableCompass();
             mMyLocationOverlay.enableMyLocation();
         }
     }
