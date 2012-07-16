@@ -42,6 +42,7 @@ import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.CursorLoader;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -89,7 +90,7 @@ import com.markupartist.sthlmtraveling.utils.LocationUtils;
 
 public class PlannerFragment extends BaseListFragment implements
         OnCheckedChangeListener {
-    private static final String TAG = "PlannerActivity";
+    private static final String TAG = "PlannerFragment";
     protected static final int REQUEST_CODE_POINT_ON_MAP_START = 0;
     protected static final int REQUEST_CODE_POINT_ON_MAP_END = 1;
 
@@ -133,6 +134,7 @@ public class PlannerFragment extends BaseListFragment implements
      */
     private static final int COLUMN_INDEX_STARRED = 3;
 
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -150,9 +152,14 @@ public class PlannerFragment extends BaseListFragment implements
             mStackLevel = savedInstanceState.getInt("level");
         }
 
-        Cursor cursor = getActivity().managedQuery(Journeys.CONTENT_URI,
-                PROJECTION, null, null, Journeys.HISTORY_SORT_ORDER);
-
+        CursorLoader cursorLoader = new CursorLoader(
+                getActivity(),
+                Journeys.CONTENT_URI,
+                PROJECTION,
+                null, //selection,
+                null, //selectionArgs,
+                Journeys.HISTORY_SORT_ORDER);
+        Cursor cursor = cursorLoader.loadInBackground();
         mAdapter = new JourneyAdapter(getActivity(), cursor);
     }
 
