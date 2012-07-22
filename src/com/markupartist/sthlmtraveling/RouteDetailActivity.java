@@ -181,7 +181,7 @@ public class RouteDetailActivity extends BaseListActivity {
 
         mFavoriteButton = (ImageButton) findViewById(R.id.route_favorite);
         if (isStarredJourney(mJourneyQuery)) {
-            mFavoriteButton.setImageResource(android.R.drawable.star_big_on);
+            mFavoriteButton.setImageResource(R.drawable.btn_star_on_normal_holo_dark);
         }
         mFavoriteButton.setOnClickListener(new OnStarredJourneyButtonClickListener());
 
@@ -650,7 +650,7 @@ public class RouteDetailActivity extends BaseListActivity {
                 getContentResolver().update(
                         uri, values, where, selectionArgs);
                 mFavoriteButton.setImageResource(
-                        android.R.drawable.star_big_off);
+                        R.drawable.btn_star_off_normal_holo_dark);
             } else {
                 values.put(Journeys.STARRED, "1");
                 int affectedRows = getContentResolver().update(
@@ -661,7 +661,7 @@ public class RouteDetailActivity extends BaseListActivity {
                             Journeys.CONTENT_URI, values);
                 }
                 mFavoriteButton.setImageResource(
-                        android.R.drawable.star_big_on);
+                        R.drawable.btn_star_on_normal_holo_dark);
             }
         }
     }

@@ -126,7 +126,7 @@
         </TableLayout>
         <ImageButton
             android:id="@+id/route_favorite"
-            android:src="@android:drawable/star_big_off"
+            android:src="@drawable/btn_star_off_normal_holo_dark"
             android:background="@android:color/transparent"
             android:layout_gravity="right|center_vertical"
             android:layout_width="wrap_content"
