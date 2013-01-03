@@ -23,6 +23,7 @@
     <string name="to">Destino</string>
     <string name="to">Via</string> <!-- TODO: Needs translation -->
     <string name="search_label">Buscar</string>
+    <string name="search_routes_label">Fetch routes</string>
     <string name="departing">Salida</string>
     <string name="arriving">Llegada</string>
     <string name="no_routes_found_label">Lo sentimos, pero la ruta no ha podido ser encontrada</string>

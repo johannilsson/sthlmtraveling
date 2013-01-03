@@ -161,6 +161,8 @@ public class PlannerFragment extends BaseListFragment implements
                 Journeys.HISTORY_SORT_ORDER);
         Cursor cursor = cursorLoader.loadInBackground();
         mAdapter = new JourneyAdapter(getActivity(), cursor);
+        
+        
     }
 
     @Override
@@ -196,11 +198,6 @@ public class PlannerFragment extends BaseListFragment implements
             showDialog(createDialogReinstallApp());
             return;
         }
-
-        // Setup search button.
-        final Button search = (Button) mSearchView
-                .findViewById(R.id.search_route);
-        search.setOnClickListener(mGetSearchListener);
 
         // Setup view for choosing other data for start and end point.
         final ImageButton fromDialog = (ImageButton) mSearchView
@@ -273,7 +270,6 @@ public class PlannerFragment extends BaseListFragment implements
         if (mCreateShortcut) {
             registerEvent("Planner create shortcut");
             getActivity().setTitle(R.string.create_shortcut_label);
-            search.setText(getText(R.string.create_shortcut_label));
             RadioGroup chooseTimeGroup = (RadioGroup) mSearchView
                     .findViewById(R.id.planner_choose_time_group);
             chooseTimeGroup.setVisibility(View.GONE);
@@ -321,58 +317,19 @@ public class PlannerFragment extends BaseListFragment implements
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.options_menu_search, menu);
-        super.onCreateOptionsMenu(menu, inflater);
+    public void onPrepareOptionsMenu(Menu menu) {
+        if (mCreateShortcut) {
+            MenuItem item = menu.findItem(R.id.actionbar_search_route);
+            item.setTitle(R.string.create_shortcut_label);
+        }
+        super.onPrepareOptionsMenu(menu);
     }
 
-    /**
-     * On click listener for search and create shortcut button. Validates that
-     * the start point and the end point is correctly filled out before moving
-     * on.
-     */
-    View.OnClickListener mGetSearchListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            // if (!mStartPoint.hasName()) {
-            if (TextUtils.isEmpty(mStartPointAutoComplete.getText())) {
-                mStartPointAutoComplete.setError(getText(R.string.empty_value));
-                // } else if (!mEndPoint.hasName()) {
-            } else if (TextUtils.isEmpty(mEndPointAutoComplete.getText())) {
-                mEndPointAutoComplete.setError(getText(R.string.empty_value));
-            } else {
-                mStartPoint = buildStop(mStartPoint, mStartPointAutoComplete);
-                mEndPoint = buildStop(mEndPoint, mEndPointAutoComplete);
-
-                boolean looksValid = true;
-                if (!mStartPoint.looksValid()) {
-                    mStartPointAutoComplete.setError(getText(R.string.empty_value));
-                    looksValid = false;
-                }
-                if (!mEndPoint.looksValid()) {
-                    mEndPointAutoComplete.setError(getText(R.string.empty_value));
-                    looksValid = false;
-                }
-                if (!TextUtils.isEmpty(mViaPointAutoComplete.getText())) {
-                    mViaPoint = buildStop(mViaPoint, mViaPointAutoComplete);
-                    if (!mViaPoint.looksValid()) {
-                        mViaPointAutoComplete.setError(getText(R.string.empty_value));
-                        looksValid = false;
-                    }
-                }
-                if (!looksValid) {
-                    return;
-                }
-
-                if (mCreateShortcut) {
-                    showDialog(createDialogShortcutName());
-                    // onCreateShortCut(mStartPoint, mEndPoint);
-                } else {
-                    onSearchRoutes(mStartPoint, mEndPoint, mViaPoint, mTime);
-                }
-            }
-        }
-    };
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    	inflater.inflate(R.menu.options_menu_search, menu);
+    	super.onCreateOptionsMenu(menu, inflater);
+    }
 
     private Stop buildStop(Stop stop, AutoCompleteTextView auTextView) {
         if (stop.hasName()
@@ -950,6 +907,41 @@ public class PlannerFragment extends BaseListFragment implements
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+        case R.id.actionbar_search_route:
+            if (TextUtils.isEmpty(mStartPointAutoComplete.getText())) {
+                mStartPointAutoComplete.setError(getText(R.string.empty_value));
+            } else if (TextUtils.isEmpty(mEndPointAutoComplete.getText())) {
+                mEndPointAutoComplete.setError(getText(R.string.empty_value));
+            } else {
+                mStartPoint = buildStop(mStartPoint, mStartPointAutoComplete);
+                mEndPoint = buildStop(mEndPoint, mEndPointAutoComplete);
+
+                boolean looksValid = true;
+                if (!mStartPoint.looksValid()) {
+                    mStartPointAutoComplete.setError(getText(R.string.empty_value));
+                    looksValid = false;
+                }
+                if (!mEndPoint.looksValid()) {
+                    mEndPointAutoComplete.setError(getText(R.string.empty_value));
+                    looksValid = false;
+                }
+                if (!TextUtils.isEmpty(mViaPointAutoComplete.getText())) {
+                    mViaPoint = buildStop(mViaPoint, mViaPointAutoComplete);
+                    if (!mViaPoint.looksValid()) {
+                        mViaPointAutoComplete.setError(getText(R.string.empty_value));
+                        looksValid = false;
+                    }
+                }
+                if (looksValid) {
+                    if (mCreateShortcut) {
+                        showDialog(createDialogShortcutName());
+                        // onCreateShortCut(mStartPoint, mEndPoint);
+                    } else {
+                        onSearchRoutes(mStartPoint, mEndPoint, mViaPoint, mTime);
+                    }            
+                }
+            }
+            break;
         case R.id.about:
             showDialog(createDialogAbout());
             return true;

@@ -23,6 +23,7 @@
     <string name="to">To</string>
     <string name="via">Via</string>
     <string name="search_label">Search</string>
+    <string name="search_routes_label">Fetch routes</string>
     <string name="departing">Departing</string>
     <string name="arriving">Arriving</string>
     <string name="no_routes_found_label">Unfortunately there was no route found</string>
