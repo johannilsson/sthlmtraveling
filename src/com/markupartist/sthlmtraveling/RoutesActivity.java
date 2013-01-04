@@ -201,8 +201,8 @@ public class RoutesActivity extends BaseListActivity
         // Get the journey query.
         mJourneyQuery = getJourneyQueryFromIntent(getIntent());
 
-        if (mJourneyQuery.origin.name == null
-                || mJourneyQuery.destination.name == null) {
+        if (mJourneyQuery == null || (mJourneyQuery.origin.name == null
+                || mJourneyQuery.destination.name == null)) {
             showDialog(DIALOG_ILLEGAL_PARAMETERS);
             // If passed with bad parameters, break the execution.
             return;
@@ -587,7 +587,7 @@ public class RoutesActivity extends BaseListActivity
 
     private String buildDateString() {
         String timeString = mJourneyQuery.time.format("%R");
-        String dateString = mJourneyQuery.time.format("%e/%m");
+        String dateString = mJourneyQuery.time.format("%e %B");
 
         if (mJourneyQuery.isTimeDeparture) {
             return getString(R.string.departing_on, timeString, dateString);
