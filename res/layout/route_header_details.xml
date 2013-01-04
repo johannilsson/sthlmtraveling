@@ -28,10 +28,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginBottom="0dip"
-        android:paddingLeft="10dip"
-        android:paddingRight="10dip"
-        android:paddingBottom="10dip"
+        android:paddingTop="10dp"
         >
         <TableLayout
             android:layout_width="wrap_content"

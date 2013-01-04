@@ -21,16 +21,11 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:background="@drawable/route_header_background"
-    android:layout_marginBottom="0dip"
+    android:paddingBottom="16dp"
     >
     <LinearLayout 
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-	    android:paddingTop="15dip"
-	    android:paddingRight="6dip"
-	    android:paddingBottom="10dip"
-	    android:paddingLeft="6dip"
         >
         <TableLayout
             android:layout_width="wrap_content"
@@ -132,16 +127,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="0dip"
-            android:layout_marginRight="10dip"
             android:layout_marginBottom="2dip"
             android:layout_marginLeft="5dip"
             android:paddingTop="5dip"
             />
     </LinearLayout>
     <include layout="@layout/route_header_details"  />
-    <ImageView
-        android:layout_width="fill_parent"
-        android:layout_height="1px"
-        android:src="@color/list_divider"
-        />
 </LinearLayout>

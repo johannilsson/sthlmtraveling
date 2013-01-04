@@ -16,36 +16,16 @@
 ** limitations under the License.
 */
 -->
-
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/date_time"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:addStatesFromChildren="true"
-    android:gravity="center_vertical"
-    android:paddingTop="20dip"
-    android:paddingRight="15dip"
-    android:paddingBottom="20dip"
-    >
-	<TextView
-        android:id="@+id/date_time"
-        android:dropDownWidth="fill_parent"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:singleLine="true"
-        android:layout_weight="1"
-        android:textColor="?android:attr/textColorPrimary"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textStyle="normal"
-
-        android:paddingLeft="10dip"
-        />
-	<ImageView 
-        android:src="@drawable/ic_list_time"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="2dip"
-        android:layout_marginRight="5dip"
-        android:layout_marginBottom="2dip"
-        />
-</LinearLayout>
+    android:paddingTop="20dp"
+    android:paddingBottom="20dp"
+    android:paddingLeft="5dp"
+    android:paddingRight="5dp"
+    android:singleLine="true"
+    android:layout_weight="1"
+    android:textColor="?android:attr/textColorPrimary"
+    android:textAppearance="?android:attr/textAppearanceMedium"
+    />

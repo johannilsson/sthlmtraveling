@@ -18,9 +18,9 @@
 -->
 
 <TextView
-	xmlns:android="http://schemas.android.com/apk/res/android"	
-	android:layout_width="fill_parent"
-	android:layout_height="wrap_content"
-	android:padding="3dip"
-	android:textStyle="bold"
-	android:background="@color/plate_extra_background" />
+    xmlns:android="http://schemas.android.com/apk/res/android"	
+    style="?android:attr/listSeparatorTextViewStyle"
+    android:layout_marginBottom="10dp"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    />

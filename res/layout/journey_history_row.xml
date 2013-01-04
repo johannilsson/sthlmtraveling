@@ -22,17 +22,17 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:layout_marginBottom="0dip"
+    android:paddingRight="5dip"
+    android:paddingLeft="5dip"
     >
     <LinearLayout 
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:paddingTop="15dip"
-        android:paddingRight="6dip"
         android:paddingBottom="10dip"
-        android:paddingLeft="6dip"
         >
         <TableLayout
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             >
@@ -204,7 +204,7 @@
         </TableLayout>
         <CheckBox
             android:id="@+id/journey_star_check"
-            android:layout_gravity="right|center_vertical"
+            android:layout_gravity="center_horizontal|center_vertical"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:focusable="false"

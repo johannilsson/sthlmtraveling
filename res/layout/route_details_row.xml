@@ -22,16 +22,17 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:paddingTop="6dip"
-    android:paddingRight="4dip"
     android:paddingBottom="10dip"
+    android:paddingRight="5dip"
+    android:paddingLeft="5dip"
     >
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:paddingTop="6dip"
-        android:paddingRight="4dip"
-        android:paddingBottom="4dip"
+        android:paddingRight="5dip"
+        android:paddingBottom="5dip"
         >
 	<ImageView
 	    android:id="@+id/routes_row_transport"
