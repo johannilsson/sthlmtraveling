@@ -51,7 +51,7 @@ public class DepartureAdapter extends SectionedAdapter {
 
         this.clear();
         
-        String platformString = mContext.getString(R.string.platform);
+        String directionString = mContext.getString(R.string.direction);
 
         switch (transportType) {
         case TransportMode.METRO_INDEX:
@@ -60,8 +60,8 @@ public class DepartureAdapter extends SectionedAdapter {
             } else {
                 for (MetroDeparture metroDeparture: departures.metros) {
                     for (GroupOfLine gol : metroDeparture.groupOfLines) {
-                        this.addSection(0, gol.name + ", " + platformString +" 1", createAdapter(gol.direction1));
-                        this.addSection(0, gol.name + ", " + platformString +" 2", createAdapter(gol.direction2));
+                        this.addSection(0, gol.name + ", " + directionString +" 1", createAdapter(gol.direction1));
+                        this.addSection(0, gol.name + ", " + directionString +" 2", createAdapter(gol.direction2));
                     }
                 }
             }
@@ -80,8 +80,8 @@ public class DepartureAdapter extends SectionedAdapter {
                 //emptyResultView.setVisibility(View.VISIBLE);
             } else {
                 for (TrainDeparture trainDeparture : departures.trains) {
-                    this.addSection(0, trainDeparture.stopAreaName + ", " + platformString +" 1", createAdapter(trainDeparture.direction1));
-                    this.addSection(0, trainDeparture.stopAreaName + ", " + platformString +" 2", createAdapter(trainDeparture.direction2));
+                    this.addSection(0, trainDeparture.stopAreaName + ", " + directionString +" 1", createAdapter(trainDeparture.direction1));
+                    this.addSection(0, trainDeparture.stopAreaName + ", " + directionString +" 2", createAdapter(trainDeparture.direction2));
                 }
             }
             break;
@@ -90,8 +90,8 @@ public class DepartureAdapter extends SectionedAdapter {
                 //emptyResultView.setVisibility(View.VISIBLE);
             } else {
                 for (TramDeparture tramDeparture : departures.trams) {
-                    this.addSection(0, tramDeparture.stopAreaName + ", " + platformString +" 1", createAdapter(tramDeparture.direction1));
-                    this.addSection(0, tramDeparture.stopAreaName + ", " + platformString +" 2", createAdapter(tramDeparture.direction2));
+                    this.addSection(0, tramDeparture.stopAreaName + ", " + directionString +" 1", createAdapter(tramDeparture.direction1));
+                    this.addSection(0, tramDeparture.stopAreaName + ", " + directionString +" 2", createAdapter(tramDeparture.direction2));
                 }
             }
             break;

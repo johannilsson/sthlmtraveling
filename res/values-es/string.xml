@@ -127,7 +127,7 @@
     <string name="trip_description_walk" formatted="false">%s - %s Andando desde %s hasta %s</string>
     <string name="trip_description_normal" formatted="false">%s - %s %s desde %s dirección %s. Bajar en %s</string>
     <string name="show_all">Mostrar todo</string>
-    <string name="platform">Platform</string>
+    <string name="direction">Direction</string>
     <string name="no_intermediate_stops">No indermediate stops were found.</string>
     <string name="show_intermediate_stops">Show intermediate stops</string>
     <string name="hide_intermediate_stops">Hide intermediate stops</string>

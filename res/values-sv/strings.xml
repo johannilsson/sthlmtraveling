@@ -127,7 +127,7 @@
     <string name="trip_description_walk" formatted="false">%s - %s Gå från %s till %s</string>
     <string name="trip_description_normal" formatted="false">%s - %s %s från %s mot %s. Kliv av vid %s</string>
     <string name="show_all">Visa alla</string>
-    <string name="platform">Plattform</string>
+    <string name="direction">Riktning</string>
     <string name="no_intermediate_stops">Inga mellanliggande hållplatser hittades.</string>
     <string name="show_intermediate_stops">Via mellanliggande hållplatser</string>
     <string name="hide_intermediate_stops">Dölj mellanliggande hållplatser</string>
