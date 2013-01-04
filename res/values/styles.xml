@@ -20,9 +20,14 @@
         <item name="vpiTitlePageIndicatorStyle">@style/VPI.TabPageIndicator.Text</item>
     </style>
 
-    <style name="AppListView" parent="@android:style/Widget.ListView.White">
-        <item name="android:divider">@color/list_divider</item>
-        <item name="android:dividerHeight">1px</item>
+    <style name="AppBaseListView" parent="@android:style/Widget.ListView.White">
+    </style>
+
+    <style name="AppListView" parent="AppBaseListView">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:padding">16dp</item>
+        <item name="android:scrollbars">none</item><!-- TODO: We should adapt each view to the new margins instead. -->
     </style>
 
     <style name="App.ActionBar" parent="Widget.Sherlock.Light.ActionBar.Solid.Inverse">
@@ -45,4 +50,9 @@
         <item name="android:maxLines">1</item>
     </style>
 
+    <style name="Container">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:padding">16dp</item>
+    </style>
 </resources>
