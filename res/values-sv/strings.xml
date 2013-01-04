@@ -19,6 +19,8 @@
 
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name">STHLM Traveling</string>
+    <string name="done">Utför</string>
+    <string name="discard">Avbryt</string>
     <string name="from">Från</string>
     <string name="to">Till</string>
     <string name="via">Via</string>

@@ -22,8 +22,10 @@ import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.format.Time;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -53,8 +55,8 @@ public class ChangeRouteTimeActivity extends BaseActivity {
         registerEvent("Change route time");
         
         //setTitle(getText(R.string.change_date_and_time));
-        ActionBar actionBar = initActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
+        //ActionBar actionBar = initActionBar();
+        //actionBar.setDisplayHomeAsUpEnabled(true);
 
         Bundle extras = getIntent().getExtras();
         final JourneyQuery journeyQuery =
@@ -84,28 +86,44 @@ public class ChangeRouteTimeActivity extends BaseActivity {
         whenSpinner.setAdapter(whenChoiceAdapter);
         whenSpinner.setSelection(selectedPosition);
 
-        Button changeButton = (Button) findViewById(R.id.change_route_time_change);
-        changeButton.setOnClickListener(new OnClickListener() {
-            @Override public void onClick(View v) {
-                journeyQuery.isTimeDeparture =
-                    whenSpinner.getSelectedItemId() == 0 ? true : false;
-                journeyQuery.time = mTime;
+        // Inflate a "Done/Discard" custom action bar view.
+        LayoutInflater inflater = (LayoutInflater) getSupportActionBar().getThemedContext()
+                .getSystemService(LAYOUT_INFLATER_SERVICE);
+        final View customActionBarView = inflater.inflate(
+                R.layout.actionbar_custom_view_done_discard, null);
+        customActionBarView.findViewById(R.id.actionbar_done).setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        journeyQuery.isTimeDeparture =
+                                whenSpinner.getSelectedItemId() == 0 ? true : false;
+                            journeyQuery.time = mTime;
 
-                setResult(RESULT_OK, (new Intent())
-                        .putExtra(RoutesActivity.EXTRA_JOURNEY_QUERY,
-                                journeyQuery));
+                            setResult(RESULT_OK, (new Intent())
+                                    .putExtra(RoutesActivity.EXTRA_JOURNEY_QUERY,
+                                            journeyQuery));
 
-                finish();
-            }
-        });
+                            finish();
+                    }
+                });
+        customActionBarView.findViewById(R.id.actionbar_discard).setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        setResult(RESULT_CANCELED);
+                        finish();
+                    }
+                });
 
-        Button cancelButton = (Button) findViewById(R.id.change_route_time_cancel);
-        cancelButton.setOnClickListener(new OnClickListener() {
-            @Override public void onClick(View v) {
-                setResult(RESULT_CANCELED);
-                finish();
-            }
-        });
+        // Show the custom action bar view and hide the normal Home icon and title.
+        final ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayOptions(
+                ActionBar.DISPLAY_SHOW_CUSTOM,
+                ActionBar.DISPLAY_SHOW_CUSTOM | ActionBar.DISPLAY_SHOW_HOME
+                        | ActionBar.DISPLAY_SHOW_TITLE);
+        actionBar.setCustomView(customActionBarView, new ActionBar.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT));
 
         updateDisplay();
     }
