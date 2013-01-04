@@ -24,11 +24,11 @@ import android.os.Parcelable;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AutoCompleteTextView;
-import android.widget.ImageButton;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
@@ -104,10 +104,10 @@ public class SearchDeparturesFragment extends BaseListFragment {
             }
         });
 
-        ImageButton searchButton = (ImageButton) searchHeader
+        Button searchButton = (Button) searchHeader
                 .findViewById(R.id.search_departure);
         if (mCreateShortcut) {
-            // searchButton.setText(getText(R.string.create_shortcut_label));
+            searchButton.setText(getText(R.string.create_shortcut_label));
             getActivity()
                     .setTitle(R.string.create_shortcut_for_departure_label);
         }
