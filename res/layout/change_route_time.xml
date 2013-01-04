@@ -18,23 +18,29 @@
 -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res/com.markupartist.sthlmtraveling"
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
+    android:padding="16dp"
     >
+   <TextView
+       android:layout_width="fill_parent"
+       android:layout_height="wrap_content"
+       android:text="@string/change_date_and_time"
+       android:textAppearance="?android:attr/textAppearanceLarge"
+       />
     <Spinner 
         android:id="@+id/departure_arrival_choice"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:drawSelectorOnTop="true"
-        android:layout_margin="5dip"
-    />
+        android:layout_marginTop="5dp"
+    />    
 	<LinearLayout
 	    android:orientation="horizontal"
 	    android:layout_width="fill_parent"
 	    android:layout_height="wrap_content"
-	    android:layout_marginLeft="5dip"
+	    android:layout_marginTop="5dp"
 	    >
 	    <Button
 	        android:id="@+id/change_route_time"
@@ -47,36 +53,4 @@
 	        android:layout_height="wrap_content"
 	        />
 	</LinearLayout>
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_weight="1"
-        >
-        <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:background="#999999"
-        android:padding="5dip"
-        >
-        <Button
-            android:id="@+id/change_route_time_change"
-            android:text="@string/change"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:layout_weight="1"
-            />
-        <Button
-            android:id="@+id/change_route_time_cancel"
-            android:text="@string/cancel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:layout_weight="1"
-            />
-    </LinearLayout>
-    </LinearLayout>
 </LinearLayout>
