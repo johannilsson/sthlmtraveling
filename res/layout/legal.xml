@@ -16,9 +16,16 @@
 ** limitations under the License.
 */
 -->
-<WebView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/web_view"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:padding="16dp"
+    android:layout_height="fill_parent"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent" 
-    />
+    >
+    <TextView 
+        android:id="@+id/legal_notice"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" 
+        />
+</ScrollView>
+
 
