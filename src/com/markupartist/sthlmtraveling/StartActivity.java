@@ -36,7 +36,7 @@ public class StartActivity extends BaseFragmentActivity {
     private ViewPager mPager;
     private TabPageIndicator mIndicator;
 
-	@Override
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
