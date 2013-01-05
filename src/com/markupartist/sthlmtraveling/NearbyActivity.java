@@ -14,7 +14,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.actionbarsherlock.view.Menu;
@@ -28,7 +27,6 @@ import com.markupartist.sthlmtraveling.provider.site.SitesStore;
 public class NearbyActivity extends BaseListActivity implements LocationListener {
     private static String TAG = "NearbyActivity";
     private MyLocationManager mMyLocationManager;
-    private TextView mCurrentLocationText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +41,6 @@ public class NearbyActivity extends BaseListActivity implements LocationListener
         setContentView(R.layout.nearby);
         initActionBar();
         requestUpdate();
-        mCurrentLocationText = (TextView) findViewById(R.id.current_location);
     }
 
     @Override
@@ -89,8 +86,6 @@ public class NearbyActivity extends BaseListActivity implements LocationListener
         super.onPause();
         mMyLocationManager.removeUpdates();
     }
-
-
 
     protected void onCreateShortCut() {
         Intent shortcutIntent = new Intent(this, NearbyActivity.class);
@@ -150,7 +145,6 @@ public class NearbyActivity extends BaseListActivity implements LocationListener
 
     @Override
     public void onLocationChanged(Location location) {
-        //mActionBar.setTitle("Nearby ("+ location.getAccuracy() +"m)");
         setTitle("Nearby ("+ location.getAccuracy() +"m)");
         new FindNearbyStopAsyncTask().execute(location);
     }
