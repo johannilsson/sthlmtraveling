@@ -770,9 +770,9 @@ public class RoutesActivity extends BaseListActivity
 
         if (startPoint.isMyLocation()) {
             if (!mMyLocationManager.shouldAcceptLocation(location)) {
-                Intent i = new Intent(this, PointOnMapActivity.class);
-                i.putExtra(PointOnMapActivity.EXTRA_STOP, tmpStop);
-                i.putExtra(PointOnMapActivity.EXTRA_HELP_TEXT,
+                Intent i = new Intent(this, PointOnMapV2Activity.class);
+                i.putExtra(PointOnMapV2Activity.EXTRA_STOP, tmpStop);
+                i.putExtra(PointOnMapV2Activity.EXTRA_HELP_TEXT,
                         getString(R.string.tap_your_location_on_map));
                 startActivityForResult(i, REQUEST_CODE_POINT_ON_MAP_START);
             } else {
@@ -782,9 +782,9 @@ public class RoutesActivity extends BaseListActivity
         }
         if (endPoint.isMyLocation()) {
             if (!mMyLocationManager.shouldAcceptLocation(location)) {
-                Intent i = new Intent(this, PointOnMapActivity.class);
-                i.putExtra(PointOnMapActivity.EXTRA_STOP, tmpStop);
-                i.putExtra(PointOnMapActivity.EXTRA_HELP_TEXT,
+                Intent i = new Intent(this, PointOnMapV2Activity.class);
+                i.putExtra(PointOnMapV2Activity.EXTRA_STOP, tmpStop);
+                i.putExtra(PointOnMapV2Activity.EXTRA_HELP_TEXT,
                         getString(R.string.tap_your_location_on_map));
                 startActivityForResult(i, REQUEST_CODE_POINT_ON_MAP_END);
             } else {
@@ -845,7 +845,7 @@ public class RoutesActivity extends BaseListActivity
                 finish();
                 return;
             } else {
-                Stop startPoint = data.getParcelableExtra(PointOnMapActivity.EXTRA_STOP);
+                Stop startPoint = data.getParcelableExtra(PointOnMapV2Activity.EXTRA_STOP);
                 Log.d(TAG, "Got Stop " + startPoint);
 
                 mJourneyQuery.origin.name = Planner.Location.TYPE_MY_LOCATION;
@@ -866,7 +866,7 @@ public class RoutesActivity extends BaseListActivity
                 finish();
                 return;
             } else {
-                Stop endPoint = data.getParcelableExtra(PointOnMapActivity.EXTRA_STOP);
+                Stop endPoint = data.getParcelableExtra(PointOnMapV2Activity.EXTRA_STOP);
                 Log.d(TAG, "Got Stop " + endPoint);
 
                 mJourneyQuery.destination.name = Planner.Location.TYPE_MY_LOCATION;

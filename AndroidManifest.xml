@@ -9,13 +9,22 @@
         android:normalScreens="true"
         android:smallScreens="true"
         android:anyDensity="true" />
-    <uses-sdk android:minSdkVersion="7" android:targetSdkVersion="16" />
+    <uses-sdk android:minSdkVersion="8" android:targetSdkVersion="16" />
+    <uses-feature
+        android:glEsVersion="0x00020000"
+        android:required="true"/>
+    <permission
+      android:name="com.markupartist.sthlmtraveling.permission.MAPS_RECEIVE"
+      android:protectionLevel="signature"/>
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
+    <uses-permission android:name="com.markupartist.sthlmtraveling.permission.MAPS_RECEIVE"/>
     <application android:icon="@drawable/icon"
                  android:allowBackup="true"
                  android:label="@string/app_name"
@@ -107,7 +116,13 @@
         <activity android:name=".PointOnMapActivity"
                   android:label="@string/point_on_map"
                   android:configChanges="locale|orientation"></activity>
+        <activity android:name=".PointOnMapV2Activity"
+                  android:label="@string/point_on_map"
+                  android:configChanges="locale|orientation"></activity>
         <activity android:name=".ViewOnMapActivity"
+                  android:label="@string/stop_label"
+                  android:configChanges="locale|orientation"></activity>
+        <activity android:name=".ViewOnMapV2Activity"
                   android:label="@string/stop_label"
                   android:configChanges="locale|orientation"></activity>
         <activity android:name=".SearchDeparturesFragmentActivity"
@@ -190,6 +205,8 @@
                   android:authorities="com.markupartist.sthlmtraveling.journeysprovider"
                   android:exported="false"
                   />
-
+        <meta-data
+            android:name="com.google.android.maps.v2.API_KEY"
+            android:value="AIzaSyBRPIpg3D7VvT5NIjv8M1q0jmPxKG8satM"/>
     </application>
 </manifest>

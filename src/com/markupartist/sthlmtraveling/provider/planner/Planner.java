@@ -983,7 +983,7 @@ public class Planner {
             } else if ("NAR".equals(type)) {
                 return Color.WHITE;
             } else if ("Walk".equals(type)) {
-                return Color.DKGRAY;
+                return Color.BLACK;
             } else if ("TRN".equals(type)) {
                 return Color.DKGRAY;
             } else if ("TRM".equals(type)) {

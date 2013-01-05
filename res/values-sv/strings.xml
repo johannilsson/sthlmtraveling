@@ -126,6 +126,8 @@
     <string name="sms_ticket_notice_disabled">SMS-biljett är inte tillgänglig för denna resa.</string>
     <string name="trip_description_walk" formatted="false">%s - %s Gå från %s till %s</string>
     <string name="trip_description_normal" formatted="false">%s - %s %s från %s mot %s. Kliv av vid %s</string>
+    <string name="trip_map_description_walk" formatted="false">%s Gå till %s</string>
+    <string name="trip_map_description_normal" formatted="false">%s %s mot %s.</string>
     <string name="show_all">Visa alla</string>
     <string name="direction">Riktning</string>
     <string name="no_intermediate_stops">Inga mellanliggande hållplatser hittades.</string>
