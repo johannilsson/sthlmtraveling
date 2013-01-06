@@ -55,7 +55,7 @@ public class ViewOnMapV2Activity extends SherlockFragmentActivity {
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
         actionBar.setDisplayShowHomeEnabled(true);
         actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setTitle(R.string.point_on_map);
+        actionBar.setTitle(R.string.route_details_label);
 
         Bundle extras = getIntent().getExtras();
 
