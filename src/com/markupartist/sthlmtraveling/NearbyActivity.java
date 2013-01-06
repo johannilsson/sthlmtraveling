@@ -93,7 +93,7 @@ public class NearbyActivity extends BaseListActivity implements LocationListener
         // Then, set up the container intent (the response to the caller)
         Intent intent = new Intent();
         intent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortcutIntent);
-        intent.putExtra(Intent.EXTRA_SHORTCUT_NAME, "Nearby");
+        intent.putExtra(Intent.EXTRA_SHORTCUT_NAME, getString(R.string.nearby_stops));
         Parcelable iconResource = Intent.ShortcutIconResource.fromContext(
                 this, R.drawable.shortcut);
         intent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, iconResource);
@@ -145,7 +145,7 @@ public class NearbyActivity extends BaseListActivity implements LocationListener
 
     @Override
     public void onLocationChanged(Location location) {
-        setTitle("Nearby ("+ location.getAccuracy() +"m)");
+        setTitle(getString(R.string.nearby) + " ("+ location.getAccuracy() +"m)");
         new FindNearbyStopAsyncTask().execute(location);
     }
 

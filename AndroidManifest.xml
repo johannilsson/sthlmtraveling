@@ -149,16 +149,12 @@
         </activity>
         
         <activity android:name=".NearbyActivity"
-                  android:label="Nearby"
+                  android:label="@string/nearby_stops"
                   android:configChanges="locale|orientation">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-            </intent-filter>
         </activity>
         <activity-alias android:name="NearbyShortcutActivity"
             android:targetActivity="NearbyActivity"
-            android:label="Nearby"
+            android:label="@string/nearby"
             android:configChanges="locale"
             >
             <intent-filter>

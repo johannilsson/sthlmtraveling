@@ -11,6 +11,7 @@
             backward-compatibility can go here.
         -->
         <item name="actionBarStyle">@style/App.ActionBar</item>
+        <item name="borderlessButtonStyle">@style/LegacyBorderlessButton</item>
     </style>
 
     <!-- Application theme. -->
@@ -55,4 +56,10 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:padding">16dp</item>
     </style>
+
+    <style name="LegacyBorderlessButton" parent="@android:style/Widget.Button">
+        <!-- Add proper background selector. -->
+        <item name="android:background">@android:drawable/list_selector_background</item>
+    </style>
+    
 </resources>

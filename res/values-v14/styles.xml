@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="AppBaseTheme" parent="android:Theme.Holo.Light.DarkActionBar">
-        <!-- API 14 theme customizations can go here. -->
+        <item name="borderlessButtonStyle">@android:style/Widget.Holo.Button.Borderless</item>
     </style>
 
 </resources>

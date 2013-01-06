@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <style name="AppBaseTheme" parent="@style/Theme.Sherlock.Light.DarkActionBar">
+        <item name="borderlessButtonStyle">@android:style/Widget.Holo.Button.Borderless</item>
+    </style>
+
+    <!-- TODO: Change to use attrs. -->
     <style name="AppBaseListView" parent="@android:style/Widget.Holo.ListView">
     </style>
 </resources>

@@ -133,7 +133,8 @@
     <string name="no_intermediate_stops">No indermediate stops were found.</string>
     <string name="show_intermediate_stops">Show intermediate stops</string>
     <string name="hide_intermediate_stops">Hide intermediate stops</string>
-    
+    <string name="nearby_stops">Nearby stops</string>
+    <string name="nearby">Nearby</string>
 
     <!-- Planner error messages -->
     <string name="planner_error_title">Felmeddelande</string>

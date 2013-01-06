@@ -133,7 +133,9 @@
     <string name="no_intermediate_stops">Inga mellanliggande hållplatser hittades.</string>
     <string name="show_intermediate_stops">Via mellanliggande hållplatser</string>
     <string name="hide_intermediate_stops">Dölj mellanliggande hållplatser</string>
-    
+    <string name="nearby_stops">Närliggande hållplatser</string>
+    <string name="nearby">Närliggande</string>
+
     <!-- Planner error messages -->
     <string name="planner_error_title">Felmeddelande</string>
     <string name="planner_error_unknown">Sökningen misslyckades.</string>

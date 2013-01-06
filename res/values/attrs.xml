@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="AppTheme">
+        <!-- Style for buttons without an explicit border, often used in groups. -->
+        <attr name="borderlessButtonStyle" format="reference" />
+    </declare-styleable>
+
+</resources>

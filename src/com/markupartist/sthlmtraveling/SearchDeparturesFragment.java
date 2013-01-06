@@ -118,6 +118,15 @@ public class SearchDeparturesFragment extends BaseListFragment {
             }
         });
 
+        searchHeader.findViewById(R.id.btn_nearby_stops).setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getActivity().getApplicationContext(),
+                        NearbyActivity.class);
+                startActivity(i);
+            }
+        });
+        
     }
 
     @Override
