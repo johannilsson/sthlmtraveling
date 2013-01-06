@@ -25,6 +25,7 @@
             android:layout_width="fill_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
+            android:paddingTop="10dp"
             >
 
             <!-- Start from -->
@@ -41,7 +42,7 @@
 	                <AutoCompleteTextView
 	                    android:id="@+id/from"
 	                    android:layout_width="0dp"
-	                    android:layout_height="wrap_content"
+                        android:layout_height="wrap_content"
 	                    android:layout_weight="1"
 	                    android:dropDownVerticalOffset="5dip"
 	                    android:dropDownWidth="fill_parent"
@@ -65,13 +66,21 @@
 				        android:visibility="invisible"
 				        />
 	            </LinearLayout>
+
 	            <ImageButton
-	                    android:id="@+id/from_menu"
-	                    android:src="@drawable/dropdown_ic_arrow"
-	                    android:layout_width="wrap_content"
-	                    android:layout_height="fill_parent"
-	                    android:background="@null"
-	                    />
+	                android:id="@+id/from_menu"
+	                style="?attr/borderlessButtonStyle"
+	                android:layout_width="wrap_content"
+	                android:layout_height="fill_parent"
+	                android:layout_margin="0dp"
+	                android:layout_marginLeft="0dp"
+	                android:layout_marginRight="0dp"
+	                android:minWidth="20dip"
+	                android:paddingLeft="0dp"
+	                android:paddingRight="0dp"
+	                android:src="@drawable/dropdown_ic_arrow"
+	                />
+
 	        </LinearLayout>
 	        <!-- End from -->
 	        
@@ -113,10 +122,16 @@
                 </LinearLayout>
                 <ImageButton
                         android:id="@+id/to_menu"
-                        android:src="@drawable/dropdown_ic_arrow"
-                        android:layout_width="wrap_content"
-                        android:layout_height="fill_parent"
-                        android:background="@null"
+                    style="?attr/borderlessButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_margin="0dp"
+                    android:layout_marginLeft="0dp"
+                    android:layout_marginRight="0dp"
+                    android:minWidth="20dip"
+                    android:paddingLeft="0dp"
+                    android:paddingRight="0dp"
+                    android:src="@drawable/dropdown_ic_arrow"
                         />
             </LinearLayout>
             <!-- End to -->
@@ -211,10 +226,16 @@
 	                </LinearLayout>
 	                <ImageButton
 	                        android:id="@+id/via_menu"
-	                        android:src="@drawable/dropdown_ic_arrow"
-	                        android:layout_width="wrap_content"
-	                        android:layout_height="fill_parent"
-	                        android:background="@null"
+                    style="?attr/borderlessButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_margin="0dp"
+                    android:layout_marginLeft="0dp"
+                    android:layout_marginRight="0dp"
+                    android:minWidth="20dip"
+                    android:paddingLeft="0dp"
+                    android:paddingRight="0dp"
+                    android:src="@drawable/dropdown_ic_arrow"
 	                        />
 	            </LinearLayout>
 	            <!-- End via -->
