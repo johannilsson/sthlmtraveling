@@ -1,6 +1,7 @@
 package com.markupartist.sthlmtraveling;
 
 import java.io.IOException;
+import java.util.Map;
 
 import android.graphics.Color;
 import android.os.Bundle;
@@ -10,6 +11,7 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.view.Window;
+import com.flurry.android.FlurryAgent;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -40,6 +42,18 @@ public class ViewOnMapV2Activity extends SherlockFragmentActivity {
     private JourneyQuery mJourneyQuery;
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        FlurryAgent.onStartSession(this, MyApplication.ANALYTICS_KEY);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        FlurryAgent.onEndSession(this);
+     }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -48,6 +62,9 @@ public class ViewOnMapV2Activity extends SherlockFragmentActivity {
         //requestWindowFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         setContentView(R.layout.map);
+
+        FlurryAgent.onPageView();
+        FlurryAgent.onEvent("View on map");
 
         ActionBar actionBar = getSupportActionBar();
         //actionBar.setBackgroundDrawable(getResources().getDrawable(R.drawable.ab_bg_black));
@@ -218,6 +235,8 @@ public class ViewOnMapV2Activity extends SherlockFragmentActivity {
     private void setUpMap() {
         fetchRoute(mTrip, mJourneyQuery);
 
+        
+        
         mMap.setMyLocationEnabled(true);
 
         mMap.moveCamera(CameraUpdateFactory.newCameraPosition(

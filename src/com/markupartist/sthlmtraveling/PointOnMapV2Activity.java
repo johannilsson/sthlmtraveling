@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.flurry.android.FlurryAgent;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
@@ -41,6 +42,18 @@ public class PointOnMapV2Activity extends SherlockFragmentActivity
     private Marker mMarker;
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        FlurryAgent.onStartSession(this, MyApplication.ANALYTICS_KEY);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        FlurryAgent.onEndSession(this);
+     }
+ 
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -48,6 +61,9 @@ public class PointOnMapV2Activity extends SherlockFragmentActivity
 
         //requestWindowFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
         setContentView(R.layout.map);
+
+        FlurryAgent.onPageView();
+        FlurryAgent.onEvent("Point on map");
 
         ActionBar actionBar = getSupportActionBar();
         //actionBar.setBackgroundDrawable(getResources().getDrawable(R.drawable.ab_bg_black));
