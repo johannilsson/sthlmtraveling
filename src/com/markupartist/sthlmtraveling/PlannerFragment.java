@@ -140,8 +140,7 @@ public class PlannerFragment extends BaseListFragment implements
 
         // If the activity was started with the "create shortcut" action, we
         // remember this to change the behavior upon a search.
-        if (Intent.ACTION_CREATE_SHORTCUT.equals(getActivity().getIntent()
-                .getAction())) {
+        if (Intent.ACTION_CREATE_SHORTCUT.equals(getActivity().getIntent().getAction())) {
             mCreateShortcut = true;
         }
 
@@ -166,8 +165,7 @@ public class PlannerFragment extends BaseListFragment implements
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.planner_list_fragment, container,
-                false);
+        return inflater.inflate(R.layout.planner_list_fragment, container, false);
     }
 
     @Override
@@ -176,8 +174,7 @@ public class PlannerFragment extends BaseListFragment implements
 
         restoreState(savedInstanceState);
 
-        mSearchView = getActivity().getLayoutInflater().inflate(
-                R.layout.search, null);
+        mSearchView = getActivity().getLayoutInflater().inflate(R.layout.search, null);
         getListView().addHeaderView(mSearchView, null, false);
 
         final TextView historyView = (TextView) getActivity()
@@ -201,8 +198,7 @@ public class PlannerFragment extends BaseListFragment implements
         }
 
         // Setup view for choosing other data for start and end point.
-        final ImageButton fromDialog = (ImageButton) mSearchView
-                .findViewById(R.id.from_menu);
+        final ImageButton fromDialog = (ImageButton) mSearchView.findViewById(R.id.from_menu);
         fromDialog.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
@@ -210,8 +206,7 @@ public class PlannerFragment extends BaseListFragment implements
                 showDialog(createDialogStartPoint());
             }
         });
-        final ImageButton toDialog = (ImageButton) mSearchView
-                .findViewById(R.id.to_menu);
+        final ImageButton toDialog = (ImageButton) mSearchView.findViewById(R.id.to_menu);
         toDialog.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
@@ -219,8 +214,7 @@ public class PlannerFragment extends BaseListFragment implements
                 showDialog(createDialogEndPoint());
             }
         });
-        final ImageButton viaDialog = (ImageButton) mSearchView
-                .findViewById(R.id.via_menu);
+        final ImageButton viaDialog = (ImageButton) mSearchView.findViewById(R.id.via_menu);
         viaDialog.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
@@ -229,11 +223,10 @@ public class PlannerFragment extends BaseListFragment implements
             }
         });
         // Views for date and time
-        mChangeTimeLayout = (LinearLayout) mSearchView
-                .findViewById(R.id.planner_change_time_layout);
+        mChangeTimeLayout = (LinearLayout)
+                mSearchView.findViewById(R.id.planner_change_time_layout);
 
-        mDateButton = (Button) mSearchView
-                .findViewById(R.id.planner_route_date);
+        mDateButton = (Button) mSearchView.findViewById(R.id.planner_route_date);
         mDateButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(final View v) {
@@ -241,8 +234,7 @@ public class PlannerFragment extends BaseListFragment implements
             }
         });
 
-        mTimeButton = (Button) mSearchView
-                .findViewById(R.id.planner_route_time);
+        mTimeButton = (Button) mSearchView.findViewById(R.id.planner_route_time);
         mTimeButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(final View v) {
@@ -251,20 +243,18 @@ public class PlannerFragment extends BaseListFragment implements
         });
 
         // Views for radio buttons
-        final RadioButton nowRadioButton = (RadioButton) mSearchView
-                .findViewById(R.id.planner_check_now);
+        final RadioButton nowRadioButton = (RadioButton)
+                mSearchView.findViewById(R.id.planner_check_now);
         nowRadioButton.setOnCheckedChangeListener(this);
-        final RadioButton laterRadioButton = (RadioButton) mSearchView
-                .findViewById(R.id.planner_check_more_choices);
+        final RadioButton laterRadioButton = (RadioButton)
+                mSearchView.findViewById(R.id.planner_check_more_choices);
         laterRadioButton.setOnCheckedChangeListener(this);
 
-        mWhenSpinner = (Spinner) mSearchView
-                .findViewById(R.id.departure_arrival_choice);
-        final ArrayAdapter<CharSequence> whenChoiceAdapter = ArrayAdapter
-                .createFromResource(getActivity(), R.array.when_choice,
-                        android.R.layout.simple_spinner_item);
-        whenChoiceAdapter
-                .setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mWhenSpinner = (Spinner) mSearchView.findViewById(R.id.departure_arrival_choice);
+        final ArrayAdapter<CharSequence> whenChoiceAdapter =
+                ArrayAdapter.createFromResource(getActivity(),
+                        R.array.when_choice, android.R.layout.simple_spinner_item);
+        whenChoiceAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mWhenSpinner.setAdapter(whenChoiceAdapter);
 
         // Handle create shortcut.
@@ -404,10 +394,10 @@ public class PlannerFragment extends BaseListFragment implements
             int autoCompleteResId, int progressResId, final Stop stop,
             boolean includeAddresses) {
         // TODO: Wrap the auto complete view in a custom view...
-        final AutoCompleteTextView autoCompleteTextView = (AutoCompleteTextView) mSearchView
-                .findViewById(autoCompleteResId);
-        final ProgressBar progress = (ProgressBar) mSearchView
-                .findViewById(progressResId);
+        final AutoCompleteTextView autoCompleteTextView = (AutoCompleteTextView)
+                mSearchView.findViewById(autoCompleteResId);
+        final ProgressBar progress = (ProgressBar)
+                mSearchView.findViewById(progressResId);
         final AutoCompleteStopAdapter stopAdapter = new AutoCompleteStopAdapter(
                 getActivity(), R.layout.autocomplete_item_2line,
                 Planner.getInstance(), includeAddresses);
@@ -447,12 +437,6 @@ public class PlannerFragment extends BaseListFragment implements
                             (int) (address.getLongitude() * 1E6));
                     String addressLine = LocationUtils.getAddressLine(address);
                     stop.setName(addressLine);
-
-                    Log.d(TAG,
-                            "On auto complete item click " + stop.toString()
-                                    + ", loc=" + stop.getLocation()
-                                    + ". For text view "
-                                    + autoCompleteTextView.getText());
                 }
             }
         });
@@ -465,14 +449,11 @@ public class PlannerFragment extends BaseListFragment implements
          * autoCompleteTextView.setSelection(0, stop); return false; } });
          */
 
-        autoCompleteTextView
-                .addTextChangedListener(new ReservedNameTextWatcher(
-                        getText(R.string.my_location), autoCompleteTextView));
-        autoCompleteTextView
-                .addTextChangedListener(new ReservedNameTextWatcher(
-                        getText(R.string.point_on_map), autoCompleteTextView));
-        autoCompleteTextView.addTextChangedListener(new UpdateStopTextWatcher(
-                stop));
+        autoCompleteTextView.addTextChangedListener(new ReservedNameTextWatcher(
+                getText(R.string.my_location), autoCompleteTextView));
+        autoCompleteTextView.addTextChangedListener(new ReservedNameTextWatcher(
+                getText(R.string.point_on_map), autoCompleteTextView));
+        autoCompleteTextView.addTextChangedListener(new UpdateStopTextWatcher(stop));
 
         return autoCompleteTextView;
     }
