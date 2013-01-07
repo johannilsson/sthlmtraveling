@@ -174,6 +174,8 @@ public class PlannerFragment extends BaseListFragment implements
     public void onActivityCreated(Bundle savedInstanceState) {
         Log.d(TAG, "PlannerFragment.onActivityCreated()");
 
+        restoreState(savedInstanceState);
+
         mSearchView = getActivity().getLayoutInflater().inflate(
                 R.layout.search, null);
         getListView().addHeaderView(mSearchView, null, false);
@@ -354,28 +356,23 @@ public class PlannerFragment extends BaseListFragment implements
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt("level", mStackLevel);
-        /*
-         * if (mStartPoint != null) { outState.putParcelable("startPoint",
-         * mStartPoint); } if (mEndPoint != null) {
-         * outState.putParcelable("endPoint", mEndPoint); } if (mViaPoint !=
-         * null) { outState.putParcelable("viaPoint", mViaPoint); }
-         */
+        if (mStartPoint != null) outState.putParcelable("startPoint", mStartPoint);
+        if (mEndPoint != null) outState.putParcelable("endPoint", mEndPoint);
+        if (mViaPoint != null) outState.putParcelable("viaPoint", mViaPoint);
     }
 
     private void restoreState(Bundle state) {
-        /*
-         * mStartPoint = new Stop(); mEndPoint = new Stop(); mViaPoint = new
-         * Stop(); if (state != null) { Stop startPoint =
-         * state.getParcelable("startPoint"); Stop endPoint =
-         * state.getParcelable("endPoint"); Stop viaPoint =
-         * state.getParcelable("viaPoint"); if (startPoint != null) {
-         * mStartPoint = startPoint;
-         * mStartPointAutoComplete.setText(startPoint.getName()); } if (endPoint
-         * != null) { mEndPoint = endPoint;
-         * mEndPointAutoComplete.setText(endPoint.getName()); } if (viaPoint !=
-         * null) { mViaPoint = viaPoint;
-         * mViaPointAutoComplete.setText(viaPoint.getName()); } }
-         */
+        mStartPoint = new Stop();
+        mEndPoint = new Stop();
+        mViaPoint = new Stop();
+        if (state != null) {
+            Stop startPoint = state.getParcelable("startPoint");
+            Stop endPoint = state.getParcelable("endPoint");
+            Stop viaPoint = state.getParcelable("viaPoint");
+            if (startPoint != null) mStartPoint = startPoint;
+            if (endPoint != null) mEndPoint = endPoint;
+            if (viaPoint != null) mViaPoint = viaPoint;
+        }
     }
 
     private AutoCompleteTextView createAutoCompleteTextView(
@@ -415,6 +412,11 @@ public class PlannerFragment extends BaseListFragment implements
                 getActivity(), R.layout.autocomplete_item_2line,
                 Planner.getInstance(), includeAddresses);
 
+        String name = stop.getName();
+        if (stop.isMyLocation())
+            name = getString(R.string.my_location);
+        autoCompleteTextView.setText(name);
+        
         stopAdapter.setFilterListener(new FilterListener() {
             @Override
             public void onPublishFiltering() {
