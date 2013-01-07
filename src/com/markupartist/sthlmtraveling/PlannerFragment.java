@@ -161,8 +161,6 @@ public class PlannerFragment extends BaseListFragment implements
                 Journeys.HISTORY_SORT_ORDER);
         Cursor cursor = cursorLoader.loadInBackground();
         mAdapter = new JourneyAdapter(getActivity(), cursor);
-        
-        
     }
 
     @Override
@@ -183,6 +181,7 @@ public class PlannerFragment extends BaseListFragment implements
         final TextView historyView = (TextView) getActivity()
                 .getLayoutInflater().inflate(R.layout.header, null);
         historyView.setText(R.string.history_label);
+        historyView.setOnClickListener(null); // Makes the header un-clickable, hack!
         getListView().addHeaderView(historyView);
 
         mStartPointAutoComplete = createAutoCompleteTextView(R.id.from,
@@ -1094,6 +1093,7 @@ public class PlannerFragment extends BaseListFragment implements
     }
 
     private class SelectPointAdapter extends MultipleListAdapter {
+
         private SectionedAdapter mHistoryWrapperAdapter = new SectionedAdapter() {
             @Override
             protected View getHeaderView(Section section, int index,
@@ -1150,7 +1150,6 @@ public class PlannerFragment extends BaseListFragment implements
 
             mHistoryWrapperAdapter.addSection(0,
                     getString(R.string.history_label), historyAdapter);
-
             addAdapter(1, mHistoryWrapperAdapter);
         }
     }
