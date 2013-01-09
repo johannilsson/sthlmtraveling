@@ -53,9 +53,10 @@
 	                    android:lines="1"
 	                    android:nextFocusDown="@+id/to"
 	                    android:nextFocusRight="@+id/from_menu"
-	                    android:singleLine="true" >
+	                    android:singleLine="true"
+	                    android:textColor="?android:attr/textColorPrimary"
+	                    >
 	                </AutoCompleteTextView>
-	                <!-- <requestFocus /> -->
 				    <ProgressBar
 				        android:id="@+id/from_progress"
 				        android:indeterminate="true"
@@ -107,7 +108,10 @@
                         android:imeOptions="actionNext"
                         android:inputType="text"
                         android:lines="1"
-                        android:singleLine="true" >
+                        android:singleLine="true"
+                        android:textColor="?android:attr/textColorPrimary"
+                        >
+                        <requestFocus />
                     </AutoCompleteTextView>
 
                     <ProgressBar
@@ -212,7 +216,9 @@
 	                        android:imeOptions="actionNext"
 	                        android:inputType="text"
 	                        android:lines="1"
-	                        android:singleLine="true" >
+	                        android:singleLine="true"
+	                        android:textColor="?android:attr/textColorPrimary"
+	                        >
 	                    </AutoCompleteTextView>
 	                    <ProgressBar
 	                        android:id="@+id/via_progress"

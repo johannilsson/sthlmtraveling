@@ -183,6 +183,9 @@ public class PlannerFragment extends BaseListFragment implements
         historyView.setOnClickListener(null); // Makes the header un-clickable, hack!
         getListView().addHeaderView(historyView);
 
+        if (!mStartPoint.hasName()) {
+            mStartPoint.setName(Stop.TYPE_MY_LOCATION);
+        }
         mStartPointAutoComplete = createAutoCompleteTextView(R.id.from,
                 R.id.from_progress, mStartPoint);
         mEndPointAutoComplete = createAutoCompleteTextView(R.id.to,
@@ -402,9 +405,16 @@ public class PlannerFragment extends BaseListFragment implements
                 getActivity(), R.layout.autocomplete_item_2line,
                 Planner.getInstance(), includeAddresses);
 
+        autoCompleteTextView.addTextChangedListener(new ReservedNameTextWatcher(
+                getText(R.string.my_location), autoCompleteTextView));
+        autoCompleteTextView.addTextChangedListener(new ReservedNameTextWatcher(
+                getText(R.string.point_on_map), autoCompleteTextView));
+        autoCompleteTextView.addTextChangedListener(new UpdateStopTextWatcher(stop));
+
         String name = stop.getName();
-        if (stop.isMyLocation())
+        if (stop.isMyLocation()) {
             name = getString(R.string.my_location);
+        }
         autoCompleteTextView.setText(name);
         
         stopAdapter.setFilterListener(new FilterListener() {
@@ -448,12 +458,6 @@ public class PlannerFragment extends BaseListFragment implements
          * stop = autoCompleteTextView.getText().length();
          * autoCompleteTextView.setSelection(0, stop); return false; } });
          */
-
-        autoCompleteTextView.addTextChangedListener(new ReservedNameTextWatcher(
-                getText(R.string.my_location), autoCompleteTextView));
-        autoCompleteTextView.addTextChangedListener(new ReservedNameTextWatcher(
-                getText(R.string.point_on_map), autoCompleteTextView));
-        autoCompleteTextView.addTextChangedListener(new UpdateStopTextWatcher(stop));
 
         return autoCompleteTextView;
     }
