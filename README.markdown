@@ -64,6 +64,16 @@ application and the tests application deployed before.
 
 Changelog
 ---------
+
+* 2.6.1
+  * Fix shortcut for Nearby.
+* 2.6.0
+  * Change min sdk API level to 8 (2.2.x).
+  * Change to more consitent style.
+  * Udate maps implementation to Maps V2 API.
+  * Add Nearby locations to depatures.
+  * Remove beta flag from Nearby Activity.
+  * Fix NullPointerException in RoutesActivities. 
 * 2.5.3
 	* Fix issue with shortcuts.
 * 2.5.2
