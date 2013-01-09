@@ -44,6 +44,7 @@
 	            android:imeOptions="actionSearch"
 	            android:lines="1"
 	            android:inputType="text"
+	            android:textColor="?android:attr/textColorPrimary"
 	            />
 	        <Button
                 android:id="@+id/search_departure"
