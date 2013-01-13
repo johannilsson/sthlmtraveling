@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010 Johan Nilsson <http://markupartist.com>
+ * Copyright (C) 2013 Johan Nilsson <http://markupartist.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,111 +17,104 @@
 package com.markupartist.sthlmtraveling;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
-import android.content.Intent;
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.DashPathEffect;
-import android.graphics.Paint;
-import android.graphics.Point;
-import android.graphics.RectF;
-import android.graphics.drawable.ShapeDrawable;
-import android.graphics.drawable.shapes.OvalShape;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.view.Window;
-import com.google.android.maps.GeoPoint;
-import com.google.android.maps.MapController;
-import com.google.android.maps.MapView;
-import com.google.android.maps.MyLocationOverlay;
-import com.google.android.maps.Overlay;
-import com.google.android.maps.OverlayItem;
-import com.google.android.maps.Projection;
-import com.markupartist.sthlmtraveling.graphics.FixedMyLocationOverlay;
-import com.markupartist.sthlmtraveling.graphics.SimpleItemizedOverlay;
+import com.flurry.android.FlurryAgent;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.markupartist.sthlmtraveling.provider.planner.JourneyQuery;
 import com.markupartist.sthlmtraveling.provider.planner.Planner;
 import com.markupartist.sthlmtraveling.provider.planner.Planner.IntermediateStop;
 import com.markupartist.sthlmtraveling.provider.planner.Planner.SubTrip;
 import com.markupartist.sthlmtraveling.provider.planner.Planner.Trip2;
 
-public class ViewOnMapActivity extends BaseMapActivity {
-    private static final String TAG = "ViewOnMapActivity";
+public class ViewOnMapActivity extends SherlockFragmentActivity {
 
+    private static final String TAG = "ViewOnMapActivity";
     public static String EXTRA_LOCATION = "com.markupartist.sthlmtraveling.extra.Location";
     public static String EXTRA_JOURNEY_QUERY = "com.markupartist.sthlmtraveling.extra.JourneyQuery";
     public static String EXTRA_TRIP = "com.markupartist.sthlmtraveling.extra.Trip";
-    
 
-    private MapView mMapView;
-    private MapController mapController;
-    private MyLocationOverlay mMyLocationOverlay;
-    private ShapeDrawable mDefaultMarker;
-    private SimpleItemizedOverlay mItemizedOverlay;
-    private ActionBar mActionBar;
-
-    private GeoPoint mFocusedGeoPoint;
+    /**
+     * Note that this may be null if the Google Play services APK is not available.
+     */
+    private GoogleMap mMap;
+    private LatLng mFocusedLatLng;
+    private Trip2 mTrip;
+    private JourneyQuery mJourneyQuery;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onStart() {
+        super.onStart();
+        FlurryAgent.onStartSession(this, MyApplication.ANALYTICS_KEY);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        FlurryAgent.onEndSession(this);
+     }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // TODO: Use transparent action bar, fix location of my location btn.
+
+        //requestWindowFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
-        requestWindowFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
+        setContentView(R.layout.map);
 
-        setContentView(R.layout.point_on_map);
+        FlurryAgent.onPageView();
+        FlurryAgent.onEvent("View on map");
 
-        registerEvent("View on map");
-
-        mActionBar = getSupportActionBar();
-        mActionBar.setBackgroundDrawable(getResources().getDrawable(R.drawable.ab_bg_black));
-        mActionBar.setHomeButtonEnabled(true);
-        mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-        mActionBar.setDisplayShowHomeEnabled(true);
-        mActionBar.setDisplayHomeAsUpEnabled(true);
-        mActionBar.setTitle(R.string.stop_label);
+        ActionBar actionBar = getSupportActionBar();
+        //actionBar.setBackgroundDrawable(getResources().getDrawable(R.drawable.ab_bg_black));
+        actionBar.setHomeButtonEnabled(true);
+        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+        actionBar.setDisplayShowHomeEnabled(true);
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setTitle(R.string.route_details_label);
 
         Bundle extras = getIntent().getExtras();
 
-        final Trip2 trip =
-                (Trip2) extras.getParcelable(EXTRA_TRIP);
-        final JourneyQuery journeyQuery =
-                (JourneyQuery) extras.getParcelable(EXTRA_JOURNEY_QUERY);
+        mTrip = (Trip2) extras.getParcelable(EXTRA_TRIP);
+        mJourneyQuery = (JourneyQuery) extras.getParcelable(EXTRA_JOURNEY_QUERY);
         final Planner.Location focusedLocation =
                 (Planner.Location) extras.getParcelable(EXTRA_LOCATION);
 
-        mFocusedGeoPoint = new GeoPoint(
-                focusedLocation.latitude, focusedLocation.longitude);
+        mFocusedLatLng = new LatLng(
+                focusedLocation.latitude / 1E6, focusedLocation.longitude / 1E6);
 
-        mMapView = (MapView) findViewById(R.id.mapview);
-        //mMapView.setBuiltInZoomControls(true);
-        mapController = mMapView.getController();
 
-        // We draw our marker our self later on, fake for the first overlay.
-        mDefaultMarker = new ShapeDrawable(new OvalShape());
-        mDefaultMarker.getPaint().setColor(Color.TRANSPARENT);
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
+        if (savedInstanceState == null) {
+            // First incarnation of this activity.
+            mapFragment.setRetainInstance(true);
+        } else {
+            // Reincarnated activity. The obtained map is the same map instance in the previous
+            // activity life cycle. There is no need to reinitialize it.
+            mMap = mapFragment.getMap();
+        }
 
-        myLocationOverlay();
-
-        mapController.setZoom(16);
-        mapController.animateTo(mFocusedGeoPoint); 
-
-        mItemizedOverlay = new SimpleItemizedOverlay(mDefaultMarker, mMapView);
-        //mItemizedOverlay.addOverlay(new OverlayItem(mFocusedGeoPoint, "First", "Desc"));
-
-        fetchRoute(trip, journeyQuery);
+        setUpMapIfNeeded();
     }
 
     public void fetchRoute(final Trip2 trip, final JourneyQuery journeyQuery) {
-        //mActionBar.setProgressBarVisibility(View.VISIBLE);
         setSupportProgressBarIndeterminateVisibility(true);
         new Thread(new Runnable() {
             @Override
@@ -135,8 +128,6 @@ public class ViewOnMapActivity extends BaseMapActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        // In the UI
-                        //mActionBar.setProgressBarVisibility(View.GONE);
                         setSupportProgressBarIndeterminateVisibility(false);
                         addRoute(trip);
                     }
@@ -146,66 +137,64 @@ public class ViewOnMapActivity extends BaseMapActivity {
     }
 
     public void addRoute(Trip2 trip) {
-        List<Overlay> mapOverlays = mMapView.getOverlays();
-
-        RouteOverlay routeOverlay = new RouteOverlay(trip);
-        mapOverlays.add(routeOverlay);
-        mMapView.invalidate();
-
         for (SubTrip subTrip : trip.subTrips) {
-            GeoPoint origin = new GeoPoint(subTrip.origin.latitude,
-                    subTrip.origin.longitude);
-            routeOverlay.addGeoPoint(origin);
-            
-            
-            OverlayItem originOverlayItem = new OverlayItem(
-                    origin, getLocationName(subTrip.origin), 
-                    getRouteDescription(subTrip));
-            mItemizedOverlay.addOverlay(originOverlayItem);
-            if (origin.equals(mFocusedGeoPoint)) {
-                mItemizedOverlay.setFocus(originOverlayItem);
-            }
+
+            float[] hsv = new float[3];
+            Color.colorToHSV(subTrip.transport.getColor(), hsv);
+            float hueColor = hsv[0];
+
+            // One polyline per subtrip, different colors.
+            PolylineOptions options = new PolylineOptions();
+
+            LatLng origin = new LatLng(
+                    subTrip.origin.latitude / 1E6,
+                    subTrip.origin.longitude / 1E6);
+            options.add(origin);
+
+            mMap.addMarker(new MarkerOptions()
+                .position(origin)
+                .title(getLocationName(subTrip.origin))
+                .snippet(getRouteDescription(subTrip))
+                .icon(BitmapDescriptorFactory.defaultMarker(hueColor)));
 
             for (IntermediateStop stop : subTrip.intermediateStop) {
-                GeoPoint intermediateStop = new GeoPoint(stop.location.latitude,
-                        stop.location.longitude);
-                routeOverlay.addGeoPoint(intermediateStop);
-
-                mItemizedOverlay.addOverlay(new OverlayItem(
-                        intermediateStop, getLocationName(stop.location), 
-                        String.format("%s", stop.arrivalTime)));
+                LatLng intermediateStop = new LatLng(
+                        stop.location.latitude / 1E6,
+                        stop.location.longitude / 1E6);
+                options.add(intermediateStop);
+                mMap.addMarker(new MarkerOptions()
+                    .position(intermediateStop)
+                    .title(getLocationName(stop.location))
+                    .snippet(stop.arrivalTime)
+                    .icon(BitmapDescriptorFactory.defaultMarker(hueColor)));
             }
+            LatLng destination = new LatLng(
+                    subTrip.destination.latitude / 1E6,
+                    subTrip.destination.longitude / 1E6);
+            options.add(destination);
+            mMap.addMarker(new MarkerOptions()
+                .position(destination)
+                .title(getLocationName(subTrip.destination))
+                .snippet(subTrip.arrivalTime)
+                .icon(BitmapDescriptorFactory.defaultMarker(hueColor)));
 
-            GeoPoint destination = new GeoPoint(subTrip.destination.latitude,
-                    subTrip.destination.longitude);
-            routeOverlay.addGeoPoint(destination);
-            
-            OverlayItem destinationOverlayItem = new OverlayItem(
-                    destination, getLocationName(subTrip.destination), 
-                    String.format("%s", subTrip.arrivalTime));
-            mItemizedOverlay.addOverlay(destinationOverlayItem);
-            if (destination.equals(mFocusedGeoPoint)) {
-                mItemizedOverlay.setFocus(destinationOverlayItem);
-            }
+            mMap.addPolyline(options
+                    .width(5)
+                    .color(subTrip.transport.getColor()));
         }
-
-        mapOverlays.add(mItemizedOverlay);
     }
 
     public String getRouteDescription(SubTrip subTrip) {
         // TODO: Copied from RouteDetailActivity, centralize please!
         String description;
         if ("Walk".equals(subTrip.transport.type)) {
-            description = getString(R.string.trip_description_walk,
+            description = getString(R.string.trip_map_description_walk,
                     subTrip.departureTime,
-                    subTrip.arrivalTime,
-                    getLocationName(subTrip.origin),
                     getLocationName(subTrip.destination));
         } else {
-            description = getString(R.string.trip_description_normal,
-                    subTrip.departureTime, subTrip.arrivalTime,
+            description = getString(R.string.trip_map_description_normal,
+                    subTrip.departureTime,
                     subTrip.transport.name,
-                    getLocationName(subTrip.origin),
                     subTrip.transport.towards,
                     getLocationName(subTrip.destination));
         }
@@ -224,25 +213,14 @@ public class ViewOnMapActivity extends BaseMapActivity {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getSupportMenuInflater();
-        inflater.inflate(R.menu.actionbar_map, menu);
-        return true;
+    protected void onResume() {
+        super.onResume();
+        setUpMapIfNeeded();
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.menu_my_location:
-                if (mMyLocationOverlay.isMyLocationEnabled()) {
-                    GeoPoint myLocation = mMyLocationOverlay.getMyLocation();
-                    if (myLocation != null) {
-                        mapController.animateTo(myLocation);
-                    }
-                } else {
-                    toastMissingMyLocationSource();
-                }
-                return true;
             case android.R.id.home:
                 finish();
                 return true;
@@ -250,188 +228,35 @@ public class ViewOnMapActivity extends BaseMapActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void toastMissingMyLocationSource() {
-        Toast.makeText(this, getText(R.string.my_location_source_disabled),
-                Toast.LENGTH_LONG).show();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
- 
-        if (mMyLocationOverlay != null) {
-            mMyLocationOverlay.enableMyLocation();
+    private void setUpMapIfNeeded() {
+        // Do a null check to confirm that we have not already instantiated the map.
+        if (mMap == null) {
+            // Try to obtain the map from the SupportMapFragment.
+            mMap = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map))
+                    .getMap();
+            // Check if we were successful in obtaining the map.
+            if (mMap != null) {
+                setUpMap();
+            }
         }
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        disableMyLocation();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        disableMyLocation();
-    }
-
-    private void disableMyLocation() {
-        if (mMyLocationOverlay != null) {
-            mMyLocationOverlay.disableCompass();
-            mMyLocationOverlay.disableMyLocation();
-        }
-    }
-    
-    @Override
-    protected boolean isRouteDisplayed() {
-        return false;
-    }
-
-    private void myLocationOverlay() {
-        mMyLocationOverlay = new FixedMyLocationOverlay(this, mMapView);
-        if (mMyLocationOverlay.isMyLocationEnabled()) {
-            mMyLocationOverlay.enableMyLocation();
-        }
-        if (mMyLocationOverlay.isCompassEnabled()) {
-            mMyLocationOverlay.enableCompass();
-        }
-        mMapView.getOverlays().add(mMyLocationOverlay);
-    }
-
-    @Override
-    public boolean onSearchRequested() {
-        Intent i = new Intent(this, StartActivity.class);
-        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(i);
-        return true;
     }
 
     /**
-     * Converts the passed trip to a visual route. 
+     * This is where we can add markers or lines, add listeners or move the camera. In this case, we
+     * just add a marker near Africa.
+     * <p>
+     * This should only be called once and when we are sure that {@link #mMap} is not null.
      */
-    class RouteOverlay extends Overlay {
+    private void setUpMap() {
+        fetchRoute(mTrip, mJourneyQuery);
 
-        private Paint mMarkerPaint;
-        private static final int markerRadius = 8;
-        private ArrayList<GeoPoint> mPoints;
-        private Trip2 mTrip;
+        
+        
+        mMap.setMyLocationEnabled(true);
 
-        public RouteOverlay(Trip2 trip) {
-            mTrip = trip;
-            mMarkerPaint = new Paint();
-            mMarkerPaint.setColor(Color.DKGRAY);
-            mMarkerPaint.setAntiAlias(true);
-        }
-
-        public void addGeoPoint(GeoPoint geoPoint) {
-            if (mPoints == null) {
-                mPoints = new ArrayList<GeoPoint>();
-            }
-            mPoints.add(geoPoint);
-        }
-
-        protected Paint createPaint(SubTrip subTrip) {
-            Paint paint = new Paint();
-            paint.setAntiAlias(true);
-            paint.setColor(subTrip.transport.getColor());
-            paint.setStrokeWidth(6);
-
-            if (subTrip.transport.type.equalsIgnoreCase("walk")) {
-                DashPathEffect dashPath = new DashPathEffect(new float[]{6,2}, 1);
-                paint.setPathEffect(dashPath);
-            }
-
-            return paint;
-        }
-
-        protected void drawStopMarker(SubTrip subTrip, Canvas canvas, Point point) {
-            RectF oval = new RectF(point.x-markerRadius,
-                    point.y-markerRadius,
-                    point.x+markerRadius,
-                    point.y+markerRadius);
-            mMarkerPaint.setColor(subTrip.transport.getColor());
-            canvas.drawOval(oval, mMarkerPaint);
-            oval.inset(4, 4);
-        }
-
-        @Override
-        public void draw(Canvas canvas, MapView mapView, boolean shadow) {
-            Projection projection = mapView.getProjection();
-            if (shadow == false) {
-
-                GeoPoint lastGeoPoint = null;
-                for (SubTrip subTrip : mTrip.subTrips) {
-                    GeoPoint originGeoPoint = new GeoPoint(subTrip.origin.latitude,
-                            subTrip.origin.longitude);
-                    
-                    Paint paint = createPaint(subTrip); 
-
-                    Point originPoint = new Point();
-                    projection.toPixels(originGeoPoint, originPoint);
-                    drawStopMarker(subTrip, canvas, originPoint);
-
-                    if (lastGeoPoint != null) {
-                        Point point2 = new Point();
-                        projection.toPixels(lastGeoPoint, point2);
-                        Paint connectionPaint = new Paint(paint);
-                        connectionPaint.setColor(Color.DKGRAY);
-                        DashPathEffect dashPath = new DashPathEffect(new float[]{6,2}, 1);
-                        connectionPaint.setPathEffect(dashPath);
-                        canvas.drawLine((float) originPoint.x,
-                                (float) originPoint.y,
-                                (float) point2.x,
-                                (float) point2.y, connectionPaint);
-                    }
-
-                    GeoPoint lastIntermediateGeoPoint = null;
-                    for (IntermediateStop stop : subTrip.intermediateStop) {
-                        GeoPoint intermediateStopGeoPoint = new GeoPoint(stop.location.latitude,
-                                stop.location.longitude);
-                        
-                        Point intermediatePoint = new Point();
-                        projection.toPixels(intermediateStopGeoPoint, intermediatePoint);
-                        drawStopMarker(subTrip, canvas, intermediatePoint);
-                        if (lastIntermediateGeoPoint != null) {
-                            Point point2 = new Point();
-                            projection.toPixels(lastIntermediateGeoPoint, point2);
-                            canvas.drawLine((float) intermediatePoint.x,
-                                    (float) intermediatePoint.y,
-                                    (float) point2.x,
-                                    (float) point2.y, paint);
-                        } else {
-                            canvas.drawLine((float) originPoint.x, (float) originPoint.y, (float) intermediatePoint.x,(float) intermediatePoint.y, paint);
-                        }
-
-                        lastIntermediateGeoPoint = intermediateStopGeoPoint;
-                    }
-
-                    GeoPoint destinationGeoPoint = new GeoPoint(subTrip.destination.latitude,
-                            subTrip.destination.longitude);
-                    Point destinationPoint = new Point();
-                    projection.toPixels(destinationGeoPoint, destinationPoint);
-                    drawStopMarker(subTrip, canvas, destinationPoint);
-                    if (lastIntermediateGeoPoint != null) {
-                        Point lastPoint = new Point();
-                        projection.toPixels(lastIntermediateGeoPoint, lastPoint);
-                        canvas.drawLine((float) lastPoint.x,
-                                (float) lastPoint.y,
-                                (float) destinationPoint.x,
-                                (float) destinationPoint.y, paint);
-                    } else {
-                        // Assume origin
-                        canvas.drawLine((float) originPoint.x,
-                                (float) originPoint.y,
-                                (float) destinationPoint.x,
-                                (float) destinationPoint.y, paint);
-                    }
-
-                    lastGeoPoint = destinationGeoPoint;
-                }
-            }
-
-            super.draw(canvas, mapView, shadow);
-        }
+        mMap.moveCamera(CameraUpdateFactory.newCameraPosition(
+            CameraPosition.fromLatLngZoom(mFocusedLatLng, 16)
+            ));
     }
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010 Johan Nilsson <http://markupartist.com>
+ * Copyright (C) 2013 Johan Nilsson <http://markupartist.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,55 +25,64 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.ViewGroup.LayoutParams;
 import android.widget.Toast;
 
 import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
-import com.actionbarsherlock.view.Window;
-import com.google.android.maps.GeoPoint;
-import com.google.android.maps.MapController;
-import com.google.android.maps.MapView;
-import com.google.android.maps.MyLocationOverlay;
-import com.google.android.maps.Projection;
-import com.markupartist.sthlmtraveling.graphics.BalloonOverlayView;
-import com.markupartist.sthlmtraveling.graphics.BalloonOverlayView.OnTapBallonListener;
-import com.markupartist.sthlmtraveling.graphics.FixedMyLocationOverlay;
+import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.flurry.android.FlurryAgent;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
+import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.markupartist.sthlmtraveling.provider.planner.Stop;
-import com.readystatesoftware.maps.OnSingleTapListener;
-import com.readystatesoftware.maps.TapControlledMapView;
 
-public class PointOnMapActivity extends BaseMapActivity implements OnSingleTapListener {
-    private static final String TAG = "PointOnMapActivity";
+public class PointOnMapActivity extends SherlockFragmentActivity
+        implements OnMapClickListener, OnInfoWindowClickListener {
 
     public static String EXTRA_STOP = "com.markupartist.sthlmtraveling.pointonmap.stop";
     public static String EXTRA_HELP_TEXT = "com.markupartist.sthlmtraveling.pointonmap.helptext";
     public static String EXTRA_MARKER_TEXT = "com.markupartist.sthlmtraveling.pointonmap.markertext";
 
-    private TapControlledMapView mMapView;
-    private MapController mapController;
-    private GeoPoint mGeoPoint;
-    private Stop mStop;
-    private MyLocationOverlay mMyLocationOverlay;
+    /**
+     * Note that this may be null if the Google Play services APK is not available.
+     */
+    private GoogleMap mMap;
 
-    private BalloonOverlayView mBalloonView;
+    private Stop mStop;
+    private Marker mMarker;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onStart() {
+        super.onStart();
+        FlurryAgent.onStartSession(this, MyApplication.ANALYTICS_KEY);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        FlurryAgent.onEndSession(this);
+     }
+ 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        requestWindowFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
+        // TODO: Use transparent action bar, fix location of my location btn.
 
-        setContentView(R.layout.point_on_map);
+        //requestWindowFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
+        setContentView(R.layout.map);
 
-        registerEvent("Point on map");
+        FlurryAgent.onPageView();
+        FlurryAgent.onEvent("Point on map");
 
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setBackgroundDrawable(getResources().getDrawable(R.drawable.ab_bg_black));
+        //actionBar.setBackgroundDrawable(getResources().getDrawable(R.drawable.ab_bg_black));
         actionBar.setHomeButtonEnabled(true);
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
         actionBar.setDisplayShowHomeEnabled(true);
@@ -81,6 +90,7 @@ public class PointOnMapActivity extends BaseMapActivity implements OnSingleTapLi
         actionBar.setTitle(R.string.point_on_map);
 
         Bundle extras = getIntent().getExtras();
+        // TODO: Can we make this as a none member.
         mStop = (Stop) extras.getParcelable(EXTRA_STOP);
         String helpText = extras.getString(EXTRA_HELP_TEXT);
         String markerText = extras.getString(EXTRA_MARKER_TEXT);
@@ -91,31 +101,24 @@ public class PointOnMapActivity extends BaseMapActivity implements OnSingleTapLi
             markerText = getString(R.string.tap_to_select_this_point);
         }
 
-        mMapView = (TapControlledMapView) findViewById(R.id.mapview);
-        mapController = mMapView.getController();
-
-        mMapView.setBuiltInZoomControls(true);
-        mMapView.setOnSingleTapListener(this);
-
-        myLocationOverlay();
-
-        // Use stops location if present, otherwise set a geo point in 
-        // central Stockholm.
-        if (mStop.getLocation() != null) {
-            mGeoPoint = new GeoPoint(
-                    (int) (mStop.getLocation().getLatitude() * 1E6), 
-                    (int) (mStop.getLocation().getLongitude() * 1E6));
-            mapController.setZoom(16);
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
+        if (savedInstanceState == null) {
+            // First incarnation of this activity.
+            mapFragment.setRetainInstance(true);
         } else {
-            mGeoPoint = new GeoPoint(
-                    (int) (59.325309 * 1E6), 
-                    (int) (18.069763 * 1E6));
-            mapController.setZoom(12);
+            // Reincarnated activity. The obtained map is the same map instance in the previous
+            // activity life cycle. There is no need to reinitialize it.
+            mMap = mapFragment.getMap();
         }
-        mapController.animateTo(mGeoPoint);
+        setUpMapIfNeeded();
+    }
 
-        // Show the text balloon from start.
-        showBalloon(mMapView, mGeoPoint);
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        setUpMapIfNeeded();
     }
 
     private void showHelpToast(String helpText) {
@@ -124,80 +127,56 @@ public class PointOnMapActivity extends BaseMapActivity implements OnSingleTapLi
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getSupportMenuInflater();
-        inflater.inflate(R.menu.actionbar_map, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.menu_my_location:
-                if (mMyLocationOverlay.isMyLocationEnabled()) {
-                    GeoPoint myLocation = mMyLocationOverlay.getMyLocation();
-                    if (myLocation != null) {
-                        mapController.animateTo(myLocation);
-                    }
-                } else {
-                    toastMissingMyLocationSource();
-                }
-                return true;
-            case android.R.id.home:
-                finish();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    private void toastMissingMyLocationSource() {
-        Toast.makeText(this, getText(R.string.my_location_source_disabled),
-                Toast.LENGTH_LONG).show();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
- 
-        if (mMyLocationOverlay != null) {
-            mMyLocationOverlay.enableMyLocation();
+    private void setUpMapIfNeeded() {
+        // Do a null check to confirm that we have not already instantiated the map.
+        if (mMap == null) {
+            // Try to obtain the map from the SupportMapFragment.
+            mMap = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map))
+                    .getMap();
+            // Check if we were successful in obtaining the map.
+            if (mMap != null) {
+                setUpMap();
+            }
         }
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        disableMyLocation();
-    }
+    private void setUpMap() {
+        mMap.setMyLocationEnabled(true);
+        mMap.setOnMapClickListener(this);
+        mMap.setOnInfoWindowClickListener(this);
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        disableMyLocation();
-    }
-
-    private void disableMyLocation() {
-        if (mMyLocationOverlay != null) {
-            mMyLocationOverlay.disableCompass();
-            mMyLocationOverlay.disableMyLocation();
+        // Use stops location if present, otherwise set a geo point in 
+        // central Stockholm.
+        LatLng latLng;
+        int zoom;
+        if (mStop.getLocation() != null) {
+            latLng = new LatLng(
+                    mStop.getLocation().getLatitude(), 
+                    mStop.getLocation().getLongitude());
+            zoom = 16;
+        } else {
+            latLng = new LatLng(59.325309, 18.069763);
+            zoom = 12;
         }
-    }
-    
-    @Override
-    protected boolean isRouteDisplayed() {
-        return false;
+
+        mMarker = mMap.addMarker(new MarkerOptions()
+            .position(latLng)
+            .title(getString(R.string.tap_to_select_this_point))
+            .visible(true)
+            .draggable(true)
+            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
+        );
+        mMarker.showInfoWindow();
+
+        mMap.moveCamera(CameraUpdateFactory.newCameraPosition(
+            CameraPosition.fromLatLngZoom(latLng, zoom)
+            ));
     }
 
-    private void myLocationOverlay() {
-        mMyLocationOverlay = new FixedMyLocationOverlay(this, mMapView);
-        //if (mMyLocationOverlay.isMyLocationEnabled()) {
-            mMyLocationOverlay.enableMyLocation();
-        //}
-        if (mMyLocationOverlay.isCompassEnabled()) {
-            mMyLocationOverlay.enableCompass();
-        }
-        mMapView.getOverlays().add(mMyLocationOverlay);
+    @Override
+    public void onMapClick(LatLng position) {
+        mMarker.setPosition(position);
+        mMarker.showInfoWindow();
     }
 
     private String getStopName(Location location) {
@@ -210,69 +189,24 @@ public class PointOnMapActivity extends BaseMapActivity implements OnSingleTapLi
                 name = address.getThoroughfare();
             }
         } catch (IOException e) {
-            Log.d(TAG, "Failed to get name " + e.getMessage());
+            Log.d("Map", "Failed to get name " + e.getMessage());
         }
         return name;
     }
 
     @Override
-    public boolean onSearchRequested() {
-        Intent i = new Intent(this, StartActivity.class);
-        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(i);
-        return true;
-    }
-
-    public void showBalloon(final MapView mapView, final GeoPoint point) {
-        
-        boolean isRecycled;
-        int viewOffset = 10;
-        
-        if (mBalloonView == null) {
-            mBalloonView = new BalloonOverlayView(mapView.getContext(), viewOffset);
-            //View clickRegion = (View) balloonView.findViewById(R.id.balloon_inner_layout);
-            isRecycled = false;
-        } else {
-            isRecycled = true;
-        }
-
-        mBalloonView.setVisibility(View.GONE);
-        mBalloonView.setLabel(getString(R.string.tap_to_select_this_point));
-
-        MapView.LayoutParams params = new MapView.LayoutParams(
-                LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, point,
-                MapView.LayoutParams.BOTTOM_CENTER);
-        params.mode = MapView.LayoutParams.MODE_MAP;
-        
-        mBalloonView.setOnTapBalloonListener(new OnTapBallonListener() {
-            @Override
-            public void onTap() {
-                Toast.makeText(getApplicationContext(),
-                        getText(R.string.point_selected), Toast.LENGTH_LONG).show();
-                mStop.setLocation(point.getLatitudeE6(), point.getLongitudeE6());
-                mStop.setName(getStopName(mStop.getLocation()));
-
-                setResult(RESULT_OK, (new Intent()).putExtra(EXTRA_STOP, mStop));
-                finish();
-            }
-        });
-
-        mBalloonView.setVisibility(View.VISIBLE);
-
-        if (isRecycled) {
-            mBalloonView.setLayoutParams(params);
-        } else {
-            mapView.addView(mBalloonView, params);
+    public void onInfoWindowClick(Marker clickedMarker) {
+        if (clickedMarker.equals(mMarker)) {
+            Toast.makeText(getApplicationContext(),
+                    getText(R.string.point_selected), Toast.LENGTH_LONG).show();
+            Location location = new Location("sthlmtraveling");
+            location.setLatitude(mMarker.getPosition().latitude);
+            location.setLongitude(mMarker.getPosition().longitude);
+            mStop.setLocation(location);
+            mStop.setName(getStopName(mStop.getLocation()));
+            setResult(RESULT_OK, (new Intent()).putExtra(EXTRA_STOP, mStop));
+            finish();
         }
     }
 
-    @Override
-    public boolean onSingleTap(MotionEvent e) {
-        Projection projection = mMapView.getProjection();
-        GeoPoint geoPoint = projection.fromPixels(
-                (int)e.getX(), (int)e.getY());
-
-        showBalloon(mMapView, geoPoint);
-        return true;
-    }
 }

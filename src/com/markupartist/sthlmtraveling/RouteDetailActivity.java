@@ -441,10 +441,10 @@ public class RouteDetailActivity extends BaseListActivity {
 
     private Intent createViewOnMapIntent(Planner.Trip2 trip,
             JourneyQuery query, Planner.Location location) {
-        Intent intent = new Intent(this, ViewOnMapV2Activity.class);
-        intent.putExtra(ViewOnMapV2Activity.EXTRA_TRIP, trip);
-        intent.putExtra(ViewOnMapV2Activity.EXTRA_JOURNEY_QUERY, query);
-        intent.putExtra(ViewOnMapV2Activity.EXTRA_LOCATION, location);
+        Intent intent = new Intent(this, ViewOnMapActivity.class);
+        intent.putExtra(ViewOnMapActivity.EXTRA_TRIP, trip);
+        intent.putExtra(ViewOnMapActivity.EXTRA_JOURNEY_QUERY, query);
+        intent.putExtra(ViewOnMapActivity.EXTRA_LOCATION, location);
 
         return intent;
     }

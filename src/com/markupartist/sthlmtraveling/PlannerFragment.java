@@ -814,10 +814,10 @@ public class PlannerFragment extends BaseListFragment implements
                             break;
                         case 1:
                             Intent i = new Intent(getActivity(),
-                                    PointOnMapV2Activity.class);
-                            i.putExtra(PointOnMapV2Activity.EXTRA_STOP, mEndPoint);
+                                    PointOnMapActivity.class);
+                            i.putExtra(PointOnMapActivity.EXTRA_STOP, mEndPoint);
                             i.putExtra(
-                                    PointOnMapV2Activity.EXTRA_HELP_TEXT,
+                                    PointOnMapActivity.EXTRA_HELP_TEXT,
                                    getString(R.string.tap_your_end_point_on_map));
                             startActivityForResult(i,
                                     REQUEST_CODE_POINT_ON_MAP_END);
@@ -858,11 +858,11 @@ public class PlannerFragment extends BaseListFragment implements
                             break;
                         case 1:
                             Intent i = new Intent(getActivity(),
-                                    PointOnMapV2Activity.class);
-                            i.putExtra(PointOnMapV2Activity.EXTRA_STOP,
+                                    PointOnMapActivity.class);
+                            i.putExtra(PointOnMapActivity.EXTRA_STOP,
                                     mStartPoint);
                             i.putExtra(
-                                    PointOnMapV2Activity.EXTRA_HELP_TEXT,
+                                    PointOnMapActivity.EXTRA_HELP_TEXT,
                                     getString(R.string.tap_your_start_point_on_map));
                             startActivityForResult(i,
                                     REQUEST_CODE_POINT_ON_MAP_START);
@@ -960,7 +960,7 @@ public class PlannerFragment extends BaseListFragment implements
                 Log.d(TAG, "action canceled");
             } else {
                 mStartPoint = data
-                        .getParcelableExtra(PointOnMapV2Activity.EXTRA_STOP);
+                        .getParcelableExtra(PointOnMapActivity.EXTRA_STOP);
                 mStartPointAutoComplete.setText(getText(R.string.point_on_map));
                 // mStartPointAutoComplete.setText(mStartPoint.getName());
                 Log.d(TAG, "Got Stop " + mStartPoint);
@@ -971,7 +971,7 @@ public class PlannerFragment extends BaseListFragment implements
                 Log.d(TAG, "action canceled");
             } else {
                 mEndPoint = data
-                        .getParcelableExtra(PointOnMapV2Activity.EXTRA_STOP);
+                        .getParcelableExtra(PointOnMapActivity.EXTRA_STOP);
                 mEndPointAutoComplete.setText(getText(R.string.point_on_map));
                 // mEndPointAutoComplete.setText(mEndPoint.getName());
                 Log.d(TAG, "Got Stop " + mEndPoint);

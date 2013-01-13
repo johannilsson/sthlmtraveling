@@ -116,13 +116,7 @@
         <activity android:name=".PointOnMapActivity"
                   android:label="@string/point_on_map"
                   android:configChanges="locale|orientation"></activity>
-        <activity android:name=".PointOnMapV2Activity"
-                  android:label="@string/point_on_map"
-                  android:configChanges="locale|orientation"></activity>
         <activity android:name=".ViewOnMapActivity"
-                  android:label="@string/stop_label"
-                  android:configChanges="locale|orientation"></activity>
-        <activity android:name=".ViewOnMapV2Activity"
                   android:label="@string/stop_label"
                   android:configChanges="locale|orientation"></activity>
         <activity android:name=".SearchDeparturesFragmentActivity"
