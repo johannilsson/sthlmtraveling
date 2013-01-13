@@ -64,7 +64,8 @@ application and the tests application deployed before.
 
 Changelog
 ---------
-
+* NEXT
+  * Remove references to previous maps implementation.
 * 2.6.1
   * Fix shortcut for Nearby.
 * 2.6.0
