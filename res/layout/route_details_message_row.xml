@@ -24,7 +24,7 @@
     >
 	<ImageView
 	    android:id="@+id/routes_warning_message_image"
-	    android:src="@drawable/trip_message_warning"
+	    android:src="@drawable/ic_trip_deviation"
 	    android:layout_width="wrap_content"
 	    android:layout_height="wrap_content"
 	    android:layout_gravity="center_vertical|center_horizontal"

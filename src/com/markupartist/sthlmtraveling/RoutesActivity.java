@@ -1178,7 +1178,7 @@ public class RoutesActivity extends BaseListActivity
             
             if (trip.mt6MessageExist || trip.remarksMessageExist || trip.rtuMessageExist) {
                 ImageView warning = new ImageView(context);
-                warning.setImageResource(R.drawable.trip_message_warning);
+                warning.setImageResource(R.drawable.ic_trip_deviation);
                 warning.setPadding((int)(8 * scale), (int)(7 * scale), 0, 0);
 
                 timeLayout.addView(warning);
