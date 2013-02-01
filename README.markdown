@@ -64,8 +64,10 @@ application and the tests application deployed before.
 
 Changelog
 ---------
-* NEXT
+* 2.6.2
   * Remove references to previous maps implementation.
+  * Change number for SMS tickets.
+  * Change icon for deviations in route views.
 * 2.6.1
   * Fix shortcut for Nearby.
 * 2.6.0
