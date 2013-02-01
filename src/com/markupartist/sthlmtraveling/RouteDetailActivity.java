@@ -422,7 +422,7 @@ public class RouteDetailActivity extends BaseListActivity {
 
         String price = reducedPrice ? "R" : "H";
         intent.setType("vnd.android-dir/mms-sms");
-        intent.putExtra("address", "72150");
+        intent.putExtra("address", "0767201010");
         intent.putExtra("sms_body", price + mTrip.tariffZones);
 
         Toast.makeText(this, R.string.sms_ticket_notice_message,
