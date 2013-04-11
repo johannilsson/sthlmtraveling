@@ -100,6 +100,10 @@ public class DeviationStore {
             for (int line : lineNumbers) {
                 if (lines.contains(line)) {
                     filteredList.add(deviation);
+                    // A deviation can span over several line numbers.
+                    // Break on the first criteria match to not add the same
+                    // deviation more than once.
+                    break;
                 }
             }
         }
