@@ -23,7 +23,7 @@
     <string name="discard">Discard</string>
     <string name="from">Origen</string>
     <string name="to">Destino</string>
-    <string name="to">Via</string> <!-- TODO: Needs translation -->
+    <string name="via">Via</string> <!-- TODO: Needs translation -->
     <string name="search_label">Buscar</string>
     <string name="search_routes_label">Fetch routes</string>
     <string name="departing">Salida</string>
