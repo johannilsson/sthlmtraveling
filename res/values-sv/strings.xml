@@ -131,7 +131,7 @@
     <string name="show_all">Visa alla</string>
     <string name="direction">Riktning</string>
     <string name="no_intermediate_stops">Inga mellanliggande hållplatser hittades.</string>
-    <string name="show_intermediate_stops">Via mellanliggande hållplatser</string>
+    <string name="show_intermediate_stops">Visa mellanliggande hållplatser</string>
     <string name="hide_intermediate_stops">Dölj mellanliggande hållplatser</string>
     <string name="nearby_stops">Närliggande hållplatser</string>
     <string name="nearby">Närliggande</string>
@@ -187,3 +187,4 @@
     <string name="help">Hjälp</string>
     <string name="support">Support och hjälpforum</string>
 </resources>
+
