@@ -40,8 +40,6 @@ import com.markupartist.sthlmtraveling.provider.site.Site;
 
 public class SearchDeparturesFragment extends BaseListFragment {
     static String TAG = "SearchDeparturesActivity";
-    private static final int DIALOG_HISTORY = 0;
-    private static final int DIALOG_MORE = 1;
     private boolean mCreateShortcut;
     private HistoryDbAdapter mHistoryDbAdapter;
     private AutoCompleteTextView mSiteTextView;
@@ -85,7 +83,7 @@ public class SearchDeparturesFragment extends BaseListFragment {
                 .findViewById(R.id.sites);
         AutoCompleteStopAdapter stopAdapter = new AutoCompleteStopAdapter(
                 getActivity(), R.layout.simple_dropdown_item_1line,
-                Planner.getInstance(), false);
+                Planner.getInstance(), true);
 
         mSiteTextView.setSelectAllOnFocus(true);
         mSiteTextView.setAdapter(stopAdapter);
@@ -165,23 +163,25 @@ public class SearchDeparturesFragment extends BaseListFragment {
         Cursor historyCursor = ((SimpleCursorAdapter) this.getListAdapter())
                 .getCursor();
         getActivity().startManagingCursor(historyCursor);
-        int index = historyCursor.getColumnIndex(HistoryDbAdapter.KEY_NAME);
-        String siteName = historyCursor.getString(index);
+
+        Site site = new Site();
+        site.setName(historyCursor.getString(HistoryDbAdapter.INDEX_NAME));
+        site.setId(historyCursor.getInt(HistoryDbAdapter.INDEX_SITE_ID));
+
         getActivity().stopManagingCursor(historyCursor);
 
-        Site stop = new Site();
-        stop.setName(siteName);
         if (mCreateShortcut) {
-            onCreateShortCut(stop);
+            onCreateShortCut(site);
         } else {
-            onSearchDepartures(stop);
+            onSearchDepartures(site);
         }
     }
 
     private void dispatchSearch() {
         Site stop = new Site();
         stop.setName(mSiteTextView.getText().toString());
-        if (!stop.looksValid()) {
+        // TODO: Change to use looksValid and make sure site id is passed all the way.
+        if (!stop.hasName()) {
             mSiteTextView.setError(getText(R.string.empty_value));
         } else {
             if (mCreateShortcut) {
