@@ -40,7 +40,7 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.markupartist.sthlmtraveling.provider.planner.Stop;
+import com.markupartist.sthlmtraveling.provider.site.Site;
 
 public class PointOnMapActivity extends SherlockFragmentActivity
         implements OnMapClickListener, OnInfoWindowClickListener {
@@ -54,7 +54,7 @@ public class PointOnMapActivity extends SherlockFragmentActivity
      */
     private GoogleMap mMap;
 
-    private Stop mStop;
+    private Site mStop;
     private Marker mMarker;
 
     @Override
@@ -91,7 +91,7 @@ public class PointOnMapActivity extends SherlockFragmentActivity
 
         Bundle extras = getIntent().getExtras();
         // TODO: Can we make this as a none member.
-        mStop = (Stop) extras.getParcelable(EXTRA_STOP);
+        mStop = (Site) extras.getParcelable(EXTRA_STOP);
         String helpText = extras.getString(EXTRA_HELP_TEXT);
         String markerText = extras.getString(EXTRA_MARKER_TEXT);
 

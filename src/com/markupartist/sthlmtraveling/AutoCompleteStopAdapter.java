@@ -19,12 +19,7 @@ package com.markupartist.sthlmtraveling;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
-import java.util.regex.Pattern;
-
 import android.content.Context;
-import android.location.Address;
-import android.location.Geocoder;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
@@ -38,33 +33,31 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.markupartist.sthlmtraveling.provider.planner.Planner;
-import com.markupartist.sthlmtraveling.provider.planner.Stop;
-import com.markupartist.sthlmtraveling.utils.LocationUtils;
+import com.markupartist.sthlmtraveling.provider.site.Site;
+import com.markupartist.sthlmtraveling.provider.site.SitesStore;
 
 public class AutoCompleteStopAdapter extends ArrayAdapter<String> implements Filterable {
     protected static final int WHAT_NOTIFY_PERFORM_FILTERING = 1;
     protected static final int WHAT_NOTIFY_PUBLISH_FILTERING = 2;
     private static String TAG = "AutoCompleteStopAdapter";
     private final Object mLock = new Object();
-    private Planner mPlanner;
-    private Geocoder mGeocoder;
-    private List<Object> mValues;
-    private boolean mIncludeAddresses = true;
+    private List<Site> mValues;
     private LayoutInflater mInflater;
-    private FilterListener mFilterListener;
+    private boolean mOnlyStations;
+    private static FilterListener sFilterListener;
 
-    private Handler mHandler = new Handler() {
+    private static Handler sHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
             case WHAT_NOTIFY_PERFORM_FILTERING:
-                if (mFilterListener != null) {
-                    mFilterListener.onPerformFiltering();
+                if (sFilterListener != null) {
+                    sFilterListener.onPerformFiltering();
                 }
                 break;
             case WHAT_NOTIFY_PUBLISH_FILTERING:
-                if (mFilterListener != null) {
-                    mFilterListener.onPublishFiltering();
+                if (sFilterListener != null) {
+                    sFilterListener.onPublishFiltering();
                 }
                 break;
             }
@@ -72,20 +65,17 @@ public class AutoCompleteStopAdapter extends ArrayAdapter<String> implements Fil
     };
 
     public AutoCompleteStopAdapter(Context context, int textViewResourceId,
-            Planner planner, boolean includeAddresses) {
+            Planner planner, boolean onlyStations) {
         super(context, textViewResourceId);
-        mPlanner = planner;
-        mIncludeAddresses = includeAddresses;
-        mGeocoder = new Geocoder(context, new Locale("sv"));
         mInflater = (LayoutInflater) context.getSystemService(
                 Context.LAYOUT_INFLATER_SERVICE);
+        mOnlyStations = onlyStations;
     }
 
-    public Object getValue(int position) {
+    public Site getValue(int position) {
         if (mValues != null && mValues.size() > 0) {
             return mValues.get(position);
         }
-        
         Log.d(TAG, "value was null");
         return null;
     }
@@ -98,7 +88,7 @@ public class AutoCompleteStopAdapter extends ArrayAdapter<String> implements Fil
             @Override
             protected FilterResults performFiltering(CharSequence constraint) {
 
-                mHandler.sendEmptyMessage(WHAT_NOTIFY_PERFORM_FILTERING);
+                sHandler.sendEmptyMessage(WHAT_NOTIFY_PERFORM_FILTERING);
 
                 FilterResults filterResults = new FilterResults();
 
@@ -109,36 +99,14 @@ public class AutoCompleteStopAdapter extends ArrayAdapter<String> implements Fil
                         && !constraint.equals("Välj en plats på kartan")
                         && !constraint.equals("Point on map")) {
 
-                    List<Object> values = new ArrayList<Object>();
+                    List<Site> values = new ArrayList<Site>();
 
-                    // Address search more or less requires a house number to be
-                    // accurate, so skip adress search if it's not present.
-                    // TODO: Add configuration option for this
-                    if (mIncludeAddresses
-                            && Pattern.compile("[0-9]").matcher(constraint).find()) {
-                        List<Address> addresses = null;
-                        try {
-                            double lowerLeftLatitude = 58.9074;
-                            double lowerLeftLongitude = 17.1002;
-                            double upperRightLatitude = 59.8751;
-                            double upperRightLongitude = 19.0722;
-                            addresses = mGeocoder.getFromLocationName(constraint.toString(),
-                                    5, lowerLeftLatitude, lowerLeftLongitude,
-                                    upperRightLatitude, upperRightLongitude);
-                        } catch (IOException e) {
-                            //mWasSuccess = false;
-                        }
-                        if (addresses != null) {
-                            values.addAll(addresses);
-                        }
-                    }
-
-                    ArrayList<String> list = null;
+                    ArrayList<Site> list = null;
                     try {
                         String query = constraint.toString();
-                        if (Stop.looksValid(query)) {
-                            list = mPlanner.findStop(query);
-                        }
+                        list = SitesStore.getInstance().getSiteV2(
+                            query, mOnlyStations
+                        );
                     } catch (IOException e) {
                         mWasSuccess = false;
                     }
@@ -156,20 +124,15 @@ public class AutoCompleteStopAdapter extends ArrayAdapter<String> implements Fil
             @SuppressWarnings("unchecked") // For the list used in the for each statement
             @Override
             protected void publishResults(CharSequence constraint, FilterResults results) {
-                mHandler.sendEmptyMessage(WHAT_NOTIFY_PUBLISH_FILTERING);
+                sHandler.sendEmptyMessage(WHAT_NOTIFY_PUBLISH_FILTERING);
 
                 if (results != null && results.count > 0) {
                     clear();
-                    mValues = (List<Object>)results.values;
+                    mValues = (List<Site>) results.values;
 
                     synchronized (mLock) {
-                        for (Object value : mValues) {
-                            if (value instanceof String) {
-                                add((String) value);
-                            } else {
-                                Address address = (Address) value;
-                                add(LocationUtils.getAddressLine(address));
-                            }
+                        for (Site value : mValues) {
+                            add(value.getName());
                         }
                     }
                     notifyDataSetChanged();
@@ -197,21 +160,21 @@ public class AutoCompleteStopAdapter extends ArrayAdapter<String> implements Fil
         TextView text1 = (TextView) convertView.findViewById(R.id.text1);
         TextView text2 = (TextView) convertView.findViewById(R.id.text2);
 
-        Object value = getValue(position);
-        if (value instanceof String) {
-            text1.setText((String) value);
+        Site site = getValue(position);
+
+        if (site.isAddress()) {
+            text1.setText(site.getName());
+            text2.setText("Address"/*R.string.address_label*/);
+        } else {
+            text1.setText(site.getName());
             text2.setText(R.string.stop_label);
-        } else if (value instanceof Address) {
-            Address address = (Address) value;
-            text1.setText(address.getAddressLine(0) != null ? address.getAddressLine(0) : "");
-            text2.setText(address.getAddressLine(1) != null ? address.getAddressLine(1) : "");
         }
 
         return convertView;
     }
 
     public void setFilterListener(FilterListener listener) {
-        mFilterListener = listener;
+        sFilterListener = listener;
     }
 
     public static interface FilterListener {

@@ -36,7 +36,7 @@ import android.widget.TextView.OnEditorActionListener;
 
 import com.markupartist.sthlmtraveling.provider.HistoryDbAdapter;
 import com.markupartist.sthlmtraveling.provider.planner.Planner;
-import com.markupartist.sthlmtraveling.provider.planner.Stop;
+import com.markupartist.sthlmtraveling.provider.site.Site;
 
 public class SearchDeparturesFragment extends BaseListFragment {
     static String TAG = "SearchDeparturesActivity";
@@ -169,7 +169,7 @@ public class SearchDeparturesFragment extends BaseListFragment {
         String siteName = historyCursor.getString(index);
         getActivity().stopManagingCursor(historyCursor);
 
-        Stop stop = new Stop();
+        Site stop = new Site();
         stop.setName(siteName);
         if (mCreateShortcut) {
             onCreateShortCut(stop);
@@ -179,7 +179,7 @@ public class SearchDeparturesFragment extends BaseListFragment {
     }
 
     private void dispatchSearch() {
-        Stop stop = new Stop();
+        Site stop = new Site();
         stop.setName(mSiteTextView.getText().toString());
         if (!stop.looksValid()) {
             mSiteTextView.setError(getText(R.string.empty_value));
@@ -192,7 +192,7 @@ public class SearchDeparturesFragment extends BaseListFragment {
         }
     }
 
-    private void onSearchDepartures(Stop stop) {
+    private void onSearchDepartures(Site stop) {
         mHistoryDbAdapter.create(HistoryDbAdapter.TYPE_DEPARTURE_SITE, stop);
 
         Intent i = new Intent(getActivity().getApplicationContext(),
@@ -201,7 +201,7 @@ public class SearchDeparturesFragment extends BaseListFragment {
         startActivity(i);
     }
 
-    private void onCreateShortCut(Stop stop) {
+    private void onCreateShortCut(Site stop) {
         // Setup the intent to be launched
         Intent shortcutIntent = new Intent(getActivity()
                 .getApplicationContext(), DeparturesActivity.class);

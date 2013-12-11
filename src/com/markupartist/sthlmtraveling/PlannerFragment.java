@@ -32,14 +32,11 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Color;
-import android.location.Address;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.preference.PreferenceManager;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.CursorLoader;
@@ -85,8 +82,7 @@ import com.markupartist.sthlmtraveling.provider.TransportMode;
 import com.markupartist.sthlmtraveling.provider.planner.JourneyQuery;
 import com.markupartist.sthlmtraveling.provider.planner.Planner;
 import com.markupartist.sthlmtraveling.provider.planner.Planner.Location;
-import com.markupartist.sthlmtraveling.provider.planner.Stop;
-import com.markupartist.sthlmtraveling.utils.LocationUtils;
+import com.markupartist.sthlmtraveling.provider.site.Site;
 
 public class PlannerFragment extends BaseListFragment implements
         OnCheckedChangeListener {
@@ -97,9 +93,9 @@ public class PlannerFragment extends BaseListFragment implements
     private AutoCompleteTextView mStartPointAutoComplete;
     private AutoCompleteTextView mEndPointAutoComplete;
     private AutoCompleteTextView mViaPointAutoComplete;
-    private Stop mStartPoint = new Stop();
-    private Stop mEndPoint = new Stop();
-    private Stop mViaPoint = new Stop();
+    private Site mStartPoint = new Site();
+    private Site mEndPoint = new Site();
+    private Site mViaPoint = new Site();
     private HistoryDbAdapter mHistoryDbAdapter;
     private boolean mCreateShortcut;
     private Time mTime;
@@ -184,14 +180,14 @@ public class PlannerFragment extends BaseListFragment implements
         getListView().addHeaderView(historyView);
 
         if (!mStartPoint.hasName()) {
-            mStartPoint.setName(Stop.TYPE_MY_LOCATION);
+            mStartPoint.setName(Site.TYPE_MY_LOCATION);
         }
         mStartPointAutoComplete = createAutoCompleteTextView(R.id.from,
                 R.id.from_progress, mStartPoint);
         mEndPointAutoComplete = createAutoCompleteTextView(R.id.to,
                 R.id.to_progress, mEndPoint);
         mViaPointAutoComplete = createAutoCompleteTextView(R.id.via,
-                R.id.via_progress, mViaPoint, false);
+                R.id.via_progress, mViaPoint, true);
 
         try {
             mHistoryDbAdapter = new HistoryDbAdapter(getActivity()).open();
@@ -325,24 +321,27 @@ public class PlannerFragment extends BaseListFragment implements
     	super.onCreateOptionsMenu(menu, inflater);
     }
 
-    private Stop buildStop(Stop stop, AutoCompleteTextView auTextView) {
-        if (stop.hasName()
-                && stop.getName().equals(auTextView.getText().toString())) {
-            return stop;
-        } else if (stop.isMyLocation()
+    private Site buildStop(Site site, AutoCompleteTextView auTextView) {
+        if (site.hasName()
+                && site.getName().equals(auTextView.getText().toString())) {
+            return site;
+        } else if (site.isMyLocation()
                 && auTextView.getText().toString()
                         .equals(getString(R.string.my_location))) {
             // Check for my location.
-            return stop;
+            return site;
         } else if (auTextView.getText().toString()
                 .equals(getString(R.string.point_on_map))) {
             // Check for point-on-map.
-            return stop;
+            return site;
         }
 
-        stop.setName(auTextView.getText().toString());
-        stop.setLocation(null);
-        return stop;
+        Log.d(TAG, "Error, return empty Site.");
+        // TODO: Should this be an error?
+        //site.setName(auTextView.getText().toString());
+        //site.setLocation(null);
+
+        return new Site();
     }
 
     @Override
@@ -355,13 +354,13 @@ public class PlannerFragment extends BaseListFragment implements
     }
 
     private void restoreState(Bundle state) {
-        mStartPoint = new Stop();
-        mEndPoint = new Stop();
-        mViaPoint = new Stop();
+        mStartPoint = new Site();
+        mEndPoint = new Site();
+        mViaPoint = new Site();
         if (state != null) {
-            Stop startPoint = state.getParcelable("startPoint");
-            Stop endPoint = state.getParcelable("endPoint");
-            Stop viaPoint = state.getParcelable("viaPoint");
+            Site startPoint = state.getParcelable("startPoint");
+            Site endPoint = state.getParcelable("endPoint");
+            Site viaPoint = state.getParcelable("viaPoint");
             if (startPoint != null) mStartPoint = startPoint;
             if (endPoint != null) mEndPoint = endPoint;
             if (viaPoint != null) mViaPoint = viaPoint;
@@ -369,15 +368,9 @@ public class PlannerFragment extends BaseListFragment implements
     }
 
     private AutoCompleteTextView createAutoCompleteTextView(
-            int autoCompleteResId, int progressResId, final Stop stop) {
-        SharedPreferences sharedPreferences = PreferenceManager
-                .getDefaultSharedPreferences(getActivity()
-                        .getApplicationContext());
-        boolean searchAddresses = sharedPreferences.getBoolean(
-                "search_address_enabled", true);
-
+            int autoCompleteResId, int progressResId, final Site site) {
         return createAutoCompleteTextView(autoCompleteResId, progressResId,
-                stop, searchAddresses);
+                site, false);
     }
 
     /**
@@ -394,7 +387,7 @@ public class PlannerFragment extends BaseListFragment implements
      * @return
      */
     private AutoCompleteTextView createAutoCompleteTextView(
-            int autoCompleteResId, int progressResId, final Stop stop,
+            int autoCompleteResId, int progressResId, final Site site,
             boolean includeAddresses) {
         // TODO: Wrap the auto complete view in a custom view...
         final AutoCompleteTextView autoCompleteTextView = (AutoCompleteTextView)
@@ -409,10 +402,10 @@ public class PlannerFragment extends BaseListFragment implements
                 getText(R.string.my_location), autoCompleteTextView));
         autoCompleteTextView.addTextChangedListener(new ReservedNameTextWatcher(
                 getText(R.string.point_on_map), autoCompleteTextView));
-        autoCompleteTextView.addTextChangedListener(new UpdateStopTextWatcher(stop));
+        autoCompleteTextView.addTextChangedListener(new UpdateStopTextWatcher(site));
 
-        String name = stop.getName();
-        if (stop.isMyLocation()) {
+        String name = site.getName();
+        if (site.isMyLocation()) {
             name = getString(R.string.my_location);
         }
         autoCompleteTextView.setText(name);
@@ -436,18 +429,22 @@ public class PlannerFragment extends BaseListFragment implements
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                     int position, long id) {
-                Object value = stopAdapter.getValue(position);
+                Site v = stopAdapter.getValue(position);
+                site.fromSite(v);
+                /*
                 if (value instanceof String) {
-                    stop.setLocation(null);
-                    stop.setName((String) value);
+                    site.setLocation(null);
+                    site.setName((String) value);
                 } else if (value instanceof Address) {
                     Address address = (Address) value;
 
-                    stop.setLocation((int) (address.getLatitude() * 1E6),
+                    site.setLocation((int) (address.getLatitude() * 1E6),
                             (int) (address.getLongitude() * 1E6));
                     String addressLine = LocationUtils.getAddressLine(address);
                     stop.setName(addressLine);
                 }
+                */
+
             }
         });
 
@@ -501,22 +498,18 @@ public class PlannerFragment extends BaseListFragment implements
      * @param time
      *            the departure time or null to use current time
      */
-    private void onSearchRoutes(Stop startPoint, Stop endPoint, Stop viaPoint,
+    private void onSearchRoutes(Site startPoint, Site endPoint, Site viaPoint,
             Time time) {
         // TODO: We should not handle point-on-map this way. But for now we just
         // want it to work.
-        if (!mStartPointAutoComplete.getText().toString()
-                .equals(getString(R.string.point_on_map)))
-            mHistoryDbAdapter.create(
-                    HistoryDbAdapter.TYPE_JOURNEY_PLANNER_SITE, startPoint);
-        if (!mEndPointAutoComplete.getText().toString()
-                .equals(getString(R.string.point_on_map)))
-            mHistoryDbAdapter.create(
-                    HistoryDbAdapter.TYPE_JOURNEY_PLANNER_SITE, endPoint);
-
+        if (!mStartPointAutoComplete.getText().toString().equals(getString(R.string.point_on_map))) {
+            mHistoryDbAdapter.create(HistoryDbAdapter.TYPE_JOURNEY_PLANNER_SITE, startPoint);
+        }
+        if (!mEndPointAutoComplete.getText().toString().equals(getString(R.string.point_on_map))) {
+            mHistoryDbAdapter.create(HistoryDbAdapter.TYPE_JOURNEY_PLANNER_SITE, endPoint);
+        }
         if (!TextUtils.isEmpty(mViaPointAutoComplete.getText().toString())) {
-            mHistoryDbAdapter.create(
-                    HistoryDbAdapter.TYPE_JOURNEY_PLANNER_SITE, endPoint);
+            mHistoryDbAdapter.create(HistoryDbAdapter.TYPE_JOURNEY_PLANNER_SITE, endPoint);
         }
 
         boolean alternativeStops = false;
@@ -537,11 +530,18 @@ public class PlannerFragment extends BaseListFragment implements
             time = null;
         }
 
+        Log.i(TAG, "START POINT: " + startPoint.toString());
+        Log.i(TAG, "END POINT: " + endPoint.toString());
+
         JourneyQuery journeyQuery = new JourneyQuery.Builder()
-                .origin(startPoint).destination(endPoint).via(viaPoint)
-                .isTimeDeparture(isTimeDeparture).time(time)
+                .origin(startPoint)
+                .destination(endPoint)
+                .via(viaPoint)
+                .isTimeDeparture(isTimeDeparture)
+                .time(time)
                 .transportModes(getSelectedTransportModes())
-                .alternativeStops(alternativeStops).create();
+                .alternativeStops(alternativeStops)
+                .create();
 
         Intent routesIntent = new Intent(getActivity(), RoutesActivity.class);
         routesIntent.putExtra(RoutesActivity.EXTRA_JOURNEY_QUERY, journeyQuery);
@@ -609,7 +609,7 @@ public class PlannerFragment extends BaseListFragment implements
      * @param endPoint
      *            the end point
      */
-    protected void onCreateShortCut(Stop startPoint, Stop endPoint, String name) {
+    protected void onCreateShortCut(Site startPoint, Site endPoint, String name) {
         Uri routesUri = RoutesActivity.createRoutesUri(startPoint, endPoint,
                 null, true);
         Intent shortcutIntent = new Intent(Intent.ACTION_VIEW, routesUri,
@@ -654,7 +654,7 @@ public class PlannerFragment extends BaseListFragment implements
         ft.commit();
     }
 
-    private static class PlannerDialogFragment extends DialogFragment {
+    public static class PlannerDialogFragment extends DialogFragment {
 
         private static Dialog mDialog;
 
@@ -676,7 +676,8 @@ public class PlannerFragment extends BaseListFragment implements
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .setTitle(getText(R.string.attention_label))
                 .setMessage(getText(R.string.reinstall_app_message))
-                .setPositiveButton(android.R.string.ok, null).create();
+                .setPositiveButton(android.R.string.ok, null)
+                .create();
     }
 
     private Dialog createDialogShortcutName() {
@@ -749,16 +750,14 @@ public class PlannerFragment extends BaseListFragment implements
                             public void onClick(DialogInterface dialog,
                                     int which) {
                                 final Intent emailIntent = new Intent(
-                                        Intent.ACTION_SEND);
+                                    Intent.ACTION_SEND);
                                 emailIntent.setType("plain/text");
-                                emailIntent
-                                        .putExtra(
-                                                android.content.Intent.EXTRA_EMAIL,
-                                                new String[] { getString(R.string.send_feedback_email_emailaddress) });
-                                emailIntent
-                                        .putExtra(
-                                                android.content.Intent.EXTRA_SUBJECT,
-                                                getText(R.string.send_feedback_email_title));
+                                emailIntent.putExtra(
+                                    android.content.Intent.EXTRA_EMAIL,
+                                    new String[] { getString(R.string.send_feedback_email_emailaddress) });
+                                emailIntent.putExtra(
+                                    android.content.Intent.EXTRA_SUBJECT,
+                                    getText(R.string.send_feedback_email_title));
                                 startActivity(Intent.createChooser(emailIntent,
                                         getText(R.string.send_email)));
                             }
@@ -772,7 +771,7 @@ public class PlannerFragment extends BaseListFragment implements
         final Cursor historyViaCursor = mHistoryDbAdapter.fetchLatest();
         getActivity().startManagingCursor(historyViaCursor);
         final SelectPointAdapter viaPointAdapter = new SelectPointAdapter(
-                getActivity(), historyViaCursor, true);
+                getActivity(), historyViaCursor, true, true);
         getActivity().stopManagingCursor(historyViaCursor);
         viaPointDialogBuilder.setAdapter(viaPointAdapter,
                 new DialogInterface.OnClickListener() {
@@ -780,9 +779,8 @@ public class PlannerFragment extends BaseListFragment implements
                     public void onClick(DialogInterface dialog, int which) {
                         switch (which) {
                         default:
-                            Stop viaPoint = (Stop) viaPointAdapter
-                                    .getItem(which);
-                            mViaPoint = new Stop(viaPoint);
+                            Site viaPoint = (Site) viaPointAdapter.getItem(which);
+                            mViaPoint = viaPoint;
                             mViaPointAutoComplete.setText(mViaPoint.getName());
                             mViaPointAutoComplete.clearFocus();
                         }
@@ -799,7 +797,7 @@ public class PlannerFragment extends BaseListFragment implements
         final Cursor historyDestinationCursor = mHistoryDbAdapter.fetchLatest();
         getActivity().startManagingCursor(historyDestinationCursor);
         final SelectPointAdapter endPointAdapter = new SelectPointAdapter(
-                getActivity(), historyDestinationCursor, false);
+                getActivity(), historyDestinationCursor, false, false);
         getActivity().stopManagingCursor(historyDestinationCursor);
         endPointDialogBuilder.setAdapter(endPointAdapter,
                 new DialogInterface.OnClickListener() {
@@ -807,25 +805,21 @@ public class PlannerFragment extends BaseListFragment implements
                     public void onClick(DialogInterface dialog, int which) {
                         switch (which) {
                         case 0:
-                            mEndPoint.setName(Stop.TYPE_MY_LOCATION);
-                            mEndPointAutoComplete
-                                    .setText(getText(R.string.my_location));
+                            mEndPoint.setName(Site.TYPE_MY_LOCATION);
+                            mEndPointAutoComplete.setText(getText(R.string.my_location));
                             mEndPointAutoComplete.clearFocus();
                             break;
                         case 1:
-                            Intent i = new Intent(getActivity(),
-                                    PointOnMapActivity.class);
+                            Intent i = new Intent(getActivity(), PointOnMapActivity.class);
                             i.putExtra(PointOnMapActivity.EXTRA_STOP, mEndPoint);
-                            i.putExtra(
-                                    PointOnMapActivity.EXTRA_HELP_TEXT,
+                            i.putExtra(PointOnMapActivity.EXTRA_HELP_TEXT,
                                    getString(R.string.tap_your_end_point_on_map));
                             startActivityForResult(i,
                                     REQUEST_CODE_POINT_ON_MAP_END);
                             break;
                         default:
-                            Stop endPoint = (Stop) endPointAdapter
-                                    .getItem(which);
-                            mEndPoint = new Stop(endPoint);
+                            Site endPoint = (Site) endPointAdapter.getItem(which);
+                            mEndPoint = new Site(endPoint);
                             mEndPointAutoComplete.setText(mEndPoint.getName());
                             mEndPointAutoComplete.clearFocus();
                         }
@@ -843,7 +837,7 @@ public class PlannerFragment extends BaseListFragment implements
         final Cursor historyOriginCursor = mHistoryDbAdapter.fetchLatest();
         getActivity().startManagingCursor(historyOriginCursor);
         final SelectPointAdapter startPointAdapter = new SelectPointAdapter(
-                getActivity(), historyOriginCursor, false);
+                getActivity(), historyOriginCursor, false, false);
         getActivity().stopManagingCursor(historyOriginCursor);
         startPointDialogBuilder.setAdapter(startPointAdapter,
                 new DialogInterface.OnClickListener() {
@@ -851,28 +845,22 @@ public class PlannerFragment extends BaseListFragment implements
                     public void onClick(DialogInterface dialog, int which) {
                         switch (which) {
                         case 0:
-                            mStartPoint.setName(Stop.TYPE_MY_LOCATION);
-                            mStartPointAutoComplete
-                                    .setText(getText(R.string.my_location));
+                            mStartPoint.setName(Site.TYPE_MY_LOCATION);
+                            mStartPointAutoComplete.setText(getText(R.string.my_location));
                             mStartPointAutoComplete.clearFocus();
                             break;
                         case 1:
-                            Intent i = new Intent(getActivity(),
-                                    PointOnMapActivity.class);
-                            i.putExtra(PointOnMapActivity.EXTRA_STOP,
-                                    mStartPoint);
-                            i.putExtra(
-                                    PointOnMapActivity.EXTRA_HELP_TEXT,
+                            Intent i = new Intent(getActivity(), PointOnMapActivity.class);
+                            i.putExtra(PointOnMapActivity.EXTRA_STOP, mStartPoint);
+                            i.putExtra(PointOnMapActivity.EXTRA_HELP_TEXT,
                                     getString(R.string.tap_your_start_point_on_map));
                             startActivityForResult(i,
                                     REQUEST_CODE_POINT_ON_MAP_START);
                             break;
                         default:
-                            Stop startPoint = (Stop) startPointAdapter
-                                    .getItem(which);
-                            mStartPoint = new Stop(startPoint);
-                            mStartPointAutoComplete.setText(mStartPoint
-                                    .getName());
+                            Site startPoint = (Site) startPointAdapter.getItem(which);
+                            mStartPoint = new Site(startPoint);
+                            mStartPointAutoComplete.setText(mStartPoint.getName());
                             mStartPointAutoComplete.clearFocus();
                         }
                     }
@@ -924,7 +912,7 @@ public class PlannerFragment extends BaseListFragment implements
                         // onCreateShortCut(mStartPoint, mEndPoint);
                     } else {
                         onSearchRoutes(mStartPoint, mEndPoint, mViaPoint, mTime);
-                    }            
+                    }
                 }
             }
             break;
@@ -932,8 +920,8 @@ public class PlannerFragment extends BaseListFragment implements
             showDialog(createDialogAbout());
             return true;
         case R.id.actionbar_item_reverse:
-            Stop tmpStartPoint = new Stop(mEndPoint);
-            Stop tmpEndPoint = new Stop(mStartPoint);
+            Site tmpStartPoint = new Site(mEndPoint);
+            Site tmpEndPoint = new Site(mStartPoint);
 
             mStartPoint = tmpStartPoint;
             mEndPoint = tmpEndPoint;
@@ -1000,25 +988,25 @@ public class PlannerFragment extends BaseListFragment implements
             mChangeTimeLayout.setVisibility(View.VISIBLE);
         } else if (!isChecked
                 && buttonView.getId() == R.id.planner_check_more_choices) {
-            mViaPoint = new Stop();
+            mViaPoint = new Site();
             mViaPointAutoComplete.setText("");
             mChangeTimeLayout.setVisibility(View.GONE);
         }
     }
 
     private class UpdateStopTextWatcher implements TextWatcher {
-        private final Stop mStop;
+        private final Site mSite;
 
-        public UpdateStopTextWatcher(Stop stop) {
-            mStop = stop;
+        public UpdateStopTextWatcher(Site site) {
+            mSite = site;
         }
 
         @Override
         public void afterTextChanged(Editable s) {
             if (!getString(R.string.my_location).equals(s.toString())
                     || getString(R.string.point_on_map).equals(s.toString())) {
-                mStop.setName(s.toString());
-                mStop.setLocation(null);
+                mSite.setName(s.toString());
+                mSite.setLocation(null);
             }
         }
 
@@ -1095,7 +1083,7 @@ public class PlannerFragment extends BaseListFragment implements
         };
 
         public SelectPointAdapter(Context context, Cursor historyCursor,
-                boolean onlyHistory) {
+                boolean onlyHistory, boolean isVia) {
             if (!onlyHistory) {
                 ArrayList<HashMap<String, String>> items = new ArrayList<HashMap<String, String>>();
 
@@ -1115,25 +1103,30 @@ public class PlannerFragment extends BaseListFragment implements
                 addAdapter(0, itemsAdapter);
             }
 
-            ArrayList<Stop> historyList = new ArrayList<Stop>();
+            ArrayList<Site> historyList = new ArrayList<Site>();
             historyCursor.moveToFirst();
             for (int i = 0; i < historyCursor.getCount(); i++) {
-                Stop stop = new Stop();
+                Site site = new Site();
 
-                stop.setName(historyCursor
-                        .getString(HistoryDbAdapter.INDEX_NAME));
-                stop.setLocation(
+                site.setName(historyCursor.getString(HistoryDbAdapter.INDEX_NAME));
+                site.setLocation(
                         historyCursor.getInt(HistoryDbAdapter.INDEX_LATITUDE),
                         historyCursor.getInt(HistoryDbAdapter.INDEX_LONGITUDE));
-                stop.setSiteId(historyCursor
-                        .getInt(HistoryDbAdapter.INDEX_SITE_ID));
+                site.setId(historyCursor.getInt(HistoryDbAdapter.INDEX_SITE_ID));
 
-                historyList.add(stop);
+                if (isVia) {
+                    if (!site.hasLocation()) {
+                        historyList.add(site);
+                    }
+                } else {
+                    historyList.add(site);
+                }
                 historyCursor.moveToNext();
             }
             historyCursor.close();
-            ArrayAdapter<Stop> historyAdapter = new ArrayAdapter<Stop>(context,
-                    android.R.layout.simple_list_item_1, historyList);
+            ArrayAdapter<Site> historyAdapter =
+                    new ArrayAdapter<Site>(context,
+                            android.R.layout.simple_list_item_1, historyList);
 
             mHistoryWrapperAdapter.addSection(0,
                     getString(R.string.history_label), historyAdapter);

@@ -27,6 +27,7 @@ import android.os.Parcelable;
 import android.text.format.Time;
 
 import com.markupartist.sthlmtraveling.provider.planner.Planner.Location;
+import com.markupartist.sthlmtraveling.provider.site.Site;
 
 public class JourneyQuery implements Parcelable {
     public Location origin;
@@ -189,8 +190,6 @@ public class JourneyQuery implements Parcelable {
                 + transportModes + ", via=" + via + "]";
     }
 
-
-
     public static class Builder {
         private Planner.Location mOrigin;
         private Planner.Location mDestination;
@@ -204,7 +203,7 @@ public class JourneyQuery implements Parcelable {
             
         }
 
-        public Builder origin(Stop origin) {
+        public Builder origin(Site origin) {
             mOrigin = buildLocationFromStop(origin);
             return this;
         }
@@ -226,7 +225,7 @@ public class JourneyQuery implements Parcelable {
             return this;
         }
         
-        public Builder destination(Stop destination) {
+        public Builder destination(Site destination) {
             mDestination = buildLocationFromStop(destination);
             return this;
         }
@@ -248,7 +247,7 @@ public class JourneyQuery implements Parcelable {
             return this;
         }
 
-        public Builder via(Stop via) {
+        public Builder via(Site via) {
             if (via != null && via.hasName()) {
                 mVia = buildLocationFromStop(via);
             }
@@ -311,15 +310,15 @@ public class JourneyQuery implements Parcelable {
             return journeyQuery;
         }
 
-        private Planner.Location buildLocationFromStop(Stop stop) {
+        private Planner.Location buildLocationFromStop(Site site) {
             Planner.Location location = new Planner.Location();
-            location.id = stop.getSiteId();
-            location.name = stop.getName();
-            if (stop.getLocation() != null) {
+            location.id = site.getId();
+            location.name = site.getName();
+            if (site.getLocation() != null) {
                 location.latitude =
-                    (int) (stop.getLocation().getLatitude() * 1E6);
+                    (int) (site.getLocation().getLatitude() * 1E6);
                 location.longitude =
-                    (int) (stop.getLocation().getLongitude() * 1E6);
+                    (int) (site.getLocation().getLongitude() * 1E6);
             }    
             return location;
         }

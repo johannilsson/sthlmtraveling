@@ -72,9 +72,7 @@ import com.markupartist.sthlmtraveling.provider.planner.Planner.BadResponse;
 import com.markupartist.sthlmtraveling.provider.planner.Planner.Response;
 import com.markupartist.sthlmtraveling.provider.planner.Planner.SubTrip;
 import com.markupartist.sthlmtraveling.provider.planner.Planner.Trip2;
-import com.markupartist.sthlmtraveling.provider.planner.Route;
-import com.markupartist.sthlmtraveling.provider.planner.Stop;
-import com.markupartist.sthlmtraveling.provider.planner.Trip;
+import com.markupartist.sthlmtraveling.provider.site.Site;
 import com.markupartist.sthlmtraveling.utils.AdRequestFactory;
 
 /**
@@ -736,9 +734,10 @@ public class RoutesActivity extends BaseListActivity
         }
     }
 
+    /*
     public void onSiteAlternatives(Trip trip) {
         // TODO: Handle alternatives...
-        /*
+
         if (trip.getStartPoint().getSiteId() == 0
                 && trip.getStartPointAlternatives().size() > 1) {
             Log.d(TAG, "show start alternatives...");
@@ -751,8 +750,9 @@ public class RoutesActivity extends BaseListActivity
             mSearchRoutesTask = new SearchRoutesTask();
             mSearchRoutesTask.execute(mTrip);
         }
-        */
+
     }
+    */
 
     @Override
     public void onMyLocationFound(Location location) {
@@ -765,7 +765,7 @@ public class RoutesActivity extends BaseListActivity
         Planner.Location startPoint = mJourneyQuery.origin;
         Planner.Location endPoint = mJourneyQuery.destination;
 
-        Stop tmpStop = new Stop();
+        Site tmpStop = new Site();
         tmpStop.setLocation(location);
 
         if (startPoint.isMyLocation()) {
@@ -845,7 +845,7 @@ public class RoutesActivity extends BaseListActivity
                 finish();
                 return;
             } else {
-                Stop startPoint = data.getParcelableExtra(PointOnMapActivity.EXTRA_STOP);
+                Site startPoint = data.getParcelableExtra(PointOnMapActivity.EXTRA_STOP);
                 Log.d(TAG, "Got Stop " + startPoint);
 
                 mJourneyQuery.origin.name = Planner.Location.TYPE_MY_LOCATION;
@@ -866,7 +866,7 @@ public class RoutesActivity extends BaseListActivity
                 finish();
                 return;
             } else {
-                Stop endPoint = data.getParcelableExtra(PointOnMapActivity.EXTRA_STOP);
+                Site endPoint = data.getParcelableExtra(PointOnMapActivity.EXTRA_STOP);
                 Log.d(TAG, "Got Stop " + endPoint);
 
                 mJourneyQuery.destination.name = Planner.Location.TYPE_MY_LOCATION;
@@ -1024,7 +1024,7 @@ public class RoutesActivity extends BaseListActivity
      * @param isTimeDeparture true if the time is departure time, false if arrival
      * @return the data uri
      */
-    public static Uri createRoutesUri(Stop startPoint, Stop endPoint, Time time,
+    public static Uri createRoutesUri(Site startPoint, Site endPoint, Time time,
             boolean isTimeDeparture) {
         Uri routesUri;
 
@@ -1056,8 +1056,8 @@ public class RoutesActivity extends BaseListActivity
                             + "&end_point_lng=%s"
                             + "&time=%s"
                             + "&isTimeDeparture=%s",
-                            Uri.encode(startPoint.getName()), startLat, startLng,
-                            Uri.encode(endPoint.getName()), endLat, endLng, 
+                            Uri.encode(startPoint.getNameOrId()), startLat, startLng,
+                            Uri.encode(endPoint.getNameOrId()), endLat, endLng, 
                             timeString, isTimeDeparture));
 
         return routesUri;
@@ -1155,8 +1155,7 @@ public class RoutesActivity extends BaseListActivity
     }
 
     private class RouteAdapterView extends LinearLayout {
-    	private boolean hasTime = false;
-    	// TODO: Replace this hack with a proper layout defined in XML.
+        // TODO: Replace this hack with a proper layout defined in XML.
         public RouteAdapterView(Context context, Trip2 trip) {
             super(context);
             this.setOrientation(VERTICAL);
@@ -1259,6 +1258,7 @@ public class RoutesActivity extends BaseListActivity
      * Share the list of {@link Route}S with others.
      * @param routes the routes
      */
+    /*
     public void share(ArrayList<Route> routes) {
         if (routes == null) {
             return; // TODO: Fire a toast with some message.
@@ -1282,6 +1282,7 @@ public class RoutesActivity extends BaseListActivity
 
         startActivity(Intent.createChooser(intent, getText(R.string.share_label)));
     }
+    */
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
@@ -1291,7 +1292,7 @@ public class RoutesActivity extends BaseListActivity
     }
 
     private void onRotationChange(Configuration newConfig) {
-        if (newConfig.orientation == newConfig.ORIENTATION_LANDSCAPE) {
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             if (mAdView != null) {
                 mAdView.setVisibility(View.GONE);
             }

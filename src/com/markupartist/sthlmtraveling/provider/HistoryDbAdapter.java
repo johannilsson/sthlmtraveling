@@ -20,7 +20,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import com.markupartist.sthlmtraveling.provider.planner.Stop;
+import com.markupartist.sthlmtraveling.provider.site.Site;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -133,10 +133,12 @@ public class HistoryDbAdapter {
      * @return the row id associated with the created entry or -1 of an error
      * occurred
      */
-    public long create(int type, Stop stop) {
-        if (stop.isMyLocation() || !stop.looksValid()) {
+    public long create(int type, Site site) {
+        if (site.isMyLocation() || !site.looksValid()) {
             return -1;
         }
+
+        Log.d(TAG, "Storing: " + site);
 
         // Create a sql date time format
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -144,20 +146,18 @@ public class HistoryDbAdapter {
 
         ContentValues initialValues = new ContentValues();
         initialValues.put(KEY_TYPE, type);
-        initialValues.put(KEY_NAME, stop.getName());
-        if (stop.getLocation() != null) {
-            initialValues.put(KEY_LATITUDE,
-                    (int)(stop.getLocation().getLatitude() * 1E6));
-            initialValues.put(KEY_LONGITUDE,
-                    (int)(stop.getLocation().getLongitude() * 1E6));
+        initialValues.put(KEY_NAME, site.getName());
+        if (site.hasLocation()) {
+            initialValues.put(KEY_LATITUDE, (int)(site.getLocation().getLatitude() * 1E6));
+            initialValues.put(KEY_LONGITUDE, (int)(site.getLocation().getLongitude() * 1E6));
         }
-        if (stop.getSiteId() > 0) {
-            initialValues.put(KEY_SITE_ID, stop.getSiteId());
+        if (site.getId() > 0) {
+            initialValues.put(KEY_SITE_ID, site.getId());
         }
 
         initialValues.put(KEY_CREATED, dateFormat.format(date));
 
-        Cursor rowCursor = fetchByName(type, stop.getName());
+        Cursor rowCursor = fetchByName(type, site.getName());
         if (rowCursor.getCount() >= 1) {
             initialValues.put(KEY_ROWID, 
                     rowCursor.getInt(rowCursor.getColumnIndex(KEY_ROWID)));
@@ -213,7 +213,7 @@ public class HistoryDbAdapter {
                     KEY_LATITUDE, KEY_LONGITUDE, KEY_SITE_ID},
                     null, null, null, null,
                     KEY_CREATED + " DESC", "10");
-        return mCursor;        
+        return mCursor;
     }
 
     

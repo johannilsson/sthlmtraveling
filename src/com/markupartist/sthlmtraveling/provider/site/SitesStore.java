@@ -40,8 +40,14 @@ public class SitesStore {
     }
 
     public ArrayList<Site> getSiteV2(String name) throws IOException {
+        return getSiteV2(name, true);
+    }
+
+    public ArrayList<Site> getSiteV2(String name, boolean onlyStations) throws IOException {
+        String onlyStationsParam = onlyStations ? "true" : "false";
         final HttpGet get = new HttpGet(apiEndpoint2() + "v1/site/"
-                + "?q=" + URLEncoder.encode(name));
+                + "?q=" + URLEncoder.encode(name)
+                + "&onlyStations=" + onlyStationsParam);
         get.addHeader("X-STHLMTraveling-API-Key", get(KEY));
         HttpEntity entity = null;
 

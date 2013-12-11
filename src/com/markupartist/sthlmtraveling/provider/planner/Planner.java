@@ -282,15 +282,19 @@ public class Planner {
             b.appendQueryParameter("ident", query.ident);
             b.appendQueryParameter("seq", query.seqnr);
         } else {
-            b.appendQueryParameter("origin", query.origin.name);
             if (query.origin.hasLocation()) {
+                b.appendQueryParameter("origin", query.origin.name);
                 b.appendQueryParameter("origin_latitude", String.valueOf(query.origin.latitude / 1E6));
                 b.appendQueryParameter("origin_longitude", String.valueOf(query.origin.longitude / 1E6));
+            } else {
+                b.appendQueryParameter("origin", String.valueOf(query.origin.getNameOrId()));
             }
-            b.appendQueryParameter("destination", query.destination.name);
             if (query.destination.hasLocation()) {
+                b.appendQueryParameter("destination", query.destination.name);
                 b.appendQueryParameter("destination_latitude", String.valueOf(query.destination.latitude / 1E6));
                 b.appendQueryParameter("destination_longitude", String.valueOf(query.destination.longitude / 1E6));
+            } else {
+                b.appendQueryParameter("destination", String.valueOf(query.destination.getNameOrId()));
             }
             for (String transportMode : query.transportModes) {
                 b.appendQueryParameter("transport", transportMode);
@@ -830,7 +834,7 @@ public class Planner {
             latitude = location.latitude;
             longitude = location.longitude;
         }
-        
+
         public Location(Parcel parcel) {
             id = parcel.readInt();
             name = parcel.readString();
@@ -846,9 +850,18 @@ public class Planner {
             return latitude != 0 && longitude != 0;
         }
 
+        public String getNameOrId() {
+            if (hasLocation() || id == 0) {
+                return name;
+            }
+            return String.valueOf(id);
+        }
+
         public static Location fromJson(JSONObject json) throws JSONException {
             Location l = new Location();
-            //l.id = json.getInt("id");
+            if (json.has("id")) {
+                l.id = json.getInt("id");
+            }
             l.name = json.getString("name");
             l.longitude = (int) (json.getDouble("longitude") * 1E6);
             l.latitude = (int) (json.getDouble("latitude") * 1E6);
@@ -867,7 +880,6 @@ public class Planner {
 
         @Override
         public int describeContents() {
-            // TODO Auto-generated method stub
             return 0;
         }
 
