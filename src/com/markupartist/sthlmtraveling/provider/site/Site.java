@@ -72,7 +72,8 @@ public class Site implements Parcelable {
             if (name.equals(TYPE_MY_LOCATION)) {
                 mName = name;
             } else {
-                mName = name.trim().replaceAll(NAME_RE, "");
+                //mName = name.trim().replaceAll(NAME_RE, "");
+                mName = name;
             }
         }
     }
@@ -90,14 +91,15 @@ public class Site implements Parcelable {
     }
 
     public boolean isAddress() {
+        if (mType == null) {
+            return false;
+        }
         return mType.equals("A");
     }
 
     public boolean hasName() {
         return !TextUtils.isEmpty(mName);
     }
-
-
 
     @Override
     public String toString() {
@@ -198,4 +200,10 @@ public class Site implements Parcelable {
         mLocation.setLatitude(lat / 1E6);
         mLocation.setLongitude(lng / 1E6);
     }
+
+    public String toDump() {
+        return "Site [mId=" + mId + ", mName=" + mName + ", mType=" + mType
+                + ", mLocation=" + mLocation + "]";
+    }
+
 }

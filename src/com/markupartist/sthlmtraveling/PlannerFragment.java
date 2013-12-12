@@ -336,7 +336,8 @@ public class PlannerFragment extends BaseListFragment implements
             return site;
         }
 
-        Log.d(TAG, "Error, return empty Site.");
+        Log.d(TAG, "AutoComplete text was: " + auTextView.getText().toString());
+        Log.d(TAG, "Error, return empty Site, site was " + site.toDump());
         // TODO: Should this be an error?
         //site.setName(auTextView.getText().toString());
         //site.setLocation(null);
@@ -430,7 +431,9 @@ public class PlannerFragment extends BaseListFragment implements
             public void onItemClick(AdapterView<?> parent, View view,
                     int position, long id) {
                 Site v = stopAdapter.getValue(position);
+                Log.d(TAG, "Selected " + v.toDump());
                 site.fromSite(v);
+                Log.d(TAG, "Site set " + site.toDump());
                 /*
                 if (value instanceof String) {
                     site.setLocation(null);
@@ -819,7 +822,13 @@ public class PlannerFragment extends BaseListFragment implements
                             break;
                         default:
                             Site endPoint = (Site) endPointAdapter.getItem(which);
+                            
+                            Log.d(TAG, "Setting new EndPoint " + endPoint.toDump());
+                            
                             mEndPoint = new Site(endPoint);
+
+                            Log.d(TAG, "New EndPoint " + mEndPoint.toDump());
+
                             mEndPointAutoComplete.setText(mEndPoint.getName());
                             mEndPointAutoComplete.clearFocus();
                         }
@@ -920,16 +929,29 @@ public class PlannerFragment extends BaseListFragment implements
             showDialog(createDialogAbout());
             return true;
         case R.id.actionbar_item_reverse:
+
+            Log.i(TAG, "Before reversed start " + mStartPoint.toDump());
+            Log.i(TAG, "Before reversed end " + mEndPoint.toDump());
+
             Site tmpStartPoint = new Site(mEndPoint);
             Site tmpEndPoint = new Site(mStartPoint);
 
             mStartPoint = tmpStartPoint;
             mEndPoint = tmpEndPoint;
 
-            String startPoint = mStartPointAutoComplete.getText().toString();
-            String endPoint = mEndPointAutoComplete.getText().toString();
-            mStartPointAutoComplete.setText(endPoint);
-            mEndPointAutoComplete.setText(startPoint);
+            Log.i(TAG, "Reversed start " + mStartPoint.toDump());
+            Log.i(TAG, "Reversed end " + mEndPoint.toDump());
+
+            // Seems like we loose the reference during reverse.
+            // Investigate this further.
+            mStartPointAutoComplete = createAutoCompleteTextView(R.id.from,
+                    R.id.from_progress, mStartPoint);
+            mEndPointAutoComplete = createAutoCompleteTextView(R.id.to,
+                    R.id.to_progress, mEndPoint);
+
+            mStartPointAutoComplete.setText(mStartPoint.getName());
+            mEndPointAutoComplete.setText(mEndPoint.getName());
+
             return true;
         case R.id.menu_settings:
             Intent settingsIntent = new Intent().setClass(getActivity(),
