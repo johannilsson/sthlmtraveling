@@ -164,7 +164,7 @@ public class AutoCompleteStopAdapter extends ArrayAdapter<String> implements Fil
 
         if (site.isAddress()) {
             text1.setText(site.getName());
-            text2.setText("Address"/*R.string.address_label*/);
+            text2.setText(R.string.address_label);
         } else {
             text1.setText(site.getName());
             text2.setText(R.string.stop_label);

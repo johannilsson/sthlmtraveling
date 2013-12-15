@@ -88,6 +88,7 @@
     <string name="no_departures">No departures right now.</string>
     <string name="site_name">Location</string>
     <string name="stop_label">Stop</string>
+    <string name="address_label">Address</string>
     <string name="refresh">Refresh</string>
     <string name="show_departures_for_start">Dep. for start</string>
     <string name="metros">Metros</string>
