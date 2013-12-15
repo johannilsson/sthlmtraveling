@@ -38,9 +38,16 @@ public class Site implements Parcelable {
 
     public Site(Parcel parcel) {
         mId = parcel.readInt();
-        mType = parcel.readString();
         mName = parcel.readString();
-        mLocation = parcel.readParcelable(null);
+        mType = parcel.readString();
+        double latitude = parcel.readDouble();
+        double longitude = parcel.readDouble();
+        if (latitude > 0 && longitude > 0) {
+            Location location = new Location("sthlmtraveling");
+            location.setLatitude(latitude);
+            location.setLongitude(longitude);
+            setLocation(location);
+        }
     }
 
     /**
@@ -116,12 +123,18 @@ public class Site implements Parcelable {
         parcel.writeInt(mId);
         parcel.writeString(mName);
         parcel.writeString(mType);
-        parcel.writeParcelable(mLocation, 0);
+        if (this.hasLocation()) {
+            parcel.writeDouble(mLocation.getLatitude());
+            parcel.writeDouble(mLocation.getLongitude());
+        } else {
+            parcel.writeDouble(0);
+            parcel.writeDouble(0);
+        }
     }
 
-    public static final Creator<Site> CREATOR = new Creator<Site>() {
-        public Site createFromParcel(Parcel parcel) {
-            return new Site(parcel);
+    public static final Parcelable.Creator<Site> CREATOR = new Parcelable.Creator<Site>() {
+        public Site createFromParcel(Parcel in) {
+            return new Site(in);
         }
 
         public Site[] newArray(int size) {
