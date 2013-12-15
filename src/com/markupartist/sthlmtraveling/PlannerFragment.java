@@ -335,13 +335,6 @@ public class PlannerFragment extends BaseListFragment implements
             // Check for point-on-map.
             return site;
         }
-
-        Log.d(TAG, "AutoComplete text was: " + auTextView.getText().toString());
-        Log.d(TAG, "Error, return empty Site, site was " + site.toDump());
-        // TODO: Should this be an error?
-        //site.setName(auTextView.getText().toString());
-        //site.setLocation(null);
-
         return new Site();
     }
 
@@ -411,7 +404,7 @@ public class PlannerFragment extends BaseListFragment implements
             name = getString(R.string.my_location);
         }
         autoCompleteTextView.setText(name);
-        
+
         stopAdapter.setFilterListener(new FilterListener() {
             @Override
             public void onPublishFiltering() {
@@ -432,23 +425,7 @@ public class PlannerFragment extends BaseListFragment implements
             public void onItemClick(AdapterView<?> parent, View view,
                     int position, long id) {
                 Site v = stopAdapter.getValue(position);
-                Log.d(TAG, "Selected " + v.toDump());
                 site.fromSite(v);
-                Log.d(TAG, "Site set " + site.toDump());
-                /*
-                if (value instanceof String) {
-                    site.setLocation(null);
-                    site.setName((String) value);
-                } else if (value instanceof Address) {
-                    Address address = (Address) value;
-
-                    site.setLocation((int) (address.getLatitude() * 1E6),
-                            (int) (address.getLongitude() * 1E6));
-                    String addressLine = LocationUtils.getAddressLine(address);
-                    stop.setName(addressLine);
-                }
-                */
-
             }
         });
 
@@ -823,13 +800,7 @@ public class PlannerFragment extends BaseListFragment implements
                             break;
                         default:
                             Site endPoint = (Site) endPointAdapter.getItem(which);
-                            
-                            Log.d(TAG, "Setting new EndPoint " + endPoint.toDump());
-                            
                             mEndPoint = new Site(endPoint);
-
-                            Log.d(TAG, "New EndPoint " + mEndPoint.toDump());
-
                             mEndPointAutoComplete.setText(mEndPoint.getName());
                             mEndPointAutoComplete.clearFocus();
                         }
@@ -893,8 +864,10 @@ public class PlannerFragment extends BaseListFragment implements
         switch (item.getItemId()) {
         case R.id.actionbar_search_route:
             if (TextUtils.isEmpty(mStartPointAutoComplete.getText())) {
+                Log.d(TAG, "Start auto was empty");
                 mStartPointAutoComplete.setError(getText(R.string.empty_value));
             } else if (TextUtils.isEmpty(mEndPointAutoComplete.getText())) {
+                Log.d(TAG, "End auto was empty");
                 mEndPointAutoComplete.setError(getText(R.string.empty_value));
             } else {
                 mStartPoint = buildStop(mStartPoint, mStartPointAutoComplete);
@@ -902,16 +875,19 @@ public class PlannerFragment extends BaseListFragment implements
 
                 boolean looksValid = true;
                 if (!mStartPoint.looksValid()) {
+                    Log.d(TAG, "Start was not valid: " + mStartPoint.toDump());
                     mStartPointAutoComplete.setError(getText(R.string.empty_value));
                     looksValid = false;
                 }
                 if (!mEndPoint.looksValid()) {
+                    Log.d(TAG, "End was not valid: " + mEndPoint.toDump());
                     mEndPointAutoComplete.setError(getText(R.string.empty_value));
                     looksValid = false;
                 }
                 if (!TextUtils.isEmpty(mViaPointAutoComplete.getText())) {
                     mViaPoint = buildStop(mViaPoint, mViaPointAutoComplete);
                     if (!mViaPoint.looksValid()) {
+                        Log.d(TAG, "Via was not valid");
                         mViaPointAutoComplete.setError(getText(R.string.empty_value));
                         looksValid = false;
                     }
