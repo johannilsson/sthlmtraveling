@@ -1027,8 +1027,10 @@ public class PlannerFragment extends BaseListFragment implements
         public void afterTextChanged(Editable s) {
             if (!getString(R.string.my_location).equals(s.toString())
                     || getString(R.string.point_on_map).equals(s.toString())) {
-                mSite.setName(s.toString());
-                mSite.setLocation(null);
+                if (!s.toString().equals(mSite.getName())) {
+                    mSite.setName(s.toString());
+                    mSite.setLocation(null);
+                }
             }
         }
 

@@ -38,7 +38,7 @@
     <string name="attention_label">Attention</string>
     <string name="bad_routes_parameters_message">Start point or end point must not be empty.</string>
     <string name="new_search">Search</string>
-    <string name="empty_value">Missing value</string>
+    <string name="empty_value">Missing or invalid</string>
     <string name="loading">Searching. Please wait...</string>
     <string name="my_location">My location</string>
     <string name="change_date_and_time">Change date &amp; time</string>

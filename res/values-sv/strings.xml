@@ -38,7 +38,7 @@
     <string name="attention_label">Varning</string>
     <string name="bad_routes_parameters_message">Från- eller Till-fältet får inte lämnas blankt.</string>
     <string name="new_search">Sök</string>
-    <string name="empty_value">Värde saknas</string>
+    <string name="empty_value">Saknas eller ogiltigt</string>
     <string name="loading">Söker... Var god dröj</string>
     <string name="my_location">Min position</string>
     <string name="change_date_and_time">Ändra datum &amp; tid</string>
