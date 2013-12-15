@@ -347,11 +347,12 @@ public class PlannerFragment extends BaseListFragment implements
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
         outState.putInt("level", mStackLevel);
         if (mStartPoint != null) outState.putParcelable("startPoint", mStartPoint);
         if (mEndPoint != null) outState.putParcelable("endPoint", mEndPoint);
         if (mViaPoint != null) outState.putParcelable("viaPoint", mViaPoint);
+
+        super.onSaveInstanceState(outState);
     }
 
     private void restoreState(Bundle state) {
@@ -362,9 +363,9 @@ public class PlannerFragment extends BaseListFragment implements
             Site startPoint = state.getParcelable("startPoint");
             Site endPoint = state.getParcelable("endPoint");
             Site viaPoint = state.getParcelable("viaPoint");
-            if (startPoint != null) mStartPoint = startPoint;
-            if (endPoint != null) mEndPoint = endPoint;
-            if (viaPoint != null) mViaPoint = viaPoint;
+            if (startPoint != null) mStartPoint.fromSite(startPoint);
+            if (endPoint != null) mEndPoint.fromSite(endPoint);
+            if (viaPoint != null) mViaPoint.fromSite(viaPoint);
         }
     }
 
