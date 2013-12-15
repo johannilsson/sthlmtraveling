@@ -95,6 +95,7 @@
     <string name="trains">Trains</string>
     <string name="trams">Lokalbanan</string>
     <string name="tram_cars">Tram Cars</string>
+    <string name="boats">Boats</string>
     <string name="departure_metro">Metro</string>
     <string name="departure_bus">Bus</string>
     <string name="departure_train">Train</string>

@@ -143,6 +143,8 @@ public class TrafficStatusFragment extends BaseFragment {
 			return R.string.trams;
 		} else if ("TRC".equals(transport)) {
 			return R.string.tram_cars;
+        } else if ("SHP".equals(transport)) {
+            return R.string.boats;
 		} else {
 			return R.string.buses;
 		}
@@ -157,6 +159,8 @@ public class TrafficStatusFragment extends BaseFragment {
 			return R.drawable.transport_lokalbana;
 		} else if ("TRC".equals(transport)) {
 			return R.drawable.transport_tram_car;
+		} else if ("SHP".equals(transport)) {
+		    return R.drawable.transport_boat;
 		} else {
 			return R.drawable.transport_bus;
 		}

@@ -95,6 +95,7 @@
     <string name="trains">Pendeltåg</string>
     <string name="trams">Lokalbana</string>
     <string name="tram_cars">Spårvagn</string>
+    <string name="boats">Båtar</string>
     <string name="departure_metro">Tunnelb.</string>
     <string name="departure_bus">Buss</string>
     <string name="departure_train">Tåg</string>
