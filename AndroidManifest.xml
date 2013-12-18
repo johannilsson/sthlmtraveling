@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="com.markupartist.sthlmtraveling"
       android:installLocation="auto"
-      android:versionCode="98" android:versionName="2.6.3-RC2"
+      android:versionCode="99" android:versionName="2.6.3-RC3"
       >
     <supports-screens
         android:largeScreens="true"
@@ -53,14 +53,14 @@
         <activity android:name=".PlannerFragmentActivity"
                   android:uiOptions="splitActionBarWhenNarrow"
                   android:label="@string/search_label"
-                  android:configChanges="locale"
+                  android:configChanges="locale|orientation"
                   ></activity>
         <!-- Alias activity used to create shortcuts on Home. The alias is used
              simply to have a different label. -->
         <activity-alias android:name="SearchShortcutActivity"
             android:targetActivity="PlannerFragmentActivity"
             android:label="@string/activity_create_shortcut"
-            android:configChanges="locale"
+            android:configChanges="locale|orientation"
             >
             <intent-filter>
                 <action android:name="android.intent.action.CREATE_SHORTCUT" />
