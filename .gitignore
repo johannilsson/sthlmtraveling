@@ -3,5 +3,6 @@ sthlmtraveling/src/main/java/com/markupartist/sthlmtraveling/provider/ApiConf.ja
 /signing.properties
 build
 /.idea/workspace.xml
+/.idea/tasks.xml
 .gradle
 *.DS_Store
