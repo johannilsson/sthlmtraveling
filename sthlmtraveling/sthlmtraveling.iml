@@ -84,14 +84,11 @@
     </content>
     <orderEntry type="jdk" jdkName="Android SDK" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" exported="" name="hugo-annotations-1.0.1" level="project" />
     <orderEntry type="library" exported="" name="support-v4-13.0.0" level="project" />
     <orderEntry type="module" module-name="ViewPageIndicator" exported="" />
     <orderEntry type="library" exported="" name="ComGoogleAndroidGmsPlayServices4030.aar" level="project" />
     <orderEntry type="library" exported="" name="FlurryAgent" level="project" />
     <orderEntry type="library" exported="" name="ComActionbarsherlockActionbarsherlock440.aar" level="project" />
-    <orderEntry type="library" exported="" name="ComJakewhartonHugoHugoRuntime101.aar" level="project" />
-    <orderEntry type="library" exported="" name="aspectjrt-1.7.4" level="project" />
   </component>
 </module>
 
