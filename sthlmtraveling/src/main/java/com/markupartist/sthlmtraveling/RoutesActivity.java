@@ -61,7 +61,6 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.view.Window;
-import com.google.ads.AdView;
 import com.markupartist.sthlmtraveling.MyLocationManager.MyLocationFoundListener;
 import com.markupartist.sthlmtraveling.SectionedAdapter.Section;
 import com.markupartist.sthlmtraveling.provider.JourneysProvider.Journey.Journeys;
@@ -73,7 +72,6 @@ import com.markupartist.sthlmtraveling.provider.planner.Planner.Response;
 import com.markupartist.sthlmtraveling.provider.planner.Planner.SubTrip;
 import com.markupartist.sthlmtraveling.provider.planner.Planner.Trip2;
 import com.markupartist.sthlmtraveling.provider.site.Site;
-import com.markupartist.sthlmtraveling.utils.AdRequestFactory;
 
 /**
  * Routes activity
@@ -181,8 +179,6 @@ public class RoutesActivity extends BaseListActivity
 
     private ImageButton mFavoriteButton;
 
-    private AdView mAdView;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -207,11 +203,6 @@ public class RoutesActivity extends BaseListActivity
         }
 
         initActionBar();
-        mAdView = (AdView) findViewById(R.id.ad_view);
-        if (AppConfig.ADS_ENABLED) { 
-            mAdView.loadAd(AdRequestFactory.createRequest());
-        }
-        
 
         View headerView = getLayoutInflater().inflate(R.layout.route_header, null);
         mFromView = (TextView) headerView.findViewById(R.id.route_from);
@@ -340,9 +331,7 @@ public class RoutesActivity extends BaseListActivity
 
     /**
      * Search for routes. Will first check if we already have data stored.
-     * @param startPoint the start point
-     * @param endPoint the end point
-     * @param time the time
+     * @param journeyQuery The journey query
      */
     private void initRoutes(JourneyQuery journeyQuery) {
         final Planner.Response savedResponse = (Planner.Response) getLastNonConfigurationInstance();
@@ -423,10 +412,6 @@ public class RoutesActivity extends BaseListActivity
 
     @Override
     protected void onDestroy() {
-        if (mAdView != null) {
-            mAdView.destroy();
-        }
-
         super.onDestroy();
 
         onCancelSearchRoutesTask();
@@ -1292,15 +1277,11 @@ public class RoutesActivity extends BaseListActivity
     }
 
     private void onRotationChange(Configuration newConfig) {
+        /*
         if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            if (mAdView != null) {
-                mAdView.setVisibility(View.GONE);
-            }
         } else {
-            if (mAdView != null) {
-                mAdView.setVisibility(View.VISIBLE);
-            }
-        }        
+        }
+        */
     }
     
     /**

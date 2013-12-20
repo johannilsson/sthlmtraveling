@@ -49,7 +49,6 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.view.Window;
-import com.google.ads.AdView;
 import com.markupartist.sthlmtraveling.provider.PlacesProvider.Place.Places;
 import com.markupartist.sthlmtraveling.provider.TransportMode;
 import com.markupartist.sthlmtraveling.provider.departure.DeparturesStore;
@@ -57,7 +56,6 @@ import com.markupartist.sthlmtraveling.provider.departure.DeparturesStore.Depart
 import com.markupartist.sthlmtraveling.provider.departure.DeparturesStore.Departures;
 import com.markupartist.sthlmtraveling.provider.site.Site;
 import com.markupartist.sthlmtraveling.provider.site.SitesStore;
-import com.markupartist.sthlmtraveling.utils.AdRequestFactory;
 
 
 public class DeparturesActivity extends BaseListActivity {
@@ -97,8 +95,6 @@ public class DeparturesActivity extends BaseListActivity {
 
     private ActionBar mActionBar;
 
-    private AdView mAdView;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -124,11 +120,6 @@ public class DeparturesActivity extends BaseListActivity {
 
         mActionBar = initActionBar();
         mActionBar.setTitle(R.string.departures);
-
-        mAdView = (AdView) findViewById(R.id.ad_view);
-        if (AppConfig.ADS_ENABLED) {
-            mAdView.loadAd(AdRequestFactory.createRequest());
-        }
     }
 
     @Override
@@ -151,15 +142,11 @@ public class DeparturesActivity extends BaseListActivity {
     }
 
     private void onRotationChange(Configuration newConfig) {
+        /*
         if (newConfig.orientation == newConfig.ORIENTATION_LANDSCAPE) {
-            if (mAdView != null) {
-                mAdView.setVisibility(View.GONE);
-            }
         } else {
-            if (mAdView != null) {
-                mAdView.setVisibility(View.VISIBLE);
-            }
-        }        
+        }
+        */
     }
 
     @Override
@@ -529,10 +516,6 @@ public class DeparturesActivity extends BaseListActivity {
 
     @Override
     protected void onDestroy() {
-        if (mAdView != null) {
-            mAdView.destroy();
-        }
-
         super.onDestroy();
 
         onCancelGetSitesTask();

@@ -33,7 +33,6 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         >
-        <include layout="@layout/ad"/>
     </RelativeLayout>
     <ListView
         android:layout_above="@id/ad_holder"

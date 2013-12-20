@@ -57,14 +57,12 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
-import com.google.ads.AdView;
 import com.markupartist.sthlmtraveling.provider.JourneysProvider.Journey.Journeys;
 import com.markupartist.sthlmtraveling.provider.planner.JourneyQuery;
 import com.markupartist.sthlmtraveling.provider.planner.Planner;
 import com.markupartist.sthlmtraveling.provider.planner.Planner.IntermediateStop;
 import com.markupartist.sthlmtraveling.provider.planner.Planner.SubTrip;
 import com.markupartist.sthlmtraveling.provider.planner.Planner.Trip2;
-import com.markupartist.sthlmtraveling.utils.AdRequestFactory;
 
 public class RouteDetailActivity extends BaseListActivity {
     public static final String TAG = "RouteDetailActivity";
@@ -85,8 +83,6 @@ public class RouteDetailActivity extends BaseListActivity {
 
     private ActionBar mActionBar;
 
-    private AdView mAdView;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -104,11 +100,6 @@ public class RouteDetailActivity extends BaseListActivity {
         mJourneyQuery = extras.getParcelable(EXTRA_JOURNEY_QUERY);
 
         mActionBar = initActionBar();
-
-        mAdView = (AdView) findViewById(R.id.ad_view);
-        if (AppConfig.ADS_ENABLED) {
-            mAdView.loadAd(AdRequestFactory.createRequest());
-        }
 
         View headerView = getLayoutInflater().inflate(R.layout.route_header, null);
         TextView startPointView = (TextView) headerView.findViewById(R.id.route_from);
@@ -203,15 +194,11 @@ public class RouteDetailActivity extends BaseListActivity {
     }
 
     private void onRotationChange(Configuration newConfig) {
+        /*
         if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            if (mAdView != null) {
-                mAdView.setVisibility(View.GONE);
-            }
         } else {
-            if (mAdView != null) {
-                mAdView.setVisibility(View.VISIBLE);
-            }
-        }        
+        }
+        */
     }
 
     @Override
@@ -313,15 +300,12 @@ public class RouteDetailActivity extends BaseListActivity {
 
     @Override
     protected void onDestroy() {
-        if (mAdView != null) {
-            mAdView.destroy();
-        }
         super.onDestroy();
     }
 
     /**
      * Called when there is results to display.
-     * @param details the route details
+     * @param trip the route details
      */
     public void onRouteDetailsResult(Trip2 trip) {
         mSubTripAdapter = new SubTripAdapter(this, trip.subTrips);
@@ -393,7 +377,7 @@ public class RouteDetailActivity extends BaseListActivity {
     }
 
     /**
-     * Share a {@link Route} with others.
+     * Share a {@link Trip2} with others.
      * @param route the route to share
      */
     public void share(Trip2 route) {
