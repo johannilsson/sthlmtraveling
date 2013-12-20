@@ -3,67 +3,31 @@
 STHLM Traveling
 ===============
 
-Travel in Stockholm with your Android phone.
-
-STHLM Traveling helps you plan your journeys using data from Stockholm Public 
+Travel in Stockholm with your Android phone. STHLM Traveling helps you plan your journeys using data from Stockholm Public 
 Transport (SL, Stockholms Lokaltrafik).
 
-Kundo support forum, <http://kundo.se/org/sthlm-traveling/>.
+Join the [STHLM Traveling community](https://plus.google.com/communities/112536937011202734088) at Google Plus to take part of early releases and discuss features of coming releases.
 
 More about this project at <http://markupartist.com/sthlmtraveling> or follow 
 me on twitter at [@johanni](http://twitter.com/johanni) or [@sthlmtraveling](http://twitter.com/sthlmtraveling)
 where new versions is announced.
 
-Some screen shots can be found at [Flickr](http://www.flickr.com/photos/johannilsson/tags/sthlmtraveling/).
-
-The app is powered by a backend service written in <strike>Java and hosted at Google
-app engine</strike> python. Unfortunately that application is not open source since it's using
-closed API's that is provided by SL.
-
 <a href="http://flattr.com/thing/332993/STHLM-Traveling" target="_blank">
 <img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" border="0" /></a> 
-
-Credits
--------
-* App icon, concepts & ideas Olof Brickarp
-* Icons by [Fredrik Broman](http://fredrikbroman.com)
-* Feedback, suggestions & test by [Swedroid users](http://swedroid.se)
-* Also great thanks to my Twitter and Flickr followers for their suggestions 
-  and feedback
 
 Developers
 ----------
 
 If you want to contribute to this project just send me a email, tweet or just
-fork the app. I will do my best help you out if you have any problems.
-
-Please follow the [Code Style Guidelines for Contributors](http://source.android.com/source/code-style.html)
-for Android except for line length that should be kept to 80 colums where possible.  
-
-### Dependencies
-
-* [Android ActionBar](https://github.com/johannilsson/android-actionbar) - mimic-native-api
-* [View Pager Indicator](http://viewpagerindicator.com/) - v2.2.2
-
-### Run tests
-
-To be able to run the tests from Eclipse follow these instructions. Assumes
-that you already have STHLM Traveling setup as a project and deployed.
-
-* Create a new Android Project.
-* Choose create project from existing source. Choose tests/src as project root.
-* Under project properties and Java Build Path choose Projects and add a 
-  dependency to STHLM Traveling.
-* If necessary run Fix Project Properties under Android Tools.
-* Now you should be able to run the tests. Choose Run As Android JUnit Test.
-
-To run the tests from a terminal: Note, you must have both the 
-application and the tests application deployed before.
-
-    adb shell am instrument -w com.markupartist.sthlmtraveling.tests/android.test.InstrumentationTestRunner
+fork the app. I will do my best help you out if you have any problems. The document [An Introduction for Developers](https://github.com/johannilsson/sthlmtraveling/wiki/An-Introduction-for-Developers) helps to set up the basics.
 
 Changelog
 ---------
+* NEXT
+  * Change to use Gradle and Android Studio by [Per Jonsson](https://github.com/pertyjons).
+  * Change to use address information provided by the site API.
+  * Change to validate origin, destination & via before performing a search.
+  * Various bug fixes. 
 * 2.6.2
   * Remove references to previous maps implementation.
   * Change number for SMS tickets.
@@ -322,6 +286,14 @@ Changelog
     * Made the search button bigger
 * 0.1
     * Initial release
+
+Credits
+-------
+* App icon, concepts & ideas Olof Brickarp
+* Icons by [Fredrik Broman](http://fredrikbroman.com)
+* Feedback, suggestions & test by [Swedroid users](http://swedroid.se)
+* Also great thanks to my Twitter and Flickr followers for their suggestions 
+  and feedback
 
 License
 -------
