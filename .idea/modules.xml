@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/ViewPageIndicator/ViewPageIndicator.iml" filepath="$PROJECT_DIR$/ViewPageIndicator/ViewPageIndicator.iml" />
+      <module fileurl="file://$PROJECT_DIR$/sthlmtraveling/sthlmtraveling.iml" filepath="$PROJECT_DIR$/sthlmtraveling/sthlmtraveling.iml" />
+      <module fileurl="file://$PROJECT_DIR$/sthlmtraveling-app.iml" filepath="$PROJECT_DIR$/sthlmtraveling-app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/sthlmtraveling-gradle-support.iml" filepath="$PROJECT_DIR$/sthlmtraveling-gradle-support.iml" />
+    </modules>
+  </component>
+</project>
+
