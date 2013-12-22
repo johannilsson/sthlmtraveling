@@ -23,7 +23,7 @@ fork the app. I will do my best help you out if you have any problems. The docum
 
 Changelog
 ---------
-* NEXT
+* 2.7.0
   * Change to hide search history from journey planner when creating a shortcut.
   * Add support for searching by site id from journey planner shortcuts.
   * Remove Flygbussarna and Arlanda Express, these are not supported by SL anymore.
@@ -31,7 +31,9 @@ Changelog
   * Change to use Gradle and Android Studio by [Per Jonsson](https://github.com/pertyjons).
   * Change to use address information provided by the site API.
   * Change to validate origin, destination & via before performing a search.
-  * Various bug fixes. 
+  * Change to show boats correctly labeled in traffic status.
+  * Change via to visa in journey planner, reported by Anders.
+  * Change to break if a deviation criteria matches to avoid adding the same deviation multiple times, reported and fixed by Christoffer Jonsson.
 * 2.6.2
   * Remove references to previous maps implementation.
   * Change number for SMS tickets.
@@ -293,11 +295,11 @@ Changelog
 
 Credits
 -------
-* App icon, concepts & ideas Olof Brickarp
+* App icon, concepts & ideas [Olof Brickarp](http://www.yay.se)
 * Icons by [Fredrik Broman](http://fredrikbroman.com)
-* Feedback, suggestions & test by [Swedroid users](http://swedroid.se)
 * Also great thanks to my Twitter and Flickr followers for their suggestions 
   and feedback
+* The [STHLM Traveling community](https://plus.google.com/communities/112536937011202734088) for endless testing and feedback.
 
 License
 -------
