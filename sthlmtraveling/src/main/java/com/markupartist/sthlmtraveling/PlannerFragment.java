@@ -375,7 +375,7 @@ public class PlannerFragment extends BaseListFragment implements
      *            The {@link AutoCompleteTextView} resource id.
      * @param progressResId
      *            The {@link ProgressBar} resource id.
-     * @param stop
+     * @param site
      *            The stop.
      * @param includeAddresses
      *            If addresses should be included.
@@ -538,8 +538,6 @@ public class PlannerFragment extends BaseListFragment implements
     private ArrayList<String> getSelectedTransportModes() {
         CheckBox transportBus = (CheckBox) mSearchView
                 .findViewById(R.id.planner_transport_bus);
-        CheckBox transportFly = (CheckBox) mSearchView
-                .findViewById(R.id.planner_transport_fly);
         CheckBox transportMetro = (CheckBox) mSearchView
                 .findViewById(R.id.planner_transport_metro);
         CheckBox transportNar = (CheckBox) mSearchView
@@ -550,15 +548,10 @@ public class PlannerFragment extends BaseListFragment implements
                 .findViewById(R.id.planner_transport_tram);
         CheckBox transportWax = (CheckBox) mSearchView
                 .findViewById(R.id.planner_transport_wax);
-        CheckBox transportAex = (CheckBox) mSearchView
-                .findViewById(R.id.planner_transport_aex);
 
         ArrayList<String> transportModes = new ArrayList<String>();
         if (transportBus.isChecked()) {
             transportModes.add(TransportMode.BUS);
-        }
-        if (transportFly.isChecked()) {
-            transportModes.add(TransportMode.FLY);
         }
         if (transportMetro.isChecked()) {
             transportModes.add(TransportMode.METRO);
@@ -574,9 +567,6 @@ public class PlannerFragment extends BaseListFragment implements
         }
         if (transportWax.isChecked()) {
             transportModes.add(TransportMode.WAX);
-        }
-        if (transportAex.isChecked()) {
-            transportModes.add(TransportMode.AEX);
         }
 
         return transportModes;
@@ -1251,15 +1241,9 @@ public class PlannerFragment extends BaseListFragment implements
             ImageView waxView = (ImageView) v
                     .findViewById(R.id.favorite_transport_mode_wax);
             waxView.setVisibility(View.GONE);
-            ImageView flyView = (ImageView) v
-                    .findViewById(R.id.favorite_transport_mode_fly);
-            flyView.setVisibility(View.GONE);
             ImageView narView = (ImageView) v
                     .findViewById(R.id.favorite_transport_mode_nar);
             narView.setVisibility(View.GONE);
-            ImageView aexView = (ImageView) v
-                    .findViewById(R.id.favorite_transport_mode_aex);
-            aexView.setVisibility(View.GONE);
 
             if (journeyQuery.transportModes != null) {
                 for (String transportMode : journeyQuery.transportModes) {
@@ -1273,12 +1257,8 @@ public class PlannerFragment extends BaseListFragment implements
                         tramView.setVisibility(View.VISIBLE);
                     } else if (transportMode.equals(TransportMode.WAX)) {
                         waxView.setVisibility(View.VISIBLE);
-                    } else if (transportMode.equals(TransportMode.FLY)) {
-                        flyView.setVisibility(View.VISIBLE);
                     } else if (transportMode.equals(TransportMode.NAR)) {
                         narView.setVisibility(View.VISIBLE);
-                    } else if (transportMode.equals(TransportMode.AEX)) {
-                        aexView.setVisibility(View.VISIBLE);
                     }
                 }
             } else {
@@ -1287,7 +1267,6 @@ public class PlannerFragment extends BaseListFragment implements
                 trainView.setVisibility(View.VISIBLE);
                 tramView.setVisibility(View.VISIBLE);
                 waxView.setVisibility(View.VISIBLE);
-                flyView.setVisibility(View.VISIBLE);
             }
         }
     }

@@ -245,8 +245,6 @@
 	                        />
 	            </LinearLayout>
 	            <!-- End via -->
-	            
-	            
 
                 <CheckBox
                     android:id="@+id/planner_alternative_stops"
@@ -291,13 +289,6 @@
                     android:checked="true"
                     />
                 <CheckBox
-                    android:id="@+id/planner_transport_fly"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Flygbussar"
-                    android:checked="true"
-                    />
-                <CheckBox
                     android:id="@+id/planner_transport_wax"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
@@ -309,13 +300,6 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:text="Närtrafiken"
-                    android:checked="false"
-                    />
-                <CheckBox
-                    android:id="@+id/planner_transport_aex"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Arlanda Express"
                     android:checked="false"
                     />
             </LinearLayout>
