@@ -258,6 +258,9 @@ public class RoutesActivity extends BaseListActivity
 
         jq.origin = new Planner.Location();        
         jq.origin.name = uri.getQueryParameter("start_point");
+        if (!TextUtils.isEmpty(uri.getQueryParameter("start_point_id"))) {
+            jq.origin.id = Integer.parseInt(uri.getQueryParameter("start_point_id"));
+        }
         if (!TextUtils.isEmpty(uri.getQueryParameter("start_point_lat"))
                 && !TextUtils.isEmpty(uri.getQueryParameter("start_point_lng"))) {
             jq.origin.latitude =
@@ -268,6 +271,9 @@ public class RoutesActivity extends BaseListActivity
 
         jq.destination = new Planner.Location();
         jq.destination.name = uri.getQueryParameter("end_point");
+        if (!TextUtils.isEmpty(uri.getQueryParameter("end_point_id"))) {
+            jq.destination.id = Integer.parseInt(uri.getQueryParameter("end_point_id"));
+        }
         if (!TextUtils.isEmpty(uri.getQueryParameter("end_point_lat"))
                 && !TextUtils.isEmpty(uri.getQueryParameter("end_point_lng"))) {
             jq.destination.latitude =
@@ -1034,15 +1040,17 @@ public class RoutesActivity extends BaseListActivity
         routesUri = Uri.parse(
                     String.format("journeyplanner://routes?" 
                             + "start_point=%s"
+                            + "&start_point_id=%s"
                             + "&start_point_lat=%s"
                             + "&start_point_lng=%s"
                             + "&end_point=%s"
+                            + "&end_point_id=%s"
                             + "&end_point_lat=%s"
                             + "&end_point_lng=%s"
                             + "&time=%s"
                             + "&isTimeDeparture=%s",
-                            Uri.encode(startPoint.getNameOrId()), startLat, startLng,
-                            Uri.encode(endPoint.getNameOrId()), endLat, endLng, 
+                            Uri.encode(startPoint.getName()), startPoint.getId(), startLat, startLng,
+                            Uri.encode(endPoint.getName()), endPoint.getId(), endLat, endLng,
                             timeString, isTimeDeparture));
 
         return routesUri;

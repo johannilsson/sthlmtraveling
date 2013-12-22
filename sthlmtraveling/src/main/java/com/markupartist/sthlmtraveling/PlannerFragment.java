@@ -263,11 +263,14 @@ public class PlannerFragment extends BaseListFragment implements
             RadioGroup chooseTimeGroup = (RadioGroup) mSearchView
                     .findViewById(R.id.planner_choose_time_group);
             chooseTimeGroup.setVisibility(View.GONE);
+            historyView.setVisibility(View.GONE);
+            // Fake an adapter. This needs to be fixed later on so we can use the history.
+            setListAdapter(new ArrayAdapter<String>(getActivity(), R.layout.journey_history_row));
         } else {
             registerEvent("Planner");
+            setListAdapter(mAdapter);
         }
 
-        setListAdapter(mAdapter);
 
         super.onActivityCreated(savedInstanceState);
     }
