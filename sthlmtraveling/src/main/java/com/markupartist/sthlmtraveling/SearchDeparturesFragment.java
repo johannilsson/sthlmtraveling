@@ -27,8 +27,8 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
@@ -38,7 +38,7 @@ import com.markupartist.sthlmtraveling.provider.HistoryDbAdapter;
 import com.markupartist.sthlmtraveling.provider.planner.Planner;
 import com.markupartist.sthlmtraveling.provider.site.Site;
 
-public class SearchDeparturesFragment extends BaseListFragment {
+public class SearchDeparturesFragment extends BaseListFragment implements AdapterView.OnItemClickListener {
     static String TAG = "SearchDeparturesActivity";
     private boolean mCreateShortcut;
     private HistoryDbAdapter mHistoryDbAdapter;
@@ -101,20 +101,7 @@ public class SearchDeparturesFragment extends BaseListFragment {
                 return false;
             }
         });
-
-        Button searchButton = (Button) searchHeader
-                .findViewById(R.id.search_departure);
-        if (mCreateShortcut) {
-            searchButton.setText(getText(R.string.create_shortcut_label));
-            getActivity()
-                    .setTitle(R.string.create_shortcut_for_departure_label);
-        }
-        searchButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dispatchSearch();
-            }
-        });
+        mSiteTextView.setOnItemClickListener(this);
 
         searchHeader.findViewById(R.id.btn_nearby_stops).setOnClickListener(new OnClickListener() {
             @Override
@@ -177,9 +164,23 @@ public class SearchDeparturesFragment extends BaseListFragment {
         }
     }
 
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Site site = ((AutoCompleteStopAdapter)mSiteTextView.getAdapter()).getValue(position);
+        if (mCreateShortcut) {
+            onCreateShortCut(site);
+        } else {
+            onSearchDepartures(site);
+        }
+    }
+
     private void dispatchSearch() {
         Site stop = new Site();
         stop.setName(mSiteTextView.getText().toString());
+
+        AutoCompleteStopAdapter autoCompleteAdapter = (AutoCompleteStopAdapter) mSiteTextView.getAdapter();
+        //autoCompleteAdapter.getValue(pos);
+
         // TODO: Change to use looksValid and make sure site id is passed all the way.
         if (!stop.hasName()) {
             mSiteTextView.setError(getText(R.string.empty_value));
@@ -197,7 +198,7 @@ public class SearchDeparturesFragment extends BaseListFragment {
 
         Intent i = new Intent(getActivity().getApplicationContext(),
                 DeparturesActivity.class);
-        i.putExtra(DeparturesActivity.EXTRA_SITE_NAME, stop.getName());
+        i.putExtra(DeparturesActivity.EXTRA_SITE, stop);
         startActivity(i);
     }
 

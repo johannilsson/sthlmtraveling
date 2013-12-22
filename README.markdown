@@ -24,7 +24,8 @@ fork the app. I will do my best help you out if you have any problems. The docum
 Changelog
 ---------
 * NEXT
-  * Remove Flygbussarna and Arlanda Express, these are not supported by SL anymore. 
+  * Remove Flygbussarna and Arlanda Express, these are not supported by SL anymore.
+  * Remove search and create shortcut button from the Departures view. Search is now triggered by selecting an item from the auto complete suggestions instead. 
   * Change to use Gradle and Android Studio by [Per Jonsson](https://github.com/pertyjons).
   * Change to use address information provided by the site API.
   * Change to validate origin, destination & via before performing a search.
