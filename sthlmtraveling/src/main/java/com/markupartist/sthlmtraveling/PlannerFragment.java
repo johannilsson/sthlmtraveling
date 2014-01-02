@@ -502,8 +502,7 @@ public class PlannerFragment extends BaseListFragment implements
                 .findViewById(R.id.planner_choose_time_group);
         int checkedId = chooseTimeGroup.getCheckedRadioButtonId();
         if (checkedId == R.id.planner_check_more_choices) {
-            isTimeDeparture = mWhenSpinner.getSelectedItemId() == 0 ? true
-                    : false;
+            isTimeDeparture = mWhenSpinner.getSelectedItemId() == 0;
 
             CheckBox alternativeCheckBox = (CheckBox) getActivity()
                     .findViewById(R.id.planner_alternative_stops);
