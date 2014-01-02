@@ -25,11 +25,12 @@ Changelog
 ---------
 * 2.7.1
   * Fix so that legal notices show properly.
+  * Remove AdMob library from source.
 * 2.7.0
   * Change to hide search history from journey planner when creating a shortcut.
   * Add support for searching by site id from journey planner shortcuts.
   * Remove Flygbussarna and Arlanda Express, these are not supported by SL anymore.
-  * Remove search and create shortcut button from the Departures view. Search is now triggered by selecting an item from the auto complete suggestions instead. 
+  * Remove search and create shortcut button from the Departures view. Search is now triggered by selecting an item from the auto complete suggestions instead.
   * Change to use Gradle and Android Studio by [Per Jonsson](https://github.com/pertyjons).
   * Change to use address information provided by the site API.
   * Change to validate origin, destination & via before performing a search.
