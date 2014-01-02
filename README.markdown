@@ -23,6 +23,8 @@ fork the app. I will do my best help you out if you have any problems. The docum
 
 Changelog
 ---------
+* 2.7.1
+  * Fix so that legal notices show properly.
 * 2.7.0
   * Change to hide search history from journey planner when creating a shortcut.
   * Add support for searching by site id from journey planner shortcuts.
