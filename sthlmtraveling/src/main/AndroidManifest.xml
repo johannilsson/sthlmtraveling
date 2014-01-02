@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="com.markupartist.sthlmtraveling"
       android:installLocation="auto"
-      android:versionCode="100" android:versionName="2.7.1"
+      android:versionCode="101" android:versionName="2.7.1"
       >
     <supports-screens
         android:largeScreens="true"
@@ -202,6 +202,6 @@
                   />
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
-            android:value="AIzaSyBRPIpg3D7VvT5NIjv8M1q0jmPxKG8satM"/>
+            android:value="AIzaSyCzROoCVIGVxOnBLFB1s3uWc8845TYlkRI"/>
     </application>
 </manifest>
