@@ -85,7 +85,7 @@ public class Site implements Parcelable {
         }
     }
 
-    private void setType(String type) {
+    public void setType(String type) {
         mType = type;
     }
 
@@ -187,11 +187,22 @@ public class Site implements Parcelable {
         return !name.matches(NAME_RE);
     }
 
+    /**
+     * Fill this Site with the values from another Site. If other is null this will be nullified.
+     * @param value
+     */
     public void fromSite(Site value) {
-        mId = value.mId;
-        mLocation = value.mLocation;
-        mName = value.mName;
-        mType = value.mType;
+        if (value != null) {
+            mId = value.mId;
+            mLocation = value.mLocation;
+            mName = value.mName;
+            mType = value.mType;
+        } else {
+            mId = 0;
+            mLocation = null;
+            mName = null;
+            mType = null;
+        }
     }
 
     public String getNameOrId() {

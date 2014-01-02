@@ -338,7 +338,8 @@ public class PlannerFragment extends BaseListFragment implements
             // Check for point-on-map.
             return site;
         }
-        return new Site();
+        site.fromSite(null);
+        return site;
     }
 
     @Override
@@ -427,6 +428,7 @@ public class PlannerFragment extends BaseListFragment implements
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                     int position, long id) {
+                // Sometime site is not properly set here, where is the reference cleared?
                 Site v = stopAdapter.getValue(position);
                 site.fromSite(v);
             }
@@ -513,8 +515,8 @@ public class PlannerFragment extends BaseListFragment implements
             time = null;
         }
 
-        Log.i(TAG, "START POINT: " + startPoint.toString());
-        Log.i(TAG, "END POINT: " + endPoint.toString());
+        Log.i(TAG, "START POINT: " + startPoint.toDump());
+        Log.i(TAG, "END POINT: " + endPoint.toDump());
 
         JourneyQuery journeyQuery = new JourneyQuery.Builder()
                 .origin(startPoint)
@@ -792,7 +794,7 @@ public class PlannerFragment extends BaseListFragment implements
                             break;
                         default:
                             Site endPoint = (Site) endPointAdapter.getItem(which);
-                            mEndPoint = new Site(endPoint);
+                            mEndPoint.fromSite(endPoint);
                             mEndPointAutoComplete.setText(mEndPoint.getName());
                             mEndPointAutoComplete.clearFocus();
                         }
@@ -832,7 +834,7 @@ public class PlannerFragment extends BaseListFragment implements
                             break;
                         default:
                             Site startPoint = (Site) startPointAdapter.getItem(which);
-                            mStartPoint = new Site(startPoint);
+                            mStartPoint.fromSite(startPoint);
                             mStartPointAutoComplete.setText(mStartPoint.getName());
                             mStartPointAutoComplete.clearFocus();
                         }
@@ -868,13 +870,24 @@ public class PlannerFragment extends BaseListFragment implements
                 boolean looksValid = true;
                 if (!mStartPoint.looksValid()) {
                     Log.d(TAG, "Start was not valid: " + mStartPoint.toDump());
-                    mStartPointAutoComplete.setError(getText(R.string.empty_value));
-                    looksValid = false;
+
+                    AutoCompleteStopAdapter a = (AutoCompleteStopAdapter) mStartPointAutoComplete.getAdapter();
+                    Site startPoint = a.findSite(mStartPointAutoComplete.getText().toString());
+                    mStartPoint.fromSite(startPoint);
+                    if (startPoint == null) {
+                        mStartPointAutoComplete.setError(getText(R.string.empty_value));
+                        looksValid = false;
+                    }
                 }
                 if (!mEndPoint.looksValid()) {
                     Log.d(TAG, "End was not valid: " + mEndPoint.toDump());
-                    mEndPointAutoComplete.setError(getText(R.string.empty_value));
-                    looksValid = false;
+                    AutoCompleteStopAdapter a = (AutoCompleteStopAdapter) mEndPointAutoComplete.getAdapter();
+                    Site endPoint = a.findSite(mEndPointAutoComplete.getText().toString());
+                    mEndPoint.fromSite(endPoint);
+                    if (endPoint == null) {
+                        mEndPointAutoComplete.setError(getText(R.string.empty_value));
+                        looksValid = false;
+                    }
                 }
                 if (!TextUtils.isEmpty(mViaPointAutoComplete.getText())) {
                     mViaPoint = buildStop(mViaPoint, mViaPointAutoComplete);
@@ -998,6 +1011,8 @@ public class PlannerFragment extends BaseListFragment implements
                     || getString(R.string.point_on_map).equals(s.toString())) {
                 if (!s.toString().equals(mSite.getName())) {
                     mSite.setName(s.toString());
+                    mSite.setId(0);
+                    mSite.setType(null);
                     mSite.setLocation(null);
                 }
             }

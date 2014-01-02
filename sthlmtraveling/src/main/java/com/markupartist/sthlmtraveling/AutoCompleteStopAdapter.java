@@ -22,6 +22,7 @@ import java.util.List;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -104,9 +105,11 @@ public class AutoCompleteStopAdapter extends ArrayAdapter<String> implements Fil
                     ArrayList<Site> list = null;
                     try {
                         String query = constraint.toString();
-                        list = SitesStore.getInstance().getSiteV2(
-                            query, mOnlyStations
-                        );
+                        if (Site.looksValid(query)) {
+                            list = SitesStore.getInstance().getSiteV2(
+                               query, mOnlyStations
+                            );
+                        }
                     } catch (IOException e) {
                         mWasSuccess = false;
                     }
@@ -171,6 +174,18 @@ public class AutoCompleteStopAdapter extends ArrayAdapter<String> implements Fil
         }
 
         return convertView;
+    }
+
+    public Site findSite(String name) {
+        if (TextUtils.isEmpty(name)) {
+            return null;
+        }
+        for (Site s : mValues) {
+            if (s.hasName() && s.getName().toLowerCase().startsWith(name.trim().toLowerCase())) {
+                return s;
+            }
+        }
+        return null;
     }
 
     public void setFilterListener(FilterListener listener) {
