@@ -24,6 +24,7 @@ fork the app. I will do my best help you out if you have any problems. The docum
 Changelog
 ---------
 * 2.7.1
+  * Fix issue with start and endpoint not being properly set before fetching routes.
   * Fix so that legal notices show properly.
   * Remove AdMob library from source.
 * 2.7.0
