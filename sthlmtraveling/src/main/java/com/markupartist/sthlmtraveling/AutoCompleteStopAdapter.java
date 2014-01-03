@@ -177,7 +177,7 @@ public class AutoCompleteStopAdapter extends ArrayAdapter<String> implements Fil
     }
 
     public Site findSite(String name) {
-        if (TextUtils.isEmpty(name)) {
+        if (TextUtils.isEmpty(name) || mValues == null) {
             return null;
         }
         for (Site s : mValues) {
