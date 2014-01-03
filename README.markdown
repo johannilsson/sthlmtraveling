@@ -23,6 +23,8 @@ fork the app. I will do my best help you out if you have any problems. The docum
 
 Changelog
 ---------
+* NEXT
+  * Fix crash that occured when performing a search with no values.
 * 2.7.1
   * Fix issue with start and endpoint not being properly set before fetching routes.
   * Fix so that legal notices show properly.
