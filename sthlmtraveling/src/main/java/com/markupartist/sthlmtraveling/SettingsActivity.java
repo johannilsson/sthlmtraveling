@@ -75,7 +75,7 @@ public class SettingsActivity extends BasePreferenceActivity
             Intent i = new Intent(this, AboutActivity.class);
             startActivity(i);
         } else if (preference.getKey().equals("help_support")) {
-            Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("http://kundo.se/mobile/sthlm-traveling/"));
+            Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("http://kundo.se/org/sthlm-traveling/"));
             startActivity(i);
         }
         return super.onPreferenceTreeClick(preferenceScreen, preference);
