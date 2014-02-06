@@ -183,11 +183,11 @@ public class PlannerFragment extends BaseListFragment implements
             mStartPoint.setName(Site.TYPE_MY_LOCATION);
         }
         mStartPointAutoComplete = createAutoCompleteTextView(R.id.from,
-                R.id.from_progress, mStartPoint);
+                /*R.id.from_progress*/ -1, mStartPoint);
         mEndPointAutoComplete = createAutoCompleteTextView(R.id.to,
-                R.id.to_progress, mEndPoint);
+                /*R.id.to_progress*/ -1, mEndPoint);
         mViaPointAutoComplete = createAutoCompleteTextView(R.id.via,
-                R.id.via_progress, mViaPoint, true);
+                /*R.id.via_progress*/ -1, mViaPoint, true);
 
         try {
             mHistoryDbAdapter = new HistoryDbAdapter(getActivity()).open();
@@ -391,8 +391,8 @@ public class PlannerFragment extends BaseListFragment implements
         // TODO: Wrap the auto complete view in a custom view...
         final AutoCompleteTextView autoCompleteTextView = (AutoCompleteTextView)
                 mSearchView.findViewById(autoCompleteResId);
-        final ProgressBar progress = (ProgressBar)
-                mSearchView.findViewById(progressResId);
+        //final ProgressBar progress = (ProgressBar)
+        //        mSearchView.findViewById(progressResId);
         final AutoCompleteStopAdapter stopAdapter = new AutoCompleteStopAdapter(
                 getActivity(), R.layout.autocomplete_item_2line,
                 Planner.getInstance(), includeAddresses);
@@ -409,6 +409,7 @@ public class PlannerFragment extends BaseListFragment implements
         }
         autoCompleteTextView.setText(name);
 
+        /*
         stopAdapter.setFilterListener(new FilterListener() {
             @Override
             public void onPublishFiltering() {
@@ -420,6 +421,7 @@ public class PlannerFragment extends BaseListFragment implements
                 progress.setVisibility(View.VISIBLE);
             }
         });
+        */
 
         autoCompleteTextView.setSelectAllOnFocus(true);
         autoCompleteTextView.setAdapter(stopAdapter);
@@ -927,9 +929,9 @@ public class PlannerFragment extends BaseListFragment implements
             // Seems like we loose the reference during reverse.
             // Investigate this further.
             mStartPointAutoComplete = createAutoCompleteTextView(R.id.from,
-                    R.id.from_progress, mStartPoint);
+                    /*R.id.from_progress*/ -1, mStartPoint);
             mEndPointAutoComplete = createAutoCompleteTextView(R.id.to,
-                    R.id.to_progress, mEndPoint);
+                    /*R.id.to_progress*/ -1, mEndPoint);
 
             mStartPointAutoComplete.setText(mStartPoint.getName());
             mEndPointAutoComplete.setText(mEndPoint.getName());
