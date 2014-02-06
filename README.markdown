@@ -21,9 +21,16 @@ Developers
 If you want to contribute to this project just send me a email, tweet or just
 fork the app. I will do my best help you out if you have any problems. The document [An Introduction for Developers](https://github.com/johannilsson/sthlmtraveling/wiki/An-Introduction-for-Developers) helps to set up the basics.
 
+TODO
+----
+
+* Remove focus on Destination field (https://kundo.se/org/sthlm-traveling/d/tackande-tangentbord/#c479879)
+
+
 Changelog
 ---------
-* NEXT
+* 2.7.2
+  * Fix issue with no departures showing.
   * Fix crash that occured when performing a search with no values.
 * 2.7.1
   * Fix issue with start and endpoint not being properly set before fetching routes.
