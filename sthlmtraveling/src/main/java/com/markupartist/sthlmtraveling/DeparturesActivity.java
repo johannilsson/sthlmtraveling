@@ -49,6 +49,7 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.view.Window;
+import com.markupartist.sthlmtraveling.provider.HistoryDbAdapter;
 import com.markupartist.sthlmtraveling.provider.PlacesProvider.Place.Places;
 import com.markupartist.sthlmtraveling.provider.TransportMode;
 import com.markupartist.sthlmtraveling.provider.departure.DeparturesStore;
@@ -94,6 +95,7 @@ public class DeparturesActivity extends BaseListActivity {
     private int mPlaceId = -1;
 
     private ActionBar mActionBar;
+    private HistoryDbAdapter mHistoryDbAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -120,6 +122,9 @@ public class DeparturesActivity extends BaseListActivity {
 
         mActionBar = initActionBar();
         mActionBar.setTitle(R.string.departures);
+
+        // Not ideal.
+        mHistoryDbAdapter = new HistoryDbAdapter(this).open();
     }
 
     @Override
@@ -235,10 +240,14 @@ public class DeparturesActivity extends BaseListActivity {
             (Departures) getLastNonConfigurationInstance();
         if (departureResult != null) {
             fillData(departureResult);
-        } else if (mSite != null) {
+        } else if (mSite != null && mSite.getId() > 0) {
             mGetDeparturesTask = new GetDeparturesTask();
             mGetDeparturesTask.execute(mSite);
         } else {
+            // Handle legacy history that does not have the site id set.
+            if (mSite != null) {
+                mSiteName = mSite.getName();
+            }
             mGetSitesTask = new GetSitesTask();
             mGetSitesTask.execute(mSiteName);
         }
@@ -608,6 +617,12 @@ public class DeparturesActivity extends BaseListActivity {
         protected Departures doInBackground(Site... params) {
             try {
                 mSite = params[0];
+
+                // Update history if site id is not set, we do this to patch old versions
+                // that will end up here without site id set.
+                if (mSite.getId() > 0) {
+                    mHistoryDbAdapter.create(HistoryDbAdapter.TYPE_DEPARTURE_SITE, mSite);
+                }
 
                 DeparturesStore departures = new DeparturesStore();
                 Departures result = departures.find(params[0]);
