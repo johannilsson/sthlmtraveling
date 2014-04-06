@@ -16,13 +16,10 @@
 
 package com.markupartist.sthlmtraveling;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.json.JSONException;
-
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.ContentUris;
@@ -38,6 +35,7 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.text.format.Time;
@@ -72,6 +70,14 @@ import com.markupartist.sthlmtraveling.provider.planner.Planner.Response;
 import com.markupartist.sthlmtraveling.provider.planner.Planner.SubTrip;
 import com.markupartist.sthlmtraveling.provider.planner.Planner.Trip2;
 import com.markupartist.sthlmtraveling.provider.site.Site;
+import com.markupartist.sthlmtraveling.utils.ViewHelper;
+
+import org.json.JSONException;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Routes activity
@@ -613,6 +619,7 @@ public class RoutesActivity extends BaseListActivity
         mSectionedAdapter.addSection(SECTION_ROUTES, getString(R.string.route_alternatives_label), mMultipleListAdapter);
 
         setListAdapter(mSectionedAdapter);
+        ViewHelper.crossfade(getListView().getEmptyView(), getListView());
     }
 
     SectionedAdapter mSectionedAdapter = new SectionedAdapter() {
@@ -714,6 +721,7 @@ public class RoutesActivity extends BaseListActivity
             mRouteAdapter = new RoutesAdapter(this, response.trips);
             createSections();
         } else {
+            // TODO: Scroll and animate to the new result.
             mRouteAdapter.refill(response.trips);
             mSectionedAdapter.notifyDataSetChanged();
         }
@@ -1291,7 +1299,7 @@ public class RoutesActivity extends BaseListActivity
         }
         */
     }
-    
+
     /**
      * Background task for searching for routes.
      */

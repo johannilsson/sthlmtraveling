@@ -1,9 +1,11 @@
 package com.markupartist.sthlmtraveling;
 
-import java.util.Map;
+import android.content.Intent;
 
 import com.actionbarsherlock.app.SherlockListFragment;
 import com.flurry.android.FlurryAgent;
+
+import java.util.Map;
 
 public class BaseListFragment extends SherlockListFragment {
 
@@ -16,4 +18,9 @@ public class BaseListFragment extends SherlockListFragment {
         FlurryAgent.onEvent(event, parameters);
     }
 
+    @Override
+    public void startActivity(Intent intent) {
+        super.startActivity(intent);
+        getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+    }
 }

@@ -16,10 +16,13 @@
 
 package com.markupartist.sthlmtraveling;
 
-import java.io.IOException;
-
+import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.util.Log;
 
 import com.actionbarsherlock.app.ActionBar;
@@ -67,6 +70,18 @@ public class ViewOnMapActivity extends SherlockFragmentActivity {
         super.onStop();
         FlurryAgent.onEndSession(this);
      }
+
+    @Override
+    public void startActivity(Intent intent) {
+        super.startActivity(intent);
+        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

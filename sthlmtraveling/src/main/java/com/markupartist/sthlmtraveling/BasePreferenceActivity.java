@@ -1,11 +1,12 @@
 package com.markupartist.sthlmtraveling;
 
-import java.util.Map;
+import android.content.Intent;
+import android.os.Bundle;
+import android.preference.PreferenceActivity;
 
 import com.flurry.android.FlurryAgent;
 
-import android.os.Bundle;
-import android.preference.PreferenceActivity;
+import java.util.Map;
 
 public class BasePreferenceActivity extends PreferenceActivity {
     @Override
@@ -32,5 +33,19 @@ public class BasePreferenceActivity extends PreferenceActivity {
 
     protected void registerEvent(String event, Map<String, String> parameters) {
         FlurryAgent.onEvent(event, parameters);
+    }
+
+    @Override
+    public void startActivity(Intent intent) {
+        super.startActivity(intent);
+        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+
+        // Need to know if we are on the top level, then we should not apply this.
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }
 }

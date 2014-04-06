@@ -1,7 +1,5 @@
 package com.markupartist.sthlmtraveling;
 
-import java.util.Map;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -13,6 +11,8 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.MenuItem;
 import com.flurry.android.FlurryAgent;
+
+import java.util.Map;
 
 public class BaseListFragmentActivity extends SherlockFragmentActivity implements OnItemClickListener {
 
@@ -81,4 +81,18 @@ public class BaseListFragmentActivity extends SherlockFragmentActivity implement
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 		//Implement in subclass
 	}
+
+    @Override
+    public void startActivity(Intent intent) {
+        super.startActivity(intent);
+        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+
+        // Need to know if we are on the top level, then we should not apply this.
+        //overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+    }
 }

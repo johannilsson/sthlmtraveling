@@ -1,7 +1,5 @@
 package com.markupartist.sthlmtraveling;
 
-import java.util.Map;
-
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -9,6 +7,8 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.MenuItem;
 import com.flurry.android.FlurryAgent;
+
+import java.util.Map;
 
 public class BaseFragmentActivity extends SherlockFragmentActivity {
 
@@ -58,4 +58,17 @@ public class BaseFragmentActivity extends SherlockFragmentActivity {
         FlurryAgent.onEvent(event, parameters);
     }
 
+    @Override
+    public void startActivity(Intent intent) {
+        super.startActivity(intent);
+        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+
+        // Need to know if we are on the top level, then we should not apply this.
+        //overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+    }
 }

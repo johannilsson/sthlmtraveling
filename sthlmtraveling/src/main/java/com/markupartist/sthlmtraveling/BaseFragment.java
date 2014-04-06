@@ -1,10 +1,11 @@
 package com.markupartist.sthlmtraveling;
 
-import java.util.Map;
-
+import android.content.Intent;
 import android.support.v4.app.Fragment;
 
 import com.flurry.android.FlurryAgent;
+
+import java.util.Map;
 
 public class BaseFragment extends Fragment {
 
@@ -16,4 +17,9 @@ public class BaseFragment extends Fragment {
         FlurryAgent.onEvent(event, parameters);
     }
 
+    @Override
+    public void startActivity(Intent intent) {
+        super.startActivity(intent);
+        getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+    }
 }
