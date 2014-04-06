@@ -3,17 +3,17 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.7.+'
+        classpath 'com.android.tools.build:gradle:0.9.+'
         // https://github.com/JakeWharton/hugo
         //classpath 'com.jakewharton.hugo:hugo-plugin:1.0.+'
         // https://github.com/JakeWharton/gradle-android-test-plugin
-        classpath 'com.squareup.gradle:gradle-android-test-plugin:0.9.+'
+        //classpath 'com.squareup.gradle:gradle-android-test-plugin:0.9.+'
     }
 }
 
 apply plugin: 'android'
 //apply plugin: 'hugo'
-apply plugin: 'android-test'
+//apply plugin: 'android-test'
 
 repositories {
     mavenCentral()
@@ -21,7 +21,7 @@ repositories {
 
 android {
     compileSdkVersion 19
-    buildToolsVersion "19.0.0"
+    buildToolsVersion "19.0.3"
 
     defaultConfig {
         minSdkVersion 8
@@ -48,14 +48,14 @@ android {
 
 dependencies {
     compile 'com.actionbarsherlock:actionbarsherlock:4.4.0@aar'
-    compile 'com.android.support:support-v4:13.0.+'
+    compile 'com.android.support:support-v4:19.1.0'
     compile 'com.google.android.gms:play-services:4.0.+'
     compile project(':ViewPageIndicator')
     compile files('libs/FlurryAgent.jar')
     // Test
-    testCompile 'junit:junit:4.10'
-    testCompile 'org.robolectric:robolectric:2.1.+'
-    testCompile 'com.squareup:fest-android:1.0.+'
+    //testCompile 'junit:junit:4.10'
+    //testCompile 'org.robolectric:robolectric:2.1.+'
+    //testCompile 'com.squareup:fest-android:1.0.+'
 }
 
 // Fetch properties for signing
@@ -74,7 +74,7 @@ if (propFile.canRead()){
         println 'signing.properties found but some entries are missing'
         android.buildTypes.release.signingConfig = null
     }
-}else {
+} else {
     println 'signing.properties not found'
     android.buildTypes.release.signingConfig = null
 }
