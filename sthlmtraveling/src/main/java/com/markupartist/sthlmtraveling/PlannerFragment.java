@@ -16,12 +16,6 @@
 
 package com.markupartist.sthlmtraveling;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
@@ -75,7 +69,6 @@ import android.widget.TimePicker;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
-import com.markupartist.sthlmtraveling.AutoCompleteStopAdapter.FilterListener;
 import com.markupartist.sthlmtraveling.provider.HistoryDbAdapter;
 import com.markupartist.sthlmtraveling.provider.JourneysProvider.Journey.Journeys;
 import com.markupartist.sthlmtraveling.provider.TransportMode;
@@ -83,6 +76,12 @@ import com.markupartist.sthlmtraveling.provider.planner.JourneyQuery;
 import com.markupartist.sthlmtraveling.provider.planner.Planner;
 import com.markupartist.sthlmtraveling.provider.planner.Planner.Location;
 import com.markupartist.sthlmtraveling.provider.site.Site;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class PlannerFragment extends BaseListFragment implements
         OnCheckedChangeListener {
@@ -938,9 +937,8 @@ public class PlannerFragment extends BaseListFragment implements
 
             return true;
         case R.id.menu_settings:
-            Intent settingsIntent = new Intent().setClass(getActivity(),
-                    SettingsActivity.class);
-            startActivity(settingsIntent);
+            Intent settingsIntent = new Intent().setClass(getActivity(), SettingsActivity.class);
+            startActivityWithDefaultTransition(settingsIntent);
             return true;
         }
         return super.onOptionsItemSelected(item);

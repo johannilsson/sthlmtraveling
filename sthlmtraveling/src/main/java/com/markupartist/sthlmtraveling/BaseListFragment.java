@@ -23,4 +23,8 @@ public class BaseListFragment extends SherlockListFragment {
         super.startActivity(intent);
         getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
     }
+
+    public void startActivityWithDefaultTransition(Intent intent) {
+        super.startActivity(intent);
+    }
 }
