@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2009-2010 Johan Nilsson <http://markupartist.com>
+ * Copyright (C) 2009-2014 Johan Nilsson <http://markupartist.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,25 +16,7 @@
 
 package com.markupartist.sthlmtraveling.provider.planner;
 
-import static com.markupartist.sthlmtraveling.provider.ApiConf.KEY;
-import static com.markupartist.sthlmtraveling.provider.ApiConf.apiEndpoint2;
-import static com.markupartist.sthlmtraveling.provider.ApiConf.get;
-
-import java.io.IOException;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.client.methods.HttpGet;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
+import android.content.Context;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Parcel;
@@ -47,6 +29,25 @@ import com.markupartist.sthlmtraveling.provider.site.Site;
 import com.markupartist.sthlmtraveling.provider.site.SitesStore;
 import com.markupartist.sthlmtraveling.utils.HttpManager;
 import com.markupartist.sthlmtraveling.utils.StreamUtils;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.HttpGet;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+
+import static com.markupartist.sthlmtraveling.provider.ApiConf.KEY;
+import static com.markupartist.sthlmtraveling.provider.ApiConf.apiEndpoint2;
+import static com.markupartist.sthlmtraveling.provider.ApiConf.get;
 
 /**
  * Journey planner for the sl.se API.
@@ -978,28 +979,28 @@ public class Planner {
             return R.drawable.transport_unkown;
         }
 
-        public int getColor() {
+        public int getColor(final Context context) {
             if ("BUS".equals(type)) {
                 if (name.contains("blå")) {
-                    return 0xff007FC6;
+                    return context.getResources().getColor(R.color.bus_blue);
                 }
-                return 0xffEE1D23;
+                return context.getResources().getColor(R.color.metro_red);
             } else if ("MET".equals(type)) {
                 if (name.contains("grön")) {
-                    return 0xff79C142;
+                    return context.getResources().getColor(R.color.metro_green);
                 } else if (name.contains("röd")) {
-                    return 0xffF25B21;
+                    return context.getResources().getColor(R.color.metro_red);
                 } else if (name.contains("blå")) {
-                    return 0xff1C378C;
+                    return context.getResources().getColor(R.color.metro_blue);
                 }
             } else if ("NAR".equals(type)) {
                 return Color.WHITE;
             } else if ("Walk".equals(type)) {
                 return Color.BLACK;
             } else if ("TRN".equals(type)) {
-                return Color.DKGRAY;
+                return context.getResources().getColor(R.color.train);
             } else if ("TRM".equals(type)) {
-                return 0xffA8A9AD;
+                return context.getResources().getColor(R.color.train);
             } else if ("SHP".equals(type)) {
                 return 0xff09693E;
             } else if ("FLY".equals(type)) {
