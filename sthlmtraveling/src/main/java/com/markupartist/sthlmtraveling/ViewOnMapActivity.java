@@ -155,7 +155,7 @@ public class ViewOnMapActivity extends SherlockFragmentActivity {
         for (SubTrip subTrip : trip.subTrips) {
 
             float[] hsv = new float[3];
-            Color.colorToHSV(subTrip.transport.getColor(), hsv);
+            Color.colorToHSV(subTrip.transport.getColor(this), hsv);
             float hueColor = hsv[0];
 
             // One polyline per subtrip, different colors.
@@ -195,7 +195,7 @@ public class ViewOnMapActivity extends SherlockFragmentActivity {
 
             mMap.addPolyline(options
                     .width(5)
-                    .color(subTrip.transport.getColor()));
+                    .color(subTrip.transport.getColor(this)));
         }
     }
 
@@ -237,7 +237,7 @@ public class ViewOnMapActivity extends SherlockFragmentActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                finish();
+                onBackPressed();
                 return true;
         }
         return super.onOptionsItemSelected(item);
