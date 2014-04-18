@@ -2,13 +2,13 @@ package com.markupartist.sthlmtraveling;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.preference.PreferenceActivity;
 
+import com.actionbarsherlock.app.SherlockPreferenceActivity;
 import com.flurry.android.FlurryAgent;
 
 import java.util.Map;
 
-public class BasePreferenceActivity extends PreferenceActivity {
+public class BasePreferenceActivity extends SherlockPreferenceActivity {
     @Override
     public void onStart() {
         super.onStart();
@@ -44,8 +44,5 @@ public class BasePreferenceActivity extends PreferenceActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-
-        // Need to know if we are on the top level, then we should not apply this.
-        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }
 }
