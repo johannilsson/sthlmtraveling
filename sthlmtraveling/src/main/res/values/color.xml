@@ -10,9 +10,19 @@
     <color name="list_divider">#DBDBDB</color>
     <color name="header_background">#CFCFCF</color>
     <color name="actionbar_divider">#1A1A1A</color>
-    <color name="actionbar_background_start">#000000</color>
-    <color name="actionbar_background_end">#000000</color>
-    <color name="actionbar_background_item_pressed_start">#ff33b5e5</color>
-    <color name="actionbar_background_item_pressed_end">#ff33b5e5</color>
+    <drawable name="actionbar_background">#000000</drawable>
     <drawable name="ab_bg_black">#64000000</drawable>
+
+
+    <color name="sl_blue">#008ED7</color>
+    <color name="sl_light_blue">#E7F4FC</color>
+    <color name="sl_grey">#A4A5A7</color>
+    <color name="deviation">#E57622</color>
+    <!-- Traffic types -->
+    <color name="bus_red">#A4112C</color>
+    <color name="bus_blue">#003E9A</color>
+    <color name="train">#A4A5A7</color> <!-- Lokalbanor, Pendeltåg -->
+    <color name="metro_blue">#1C2F7A</color>
+    <color name="metro_red">#D51427</color>
+    <color name="metro_green">#60A42B</color>
 </resources>
