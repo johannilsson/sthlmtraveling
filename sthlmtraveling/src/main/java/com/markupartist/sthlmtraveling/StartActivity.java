@@ -16,8 +16,6 @@
 
 package com.markupartist.sthlmtraveling;
 
-import java.util.ArrayList;
-
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -29,6 +27,8 @@ import com.actionbarsherlock.app.ActionBar;
 import com.markupartist.sthlmtraveling.service.DeviationService;
 import com.markupartist.sthlmtraveling.utils.ErrorReporter;
 import com.viewpagerindicator.TabPageIndicator;
+
+import java.util.ArrayList;
 //import com.viewpagerindicator.TitleProvider;
 
 public class StartActivity extends BaseFragmentActivity {
@@ -55,16 +55,14 @@ public class StartActivity extends BaseFragmentActivity {
 
         mPageAdapter = new PageFragmentAdapter(this, getSupportFragmentManager());
 
-        mPageAdapter.addPage(new PageInfo(
-                getString(R.string.search_label), PlannerFragment.class, null));
-        mPageAdapter.addPage(new PageInfo(
-                getString(R.string.favorites_label), FavoritesFragment.class, null));
-        mPageAdapter.addPage(new PageInfo(
-                getString(R.string.departures), SearchDeparturesFragment.class, null));
-        mPageAdapter.addPage(new PageInfo(
-                getString(R.string.deviations_label), TrafficStatusFragment.class, null));
+        mPageAdapter.addPage(new PageInfo(getString(R.string.search_label), PlannerFragment.class, null));
+        mPageAdapter.addPage(new PageInfo(getString(R.string.favorites_label), FavoritesFragment.class, null));
+        mPageAdapter.addPage(new PageInfo(getString(R.string.departures), SearchDeparturesFragment.class, null));
+        mPageAdapter.addPage(new PageInfo(getString(R.string.deviations_label), TrafficStatusFragment.class, null));
 
         mPager = (ViewPager) findViewById(R.id.pager);
+        mPager.setPageMarginDrawable(R.color.light_grey);
+        mPager.setPageMargin(25);  // TODO: Compensate with denisity to get it right on all screens
         mPager.setAdapter(mPageAdapter);
 
         mIndicator = (TabPageIndicator)findViewById(R.id.indicator);

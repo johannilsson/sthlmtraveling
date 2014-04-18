@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<resources xmlns:android="http://schemas.android.com/apk/res/android">
+<resources>
     <color name="search_plate">#D1EEEE</color>
     <color name="plate_background">#2c82c0</color>
     <color name="plate_extra_background">#e4e4e4</color>
+    <color name="light_grey">#F0F0F0</color>
     <color name="stroke">#807e77</color>
     <color name="stroke_light">#ffffff</color>
     <color name="list_divider">#DBDBDB</color>
