@@ -40,9 +40,8 @@ public class BaseListActivity extends SherlockListActivity {
 
     protected ActionBar initActionBar() {
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setHomeButtonEnabled(true);
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-        actionBar.setDisplayShowHomeEnabled(true);
+        actionBar.setDisplayHomeAsUpEnabled(true);
         return actionBar;
     }
 
@@ -50,9 +49,7 @@ public class BaseListActivity extends SherlockListActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
         case android.R.id.home:
-            final Intent startIntent = new Intent(this, StartActivity.class);
-            startIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(startIntent);
+            onBackPressed();
             return true;
         }
         return super.onOptionsItemSelected(item);
