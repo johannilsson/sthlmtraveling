@@ -626,7 +626,7 @@ public class Planner {
             String departureDateString =
                 departureDate.substring(0, end).replace(".", "/");*/
 
-            return String.format("%s - %s (%s)",
+            return String.format("%s — %s (%s)",
                     departureTime, arrivalTime, durationInMinutes);
         }
 
