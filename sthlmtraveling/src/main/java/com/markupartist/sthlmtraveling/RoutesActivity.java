@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2009 Johan Nilsson <http://markupartist.com>
+ * Copyright (C) 2009-2014 Johan Nilsson <http://markupartist.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,6 @@ import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.database.Cursor;
-import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
@@ -35,7 +34,6 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.text.format.Time;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager.BadTokenException;
@@ -43,7 +41,6 @@ import android.widget.Adapter;
 import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.SimpleAdapter.ViewBinder;
@@ -57,14 +54,13 @@ import com.actionbarsherlock.view.Window;
 import com.markupartist.sthlmtraveling.MyLocationManager.MyLocationFoundListener;
 import com.markupartist.sthlmtraveling.SectionedAdapter.Section;
 import com.markupartist.sthlmtraveling.provider.JourneysProvider.Journey.Journeys;
-import com.markupartist.sthlmtraveling.provider.deviation.DeviationStore;
 import com.markupartist.sthlmtraveling.provider.planner.JourneyQuery;
 import com.markupartist.sthlmtraveling.provider.planner.Planner;
 import com.markupartist.sthlmtraveling.provider.planner.Planner.BadResponse;
 import com.markupartist.sthlmtraveling.provider.planner.Planner.Response;
-import com.markupartist.sthlmtraveling.provider.planner.Planner.SubTrip;
 import com.markupartist.sthlmtraveling.provider.planner.Planner.Trip2;
 import com.markupartist.sthlmtraveling.provider.site.Site;
+import com.markupartist.sthlmtraveling.ui.view.TripView;
 import com.markupartist.sthlmtraveling.utils.ViewHelper;
 
 import org.json.JSONException;
@@ -1100,139 +1096,9 @@ public class RoutesActivity extends BaseListActivity
         public View getView(int position, View convertView, ViewGroup parent) {
             if (!isEmpty()) {
                 Trip2 trip = mTrips.get(position);
-                return new RouteAdapterView(mContext, trip);
+                return new TripView(mContext, trip);
             }
             return new View(mContext);
-            //return createView(mContext, route);
-        }
-
-        /*
-        private View createView(Context context, Route route) {
-            LayoutInflater inflater = (LayoutInflater)context.getSystemService(
-                    Context.LAYOUT_INFLATER_SERVICE);
-
-            View layout = inflater.inflate(R.layout.routes_row, null);
-
-            TextView startPoint = (TextView) layout.findViewById(R.id.route_startpoint_label);
-            startPoint.setText(route.from);
-            TextView startPointDeparture = (TextView) layout.findViewById(R.id.route_startpoint_departure);
-            startPointDeparture.setText(route.departure);
-
-            TextView endPoint = (TextView) layout.findViewById(R.id.route_endpoint_label);
-            endPoint.setText(route.to);
-            TextView endPointArrival = (TextView) layout.findViewById(R.id.route_endpoint_arrival);
-            endPointArrival.setText(route.arrival);
-
-            TextView durationAndChanges = (TextView) layout.findViewById(R.id.route_duration_and_changes);
-            durationAndChanges.setText(route.duration);
-
-            LinearLayout routeChangesDrawables = (LinearLayout) findViewById(R.id.route_changes);
-            int currentTransportCount = 1;
-            int transportCount = route.transports.size();
-            for (Route.Transport transport : route.transports) {
-                ImageView change = new ImageView(context);
-                change.setImageResource(transport.imageResource());
-                change.setPadding(0, 0, 5, 0);
-                routeChangesDrawables.addView(change);
-
-                if (transportCount > currentTransportCount) {
-                    ImageView separator = new ImageView(context);
-                    separator.setImageResource(R.drawable.transport_separator);
-                    separator.setPadding(0, 5, 5, 0);
-                    routeChangesDrawables.addView(separator);
-                }
-
-                currentTransportCount++;
-            }
-            
-            return layout;
-        }
-        */
-    }
-
-    private class RouteAdapterView extends LinearLayout {
-        // TODO: Replace this hack with a proper layout defined in XML.
-        public RouteAdapterView(Context context, Trip2 trip) {
-            super(context);
-            this.setOrientation(VERTICAL);
-
-            float scale = getResources().getDisplayMetrics().density;
-
-            this.setPadding((int)(5 * scale), (int)(10 * scale), (int)(5 * scale), (int)(10 * scale));
-
-            LinearLayout timeLayout = new LinearLayout(context);
-
-            TextView routeDetail = new TextView(context);
-            routeDetail.setText(trip.toText());
-            routeDetail.setTextColor(Color.BLACK);
-            routeDetail.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
-            routeDetail.setPadding((int)(5 * scale), (int)(2 * scale), 0, (int)(2 * scale));
-            //routeDetail.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
-
-            timeLayout.addView(routeDetail);
-            
-            if (trip.mt6MessageExist || trip.remarksMessageExist || trip.rtuMessageExist) {
-                ImageView warning = new ImageView(context);
-                warning.setImageResource(R.drawable.ic_trip_deviation);
-                warning.setPadding((int)(8 * scale), (int)(7 * scale), 0, 0);
-
-                timeLayout.addView(warning);
-            }
-
-            TextView startAndEndPoint = new TextView(context);
-            startAndEndPoint.setText(trip.origin.name + " - " + trip.destination.name);
-            startAndEndPoint.setTextColor(0xFF444444); // Dark gray
-            startAndEndPoint.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
-            startAndEndPoint.setPadding((int)(5 * scale), (int)(2 * scale), 0, (int)(2 * scale));
-            
-            LinearLayout routeChanges = new LinearLayout(context);
-            routeChanges.setPadding((int)(5 * scale), (int)(10 * scale), 0, 0);
-
-            int currentTransportCount = 1;
-
-            int transportCount = trip.subTrips.size();
-            for (SubTrip subTrip : trip.subTrips) {
-                ImageView change = new ImageView(context);
-                change.setImageResource(subTrip.transport.getImageResource());
-                change.setPadding(0, 0, (int)(5 * scale), 0);
-                routeChanges.addView(change);
-
-                /*
-                RoundRectShape rr = new RoundRectShape(new float[]{6, 6, 6, 6, 6, 6, 6, 6}, null, null);
-                ShapeDrawable ds = new ShapeDrawable();
-                ds.setShape(rr);
-                ds.setColorFilter(transport.getColor(), Mode.SCREEN);
-                */
-
-                // Okey, this is _not_ okey!!
-                ArrayList<Integer> lineNumbers = new ArrayList<Integer>();
-                lineNumbers = DeviationStore.extractLineNumbers(subTrip.transport.name, lineNumbers);
-                if (!lineNumbers.isEmpty()) {
-                    TextView lineNumberView = new TextView(context);
-                    lineNumberView.setTextColor(Color.BLACK);
-                    lineNumberView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
-                    //lineNumberView.setBackgroundDrawable(ds);
-                    //lineNumberView.setText(transport.getShortName());
-                    lineNumberView.setText(Integer.toString(lineNumbers.get(0)));
-                    //lineNumberView.setPadding(7, 2, 7, 2);
-                    lineNumberView.setPadding((int)(2 * scale), (int)(2 * scale), (int)(2 * scale), (int)(2 * scale));
-                    routeChanges.addView(lineNumberView);
-                }
-
-                if (transportCount > currentTransportCount) {
-                    ImageView separator = new ImageView(context);
-                    separator.setImageResource(R.drawable.transport_separator);
-                    //separator.setPadding(9, 7, 9, 0);
-                    separator.setPadding((int)(5 * scale), (int)(7 * scale), (int)(5 * scale), 0);
-                    routeChanges.addView(separator);
-                }
-
-                currentTransportCount++;
-            }
-
-            this.addView(timeLayout);
-            this.addView(startAndEndPoint);
-            this.addView(routeChanges);
         }
     }
 
