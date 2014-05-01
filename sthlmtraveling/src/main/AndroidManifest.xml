@@ -113,20 +113,21 @@
         <activity android:name=".RouteDetailActivity"
                   android:label="@string/route_details_label"
                   android:configChanges="locale"
-                  ></activity>
+                  />
         <activity android:name=".ChangeRouteTimeActivity"
                   android:label="@string/change_date_and_time"
-                  android:configChanges="locale"></activity>
+                  android:configChanges="locale"/>
         <activity android:name=".PointOnMapActivity"
                   android:label="@string/point_on_map"
-                  android:configChanges="locale|orientation"></activity>
+                  android:configChanges="locale|orientation"/>
         <activity android:name=".ViewOnMapActivity"
                   android:label="@string/stop_label"
-                  android:configChanges="locale|orientation"></activity>
+                  android:configChanges="locale|orientation"
+            />
         <activity android:name=".SearchDeparturesFragmentActivity"
                   android:label="@string/departures"
                   android:configChanges="locale|orientation"
-                  ></activity>
+                  />
         <activity-alias android:name="CreateDepartureShortcutActivity"
 			            android:targetActivity="SearchDeparturesFragmentActivity"
 			            android:label="@string/activity_create_departure_shortcut"

@@ -39,7 +39,6 @@ import android.view.ViewGroup;
 import android.view.WindowManager.BadTokenException;
 import android.widget.Adapter;
 import android.widget.BaseAdapter;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
@@ -157,9 +156,6 @@ public class RoutesActivity extends BaseListActivity
     
     private RoutesAdapter mRouteAdapter;
     private MultipleListAdapter mMultipleListAdapter;
-    private TextView mFromView;
-    private TextView mToView;
-    private TextView mViaView;
     private ArrayList<HashMap<String, String>> mDateAdapterData;
 
     private MyLocationManager mMyLocationManager;
@@ -173,8 +169,6 @@ public class RoutesActivity extends BaseListActivity
     private String mRouteErrorCode;
 
     private Bundle mSavedState;
-
-    private ImageButton mFavoriteButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -199,24 +193,11 @@ public class RoutesActivity extends BaseListActivity
             return;
         }
 
+        getListView().setHeaderDividersEnabled(false);
+
         initActionBar();
 
-        View headerView = getLayoutInflater().inflate(R.layout.route_header, null);
-        mFromView = (TextView) headerView.findViewById(R.id.route_from);
-        mToView = (TextView) headerView.findViewById(R.id.route_to);
-
-        if (mJourneyQuery.hasVia()) {
-            headerView.findViewById(R.id.via_row).setVisibility(View.VISIBLE);
-            mViaView = (TextView) headerView.findViewById(R.id.route_via);
-            mViaView.setText(mJourneyQuery.via.name);
-        }
-
-        getListView().addHeaderView(headerView, null, false);
-
-        updateStartAndEndPointViews(mJourneyQuery.origin, mJourneyQuery.destination);
-
-        mFavoriteButton = (ImageButton) findViewById(R.id.route_favorite);
-        mFavoriteButton.setOnClickListener(new OnStarredJourneyButtonClickListener());
+        updateStartAndEndPointViews(mJourneyQuery);
 
         updateJourneyHistory();
 
@@ -231,10 +212,26 @@ public class RoutesActivity extends BaseListActivity
     }
 
     @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        MenuItem starItem = menu.findItem(R.id.actionbar_item_star);
+        if (isStarredJourney(mJourneyQuery)) {
+            starItem.setIcon(R.drawable.ic_action_star_on);
+        } else {
+            starItem.setIcon(R.drawable.ic_action_star_off);
+        }
+
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
         case R.id.actionbar_item_reverse:
             reverseJourneyQuery();
+            return true;
+        case R.id.actionbar_item_star:
+            handleStarAction();
+            supportInvalidateOptionsMenu();
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -294,42 +291,6 @@ public class RoutesActivity extends BaseListActivity
         }
 
         return jq;
-    }
-    
-    /**
-     * Update the {@link TextView} for start and end points in the ui.
-     * @param startPoint the start point
-     * @param endPoint the end point
-     */
-    private void updateStartAndEndPointViews(Planner.Location startPoint,
-            Planner.Location endPoint) {
-        if (startPoint.isMyLocation()) {
-            mFromView.setText(getMyLocationString(startPoint));
-        } else {
-            mFromView.setText(startPoint.name);
-        }
-        if (endPoint.isMyLocation()) {
-            mToView.setText(getMyLocationString(endPoint));
-        } else {
-            mToView.setText(endPoint.name);
-        }
-    }
-
-    /**
-     * Helper that returns the my location text representation. If the {@link Location}
-     * is set the accuracy will also be appended.
-     * @param stop the stop
-     * @return a text representation of my location
-     */
-    private CharSequence getMyLocationString(Planner.Location stop) {
-        CharSequence string = getText(R.string.my_location);
-        /*
-        Location location = stop.getLocation(); 
-        if (location != null) {
-            string = String.format("%s (%sm)", string, location.getAccuracy());
-        }
-        */
-        return string;
     }
 
     /**
@@ -717,11 +678,6 @@ public class RoutesActivity extends BaseListActivity
             mSectionedAdapter.notifyDataSetChanged();
         }
 
-        if (isStarredJourney(mJourneyQuery)) {
-            mFavoriteButton.setImageResource(R.drawable.btn_star_on_normal_holo_dark);
-        } else {
-            mFavoriteButton.setImageResource(R.drawable.btn_star_off_normal_holo_dark);
-        }
     }
 
     /*
@@ -783,7 +739,7 @@ public class RoutesActivity extends BaseListActivity
             }
         }
 
-        updateStartAndEndPointViews(startPoint, endPoint);
+        updateStartAndEndPointViews(mJourneyQuery);
 
         // TODO: Maybe need to set start and end points to the trip again here?
         mSearchRoutesTask = new SearchRoutesTask();
@@ -792,7 +748,7 @@ public class RoutesActivity extends BaseListActivity
 
     /**
      * Find route details. Will start {@link RouteDetailActivity}. 
-     * @param route the route to find details for 
+     * @param trip the route to find details for
      */
     private void findRouteDetails(final Trip2 trip) {
         // TODO: Change to pass the trip later on instead.
@@ -823,8 +779,6 @@ public class RoutesActivity extends BaseListActivity
                 HashMap<String, String> item = mDateAdapterData.get(0);
                 item.put("title", buildDateString());
 
-                //updateStartAndEndPointViews(startPoint, endPoint);
-
                 mSearchRoutesTask = new SearchRoutesTask();
                 mSearchRoutesTask.execute(mJourneyQuery);
             }
@@ -846,8 +800,7 @@ public class RoutesActivity extends BaseListActivity
                 mSearchRoutesTask.execute(mJourneyQuery);
 
                 // TODO: Is this call really needed?
-                updateStartAndEndPointViews(mJourneyQuery.origin,
-                        mJourneyQuery.destination);
+                updateStartAndEndPointViews(mJourneyQuery);
             }
             break;
         case REQUEST_CODE_POINT_ON_MAP_END:
@@ -867,8 +820,8 @@ public class RoutesActivity extends BaseListActivity
                 mSearchRoutesTask.execute(mJourneyQuery);
 
                 // TODO: Is this call really needed?
-                updateStartAndEndPointViews(mJourneyQuery.origin,
-                        mJourneyQuery.destination);            }
+                updateStartAndEndPointViews(mJourneyQuery);
+            }
             
             break;
         }
@@ -889,8 +842,7 @@ public class RoutesActivity extends BaseListActivity
         mSearchRoutesTask = new SearchRoutesTask();
         mSearchRoutesTask.execute(mJourneyQuery);
 
-        updateStartAndEndPointViews(
-                mJourneyQuery.origin, mJourneyQuery.destination);
+        updateStartAndEndPointViews(mJourneyQuery);
     }
 
     @Override
@@ -1096,7 +1048,9 @@ public class RoutesActivity extends BaseListActivity
         public View getView(int position, View convertView, ViewGroup parent) {
             if (!isEmpty()) {
                 Trip2 trip = mTrips.get(position);
-                return new TripView(mContext, trip);
+                TripView v = new TripView(mContext);
+                v.setTrip(trip);
+                return v;
             }
             return new View(mContext);
         }
@@ -1115,36 +1069,6 @@ public class RoutesActivity extends BaseListActivity
     private void dismissProgress() {
         setSupportProgressBarIndeterminateVisibility(false);
     }
-
-    /**
-     * Share the list of {@link Route}S with others.
-     * @param routes the routes
-     */
-    /*
-    public void share(ArrayList<Route> routes) {
-        if (routes == null) {
-            return; // TODO: Fire a toast with some message.
-        }
-
-        final Intent intent = new Intent(Intent.ACTION_SEND);
-
-        String routesString = "";
-        int routesCount = routes.size();
-        int addedRoutes = 0;
-        for (Route route : routes) {
-            routesString += route.toTextRepresentation();
-            addedRoutes++;
-            if (routesCount > addedRoutes)
-                routesString += "\n----------\n";
-        }
-
-        intent.setType("text/plain");
-        intent.putExtra(Intent.EXTRA_SUBJECT, getText(R.string.routes_label));
-        intent.putExtra(Intent.EXTRA_TEXT, routesString);
-
-        startActivity(Intent.createChooser(intent, getText(R.string.share_label)));
-    }
-    */
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
@@ -1359,6 +1283,36 @@ public class RoutesActivity extends BaseListActivity
         return isStarred;
     }
 
+    private void handleStarAction() {
+        String json;
+        try {
+            json = mJourneyQuery.toJson(false).toString();
+        } catch (JSONException e) {
+            Log.e(TAG, "Failed to convert journey to a json document.");
+            return;
+        }
+
+        ContentValues values = new ContentValues();
+        values.put(Journeys.JOURNEY_DATA, json);
+        Uri uri = Journeys.CONTENT_URI;
+        String where = Journeys.JOURNEY_DATA + "= ?";
+        String[] selectionArgs = new String[] { json };
+        // TODO: Replace button with a checkbox and check with that instead?
+        if (isStarredJourney(mJourneyQuery)) {
+            values.put(Journeys.STARRED, "0");
+            getContentResolver().update(
+                    uri, values, where, selectionArgs);
+        } else {
+            values.put(Journeys.STARRED, "1");
+            int affectedRows = getContentResolver().update(
+                    uri, values, where, selectionArgs);
+            if (affectedRows <= 0) {
+                getContentResolver().insert(
+                        Journeys.CONTENT_URI, values);
+            }
+        }
+    }
+
     /**
      * Updates the journey history.
      */
@@ -1417,40 +1371,4 @@ public class RoutesActivity extends BaseListActivity
         
     }
 
-    private class OnStarredJourneyButtonClickListener implements View.OnClickListener {
-        @Override
-        public void onClick(View v) {
-            String json;
-            try {
-                json = mJourneyQuery.toJson(false).toString();
-            } catch (JSONException e) {
-                Log.e(TAG, "Failed to convert journey to a json document.");
-                return;
-            }
-
-            ContentValues values = new ContentValues();
-            values.put(Journeys.JOURNEY_DATA, json);
-            Uri uri = Journeys.CONTENT_URI;
-            String where = Journeys.JOURNEY_DATA + "= ?";
-            String[] selectionArgs = new String[] { json };
-            // TODO: Replace button with a checkbox and check with that instead?
-            if (isStarredJourney(mJourneyQuery)) {
-                values.put(Journeys.STARRED, "0");
-                getContentResolver().update(
-                        uri, values, where, selectionArgs);
-                mFavoriteButton.setImageResource(
-                        R.drawable.btn_star_off_normal_holo_dark);
-            } else {
-                values.put(Journeys.STARRED, "1");
-                int affectedRows = getContentResolver().update(
-                        uri, values, where, selectionArgs);
-                if (affectedRows <= 0) {
-                    getContentResolver().insert(
-                            Journeys.CONTENT_URI, values);
-                }
-                mFavoriteButton.setImageResource(
-                        R.drawable.btn_star_on_normal_holo_dark);
-            }
-        }
-    }
 }

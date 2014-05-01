@@ -4,6 +4,9 @@
     <style name="Theme.App.SplitActionBar" parent="@style/Theme.Sherlock.Light.DarkActionBar">
         <item name="borderlessButtonStyle">@style/LegacyBorderlessButton</item>
         <item name="windowContentOverlay">@null</item>
+        <item name="android:icon">@android:color/transparent</item>
+        <item name="android:windowBackground">@color/background</item>
+        <item name="actionBarDivider">@drawable/abs__list_divider_holo_light</item>
 
         <!-- ActionBar related -->
         <item name="actionBarItemBackground">@drawable/selectable_background_app</item>
@@ -21,6 +24,7 @@
     </style>
 
     <style name="Theme.App" parent="@style/Theme.Sherlock.Light">
+        <item name="android:icon">@android:color/transparent</item>
         <item name="borderlessButtonStyle">@style/LegacyBorderlessButton</item>
         <item name="windowContentOverlay">@null</item>
 

@@ -24,4 +24,10 @@
         android:title="@string/reverse_start_end"
         android:showAsAction="always"
         />
+    <item
+        android:id="@+id/actionbar_item_star"
+        android:icon="@drawable/ic_action_star_off"
+        android:title="@string/reverse_start_end"
+        android:showAsAction="always"
+        />
 </menu>

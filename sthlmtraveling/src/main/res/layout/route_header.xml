@@ -26,6 +26,7 @@
     <LinearLayout 
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:visibility="gone"
         >
         <TableLayout
             android:layout_width="wrap_content"
@@ -132,5 +133,12 @@
             android:paddingTop="5dip"
             />
     </LinearLayout>
+
+    <com.markupartist.sthlmtraveling.ui.view.TripView
+        android:id="@+id/route_trip"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
     <include layout="@layout/route_header_details"  />
 </LinearLayout>

@@ -18,6 +18,7 @@ package com.markupartist.sthlmtraveling.ui.view;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -33,17 +34,32 @@ import java.util.ArrayList;
  * Represent a Route
  */
 public class TripView extends LinearLayout {
-    public TripView(Context context, Planner.Trip2 trip) {
+    private Planner.Trip2 trip;
+
+    public TripView(Context context) {
         super(context);
+    }
+
+    public TripView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+    }
+
+    public void setTrip(final Planner.Trip2 trip) {
+        this.trip = trip;
+        removeAllViews();
+        updateViews();
+    }
+
+    public void updateViews() {
         this.setOrientation(VERTICAL);
 
         float scale = getResources().getDisplayMetrics().density;
 
         this.setPadding((int)(5 * scale), (int)(10 * scale), (int)(5 * scale), (int)(10 * scale));
 
-        LinearLayout timeLayout = new LinearLayout(context);
+        LinearLayout timeLayout = new LinearLayout(getContext());
 
-        TextView routeDetail = new TextView(context);
+        TextView routeDetail = new TextView(getContext());
         routeDetail.setText(trip.toText());
         routeDetail.setTextColor(Color.BLACK);
         routeDetail.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
@@ -53,27 +69,27 @@ public class TripView extends LinearLayout {
         timeLayout.addView(routeDetail);
 
         if (trip.mt6MessageExist || trip.remarksMessageExist || trip.rtuMessageExist) {
-            ImageView warning = new ImageView(context);
+            ImageView warning = new ImageView(getContext());
             warning.setImageResource(R.drawable.ic_trip_deviation);
             warning.setPadding((int)(8 * scale), (int)(7 * scale), 0, 0);
 
             timeLayout.addView(warning);
         }
 
-        TextView startAndEndPoint = new TextView(context);
+        TextView startAndEndPoint = new TextView(getContext());
         startAndEndPoint.setText(trip.origin.name + " — " + trip.destination.name);
         startAndEndPoint.setTextColor(0xFF444444); // Dark gray
         startAndEndPoint.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
         startAndEndPoint.setPadding((int)(5 * scale), (int)(2 * scale), 0, (int)(2 * scale));
 
-        LinearLayout routeChanges = new LinearLayout(context);
+        LinearLayout routeChanges = new LinearLayout(getContext());
         routeChanges.setPadding((int)(5 * scale), (int)(10 * scale), 0, 0);
 
         int currentTransportCount = 1;
 
         int transportCount = trip.subTrips.size();
         for (Planner.SubTrip subTrip : trip.subTrips) {
-            ImageView change = new ImageView(context);
+            ImageView change = new ImageView(getContext());
             change.setImageResource(subTrip.transport.getImageResource());
             change.setPadding(0, 0, (int)(5 * scale), 0);
             routeChanges.addView(change);
@@ -89,7 +105,7 @@ public class TripView extends LinearLayout {
             ArrayList<Integer> lineNumbers = new ArrayList<Integer>();
             lineNumbers = DeviationStore.extractLineNumbers(subTrip.transport.name, lineNumbers);
             if (!lineNumbers.isEmpty()) {
-                TextView lineNumberView = new TextView(context);
+                TextView lineNumberView = new TextView(getContext());
                 lineNumberView.setTextColor(Color.BLACK);
                 lineNumberView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
                 //lineNumberView.setBackgroundDrawable(ds);
@@ -101,7 +117,7 @@ public class TripView extends LinearLayout {
             }
 
             if (transportCount > currentTransportCount) {
-                ImageView separator = new ImageView(context);
+                ImageView separator = new ImageView(getContext());
                 separator.setImageResource(R.drawable.transport_separator);
                 //separator.setPadding(9, 7, 9, 0);
                 separator.setPadding((int)(5 * scale), (int)(7 * scale), (int)(5 * scale), 0);

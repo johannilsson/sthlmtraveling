@@ -905,6 +905,18 @@ public class Planner {
         public boolean hasName() {
             return !TextUtils.isEmpty(name);
         }
+
+        /**
+         * Get a clean representation of the stop name.
+         *
+         * @return The name
+         */
+        public CharSequence getCleanName() {
+            if (TextUtils.isEmpty(name)) {
+                return "";
+            }
+            return name.replaceAll("\\(.*\\)", "");
+        }
     }
 
     public static class TransportType implements Parcelable {

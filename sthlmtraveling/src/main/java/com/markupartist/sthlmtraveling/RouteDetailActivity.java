@@ -16,22 +16,12 @@
 
 package com.markupartist.sthlmtraveling;
 
-import java.io.IOException;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-
-import org.json.JSONException;
-
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.database.Cursor;
 import android.location.Location;
 import android.net.Uri;
@@ -63,6 +53,16 @@ import com.markupartist.sthlmtraveling.provider.planner.Planner;
 import com.markupartist.sthlmtraveling.provider.planner.Planner.IntermediateStop;
 import com.markupartist.sthlmtraveling.provider.planner.Planner.SubTrip;
 import com.markupartist.sthlmtraveling.provider.planner.Planner.Trip2;
+import com.markupartist.sthlmtraveling.ui.view.TripView;
+
+import org.json.JSONException;
+
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
 
 public class RouteDetailActivity extends BaseListActivity {
     public static final String TAG = "RouteDetailActivity";
@@ -101,19 +101,10 @@ public class RouteDetailActivity extends BaseListActivity {
 
         mActionBar = initActionBar();
 
+        updateStartAndEndPointViews(mJourneyQuery);
+
+        // Include the time, kill?
         View headerView = getLayoutInflater().inflate(R.layout.route_header, null);
-        TextView startPointView = (TextView) headerView.findViewById(R.id.route_from);
-        TextView endPointView = (TextView) headerView.findViewById(R.id.route_to);
-        //getListView().addHeaderView(headerView, null, false);
-
-        startPointView.setText(getLocationName(mJourneyQuery.origin));
-        endPointView.setText(getLocationName(mJourneyQuery.destination));
-
-        if (mJourneyQuery.hasVia()) {
-            headerView.findViewById(R.id.via_row).setVisibility(View.VISIBLE);
-            TextView viaTextView = (TextView) headerView.findViewById(R.id.route_via);
-            viaTextView.setText(mJourneyQuery.via.name);
-        }
 
         String durationInMinutes = mTrip.duration;
         try {
@@ -130,23 +121,15 @@ public class RouteDetailActivity extends BaseListActivity {
             Log.e(TAG, "Error parsing duration, " + e.getMessage());
         }
 
-        /*View headerDetailView = getLayoutInflater().inflate(
-                R.layout.route_header_details, null);*/
+//        LinearLayout headerDetailView = (LinearLayout) headerView.findViewById(R.id.header_details);
+//        headerDetailView.setVisibility(View.VISIBLE);
 
-        LinearLayout headerDetailView = (LinearLayout) headerView.findViewById(R.id.header_details);
-        headerDetailView.setVisibility(View.VISIBLE);
-        
-        StringBuilder timeBuilder = new StringBuilder();
-        timeBuilder.append(mTrip.departureTime);
-        timeBuilder.append(" - ");
-        timeBuilder.append(mTrip.arrivalTime);
-        timeBuilder.append(" (");
-        timeBuilder.append(durationInMinutes);
-        timeBuilder.append(")");
-        
-        //TextView timeView = (TextView) findViewById(R.id.route_date_time);
+        TripView tripView = (TripView) headerView.findViewById(R.id.route_trip);
+        tripView.setVisibility(View.VISIBLE);
+        tripView.setTrip(mTrip);
+
         TextView timeView = (TextView) headerView.findViewById(R.id.route_date_time);
-        timeView.setText(timeBuilder.toString());
+        timeView.setText(mTrip.departureTime + " - " + mTrip.arrivalTime + " (" + durationInMinutes + ")");
         
         // TODO: We should parse the date when getting the results and store a
         // Time object instead.
@@ -158,7 +141,6 @@ public class RouteDetailActivity extends BaseListActivity {
             ;
         }
         SimpleDateFormat otherFormat = new SimpleDateFormat("yyyy-MM-dd");
-        //TextView dateView = (TextView) findViewById(R.id.route_date_of_trip);
         TextView dateView = (TextView) headerView.findViewById(R.id.route_date_of_trip);
         if (date != null) {
             dateView.setText(getString(R.string.date_of_trip, otherFormat.format(date)));
@@ -166,14 +148,7 @@ public class RouteDetailActivity extends BaseListActivity {
             dateView.setVisibility(View.GONE);
         }
 
-        //getListView().addHeaderView(headerDetailView, null, false);
         getListView().addHeaderView(headerView, null, false);
-
-        mFavoriteButton = (ImageButton) findViewById(R.id.route_favorite);
-        if (isStarredJourney(mJourneyQuery)) {
-            mFavoriteButton.setImageResource(R.drawable.btn_star_on_normal_holo_dark);
-        }
-        mFavoriteButton.setOnClickListener(new OnStarredJourneyButtonClickListener());
 
         //initRouteDetails(mRoute);
         onRouteDetailsResult(mTrip);
@@ -187,18 +162,15 @@ public class RouteDetailActivity extends BaseListActivity {
     }
 
     @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        onRotationChange(newConfig);
-
-        super.onConfigurationChanged(newConfig);
-    }
-
-    private void onRotationChange(Configuration newConfig) {
-        /*
-        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        MenuItem starItem = menu.findItem(R.id.actionbar_item_star);
+        if (isStarredJourney(mJourneyQuery)) {
+            starItem.setIcon(R.drawable.ic_action_star_on);
         } else {
+            starItem.setIcon(R.drawable.ic_action_star_off);
         }
-        */
+
+        return super.onPrepareOptionsMenu(menu);
     }
 
     @Override
@@ -216,6 +188,10 @@ public class RouteDetailActivity extends BaseListActivity {
             } else {
                 Toast.makeText(this, R.string.sms_ticket_notice_disabled, Toast.LENGTH_LONG).show();
             }
+            return true;
+        case R.id.actionbar_item_star:
+            handleStarAction();
+            supportInvalidateOptionsMenu();
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -348,8 +324,7 @@ public class RouteDetailActivity extends BaseListActivity {
                     getText(R.string.sms_ticket_price_reduced) + " " + getReducedPrice()
                 };
             return new AlertDialog.Builder(this)
-            .setTitle(String.format("%s (%s)",
-                    getText(R.string.sms_ticket_label), mTrip.tariffZones))
+            .setTitle(String.format("%s (%s)", getText(R.string.sms_ticket_label), mTrip.tariffZones))
                 .setItems(smsOptions, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int item) {
                         switch(item) {
@@ -374,24 +349,6 @@ public class RouteDetailActivity extends BaseListActivity {
     private CharSequence getReducedPrice() {
         final int[] PRICE = new int[] { 20, 30, 40 };
         return PRICE[mTrip.tariffZones.length() - 1] + " kr";
-    }
-
-    /**
-     * Share a {@link Trip2} with others.
-     * @param route the route to share
-     */
-    public void share(Trip2 route) {
-        Toast.makeText(this, "Share is temporally disabled.",
-                Toast.LENGTH_LONG).show();
-        /*
-        final Intent intent = new Intent(Intent.ACTION_SEND);
-
-        intent.setType("text/plain");
-        intent.putExtra(Intent.EXTRA_SUBJECT, getText(R.string.route_details_label));
-        intent.putExtra(Intent.EXTRA_TEXT, route.toTextRepresentation());
-
-        startActivity(Intent.createChooser(intent, getText(R.string.share_label)));
-        */
     }
 
     /**
@@ -611,40 +568,32 @@ public class RouteDetailActivity extends BaseListActivity {
         }
     };
 
-    private class OnStarredJourneyButtonClickListener implements View.OnClickListener {
-        @Override
-        public void onClick(View v) {
-            String json;
-            try {
-                json = mJourneyQuery.toJson(false).toString();
-            } catch (JSONException e) {
-                Log.e(TAG, "Failed to convert journey to a json document.");
-                return;
-            }
+    private void handleStarAction() {
+        String json;
+        try {
+            json = mJourneyQuery.toJson(false).toString();
+        } catch (JSONException e) {
+            Log.e(TAG, "Failed to convert journey to a json document.");
+            return;
+        }
 
-            ContentValues values = new ContentValues();
-            values.put(Journeys.JOURNEY_DATA, json);
-            Uri uri = Journeys.CONTENT_URI;
-            String where = Journeys.JOURNEY_DATA + "= ?";
-            String[] selectionArgs = new String[] { json };
-            // TODO: Replace button with a checkbox and check with that instead?
-            if (isStarredJourney(mJourneyQuery)) {
-                values.put(Journeys.STARRED, "0");
-                getContentResolver().update(
-                        uri, values, where, selectionArgs);
-                mFavoriteButton.setImageResource(
-                        R.drawable.btn_star_off_normal_holo_dark);
-            } else {
+        ContentValues values = new ContentValues();
+        values.put(Journeys.JOURNEY_DATA, json);
+        Uri uri = Journeys.CONTENT_URI;
+        String where = Journeys.JOURNEY_DATA + "= ?";
+        String[] selectionArgs = new String[] { json };
+        if (isStarredJourney(mJourneyQuery)) {
+            values.put(Journeys.STARRED, "0");
+            getContentResolver().update(
+                    uri, values, where, selectionArgs);
+        } else {
+            values.put(Journeys.STARRED, "1");
+            int affectedRows = getContentResolver().update(
+                    uri, values, where, selectionArgs);
+            if (affectedRows <= 0) {
                 values.put(Journeys.STARRED, "1");
-                int affectedRows = getContentResolver().update(
-                        uri, values, where, selectionArgs);
-                if (affectedRows <= 0) {
-                    values.put(Journeys.STARRED, "1");
-                    getContentResolver().insert(
-                            Journeys.CONTENT_URI, values);
-                }
-                mFavoriteButton.setImageResource(
-                        R.drawable.btn_star_on_normal_holo_dark);
+                getContentResolver().insert(
+                        Journeys.CONTENT_URI, values);
             }
         }
     }

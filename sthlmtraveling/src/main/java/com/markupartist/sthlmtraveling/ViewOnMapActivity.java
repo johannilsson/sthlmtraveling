@@ -19,6 +19,7 @@ package com.markupartist.sthlmtraveling;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.actionbarsherlock.app.ActionBar;
@@ -39,6 +40,7 @@ import com.markupartist.sthlmtraveling.provider.planner.Planner;
 import com.markupartist.sthlmtraveling.provider.planner.Planner.IntermediateStop;
 import com.markupartist.sthlmtraveling.provider.planner.Planner.SubTrip;
 import com.markupartist.sthlmtraveling.provider.planner.Planner.Trip2;
+import com.markupartist.sthlmtraveling.utils.StringUtils;
 
 import java.io.IOException;
 
@@ -104,13 +106,11 @@ public class ViewOnMapActivity extends SherlockFragmentActivity {
 
         Bundle extras = getIntent().getExtras();
 
-        mTrip = (Trip2) extras.getParcelable(EXTRA_TRIP);
-        mJourneyQuery = (JourneyQuery) extras.getParcelable(EXTRA_JOURNEY_QUERY);
-        final Planner.Location focusedLocation =
-                (Planner.Location) extras.getParcelable(EXTRA_LOCATION);
+        mTrip = extras.getParcelable(EXTRA_TRIP);
+        mJourneyQuery = extras.getParcelable(EXTRA_JOURNEY_QUERY);
+        final Planner.Location focusedLocation = extras.getParcelable(EXTRA_LOCATION);
 
-        mFocusedLatLng = new LatLng(
-                focusedLocation.latitude / 1E6, focusedLocation.longitude / 1E6);
+        mFocusedLatLng = new LatLng(focusedLocation.latitude / 1E6, focusedLocation.longitude / 1E6);
 
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -123,6 +123,8 @@ public class ViewOnMapActivity extends SherlockFragmentActivity {
             // activity life cycle. There is no need to reinitialize it.
             mMap = mapFragment.getMap();
         }
+
+        updateStartAndEndPointViews(mJourneyQuery);
 
         setUpMapIfNeeded();
     }
@@ -272,4 +274,34 @@ public class ViewOnMapActivity extends SherlockFragmentActivity {
             ));
     }
 
+    /**
+     * Update the action bar with start and end points.
+     * @param journeyQuery the journey query
+     */
+    protected void updateStartAndEndPointViews(final JourneyQuery journeyQuery) {
+        ActionBar ab = getSupportActionBar();
+        if (journeyQuery.origin.isMyLocation()) {
+            ab.setTitle(StringUtils.getStyledMyLocationString(this));
+        } else {
+            ab.setTitle(journeyQuery.origin.getCleanName());
+        }
+
+        CharSequence via = null;
+        if (journeyQuery.hasVia()) {
+            via = journeyQuery.via.getCleanName();
+        }
+        if (journeyQuery.destination.isMyLocation()) {
+            if (via != null) {
+                ab.setSubtitle(TextUtils.join(" • ", new CharSequence[]{via, StringUtils.getStyledMyLocationString(this)}));
+            } else {
+                ab.setSubtitle(StringUtils.getStyledMyLocationString(this));
+            }
+        } else {
+            if (via != null) {
+                ab.setSubtitle(TextUtils.join(" • ", new CharSequence[]{via, journeyQuery.destination.getCleanName()}));
+            } else {
+                ab.setSubtitle(journeyQuery.destination.name);
+            }
+        }
+    }
 }
