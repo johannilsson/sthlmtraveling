@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2009 Johan Nilsson <http://markupartist.com>
+ * Copyright (C) 2009-2014 Johan Nilsson <http://markupartist.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,20 +21,18 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.markupartist.sthlmtraveling.service.DeviationService;
 import com.markupartist.sthlmtraveling.utils.ErrorReporter;
-import com.viewpagerindicator.TabPageIndicator;
 
 import java.util.ArrayList;
 //import com.viewpagerindicator.TitleProvider;
 
 public class StartActivity extends BaseFragmentActivity {
-    private PageFragmentAdapter mPageAdapter;
     private ViewPager mPager;
-    private TabPageIndicator mIndicator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,31 +40,59 @@ public class StartActivity extends BaseFragmentActivity {
 
         setContentView(R.layout.start);
 
-        ActionBar ab = getSupportActionBar();
-        ab.setHomeButtonEnabled(false);
-        ab.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-        ab.setDisplayShowHomeEnabled(true);
-        ab.setDisplayUseLogoEnabled(true);
-        //ab.setHomeLogo(R.drawable.logo);
-        ab.setTitle(R.string.app_name);
+        PageFragmentAdapter pageAdapter = new PageFragmentAdapter(this, getSupportFragmentManager());
 
-        final ErrorReporter reporter = ErrorReporter.getInstance();
-        reporter.checkErrorAndReport(this);
-
-        mPageAdapter = new PageFragmentAdapter(this, getSupportFragmentManager());
-
-        mPageAdapter.addPage(new PageInfo(getString(R.string.search_label), PlannerFragment.class, null));
-        mPageAdapter.addPage(new PageInfo(getString(R.string.favorites_label), FavoritesFragment.class, null));
-        mPageAdapter.addPage(new PageInfo(getString(R.string.departures), SearchDeparturesFragment.class, null));
-        mPageAdapter.addPage(new PageInfo(getString(R.string.deviations_label), TrafficStatusFragment.class, null));
+        pageAdapter.addPage(new PageInfo(getString(R.string.search_label), PlannerFragment.class, null));
+        pageAdapter.addPage(new PageInfo(getString(R.string.favorites_label), FavoritesFragment.class, null));
+        pageAdapter.addPage(new PageInfo(getString(R.string.departures), SearchDeparturesFragment.class, null));
+        pageAdapter.addPage(new PageInfo(getString(R.string.deviations_label), TrafficStatusFragment.class, null));
 
         mPager = (ViewPager) findViewById(R.id.pager);
         mPager.setPageMarginDrawable(R.color.light_grey);
         mPager.setPageMargin(25);  // TODO: Compensate with denisity to get it right on all screens
-        mPager.setAdapter(mPageAdapter);
+        mPager.setAdapter(pageAdapter);
+        mPager.setOnPageChangeListener(
+                new ViewPager.SimpleOnPageChangeListener() {
+                    @Override
+                    public void onPageSelected(int position) {
+                        getSupportActionBar().setSelectedNavigationItem(position);
+                    }
+                }
+        );
 
-        mIndicator = (TabPageIndicator)findViewById(R.id.indicator);
-        mIndicator.setViewPager(mPager);
+        //TabPageIndicator tabPageIndicator = (TabPageIndicator) findViewById(R.id.indicator);
+        //tabPageIndicator.setViewPager(mPager);
+
+        ActionBar ab = getSupportActionBar();
+        ab.setDisplayShowTitleEnabled(false);
+        ab.setDisplayShowHomeEnabled(false);
+        ab.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+
+        ActionBar.TabListener tabListener = new ActionBar.TabListener() {
+            public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft) {
+                mPager.setCurrentItem(tab.getPosition());
+            }
+
+            public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction ft) {
+            }
+
+            public void onTabReselected(ActionBar.Tab tab, FragmentTransaction ft) {
+            }
+        };
+
+        ab.addTab(ab.newTab().setIcon(R.drawable.tab_planner).setTabListener(tabListener));
+        ab.addTab(ab.newTab().setIcon(R.drawable.tab_favorites).setTabListener(tabListener));
+        ab.addTab(ab.newTab().setIcon(R.drawable.tab_departures).setTabListener(tabListener));
+        ab.addTab(ab.newTab().setIcon(R.drawable.tab_deviations).setTabListener(tabListener));
+
+//        ab.addTab(ab.newTab().setText(R.string.search_label).setTabListener(tabListener));
+//        ab.addTab(ab.newTab().setText(R.string.favorites_label).setTabListener(tabListener));
+//        ab.addTab(ab.newTab().setText(R.string.departures).setTabListener(tabListener));
+//        ab.addTab(ab.newTab().setText(R.string.deviations_label).setTabListener(tabListener));
+
+        final ErrorReporter reporter = ErrorReporter.getInstance();
+        reporter.checkErrorAndReport(this);
+
 
         // Start background service.
         DeviationService.startAsRepeating(getApplicationContext());

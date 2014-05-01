@@ -1,6 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (C) 2009-2014 Johan Nilsson <http://markupartist.com>
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
 
 <resources>
+    <color name="background">#ffffff</color>
     <color name="search_plate">#D1EEEE</color>
     <color name="plate_background">#2c82c0</color>
     <color name="plate_extra_background">#e4e4e4</color>
@@ -13,7 +29,7 @@
     <drawable name="actionbar_background">#000000</drawable>
     <drawable name="ab_bg_black">#64000000</drawable>
 
-
+    <color name="dark_blue">#088cbd</color>
     <color name="sl_blue">#008ED7</color>
     <color name="sl_light_blue">#E7F4FC</color>
     <color name="sl_grey">#A4A5A7</color>

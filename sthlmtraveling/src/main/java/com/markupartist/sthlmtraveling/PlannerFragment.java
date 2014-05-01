@@ -178,6 +178,9 @@ public class PlannerFragment extends BaseListFragment implements
         historyView.setOnClickListener(null); // Makes the header un-clickable, hack!
         getListView().addHeaderView(historyView);
 
+        // Hide dividers on the header view.
+        getListView().setHeaderDividersEnabled(false);
+
         if (!mStartPoint.hasName()) {
             mStartPoint.setName(Site.TYPE_MY_LOCATION);
         }
