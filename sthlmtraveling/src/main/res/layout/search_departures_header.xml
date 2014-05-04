@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
 /*
 ** Copyright (C) 2009 Johan Nilsson <http://markupartist.com>
 **
@@ -21,47 +20,47 @@
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content">
-	<LinearLayout
-	    android:orientation="vertical"
-	    android:layout_width="fill_parent"
-	    android:layout_height="wrap_content">
 
-	    <LinearLayout 
-	        android:layout_width="fill_parent"
-	        android:layout_height="wrap_content"
-	        android:addStatesFromChildren="true"
-	        android:gravity="center_vertical"
-	        android:paddingTop="5dip"
-	        android:paddingBottom="10dip"
-	        >
-	        <AutoCompleteTextView 
-	            android:id="@+id/sites"
-	            android:hint="@string/site_name"
-	            android:dropDownWidth="fill_parent"
-	            android:layout_width="0dip"
-	            android:layout_height="fill_parent"
-	            android:layout_weight="1"
-	            android:imeOptions="actionSearch"
-	            android:lines="1"
-	            android:inputType="text"
-	            android:textColor="?android:attr/textColorPrimary"
-	            />
-	    </LinearLayout>
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:addStatesFromChildren="true"
+            android:gravity="center_vertical"
+            android:paddingTop="16dip"
+            android:paddingBottom="10dip">
+
+            <AutoCompleteTextView
+                android:id="@+id/sites"
+                android:hint="@string/site_name"
+                android:dropDownWidth="fill_parent"
+                android:layout_width="0dip"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:imeOptions="actionSearch"
+                android:lines="1"
+                android:inputType="text"
+                android:textColor="?android:attr/textColorPrimary" />
+        </LinearLayout>
     </LinearLayout>
-    <Button 
+
+    <Button
         android:id="@+id/btn_nearby_stops"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/nearby_stops"
         android:drawableLeft="@drawable/ic_place"
         style="?attr/borderlessButtonStyle"
-        android:textColor="?android:attr/textColorPrimary"
-        />
-	<TextView
-	    android:layout_width="fill_parent"
-	    android:layout_height="wrap_content"
+        android:textColor="?android:attr/textColorPrimary" />
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
         style="?android:attr/listSeparatorTextViewStyle"
-	    android:text="@string/history_label"
-        />
+        android:text="@string/history_label" />
 </LinearLayout>
 
