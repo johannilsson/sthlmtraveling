@@ -16,12 +16,12 @@
 
 package com.markupartist.sthlmtraveling;
 
-import java.util.HashMap;
-import java.util.Map.Entry;
-
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+
+import java.util.HashMap;
+import java.util.Map.Entry;
 
 /**
  * Adapter that represent the data of several other adapters. 
@@ -64,7 +64,7 @@ public class MultipleListAdapter extends BaseAdapter {
     public HashMap<Integer, BaseAdapter> getAdapters() {
         return mAdapters;
     }
-    
+
     /**
      * Adds a new adapter to the list.
      * @param adapter The adapter to add.
