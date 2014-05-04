@@ -1,12 +1,9 @@
 package com.markupartist.sthlmtraveling;
 
-import java.util.Locale;
-
 import android.app.Application;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.preference.PreferenceManager;
@@ -15,6 +12,8 @@ import android.util.Log;
 
 import com.markupartist.sthlmtraveling.service.DataMigrationService;
 import com.markupartist.sthlmtraveling.utils.ErrorReporter;
+
+import java.util.Locale;
 
 public class MyApplication extends Application {
     public static String ANALYTICS_KEY = "JUSQKB45DEN62VRQVBU9";
@@ -39,10 +38,9 @@ public class MyApplication extends Application {
         if (APP_VERSION == null) {
             PackageManager pm = getPackageManager();
             try {
-                PackageInfo pi = pm.getPackageInfo(getPackageName(),
-                        0);
+                PackageInfo pi = pm.getPackageInfo(getPackageName(), 0);
                 APP_VERSION = pi.versionName;
-            } catch (NameNotFoundException e) {
+            } catch (Throwable e) {
                 Log.e(TAG, "Could not get the package info.");
             }
         }        
