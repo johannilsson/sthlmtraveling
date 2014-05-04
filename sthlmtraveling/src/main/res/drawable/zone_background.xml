@@ -2,11 +2,11 @@
 android:shape="rectangle">
     <stroke android:color="#FBBB" />
     <size android:height="1dp" />
-    <solid android:color="#009ACD"/>
+    <solid android:color="@color/sl_blue"/>
     <!-- <layout_margin android:layout_margin="1dp"/> -->
     <corners 
-        android:bottomRightRadius="6dip" 
-        android:bottomLeftRadius="6dip" 
-        android:topLeftRadius="6dip" 
-        android:topRightRadius="6dip"/> 
+        android:bottomRightRadius="6dip"
+        android:bottomLeftRadius="6dip"
+        android:topLeftRadius="6dip"
+        android:topRightRadius="6dip"/>
 </shape>

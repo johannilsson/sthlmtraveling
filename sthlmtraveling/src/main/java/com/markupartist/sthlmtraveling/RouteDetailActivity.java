@@ -31,6 +31,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewStub;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -38,7 +39,6 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -53,25 +53,19 @@ import com.markupartist.sthlmtraveling.provider.planner.Planner;
 import com.markupartist.sthlmtraveling.provider.planner.Planner.IntermediateStop;
 import com.markupartist.sthlmtraveling.provider.planner.Planner.SubTrip;
 import com.markupartist.sthlmtraveling.provider.planner.Planner.Trip2;
-import com.markupartist.sthlmtraveling.ui.view.TripView;
+import com.markupartist.sthlmtraveling.utils.DateTimeUtil;
+import com.markupartist.sthlmtraveling.utils.IntentUtil;
 
 import org.json.JSONException;
 
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 public class RouteDetailActivity extends BaseListActivity {
     public static final String TAG = "RouteDetailActivity";
     
-    public static final String EXTRA_JOURNEY_TRIP =
-        "sthlmtraveling.intent.action.JOURNEY_TRIP";
-
-    public static final String EXTRA_JOURNEY_QUERY =
-        "sthlmtraveling.intent.action.JOURNEY_QUERY";
+    public static final String EXTRA_JOURNEY_TRIP = "sthlmtraveling.intent.action.JOURNEY_TRIP";
+    public static final String EXTRA_JOURNEY_QUERY = "sthlmtraveling.intent.action.JOURNEY_QUERY";
 
     private static final int DIALOG_BUY_SMS_TICKET = 1;
 
@@ -103,54 +97,17 @@ public class RouteDetailActivity extends BaseListActivity {
 
         updateStartAndEndPointViews(mJourneyQuery);
 
-        // Include the time, kill?
-        View headerView = getLayoutInflater().inflate(R.layout.route_header, null);
-
-        String durationInMinutes = mTrip.duration;
-        try {
-            DateFormat df = new SimpleDateFormat("H:mm");
-            Date tripDate = df.parse(mTrip.duration);
-            if (tripDate.getHours() == 0) {
-                int start = mTrip.duration.indexOf(":") + 1;
-                if (mTrip.duration.substring(start).startsWith("0")) {
-                    start++;
-                }
-                durationInMinutes = mTrip.duration.substring(start) + " min";
-            }
-        } catch (ParseException e) {
-            Log.e(TAG, "Error parsing duration, " + e.getMessage());
-        }
-
-//        LinearLayout headerDetailView = (LinearLayout) headerView.findViewById(R.id.header_details);
-//        headerDetailView.setVisibility(View.VISIBLE);
-
-        TripView tripView = (TripView) headerView.findViewById(R.id.route_trip);
-        tripView.setVisibility(View.VISIBLE);
-        tripView.setTrip(mTrip);
-
+        View headerView = getLayoutInflater().inflate(R.layout.route_header_details, null);
         TextView timeView = (TextView) headerView.findViewById(R.id.route_date_time);
-        timeView.setText(mTrip.departureTime + " - " + mTrip.arrivalTime + " (" + durationInMinutes + ")");
-        
-        // TODO: We should parse the date when getting the results and store a
-        // Time object instead.
-        SimpleDateFormat format = new SimpleDateFormat("dd.MM.yy");
-        Date date = null;
-        try {
-            date = format.parse(mTrip.departureDate);
-        } catch (ParseException e) {
-            ;
-        }
-        SimpleDateFormat otherFormat = new SimpleDateFormat("yyyy-MM-dd");
-        TextView dateView = (TextView) headerView.findViewById(R.id.route_date_of_trip);
-        if (date != null) {
-            dateView.setText(getString(R.string.date_of_trip, otherFormat.format(date)));
-        } else {
-            dateView.setVisibility(View.GONE);
+        timeView.setText(getString(R.string.time_to, mTrip.getDurationText(), mTrip.destination.getCleanName()));
+        if (mTrip.canBuySmsTicket()) {
+            TextView zoneView = (TextView) headerView.findViewById(R.id.route_zones);
+            zoneView.setText(mTrip.tariffZones);
+            zoneView.setVisibility(View.VISIBLE);
         }
 
         getListView().addHeaderView(headerView, null, false);
 
-        //initRouteDetails(mRoute);
         onRouteDetailsResult(mTrip);
     }
 
@@ -168,6 +125,9 @@ public class RouteDetailActivity extends BaseListActivity {
             starItem.setIcon(R.drawable.ic_action_star_on);
         } else {
             starItem.setIcon(R.drawable.ic_action_star_off);
+        }
+        if (!mTrip.canBuySmsTicket()) {
+            menu.removeItem(R.id.actionbar_item_sms);
         }
 
         return super.onPrepareOptionsMenu(menu);
@@ -195,33 +155,6 @@ public class RouteDetailActivity extends BaseListActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    protected void onListItemClick(ListView l, View v, int position, long id) {
-        super.onListItemClick(l, v, position, id);
-
-        int headerViewsCount = getListView().getHeaderViewsCount();
-        // Compensate for the added header views. Is this how we do it?
-        position -= headerViewsCount;
-
-        Planner.Location location;
-        // Detects the footer view.
-        if (position + 1 > mSubTripAdapter.getCount()) {
-            int numSubTrips = mTrip.subTrips.size();
-            SubTrip subTrip = mTrip.subTrips.get(numSubTrips - 1);
-            location = subTrip.destination;
-        } else {
-            SubTrip subTrip = mSubTripAdapter.getItem(position);
-            location = subTrip.origin;
-        }
-
-        if (location.hasLocation()) {
-            //startActivity(createViewOnMapIntent(location));
-            startActivity(createViewOnMapIntent(mTrip, mJourneyQuery, location));
-        } else {
-            Toast.makeText(this, "Missing geo data", Toast.LENGTH_LONG).show();
-        }
     }
 
     /**
@@ -284,35 +217,48 @@ public class RouteDetailActivity extends BaseListActivity {
      * @param trip the route details
      */
     public void onRouteDetailsResult(Trip2 trip) {
-        mSubTripAdapter = new SubTripAdapter(this, trip.subTrips);
 
-        int numSubTrips = trip.subTrips.size();
-        SubTrip lastSubTrip = trip.subTrips.get(numSubTrips - 1); 
-
-        View footerView = getLayoutInflater().inflate(R.layout.route_details_row, null);
-        Button message = (Button) footerView.findViewById(R.id.routes_row);
-        message.setTag(lastSubTrip.destination);
-        message.setOnClickListener(mLocationClickListener);
-        message.setText(getLocationName(lastSubTrip.destination));
-
-        ImageView image = (ImageView) footerView.findViewById(R.id.routes_row_transport);
-        image.setImageResource(R.drawable.bullet_black);
-
-        getListView().addFooterView(footerView);
+        getListView().addFooterView(createFooterView(trip));
 
         setListAdapter(mSubTripAdapter);
 
-        // TODO: Add action, or toggle disable/enable instead.
-        /*
-        if (trip.canBuySmsTicket()) {
-            mActionBar.addAction(
-                mActionBar.newAction(R.id.actionbar_item_sms)
-                    .setIcon(R.drawable.ic_actionbar_sms)
-            );
-        }
-        */
-
         mTrip = trip;
+    }
+
+    private View createFooterView(final Trip2 trip) {
+        mSubTripAdapter = new SubTripAdapter(this, trip.subTrips);
+
+        int numSubTrips = trip.subTrips.size();
+        final SubTrip lastSubTrip = trip.subTrips.get(numSubTrips - 1);
+        // todo: make sure this is safe.
+
+        View convertView = getLayoutInflater().inflate(R.layout.trip_row_stop_layout, null);
+        Button nameView = (Button) convertView.findViewById(R.id.trip_stop_title);
+        nameView.setText(getLocationName(lastSubTrip.destination));
+        nameView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Planner.Location location = lastSubTrip.destination;
+                if (location.hasLocation()) {
+                    startActivity(createViewOnMapIntent(mTrip, mJourneyQuery, location));
+                } else {
+                    Toast.makeText(RouteDetailActivity.this, "Missing geo data", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+
+        View endSegment = convertView.findViewById(R.id.trip_line_segment_end);
+        endSegment.setVisibility(View.VISIBLE);
+
+        TextView arrivalTimeView = (TextView) convertView.findViewById(R.id.trip_arrival_time);
+        arrivalTimeView.setVisibility(View.GONE);
+
+        TextView departureTimeView = (TextView) convertView.findViewById(R.id.trip_departure_time);
+        departureTimeView.setText(lastSubTrip.arrivalTime);
+
+        convertView.findViewById(R.id.trip_intermediate_stops_layout).setVisibility(View.GONE);
+
+        return convertView;
     }
 
     @Override
@@ -357,18 +303,10 @@ public class RouteDetailActivity extends BaseListActivity {
      */
     public void sendSms(boolean reducedPrice) {
         registerEvent("Buy SMS Ticket");
-
-        final Intent intent = new Intent(Intent.ACTION_VIEW);
-
+        Toast.makeText(this, R.string.sms_ticket_notice_message, Toast.LENGTH_LONG).show();
         String price = reducedPrice ? "R" : "H";
-        intent.setType("vnd.android-dir/mms-sms");
-        intent.putExtra("address", "0767201010");
-        intent.putExtra("sms_body", price + mTrip.tariffZones);
-
-        Toast.makeText(this, R.string.sms_ticket_notice_message,
-                Toast.LENGTH_LONG).show();
-
-        startActivity(intent);
+        String number = "0767201010";
+        IntentUtil.smsIntent(this, number, price + mTrip.tariffZones);
     }
 
     @Override
@@ -387,154 +325,6 @@ public class RouteDetailActivity extends BaseListActivity {
         intent.putExtra(ViewOnMapActivity.EXTRA_LOCATION, location);
 
         return intent;
-    }
-
-    private class SubTripAdapter extends ArrayAdapter<SubTrip> {
-
-        private LayoutInflater mInflater;
-
-        public SubTripAdapter(Context context, List<SubTrip> objects) {
-            super(context, R.layout.route_details_row, objects);
-
-            mInflater = (LayoutInflater) context.getSystemService(
-                    Context.LAYOUT_INFLATER_SERVICE);
-        }
-
-        @Override
-        public boolean areAllItemsEnabled() {
-            return false;
-        }
-
-        @Override
-        public View getView(final int position, View convertView, ViewGroup parent) {
-            final SubTrip subTrip = getItem(position);
-
-            convertView = mInflater.inflate(R.layout.route_details_row, null);
-
-            ImageView transportImage = (ImageView) convertView.findViewById(R.id.routes_row_transport);
-            Button descriptionView = (Button) convertView.findViewById(R.id.routes_row);
-            descriptionView.setTag(subTrip.origin);
-            descriptionView.setOnClickListener(mLocationClickListener);
-
-            transportImage.setImageResource(subTrip.transport.getImageResource());
-            
-            CharSequence description;
-            if ("Walk".equals(subTrip.transport.type)) {
-                description = getString(R.string.trip_description_walk,
-                        "<b>" + subTrip.departureTime + "</b>",
-                        "<b>" + subTrip.arrivalTime + "</b>",
-                        "<b>" + getLocationName(subTrip.origin) + "</b>",
-                        "<b>" + getLocationName(subTrip.destination) + "</b>");
-            } else {
-                description = getString(R.string.trip_description_normal,
-                        subTrip.departureTime, subTrip.arrivalTime,
-                        "<b>" + subTrip.transport.name + "</b>",
-                        "<b>" + getLocationName(subTrip.origin) + "</b>",
-                        "<b>" + subTrip.transport.towards + "</b>",
-                        "<b>" + getLocationName(subTrip.destination) + "</b>");
-            }
-
-            descriptionView.setText(android.text.Html.fromHtml(description.toString()));
-            //descriptionView.setText(description);
-            
-            LinearLayout messagesLayout = (LinearLayout) convertView.findViewById(R.id.routes_messages);
-            if (!subTrip.remarks.isEmpty()) {
-                for (String message : subTrip.remarks) {
-                    messagesLayout.addView(inflateMessage("remark", message,
-                                    messagesLayout));
-                }
-            }
-            if (!subTrip.rtuMessages.isEmpty()) {
-                for (String message : subTrip.rtuMessages) {
-                    messagesLayout.addView(inflateMessage("rtu", message,
-                                    messagesLayout));
-                }
-            }
-            if (!subTrip.mt6Messages.isEmpty()) {
-                for (String message : subTrip.mt6Messages) {
-                    messagesLayout.addView(inflateMessage("mt6", message,
-                                    messagesLayout));
-                }
-            }
-
-            final LinearLayout intermediateStopLayout =
-                (LinearLayout) convertView.findViewById(R.id.intermediate_stops);
-            ToggleButton showHideIntermediateStops =
-                (ToggleButton) convertView.findViewById(
-                        R.id.show_hide_intermediate_stops);
-            if (!"Walk".equals(subTrip.transport.type)) {
-                intermediateStopLayout.setVisibility(View.VISIBLE);
-                showHideIntermediateStops.setVisibility(View.VISIBLE);
-            }
-
-            showHideIntermediateStops.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    if (isChecked) {
-                        if (intermediateStopLayout.getChildCount() == 0
-                                && subTrip.intermediateStop.size() == 0) {
-                            new GetIntermediateStopTask(new GetIntermediateStopTask.OnResult() {
-                                @Override
-                                public void onResult(SubTrip st) {
-                                    if (st.intermediateStop.isEmpty()) {
-                                        intermediateStopLayout.addView(
-                                                inflateText(getText(
-                                                        R.string.no_intermediate_stops),
-                                                        intermediateStopLayout));
-                                    }
-                                    for (IntermediateStop is : st.intermediateStop) {
-                                        intermediateStopLayout.addView(
-                                                inflateIntermediateStop(
-                                                        is, intermediateStopLayout));
-                                    }
-                                    mTrip.subTrips.set(position, st);
-                                }
-                            }).execute(subTrip, mJourneyQuery);
-                        } else if (intermediateStopLayout.getChildCount() == 0
-                                && subTrip.intermediateStop.size() > 0) {
-                            for (IntermediateStop is : subTrip.intermediateStop) {
-                                intermediateStopLayout.addView(
-                                        inflateIntermediateStop(
-                                                is, intermediateStopLayout));
-                            }
-                        }
-                        intermediateStopLayout.setVisibility(View.VISIBLE);
-                    } else {
-                        intermediateStopLayout.setVisibility(View.GONE);
-                    }
-                }
-            });
-
-            return convertView;
-        }
-
-        private View inflateIntermediateStop(IntermediateStop stop,
-                ViewGroup layout) {
-            View view = mInflater.inflate(R.layout.intermediate_stop, layout, false);
-            TextView descView =
-                (TextView) view.findViewById(R.id.intermediate_stop_description);
-            descView.setText(String.format("%s %s",
-                    stop.arrivalTime, stop.location.name));
-            return view;
-        }
-
-        private View inflateMessage(String messageType, String message,
-                ViewGroup messagesLayout) {
-            View view = mInflater.inflate(R.layout.route_details_message_row,
-                    messagesLayout, false);
-
-            TextView messageView = (TextView) view.findViewById(R.id.routes_warning_message);
-            messageView.setText(message);
-
-            return view;
-        }
-
-        private View inflateText(CharSequence text, ViewGroup viewGroup) {
-            TextView view = (TextView) mInflater.inflate(R.layout.simple_text,
-                    viewGroup, false);
-            view.setText(text);
-            return view;
-        }
     }
 
     private boolean isStarredJourney(JourneyQuery journeyQuery) {
@@ -597,6 +387,169 @@ public class RouteDetailActivity extends BaseListActivity {
             }
         }
     }
+
+    /**
+     * A not at all optimized adapter for showing a route based on a list of sub trips.
+     */
+    private class SubTripAdapter extends ArrayAdapter<SubTrip> {
+        private LayoutInflater mInflater;
+
+        public SubTripAdapter(Context context, List<SubTrip> objects) {
+            super(context, R.layout.route_details_row, objects);
+
+            mInflater = (LayoutInflater) context.getSystemService(
+                    Context.LAYOUT_INFLATER_SERVICE);
+        }
+
+        @Override
+        public boolean areAllItemsEnabled() {
+            return false;
+        }
+
+        @Override
+        public View getView(final int position, View convertView, ViewGroup parent) {
+            final SubTrip subTrip = getItem(position);
+            convertView = mInflater.inflate(R.layout.trip_row_stop_layout, null);
+
+            Button nameView = (Button) convertView.findViewById(R.id.trip_stop_title);
+            nameView.setText(getLocationName(subTrip.origin));
+            nameView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Planner.Location location = subTrip.origin;
+                    if (location.hasLocation()) {
+                        startActivity(createViewOnMapIntent(mTrip, mJourneyQuery, location));
+                    } else {
+                        Toast.makeText(getContext(), "Missing geo data", Toast.LENGTH_LONG).show();
+                    }
+                }
+            });
+
+            View startSegment = convertView.findViewById(R.id.trip_line_segment_start);
+            TextView arrivalTimeView = (TextView) convertView.findViewById(R.id.trip_arrival_time);
+            if (position > 0) {
+                final SubTrip prevSubTrip = getItem(position - 1);
+                arrivalTimeView.setText(prevSubTrip.arrivalTime);
+                startSegment.setVisibility(View.GONE);
+            } else {
+                startSegment.setVisibility(View.VISIBLE);
+                arrivalTimeView.setVisibility(View.GONE);
+            }
+            TextView departureTimeView = (TextView) convertView.findViewById(R.id.trip_departure_time);
+            departureTimeView.setText(subTrip.departureTime);
+
+            // Add description data
+            ViewStub descriptionStub = (ViewStub) convertView.findViewById(R.id.trip_description_stub);
+            View descriptionLayout = descriptionStub.inflate();
+            TextView descriptionView = (TextView) descriptionLayout.findViewById(R.id.trip_description);
+            descriptionView.setText(createDescription(subTrip));
+            ImageView descriptionIcon = (ImageView) descriptionLayout.findViewById(R.id.trip_description_icon);
+            descriptionIcon.setImageResource(subTrip.transport.getImageResource());
+            //descriptionView.setCompoundDrawablesWithIntrinsicBounds(subTrip.transport.getImageResource(), 0, 0, 0);
+
+            inflateMessages(subTrip, convertView);
+            inflateIntermediate(subTrip, position, convertView);
+
+            return convertView;
+        }
+
+        private void inflateIntermediate(final SubTrip subTrip, final int position, final View convertView) {
+            final ToggleButton btnIntermediateStops = (ToggleButton) convertView.findViewById(R.id.trip_btn_intermediate_stops);
+
+            CharSequence durationText = DateTimeUtil.formatDuration(getResources(), subTrip.getDurationMillis());
+            btnIntermediateStops.setText(durationText);
+            btnIntermediateStops.setTextOn(durationText);
+            btnIntermediateStops.setTextOff(durationText);
+            if ("Walk".equals(subTrip.transport.type)) {
+                btnIntermediateStops.setVisibility(View.GONE);
+            }
+
+            final LinearLayout stopsLayout = (LinearLayout) convertView.findViewById(R.id.trip_intermediate_stops);
+
+            btnIntermediateStops.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if (isChecked) {
+                        if (stopsLayout.getChildCount() == 0
+                                && subTrip.intermediateStop.size() == 0) {
+                            new GetIntermediateStopTask(new GetIntermediateStopTask.OnResult() {
+                                @Override
+                                public void onResult(SubTrip st) {
+                                    if (st.intermediateStop.isEmpty()) {
+                                        //stopsLayout.addView(inflateText(getText(R.string.no_intermediate_stops), stopsLayout));
+                                    }
+                                    for (IntermediateStop is : st.intermediateStop) {
+                                        stopsLayout.addView(inflateIntermediateStop(is, stopsLayout));
+                                    }
+                                    mTrip.subTrips.set(position, st);
+                                }
+                            }).execute(subTrip, mJourneyQuery);
+                        } else if (stopsLayout.getChildCount() == 0
+                                && subTrip.intermediateStop.size() > 0) {
+                            for (IntermediateStop is : subTrip.intermediateStop) {
+                                stopsLayout.addView(inflateIntermediateStop(is, stopsLayout));
+                            }
+                        }
+                        stopsLayout.setVisibility(View.VISIBLE);
+                    } else {
+                        stopsLayout.setVisibility(View.GONE);
+                    }
+                }
+            });
+        }
+
+        private View inflateIntermediateStop(IntermediateStop stop, LinearLayout stopsLayout) {
+            View view = mInflater.inflate(R.layout.trip_row_intermediate_stop, stopsLayout, false);
+            TextView descView = (TextView) view.findViewById(R.id.trip_stop_title);
+            descView.setTextSize(12);
+            descView.setText(stop.location.name);
+            TextView arrivalView = (TextView) view.findViewById(R.id.trip_arrival_time);
+            view.findViewById(R.id.trip_departure_time).setVisibility(View.GONE);
+            arrivalView.setText(stop.arrivalTime);
+            return view;
+        }
+
+        private void inflateMessages(final SubTrip subTrip, final View convertView) {
+            LinearLayout messagesLayout = (LinearLayout) convertView.findViewById(R.id.trip_messages);
+
+            if (!subTrip.remarks.isEmpty()) {
+                for (String message : subTrip.remarks) {
+                    messagesLayout.addView(inflateMessage("remark", message, messagesLayout));
+                }
+            }
+            if (!subTrip.rtuMessages.isEmpty()) {
+                for (String message : subTrip.rtuMessages) {
+                    messagesLayout.addView(inflateMessage("rtu", message, messagesLayout));
+                }
+            }
+            if (!subTrip.mt6Messages.isEmpty()) {
+                for (String message : subTrip.mt6Messages) {
+                    messagesLayout.addView(inflateMessage("mt6", message, messagesLayout));
+                }
+            }
+        }
+
+        private View inflateMessage(String type, String message, LinearLayout messagesLayout) {
+            View view = mInflater.inflate(R.layout.trip_row_message, messagesLayout, false);
+            TextView messageView = (TextView) view.findViewById(R.id.trip_message);
+            messageView.setText(message);
+            return view;
+        }
+
+        private CharSequence createDescription(final SubTrip subTrip) {
+            CharSequence description;
+            if ("Walk".equals(subTrip.transport.type)) {
+                description = getString(R.string.trip_description_walk,
+                        getLocationName(subTrip.origin));
+            } else {
+                description = getString(R.string.trip_description_normal,
+                        subTrip.transport.name,
+                        subTrip.transport.towards);
+            }
+            return description;
+        }
+    }
+
 
     private static class GetIntermediateStopTask extends AsyncTask<Object, Void, SubTrip> {
         GetIntermediateStopTask.OnResult mCallback;

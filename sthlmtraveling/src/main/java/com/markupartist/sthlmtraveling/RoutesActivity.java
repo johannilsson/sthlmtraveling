@@ -193,6 +193,8 @@ public class RoutesActivity extends BaseListActivity
             return;
         }
 
+        View headerView = getLayoutInflater().inflate(R.layout.empty, null);
+        getListView().addHeaderView(headerView, null, false);
         getListView().setHeaderDividersEnabled(false);
 
         initActionBar();
@@ -578,8 +580,9 @@ public class RoutesActivity extends BaseListActivity
         protected View getHeaderView(Section section, int index, View convertView, ViewGroup parent) {
             TextView result = (TextView) convertView;
 
-            if (convertView == null)
+            if (convertView == null) {
                 result = (TextView) getLayoutInflater().inflate(R.layout.header, null);
+            }
 
             result.setText(section.caption);
             return (result);
@@ -1049,6 +1052,9 @@ public class RoutesActivity extends BaseListActivity
             if (!isEmpty()) {
                 Trip2 trip = mTrips.get(position);
                 TripView v = new TripView(mContext);
+                if (position == getCount() - 1) {
+                    v.showDivider(false);
+                }
                 v.setTrip(trip);
                 return v;
             }

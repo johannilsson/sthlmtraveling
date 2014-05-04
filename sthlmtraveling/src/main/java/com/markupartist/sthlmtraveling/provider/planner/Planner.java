@@ -27,6 +27,7 @@ import android.util.Log;
 import com.markupartist.sthlmtraveling.R;
 import com.markupartist.sthlmtraveling.provider.site.Site;
 import com.markupartist.sthlmtraveling.provider.site.SitesStore;
+import com.markupartist.sthlmtraveling.utils.DateTimeUtil;
 import com.markupartist.sthlmtraveling.utils.HttpManager;
 import com.markupartist.sthlmtraveling.utils.StreamUtils;
 
@@ -639,6 +640,24 @@ public class Planner {
                 return new Trip2[size];
             }
         };
+
+        public String getDurationText() {
+            String durationInMinutes = duration;
+            try {
+                DateFormat df = new SimpleDateFormat("H:mm");
+                Date tripDate = df.parse(duration);
+                if (tripDate.getHours() == 0) {
+                    int start = duration.indexOf(":") + 1;
+                    if (duration.substring(start).startsWith("0")) {
+                        start++;
+                    }
+                    durationInMinutes = duration.substring(start) + " min";
+                }
+            } catch (ParseException e) {
+                Log.e(TAG, "Error parsing duration, " + e.getMessage());
+            }
+            return durationInMinutes;
+        }
     }
 
     /**
@@ -712,6 +731,8 @@ public class Planner {
         public String reference;
         public ArrayList<IntermediateStop> intermediateStop =
             new ArrayList<IntermediateStop>();
+        private Date departureDateTime;
+        private Date arrivalDateTime;
 
         public SubTrip() {}
 
@@ -794,6 +815,24 @@ public class Planner {
             for (int i = 0; i < jsonArray.length(); i++) {
                 list.add(jsonArray.getString(i));
             }
+        }
+
+        public long getDurationMillis() {
+            return getArrival().getTime() - getDeparture().getTime();
+        }
+
+        public Date getDeparture() {
+            if (departureDateTime == null) {
+                departureDateTime = DateTimeUtil.fromSlDateTime(departureDate, departureTime);
+            }
+            return departureDateTime;
+        }
+
+        public Date getArrival() {
+            if (arrivalDateTime == null) {
+                arrivalDateTime = DateTimeUtil.fromSlDateTime(arrivalDate, arrivalTime);
+            }
+            return arrivalDateTime;
         }
 
         @Override

@@ -126,8 +126,8 @@
     <string name="sms_ticket_price_full">Helt pris (20–64 år)</string>
     <string name="sms_ticket_notice_message">Den här funtionen är experimentell. Dubbelkolla detaljerna innan du köper din biljett. STHLM Traveling lämnar inga garantier för att biljetten stämmer med resan.</string>
     <string name="sms_ticket_notice_disabled">SMS-biljett är inte tillgänglig för denna resa.</string>
-    <string name="trip_description_walk" formatted="false">%s - %s Gå från %s till %s</string>
-    <string name="trip_description_normal" formatted="false">%s - %s %s från %s mot %s. Kliv av vid %s</string>
+    <string name="trip_description_walk" formatted="false">Gå från %s</string>
+    <string name="trip_description_normal" formatted="false">Ta %s mot %s.</string>
     <string name="trip_map_description_walk" formatted="false">%s Gå till %s</string>
     <string name="trip_map_description_normal" formatted="false">%s %s mot %s.</string>
     <string name="show_all">Visa alla</string>
@@ -137,6 +137,20 @@
     <string name="hide_intermediate_stops">Dölj mellanliggande hållplatser</string>
     <string name="nearby_stops">Närliggande hållplatser</string>
     <string name="nearby">Närliggande</string>
+    <string name="time_to" formatted="false">%s till %s</string>
+
+    <plurals name="duration_seconds">
+        <item quantity="one">1 sekund</item>
+        <item quantity="other"><xliff:g id="COUNT">%d</xliff:g> sekunder</item>
+    </plurals>
+    <plurals name="duration_minutes">
+        <item quantity="one">1 minut</item>
+        <item quantity="other"><xliff:g id="COUNT">%d</xliff:g> minuter</item>
+    </plurals>
+    <plurals name="duration_hours">
+        <item quantity="one">1 timme</item>
+        <item quantity="other"><xliff:g id="COUNT">%d</xliff:g> timmar</item>
+    </plurals>
 
     <!-- Planner error messages -->
     <string name="planner_error_title">Felmeddelande</string>

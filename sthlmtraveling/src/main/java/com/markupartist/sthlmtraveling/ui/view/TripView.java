@@ -20,6 +20,8 @@ import android.content.Context;
 import android.graphics.Color;
 import android.util.AttributeSet;
 import android.util.TypedValue;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -35,6 +37,7 @@ import java.util.ArrayList;
  */
 public class TripView extends LinearLayout {
     private Planner.Trip2 trip;
+    private boolean mShowDivider = true;
 
     public TripView(Context context) {
         super(context);
@@ -50,12 +53,16 @@ public class TripView extends LinearLayout {
         updateViews();
     }
 
+    public void showDivider(boolean show) {
+        mShowDivider = show;
+    }
+
     public void updateViews() {
         this.setOrientation(VERTICAL);
 
         float scale = getResources().getDisplayMetrics().density;
 
-        this.setPadding((int)(5 * scale), (int)(10 * scale), (int)(5 * scale), (int)(10 * scale));
+        this.setPadding((int)(5 * scale), 0, (int)(5 * scale), 0);
 
         LinearLayout timeLayout = new LinearLayout(getContext());
 
@@ -63,7 +70,7 @@ public class TripView extends LinearLayout {
         routeDetail.setText(trip.toText());
         routeDetail.setTextColor(Color.BLACK);
         routeDetail.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
-        routeDetail.setPadding((int)(5 * scale), (int)(2 * scale), 0, (int)(2 * scale));
+        routeDetail.setPadding(0, (int)(12 * scale), 0, (int)(2 * scale));
         //routeDetail.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
 
         timeLayout.addView(routeDetail);
@@ -80,10 +87,10 @@ public class TripView extends LinearLayout {
         startAndEndPoint.setText(trip.origin.name + " — " + trip.destination.name);
         startAndEndPoint.setTextColor(0xFF444444); // Dark gray
         startAndEndPoint.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
-        startAndEndPoint.setPadding((int)(5 * scale), (int)(2 * scale), 0, (int)(2 * scale));
+        startAndEndPoint.setPadding(0, (int)(2 * scale), 0, (int)(2 * scale));
 
         LinearLayout routeChanges = new LinearLayout(getContext());
-        routeChanges.setPadding((int)(5 * scale), (int)(10 * scale), 0, 0);
+        routeChanges.setPadding((int)(5 * scale), (int)(10 * scale), 0, (int)(12 * scale));
 
         int currentTransportCount = 1;
 
@@ -112,7 +119,7 @@ public class TripView extends LinearLayout {
                 //lineNumberView.setText(transport.getShortName());
                 lineNumberView.setText(Integer.toString(lineNumbers.get(0)));
                 //lineNumberView.setPadding(7, 2, 7, 2);
-                lineNumberView.setPadding((int)(2 * scale), (int)(2 * scale), (int)(2 * scale), (int)(2 * scale));
+                lineNumberView.setPadding(0, (int)(2 * scale), (int)(2 * scale), (int)(2 * scale));
                 routeChanges.addView(lineNumberView);
             }
 
@@ -127,8 +134,17 @@ public class TripView extends LinearLayout {
             currentTransportCount++;
         }
 
+
+        View divider = new View(getContext());
+        ViewGroup.LayoutParams dividerParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 1);
+        divider.setLayoutParams(dividerParams);
+        divider.setBackgroundResource(R.drawable.abs__list_divider_holo_light);
+
         this.addView(timeLayout);
         this.addView(startAndEndPoint);
         this.addView(routeChanges);
+        if (mShowDivider) {
+            this.addView(divider);
+        }
     }
 }

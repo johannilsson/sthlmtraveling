@@ -38,6 +38,7 @@
         android:layout_above="@id/ad_holder"
         style="@style/AppListView"
         android:id="@id/android:list"
+        android:divider="@null"
         android:layout_width="fill_parent" 
         android:layout_height="fill_parent"
         />

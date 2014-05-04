@@ -23,6 +23,7 @@
         <!-- Hack because we failed to set a style on the split action bar. -->
         <item name="android:windowBackground">@color/background</item>
         <item name="borderlessButtonStyle">@android:style/Widget.Holo.Button.Borderless</item>
+        <item name="borderlessButtonSmallStyle">@android:style/Widget.Holo.Button.Borderless.Small</item>
         <item name="android:windowContentOverlay">@null</item>
         <item name="android:actionBarDivider">@drawable/abs__list_divider_holo_light</item>
 
@@ -41,6 +42,7 @@
         <item name="android:icon">@android:color/transparent</item>
         <item name="android:windowBackground">@color/background</item>
         <item name="borderlessButtonStyle">@android:style/Widget.Holo.Button.Borderless</item>
+        <item name="borderlessButtonSmallStyle">@android:style/Widget.Holo.Button.Borderless.Small</item>
         <item name="android:windowContentOverlay">@null</item>
         <item name="android:actionBarDivider">@drawable/abs__list_divider_holo_light</item>
 
