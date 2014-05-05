@@ -20,7 +20,10 @@
 <TextView
     xmlns:android="http://schemas.android.com/apk/res/android"	
     style="?android:attr/listSeparatorTextViewStyle"
+    android:paddingTop="16dp"
+    android:paddingBottom="10dp"
     android:layout_marginBottom="10dp"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
+    android:text="djskdjskd"
     />
