@@ -1,11 +1,27 @@
+/*
+ * Copyright (C) 2009-2014 Johan Nilsson <http://markupartist.com>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.markupartist.sthlmtraveling.provider.departure;
 
-import static com.markupartist.sthlmtraveling.provider.ApiConf.KEY;
-import static com.markupartist.sthlmtraveling.provider.ApiConf.apiEndpoint2;
-import static com.markupartist.sthlmtraveling.provider.ApiConf.get;
+import android.text.TextUtils;
+import android.util.Log;
 
-import java.io.IOException;
-import java.util.ArrayList;
+import com.markupartist.sthlmtraveling.provider.site.Site;
+import com.markupartist.sthlmtraveling.utils.HttpManager;
+import com.markupartist.sthlmtraveling.utils.StreamUtils;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -15,12 +31,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.text.TextUtils;
-import android.util.Log;
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.ArrayList;
 
-import com.markupartist.sthlmtraveling.provider.site.Site;
-import com.markupartist.sthlmtraveling.utils.HttpManager;
-import com.markupartist.sthlmtraveling.utils.StreamUtils;
+import static com.markupartist.sthlmtraveling.provider.ApiConf.KEY;
+import static com.markupartist.sthlmtraveling.provider.ApiConf.apiEndpoint2;
+import static com.markupartist.sthlmtraveling.provider.ApiConf.get;
 
 public class DeparturesStore {
     static String TAG = "DeparturesStore";
@@ -68,7 +85,8 @@ public class DeparturesStore {
     	return departures;
     }
 
-    public static class Departures {
+    // TODO: Make this implement Parcelable
+    public static class Departures implements Serializable {
         public int siteId;
         public ArrayList<String> servesTypes = new ArrayList<String>();
         public ArrayList<MetroDeparture> metros = new ArrayList<MetroDeparture>();
@@ -118,7 +136,7 @@ public class DeparturesStore {
         }
     }
 
-    public static class Departure {
+    public static class Departure implements Serializable {
         public String stopAreaName;
         public String stopAreaNumber;
     }
@@ -201,7 +219,7 @@ public class DeparturesStore {
         }
     }
 
-    public static class GroupOfLine {
+    public static class GroupOfLine implements Serializable {
         public String name;
         public ArrayList<DisplayRow> direction1 = new ArrayList<DisplayRow>();
         public ArrayList<DisplayRow> direction2 = new ArrayList<DisplayRow>();
@@ -230,7 +248,7 @@ public class DeparturesStore {
         }
     }
 
-    public static class DisplayRow {
+    public static class DisplayRow implements Serializable {
         public String destination;
         public String lineNumber;
         public String displayTime;

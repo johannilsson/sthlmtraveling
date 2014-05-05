@@ -16,9 +16,6 @@
 
 package com.markupartist.sthlmtraveling;
 
-import java.io.IOException;
-import java.util.ArrayList;
-
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -27,24 +24,27 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.text.format.Time;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.ViewPager;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager.BadTokenException;
 import android.widget.ArrayAdapter;
-import android.widget.CompoundButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ProgressBar;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.app.SherlockListFragment;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
@@ -58,19 +58,22 @@ import com.markupartist.sthlmtraveling.provider.departure.DeparturesStore.Depart
 import com.markupartist.sthlmtraveling.provider.site.Site;
 import com.markupartist.sthlmtraveling.provider.site.SitesStore;
 
+import java.io.IOException;
+import java.util.ArrayList;
 
-public class DeparturesActivity extends BaseListActivity {
+
+public class DeparturesActivity extends BaseFragmentActivity {
     static String EXTRA_SITE_NAME = "com.markupartist.sthlmtraveling.siteName";
     static String EXTRA_SITE = "com.markupartist.sthlmtraveling.site";
 
     private static final String STATE_GET_SITES_IN_PROGRESS =
-        "com.markupartist.sthlmtraveling.getsites.inprogress";
+            "com.markupartist.sthlmtraveling.getsites.inprogress";
     private static final String STATE_GET_DEPARTURES_IN_PROGRESS =
-        "com.markupartist.sthlmtraveling.getdepartures.inprogress";
+            "com.markupartist.sthlmtraveling.getdepartures.inprogress";
     private static final String STATE_SITE =
-        "com.markupartist.sthlmtraveling.site";
+            "com.markupartist.sthlmtraveling.site";
     private static final String STATE_PREFERRED_TRANSPORT_MODE =
-        "com.markupartist.sthlmtraveling.departures.transportmode";
+            "com.markupartist.sthlmtraveling.departures.transportmode";
 
     static String TAG = "DeparturesActivity";
 
@@ -89,13 +92,14 @@ public class DeparturesActivity extends BaseListActivity {
     private Departures mDepartureResult;
     private Bundle mSavedState;
 
-    private DepartureAdapter mSectionedAdapter;
+    //private DepartureAdapter mSectionedAdapter;
 
     private int mPreferredTrafficMode = TransportMode.METRO_INDEX;
     private int mPlaceId = -1;
 
-    private ActionBar mActionBar;
     private HistoryDbAdapter mHistoryDbAdapter;
+    private ViewPager mPager;
+    private PageFragmentAdapter mPageAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,28 +107,107 @@ public class DeparturesActivity extends BaseListActivity {
 
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 
-        setContentView(R.layout.departures_list);
+        setContentView(R.layout.departures);
 
         registerEvent("Departures");
 
         Bundle extras = getIntent().getExtras();
-        
+
         if (extras.containsKey(EXTRA_SITE)) {
             mSite = extras.getParcelable(EXTRA_SITE);
+            setTitle(mSite.getName());
         } else if (extras.containsKey(EXTRA_SITE_NAME)) {
             mSiteName = extras.getString(EXTRA_SITE_NAME);
+            setTitle(mSiteName);
         } else {
             Log.e(TAG, "Could not open activity, missing site id or name.");
             finish();
         }
 
-        mSectionedAdapter = new DepartureAdapter(this);
+        mPageAdapter = new PageFragmentAdapter(this, getSupportFragmentManager());
 
-        mActionBar = initActionBar();
-        mActionBar.setTitle(R.string.departures);
+        Bundle metroArg = new Bundle();
+        metroArg.putInt(DepartureFragment.ARG_TRANSPORT_TYPE, TransportMode.METRO_INDEX);
+        mPageAdapter.addPage(new PageInfo(getString(R.string.departure_metro), DepartureFragment.class, metroArg));
+
+        Bundle busArg = new Bundle();
+        busArg.putInt(DepartureFragment.ARG_TRANSPORT_TYPE, TransportMode.BUS_INDEX);
+        mPageAdapter.addPage(new PageInfo(getString(R.string.departure_bus), DepartureFragment.class, busArg));
+
+        Bundle trainArg = new Bundle();
+        trainArg.putInt(DepartureFragment.ARG_TRANSPORT_TYPE, TransportMode.TRAIN_INDEX);
+        mPageAdapter.addPage(new PageInfo(getString(R.string.departures), DepartureFragment.class, trainArg));
+
+        Bundle tramArg = new Bundle();
+        tramArg.putInt(DepartureFragment.ARG_TRANSPORT_TYPE, TransportMode.LOKALBANA_INDEX);
+        mPageAdapter.addPage(new PageInfo(getString(R.string.deviations_label), DepartureFragment.class, tramArg));
+
+        mPager = (ViewPager) findViewById(R.id.pager);
+        mPager.setPageMarginDrawable(R.color.light_grey);
+        mPager.setPageMargin(25);  // TODO: Compensate with denisity to get it right on all screens
+        mPager.setAdapter(mPageAdapter);
+        mPager.setOnPageChangeListener(
+                new ViewPager.SimpleOnPageChangeListener() {
+                    @Override
+                    public void onPageSelected(int position) {
+                        mPreferredTrafficMode = position;
+                        getSupportActionBar().setSelectedNavigationItem(position);
+                    }
+                }
+        );
+
+        initActionBar();
 
         // Not ideal.
         mHistoryDbAdapter = new HistoryDbAdapter(this).open();
+    }
+
+    @Override
+    protected ActionBar initActionBar() {
+        ActionBar ab = super.initActionBar();
+        ab.setDisplayHomeAsUpEnabled(true);
+        ab.setDisplayUseLogoEnabled(false);
+        ab.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+
+        ActionBar.TabListener tabListener = new ActionBar.TabListener() {
+            public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft) {
+                mPager.setCurrentItem(tab.getPosition());
+                mPreferredTrafficMode = tab.getPosition();
+            }
+
+            public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction ft) {
+            }
+
+            public void onTabReselected(ActionBar.Tab tab, FragmentTransaction ft) {
+            }
+        };
+
+        ab.addTab(ab.newTab().setIcon(R.drawable.transport_metro).setTabListener(tabListener));
+        ab.addTab(ab.newTab().setIcon(R.drawable.transport_bus).setTabListener(tabListener));
+        ab.addTab(ab.newTab().setIcon(R.drawable.transport_train).setTabListener(tabListener));
+        ab.addTab(ab.newTab().setIcon(R.drawable.transport_tram_car).setTabListener(tabListener));
+
+        return ab;
+    }
+
+    private void selectPreferredTransport() {
+        int selectedItem = 0;
+        switch (mPreferredTrafficMode) {
+            case TransportMode.METRO_INDEX:
+                selectedItem = 0;
+                break;
+            case TransportMode.BUS_INDEX:
+                selectedItem = 1;
+                break;
+            case TransportMode.TRAIN_INDEX:
+                selectedItem = 2;
+                break;
+            case TransportMode.LOKALBANA_INDEX:
+                selectedItem = 3;
+                break;
+        }
+        mPager.setCurrentItem(selectedItem, true);
+        getSupportActionBar().setSelectedNavigationItem(selectedItem);
     }
 
     @Override
@@ -136,30 +219,24 @@ public class DeparturesActivity extends BaseListActivity {
 
     @Override
     public void setTitle(CharSequence title) {
-        mActionBar.setTitle(title);
+        getSupportActionBar().setTitle(title);
     }
 
     @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        onRotationChange(newConfig);
-
-        super.onConfigurationChanged(newConfig);
-    }
-
-    private void onRotationChange(Configuration newConfig) {
-        /*
-        if (newConfig.orientation == newConfig.ORIENTATION_LANDSCAPE) {
-        } else {
-        }
-        */
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-        case R.id.actionbar_item_refresh:
-            new GetDeparturesTask().execute(mSite);
-            return true;
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+            case R.id.actionbar_item_refresh:
+                new GetDeparturesTask().execute(mSite);
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -167,6 +244,7 @@ public class DeparturesActivity extends BaseListActivity {
     /**
      * We need to call loadDeapartures after restoreLocalState that's
      * why we need to override this method. Only needed for 1.5 devices though.
+     *
      * @see android.app.Activity#onPostCreate(android.os.Bundle)
      */
     @Override
@@ -176,70 +254,13 @@ public class DeparturesActivity extends BaseListActivity {
         super.onPostCreate(savedInstanceState);
     }
 
-    OnCheckedChangeListener mOnTransportModeChange = new OnCheckedChangeListener() {
-
-        @Override
-        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-            if (isChecked) {
-                handleCheckedTransportMode(buttonView.getId());
-            }
-        }
-    };
-
-    private void handleCheckedTransportMode(int id) {
-        switch (id) {
-        case R.id.radio_metros:
-            mSectionedAdapter.fillDepartures(mDepartureResult,
-                    TransportMode.METRO_INDEX);
-            mPreferredTrafficMode = TransportMode.METRO_INDEX;
-            break;
-        case R.id.radio_buses:
-            mSectionedAdapter.fillDepartures(mDepartureResult,
-                    TransportMode.BUS_INDEX);
-            mPreferredTrafficMode = TransportMode.BUS_INDEX;
-            break;
-        case R.id.radio_trains:
-            mSectionedAdapter.fillDepartures(mDepartureResult,
-                    TransportMode.TRAIN_INDEX);
-            mPreferredTrafficMode = TransportMode.TRAIN_INDEX;
-            break;
-        case R.id.radio_trams:
-            mSectionedAdapter.fillDepartures(mDepartureResult,
-                    TransportMode.LOKALBANA_INDEX);
-            mPreferredTrafficMode = TransportMode.LOKALBANA_INDEX;
-            break;
-        }
-
-        setListAdapter(mSectionedAdapter);
-        //getListView().getEmptyView().setVisibility(View.GONE);
-    }
-
-    public void setupFilterButtons() {
-        // TODO: Fix hard coded values for preferred traffic mode.
-        RadioButton radioMetros = (RadioButton) findViewById(R.id.radio_metros);
-        radioMetros.setOnCheckedChangeListener(mOnTransportModeChange);
-        radioMetros.setEnabled(true);
-        radioMetros.setChecked(mPreferredTrafficMode == TransportMode.METRO_INDEX ? true : false);
-        RadioButton radioBuses = (RadioButton) findViewById(R.id.radio_buses);
-        radioBuses.setOnCheckedChangeListener(mOnTransportModeChange);
-        radioBuses.setEnabled(true);
-        radioBuses.setChecked(mPreferredTrafficMode == TransportMode.BUS_INDEX ? true : false);
-        RadioButton radioTrains = (RadioButton) findViewById(R.id.radio_trains);
-        radioTrains.setOnCheckedChangeListener(mOnTransportModeChange);
-        radioTrains.setEnabled(true);
-        radioTrains.setChecked(mPreferredTrafficMode == TransportMode.TRAIN_INDEX ? true : false);
-        RadioButton radioTrams = (RadioButton) findViewById(R.id.radio_trams);
-        radioTrams.setOnCheckedChangeListener(mOnTransportModeChange);
-        radioTrams.setEnabled(true);
-        radioTrams.setChecked(mPreferredTrafficMode == TransportMode.LOKALBANA_INDEX ? true : false);
-    }
-
     private void loadDepartures() {
         @SuppressWarnings("unchecked")
-        final Departures departureResult =
-            (Departures) getLastNonConfigurationInstance();
+//        final Departures departureResult =
+//                (Departures) getLastNonConfigurationInstance();
+        Departures departureResult = null;
         if (departureResult != null) {
-            fillData(departureResult);
+            onData(departureResult);
         } else if (mSite != null && mSite.getId() > 0) {
             mGetDeparturesTask = new GetDeparturesTask();
             mGetDeparturesTask.execute(mSite);
@@ -251,56 +272,6 @@ public class DeparturesActivity extends BaseListActivity {
             mGetSitesTask = new GetSitesTask();
             mGetSitesTask.execute(mSiteName);
         }
-    }
-
-    private void fillData(Departures result) {
-        // TODO: Get the selected type...
-        mDepartureResult = result;
-
-        RadioGroup transportGroup = (RadioGroup) findViewById(R.id.transport_group);
-
-        setupFilterButtons();
-
-        int checkedId = transportGroup.getCheckedRadioButtonId();
-        handleCheckedTransportMode(checkedId);
-
-        setTitle(mSite.getName());
-
-        Time now = new Time();
-        now.setToNow();
-
-        // Adjust the empty view.
-        /*
-        LinearLayout emptyView = (LinearLayout) getListView().getEmptyView();
-        TextView text = (TextView) emptyView.findViewById(R.id.search_progress_text);
-        text.setText(R.string.no_departures_for_transport_type);
-        ProgressBar progressBar = (ProgressBar) emptyView.findViewById(R.id.search_progress_bar);
-        progressBar.setVisibility(View.GONE);
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
-        params.gravity = Gravity.TOP|Gravity.LEFT;
-        emptyView.setLayoutParams(params);
-        getListView().setEmptyView(emptyView);
-        */
-        View emptyView = getListView().getEmptyView();
-        TextView text = (TextView) emptyView.findViewById(R.id.search_progress_text);
-        text.setText(R.string.no_departures_for_transport_type);
-        ProgressBar progressBar = (ProgressBar) emptyView.findViewById(R.id.search_progress_bar);
-        progressBar.setVisibility(View.GONE);
-        getListView().setEmptyView(emptyView);
-
-        /*
-        PullToRefreshListView listView = (PullToRefreshListView) getListView();
-        listView.setLastUpdated("Updated at " + now.format("%H:%M"));
-        listView.setOnRefreshListener(new OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                new RefreshDeparturesTask().execute(mSite);
-            }
-
-        });
-        */
     }
 
     @Override
@@ -336,14 +307,9 @@ public class DeparturesActivity extends BaseListActivity {
                 values.put(Places.PREFERRED_TRANSPORT_MODE, preferredTransportType);
                 int updated = getContentResolver().update(Places.CONTENT_URI, values,
                         Places.SITE_ID + "= ?",
-                        new String[] {String.valueOf(mSite.getId())});
+                        new String[]{String.valueOf(mSite.getId())});
             }
         }
-    }
-
-    @Override
-    public Object onRetainNonConfigurationInstance() {
-        return mDepartureResult;
     }
 
     @Override
@@ -371,6 +337,7 @@ public class DeparturesActivity extends BaseListActivity {
 
     /**
      * Restores any local state, if any.
+     *
      * @param savedInstanceState the bundle containing the saved state
      */
     private void restoreLocalState(Bundle savedInstanceState) {
@@ -400,6 +367,7 @@ public class DeparturesActivity extends BaseListActivity {
 
     /**
      * Restores the {@link GetSitesTask}.
+     *
      * @param savedInstanceState the saved state
      */
     private void restoreGetSitesTask(Bundle savedInstanceState) {
@@ -413,6 +381,7 @@ public class DeparturesActivity extends BaseListActivity {
 
     /**
      * Saves the state of {@link GetSitesTask}.
+     *
      * @param outState
      */
     private void saveGetSitesTask(Bundle outState) {
@@ -434,12 +403,13 @@ public class DeparturesActivity extends BaseListActivity {
                 mGetDeparturesTask.getStatus() == AsyncTask.Status.RUNNING*/) {
             Log.i(TAG, "Cancels GetDeparturesTask.");
             mGetDeparturesTask.cancel(true);
-            mGetDeparturesTask= null;
+            mGetDeparturesTask = null;
         }
     }
 
     /**
      * Restores the {@link GetDeparturesTask}.
+     *
      * @param savedInstanceState the saved state
      */
     private void restoreGetDeparturesTask(Bundle savedInstanceState) {
@@ -452,6 +422,7 @@ public class DeparturesActivity extends BaseListActivity {
 
     /**
      * Saves the state of {@link GetDeparturesTask}.
+     *
      * @param outState
      */
     private void saveGetDeparturesTask(Bundle outState) {
@@ -466,45 +437,45 @@ public class DeparturesActivity extends BaseListActivity {
 
     @Override
     protected Dialog onCreateDialog(int id) {
-        switch(id) {
-        case DIALOG_SITE_ALTERNATIVES:
-            ArrayAdapter<Site> siteAdapter =
-                new ArrayAdapter<Site>(this, R.layout.simple_dropdown_item_1line,
-                        mSiteAlternatives);
-            return new AlertDialog.Builder(this)
-                .setTitle(R.string.did_you_mean)
-                .setAdapter(siteAdapter, new OnClickListener() {
+        switch (id) {
+            case DIALOG_SITE_ALTERNATIVES:
+                ArrayAdapter<Site> siteAdapter =
+                        new ArrayAdapter<Site>(this, R.layout.simple_dropdown_item_1line,
+                                mSiteAlternatives);
+                return new AlertDialog.Builder(this)
+                        .setTitle(R.string.did_you_mean)
+                        .setAdapter(siteAdapter, new OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                new GetDeparturesTask().execute(
+                                        mSiteAlternatives.get(which));
+                            }
+                        })
+                        .setOnCancelListener(new OnCancelListener() {
+                            @Override
+                            public void onCancel(DialogInterface dialog) {
+                                // We need a site to proceed, finish the activity here
+                                // is most likely what the user intended.
+                                finish();
+                            }
+                        })
+                        .create();
+            case DIALOG_GET_SITES_NETWORK_PROBLEM:
+                return DialogHelper.createNetworkProblemDialog(this, new OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        new GetDeparturesTask().execute(
-                                mSiteAlternatives.get(which));
+                        mGetSitesTask = new GetSitesTask();
+                        mGetSitesTask.execute(mSiteName);
                     }
-                })
-                .setOnCancelListener(new OnCancelListener() {
+                });
+            case DIALOG_GET_DEPARTURES_NETWORK_PROBLEM:
+                return DialogHelper.createNetworkProblemDialog(this, new OnClickListener() {
                     @Override
-                    public void onCancel(DialogInterface dialog) {
-                        // We need a site to proceed, finish the activity here
-                        // is most likely what the user intended.
-                        finish();
+                    public void onClick(DialogInterface dialog, int which) {
+                        mGetDeparturesTask = new GetDeparturesTask();
+                        mGetDeparturesTask.execute(mSite);
                     }
-                })
-                .create();
-        case DIALOG_GET_SITES_NETWORK_PROBLEM:
-            return DialogHelper.createNetworkProblemDialog(this, new OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    mGetSitesTask = new GetSitesTask();
-                    mGetSitesTask.execute(mSiteName);
-                }
-            });
-        case DIALOG_GET_DEPARTURES_NETWORK_PROBLEM:
-            return DialogHelper.createNetworkProblemDialog(this, new OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    mGetDeparturesTask = new GetDeparturesTask();
-                    mGetDeparturesTask.execute(mSite);
-                }
-            });
+                });
         }
         return null;
     }
@@ -593,11 +564,11 @@ public class DeparturesActivity extends BaseListActivity {
                     Log.w(TAG, "Caught BadTokenException when trying to show network error dialog.");
                 }
             } else {
-            //    onNoRoutesDetailsResult();
+                //    onNoRoutesDetailsResult();
             }
         }
     }
-    
+
     /**
      * Background job for getting {@link Departure}s.
      */
@@ -633,16 +604,16 @@ public class DeparturesActivity extends BaseListActivity {
                 }
 
                 if (mPlaceId == -1) {
-                    String[] projection = new String[] {
-                                                 Places._ID,
-                                                 Places.NAME,
-                                                 Places.PREFERRED_TRANSPORT_MODE,
-                                                 Places.SITE_ID
-                                              };
-                    Uri sitesUri =  Places.CONTENT_URI;
+                    String[] projection = new String[]{
+                            Places._ID,
+                            Places.NAME,
+                            Places.PREFERRED_TRANSPORT_MODE,
+                            Places.SITE_ID
+                    };
+                    Uri sitesUri = Places.CONTENT_URI;
                     Cursor sitesCursor = managedQuery(sitesUri, projection,
                             Places.SITE_ID + "= ?",
-                            new String[] {String.valueOf(mSite.getId())},
+                            new String[]{String.valueOf(mSite.getId())},
                             Places.NAME + " asc");
                     if (sitesCursor.moveToFirst()) {
                         mPlaceId = sitesCursor.getInt(sitesCursor.getColumnIndex(Places._ID));
@@ -665,13 +636,202 @@ public class DeparturesActivity extends BaseListActivity {
             dismissProgress();
 
             if (mWasSuccess) {
-                fillData(result);
+                onData(result);
             } else {
                 try {
                     showDialog(DIALOG_GET_DEPARTURES_NETWORK_PROBLEM);
                 } catch (BadTokenException e) {
                     Log.w(TAG, "Caught BadTokenException when trying to show network error dialog.");
                 }
+            }
+        }
+    }
+
+    private void onData(Departures result) {
+        selectPreferredTransport();
+
+        // TODO: Fix this mess.
+        Bundle b0 = mPageAdapter.getPageArgs(0);
+        b0.putSerializable(DepartureFragment.ARG_DEPARTURES, result);
+        mPageAdapter.updatePageArgs(0, b0);
+
+        Bundle b1 = mPageAdapter.getPageArgs(1);
+        b1.putSerializable(DepartureFragment.ARG_DEPARTURES, result);
+        mPageAdapter.updatePageArgs(1, b1);
+
+        Bundle b2 = mPageAdapter.getPageArgs(2);
+        b2.putSerializable(DepartureFragment.ARG_DEPARTURES, result);
+        mPageAdapter.updatePageArgs(2, b2);
+
+        Bundle b3 = mPageAdapter.getPageArgs(3);
+        b3.putSerializable(DepartureFragment.ARG_DEPARTURES, result);
+        mPageAdapter.updatePageArgs(3, b3);
+
+        updateFragment(0, result);
+        updateFragment(1, result);
+        updateFragment(2, result);
+        updateFragment(3, result);
+    }
+
+    private void updateFragment(int position, Departures departures) {
+        Fragment f = this.getSupportFragmentManager().findFragmentByTag(getFragmentTag(position));
+        if (f != null) {
+            ((DepartureFragment) f).update(departures);
+        }
+    }
+
+    /**
+     * Get fragment by the same naming pattern that ViewPager use internally.
+     * <p/>
+     * We should not do this since might break when their api changes.
+     *
+     * @param pos position of the fragment tag
+     * @return A fragment tag
+     */
+    private String getFragmentTag(int pos){
+        return "android:switcher:"+R.id.pager+":"+pos;
+    }
+
+    public class PageFragmentAdapter extends FragmentPagerAdapter /*implements TitleProvider*/ {
+
+        private ArrayList<PageInfo> mPages = new ArrayList<PageInfo>();
+        private FragmentActivity mContext;
+
+        public PageFragmentAdapter(FragmentActivity activity, FragmentManager fm) {
+            super(fm);
+            mContext = activity;
+        }
+
+        public Bundle getPageArgs(int position) {
+            return mPages.get(position).mArgs;
+        }
+
+        public void updatePageArgs(int position, Bundle args) {
+            mPages.get(position).mArgs = args;
+        }
+
+        public void addPage(PageInfo page) {
+            mPages.add(page);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            PageInfo page = mPages.get(position);
+            return Fragment.instantiate(mContext,
+                    page.getFragmentClass().getName(), page.getArgs());
+        }
+
+        @Override
+        public int getCount() {
+            return mPages.size();
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return mPages.get(position).getTextResource().toUpperCase();
+        }
+
+    }
+
+    public class PageInfo {
+        private String mTextResource;
+        private Class<?> mFragmentClass;
+        private Bundle mArgs;
+
+        public PageInfo(String textResource, Class<?> fragmentClass,
+                        Bundle args) {
+            mTextResource = textResource;
+            mFragmentClass = fragmentClass;
+            mArgs = args;
+        }
+
+        public String getTextResource() {
+            return mTextResource;
+        }
+
+        public Class<?> getFragmentClass() {
+            return mFragmentClass;
+        }
+
+        public Bundle getArgs() {
+            return mArgs;
+        }
+    }
+
+    public static class DepartureFragment extends SherlockListFragment {
+        public static String ARG_DEPARTURES = "ARG_DEPARTURES";
+        public static String ARG_TRANSPORT_TYPE = "ARG_TRANSPORT_TYPE";
+
+        private DepartureAdapter mSectionedAdapter;
+        private Departures mDepartureResult;
+
+        public DepartureFragment() {
+            setRetainInstance(true);
+        }
+
+        @Override
+        public void onActivityCreated(Bundle savedInstanceState) {
+            super.onActivityCreated(savedInstanceState);
+        }
+
+        @Override
+        public void onViewCreated(View view, Bundle savedInstanceState) {
+            super.onViewCreated(view, savedInstanceState);
+
+            restoreDepartures(savedInstanceState);
+
+            updateViews();
+        }
+
+        private void restoreDepartures(Bundle savedInstanceState) {
+            if (savedInstanceState != null) {
+                mDepartureResult = (Departures) savedInstanceState.getSerializable(ARG_DEPARTURES);
+            }
+            if (mDepartureResult == null) {
+                Bundle args = getArguments();
+                if (args != null) {
+                    mDepartureResult = (Departures) args.getSerializable(ARG_DEPARTURES);
+                }
+            }
+        }
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+            View view = inflater.inflate(R.layout.departures_list, container, false);
+
+            return view;
+        }
+
+        private void updateViews() {
+            mSectionedAdapter = new DepartureAdapter(getActivity());
+            View emptyView = getListView().getEmptyView();
+            getListView().setEmptyView(emptyView);
+
+            if (mDepartureResult != null) {
+                TextView text = (TextView) emptyView.findViewById(R.id.search_progress_text);
+                text.setText(R.string.no_departures_for_transport_type);
+                ProgressBar progressBar = (ProgressBar) emptyView.findViewById(R.id.search_progress_bar);
+                progressBar.setVisibility(View.GONE);
+
+                mSectionedAdapter.fillDepartures(mDepartureResult, getArguments().getInt(ARG_TRANSPORT_TYPE));
+            }
+            setListAdapter(mSectionedAdapter);
+        }
+
+        @Override
+        public void onSaveInstanceState(Bundle outState) {
+            super.onSaveInstanceState(outState);
+
+            if (mDepartureResult != null) {
+                outState.putSerializable(ARG_DEPARTURES, mDepartureResult);
+            }
+        }
+
+        public void update(Departures result) {
+            mDepartureResult = result;
+            if (isVisible()) {
+                updateViews();
             }
         }
     }
