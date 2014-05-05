@@ -140,7 +140,7 @@
         </activity-alias>
         <activity android:name=".DeparturesActivity"
                   android:label="@string/departures"
-                  android:configChanges="locale|orientation">
+                  android:configChanges="locale|orientation|screenSize">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
                 <category android:name="android.intent.category.DEFAULT"/>
