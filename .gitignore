@@ -6,3 +6,4 @@ build
 /.idea/tasks.xml
 .gradle
 *.DS_Store
+com_crashlytics_export_strings.xml
