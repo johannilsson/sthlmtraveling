@@ -47,7 +47,7 @@
     </style>
 
     <style name="ActionBar.Solid.App" parent="@style/Widget.Sherlock.Light.ActionBar.Solid.Inverse">
-        <item name="background">@drawable/ab_solid_app</item>
+        <item name="background">@drawable/ab_stacked_solid_app</item>
         <item name="backgroundStacked">@drawable/ab_stacked_solid_app</item>
         <item name="backgroundSplit">@color/sl_blue</item>
         <item name="progressBarStyle">@style/ProgressBar.App</item>
