@@ -30,8 +30,8 @@ android {
     defaultConfig {
         minSdkVersion 8
         targetSdkVersion 19
-        versionName "2.7.3-RC2"
-        versionCode 104
+        versionName "2.8.0"
+        versionCode 105
     }
 
     signingConfigs {
