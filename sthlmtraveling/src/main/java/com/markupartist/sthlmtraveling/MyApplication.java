@@ -15,7 +15,7 @@ import java.util.Locale;
 
 public class MyApplication extends Application {
     public static String ANALYTICS_KEY = "JUSQKB45DEN62VRQVBU9";
-    public static String APP_VERSION = BuildConfig.VERSION_NAME;
+    public static String APP_VERSION = BuildConfig.VERSION_NAME + " (" + BuildConfig.VERSION_CODE + ")";
     static String TAG = "StApplication";
 
     @Override
