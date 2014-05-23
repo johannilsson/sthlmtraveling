@@ -78,5 +78,10 @@
             android:key="about_donate"
             android:title="@string/donate"
             />
+        <Preference
+            android:key="about_version"
+            android:title="Version"
+            android:enabled="false"
+            />
     </PreferenceCategory>
 </PreferenceScreen>

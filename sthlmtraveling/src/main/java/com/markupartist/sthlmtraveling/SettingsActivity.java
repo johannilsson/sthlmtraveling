@@ -11,8 +11,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceScreen;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.markupartist.sthlmtraveling.provider.HistoryDbAdapter;
@@ -36,6 +34,9 @@ public class SettingsActivity extends BasePreferenceActivity
         registerEvent("Settings");
 
         mHistoryDbAdapter = new HistoryDbAdapter(this).open();
+
+        Preference customPref = findPreference("about_version");
+        customPref.setSummary("Version " + MyApplication.APP_VERSION);
     }
 
     @Override
@@ -97,6 +98,8 @@ public class SettingsActivity extends BasePreferenceActivity
         }
         return super.onPreferenceTreeClick(preferenceScreen, preference);
     }
+
+
 
     @Override
     protected void onResume() {
