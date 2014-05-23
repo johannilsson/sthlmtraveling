@@ -105,6 +105,12 @@ public class RouteDetailActivity extends BaseListActivity {
             TextView zoneView = (TextView) headerView.findViewById(R.id.route_zones);
             zoneView.setText(mTrip.tariffZones);
             zoneView.setVisibility(View.VISIBLE);
+            zoneView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    showDialog(DIALOG_BUY_SMS_TICKET);
+                }
+            });
         }
 
         getListView().addHeaderView(headerView, null, false);
