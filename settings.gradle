@@ -1,1 +1,2 @@
-include ':sthlmtraveling', ':ViewPageIndicator'
+//include ':sthlmtraveling', ':ViewPageIndicator'
+include ':sthlmtraveling'
