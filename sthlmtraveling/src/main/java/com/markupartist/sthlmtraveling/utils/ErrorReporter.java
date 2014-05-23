@@ -1,5 +1,20 @@
 package com.markupartist.sthlmtraveling.utils;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
+import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
+import android.os.Environment;
+import android.os.StatFs;
+import android.util.Log;
+
+import com.crashlytics.android.Crashlytics;
+import com.markupartist.sthlmtraveling.R;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -11,19 +26,6 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Date;
 import java.util.Random;
-
-import com.markupartist.sthlmtraveling.R;
-
-import android.app.AlertDialog;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.DialogInterface.OnClickListener;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.PackageManager.NameNotFoundException;
-import android.os.Environment;
-import android.os.StatFs;
 
 /**
  * Error reporter.
@@ -163,6 +165,9 @@ public class ErrorReporter implements Thread.UncaughtExceptionHandler {
     }
 
     public void uncaughtException(Thread t, Throwable e) {
+        Crashlytics.log(Log.ERROR, "ErrorReporter", "Got uncaught exception: " + e.getMessage());
+        Crashlytics.logException(e);
+
         String Report = "";
         Date CurDate = new Date();
         Report += "Error Report collected on : " + CurDate.toString();
