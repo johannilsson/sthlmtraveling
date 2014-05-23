@@ -47,6 +47,7 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+import com.crashlytics.android.Crashlytics;
 import com.markupartist.sthlmtraveling.provider.JourneysProvider.Journey.Journeys;
 import com.markupartist.sthlmtraveling.provider.planner.JourneyQuery;
 import com.markupartist.sthlmtraveling.provider.planner.Planner;
@@ -476,7 +477,7 @@ public class RouteDetailActivity extends BaseListActivity {
                                 @Override
                                 public void onResult(SubTrip st) {
                                     if (st.intermediateStop.isEmpty()) {
-                                        //stopsLayout.addView(inflateText(getText(R.string.no_intermediate_stops), stopsLayout));
+                                        stopsLayout.addView(inflateText(getText(R.string.no_intermediate_stops), stopsLayout));
                                     }
                                     for (IntermediateStop is : st.intermediateStop) {
                                         stopsLayout.addView(inflateIntermediateStop(is, stopsLayout));
@@ -496,6 +497,15 @@ public class RouteDetailActivity extends BaseListActivity {
                     }
                 }
             });
+        }
+
+        private View inflateText(CharSequence text, LinearLayout stopsLayout) {
+            View view = mInflater.inflate(R.layout.trip_row_intermediate_stop, stopsLayout, false);
+            TextView descView = (TextView) view.findViewById(R.id.trip_stop_title);
+            descView.setTextSize(12);
+            descView.setText(text);
+            view.findViewById(R.id.trip_line_segment_stop).setVisibility(View.GONE);
+            return view;
         }
 
         private View inflateIntermediateStop(IntermediateStop stop, LinearLayout stopsLayout) {
@@ -564,7 +574,7 @@ public class RouteDetailActivity extends BaseListActivity {
                 Planner.getInstance().addIntermediateStops(
                         subTrip, (JourneyQuery)params[1]);
             } catch (IOException e) {
-                e.printStackTrace();
+                Crashlytics.logException(e);
             }
             return subTrip;
         }
