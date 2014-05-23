@@ -2,8 +2,6 @@ package com.markupartist.sthlmtraveling;
 
 import android.app.Application;
 import android.content.SharedPreferences;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.preference.PreferenceManager;
@@ -17,7 +15,7 @@ import java.util.Locale;
 
 public class MyApplication extends Application {
     public static String ANALYTICS_KEY = "JUSQKB45DEN62VRQVBU9";
-    public static String APP_VERSION;
+    public static String APP_VERSION = BuildConfig.VERSION_NAME;
     static String TAG = "StApplication";
 
     @Override
@@ -31,21 +29,8 @@ public class MyApplication extends Application {
 
         DataMigrationService.startService(this);
 
-        setAppVersion();
     }
 
-    protected void setAppVersion() {
-        if (APP_VERSION == null) {
-            PackageManager pm = getPackageManager();
-            try {
-                PackageInfo pi = pm.getPackageInfo(getPackageName(), 0);
-                APP_VERSION = pi.versionName;
-            } catch (Throwable e) {
-                Log.e(TAG, "Could not get the package info.");
-            }
-        }        
-    }
-    
     /* (non-Javadoc)
      * @see android.app.Application#onConfigurationChanged(android.content.res.Configuration)
      */
