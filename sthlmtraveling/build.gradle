@@ -5,11 +5,9 @@ buildscript {
 
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.9.+'
+        classpath 'com.android.tools.build:gradle:0.10.+'
         // https://github.com/JakeWharton/hugo
         //classpath 'com.jakewharton.hugo:hugo-plugin:1.0.+'
-        // https://github.com/JakeWharton/gradle-android-test-plugin
-        //classpath 'com.squareup.gradle:gradle-android-test-plugin:0.9.+'
         classpath 'com.crashlytics.tools.gradle:crashlytics-gradle:1.+'
 
     }
@@ -18,7 +16,6 @@ buildscript {
 apply plugin: 'android'
 apply plugin: 'crashlytics'
 //apply plugin: 'hugo'
-//apply plugin: 'android-test'
 
 repositories {
     mavenCentral()
@@ -33,6 +30,8 @@ android {
     defaultConfig {
         minSdkVersion 8
         targetSdkVersion 19
+        versionName "2.7.3-RC2"
+        versionCode 104
     }
 
     signingConfigs {
@@ -51,18 +50,24 @@ android {
             proguardFile 'proguard-rules.txt'
         }
     }
+
+    lintOptions {
+        checkReleaseBuilds false
+        abortOnError false
+    }
+
+    applicationVariants.all { variant ->
+        def file = variant.outputFile
+        variant.outputFile = new File(file.parent, file.name.replace(".apk", "-" + defaultConfig.versionName + ".apk"))
+    }
 }
 
 dependencies {
     compile 'com.actionbarsherlock:actionbarsherlock:4.4.0@aar'
     compile 'com.android.support:support-v4:19.1.0'
     compile 'com.google.android.gms:play-services:4.0.+'
-    compile project(':ViewPageIndicator')
+    //compile project(':ViewPageIndicator')
     compile files('libs/FlurryAgent.jar')
-    // Test
-    //testCompile 'junit:junit:4.10'
-    //testCompile 'org.robolectric:robolectric:2.1.+'
-    //testCompile 'com.squareup:fest-android:1.0.+'
     compile 'com.crashlytics.android:crashlytics:1.+'
 
 }
