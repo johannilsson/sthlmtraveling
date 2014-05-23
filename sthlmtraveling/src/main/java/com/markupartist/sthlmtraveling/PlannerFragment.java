@@ -66,9 +66,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
 import com.markupartist.sthlmtraveling.provider.HistoryDbAdapter;
 import com.markupartist.sthlmtraveling.provider.JourneysProvider.Journey.Journeys;
 import com.markupartist.sthlmtraveling.provider.TransportMode;
@@ -139,9 +136,6 @@ public class PlannerFragment extends BaseListFragment implements
             mCreateShortcut = true;
         }
 
-        // Enable options menu
-        setHasOptionsMenu(true);
-
         if (savedInstanceState != null) {
             mStackLevel = savedInstanceState.getInt("level");
         }
@@ -160,7 +154,30 @@ public class PlannerFragment extends BaseListFragment implements
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.planner_list_fragment, container, false);
+        View rootView = inflater.inflate(R.layout.planner_list_fragment, container, false);
+
+        Button searchButton = (Button) rootView.findViewById(R.id.btn_search);
+        if (mCreateShortcut) {
+            searchButton.setText(getText(R.string.create_shortcut_label));
+        }
+        searchButton.setText(((String)searchButton.getText()).toUpperCase());
+
+        searchButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                handleSearchAction();
+            }
+        });
+        ImageButton preferenceButton = (ImageButton) rootView.findViewById(R.id.btn_settings);
+        preferenceButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent settingsIntent = new Intent().setClass(getActivity(), SettingsActivity.class);
+                startActivityWithDefaultTransition(settingsIntent);
+            }
+        });
+
+        return rootView;
     }
 
     @Override
@@ -262,6 +279,9 @@ public class PlannerFragment extends BaseListFragment implements
         if (mCreateShortcut) {
             registerEvent("Planner create shortcut");
             getActivity().setTitle(R.string.create_shortcut_label);
+
+            // Add search label to button
+
             RadioGroup chooseTimeGroup = (RadioGroup) mSearchView
                     .findViewById(R.id.planner_choose_time_group);
             chooseTimeGroup.setVisibility(View.GONE);
@@ -309,21 +329,6 @@ public class PlannerFragment extends BaseListFragment implements
         if (mViaPoint != null && !mViaPoint.hasName()) {
             mViaPointAutoComplete.setText("");
         }
-    }
-
-    @Override
-    public void onPrepareOptionsMenu(Menu menu) {
-        if (mCreateShortcut) {
-            MenuItem item = menu.findItem(R.id.actionbar_search_route);
-            item.setTitle(R.string.create_shortcut_label);
-        }
-        super.onPrepareOptionsMenu(menu);
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-    	inflater.inflate(R.menu.options_menu_search, menu);
-    	super.onCreateOptionsMenu(menu, inflater);
     }
 
     private Site buildStop(Site site, AutoCompleteTextView auTextView) {
@@ -697,52 +702,6 @@ public class PlannerFragment extends BaseListFragment implements
                 .setPositiveButton(android.R.string.ok, null).create();
     }
 
-    private Dialog createDialogAbout() {
-        String version = MyApplication.APP_VERSION;
-
-        View aboutLayout = getActivity().getLayoutInflater().inflate(
-                R.layout.about_dialog,
-                (ViewGroup) getActivity().findViewById(
-                        R.id.about_dialog_layout_root));
-
-        return new AlertDialog.Builder(getActivity())
-                .setTitle(getText(R.string.app_name) + " " + version)
-                .setIcon(android.R.drawable.ic_dialog_info)
-                .setView(aboutLayout)
-                .setCancelable(true)
-                .setInverseBackgroundForced(true)
-                .setPositiveButton(getText(android.R.string.ok), null)
-                .setNeutralButton(getText(R.string.donate),
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog,
-                                    int which) {
-                                Intent browserIntent = new Intent(
-                                        Intent.ACTION_VIEW,
-                                        Uri.parse(getString(R.string.donate_url)));
-                                startActivity(browserIntent);
-                            }
-                        })
-                .setNegativeButton(getText(R.string.feedback),
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog,
-                                    int which) {
-                                final Intent emailIntent = new Intent(
-                                    Intent.ACTION_SEND);
-                                emailIntent.setType("plain/text");
-                                emailIntent.putExtra(
-                                    android.content.Intent.EXTRA_EMAIL,
-                                    new String[] { getString(R.string.send_feedback_email_emailaddress) });
-                                emailIntent.putExtra(
-                                    android.content.Intent.EXTRA_SUBJECT,
-                                    getText(R.string.send_feedback_email_title));
-                                startActivity(Intent.createChooser(emailIntent,
-                                        getText(R.string.send_email)));
-                            }
-                        }).create();
-    }
-
     private Dialog createDialogViaPoint() {
         AlertDialog.Builder viaPointDialogBuilder = new AlertDialog.Builder(
                 getActivity());
@@ -857,94 +816,56 @@ public class PlannerFragment extends BaseListFragment implements
         mTimeButton.setText(formattedTime);
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-        case R.id.actionbar_search_route:
-            if (TextUtils.isEmpty(mStartPointAutoComplete.getText())) {
-                Log.d(TAG, "Start auto was empty");
-                mStartPointAutoComplete.setError(getText(R.string.empty_value));
-            } else if (TextUtils.isEmpty(mEndPointAutoComplete.getText())) {
-                Log.d(TAG, "End auto was empty");
-                mEndPointAutoComplete.setError(getText(R.string.empty_value));
-            } else {
-                mStartPoint = buildStop(mStartPoint, mStartPointAutoComplete);
-                mEndPoint = buildStop(mEndPoint, mEndPointAutoComplete);
+    private void handleSearchAction() {
+        if (TextUtils.isEmpty(mStartPointAutoComplete.getText())) {
+            Log.d(TAG, "Start auto was empty");
+            mStartPointAutoComplete.setError(getText(R.string.empty_value));
+        } else if (TextUtils.isEmpty(mEndPointAutoComplete.getText())) {
+            Log.d(TAG, "End auto was empty");
+            mEndPointAutoComplete.setError(getText(R.string.empty_value));
+        } else {
+            mStartPoint = buildStop(mStartPoint, mStartPointAutoComplete);
+            mEndPoint = buildStop(mEndPoint, mEndPointAutoComplete);
 
-                boolean looksValid = true;
-                if (!mStartPoint.looksValid()) {
-                    Log.d(TAG, "Start was not valid: " + mStartPoint.toDump());
+            boolean looksValid = true;
+            if (!mStartPoint.looksValid()) {
+                Log.d(TAG, "Start was not valid: " + mStartPoint.toDump());
 
-                    AutoCompleteStopAdapter a = (AutoCompleteStopAdapter) mStartPointAutoComplete.getAdapter();
-                    Site startPoint = a.findSite(mStartPointAutoComplete.getText().toString());
-                    mStartPoint.fromSite(startPoint);
-                    if (startPoint == null) {
-                        mStartPointAutoComplete.setError(getText(R.string.empty_value));
-                        looksValid = false;
-                    }
-                }
-                if (!mEndPoint.looksValid()) {
-                    Log.d(TAG, "End was not valid: " + mEndPoint.toDump());
-                    AutoCompleteStopAdapter a = (AutoCompleteStopAdapter) mEndPointAutoComplete.getAdapter();
-                    Site endPoint = a.findSite(mEndPointAutoComplete.getText().toString());
-                    mEndPoint.fromSite(endPoint);
-                    if (endPoint == null) {
-                        mEndPointAutoComplete.setError(getText(R.string.empty_value));
-                        looksValid = false;
-                    }
-                }
-                if (!TextUtils.isEmpty(mViaPointAutoComplete.getText())) {
-                    mViaPoint = buildStop(mViaPoint, mViaPointAutoComplete);
-                    if (!mViaPoint.looksValid()) {
-                        Log.d(TAG, "Via was not valid");
-                        mViaPointAutoComplete.setError(getText(R.string.empty_value));
-                        looksValid = false;
-                    }
-                }
-                if (looksValid) {
-                    if (mCreateShortcut) {
-                        showDialog(createDialogShortcutName());
-                        // onCreateShortCut(mStartPoint, mEndPoint);
-                    } else {
-                        onSearchRoutes(mStartPoint, mEndPoint, mViaPoint, mTime);
-                    }
+                AutoCompleteStopAdapter a = (AutoCompleteStopAdapter) mStartPointAutoComplete.getAdapter();
+                Site startPoint = a.findSite(mStartPointAutoComplete.getText().toString());
+                mStartPoint.fromSite(startPoint);
+                if (startPoint == null) {
+                    mStartPointAutoComplete.setError(getText(R.string.empty_value));
+                    looksValid = false;
                 }
             }
-            break;
-        case R.id.about:
-            showDialog(createDialogAbout());
-            return true;
-        case R.id.actionbar_item_reverse:
-
-            Log.i(TAG, "Before reversed start " + mStartPoint.toDump());
-            Log.i(TAG, "Before reversed end " + mEndPoint.toDump());
-
-            Site tmpStartPoint = new Site(mEndPoint);
-            Site tmpEndPoint = new Site(mStartPoint);
-
-            mStartPoint = tmpStartPoint;
-            mEndPoint = tmpEndPoint;
-
-            Log.i(TAG, "Reversed start " + mStartPoint.toDump());
-            Log.i(TAG, "Reversed end " + mEndPoint.toDump());
-
-            // Seems like we loose the reference during reverse.
-            // Investigate this further.
-            mStartPointAutoComplete = createAutoCompleteTextView(R.id.from,
-                    /*R.id.from_progress*/ -1, mStartPoint);
-            mEndPointAutoComplete = createAutoCompleteTextView(R.id.to,
-                    /*R.id.to_progress*/ -1, mEndPoint);
-
-            mStartPointAutoComplete.setText(mStartPoint.getName());
-            mEndPointAutoComplete.setText(mEndPoint.getName());
-
-            return true;
-        case R.id.menu_settings:
-            Intent settingsIntent = new Intent().setClass(getActivity(), SettingsActivity.class);
-            startActivityWithDefaultTransition(settingsIntent);
-            return true;
+            if (!mEndPoint.looksValid()) {
+                Log.d(TAG, "End was not valid: " + mEndPoint.toDump());
+                AutoCompleteStopAdapter a = (AutoCompleteStopAdapter) mEndPointAutoComplete.getAdapter();
+                Site endPoint = a.findSite(mEndPointAutoComplete.getText().toString());
+                mEndPoint.fromSite(endPoint);
+                if (endPoint == null) {
+                    mEndPointAutoComplete.setError(getText(R.string.empty_value));
+                    looksValid = false;
+                }
+            }
+            if (!TextUtils.isEmpty(mViaPointAutoComplete.getText())) {
+                mViaPoint = buildStop(mViaPoint, mViaPointAutoComplete);
+                if (!mViaPoint.looksValid()) {
+                    Log.d(TAG, "Via was not valid");
+                    mViaPointAutoComplete.setError(getText(R.string.empty_value));
+                    looksValid = false;
+                }
+            }
+            if (looksValid) {
+                if (mCreateShortcut) {
+                    showDialog(createDialogShortcutName());
+                    // onCreateShortCut(mStartPoint, mEndPoint);
+                } else {
+                    onSearchRoutes(mStartPoint, mEndPoint, mViaPoint, mTime);
+                }
+            }
         }
-        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -973,12 +894,6 @@ public class PlannerFragment extends BaseListFragment implements
             }
             break;
         }
-    }
-
-    @Override
-    public void onDestroy() {
-        Log.d(TAG, "PlannerFragment.onDestroy()");
-        super.onDestroy();
     }
 
     @Override

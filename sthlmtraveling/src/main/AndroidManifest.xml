@@ -34,7 +34,6 @@
         <activity android:name=".StartActivity"
                   android:label="@string/app_name"
                   android:configChanges="locale|orientation"
-                  android:uiOptions="splitActionBarWhenNarrow"
                   android:windowSoftInputMode="adjustResize"
                   android:theme="@style/Theme.App.SplitActionBar"
                   >
@@ -52,7 +51,6 @@
             </intent-filter>
         </activity-alias>
         <activity android:name=".PlannerFragmentActivity"
-                  android:uiOptions="splitActionBarWhenNarrow"
                   android:label="@string/search_label"
                   android:configChanges="locale|orientation"
                   android:windowSoftInputMode="adjustPan"

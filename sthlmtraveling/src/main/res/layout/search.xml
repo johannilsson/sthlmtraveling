@@ -15,10 +15,9 @@
 ** limitations under the License.
 */
 -->
-
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
+    android:layout_height="wrap_content">
 
     <LinearLayout
         android:layout_width="fill_parent"
@@ -27,7 +26,6 @@
         android:paddingTop="22dp"
         android:paddingBottom="4dp"
         >
-
         <!-- Start from -->
         <LinearLayout
             android:layout_width="match_parent"
@@ -35,7 +33,7 @@
             android:layout_marginBottom="10dp">
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1">
 
@@ -55,17 +53,6 @@
                     android:nextFocusRight="@+id/from_menu"
                     android:singleLine="true"
                     android:textColor="?android:attr/textColorPrimary" />
-                <!--
-                <ProgressBar
-                    android:id="@+id/from_progress"
-                    android:indeterminate="true"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    style="?android:attr/progressBarStyleSmall"
-                    android:layout_gravity="center_vertical"
-                    android:visibility="invisible"
-                    />
-                -->
             </LinearLayout>
 
             <ImageButton
@@ -109,20 +96,7 @@
                     android:lines="1"
                     android:singleLine="true"
                     android:textColor="?android:attr/textColorPrimary">
-
-                    <requestFocus />
                 </AutoCompleteTextView>
-                <!--
-                <ProgressBar
-                    android:id="@+id/to_progress"
-                    android:indeterminate="true"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    style="?android:attr/progressBarStyleSmallInverse"
-                    android:layout_gravity="center_vertical"
-                    android:visibility="invisible"
-                    />
-                    -->
             </LinearLayout>
 
             <ImageButton
@@ -218,17 +192,6 @@
                         android:lines="1"
                         android:singleLine="true"
                         android:textColor="?android:attr/textColorPrimary" />
-                    <!--
-                    <ProgressBar
-                        android:id="@+id/via_progress"
-                        android:indeterminate="true"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        style="?android:attr/progressBarStyleSmall"
-                        android:layout_gravity="center_vertical"
-                        android:visibility="invisible"
-                        />
-                    -->
                 </LinearLayout>
 
                 <ImageButton

@@ -1,12 +1,12 @@
 package com.markupartist.sthlmtraveling;
 
-import java.io.IOException;
-import java.io.InputStream;
-
 import android.os.Bundle;
 import android.widget.TextView;
 
 import com.google.android.gms.common.GooglePlayServicesUtil;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 public class AboutActivity extends BaseActivity {
     @Override
@@ -15,6 +15,8 @@ public class AboutActivity extends BaseActivity {
 
         setContentView(R.layout.legal);
         TextView webView = (TextView) findViewById(R.id.legal_notice);
+
+        String about = getString(R.string.about_this_app);
 
         String legal = "";
         try {
@@ -30,8 +32,8 @@ public class AboutActivity extends BaseActivity {
 
         String licenseInfo = GooglePlayServicesUtil.getOpenSourceSoftwareLicenseInfo(this);
 
-        legal += licenseInfo;
+        about += legal += licenseInfo;
 
-        webView.setText(legal);
+        webView.setText(about);
     }
 }

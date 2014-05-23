@@ -68,7 +68,15 @@
             android:title="@string/about">
         <Preference
             android:key="about_legal"
-            android:title="Legal"
+            android:title="@string/about"
+            />
+        <Preference
+            android:key="about_contact"
+            android:title="Email"
+            />
+        <Preference
+            android:key="about_donate"
+            android:title="@string/donate"
             />
     </PreferenceCategory>
 </PreferenceScreen>

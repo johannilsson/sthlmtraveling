@@ -11,6 +11,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceScreen;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.markupartist.sthlmtraveling.provider.HistoryDbAdapter;
@@ -77,6 +79,21 @@ public class SettingsActivity extends BasePreferenceActivity
         } else if (preference.getKey().equals("help_support")) {
             Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("http://kundo.se/org/sthlm-traveling/"));
             startActivity(i);
+        } else if (preference.getKey().equals("about_donate")) {
+            Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.donate_url)));
+            startActivity(i);
+        } else if (preference.getKey().equals("about_contact")) {
+            final Intent emailIntent = new Intent(
+                    Intent.ACTION_SEND);
+            emailIntent.setType("plain/text");
+            emailIntent.putExtra(
+                    android.content.Intent.EXTRA_EMAIL,
+                    new String[] { getString(R.string.send_feedback_email_emailaddress) });
+            emailIntent.putExtra(
+                    android.content.Intent.EXTRA_SUBJECT,
+                    getText(R.string.send_feedback_email_title));
+            startActivity(Intent.createChooser(emailIntent,
+                    getText(R.string.send_email)));
         }
         return super.onPreferenceTreeClick(preferenceScreen, preference);
     }
@@ -160,4 +177,5 @@ public class SettingsActivity extends BasePreferenceActivity
         startActivity(i);
         return true;
     }
+
 }
