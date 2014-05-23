@@ -8,7 +8,6 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/ViewPageIndicator" />
             <option value="$PROJECT_DIR$/sthlmtraveling" />
           </set>
         </option>
