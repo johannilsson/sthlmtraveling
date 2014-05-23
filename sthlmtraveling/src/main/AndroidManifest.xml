@@ -2,14 +2,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="com.markupartist.sthlmtraveling"
       android:installLocation="auto"
-      android:versionCode="102" android:versionName="2.7.2"
       >
     <supports-screens
         android:largeScreens="true"
         android:normalScreens="true"
         android:smallScreens="true"
         android:anyDensity="true" />
-    <uses-sdk android:minSdkVersion="8" android:targetSdkVersion="19" />
     <uses-feature
         android:glEsVersion="0x00020000"
         android:required="true"/>
