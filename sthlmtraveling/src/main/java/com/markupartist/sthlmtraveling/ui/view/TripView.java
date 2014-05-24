@@ -78,7 +78,7 @@ public class TripView extends LinearLayout {
         if (trip.mt6MessageExist || trip.remarksMessageExist || trip.rtuMessageExist) {
             ImageView warning = new ImageView(getContext());
             warning.setImageResource(R.drawable.ic_trip_deviation);
-            warning.setPadding((int)(8 * scale), (int)(7 * scale), 0, 0);
+            warning.setPadding((int)(8 * scale), (int)(16 * scale), 0, 0);
 
             timeLayout.addView(warning);
         }
@@ -90,7 +90,8 @@ public class TripView extends LinearLayout {
         startAndEndPoint.setPadding(0, (int)(2 * scale), 0, (int)(2 * scale));
 
         LinearLayout routeChanges = new LinearLayout(getContext());
-        routeChanges.setPadding((int)(5 * scale), (int)(10 * scale), 0, (int)(12 * scale));
+        routeChanges.setPadding((int) (5 * scale), (int) (10 * scale), 0, (int) (12 * scale));
+        //routeChanges.setGravity(Gravity.CENTER_VERTICAL);
 
         int currentTransportCount = 1;
 
@@ -98,7 +99,7 @@ public class TripView extends LinearLayout {
         for (Planner.SubTrip subTrip : trip.subTrips) {
             ImageView change = new ImageView(getContext());
             change.setImageResource(subTrip.transport.getImageResource());
-            change.setPadding(0, 0, (int)(5 * scale), 0);
+            change.setPadding(0, 0, 0, 0);
             routeChanges.addView(change);
 
                 /*
@@ -119,8 +120,10 @@ public class TripView extends LinearLayout {
                 //lineNumberView.setText(transport.getShortName());
                 lineNumberView.setText(Integer.toString(lineNumbers.get(0)));
                 //lineNumberView.setPadding(7, 2, 7, 2);
-                lineNumberView.setPadding(0, (int)(2 * scale), (int)(2 * scale), (int)(2 * scale));
+                lineNumberView.setPadding((int)(5 * scale), (int)(2 * scale), (int)(2 * scale), (int)(2 * scale));
                 routeChanges.addView(lineNumberView);
+            } else {
+
             }
 
             if (transportCount > currentTransportCount) {
