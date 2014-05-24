@@ -516,12 +516,13 @@ public class Planner {
          * @return returns true if this trip can be purchased with SMS.
          */
         public boolean canBuySmsTicket() {
-            if (TextUtils.isEmpty(tariffRemark)) {
-                return false;
-            }
-            return tariffRemark.startsWith("2") ||
-                tariffRemark.startsWith("3") ||
-                tariffRemark.startsWith("4");
+            // TODO: Add support for checking tariff messages
+            return tariffZones.equals("A") ||
+                    tariffZones.equals("B") ||
+                    tariffZones.equals("C") ||
+                    tariffZones.equals("AB") ||
+                    tariffZones.equals("BC") ||
+                    tariffZones.equals("ABC");
         }
 
         @Override
@@ -576,6 +577,7 @@ public class Planner {
             trip.origin = Location.fromJson(json.getJSONObject("origin"));
             if (json.has("tariff_zones")) {
                 trip.tariffZones = json.getString("tariff_zones");
+                trip.tariffZones = trip.tariffZones.trim();
             }
             if (json.has("tariff_remark")) {
                 trip.tariffRemark = json.getString("tariff_remark");
