@@ -16,15 +16,13 @@
 
 package com.markupartist.sthlmtraveling;
 
-import java.io.IOException;
-
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -35,6 +33,8 @@ import com.markupartist.sthlmtraveling.provider.deviation.DeviationStore;
 import com.markupartist.sthlmtraveling.provider.deviation.DeviationStore.TrafficEvent;
 import com.markupartist.sthlmtraveling.provider.deviation.DeviationStore.TrafficStatus;
 import com.markupartist.sthlmtraveling.provider.deviation.DeviationStore.TrafficType;
+
+import java.io.IOException;
 
 public class TrafficStatusFragment extends BaseFragment {
 
@@ -157,7 +157,7 @@ public class TrafficStatusFragment extends BaseFragment {
         } else if ("TRN".equals(transport)) {
             return R.drawable.transport_train;
         } else if ("TRM".equals(transport)) {
-            return R.drawable.transport_lokalbana;
+            return R.drawable.transport_tram_car;
         } else if ("TRC".equals(transport)) {
             return R.drawable.transport_tram_car;
         } else if ("SHP".equals(transport)) {

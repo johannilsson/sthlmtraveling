@@ -128,7 +128,7 @@
         />
         <ImageView 
             android:id="@+id/favorite_transport_mode_tram"
-            android:src="@drawable/transport_lokalbana"
+            android:src="@drawable/transport_tram_car"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="gone"

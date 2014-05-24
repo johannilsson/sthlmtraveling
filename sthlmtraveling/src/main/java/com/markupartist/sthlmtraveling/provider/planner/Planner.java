@@ -1019,7 +1019,7 @@ public class Planner {
             } else if ("TRN".equals(type)) {
                 return R.drawable.transport_train;
             } else if ("TRM".equals(type)) {
-                return R.drawable.transport_lokalbana;
+                return R.drawable.transport_tram_car;
             } else if ("SHP".equals(type)) {
                 return R.drawable.transport_boat;
             } else if ("FLY".equals(type)) {
