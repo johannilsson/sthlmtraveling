@@ -120,7 +120,7 @@ public class TripView extends LinearLayout {
                 //lineNumberView.setText(transport.getShortName());
                 lineNumberView.setText(Integer.toString(lineNumbers.get(0)));
                 //lineNumberView.setPadding(7, 2, 7, 2);
-                lineNumberView.setPadding((int)(5 * scale), (int)(2 * scale), (int)(2 * scale), (int)(2 * scale));
+                lineNumberView.setPadding((int)(5 * scale), (int)(0 * scale), (int)(2 * scale), (int)(4 * scale));
                 routeChanges.addView(lineNumberView);
             } else {
 
@@ -130,7 +130,7 @@ public class TripView extends LinearLayout {
                 ImageView separator = new ImageView(getContext());
                 separator.setImageResource(R.drawable.transport_separator);
                 //separator.setPadding(9, 7, 9, 0);
-                separator.setPadding((int)(5 * scale), (int)(7 * scale), (int)(5 * scale), 0);
+                separator.setPadding((int)(5 * scale), (int)(5 * scale), (int)(5 * scale), 0);
                 routeChanges.addView(separator);
             }
 
