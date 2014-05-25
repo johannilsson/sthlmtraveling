@@ -60,6 +60,7 @@
         <activity-alias android:name="SearchShortcutActivity"
             android:targetActivity="PlannerFragmentActivity"
             android:label="@string/activity_create_shortcut"
+            android:windowSoftInputMode="adjustResize"
             android:configChanges="locale|orientation"
             >
             <intent-filter>
