@@ -8,19 +8,22 @@ import android.preference.PreferenceManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
 
+import com.crashlytics.android.Crashlytics;
 import com.markupartist.sthlmtraveling.service.DataMigrationService;
 import com.markupartist.sthlmtraveling.utils.ErrorReporter;
 
 import java.util.Locale;
 
 public class MyApplication extends Application {
+    static String TAG = "StApplication";
     public static String ANALYTICS_KEY = "JUSQKB45DEN62VRQVBU9";
     public static String APP_VERSION = BuildConfig.VERSION_NAME + " (" + BuildConfig.VERSION_CODE + ")";
-    static String TAG = "StApplication";
 
     @Override
     public void onCreate() {
         super.onCreate();
+
+        Crashlytics.start(this);
 
         final ErrorReporter reporter = ErrorReporter.getInstance();
         reporter.init(getApplicationContext());
@@ -28,7 +31,6 @@ public class MyApplication extends Application {
         reloadLocaleForApplication();
 
         DataMigrationService.startService(this);
-
     }
 
     /* (non-Javadoc)
@@ -66,5 +68,5 @@ public class MyApplication extends Application {
             res.updateConfiguration(conf, dm);
         }
     }
-    
+
 }
