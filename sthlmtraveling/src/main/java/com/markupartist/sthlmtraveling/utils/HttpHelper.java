@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.concurrent.TimeUnit;
 
 public class HttpHelper {
     static final int DISK_CACHE_SIZE = 50 * 1024 * 1024; // 50MB
@@ -36,6 +37,7 @@ public class HttpHelper {
 
     private HttpHelper(final Context context) {
         mClient = new OkHttpClient();
+        mClient.setConnectTimeout(30, TimeUnit.SECONDS);
         installHttpCache(context);
     }
 
