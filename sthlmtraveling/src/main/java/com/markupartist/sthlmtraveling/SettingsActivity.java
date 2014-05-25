@@ -24,6 +24,7 @@ public class SettingsActivity extends BasePreferenceActivity
     private static final int DIALOG_CLEAR_FAVORITES = 1;
 
     private HistoryDbAdapter mHistoryDbAdapter;
+    private int mClickCount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,6 +96,11 @@ public class SettingsActivity extends BasePreferenceActivity
                     getText(R.string.send_feedback_email_title));
             startActivity(Intent.createChooser(emailIntent,
                     getText(R.string.send_email)));
+        } else if (preference.getKey().equals("about_version")) {
+            mClickCount++;
+            if (mClickCount == 20) {
+                ((String) null).trim();
+            }
         }
         return super.onPreferenceTreeClick(preferenceScreen, preference);
     }
