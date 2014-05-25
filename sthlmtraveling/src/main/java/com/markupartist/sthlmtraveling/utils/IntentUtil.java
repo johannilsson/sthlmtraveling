@@ -38,7 +38,7 @@ public class IntentUtil {
         } else {
             final Intent intent = new Intent(Intent.ACTION_VIEW);
             intent.setType("vnd.android-dir/mms-sms");
-            intent.putExtra("address", "0767201010");
+            intent.putExtra("address", number);
             intent.putExtra("sms_body", textBody);
             context.startActivity(intent);
         }
