@@ -25,30 +25,22 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.markupartist.sthlmtraveling.R;
-import com.markupartist.sthlmtraveling.provider.site.Site;
-import com.markupartist.sthlmtraveling.provider.site.SitesStore;
 import com.markupartist.sthlmtraveling.utils.DateTimeUtil;
-import com.markupartist.sthlmtraveling.utils.HttpManager;
-import com.markupartist.sthlmtraveling.utils.StreamUtils;
+import com.markupartist.sthlmtraveling.utils.HttpHelper;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.client.methods.HttpGet;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-import static com.markupartist.sthlmtraveling.provider.ApiConf.KEY;
 import static com.markupartist.sthlmtraveling.provider.ApiConf.apiEndpoint2;
-import static com.markupartist.sthlmtraveling.provider.ApiConf.get;
 
 /**
  * Journey planner for the sl.se API.
@@ -108,35 +100,19 @@ public class Planner {
         return R.string.planner_error_unknown;
     }
 
-    /**
-     * Find stops that matches the provided name
-     * @param name the name
-     * @return a list of stops
-     * @throws IOException on network problems
-     */
-    @Deprecated
-    public ArrayList<String> findStop(String name) throws IOException{
-        ArrayList<Site> sites = SitesStore.getInstance().getSite(name);
-        ArrayList<String> stops = new ArrayList<String>();
-        for (Site site : sites) {
-            stops.add(site.getName());
-        }
-        return stops;
+    public Response findPreviousJourney(final Context context, JourneyQuery query) throws IOException, BadResponse {
+        return doJourneyQuery(context, query, 2);
     }
 
-    public Response findPreviousJourney(JourneyQuery query) throws IOException, BadResponse {
-        return doJourneyQuery(query, 2);
+    public Response findNextJourney(final Context context, JourneyQuery query) throws IOException, BadResponse {
+        return doJourneyQuery(context, query, 1);
     }
 
-    public Response findNextJourney(JourneyQuery query) throws IOException, BadResponse {
-        return doJourneyQuery(query, 1);
+    public Response findJourney(final Context context, JourneyQuery query) throws IOException, BadResponse {
+        return doJourneyQuery(context, query, -1);
     }
 
-    public Response findJourney(JourneyQuery query) throws IOException, BadResponse {
-        return doJourneyQuery(query, -1);
-    }
-
-    public Trip2 addIntermediateStops(Trip2 trip, JourneyQuery query)
+    public Trip2 addIntermediateStops(final Context context, Trip2 trip, JourneyQuery query)
             throws IOException{
         Uri u = Uri.parse(apiEndpoint2());
         Uri.Builder b = u.buildUpon();
@@ -159,17 +135,14 @@ public class Planner {
             return trip;
         }
 
-        final HttpGet get = new HttpGet(u.toString());
-        get.addHeader("X-STHLMTraveling-API-Key", get(KEY));
-        final HttpResponse response = HttpManager.execute(get);
+        HttpHelper httpHelper = HttpHelper.getInstance(context);
+        HttpURLConnection connection = httpHelper.getConnection(u.toString());
 
-        HttpEntity entity;
         String rawContent;
-        int statusCode = response.getStatusLine().getStatusCode();
+        int statusCode = connection.getResponseCode();
         switch (statusCode) {
-        case HttpStatus.SC_OK:
-            entity = response.getEntity();
-            rawContent = StreamUtils.toString(HttpManager.getUngzippedContent(entity));
+        case 200:
+            rawContent = httpHelper.getBody(connection);
             try {
                 JSONObject baseResponse = new JSONObject(rawContent);
                 if (baseResponse.has("stops")) {
@@ -205,9 +178,8 @@ public class Planner {
                 Log.w(TAG, "Could not parse the reponse for intermediate stops.");
             }
             break;
-        case HttpStatus.SC_BAD_REQUEST:
-            entity = response.getEntity();
-            rawContent = StreamUtils.toString(entity.getContent());
+        case 400:  // Bad request
+            rawContent = httpHelper.getErrorBody(connection);
             try {
                 BadResponse br = BadResponse.fromJson(new JSONObject(rawContent));
                 Log.e(TAG, "Invalid response for intermediate stops: " + br.toString());
@@ -221,7 +193,7 @@ public class Planner {
         return trip;
     }
 
-    public SubTrip addIntermediateStops(SubTrip subTrip, JourneyQuery query)
+    public SubTrip addIntermediateStops(Context context, SubTrip subTrip, JourneyQuery query)
             throws IOException {
         Uri u = Uri.parse(apiEndpoint2());
         Uri.Builder b = u.buildUpon();
@@ -232,17 +204,14 @@ public class Planner {
 
         u = b.build();
 
-        final HttpGet get = new HttpGet(u.toString());
-        get.addHeader("X-STHLMTraveling-API-Key", get(KEY));
-        final HttpResponse response = HttpManager.execute(get);
+        HttpHelper httpHelper = HttpHelper.getInstance(context);
+        HttpURLConnection connection = httpHelper.getConnection(u.toString());
 
-        HttpEntity entity;
         String rawContent;
-        int statusCode = response.getStatusLine().getStatusCode();
+        int statusCode = connection.getResponseCode();
         switch (statusCode) {
-        case HttpStatus.SC_OK:
-            entity = response.getEntity();
-            rawContent = StreamUtils.toString(HttpManager.getUngzippedContent(entity));
+        case 200:
+            rawContent = httpHelper.getBody(connection);
             try {
                 JSONObject baseResponse = new JSONObject(rawContent);
                 if (baseResponse.has("stops")) {
@@ -258,9 +227,8 @@ public class Planner {
                 Log.w(TAG, "Could not parse the reponse for intermediate stops.");
             }
             break;
-        case HttpStatus.SC_BAD_REQUEST:
-            entity = response.getEntity();
-            rawContent = StreamUtils.toString(entity.getContent());
+        case 400:
+            rawContent = httpHelper.getErrorBody(connection);
             try {
                 BadResponse br = BadResponse.fromJson(new JSONObject(rawContent));
                 Log.e(TAG, "Invalid response for intermediate stops: " + br.toString());
@@ -274,7 +242,7 @@ public class Planner {
         return subTrip;
     }
 
-    private Response doJourneyQuery(JourneyQuery query, int scrollDirection) throws IOException, BadResponse {
+    private Response doJourneyQuery(final Context context, JourneyQuery query, int scrollDirection) throws IOException, BadResponse {
 
         Uri u = Uri.parse(apiEndpoint2());
         Uri.Builder b = u.buildUpon();
@@ -321,34 +289,29 @@ public class Planner {
 
         u = b.build();
 
-        final HttpGet get = new HttpGet(u.toString());
-        get.addHeader("X-STHLMTraveling-API-Key", get(KEY));
-        final HttpResponse response = HttpManager.execute(get);
+        HttpHelper httpHelper = HttpHelper.getInstance(context);
+        HttpURLConnection connection = httpHelper.getConnection(u.toString());
 
-        HttpEntity entity;
         Response r = null;
         String rawContent;
-        int statusCode = response.getStatusLine().getStatusCode();
+        int statusCode = connection.getResponseCode();
         switch (statusCode) {
-        case HttpStatus.SC_OK:
-            entity = response.getEntity();
-            rawContent = StreamUtils.toString(HttpManager.getUngzippedContent(entity));
+        case 200:
+            rawContent = httpHelper.getBody(connection);
             try {
                 JSONObject baseResponse = new JSONObject(rawContent);
                 if (baseResponse.has("journey")) {
                     r = Response.fromJson(baseResponse.getJSONObject("journey"));
                 } else {
                     Log.w(TAG, "Invalid response");
-                    // TODO: Parse errors.
                 }
             } catch (JSONException e) {
                 Log.d(TAG, "Could not parse the reponse...");
                 throw new IOException("Could not parse the response.");
             }
             break;
-        case HttpStatus.SC_BAD_REQUEST:
-            entity = response.getEntity();
-            rawContent = StreamUtils.toString(entity.getContent());
+        case 400:
+            rawContent = httpHelper.getErrorBody(connection);
             BadResponse br;
             try {
                 br = BadResponse.fromJson(new JSONObject(rawContent));

@@ -16,6 +16,7 @@
 
 package com.markupartist.sthlmtraveling;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -73,7 +74,7 @@ public class TrafficStatusFragment extends BaseFragment {
                 R.id.search_progress);
         mProgress.setVisibility(View.GONE);
 
-        mGetTrafficStatusTask = new GetTrafficStatusTask();
+        mGetTrafficStatusTask = new GetTrafficStatusTask(getActivity());
         mGetTrafficStatusTask.execute();
         super.onActivityCreated(savedInstanceState);
     }
@@ -196,7 +197,12 @@ public class TrafficStatusFragment extends BaseFragment {
      */
     private class GetTrafficStatusTask extends
             AsyncTask<Void, Void, TrafficStatus> {
+        private final Context mContext;
         private boolean mWasSuccess = true;
+
+        public GetTrafficStatusTask(final Context context) {
+            mContext = context;
+        }
 
         @Override
         public void onPreExecute() {
@@ -207,7 +213,7 @@ public class TrafficStatusFragment extends BaseFragment {
         protected TrafficStatus doInBackground(Void... params) {
             DeviationStore ds = new DeviationStore();
             try {
-                return ds.getTrafficStatus();
+                return ds.getTrafficStatus(mContext);
             } catch (IOException e) {
                 mWasSuccess = false;
                 return null;

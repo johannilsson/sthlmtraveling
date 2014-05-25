@@ -1,9 +1,5 @@
 package com.markupartist.sthlmtraveling.service;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.regex.Pattern;
-
 import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -21,6 +17,10 @@ import com.markupartist.sthlmtraveling.provider.deviation.Deviation;
 import com.markupartist.sthlmtraveling.provider.deviation.DeviationNotificationDbAdapter;
 import com.markupartist.sthlmtraveling.provider.deviation.DeviationStore;
 import com.markupartist.sthlmtraveling.receivers.OnAlarmReceiver;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.regex.Pattern;
 
 public class DeviationService extends WakefulIntentService {
     private static String TAG = "DeviationService";
@@ -51,7 +51,7 @@ public class DeviationService extends WakefulIntentService {
         DeviationStore deviationStore = new DeviationStore();
 
         try {
-            ArrayList<Deviation> deviations = deviationStore.getDeviations();
+            ArrayList<Deviation> deviations = deviationStore.getDeviations(this);
             deviations = DeviationStore.filterByLineNumbers(deviations, triggerFor);
 
             for (Deviation deviation : deviations) {

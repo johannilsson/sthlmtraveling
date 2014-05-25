@@ -1,8 +1,5 @@
 package com.markupartist.sthlmtraveling;
 
-import java.io.IOException;
-import java.util.ArrayList;
-
 import android.content.Intent;
 import android.location.Location;
 import android.location.LocationListener;
@@ -23,6 +20,9 @@ import com.actionbarsherlock.view.Window;
 import com.markupartist.sthlmtraveling.MyLocationManager.MyLocationFoundListener;
 import com.markupartist.sthlmtraveling.provider.site.Site;
 import com.markupartist.sthlmtraveling.provider.site.SitesStore;
+
+import java.io.IOException;
+import java.util.ArrayList;
 
 public class NearbyActivity extends BaseListActivity implements LocationListener {
     private static String TAG = "NearbyActivity";
@@ -124,7 +124,7 @@ public class NearbyActivity extends BaseListActivity implements LocationListener
         @Override
         protected ArrayList<Site> doInBackground(Location... params) {
             try {
-                return SitesStore.getInstance().nearby(params[0]);
+                return SitesStore.getInstance().nearby(NearbyActivity.this, params[0]);
             } catch (IOException e) {
                 Log.d(TAG, e.getMessage());
             }

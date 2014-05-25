@@ -479,7 +479,7 @@ public class RouteDetailActivity extends BaseListActivity {
                     if (isChecked) {
                         if (stopsLayout.getChildCount() == 0
                                 && subTrip.intermediateStop.size() == 0) {
-                            new GetIntermediateStopTask(new GetIntermediateStopTask.OnResult() {
+                            new GetIntermediateStopTask(getContext(), new GetIntermediateStopTask.OnResult() {
                                 @Override
                                 public void onResult(SubTrip st) {
                                     if (st.intermediateStop.isEmpty()) {
@@ -568,8 +568,10 @@ public class RouteDetailActivity extends BaseListActivity {
 
 
     private static class GetIntermediateStopTask extends AsyncTask<Object, Void, SubTrip> {
+        private final Context mContext;
         GetIntermediateStopTask.OnResult mCallback;
-        public GetIntermediateStopTask(GetIntermediateStopTask.OnResult onResult) {
+        public GetIntermediateStopTask(Context context, GetIntermediateStopTask.OnResult onResult) {
+            mContext = context;
             mCallback = onResult;
         }
 
@@ -578,7 +580,7 @@ public class RouteDetailActivity extends BaseListActivity {
             SubTrip subTrip = (SubTrip)params[0];
             try {
                 Planner.getInstance().addIntermediateStops(
-                        subTrip, (JourneyQuery)params[1]);
+                        mContext, subTrip, (JourneyQuery)params[1]);
             } catch (IOException e) {
                 Crashlytics.logException(e);
             }

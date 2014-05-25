@@ -16,23 +16,21 @@
 
 package com.markupartist.sthlmtraveling.provider.departure;
 
+import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.crashlytics.android.Crashlytics;
 import com.markupartist.sthlmtraveling.provider.site.Site;
-import com.markupartist.sthlmtraveling.utils.HttpManager;
-import com.markupartist.sthlmtraveling.utils.StreamUtils;
+import com.markupartist.sthlmtraveling.utils.HttpHelper;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.client.methods.HttpGet;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.net.HttpURLConnection;
 import java.util.ArrayList;
 
 import static com.markupartist.sthlmtraveling.provider.ApiConf.KEY;
@@ -45,44 +43,38 @@ public class DeparturesStore {
     public DeparturesStore() {
     }
 
-    public Departures find(Site site) throws IllegalArgumentException, IOException {
+    public Departures find(Context context, Site site) throws IllegalArgumentException, IOException {
     	if (site == null) {
             Log.w(TAG, "Site is null");
     		throw new IllegalArgumentException(TAG + ", Site is null");
     	}
     	
         Log.d(TAG, "About to get departures for " + site.getName());
-        final HttpGet get = new HttpGet(apiEndpoint2()
+        String endpoint = apiEndpoint2()
                 + "v1/departures/" + site.getId()
                 + "?key=" + get(KEY)
-                + "&timewindow=30");
+                + "&timewindow=30";
 
-        final HttpResponse response = HttpManager.execute(get);
+        HttpHelper httpHelper = HttpHelper.getInstance(context);
+        HttpURLConnection connection = httpHelper.getConnection(endpoint);
 
-        if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
+        if (connection.getResponseCode() != 200) {
             Log.w(TAG, "A remote server error occurred when getting departures, status code: " +
-                    response.getStatusLine().getStatusCode());
+                    connection.getResponseCode());
             throw new IOException("A remote server error occurred when getting departures.");
         }
 
-        Departures departures = null;
-        HttpEntity entity = response.getEntity();
-        int statusCode = response.getStatusLine().getStatusCode();
-        switch (statusCode) {
-        case HttpStatus.SC_OK:
-            String rawContent = StreamUtils.toString(HttpManager.getUngzippedContent(entity));
-
-            try {
-                departures = Departures.fromJson(new JSONObject(rawContent));
-            } catch (JSONException e) {
-                e.printStackTrace();
-                Log.d(TAG, "Could not parse the reponse...");
-                throw new IOException("Could not parse the response.");
-            }
-            break;
+        Departures departures;
+        String rawContent = httpHelper.getBody(connection);
+        try {
+            departures = Departures.fromJson(new JSONObject(rawContent));
+        } catch (JSONException e) {
+            Crashlytics.logException(e);
+            Log.d(TAG, "Could not parse the departure reponse.");
+            throw new IOException("Could not parse the response.");
         }
 
-    	return departures;
+        return departures;
     }
 
     // TODO: Make this implement Parcelable

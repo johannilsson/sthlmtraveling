@@ -528,7 +528,7 @@ public class DeparturesActivity extends BaseFragmentActivity {
         protected ArrayList<Site> doInBackground(String... params) {
             mSearchQuery = params[0];
             try {
-                return SitesStore.getInstance().getSite(mSearchQuery);
+                return SitesStore.getInstance().getSite(DeparturesActivity.this, mSearchQuery);
             } catch (IOException e) {
                 mWasSuccess = false;
                 return null;
@@ -596,7 +596,7 @@ public class DeparturesActivity extends BaseFragmentActivity {
                 }
 
                 DeparturesStore departures = new DeparturesStore();
-                Departures result = departures.find(params[0]);
+                Departures result = departures.find(DeparturesActivity.this, params[0]);
 
                 if (mPreferredTrafficMode < 1 && !result.servesTypes.isEmpty()) {
                     String transportMode = result.servesTypes.get(0);

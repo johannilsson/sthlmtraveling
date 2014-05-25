@@ -1106,7 +1106,7 @@ public class RoutesActivity extends BaseListActivity
         @Override
         protected Planner.Response doInBackground(JourneyQuery... params) {
             try {
-                return Planner.getInstance().findJourney(params[0]);
+                return Planner.getInstance().findJourney(RoutesActivity.this, params[0]);
             } catch (IOException e) {
                 mWasSuccess = false;
                 // TODO: We should return the Trip here as well.
@@ -1169,7 +1169,7 @@ public class RoutesActivity extends BaseListActivity
         @Override
         protected Planner.Response doInBackground(JourneyQuery... params) {
             try {
-                return Planner.getInstance().findPreviousJourney(params[0]);
+                return Planner.getInstance().findPreviousJourney(RoutesActivity.this, params[0]);
             } catch (IOException e) {
                 mWasSuccess = false;
             } catch (BadResponse e) {
@@ -1225,7 +1225,7 @@ public class RoutesActivity extends BaseListActivity
         @Override
         protected Planner.Response doInBackground(JourneyQuery... params) {
             try {
-                return Planner.getInstance().findNextJourney(params[0]);
+                return Planner.getInstance().findNextJourney(RoutesActivity.this, params[0]);
             } catch (IOException e) {
                 mWasSuccess = false;
             } catch (BadResponse e) {

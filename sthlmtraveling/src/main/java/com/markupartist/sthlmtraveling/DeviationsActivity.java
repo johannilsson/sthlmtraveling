@@ -16,11 +16,6 @@
 
 package com.markupartist.sthlmtraveling;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
@@ -46,6 +41,11 @@ import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.view.Window;
 import com.markupartist.sthlmtraveling.provider.deviation.Deviation;
 import com.markupartist.sthlmtraveling.provider.deviation.DeviationStore;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class DeviationsActivity extends BaseListActivity {
     private static final String STATE_GET_DEVIATIONS_IN_PROGRESS =
@@ -325,7 +325,7 @@ public class DeviationsActivity extends BaseListActivity {
         protected ArrayList<Deviation> doInBackground(Void... params) {
             try {
                 DeviationStore deviationStore = new DeviationStore();
-                return deviationStore.getDeviations();
+                return deviationStore.getDeviations(DeviationsActivity.this);
             } catch (IOException e) {
                 mWasSuccess = false;
                 return null;

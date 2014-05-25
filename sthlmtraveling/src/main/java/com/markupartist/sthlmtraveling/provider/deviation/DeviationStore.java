@@ -1,40 +1,35 @@
 package com.markupartist.sthlmtraveling.provider.deviation;
 
-import static com.markupartist.sthlmtraveling.provider.ApiConf.KEY;
-import static com.markupartist.sthlmtraveling.provider.ApiConf.apiEndpoint2;
-import static com.markupartist.sthlmtraveling.provider.ApiConf.get;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.client.methods.HttpGet;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
+import android.content.Context;
 import android.text.format.Time;
 import android.util.Log;
 import android.util.TimeFormatException;
 
-import com.markupartist.sthlmtraveling.utils.HttpManager;
-import com.markupartist.sthlmtraveling.utils.StreamUtils;
+import com.markupartist.sthlmtraveling.utils.HttpHelper;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import static com.markupartist.sthlmtraveling.provider.ApiConf.apiEndpoint2;
 
 public class DeviationStore {
     static String TAG = "DeviationStore";
     private static String LINE_PATTERN = "[A-Za-zåäöÅÄÖ ]?([\\d]+)[ A-Z]?";
     private static Pattern sLinePattern = Pattern.compile(LINE_PATTERN);
 
-    public ArrayList<Deviation> getDeviations() 
+    public ArrayList<Deviation> getDeviations(final Context context)
             throws IOException {
         ArrayList<Deviation> deviations = new ArrayList<Deviation>();
 
         try {
-            String deviationsRawJson = retrieveDeviations();
+            String deviationsRawJson = retrieveDeviations(context);
 
             JSONObject jsonDeviations = new JSONObject(deviationsRawJson); 
 
@@ -71,19 +66,17 @@ public class DeviationStore {
         return deviations;
     }
 
-    private String retrieveDeviations() throws IOException {
-        final HttpGet get = new HttpGet(apiEndpoint2()
-                + "v1/deviation/");
-        get.addHeader("X-STHLMTraveling-API-Key", get(KEY));
-        HttpEntity entity = null;
-        final HttpResponse response = HttpManager.execute(get);
+    private String retrieveDeviations(final Context context) throws IOException {
+        final String endpoint = apiEndpoint2() + "v1/deviation/";
 
-        if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
+        HttpHelper httpHelper = HttpHelper.getInstance(context);
+        HttpURLConnection connection = httpHelper.getConnection(endpoint);
+
+        if (connection.getResponseCode() != 200) {
             throw new IOException("A remote server error occurred when getting deviations.");
         }
 
-        entity = response.getEntity();
-        return StreamUtils.toString(HttpManager.getUngzippedContent(entity));
+        return httpHelper.getBody(connection);
     }
 
     public static ArrayList<Deviation> filterByLineNumbers(
@@ -144,21 +137,17 @@ public class DeviationStore {
         return value;
     }
 
-    public TrafficStatus getTrafficStatus() throws IOException {
-        final HttpGet get = new HttpGet(apiEndpoint2()
-                + "v1/trafficstatus/");
-        get.addHeader("X-STHLMTraveling-API-Key", get(KEY));
+    public TrafficStatus getTrafficStatus(final Context context) throws IOException {
+        final String endpoint = apiEndpoint2() + "v1/trafficstatus/";
 
-        HttpEntity entity = null;
-        final HttpResponse response = HttpManager.execute(get);
+        HttpHelper httpHelper = HttpHelper.getInstance(context);
+        HttpURLConnection connection = httpHelper.getConnection(endpoint);
 
-        if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
+        if (connection.getResponseCode() != 200) {
             throw new IOException("A remote server error occurred when getting traffic status.");
         }
 
-        entity = response.getEntity();
-        String rawContent = StreamUtils.toString(HttpManager.getUngzippedContent(entity));
-        //String rawContent = trafficStatusJson;
+        String rawContent = httpHelper.getBody(connection);
 
         TrafficStatus ts = null;
         try {

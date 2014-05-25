@@ -1,26 +1,21 @@
 package com.markupartist.sthlmtraveling.provider.site;
 
-import static com.markupartist.sthlmtraveling.provider.ApiConf.KEY;
-import static com.markupartist.sthlmtraveling.provider.ApiConf.apiEndpoint2;
-import static com.markupartist.sthlmtraveling.provider.ApiConf.get;
+import android.content.Context;
+import android.location.Location;
+import android.util.Log;
 
-import java.io.IOException;
-import java.net.URLEncoder;
-import java.util.ArrayList;
+import com.markupartist.sthlmtraveling.utils.HttpHelper;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.client.methods.HttpGet;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.location.Location;
-import android.util.Log;
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URLEncoder;
+import java.util.ArrayList;
 
-import com.markupartist.sthlmtraveling.utils.HttpManager;
-import com.markupartist.sthlmtraveling.utils.StreamUtils;
+import static com.markupartist.sthlmtraveling.provider.ApiConf.apiEndpoint2;
 
 public class SitesStore {
     private static SitesStore sInstance;
@@ -35,33 +30,28 @@ public class SitesStore {
         return sInstance;
     }
 
-    public ArrayList<Site> getSite(String name) throws IOException {
-        return getSiteV2(name);
+    public ArrayList<Site> getSite(final Context context, final String name) throws IOException {
+        return getSiteV2(context, name);
     }
 
-    public ArrayList<Site> getSiteV2(String name) throws IOException {
-        return getSiteV2(name, true);
+    public ArrayList<Site> getSiteV2(final Context context, final String name) throws IOException {
+        return getSiteV2(context, name, true);
     }
 
-    public ArrayList<Site> getSiteV2(String name, boolean onlyStations) throws IOException {
+    public ArrayList<Site> getSiteV2(final Context context, final String name, final boolean onlyStations) throws IOException {
+        HttpHelper httpHelper = HttpHelper.getInstance(context);
         String onlyStationsParam = onlyStations ? "true" : "false";
-        final HttpGet get = new HttpGet(apiEndpoint2() + "v1/site/"
-                + "?q=" + URLEncoder.encode(name)
+        HttpURLConnection connection = httpHelper.getConnection(apiEndpoint2() + "v1/site/"
+                + "?q=" + URLEncoder.encode(name, "UTF-8")
                 + "&onlyStations=" + onlyStationsParam);
-        get.addHeader("X-STHLMTraveling-API-Key", get(KEY));
-        HttpEntity entity = null;
 
-        final HttpResponse response = HttpManager.execute(get);
-
-        if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
-            throw new IOException("A remote server error occurred when getting sites.");
+        if (connection.getResponseCode() != 200) {
+            throw new IOException("Server error while fetching sites");
         }
 
-        entity = response.getEntity();
-        String rawContent = StreamUtils.toString(HttpManager.getUngzippedContent(entity));
         ArrayList<Site> sites = new ArrayList<Site>();
         try {
-            JSONObject jsonResponse = new JSONObject(rawContent);
+            JSONObject jsonResponse = new JSONObject(httpHelper.getBody(connection));
             if (!jsonResponse.has("sites")) {
                 throw new IOException("Invalid input.");
             }
@@ -88,28 +78,22 @@ public class SitesStore {
      * @throws IOException If failed to communicate with headend or if we can
      * not parse the response.
      */
-    public ArrayList<Site> nearby(Location location) throws IOException {
-        final HttpGet get = new HttpGet(apiEndpoint2() + "semistatic/site/near/"
+    public ArrayList<Site> nearby(Context context, Location location) throws IOException {
+        String endpoint = apiEndpoint2() + "semistatic/site/near/"
                 + "?latitude=" + location.getLatitude()
                 + "&longitude=" + location.getLongitude()
                 + "&max_distance=0.8"
-                + "&max_results=20");
-        get.addHeader("X-STHLMTraveling-API-Key", get(KEY));
-        HttpEntity entity = null;
-        HttpResponse response;
-        try {
-            response = HttpManager.execute(get);
-        } catch (Exception e) {
-            response = HttpManager.execute(get);
-        }         
+                + "&max_results=20";
 
-        if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
-            Log.w("SiteStore", "Expected 200, got " + response.getStatusLine().getStatusCode());
+        HttpHelper httpHelper = HttpHelper.getInstance(context);
+        HttpURLConnection connection = httpHelper.getConnection(endpoint);
+
+        if (connection.getResponseCode() != 200) {
+            Log.w("SiteStore", "Expected 200, got " + connection.getResponseCode());
             throw new IOException("A remote server error occurred when getting sites.");
         }
 
-        entity = response.getEntity();
-        String rawContent = StreamUtils.toString(HttpManager.getUngzippedContent(entity));
+        String rawContent = httpHelper.getBody(connection);
         ArrayList<Site> stopPoints = new ArrayList<Site>();
         try {
             JSONObject jsonSites = new JSONObject(rawContent);

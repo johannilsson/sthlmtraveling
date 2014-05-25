@@ -136,7 +136,7 @@ public class ViewOnMapActivity extends SherlockFragmentActivity {
             public void run() {
                 try {
                     Planner.getInstance().addIntermediateStops(
-                            trip, journeyQuery);
+                            ViewOnMapActivity.this, trip, journeyQuery);
                 } catch (IOException e) {
                     Log.e(TAG, e.getMessage());
                 }

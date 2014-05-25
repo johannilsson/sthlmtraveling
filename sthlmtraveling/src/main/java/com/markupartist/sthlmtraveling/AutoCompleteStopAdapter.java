@@ -16,9 +16,6 @@
 
 package com.markupartist.sthlmtraveling;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
@@ -36,6 +33,10 @@ import android.widget.Toast;
 import com.markupartist.sthlmtraveling.provider.planner.Planner;
 import com.markupartist.sthlmtraveling.provider.site.Site;
 import com.markupartist.sthlmtraveling.provider.site.SitesStore;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class AutoCompleteStopAdapter extends ArrayAdapter<String> implements Filterable {
     protected static final int WHAT_NOTIFY_PERFORM_FILTERING = 1;
@@ -107,7 +108,7 @@ public class AutoCompleteStopAdapter extends ArrayAdapter<String> implements Fil
                         String query = constraint.toString();
                         if (Site.looksValid(query)) {
                             list = SitesStore.getInstance().getSiteV2(
-                               query, mOnlyStations
+                               getContext(), query, mOnlyStations
                             );
                         }
                     } catch (IOException e) {
