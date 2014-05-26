@@ -21,14 +21,17 @@ Developers
 If you want to contribute to this project just send me a email, tweet or just
 fork the app. I will do my best help you out if you have any problems. The document [An Introduction for Developers](https://github.com/johannilsson/sthlmtraveling/wiki/An-Introduction-for-Developers) helps to set up the basics.
 
-TODO
-----
-
-* Remove focus on Destination field (https://kundo.se/org/sthlm-traveling/d/tackande-tangentbord/#c479879)
-
-
 Changelog
 ---------
+* 2.8.0
+  * Change design.
+  * Add swipe between traffic types in departures.
+  * Update all icons to support higher resolutions.
+  * Change to use okhttp for http request.
+  * Add http caching.
+  * Change to build releases with proguard.
+  * Add crashlytics for crash reports.
+  * Change to hide the keyboard when app is launched.
 * 2.7.2
   * Fix issue with no departures showing.
   * Fix crash that occured when performing a search with no values.
@@ -326,4 +329,7 @@ STHLM Traveling is open source and licensed under
 * Icons by Olof Brickarp is copyright Olof Brickarp
 * Icons by Fredrik Broman is licensed under [CC Attribution 3.0](http://creativecommons.org/licenses/by/3.0/)
 * SectionedAdapter released under [GNU General Public License](http://www.gnu.org/licenses/gpl.html)
-    
+* Arrow icon by Molly Bramlet from The Noun Project
+* Map Marker icon by Molly Bramlet from The Noun Project
+* Warning icon by Icomatic from The Noun Project
+* Walk icon by Chris Thoburn from the Noun Project
