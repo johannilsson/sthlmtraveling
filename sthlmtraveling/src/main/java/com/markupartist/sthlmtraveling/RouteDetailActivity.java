@@ -400,6 +400,7 @@ public class RouteDetailActivity extends BaseListActivity {
      */
     private class SubTripAdapter extends ArrayAdapter<SubTrip> {
         private LayoutInflater mInflater;
+        private boolean mIsFetchingSubTrips;
 
         public SubTripAdapter(Context context, List<SubTrip> objects) {
             super(context, R.layout.route_details_row, objects);
@@ -478,7 +479,8 @@ public class RouteDetailActivity extends BaseListActivity {
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     if (isChecked) {
                         if (stopsLayout.getChildCount() == 0
-                                && subTrip.intermediateStop.size() == 0) {
+                                && subTrip.intermediateStop.size() == 0 && !mIsFetchingSubTrips) {
+                            mIsFetchingSubTrips = true;
                             new GetIntermediateStopTask(getContext(), new GetIntermediateStopTask.OnResult() {
                                 @Override
                                 public void onResult(SubTrip st) {
@@ -489,6 +491,7 @@ public class RouteDetailActivity extends BaseListActivity {
                                         stopsLayout.addView(inflateIntermediateStop(is, stopsLayout));
                                     }
                                     mTrip.subTrips.set(position, st);
+                                    mIsFetchingSubTrips = false;
                                 }
                             }).execute(subTrip, mJourneyQuery);
                         } else if (stopsLayout.getChildCount() == 0
