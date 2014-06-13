@@ -126,8 +126,8 @@
     <string name="sms_ticket_price_full">Full price (20–64 yrs)</string>
     <string name="sms_ticket_notice_message">This function is experimental, please verify the details before you buy your ticket. STHLM Traveling can\'t garantuee that the ticket is valid for your journey.</string>
     <string name="sms_ticket_notice_disabled">SMS tickets is not available for this route.</string>
-    <string name="trip_description_walk" formatted="false">Walk from %s</string>
-    <string name="trip_description_normal" formatted="false">Take %s towards %s</string>
+    <string name="trip_description_walk" formatted="false">Walk from %s to %s</string>
+    <string name="trip_description_normal" formatted="false">Take %s from %s towards %s. Get off at %s</string>
     <string name="trip_map_description_walk" formatted="false">%s Walk to %s</string>
     <string name="trip_map_description_normal" formatted="false">%s %s towards %s.</string>
     <string name="show_all">Show all</string>

@@ -559,11 +559,14 @@ public class RouteDetailActivity extends BaseListActivity {
             CharSequence description;
             if ("Walk".equals(subTrip.transport.type)) {
                 description = getString(R.string.trip_description_walk,
-                        getLocationName(subTrip.origin));
+                        getLocationName(subTrip.origin),
+                        getLocationName(subTrip.destination));
             } else {
                 description = getString(R.string.trip_description_normal,
                         subTrip.transport.name,
-                        subTrip.transport.towards);
+                        getLocationName(subTrip.origin),
+                        subTrip.transport.towards,
+                        getLocationName(subTrip.destination));
             }
             return description;
         }
@@ -573,6 +576,7 @@ public class RouteDetailActivity extends BaseListActivity {
     private static class GetIntermediateStopTask extends AsyncTask<Object, Void, SubTrip> {
         private final Context mContext;
         GetIntermediateStopTask.OnResult mCallback;
+
         public GetIntermediateStopTask(Context context, GetIntermediateStopTask.OnResult onResult) {
             mContext = context;
             mCallback = onResult;

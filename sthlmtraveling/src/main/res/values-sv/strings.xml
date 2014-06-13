@@ -126,8 +126,8 @@
     <string name="sms_ticket_price_full">Helt pris (20–64 år)</string>
     <string name="sms_ticket_notice_message">Den här funtionen är experimentell. Dubbelkolla detaljerna innan du köper din biljett. STHLM Traveling lämnar inga garantier för att biljetten stämmer med resan.</string>
     <string name="sms_ticket_notice_disabled">SMS-biljett är inte tillgänglig för denna resa.</string>
-    <string name="trip_description_walk" formatted="false">Gå från %s</string>
-    <string name="trip_description_normal" formatted="false">Ta %s mot %s.</string>
+    <string name="trip_description_walk" formatted="false">Gå från %s till %s</string>
+    <string name="trip_description_normal" formatted="false">Ta %s från %s mot %s. Kliv av vid %s</string>
     <string name="trip_map_description_walk" formatted="false">%s Gå till %s</string>
     <string name="trip_map_description_normal" formatted="false">%s %s mot %s.</string>
     <string name="show_all">Visa alla</string>
