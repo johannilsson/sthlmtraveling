@@ -4,6 +4,8 @@
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.squareup.okhttp/okhttp-protocols/1.3.0/dc5d37f18fb61f8df0b2f0b0c476b2b8ab08efbb/okhttp-protocols-1.3.0.jar!/" />
     </CLASSES>
     <JAVADOC />
-    <SOURCES />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.squareup.okhttp/okhttp-protocols/1.3.0/921cbdbd43fa82f5040cf98d010638ecffa46f8d/okhttp-protocols-1.3.0-sources.jar!/" />
+    </SOURCES>
   </library>
 </component>
