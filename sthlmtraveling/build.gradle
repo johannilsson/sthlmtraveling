@@ -25,13 +25,13 @@ repositories {
 
 android {
     compileSdkVersion 19
-    buildToolsVersion "19.0.3"
+    buildToolsVersion "19.1.0"
 
     defaultConfig {
         minSdkVersion 8
         targetSdkVersion 19
-        versionName "2.8.0"
-        versionCode 109
+        versionName "2.8.1-dev"
+        versionCode 110
     }
 
     signingConfigs {
