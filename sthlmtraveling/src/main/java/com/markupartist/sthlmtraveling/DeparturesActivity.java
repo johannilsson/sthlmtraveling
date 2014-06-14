@@ -20,6 +20,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.DialogInterface.OnClickListener;
@@ -29,7 +30,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
@@ -125,6 +125,7 @@ public class DeparturesActivity extends BaseFragmentActivity {
         }
 
         mPageAdapter = new PageFragmentAdapter(this, getSupportFragmentManager());
+        mPageAdapter.setCount(4);
 
         Bundle metroArg = new Bundle();
         metroArg.putInt(DepartureFragment.ARG_TRANSPORT_TYPE, TransportMode.METRO_INDEX);
@@ -695,11 +696,16 @@ public class DeparturesActivity extends BaseFragmentActivity {
     public class PageFragmentAdapter extends FragmentPagerAdapter /*implements TitleProvider*/ {
 
         private ArrayList<PageInfo> mPages = new ArrayList<PageInfo>();
-        private FragmentActivity mContext;
+        private Context mContext;
+        private int mCount;
 
-        public PageFragmentAdapter(FragmentActivity activity, FragmentManager fm) {
+        public PageFragmentAdapter(Context activity, FragmentManager fm) {
             super(fm);
             mContext = activity;
+        }
+
+        public void setCount(final int count) {
+            mCount = count;
         }
 
         public Bundle getPageArgs(int position) {
@@ -723,7 +729,7 @@ public class DeparturesActivity extends BaseFragmentActivity {
 
         @Override
         public int getCount() {
-            return mPages.size();
+            return mCount;
         }
 
         @Override
