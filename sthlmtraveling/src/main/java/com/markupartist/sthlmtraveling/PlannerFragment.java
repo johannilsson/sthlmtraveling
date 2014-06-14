@@ -180,12 +180,7 @@ public class PlannerFragment extends BaseListFragment implements
         return rootView;
     }
 
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        Log.d(TAG, "PlannerFragment.onActivityCreated()");
-
-        restoreState(savedInstanceState);
-
+    public void initViews() {
         mSearchView = getActivity().getLayoutInflater().inflate(R.layout.search, null);
         getListView().addHeaderView(mSearchView, null, false);
 
@@ -292,9 +287,16 @@ public class PlannerFragment extends BaseListFragment implements
             registerEvent("Planner");
             setListAdapter(mAdapter);
         }
+    }
 
-
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        Log.d(TAG, "PlannerFragment.onActivityCreated()");
+
+        restoreState(savedInstanceState);
+
+        initViews();
     }
 
     @Override
@@ -619,17 +621,16 @@ public class PlannerFragment extends BaseListFragment implements
         // in a transaction. We also want to remove any currently showing
         // dialog, so make our own transaction and take care of that here.
 
-        /*
-         * FragmentTransaction ft = getActivity().getSupportFragmentManager()
-         * .beginTransaction(); Fragment prev =
-         * getActivity().getSupportFragmentManager()
-         * .findFragmentByTag("dialog"); if (prev != null) { ft.remove(prev); }
-         * ft.addToBackStack(null);
-         * 
-         * // Create and show the dialog. DialogFragment newFragment =
-         * PlannerDialogFragment.newInstance(dialog); newFragment.show(ft,
-         * "dialog");
-         */
+//        FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+//        Fragment prev = getActivity().getSupportFragmentManager().findFragmentByTag("dialog");
+//        if (prev != null) {
+//            ft.remove(prev);
+//        }
+//        ft.addToBackStack(null);
+//
+//         // Create and show the dialog. DialogFragment newFragment =
+//        DialogFragment newFragment = PlannerDialogFragment.newInstance(dialog);
+//        newFragment.show(ft, "dialog");
         // TODO: This resolves an issue that raises a IllegalStateException on
         // ICS, Investigate if the above is really needed.
         FragmentTransaction ft = getFragmentManager().beginTransaction();
@@ -651,6 +652,12 @@ public class PlannerFragment extends BaseListFragment implements
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
+
+            // Quick fix to avoid crash when resuming.
+            if (savedInstanceState != null) {
+                this.dismiss();
+            }
+
             return mDialog;
         }
     }
@@ -995,20 +1002,24 @@ public class PlannerFragment extends BaseListFragment implements
 
     private class SelectPointAdapter extends MultipleListAdapter {
 
+        private final Context mContext;
         private SectionedAdapter mHistoryWrapperAdapter = new SectionedAdapter() {
             @Override
             protected View getHeaderView(Section section, int index, View convertView, ViewGroup parent) {
                 TextView result = (TextView) convertView;
                 if (convertView == null) {
-                    result = (TextView) getActivity().getLayoutInflater().inflate(R.layout.header, null);
+                    LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                    result = (TextView) inflater.inflate(R.layout.header, null);
                 }
                 result.setText(section.caption);
                 return (result);
             }
         };
 
-        public SelectPointAdapter(Context context, Cursor historyCursor,
-                boolean onlyHistory, boolean isVia) {
+        public SelectPointAdapter(Context context, Cursor historyCursor, boolean onlyHistory, boolean isVia) {
+
+            mContext = context;
+
             if (!onlyHistory) {
                 ArrayList<HashMap<String, String>> items = new ArrayList<HashMap<String, String>>();
 
