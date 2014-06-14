@@ -23,6 +23,10 @@ fork the app. I will do my best help you out if you have any problems. The docum
 
 Changelog
 ---------
+* 2.8.1 (2014-06-14)
+  * Add text to show where to get off in route details.
+  * Fix crash when clicking multiple times on intermediate stops.
+  * Fix crash when resuming the planner and a dialog was open.
 * 2.8.0
   * Change design.
   * Add swipe between traffic types in departures.
