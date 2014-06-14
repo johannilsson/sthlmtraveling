@@ -997,12 +997,11 @@ public class PlannerFragment extends BaseListFragment implements
 
         private SectionedAdapter mHistoryWrapperAdapter = new SectionedAdapter() {
             @Override
-            protected View getHeaderView(Section section, int index,
-                    View convertView, ViewGroup parent) {
+            protected View getHeaderView(Section section, int index, View convertView, ViewGroup parent) {
                 TextView result = (TextView) convertView;
-                if (convertView == null)
-                    result = (TextView) getActivity().getLayoutInflater()
-                            .inflate(R.layout.header, null);
+                if (convertView == null) {
+                    result = (TextView) getActivity().getLayoutInflater().inflate(R.layout.header, null);
+                }
                 result.setText(section.caption);
                 return (result);
             }
