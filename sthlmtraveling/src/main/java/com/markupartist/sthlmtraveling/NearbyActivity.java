@@ -23,6 +23,8 @@ import com.markupartist.sthlmtraveling.provider.site.SitesStore;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class NearbyActivity extends BaseListActivity implements LocationListener {
     private static String TAG = "NearbyActivity";
@@ -103,8 +105,23 @@ public class NearbyActivity extends BaseListActivity implements LocationListener
         finish();
     }
     
-    private void fill(ArrayList<Site> stopPoints) {
+    private void fill(ArrayList<Site> stopPoints, final Location location) {
         setSupportProgressBarIndeterminateVisibility(false);
+
+        //Sort stop in order of distance from users location
+        Collections.sort(stopPoints, new Comparator<Site>() {
+            @Override
+            public int compare(Site site1, Site site2) {
+                float distanceToSite1 = location.distanceTo(site1.getLocation());
+                float distanceToSite2 = location.distanceTo(site2.getLocation());
+                if (distanceToSite1 > distanceToSite2) {
+                    return 1;
+                } else if (distanceToSite1 < distanceToSite2) {
+                    return -1;
+                }
+                return 0;
+            }
+        });
 
         ArrayAdapter<Site> adapter =
             new ArrayAdapter<Site>(this, android.R.layout.simple_list_item_1, stopPoints);
@@ -119,12 +136,18 @@ public class NearbyActivity extends BaseListActivity implements LocationListener
         startActivity(i);
     }
 
-    private class FindNearbyStopAsyncTask extends AsyncTask<Location, Void, ArrayList<Site>> {
+    private class FindNearbyStopAsyncTask extends AsyncTask<Void, Void, ArrayList<Site>> {
+
+        private Location mLocation;
+
+        public FindNearbyStopAsyncTask(Location location){
+            mLocation = location;
+        }
 
         @Override
-        protected ArrayList<Site> doInBackground(Location... params) {
+        protected ArrayList<Site> doInBackground(Void... params) {
             try {
-                return SitesStore.getInstance().nearby(NearbyActivity.this, params[0]);
+                return SitesStore.getInstance().nearby(NearbyActivity.this, mLocation);
             } catch (IOException e) {
                 Log.d(TAG, e.getMessage());
             }
@@ -134,7 +157,7 @@ public class NearbyActivity extends BaseListActivity implements LocationListener
         @Override
         protected void onPostExecute(ArrayList<Site> result) {
             if (result != null) {
-                fill(result);
+                fill(result, mLocation);
             } else {
                 Toast.makeText(NearbyActivity.this, "Your're in the void", Toast.LENGTH_LONG).show();
             }
@@ -146,7 +169,7 @@ public class NearbyActivity extends BaseListActivity implements LocationListener
     @Override
     public void onLocationChanged(Location location) {
         setTitle(getString(R.string.nearby) + " ("+ location.getAccuracy() +"m)");
-        new FindNearbyStopAsyncTask().execute(location);
+        new FindNearbyStopAsyncTask(location).execute();
     }
 
     @Override

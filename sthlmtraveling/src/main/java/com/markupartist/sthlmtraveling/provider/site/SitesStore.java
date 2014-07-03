@@ -5,6 +5,7 @@ import android.location.Location;
 import android.util.Log;
 
 import com.markupartist.sthlmtraveling.utils.HttpHelper;
+import com.markupartist.sthlmtraveling.utils.LocationUtils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -106,6 +107,10 @@ public class SitesStore {
                         Site site = new Site();
                         site.setName(jsonStop.getString("name"));
                         site.setId(jsonStop.getInt("site_id"));
+                        String locationData = jsonStop.optString("location");
+                        if(locationData != null) {
+                            site.setLocation(LocationUtils.parseLocation(locationData));
+                        }
 
                         stopPoints.add(site);
                     } catch (JSONException e) {
