@@ -369,15 +369,18 @@ public class Planner {
         // TODO: Parse out the ident.
         public String ident;
         public String seqnr;
-        public int numberOfTrips;
+        public int    numberOfTrips;
         public ArrayList<Trip2> trips = new ArrayList<Trip2>();
+        private String tariffZones;
 
-        public Response() {}
+        public Response() {
+        }
 
         public Response(Parcel parcel) {
             ident = parcel.readString();
             seqnr = parcel.readString();
             trips = new ArrayList<Trip2>();
+            seqnr = parcel.readString();
             parcel.readTypedList(trips, Trip2.CREATOR);
         }
 
@@ -391,6 +394,35 @@ public class Planner {
             dest.writeString(ident);
             dest.writeString(seqnr);
             dest.writeTypedList(trips);
+            dest.writeString(tariffZones);
+        }
+
+        public boolean canBuySmsTicket() {
+            tariffZones = null;
+            for (Trip2 trip : trips) {
+                if (!trip.canBuySmsTicket()) {
+                    return false;
+                }
+                if (tariffZones != null && !tariffZones.equals(trip.tariffZones)) {
+                    tariffZones = null;
+                    return false;
+                }
+                tariffZones = trip.tariffZones;
+            }
+            return true;
+        }
+
+        public String getTariffZones() {
+            if (tariffZones == null) {
+                for (Trip2 trip : trips) {
+                    if (tariffZones != null && !tariffZones.equals(trip.tariffZones)) {
+                        tariffZones = null;
+                        return null;
+                    }
+                    tariffZones = trip.tariffZones;
+                }
+            }
+            return tariffZones;
         }
 
         @Override
@@ -435,26 +467,29 @@ public class Planner {
                 return new Response[size];
             }
         };
+
+
     }
 
     public static class Trip2 implements Parcelable {
         public Location origin;
         public Location destination;
-        public String departureDate; // TODO: Combine date and time
-        public String departureTime;
-        public String arrivalDate; // TODO: Combine date and time
-        public String arrivalTime;
-        public int changes;
-        public String duration;
-        public String tariffZones;
-        public String tariffRemark;
-        public String co2;
-        public boolean mt6MessageExist;
-        public boolean rtuMessageExist;
-        public boolean remarksMessageExist;
+        public String   departureDate; // TODO: Combine date and time
+        public String   departureTime;
+        public String   arrivalDate; // TODO: Combine date and time
+        public String   arrivalTime;
+        public int      changes;
+        public String   duration;
+        public String   tariffZones;
+        public String   tariffRemark;
+        public String   co2;
+        public boolean  mt6MessageExist;
+        public boolean  rtuMessageExist;
+        public boolean  remarksMessageExist;
         public ArrayList<SubTrip> subTrips = new ArrayList<SubTrip>();
 
-        public Trip2() {}
+        public Trip2() {
+        }
 
         public Trip2(Parcel parcel) {
             origin = parcel.readParcelable(Location.class.getClassLoader());
@@ -550,7 +585,7 @@ public class Planner {
 
             return trip;
         }
-        
+
         @Override
         public String toString() {
             return "Trip{" +
@@ -630,8 +665,8 @@ public class Planner {
      */
     public static class IntermediateStop implements Parcelable {
 
-        public String arrivalDate;
-        public String arrivalTime;
+        public String   arrivalDate;
+        public String   arrivalTime;
         public Location location;
 
         public IntermediateStop(Parcel parcel) {
@@ -683,23 +718,24 @@ public class Planner {
     }
 
     public static class SubTrip implements Parcelable {
-        public Location origin;
-        public Location destination;
-        public String departureDate; // TODO: Combine date and time
-        public String departureTime;
-        public String arrivalDate; // TODO: Combine date and time
-        public String arrivalTime;
+        public Location      origin;
+        public Location      destination;
+        public String        departureDate; // TODO: Combine date and time
+        public String        departureTime;
+        public String        arrivalDate; // TODO: Combine date and time
+        public String        arrivalTime;
         public TransportType transport;
-        public ArrayList<String> remarks = new ArrayList<String>();
+        public ArrayList<String> remarks     = new ArrayList<String>();
         public ArrayList<String> rtuMessages = new ArrayList<String>();
         public ArrayList<String> mt6Messages = new ArrayList<String>();
         public String reference;
         public ArrayList<IntermediateStop> intermediateStop =
-            new ArrayList<IntermediateStop>();
+                new ArrayList<IntermediateStop>();
         private Date departureDateTime;
         private Date arrivalDateTime;
 
-        public SubTrip() {}
+        public SubTrip() {
+        }
 
         public SubTrip(Parcel parcel) {
             origin = parcel.readParcelable(Location.class.getClassLoader());

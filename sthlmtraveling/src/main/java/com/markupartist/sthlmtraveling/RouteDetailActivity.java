@@ -16,11 +16,9 @@
 
 package com.markupartist.sthlmtraveling;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.location.Location;
@@ -54,8 +52,8 @@ import com.markupartist.sthlmtraveling.provider.planner.Planner;
 import com.markupartist.sthlmtraveling.provider.planner.Planner.IntermediateStop;
 import com.markupartist.sthlmtraveling.provider.planner.Planner.SubTrip;
 import com.markupartist.sthlmtraveling.provider.planner.Planner.Trip2;
+import com.markupartist.sthlmtraveling.ui.view.SmsTicketDialog;
 import com.markupartist.sthlmtraveling.utils.DateTimeUtil;
-import com.markupartist.sthlmtraveling.utils.IntentUtil;
 
 import org.json.JSONException;
 
@@ -272,48 +270,9 @@ public class RouteDetailActivity extends BaseListActivity {
     protected Dialog onCreateDialog(int id) {
         switch(id) {
         case DIALOG_BUY_SMS_TICKET:
-            CharSequence[] smsOptions = {
-                    getText(R.string.sms_ticket_price_full) + " " + getFullPrice(), 
-                    getText(R.string.sms_ticket_price_reduced) + " " + getReducedPrice()
-                };
-            return new AlertDialog.Builder(this)
-            .setTitle(String.format("%s (%s)", getText(R.string.sms_ticket_label), mTrip.tariffZones))
-                .setItems(smsOptions, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int item) {
-                        switch(item) {
-                        case 0:
-                            sendSms(false);
-                            break;
-                        case 1:
-                            sendSms(true);
-                            break;
-                        }
-                    }
-                }).create();
+            return SmsTicketDialog.createDialog(this, mTrip.tariffZones);
         }
         return null;
-    }
-
-    private CharSequence getFullPrice() {
-        final int[] PRICE = new int[] { 36, 54, 72 };
-        return PRICE[mTrip.tariffZones.length() - 1] + " kr";
-    }
-
-    private CharSequence getReducedPrice() {
-        final int[] PRICE = new int[] { 20, 30, 40 };
-        return PRICE[mTrip.tariffZones.length() - 1] + " kr";
-    }
-
-    /**
-     * Invokes the Messaging application.
-     * @param reducedPrice True if the price is reduced, false otherwise. 
-     */
-    public void sendSms(boolean reducedPrice) {
-        registerEvent("Buy SMS Ticket");
-        Toast.makeText(this, R.string.sms_ticket_notice_message, Toast.LENGTH_LONG).show();
-        String price = reducedPrice ? "R" : "H";
-        String number = "0767201010";
-        IntentUtil.smsIntent(this, number, price + mTrip.tariffZones);
     }
 
     @Override

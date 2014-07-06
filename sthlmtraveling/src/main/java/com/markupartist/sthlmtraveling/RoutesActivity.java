@@ -59,6 +59,7 @@ import com.markupartist.sthlmtraveling.provider.planner.Planner.BadResponse;
 import com.markupartist.sthlmtraveling.provider.planner.Planner.Response;
 import com.markupartist.sthlmtraveling.provider.planner.Planner.Trip2;
 import com.markupartist.sthlmtraveling.provider.site.Site;
+import com.markupartist.sthlmtraveling.ui.view.SmsTicketDialog;
 import com.markupartist.sthlmtraveling.ui.view.TripView;
 import com.markupartist.sthlmtraveling.utils.ViewHelper;
 
@@ -119,6 +120,7 @@ public class RoutesActivity extends BaseListActivity
     static final String EXTRA_IS_TIME_DEPARTURE =
         "com.markupartist.sthlmtraveling.is_time_departure";
 
+
     private final String TAG = "RoutesActivity";
 
     private static final int DIALOG_ILLEGAL_PARAMETERS = 0;
@@ -130,6 +132,7 @@ public class RoutesActivity extends BaseListActivity
     private static final int DIALOG_START_POINT_ALTERNATIVES = 6;
     private static final int DIALOG_END_POINT_ALTERNATIVES = 7;
     private static final int DIALOG_SEARCH_ROUTES_ERROR = 8;
+    private static final int DIALOG_BUY_SMS_TICKET = 9;
 
     private static final int ADAPTER_EARLIER = 0;
     private static final int ADAPTER_ROUTES = 1;
@@ -222,6 +225,11 @@ public class RoutesActivity extends BaseListActivity
             starItem.setIcon(R.drawable.ic_action_star_off);
         }
 
+        if (mPlannerResponse != null && mPlannerResponse.canBuySmsTicket()) {
+            MenuItem smsItem = menu.findItem(R.id.actionbar_item_sms);
+            smsItem.setVisible(true);
+        }
+
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -234,6 +242,9 @@ public class RoutesActivity extends BaseListActivity
         case R.id.actionbar_item_star:
             handleStarAction();
             supportInvalidateOptionsMenu();
+            return true;
+        case R.id.actionbar_item_sms:
+            showDialog(DIALOG_BUY_SMS_TICKET);
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -681,6 +692,7 @@ public class RoutesActivity extends BaseListActivity
             mSectionedAdapter.notifyDataSetChanged();
         }
 
+        supportInvalidateOptionsMenu();
     }
 
     /*
@@ -957,6 +969,8 @@ public class RoutesActivity extends BaseListActivity
                 .create();
             */
             break;
+            case DIALOG_BUY_SMS_TICKET:
+                return SmsTicketDialog.createDialog(this, mPlannerResponse.getTariffZones());
         }
         return null;
     }

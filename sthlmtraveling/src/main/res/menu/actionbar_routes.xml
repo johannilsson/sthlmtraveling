@@ -19,6 +19,13 @@
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
+        android:id="@+id/actionbar_item_sms"
+        android:icon="@drawable/ic_action_sms"
+        android:showAsAction="always"
+        android:title="@string/sms_ticket_label"
+        android:visible="false"
+        />
+    <item
         android:id="@+id/actionbar_item_reverse"
         android:icon="@drawable/ic_action_reverse"
         android:title="@string/reverse_start_end"
