@@ -17,11 +17,15 @@
 package com.markupartist.sthlmtraveling.utils;
 
 import android.location.Address;
+import android.location.Location;
+import android.util.Log;
 
 /**
  * Various location helpers.
  */
 public class LocationUtils {
+
+    private static final String TAG = "LocationUtils";
     /**
      * Simple formatting of an {@link Address}.
      * @param address the address
@@ -36,6 +40,32 @@ public class LocationUtils {
             sb.append(" ").append(address.getAddressLine(1));
         }
         return sb.toString();
+    }
+
+    /**
+     * Converts a string representation to {@link android.location.Location}.
+     * @param locationData the location (latitude,longitude)
+     * @return android location.
+     */
+    public static Location parseLocation(String locationData) {
+        String[] longAndLat = locationData.split(",");
+        //Defualt to the world center, The Royal Palace
+        float latitude = 59.3270053f;
+        float longitude = 18.0723166f;
+        try {
+            latitude = Float.parseFloat(longAndLat[0]);
+            longitude = Float.parseFloat(longAndLat[1]);
+        } catch (NumberFormatException nfe) {
+            Log.e(TAG, nfe.toString());
+        } catch (ArrayIndexOutOfBoundsException aioobe) {
+            Log.e(TAG, aioobe.toString());
+        }
+
+        Location location = new Location("sthlmtraveling");
+        location.setLatitude(latitude);
+        location.setLongitude(longitude);
+
+        return location;
     }
 
 }
