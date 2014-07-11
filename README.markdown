@@ -23,6 +23,15 @@ fork the app. I will do my best help you out if you have any problems. The docum
 
 Changelog
 ---------
+* 2.9.0 (2014-07-11)
+  * Fix order of nearby stops. Thanks [Henrik Sandström](https://github.com/heinrisch)
+  * New icon for SMS Ticket and button in route details
+  * Add arrival stop to the line in route details
+  * Change Google Play Services to version 5
+  * Change support library to version 20
+  * Change target sdk to 20
+  * Change min sdk version to 9 (2.3.x)
+  * Add Google Analytics
 * 2.8.1 (2014-06-14)
   * Add text to show where to get off in route details.
   * Fix crash when clicking multiple times on intermediate stops.
