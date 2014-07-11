@@ -284,7 +284,6 @@ public class PlannerFragment extends BaseListFragment implements
             // Fake an adapter. This needs to be fixed later on so we can use the history.
             setListAdapter(new ArrayAdapter<String>(getActivity(), R.layout.journey_history_row));
         } else {
-            registerScreen("Planner");
             setListAdapter(mAdapter);
         }
     }

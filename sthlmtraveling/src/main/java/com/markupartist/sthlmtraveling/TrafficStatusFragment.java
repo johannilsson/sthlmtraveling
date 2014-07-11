@@ -46,9 +46,6 @@ public class TrafficStatusFragment extends BaseFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        registerScreen("Traffic status");
-
     }
 
     @Override

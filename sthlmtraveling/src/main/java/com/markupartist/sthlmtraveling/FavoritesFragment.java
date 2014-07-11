@@ -111,8 +111,6 @@ public class FavoritesFragment extends BaseListFragment {
 	public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        registerScreen("Favorites");
-
         getActivity().registerReceiver(mUpdateUIReceiver, new IntentFilter("sthlmtraveling.intent.action.UPDATE_UI"));
     }
     

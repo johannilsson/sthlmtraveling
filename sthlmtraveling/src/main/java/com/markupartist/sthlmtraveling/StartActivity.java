@@ -26,6 +26,7 @@ import android.support.v4.view.ViewPager;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.markupartist.sthlmtraveling.service.DeviationService;
+import com.markupartist.sthlmtraveling.utils.Analytics;
 import com.markupartist.sthlmtraveling.utils.ErrorReporter;
 
 import java.util.ArrayList;
@@ -42,12 +43,12 @@ public class StartActivity extends BaseFragmentActivity {
 
         registerScreen("Start");
 
-        PageFragmentAdapter pageAdapter = new PageFragmentAdapter(this, getSupportFragmentManager());
+        final PageFragmentAdapter pageAdapter = new PageFragmentAdapter(this, getSupportFragmentManager());
 
-        pageAdapter.addPage(new PageInfo(getString(R.string.search_label), PlannerFragment.class, null));
-        pageAdapter.addPage(new PageInfo(getString(R.string.favorites_label), FavoritesFragment.class, null));
-        pageAdapter.addPage(new PageInfo(getString(R.string.departures), SearchDeparturesFragment.class, null));
-        pageAdapter.addPage(new PageInfo(getString(R.string.deviations_label), TrafficStatusFragment.class, null));
+        pageAdapter.addPage(new PageInfo(getString(R.string.search_label), PlannerFragment.class, null, "Planner"));
+        pageAdapter.addPage(new PageInfo(getString(R.string.favorites_label), FavoritesFragment.class, null, "Favorites"));
+        pageAdapter.addPage(new PageInfo(getString(R.string.departures), SearchDeparturesFragment.class, null, "Search departures"));
+        pageAdapter.addPage(new PageInfo(getString(R.string.deviations_label), TrafficStatusFragment.class, null, "Traffic status"));
 
         mPager = (ViewPager) findViewById(R.id.pager);
         mPager.setPageMarginDrawable(R.color.light_grey);
@@ -73,6 +74,8 @@ public class StartActivity extends BaseFragmentActivity {
         ActionBar.TabListener tabListener = new ActionBar.TabListener() {
             public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft) {
                 mPager.setCurrentItem(tab.getPosition());
+                Analytics.getInstance(StartActivity.this).registerScreen(
+                        pageAdapter.getName(tab.getPosition()));
             }
 
             public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction ft) {
@@ -87,14 +90,8 @@ public class StartActivity extends BaseFragmentActivity {
         ab.addTab(ab.newTab().setIcon(R.drawable.tab_departures).setTabListener(tabListener));
         ab.addTab(ab.newTab().setIcon(R.drawable.tab_deviations).setTabListener(tabListener));
 
-//        ab.addTab(ab.newTab().setText(R.string.search_label).setTabListener(tabListener));
-//        ab.addTab(ab.newTab().setText(R.string.favorites_label).setTabListener(tabListener));
-//        ab.addTab(ab.newTab().setText(R.string.departures).setTabListener(tabListener));
-//        ab.addTab(ab.newTab().setText(R.string.deviations_label).setTabListener(tabListener));
-
         final ErrorReporter reporter = ErrorReporter.getInstance();
         reporter.checkErrorAndReport(this);
-
 
         // Start background service.
         DeviationService.startAsRepeating(getApplicationContext());
@@ -131,18 +128,23 @@ public class StartActivity extends BaseFragmentActivity {
             return mPages.get(position).getTextResource().toUpperCase();
         }
 
+        public String getName(final int position) {
+            return mPages.get(position).getName();
+        }
     }
 
     public class PageInfo {
         private String mTextResource;
         private Class<?> mFragmentClass;
         private Bundle mArgs;
+        private String mName;
 
-        public PageInfo(String textResource, Class<?> fragmentClass,
-                Bundle args) {
+        public PageInfo(final String textResource, final Class<?> fragmentClass,
+                        final Bundle args, final String name) {
             mTextResource = textResource;
             mFragmentClass = fragmentClass;
             mArgs = args;
+            mName = name;
         }
 
         public String getTextResource() {
@@ -155,6 +157,10 @@ public class StartActivity extends BaseFragmentActivity {
 
         public Bundle getArgs() {
             return mArgs;
+        }
+
+        public String getName() {
+            return mName;
         }
     }
 
