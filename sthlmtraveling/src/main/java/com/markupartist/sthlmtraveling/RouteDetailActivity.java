@@ -53,6 +53,7 @@ import com.markupartist.sthlmtraveling.provider.planner.Planner.IntermediateStop
 import com.markupartist.sthlmtraveling.provider.planner.Planner.SubTrip;
 import com.markupartist.sthlmtraveling.provider.planner.Planner.Trip2;
 import com.markupartist.sthlmtraveling.ui.view.SmsTicketDialog;
+import com.markupartist.sthlmtraveling.utils.Analytics;
 import com.markupartist.sthlmtraveling.utils.DateTimeUtil;
 
 import org.json.JSONException;
@@ -100,15 +101,19 @@ public class RouteDetailActivity extends BaseListActivity {
         TextView timeView = (TextView) headerView.findViewById(R.id.route_date_time);
         timeView.setText(getString(R.string.time_to, mTrip.getDurationText(), mTrip.destination.getCleanName()));
         if (mTrip.canBuySmsTicket()) {
-            TextView zoneView = (TextView) headerView.findViewById(R.id.route_zones);
-            zoneView.setText(mTrip.tariffZones);
-            zoneView.setVisibility(View.VISIBLE);
-            zoneView.setOnClickListener(new View.OnClickListener() {
+
+            View buySmsTicketView = headerView.findViewById(R.id.route_buy_ticket);
+            buySmsTicketView.setVisibility(View.VISIBLE);
+            buySmsTicketView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    Analytics.getInstance(RouteDetailActivity.this).event("Ticket", "Click on zone");
                     showDialog(DIALOG_BUY_SMS_TICKET);
                 }
             });
+
+            TextView zoneView = (TextView) headerView.findViewById(R.id.route_zones);
+            zoneView.setText(mTrip.tariffZones);
         }
 
         getListView().addHeaderView(headerView, null, false);
@@ -149,6 +154,7 @@ public class RouteDetailActivity extends BaseListActivity {
             return true;
         case R.id.actionbar_item_sms:
             if (mTrip.canBuySmsTicket()) {
+                Analytics.getInstance(this).event("Ticket", "Click on ab");
                 showDialog(DIALOG_BUY_SMS_TICKET);
             } else {
                 Toast.makeText(this, R.string.sms_ticket_notice_disabled, Toast.LENGTH_LONG).show();

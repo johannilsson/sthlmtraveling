@@ -34,20 +34,40 @@
         style="@style/Title"
         />
 
-    <TextView
-        android:id="@+id/route_zones"
-        android:visibility="gone"
-        android:background="@drawable/zone_background"
-        android:layout_gravity="center_horizontal|right"
+    <LinearLayout
+        android:id="@+id/route_buy_ticket"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingRight="7dip"
-        android:paddingBottom="4dip"
-        android:paddingLeft="7dip"
-        android:paddingTop="4dip"
-        android:textColor="#fff"
-        android:textSize="14dip"
-        android:textStyle="bold"
-        />
+        android:visibility="gone"
+        >
+        <TextView
+            android:text="@string/sms_ticket_label"
+            android:background="@drawable/zone_buy_ticket_background"
+            android:layout_gravity="center_horizontal|right"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#fff"
+            android:textSize="14sp"
+            android:paddingRight="7dip"
+            android:paddingBottom="4dip"
+            android:paddingLeft="7dip"
+            android:paddingTop="4dip"
+            />
+        <TextView
+            android:id="@+id/route_zones"
+            android:layout_gravity="center_horizontal|right"
+            android:background="@drawable/zone_background"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#fff"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:paddingRight="7dip"
+            android:paddingBottom="4dip"
+            android:paddingLeft="7dip"
+            android:paddingTop="4dip"
+            />
+    </LinearLayout>
+
 
 </LinearLayout>

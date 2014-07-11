@@ -61,6 +61,7 @@ import com.markupartist.sthlmtraveling.provider.planner.Planner.Trip2;
 import com.markupartist.sthlmtraveling.provider.site.Site;
 import com.markupartist.sthlmtraveling.ui.view.SmsTicketDialog;
 import com.markupartist.sthlmtraveling.ui.view.TripView;
+import com.markupartist.sthlmtraveling.utils.Analytics;
 import com.markupartist.sthlmtraveling.utils.ViewHelper;
 
 import org.json.JSONException;
@@ -244,6 +245,7 @@ public class RoutesActivity extends BaseListActivity
             supportInvalidateOptionsMenu();
             return true;
         case R.id.actionbar_item_sms:
+            Analytics.getInstance(this).event("Ticket", "Click on ab");
             showDialog(DIALOG_BUY_SMS_TICKET);
             return true;
         }

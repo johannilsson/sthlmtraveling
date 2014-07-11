@@ -121,10 +121,10 @@
     <string name="reinstall_app_message">Tyvärr måste du installera STHLM Traveling på nytt för att forsätta använda den fullt ut.\n\nDetta är orsakat av en bugg i Android. För en utförligare beskrivning läs mer på min blogg, http://bit.ly/fcissue.\n\nJag är verkligen ledsen för det här!</string>
     <string name="did_you_mean">Menade du?</string>
     <string name="share_label">Dela med andra</string>
-    <string name="sms_ticket_label">SMS-Biljett</string>
+    <string name="sms_ticket_label">Köp biljett</string>
     <string name="sms_ticket_price_reduced">Reducerat pris</string>
     <string name="sms_ticket_price_full">Helt pris (20–64 år)</string>
-    <string name="sms_ticket_notice_message">Den här funtionen är experimentell. Dubbelkolla detaljerna innan du köper din biljett. STHLM Traveling lämnar inga garantier för att biljetten stämmer med resan.</string>
+    <string name="sms_ticket_notice_message">Dubbelkolla detaljerna innan du skickar din biljett. STHLM Traveling lämnar inga garantier för att biljetten stämmer med resan.</string>
     <string name="sms_ticket_notice_disabled">SMS-biljett är inte tillgänglig för denna resa.</string>
     <string name="trip_description_walk" formatted="false">Gå från %s till %s</string>
     <string name="trip_description_normal" formatted="false">Ta %s från %s mot %s. Kliv av vid %s</string>

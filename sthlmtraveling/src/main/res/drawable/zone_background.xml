@@ -6,7 +6,7 @@ android:shape="rectangle">
     <!-- <layout_margin android:layout_margin="1dp"/> -->
     <corners 
         android:bottomRightRadius="6dip"
-        android:bottomLeftRadius="6dip"
-        android:topLeftRadius="6dip"
+        android:bottomLeftRadius="0dip"
+        android:topLeftRadius="0dip"
         android:topRightRadius="6dip"/>
 </shape>
