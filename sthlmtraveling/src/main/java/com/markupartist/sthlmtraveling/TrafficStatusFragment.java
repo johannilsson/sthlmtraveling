@@ -47,7 +47,7 @@ public class TrafficStatusFragment extends BaseFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        registerEvent("Traffic status");
+        registerScreen("Traffic status");
 
     }
 

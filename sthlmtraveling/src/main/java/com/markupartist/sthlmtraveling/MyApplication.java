@@ -9,6 +9,8 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
+import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.Tracker;
 import com.markupartist.sthlmtraveling.service.DataMigrationService;
 import com.markupartist.sthlmtraveling.utils.ErrorReporter;
 
@@ -17,6 +19,7 @@ import java.util.Locale;
 public class MyApplication extends Application {
     static String TAG = "StApplication";
     public static String ANALYTICS_KEY = "JUSQKB45DEN62VRQVBU9";
+    public static String ANALYTICS_PROPERY_KEY = "UA-6205540-15";
     public static String APP_VERSION = BuildConfig.VERSION_NAME + " (" + BuildConfig.VERSION_CODE + ")";
 
     @Override
@@ -69,4 +72,14 @@ public class MyApplication extends Application {
         }
     }
 
+    /**
+     * Get analytics tracker.
+     *
+     * @return A Tracker
+     */
+    public synchronized Tracker getTracker() {
+        GoogleAnalytics analytics = GoogleAnalytics.getInstance(this);
+        analytics.setDryRun(BuildConfig.DEBUG);
+        return analytics.newTracker(ANALYTICS_PROPERY_KEY);
+    }
 }

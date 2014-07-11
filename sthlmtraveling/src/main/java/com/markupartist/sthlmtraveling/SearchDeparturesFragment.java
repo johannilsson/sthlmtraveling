@@ -53,9 +53,9 @@ public class SearchDeparturesFragment extends BaseListFragment implements Adapte
         if (Intent.ACTION_CREATE_SHORTCUT.equals(getActivity().getIntent()
                 .getAction())) {
             mCreateShortcut = true;
-            registerEvent("Create departure shortcut");
+            registerScreen("Create departure shortcut");
         } else {
-            registerEvent("Search departures");
+            registerScreen("Search departures");
         }
         mHistoryDbAdapter = new HistoryDbAdapter(getActivity()).open();
     }

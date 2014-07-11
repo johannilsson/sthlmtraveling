@@ -24,6 +24,7 @@ import android.widget.Toast;
 
 import com.flurry.android.FlurryAgent;
 import com.markupartist.sthlmtraveling.R;
+import com.markupartist.sthlmtraveling.utils.Analytics;
 import com.markupartist.sthlmtraveling.utils.IntentUtil;
 
 /**
@@ -34,6 +35,8 @@ import com.markupartist.sthlmtraveling.utils.IntentUtil;
 public class SmsTicketDialog {
 
     public static Dialog createDialog(final Context context, final String tariffZones) {
+
+        Analytics.getInstance(context).event("SMS", "Open Dialog");
 
         CharSequence[] smsOptions = {
                 context.getText(R.string.sms_ticket_price_full) + " " + getFullPrice(tariffZones),
@@ -72,10 +75,13 @@ public class SmsTicketDialog {
      */
     private static void sendSms(final Context context, final boolean reducedPrice, final String tariffZones) {
         FlurryAgent.onEvent("Buy SMS Ticket");
+
         Toast.makeText(context, R.string.sms_ticket_notice_message, Toast.LENGTH_LONG).show();
         String price = reducedPrice ? "R" : "H";
+
+        Analytics.getInstance(context).event("SMS", "Buy SMS Ticket", price);
+
         String number = "0767201010";
-        FlurryAgent.onEvent("SMS " + price);
         IntentUtil.smsIntent(context, number, price + tariffZones);
     }
 }

@@ -181,7 +181,7 @@ public class RoutesActivity extends BaseListActivity
 
         setContentView(R.layout.routes_list);
 
-        registerEvent("Routes");
+        registerScreen("Routes");
 
         LocationManager locationManager = (LocationManager)getSystemService(LOCATION_SERVICE);
         mMyLocationManager = new MyLocationManager(locationManager);

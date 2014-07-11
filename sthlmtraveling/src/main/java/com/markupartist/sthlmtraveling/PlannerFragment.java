@@ -272,7 +272,7 @@ public class PlannerFragment extends BaseListFragment implements
 
         // Handle create shortcut.
         if (mCreateShortcut) {
-            registerEvent("Planner create shortcut");
+            registerScreen("Planner create shortcut");
             getActivity().setTitle(R.string.create_shortcut_label);
 
             // Add search label to button
@@ -284,7 +284,7 @@ public class PlannerFragment extends BaseListFragment implements
             // Fake an adapter. This needs to be fixed later on so we can use the history.
             setListAdapter(new ArrayAdapter<String>(getActivity(), R.layout.journey_history_row));
         } else {
-            registerEvent("Planner");
+            registerScreen("Planner");
             setListAdapter(mAdapter);
         }
     }

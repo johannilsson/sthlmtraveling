@@ -9,6 +9,7 @@ import com.actionbarsherlock.app.SherlockListActivity;
 import com.actionbarsherlock.view.MenuItem;
 import com.flurry.android.FlurryAgent;
 import com.markupartist.sthlmtraveling.provider.planner.JourneyQuery;
+import com.markupartist.sthlmtraveling.utils.Analytics;
 import com.markupartist.sthlmtraveling.utils.StringUtils;
 
 import java.util.Map;
@@ -33,8 +34,9 @@ public class BaseListActivity extends SherlockListActivity {
         FlurryAgent.onEndSession(this);
      }
 
-    protected void registerEvent(String event) {
+    protected void registerScreen(String event) {
         FlurryAgent.onEvent(event);
+        Analytics.getInstance(this).registerScreen(event);
     }
 
     protected void registerEvent(String event, Map<String, String> parameters) {

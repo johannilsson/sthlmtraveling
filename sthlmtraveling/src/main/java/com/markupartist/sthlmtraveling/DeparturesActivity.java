@@ -109,7 +109,7 @@ public class DeparturesActivity extends BaseFragmentActivity {
 
         setContentView(R.layout.departures);
 
-        registerEvent("Departures");
+        registerScreen("Departures");
 
         Bundle extras = getIntent().getExtras();
 

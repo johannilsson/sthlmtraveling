@@ -81,7 +81,7 @@ public class RouteDetailActivity extends BaseListActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.route_details_list);
 
-        registerEvent("Route details");
+        registerScreen("Route details");
 
         Bundle extras = getIntent().getExtras();
 
@@ -270,6 +270,7 @@ public class RouteDetailActivity extends BaseListActivity {
     protected Dialog onCreateDialog(int id) {
         switch(id) {
         case DIALOG_BUY_SMS_TICKET:
+            registerScreen("SMS Ticket Click");
             return SmsTicketDialog.createDialog(this, mTrip.tariffZones);
         }
         return null;

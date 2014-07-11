@@ -13,7 +13,7 @@ buildscript {
     }
 }
 
-apply plugin: 'android'
+apply plugin: 'com.android.application'
 apply plugin: 'crashlytics'
 //apply plugin: 'hugo'
 
@@ -24,12 +24,12 @@ repositories {
 }
 
 android {
-    compileSdkVersion 19
+    compileSdkVersion 20
     buildToolsVersion "19.1.0"
 
     defaultConfig {
-        minSdkVersion 8
-        targetSdkVersion 19
+        minSdkVersion 9
+        targetSdkVersion 20
         versionName "2.8.2.dev"
         versionCode 112
     }
@@ -66,8 +66,8 @@ android {
 
 dependencies {
     compile 'com.actionbarsherlock:actionbarsherlock:4.4.0@aar'
-    compile 'com.android.support:support-v4:19.1.0'
-    compile 'com.google.android.gms:play-services:4.0.+'
+    compile 'com.android.support:support-v4:20.+'
+    compile 'com.google.android.gms:play-services:5.0.+'
     //compile project(':ViewPageIndicator')
     compile 'com.squareup.okhttp:okhttp:1.3.0'
     compile files('libs/FlurryAgent.jar')

@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.markupartist.sthlmtraveling.provider.HistoryDbAdapter;
 import com.markupartist.sthlmtraveling.provider.JourneysProvider.Journey.Journeys;
 import com.markupartist.sthlmtraveling.service.DeviationService;
+import com.markupartist.sthlmtraveling.utils.Analytics;
 
 public class SettingsActivity extends BasePreferenceActivity
         implements OnSharedPreferenceChangeListener {
@@ -32,7 +33,7 @@ public class SettingsActivity extends BasePreferenceActivity
 
         addPreferencesFromResource(R.xml.preferences);
 
-        registerEvent("Settings");
+        registerScreen("Settings");
 
         mHistoryDbAdapter = new HistoryDbAdapter(this).open();
 
@@ -48,7 +49,7 @@ public class SettingsActivity extends BasePreferenceActivity
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
-            String key) {
+                                          String key) {
         if (key.equals("prefered_language_preference")) {
             MyApplication application = (MyApplication) getApplication();
             application.reloadLocaleForApplication();
@@ -57,9 +58,11 @@ public class SettingsActivity extends BasePreferenceActivity
         } else if (key.equals("notification_deviations_enabled")) {
             boolean enabled = sharedPreferences.getBoolean("notification_deviations_enabled", false);
             if (enabled) {
-                registerEvent("Starting deviation service");
+                registerEvent("Starting deviation service", null);
+                Analytics.getInstance(this).event("Settings", "Deviation Service", "start");
             } else {
-                registerEvent("Disabled deviation service");
+                registerEvent("Disabled deviation service", null);
+                Analytics.getInstance(this).event("Settings", "Deviation Service", "stop");
             }
             DeviationService.startAsRepeating(SettingsActivity.this);
         }
@@ -90,7 +93,7 @@ public class SettingsActivity extends BasePreferenceActivity
             emailIntent.setType("plain/text");
             emailIntent.putExtra(
                     android.content.Intent.EXTRA_EMAIL,
-                    new String[] { getString(R.string.send_feedback_email_emailaddress) });
+                    new String[]{getString(R.string.send_feedback_email_emailaddress)});
             emailIntent.putExtra(
                     android.content.Intent.EXTRA_SUBJECT,
                     getText(R.string.send_feedback_email_title));
@@ -106,13 +109,12 @@ public class SettingsActivity extends BasePreferenceActivity
     }
 
 
-
     @Override
     protected void onResume() {
         super.onResume();
         // Set up a listener whenever a key changes            
         getPreferenceScreen().getSharedPreferences()
-            .registerOnSharedPreferenceChangeListener(this);
+                .registerOnSharedPreferenceChangeListener(this);
     }
 
     @Override
@@ -120,60 +122,61 @@ public class SettingsActivity extends BasePreferenceActivity
         super.onPause();
         // Unregister the listener whenever a key changes            
         getPreferenceScreen().getSharedPreferences()
-            .unregisterOnSharedPreferenceChangeListener(this);    
+                .unregisterOnSharedPreferenceChangeListener(this);
     }
 
     @Override
     protected Dialog onCreateDialog(int id) {
-        switch(id) {
-        case DIALOG_CLEAR_SEARCH_HISTORY:
-            return new AlertDialog.Builder(this)
-                .setTitle(R.string.search_clear_history_preference)
-                .setMessage(R.string.search_clear_history_confirm)
-                .setCancelable(true)
-                .setPositiveButton(R.string.yes, new OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        getContentResolver().delete(Journeys.CONTENT_URI,
-                                Journeys.STARRED + " = 0 OR " +
-                                Journeys.STARRED + " IS NULL",
-                                null);
+        switch (id) {
+            case DIALOG_CLEAR_SEARCH_HISTORY:
+                return new AlertDialog.Builder(this)
+                        .setTitle(R.string.search_clear_history_preference)
+                        .setMessage(R.string.search_clear_history_confirm)
+                        .setCancelable(true)
+                        .setPositiveButton(R.string.yes, new OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                getContentResolver().delete(Journeys.CONTENT_URI,
+                                        Journeys.STARRED + " = 0 OR " +
+                                                Journeys.STARRED + " IS NULL",
+                                        null
+                                );
 
-                        mHistoryDbAdapter.deleteAll();
-                        Toast.makeText(SettingsActivity.this,
-                                R.string.search_history_cleared,
-                                Toast.LENGTH_SHORT).show();
-                    }
-                })
-                .setNegativeButton(R.string.no, new OnClickListener() {                    
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                })
-                .create();
-        case DIALOG_CLEAR_FAVORITES:
-            return new AlertDialog.Builder(this)
-                .setTitle(R.string.search_clear_favorites_preference)
-                .setMessage(R.string.search_clear_favorites_confirm)
-                .setCancelable(true)
-                .setPositiveButton(R.string.yes, new OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        getContentResolver().delete(Journeys.CONTENT_URI,
-                                Journeys.STARRED + " = 1", null);
-                        Toast.makeText(SettingsActivity.this,
-                                R.string.search_favorites_cleared,
-                                Toast.LENGTH_SHORT).show();
-                    }
-                })
-                .setNegativeButton(R.string.no, new OnClickListener() {                    
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                })
-                .create();
+                                mHistoryDbAdapter.deleteAll();
+                                Toast.makeText(SettingsActivity.this,
+                                        R.string.search_history_cleared,
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                        })
+                        .setNegativeButton(R.string.no, new OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                            }
+                        })
+                        .create();
+            case DIALOG_CLEAR_FAVORITES:
+                return new AlertDialog.Builder(this)
+                        .setTitle(R.string.search_clear_favorites_preference)
+                        .setMessage(R.string.search_clear_favorites_confirm)
+                        .setCancelable(true)
+                        .setPositiveButton(R.string.yes, new OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                getContentResolver().delete(Journeys.CONTENT_URI,
+                                        Journeys.STARRED + " = 1", null);
+                                Toast.makeText(SettingsActivity.this,
+                                        R.string.search_favorites_cleared,
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                        })
+                        .setNegativeButton(R.string.no, new OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                            }
+                        })
+                        .create();
         }
 
         return null;

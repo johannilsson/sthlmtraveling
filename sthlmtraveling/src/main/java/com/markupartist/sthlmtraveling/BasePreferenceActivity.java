@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 import com.actionbarsherlock.app.SherlockPreferenceActivity;
 import com.flurry.android.FlurryAgent;
+import com.markupartist.sthlmtraveling.utils.Analytics;
 
 import java.util.Map;
 
@@ -27,12 +28,17 @@ public class BasePreferenceActivity extends SherlockPreferenceActivity {
         FlurryAgent.onEndSession(this);
      }
 
-    protected void registerEvent(String event) {
+    protected void registerScreen(String event) {
         FlurryAgent.onEvent(event);
+        Analytics.getInstance(this).registerScreen(event);
     }
 
     protected void registerEvent(String event, Map<String, String> parameters) {
-        FlurryAgent.onEvent(event, parameters);
+        if (parameters == null) {
+            FlurryAgent.onEvent(event);
+        } else {
+            FlurryAgent.onEvent(event, parameters);
+        }
     }
 
     @Override

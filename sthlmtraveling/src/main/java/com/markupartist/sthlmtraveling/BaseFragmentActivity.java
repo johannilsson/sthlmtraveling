@@ -7,6 +7,7 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.MenuItem;
 import com.flurry.android.FlurryAgent;
+import com.markupartist.sthlmtraveling.utils.Analytics;
 
 import java.util.Map;
 
@@ -50,8 +51,9 @@ public class BaseFragmentActivity extends SherlockFragmentActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    protected void registerEvent(String event) {
+    protected void registerScreen(String event) {
         FlurryAgent.onEvent(event);
+        Analytics.getInstance(this).registerScreen(event);
     }
 
     protected void registerEvent(String event, Map<String, String> parameters) {

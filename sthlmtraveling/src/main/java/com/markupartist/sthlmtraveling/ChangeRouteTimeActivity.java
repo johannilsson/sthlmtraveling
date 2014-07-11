@@ -52,7 +52,7 @@ public class ChangeRouteTimeActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.change_route_time);
         
-        registerEvent("Change route time");
+        registerScreen("Change route time");
         
         //setTitle(getText(R.string.change_date_and_time));
         //ActionBar actionBar = initActionBar();

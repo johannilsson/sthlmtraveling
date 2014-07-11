@@ -40,6 +40,8 @@ public class StartActivity extends BaseFragmentActivity {
 
         setContentView(R.layout.start);
 
+        registerScreen("Start");
+
         PageFragmentAdapter pageAdapter = new PageFragmentAdapter(this, getSupportFragmentManager());
 
         pageAdapter.addPage(new PageInfo(getString(R.string.search_label), PlannerFragment.class, null));

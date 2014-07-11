@@ -16,11 +16,6 @@
 
 package com.markupartist.sthlmtraveling;
 
-import java.util.ArrayList;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.content.BroadcastReceiver;
 import android.content.ContentUris;
 import android.content.ContentValues;
@@ -45,11 +40,16 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.markupartist.sthlmtraveling.provider.TransportMode;
 import com.markupartist.sthlmtraveling.provider.JourneysProvider.Journey.Journeys;
+import com.markupartist.sthlmtraveling.provider.TransportMode;
 import com.markupartist.sthlmtraveling.provider.planner.JourneyQuery;
 import com.markupartist.sthlmtraveling.provider.planner.Planner;
 import com.markupartist.sthlmtraveling.provider.planner.Planner.Location;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 public class FavoritesFragment extends BaseListFragment {
 
@@ -111,7 +111,7 @@ public class FavoritesFragment extends BaseListFragment {
 	public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        registerEvent("Favorites");
+        registerScreen("Favorites");
 
         getActivity().registerReceiver(mUpdateUIReceiver, new IntentFilter("sthlmtraveling.intent.action.UPDATE_UI"));
     }
