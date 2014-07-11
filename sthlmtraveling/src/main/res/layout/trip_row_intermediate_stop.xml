@@ -31,12 +31,11 @@
             android:layout_width="40dp"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_gravity="center"
-            android:paddingTop="12dp"
-            android:paddingBottom="12dp">
+            android:layout_gravity="bottom"
+            android:paddingTop="8dp">
 
             <TextView
-                android:id="@+id/trip_arrival_time"
+                android:id="@+id/trip_intermediate_arrival_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/sl_grey"
@@ -44,7 +43,7 @@
                 android:layout_gravity="right" />
 
             <TextView
-                android:id="@+id/trip_departure_time"
+                android:id="@+id/trip_intermediate_departure_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="right"
@@ -57,18 +56,19 @@
             android:layout_width="36dp"
             android:layout_height="fill_parent">
             <ImageView
-                android:id="@+id/trip_line_segment"
+                android:id="@+id/trip_intermediate_line_segment"
                 android:layout_width="wrap_content"
                 android:layout_height="fill_parent"
                 android:src="@drawable/line_segment_walk"
                 android:layout_gravity="center_vertical|center_horizontal" />
 
             <ImageView
-                android:id="@+id/trip_line_segment_stop"
+                android:id="@+id/trip_intermediate_line_segment_stop"
+                android:paddingBottom="4dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/line_segment_intermediate_stop"
-                android:layout_gravity="center" />
+                android:layout_gravity="bottom|center_horizontal" />
         </FrameLayout>
     </LinearLayout>
 
@@ -77,15 +77,15 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:layout_gravity="center"
-        android:gravity="center_vertical">
+        android:gravity="bottom">
 
         <TextView
-            android:id="@+id/trip_stop_title"
+            android:id="@+id/trip_intermediate_stop_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="?android:attr/textColorPrimary"
+            android:textColor="?android:attr/textColorSecondary"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            android:gravity="left|center_vertical"
+            android:gravity="left|bottom"
             android:paddingLeft="4dp" />
 
     </LinearLayout>

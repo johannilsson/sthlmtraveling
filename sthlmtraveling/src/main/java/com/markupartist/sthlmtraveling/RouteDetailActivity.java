@@ -261,8 +261,9 @@ public class RouteDetailActivity extends BaseListActivity {
         View endSegment = convertView.findViewById(R.id.trip_line_segment_end);
         endSegment.setVisibility(View.VISIBLE);
 
-        TextView arrivalTimeView = (TextView) convertView.findViewById(R.id.trip_arrival_time);
-        arrivalTimeView.setVisibility(View.GONE);
+        convertView.findViewById(R.id.trip_layout_intermediate_stop).setVisibility(View.GONE);
+//        TextView arrivalTimeView = (TextView) convertView.findViewById(R.id.trip_arrival_time);
+//        arrivalTimeView.setVisibility(View.GONE);
 
         TextView departureTimeView = (TextView) convertView.findViewById(R.id.trip_departure_time);
         departureTimeView.setText(lastSubTrip.arrivalTime);
@@ -382,7 +383,21 @@ public class RouteDetailActivity extends BaseListActivity {
         @Override
         public View getView(final int position, View convertView, ViewGroup parent) {
             final SubTrip subTrip = getItem(position);
+
             convertView = mInflater.inflate(R.layout.trip_row_stop_layout, null);
+
+            if (position > 0) {
+                final SubTrip previousSubTrip = getItem(position - 1);
+                convertView.findViewById(R.id.trip_intermediate_departure_time).setVisibility(View.GONE);
+                TextView descView = (TextView) convertView.findViewById(R.id.trip_intermediate_stop_title);
+                descView.setTextSize(12);
+                descView.setText(getLocationName(previousSubTrip.destination));
+                TextView arrivalView = (TextView) convertView.findViewById(R.id.trip_intermediate_arrival_time);
+                arrivalView.setText(previousSubTrip.arrivalTime);
+            } else {
+                convertView.findViewById(R.id.trip_layout_intermediate_stop).setVisibility(View.GONE);
+                convertView.findViewById(R.id.trip_line_segment_start).setVisibility(View.VISIBLE);
+            }
 
             Button nameView = (Button) convertView.findViewById(R.id.trip_stop_title);
             nameView.setText(getLocationName(subTrip.origin));
@@ -398,8 +413,9 @@ public class RouteDetailActivity extends BaseListActivity {
                 }
             });
 
+
+            /*
             View startSegment = convertView.findViewById(R.id.trip_line_segment_start);
-            TextView arrivalTimeView = (TextView) convertView.findViewById(R.id.trip_arrival_time);
             if (position > 0) {
                 final SubTrip prevSubTrip = getItem(position - 1);
                 arrivalTimeView.setText(prevSubTrip.arrivalTime);
@@ -408,6 +424,7 @@ public class RouteDetailActivity extends BaseListActivity {
                 startSegment.setVisibility(View.VISIBLE);
                 arrivalTimeView.setVisibility(View.GONE);
             }
+            */
             TextView departureTimeView = (TextView) convertView.findViewById(R.id.trip_departure_time);
             departureTimeView.setText(subTrip.departureTime);
 
@@ -475,20 +492,20 @@ public class RouteDetailActivity extends BaseListActivity {
 
         private View inflateText(CharSequence text, LinearLayout stopsLayout) {
             View view = mInflater.inflate(R.layout.trip_row_intermediate_stop, stopsLayout, false);
-            TextView descView = (TextView) view.findViewById(R.id.trip_stop_title);
+            TextView descView = (TextView) view.findViewById(R.id.trip_intermediate_stop_title);
             descView.setTextSize(12);
             descView.setText(text);
-            view.findViewById(R.id.trip_line_segment_stop).setVisibility(View.GONE);
+            view.findViewById(R.id.trip_intermediate_line_segment_stop).setVisibility(View.GONE);
             return view;
         }
 
         private View inflateIntermediateStop(IntermediateStop stop, LinearLayout stopsLayout) {
             View view = mInflater.inflate(R.layout.trip_row_intermediate_stop, stopsLayout, false);
-            TextView descView = (TextView) view.findViewById(R.id.trip_stop_title);
+            view.findViewById(R.id.trip_intermediate_departure_time).setVisibility(View.GONE);
+            TextView descView = (TextView) view.findViewById(R.id.trip_intermediate_stop_title);
             descView.setTextSize(12);
             descView.setText(stop.location.name);
-            TextView arrivalView = (TextView) view.findViewById(R.id.trip_arrival_time);
-            view.findViewById(R.id.trip_departure_time).setVisibility(View.GONE);
+            TextView arrivalView = (TextView) view.findViewById(R.id.trip_intermediate_arrival_time);
             arrivalView.setText(stop.arrivalTime);
             return view;
         }
@@ -523,15 +540,11 @@ public class RouteDetailActivity extends BaseListActivity {
         private CharSequence createDescription(final SubTrip subTrip) {
             CharSequence description;
             if ("Walk".equals(subTrip.transport.type)) {
-                description = getString(R.string.trip_description_walk,
-                        getLocationName(subTrip.origin),
-                        getLocationName(subTrip.destination));
+                description = getString(R.string.trip_description_walk);
             } else {
                 description = getString(R.string.trip_description_normal,
                         subTrip.transport.name,
-                        getLocationName(subTrip.origin),
-                        subTrip.transport.towards,
-                        getLocationName(subTrip.destination));
+                        subTrip.transport.towards);
             }
             return description;
         }

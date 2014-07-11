@@ -124,8 +124,8 @@
     <string name="sms_ticket_price_full">Tarifa general</string>
     <string name="sms_ticket_notice_message">Por favor compruebe los detalles antes de comprar su ticket. STHLM Traveling no puede garantizar que el ticket sea válido para su trayecto.</string>
     <string name="sms_ticket_notice_disabled">SMS tickets is not available for this route.</string>
-    <string name="trip_description_walk" formatted="false">Andando desde %s hasta %s</string>
-    <string name="trip_description_normal" formatted="false">%s desde %s dirección %s. Bajar en %s</string>
+    <string name="trip_description_walk" formatted="false">Caminar</string>
+    <string name="trip_description_normal" formatted="false">%s dirección %s</string>
     <string name="trip_map_description_walk" formatted="false">%s Caminar a %s</string>
     <string name="trip_map_description_normal" formatted="false">%s %s hacia %s.</string>
     <string name="show_all">Mostrar todo</string>
