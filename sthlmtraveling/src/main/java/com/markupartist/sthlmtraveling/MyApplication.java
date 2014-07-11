@@ -10,6 +10,7 @@ import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.Logger;
 import com.google.android.gms.analytics.Tracker;
 import com.markupartist.sthlmtraveling.service.DataMigrationService;
 import com.markupartist.sthlmtraveling.utils.ErrorReporter;
@@ -80,6 +81,9 @@ public class MyApplication extends Application {
     public synchronized Tracker getTracker() {
         GoogleAnalytics analytics = GoogleAnalytics.getInstance(this);
         analytics.setDryRun(BuildConfig.DEBUG);
+        if (BuildConfig.DEBUG) {
+            analytics.getLogger().setLogLevel(Logger.LogLevel.VERBOSE);
+        }
         return analytics.newTracker(ANALYTICS_PROPERY_KEY);
     }
 }
