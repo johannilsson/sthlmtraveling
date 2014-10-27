@@ -46,11 +46,11 @@ public class DelayAutoCompleteTextView extends AutoCompleteTextView {
         super(context, attrs);
     }
 
-    public void setLoadingIndicator(final ProgressBar progressBar) {
+    public void setProgressBar(final ProgressBar progressBar) {
         mLoadingIndicator = progressBar;
     }
 
-    public void setAutoCompleteDelay(final int autoCompleteDelay) {
+    public void setFilterDelay(final int autoCompleteDelay) {
         mAutoCompleteDelay = autoCompleteDelay;
     }
 
