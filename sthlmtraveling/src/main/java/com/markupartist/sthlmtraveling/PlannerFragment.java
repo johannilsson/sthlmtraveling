@@ -73,6 +73,7 @@ import com.markupartist.sthlmtraveling.provider.planner.JourneyQuery;
 import com.markupartist.sthlmtraveling.provider.planner.Planner;
 import com.markupartist.sthlmtraveling.provider.planner.Planner.Location;
 import com.markupartist.sthlmtraveling.provider.site.Site;
+import com.markupartist.sthlmtraveling.ui.view.DelayAutoCompleteTextView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -86,9 +87,9 @@ public class PlannerFragment extends BaseListFragment implements
     protected static final int REQUEST_CODE_POINT_ON_MAP_START = 0;
     protected static final int REQUEST_CODE_POINT_ON_MAP_END = 1;
 
-    private AutoCompleteTextView mStartPointAutoComplete;
-    private AutoCompleteTextView mEndPointAutoComplete;
-    private AutoCompleteTextView mViaPointAutoComplete;
+    private DelayAutoCompleteTextView mStartPointAutoComplete;
+    private DelayAutoCompleteTextView mEndPointAutoComplete;
+    private DelayAutoCompleteTextView mViaPointAutoComplete;
     private Site mStartPoint = new Site();
     private Site mEndPoint = new Site();
     private Site mViaPoint = new Site();
@@ -374,7 +375,7 @@ public class PlannerFragment extends BaseListFragment implements
         }
     }
 
-    private AutoCompleteTextView createAutoCompleteTextView(
+    private DelayAutoCompleteTextView createAutoCompleteTextView(
             int autoCompleteResId, int progressResId, final Site site) {
         return createAutoCompleteTextView(autoCompleteResId, progressResId,
                 site, false);
@@ -393,11 +394,11 @@ public class PlannerFragment extends BaseListFragment implements
      *            If addresses should be included.
      * @return
      */
-    private AutoCompleteTextView createAutoCompleteTextView(
+    private DelayAutoCompleteTextView createAutoCompleteTextView(
             int autoCompleteResId, int progressResId, final Site site,
             boolean includeAddresses) {
         // TODO: Wrap the auto complete view in a custom view...
-        final AutoCompleteTextView autoCompleteTextView = (AutoCompleteTextView)
+        final DelayAutoCompleteTextView autoCompleteTextView = (DelayAutoCompleteTextView)
                 mSearchView.findViewById(autoCompleteResId);
         //final ProgressBar progress = (ProgressBar)
         //        mSearchView.findViewById(progressResId);

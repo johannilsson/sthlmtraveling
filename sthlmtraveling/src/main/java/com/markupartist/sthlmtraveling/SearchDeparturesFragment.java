@@ -28,7 +28,6 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
-import android.widget.AutoCompleteTextView;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
@@ -37,12 +36,13 @@ import android.widget.TextView.OnEditorActionListener;
 import com.markupartist.sthlmtraveling.provider.HistoryDbAdapter;
 import com.markupartist.sthlmtraveling.provider.planner.Planner;
 import com.markupartist.sthlmtraveling.provider.site.Site;
+import com.markupartist.sthlmtraveling.ui.view.DelayAutoCompleteTextView;
 
 public class SearchDeparturesFragment extends BaseListFragment implements AdapterView.OnItemClickListener {
     static String TAG = "SearchDeparturesActivity";
     private boolean mCreateShortcut;
     private HistoryDbAdapter mHistoryDbAdapter;
-    private AutoCompleteTextView mSiteTextView;
+    private DelayAutoCompleteTextView mSiteTextView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -78,7 +78,7 @@ public class SearchDeparturesFragment extends BaseListFragment implements Adapte
                 R.layout.search_departures_header, null);
         getListView().addHeaderView(searchHeader, null, false);
 
-        mSiteTextView = (AutoCompleteTextView) searchHeader
+        mSiteTextView = (DelayAutoCompleteTextView) searchHeader
                 .findViewById(R.id.sites);
         AutoCompleteStopAdapter stopAdapter = new AutoCompleteStopAdapter(
                 getActivity(), R.layout.simple_dropdown_item_1line,

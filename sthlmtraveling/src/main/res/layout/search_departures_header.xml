@@ -34,8 +34,9 @@
             android:paddingTop="16dip"
             android:paddingBottom="10dip">
 
-            <AutoCompleteTextView
+            <com.markupartist.sthlmtraveling.ui.view.DelayAutoCompleteTextView
                 android:id="@+id/sites"
+                android:completionThreshold="3"
                 android:hint="@string/site_name"
                 android:dropDownWidth="fill_parent"
                 android:layout_width="0dip"

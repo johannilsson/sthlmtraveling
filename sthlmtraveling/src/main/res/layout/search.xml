@@ -37,10 +37,11 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1">
 
-                <AutoCompleteTextView
+                <com.markupartist.sthlmtraveling.ui.view.DelayAutoCompleteTextView
                     android:id="@+id/from"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:completionThreshold="3"
                     android:layout_weight="1"
                     android:dropDownVerticalOffset="5dip"
                     android:dropDownWidth="fill_parent"
@@ -82,10 +83,11 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1">
 
-                <AutoCompleteTextView
+                <com.markupartist.sthlmtraveling.ui.view.DelayAutoCompleteTextView
                     android:id="@+id/to"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:completionThreshold="3"
                     android:layout_weight="1"
                     android:dropDownVerticalOffset="5dip"
                     android:dropDownWidth="fill_parent"
@@ -95,8 +97,7 @@
                     android:inputType="text"
                     android:lines="1"
                     android:singleLine="true"
-                    android:textColor="?android:attr/textColorPrimary">
-                </AutoCompleteTextView>
+                    android:textColor="?android:attr/textColorPrimary"/>
             </LinearLayout>
 
             <ImageButton
@@ -178,10 +179,11 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1">
 
-                    <AutoCompleteTextView
+                    <com.markupartist.sthlmtraveling.ui.view.DelayAutoCompleteTextView
                         android:id="@+id/via"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:completionThreshold="3"
                         android:layout_weight="1"
                         android:dropDownVerticalOffset="5dip"
                         android:dropDownWidth="fill_parent"
