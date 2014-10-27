@@ -2,8 +2,8 @@ sthlmtraveling/src/main/java/com/markupartist/sthlmtraveling/provider/ApiConf.ja
 /local.properties
 /signing.properties
 build
-/.idea/workspace.xml
-/.idea/tasks.xml
+/.idea
+*.iml
 .gradle
 *.DS_Store
 com_crashlytics_export_strings.xml

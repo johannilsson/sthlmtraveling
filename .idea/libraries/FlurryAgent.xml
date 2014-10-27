@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="FlurryAgent">
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/sthlmtraveling/libs/FlurryAgent.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>
