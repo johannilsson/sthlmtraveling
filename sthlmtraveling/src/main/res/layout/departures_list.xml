@@ -16,24 +16,28 @@
 ** limitations under the License.
 */
 -->
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-    <RelativeLayout
-        android:id="@+id/ad_holder"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_refresh"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         >
-    </RelativeLayout>
-	<ListView
-	    android:layout_above="@id/ad_holder"
-	    style="@style/AppListView"
-	    android:id="@+id/android:list"
-	    android:layout_width="fill_parent"
-	    android:layout_height="fill_parent"
-        />
-    <include layout="@layout/progress_bar" android:id="@id/android:empty" />
-</RelativeLayout>
+
+        <ListView
+            style="@style/AppListView"
+            android:id="@+id/android:list"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            />
+
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+    <include
+        layout="@layout/progress_bar"
+        android:id="@id/android:empty"/>
+
+</FrameLayout>

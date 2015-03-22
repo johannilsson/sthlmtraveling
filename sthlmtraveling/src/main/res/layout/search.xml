@@ -16,45 +16,35 @@
 */
 -->
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content">
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
 
     <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="match_parent"
+        style="@style/Container"
+        android:paddingTop="0dp"
+        android:paddingBottom="0dp"
+        android:paddingLeft="0dp"
+        android:paddingRight="0dp"
         android:orientation="vertical"
-        android:paddingTop="22dp"
-        android:paddingBottom="4dp"
+        android:background="@color/primary"
         >
         <!-- Start from -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginBottom="10dp">
+            >
 
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1">
-
-                <com.markupartist.sthlmtraveling.ui.view.DelayAutoCompleteTextView
-                    android:id="@+id/from"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:completionThreshold="3"
-                    android:layout_weight="1"
-                    android:dropDownVerticalOffset="5dip"
-                    android:dropDownWidth="fill_parent"
-                    android:ems="10"
-                    android:hint="@string/from"
-                    android:imeOptions="actionNext"
-                    android:inputType="text"
-                    android:lines="1"
-                    android:nextFocusDown="@+id/to"
-                    android:nextFocusRight="@+id/from_menu"
-                    android:singleLine="true"
-                    android:textColor="?android:attr/textColorPrimary" />
-            </LinearLayout>
+            <com.markupartist.sthlmtraveling.ui.view.DelayAutoCompleteTextView
+                style="@style/AutoComplete"
+                android:id="@+id/from"
+                android:hint="@string/from"
+                android:gravity="center_vertical"
+                android:paddingLeft="@dimen/list_horizontal_padding"
+                android:textColorHint="#88ffffff"
+                android:textColorHighlight="#33ffffff"
+                android:textColor="?android:attr/textColorPrimaryInverse"
+                />
 
             <ImageButton
                 android:id="@+id/from_menu"
@@ -65,40 +55,36 @@
                 android:layout_marginLeft="0dp"
                 android:layout_marginRight="0dp"
                 android:minWidth="20dip"
-                android:paddingLeft="0dp"
-                android:paddingRight="0dp"
-                android:src="@drawable/abs__spinner_ab_default_holo_light" />
+                android:paddingLeft="@dimen/list_horizontal_padding"
+                android:paddingRight="@dimen/list_horizontal_padding"
+                android:src="@drawable/ic_more_vert_white_18dp"/>
 
         </LinearLayout>
         <!-- End from -->
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="@color/primary_light_alpha"
+            android:layout_marginLeft="@dimen/list_horizontal_padding"
+            android:layout_marginRight="@dimen/list_horizontal_padding"
+            />
+
         <!-- Start to -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="10dp">
+            android:layout_height="match_parent">
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_weight="1">
-
-                <com.markupartist.sthlmtraveling.ui.view.DelayAutoCompleteTextView
-                    android:id="@+id/to"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:completionThreshold="3"
-                    android:layout_weight="1"
-                    android:dropDownVerticalOffset="5dip"
-                    android:dropDownWidth="fill_parent"
-                    android:ems="10"
-                    android:hint="@string/to"
-                    android:imeOptions="actionNext"
-                    android:inputType="text"
-                    android:lines="1"
-                    android:singleLine="true"
-                    android:textColor="?android:attr/textColorPrimary"/>
-            </LinearLayout>
+            <com.markupartist.sthlmtraveling.ui.view.DelayAutoCompleteTextView
+                style="@style/AutoComplete"
+                android:id="@+id/to"
+                android:hint="@string/to"
+                android:gravity="center_vertical"
+                android:textColorHint="#88ffffff"
+                android:textColorHighlight="#33ffffff"
+                android:textColor="?android:attr/textColorPrimaryInverse"
+                android:paddingLeft="@dimen/list_horizontal_padding"
+                />
 
             <ImageButton
                 android:id="@+id/to_menu"
@@ -109,163 +95,118 @@
                 android:layout_marginLeft="0dp"
                 android:layout_marginRight="0dp"
                 android:minWidth="20dip"
-                android:paddingLeft="0dp"
-                android:paddingRight="0dp"
-                android:src="@drawable/abs__spinner_ab_default_holo_light" />
+                android:paddingLeft="@dimen/list_horizontal_padding"
+                android:paddingRight="@dimen/list_horizontal_padding"
+                android:src="@drawable/ic_more_vert_white_18dp"/>
         </LinearLayout>
         <!-- End to -->
 
-        <RadioGroup
-            android:id="@+id/planner_choose_time_group"
-            android:orientation="horizontal"
-            android:layout_width="fill_parent"
+        <RelativeLayout
+            android:id="@+id/options_active_container"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:checkedButton="@+id/planner_check_now">
-
-            <RadioButton
-                android:id="@+id/planner_check_now"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/now_label" />
-
-            <RadioButton
-                android:id="@+id/planner_check_more_choices"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="15dip"
-                android:text="@string/more_choices_label" />
-        </RadioGroup>
-
-        <LinearLayout
-            android:id="@+id/planner_change_time_layout"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:visibility="gone">
-
-            <Spinner
-                android:id="@+id/departure_arrival_choice"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:drawSelectorOnTop="true" />
-
-            <TableLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-
-                <TableRow>
-
-                    <Button
-                        android:id="@+id/planner_route_time"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-
-                    <Button
-                        android:id="@+id/planner_route_date"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-                </TableRow>
-            </TableLayout>
-
-            <!-- Start via -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginBottom="10dp"
-                android:layout_marginTop="10dp">
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1">
-
-                    <com.markupartist.sthlmtraveling.ui.view.DelayAutoCompleteTextView
-                        android:id="@+id/via"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:completionThreshold="3"
-                        android:layout_weight="1"
-                        android:dropDownVerticalOffset="5dip"
-                        android:dropDownWidth="fill_parent"
-                        android:ems="10"
-                        android:hint="@string/via"
-                        android:imeOptions="actionNext"
-                        android:inputType="text"
-                        android:lines="1"
-                        android:singleLine="true"
-                        android:textColor="?android:attr/textColorPrimary" />
-                </LinearLayout>
-
-                <ImageButton
-                    android:id="@+id/via_menu"
-                    style="?attr/borderlessButtonStyle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="fill_parent"
-                    android:layout_margin="0dp"
-                    android:layout_marginLeft="0dp"
-                    android:layout_marginRight="0dp"
-                    android:minWidth="20dip"
-                    android:paddingLeft="0dp"
-                    android:paddingRight="0dp"
-                    android:src="@drawable/dropdown_ic_arrow" />
-            </LinearLayout>
-            <!-- End via -->
-
-            <CheckBox
-                android:id="@+id/planner_alternative_stops"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/alternative_stops_label" />
+            android:minHeight="48dp"
+            android:background="@color/primary"
+            android:visibility="visible"
+            tools:visibility="visible"
+            >
 
             <View
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="1px"
-                android:layout_marginTop="10dip"
-                android:layout_marginBottom="10dip"
-                android:background="@drawable/stroke" />
+                android:background="@color/primary_light_alpha"
+                android:layout_marginLeft="@dimen/list_horizontal_padding"
+                android:layout_marginRight="@dimen/list_horizontal_padding"
+                />
 
-            <CheckBox
-                android:id="@+id/planner_transport_metro"
-                android:layout_width="fill_parent"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/metros"
-                android:checked="true" />
+                android:orientation="vertical"
+                android:layout_centerVertical="true"
+                android:paddingTop="@dimen/list_vertical_padding"
+                android:paddingBottom="@dimen/list_vertical_padding"
+                android:layout_marginRight="48dp">
 
-            <CheckBox
-                android:id="@+id/planner_transport_bus"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/buses"
-                android:checked="true" />
+                <TextView
+                    android:id="@+id/options_summary"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="?android:attr/textColorSecondaryInverse"
+                    android:paddingLeft="@dimen/list_horizontal_padding"
+                    tools:text="Departs at 20.00"
+                    />
 
-            <CheckBox
-                android:id="@+id/planner_transport_tram"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/trams"
-                android:checked="true" />
+                <TextView
+                    android:id="@+id/options_summary_with_options"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:textSize="12dp"
+                    android:textColor="@color/primary_light_alpha"
+                    android:paddingLeft="@dimen/list_horizontal_padding"
+                    android:text="@string/route_options_active"
+                    android:visibility="gone"
+                    tools:visibility="visible"
+                    />
 
-            <CheckBox
-                android:id="@+id/planner_transport_train"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/trains"
-                android:checked="true" />
+            </LinearLayout>
 
-            <CheckBox
-                android:id="@+id/planner_transport_wax"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:text="Waxholmsbolagets båttrafik"
-                android:checked="true" />
+            <ImageButton
+                android:id="@+id/btn_clear_options"
+                style="?attr/borderlessButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/ic_close"
+                android:padding="@dimen/list_horizontal_padding"
+                android:textSize="14dp"
+                />
+        </RelativeLayout>
 
-            <CheckBox
-                android:id="@+id/planner_transport_nar"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:text="Närtrafiken"
-                android:checked="false" />
-        </LinearLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="@color/primary_dark">
+
+            <Button
+                android:id="@+id/btn_options"
+                style="?attr/borderlessButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="@string/more_choices_label"
+                android:textColor="@color/primary_light"
+                android:layout_toLeftOf="@+id/action_divider"
+                android:paddingLeft="@dimen/list_horizontal_padding"
+                android:paddingRight="@dimen/list_horizontal_padding"
+                android:textSize="14dp"
+                />
+
+            <View
+                android:id="@+id/action_divider"
+                android:layout_toLeftOf="@+id/do_search"
+                android:layout_width="1px"
+                android:layout_height="match_parent"
+                android:layout_marginTop="@dimen/list_vertical_padding"
+                android:layout_marginBottom="@dimen/list_vertical_padding"
+                android:background="@color/primary_light"
+                />
+
+            <Button
+                android:id="@+id/do_search"
+                style="?attr/borderlessButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="@string/new_search"
+                android:textColor="@color/primary_light"
+                android:paddingLeft="@dimen/list_horizontal_padding"
+                android:paddingRight="@dimen/list_horizontal_padding"
+                android:textSize="14dp"
+                android:layout_alignParentRight="true"
+                />
+        </RelativeLayout>
+
     </LinearLayout>
 
 </ScrollView>

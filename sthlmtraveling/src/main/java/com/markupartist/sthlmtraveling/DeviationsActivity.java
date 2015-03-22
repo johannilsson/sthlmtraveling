@@ -27,6 +27,9 @@ import android.preference.PreferenceManager;
 import android.text.format.Time;
 import android.util.Log;
 import android.view.ContextMenu;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager.BadTokenException;
 import android.widget.AdapterView;
@@ -35,10 +38,6 @@ import android.widget.SimpleAdapter;
 import android.widget.SimpleAdapter.ViewBinder;
 import android.widget.TextView;
 
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
-import com.actionbarsherlock.view.Window;
 import com.markupartist.sthlmtraveling.provider.deviation.Deviation;
 import com.markupartist.sthlmtraveling.provider.deviation.DeviationStore;
 
@@ -64,7 +63,7 @@ public class DeviationsActivity extends BaseListActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+//        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 
         setContentView(R.layout.deviations_list);
 
@@ -81,7 +80,7 @@ public class DeviationsActivity extends BaseListActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getSupportMenuInflater();
+        MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.actionbar_deviations, menu);
         return true;
     }
@@ -201,10 +200,10 @@ public class DeviationsActivity extends BaseListActivity {
         return true;
     }
 
-    @Override
-    public Object onRetainNonConfigurationInstance() {
-        return mDeviationsResult;
-    }
+//    @Override
+//    public Object onRetainNonConfigurationInstance() {
+//        return mDeviationsResult;
+//    }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
@@ -283,14 +282,14 @@ public class DeviationsActivity extends BaseListActivity {
      * Show progress dialog.
      */
     private void showProgress() {
-        setSupportProgressBarIndeterminateVisibility(true);
+        //setSupportProgressBarIndeterminateVisibility(true);
     }
 
     /**
      * Dismiss the progress dialog.
      */
     private void dismissProgress() {
-        setSupportProgressBarIndeterminateVisibility(false);
+        //setSupportProgressBarIndeterminateVisibility(false);
     }
 
     @Override

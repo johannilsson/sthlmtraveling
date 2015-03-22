@@ -12,10 +12,31 @@
 # If your project uses WebView with JS, uncomment the following
 # and specify the fully qualified class name to the JavaScript interface
 # class:
-#-keepclassmembers class fqcn.of.javascript.interface.for.webview {
+#-keepclassmembers class com.widespace.internal.views.** {
 #   public *;
 #}
+-keep class com.widespace.internal.interfaces.** {
+   *;
+}
 
+# Google Play Services
+
+-keep class * extends java.util.ListResourceBundle {
+    protected Object[][] getContents();
+}
+
+-keep public class com.google.android.gms.common.internal.safeparcel.SafeParcelable {
+    public static final *** NULL;
+}
+
+-keepnames @com.google.android.gms.common.annotation.KeepName class *
+-keepclassmembernames class * {
+    @com.google.android.gms.common.annotation.KeepName *;
+}
+
+-keepnames class * implements android.os.Parcelable {
+    public static final ** CREATOR;
+}
 
 # ActionBar Sherlock
 -keep class android.support.v4.app.** { *; }
@@ -30,3 +51,61 @@
 # okhttp
 -dontwarn com.squareup.okhttp.**
 
+# Facebook
+-keep class com.facebook.** { *; }
+-keepattributes Signature
+
+# Crashlytics
+-keep class com.crashlytics.** { *; }
+-keepattributes SourceFile,LineNumberTable
+
+-assumenosideeffects class android.util.Log {
+    public static int v(...);
+    public static int i(...);
+    public static int w(...);
+    public static int d(...);
+    public static int e(...);
+}
+
+# Glimr
+-keepattributes EnclosingMethod
+-keep class sun.misc.Unsafe { *; }
+-keep class com.google.gson.examples.android.model.** { *; }
+-keep class com.katalysator.sdk.KATAdvertType {
+    public <methods>;
+}
+-keep class com.katalysator.sdk.KATAssets {
+    public <methods>;
+}
+-keep class com.katalysator.sdk.KATBeaconAdvert {
+    public <methods>;
+}
+-keep class com.katalysator.sdk.KATConfiguration {
+    public <methods>;
+}
+-keep class com.katalysator.sdk.KATEndPoints {
+    public <methods>;
+}
+-keep class com.katalysator.sdk.KATRequestBeaconAdvertPayload {
+    public <methods>;
+}
+-keep class com.katalysator.sdk.KATAdvertImageActivity {
+    public <methods>;
+}
+-keep class com.katalysator.sdk.KATBeaconManager {
+    public <methods>;
+}
+
+-keep class com.katalysator.sdk.* {
+    public <methods>;
+}
+-keep public class * extends android.app.
+-keep public class * extends android.app.Activity
+-keepclasseswithmembers class * {
+    void onClick*(...);
+}
+-keepclasseswithmembers class * {
+    *** *Callback(...);
+}
+
+-keep public class * extends android.app.Service

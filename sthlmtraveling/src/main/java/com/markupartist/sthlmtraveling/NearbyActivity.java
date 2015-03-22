@@ -2,33 +2,30 @@ package com.markupartist.sthlmtraveling;
 
 import android.content.Intent;
 import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
-import com.actionbarsherlock.view.Window;
-import com.markupartist.sthlmtraveling.MyLocationManager.MyLocationFoundListener;
 import com.markupartist.sthlmtraveling.provider.site.Site;
 import com.markupartist.sthlmtraveling.provider.site.SitesStore;
+import com.markupartist.sthlmtraveling.utils.LocationManager;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
-public class NearbyActivity extends BaseListActivity implements LocationListener {
+public class NearbyActivity extends BaseListActivity implements LocationManager.LocationFoundListener {
     private static String TAG = "NearbyActivity";
-    private MyLocationManager mMyLocationManager;
+    private LocationManager mMyLocationManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +36,11 @@ public class NearbyActivity extends BaseListActivity implements LocationListener
             onCreateShortCut();
         }
 
-        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+        initGoogleApiClient();
+        mMyLocationManager = new LocationManager(this, getGoogleApiClient());
+        mMyLocationManager.setLocationListener(this);
+        registerPlayService(mMyLocationManager);
+
         setContentView(R.layout.nearby);
         initActionBar();
         requestUpdate();
@@ -47,7 +48,7 @@ public class NearbyActivity extends BaseListActivity implements LocationListener
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getSupportMenuInflater();
+        MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.actionbar_nearby, menu);
         return true;
     }
@@ -64,17 +65,7 @@ public class NearbyActivity extends BaseListActivity implements LocationListener
 
     private void requestUpdate() {
         setSupportProgressBarIndeterminateVisibility(true);
-        LocationManager locationManager = (LocationManager)getSystemService(LOCATION_SERVICE);
-        mMyLocationManager = new MyLocationManager(locationManager);
-        mMyLocationManager.requestLocationUpdates(new MyLocationFoundListener() {
-            
-            @Override
-            public void onMyLocationFound(Location location) {
-                // TODO Auto-generated method stub
-                
-            }
-        });
-        mMyLocationManager.setLocationListener(this);        
+        mMyLocationManager.requestLocation();
     }
 
     @Override
@@ -132,8 +123,14 @@ public class NearbyActivity extends BaseListActivity implements LocationListener
     protected void onListItemClick(ListView l, View v, int position, long id) {
         Site stopPoint = (Site) getListAdapter().getItem(position);
         Intent i = new Intent(this, DeparturesActivity.class);
-        i.putExtra(DeparturesActivity.EXTRA_SITE_NAME, stopPoint.getName());
+        i.putExtra(DeparturesActivity.EXTRA_SITE, stopPoint);
         startActivity(i);
+    }
+
+    @Override
+    public void onMyLocationFound(Location location) {
+        setTitle(getString(R.string.nearby) + " ("+ location.getAccuracy() +"m)");
+        new FindNearbyStopAsyncTask(location).execute();
     }
 
     private class FindNearbyStopAsyncTask extends AsyncTask<Void, Void, ArrayList<Site>> {
@@ -163,30 +160,6 @@ public class NearbyActivity extends BaseListActivity implements LocationListener
             }
         }
         
-        
-    }
-
-    @Override
-    public void onLocationChanged(Location location) {
-        setTitle(getString(R.string.nearby) + " ("+ location.getAccuracy() +"m)");
-        new FindNearbyStopAsyncTask(location).execute();
-    }
-
-    @Override
-    public void onProviderDisabled(String provider) {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
-    public void onProviderEnabled(String provider) {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
-        // TODO Auto-generated method stub
         
     }
 }

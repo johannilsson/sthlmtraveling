@@ -16,58 +16,75 @@
 */
 -->
 
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:id="@+id/header_details"
-    android:visibility="visible"
-    android:paddingTop="22dp"
-    android:paddingBottom="16dp"
-    >
+              xmlns:tools="http://schemas.android.com/tools"
+              android:orientation="vertical"
+              android:layout_width="fill_parent"
+              android:layout_height="fill_parent"
+              android:visibility="visible"
+              android:paddingTop="@dimen/list_vertical_padding"
+              android:paddingLeft="@dimen/list_horizontal_padding"
+              android:paddingRight="@dimen/list_horizontal_padding"
+              android:paddingBottom="16dp">
 
-    <TextView
-        android:id="@+id/route_date_time"
-        android:layout_width="0dp"
-        android:layout_weight="1"
-        android:layout_height="wrap_content"
-        style="@style/Title"
-        />
-
-    <LinearLayout
-        android:id="@+id/route_buy_ticket"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                  android:orientation="horizontal"
+                  android:layout_width="fill_parent"
+                  android:layout_height="fill_parent"
+                  android:id="@+id/header_details"
+                  android:visibility="visible"
+                  android:paddingTop="@dimen/list_horizontal_padding"
         >
-        <TextView
-            android:text="@string/sms_ticket_label"
-            android:background="@drawable/zone_buy_ticket_background"
-            android:layout_gravity="center_horizontal|right"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="#fff"
-            android:textSize="14sp"
-            android:paddingRight="7dip"
-            android:paddingBottom="4dip"
-            android:paddingLeft="7dip"
-            android:paddingTop="4dip"
-            />
-        <TextView
-            android:id="@+id/route_zones"
-            android:layout_gravity="center_horizontal|right"
-            android:background="@drawable/zone_background"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="#fff"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            android:paddingRight="7dip"
-            android:paddingBottom="4dip"
-            android:paddingLeft="7dip"
-            android:paddingTop="4dip"
-            />
-    </LinearLayout>
 
+        <TextView
+            android:id="@+id/route_date_time"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:paddingRight="@dimen/list_vertical_padding"
+            style="@style/Title"
+            tools:text="Time to station 45 min"
+            />
+
+        <LinearLayout
+            android:id="@+id/route_buy_ticket"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            tools:visibility="visible"
+            >
+
+            <TextView
+                android:text="@string/sms_ticket_label"
+                android:layout_gravity="center|right"
+                android:gravity="center_vertical"
+                android:background="@drawable/zone_buy_ticket_background"
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:textColor="@color/primary_dark"
+                android:textSize="14sp"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                />
+
+            <TextView
+                android:id="@+id/route_zones"
+                android:layout_gravity="center|right"
+                android:gravity="center_vertical"
+                android:background="@drawable/zone_background"
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:textColor="#fff"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:paddingLeft="8dip"
+                android:paddingRight="8dip"
+                tools:text="AB"
+                />
+        </LinearLayout>
+
+
+    </LinearLayout>
 
 </LinearLayout>

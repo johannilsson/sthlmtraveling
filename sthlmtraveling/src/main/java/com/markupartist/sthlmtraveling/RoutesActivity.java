@@ -24,34 +24,31 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.database.Cursor;
 import android.location.Location;
-import android.location.LocationManager;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.text.format.Time;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager.BadTokenException;
-import android.widget.Adapter;
+import android.view.animation.DecelerateInterpolator;
+import android.widget.AbsListView;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.SimpleAdapter.ViewBinder;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
-import com.actionbarsherlock.view.Window;
-import com.markupartist.sthlmtraveling.MyLocationManager.MyLocationFoundListener;
-import com.markupartist.sthlmtraveling.SectionedAdapter.Section;
 import com.markupartist.sthlmtraveling.provider.JourneysProvider.Journey.Journeys;
 import com.markupartist.sthlmtraveling.provider.planner.JourneyQuery;
 import com.markupartist.sthlmtraveling.provider.planner.Planner;
@@ -62,6 +59,7 @@ import com.markupartist.sthlmtraveling.provider.site.Site;
 import com.markupartist.sthlmtraveling.ui.view.SmsTicketDialog;
 import com.markupartist.sthlmtraveling.ui.view.TripView;
 import com.markupartist.sthlmtraveling.utils.Analytics;
+import com.markupartist.sthlmtraveling.utils.LocationManager;
 import com.markupartist.sthlmtraveling.utils.ViewHelper;
 
 import org.json.JSONException;
@@ -73,24 +71,24 @@ import java.util.Map;
 
 /**
  * Routes activity
- * 
+ * <p/>
  * Accepts a routes data URI in the format:
- * 
+ * <p/>
  * <pre>
  * <code>journeyplanner://routes?start_point=STARTPOINT&end_point=ENDPOINT&time=TIME</code>
  * </pre>
- * 
+ * <p/>
  * All parameters needs to be url encoded. Time is optional, but if provided it must be in
  * RFC 2445 format.
  */
-public class RoutesActivity extends BaseListActivity
-        implements MyLocationFoundListener {
+public class RoutesActivity extends BaseListActivity implements
+        LocationManager.LocationFoundListener,
+        View.OnClickListener {
 
     /**
      * The Journey
      */
-    static final String EXTRA_JOURNEY_QUERY =
-        "sthlmtraveling.intent.action.JOURNEY_QUERY";
+    static final String EXTRA_JOURNEY_QUERY = "sthlmtraveling.intent.action.JOURNEY_QUERY";
 
     /**
      * The trip.
@@ -102,24 +100,21 @@ public class RoutesActivity extends BaseListActivity
      * The start point for the search.
      */
     @Deprecated
-    static final String EXTRA_START_POINT =
-        "com.markupartist.sthlmtraveling.start_point";
+    static final String EXTRA_START_POINT = "com.markupartist.sthlmtraveling.start_point";
     /**
      * The end point for the search.
      */
     @Deprecated
-    static final String EXTRA_END_POINT =
-        "com.markupartist.sthlmtraveling.end_point";
+    static final String EXTRA_END_POINT = "com.markupartist.sthlmtraveling.end_point";
     /**
      * Departure time in RFC 2445 format.
      */
     static final String EXTRA_TIME = "com.markupartist.sthlmtraveling.time";
 
     /**
-     * Indicates if the time is the departure or arrival time. 
+     * Indicates if the time is the departure or arrival time.
      */
-    static final String EXTRA_IS_TIME_DEPARTURE =
-        "com.markupartist.sthlmtraveling.is_time_departure";
+    static final String EXTRA_IS_TIME_DEPARTURE = "com.markupartist.sthlmtraveling.is_time_departure";
 
 
     private final String TAG = "RoutesActivity";
@@ -139,30 +134,30 @@ public class RoutesActivity extends BaseListActivity
     private static final int ADAPTER_ROUTES = 1;
     private static final int ADAPTER_LATER = 2;
 
-    private final int SECTION_CHANGE_TIME = 1;
-    private final int SECTION_ROUTES = 2;
-
     protected static final int REQUEST_CODE_CHANGE_TIME = 0;
     protected static final int REQUEST_CODE_POINT_ON_MAP_START = 1;
     protected static final int REQUEST_CODE_POINT_ON_MAP_END = 2;
 
+    private static final long HEADER_HIDE_ANIM_DURATION = 300;
+
     /**
-     * Key to identify if the instance of SearchRoutesTask is in progress. 
+     * Key to identify if the instance of SearchRoutesTask is in progress.
      */
     private static final String STATE_SEARCH_ROUTES_IN_PROGRESS =
-        "com.markupartist.sthlmtraveling.searchroutes.inprogress";
+            "com.markupartist.sthlmtraveling.searchroutes.inprogress";
     private static final String STATE_GET_EARLIER_ROUTES_IN_PROGRESS =
-        "com.markupartist.sthlmtraveling.getearlierroutes.inprogress";
+            "com.markupartist.sthlmtraveling.getearlierroutes.inprogress";
     private static final String STATE_GET_LATER_ROUTES_IN_PROGRESS =
-        "com.markupartist.sthlmtraveling.getlaterroutes.inprogress";
+            "com.markupartist.sthlmtraveling.getlaterroutes.inprogress";
     private static final String STATE_ROUTE_ERROR_CODE =
-        "com.markupartist.sthlmtraveling.state.routeerrorcode";
-    
+            "com.markupartist.sthlmtraveling.state.routeerrorcode";
+    private static final String STATE_PLANNER_RESPONSE = "STATE_PLANNER_RESPONSE";
+
     private RoutesAdapter mRouteAdapter;
     private MultipleListAdapter mMultipleListAdapter;
     private ArrayList<HashMap<String, String>> mDateAdapterData;
 
-    private MyLocationManager mMyLocationManager;
+    private LocationManager mMyLocationManager;
     private SearchRoutesTask mSearchRoutesTask;
     private GetEarlierRoutesTask mGetEarlierRoutesTask;
     private GetLaterRoutesTask mGetLaterRoutesTask;
@@ -173,22 +168,36 @@ public class RoutesActivity extends BaseListActivity
     private String mRouteErrorCode;
 
     private Bundle mSavedState;
+    private Button mTimeAndDate;
+    private View mEmptyView;
+
+    // variables that control the Action Bar auto hide behavior (aka "quick recall")
+    private boolean mActionBarAutoHideEnabled = false;
+    private int mActionBarAutoHideSensivity = 0;
+    private int mActionBarAutoHideMinY = 0;
+    private int mActionBarAutoHideSignal = 0;
+    private boolean mActionBarShown = true;
+    private View mHeaderbarView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
-
         setContentView(R.layout.routes_list);
 
         registerScreen("Routes");
 
-        LocationManager locationManager = (LocationManager)getSystemService(LOCATION_SERVICE);
-        mMyLocationManager = new MyLocationManager(locationManager);
+        initGoogleApiClient();
+        mMyLocationManager = new LocationManager(this, getGoogleApiClient());
+        mMyLocationManager.setLocationListener(this);
+        registerPlayService(mMyLocationManager);
 
         // Get the journey query.
         mJourneyQuery = getJourneyQueryFromIntent(getIntent());
+        if (savedInstanceState != null) {
+            mPlannerResponse = savedInstanceState.getParcelable(STATE_PLANNER_RESPONSE);
+            mJourneyQuery = savedInstanceState.getParcelable(EXTRA_JOURNEY_QUERY);
+        }
 
         if (mJourneyQuery == null || (mJourneyQuery.origin.name == null
                 || mJourneyQuery.destination.name == null)) {
@@ -197,22 +206,33 @@ public class RoutesActivity extends BaseListActivity
             return;
         }
 
+        mHeaderbarView = findViewById(R.id.headerbar);
+
+        mEmptyView = findViewById(R.id.empty_view);
+
+        mTimeAndDate = (Button) findViewById(R.id.date_time);
+        mTimeAndDate.setText(buildDateString());
+        mTimeAndDate.setOnClickListener(this);
+        ViewHelper.tintIcon(mTimeAndDate.getCompoundDrawables()[0],
+                getResources().getColor(R.color.primary_light));
+
         View headerView = getLayoutInflater().inflate(R.layout.empty, null);
         getListView().addHeaderView(headerView, null, false);
         getListView().setHeaderDividersEnabled(false);
 
+        getListView().setVerticalFadingEdgeEnabled(false);
+        getListView().setHorizontalFadingEdgeEnabled(false);
+
         initActionBar();
-
         updateStartAndEndPointViews(mJourneyQuery);
-
         updateJourneyHistory();
-
         initRoutes(mJourneyQuery);
+        initAutoHideHeader(getListView());
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getSupportMenuInflater();
+        MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.actionbar_routes, menu);
         return true;
     }
@@ -222,14 +242,19 @@ public class RoutesActivity extends BaseListActivity
         MenuItem starItem = menu.findItem(R.id.actionbar_item_star);
         if (isStarredJourney(mJourneyQuery)) {
             starItem.setIcon(R.drawable.ic_action_star_on);
+            ViewHelper.tintIcon(getResources(), starItem.getIcon());
         } else {
             starItem.setIcon(R.drawable.ic_action_star_off);
+            ViewHelper.tintIcon(getResources(), starItem.getIcon());
         }
 
         if (mPlannerResponse != null && mPlannerResponse.canBuySmsTicket()) {
             MenuItem smsItem = menu.findItem(R.id.actionbar_item_sms);
-            smsItem.setVisible(true);
+            ViewHelper.tintIcon(getResources(), smsItem.getIcon());
+            smsItem.setVisible(false);  // disable SMS tickets on this view
         }
+
+        ViewHelper.tintIcon(getResources(), menu.findItem(R.id.actionbar_item_reverse).getIcon());
 
         return super.onPrepareOptionsMenu(menu);
     }
@@ -237,17 +262,17 @@ public class RoutesActivity extends BaseListActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-        case R.id.actionbar_item_reverse:
-            reverseJourneyQuery();
-            return true;
-        case R.id.actionbar_item_star:
-            handleStarAction();
-            supportInvalidateOptionsMenu();
-            return true;
-        case R.id.actionbar_item_sms:
-            Analytics.getInstance(this).event("Ticket", "Click on ab");
-            showDialog(DIALOG_BUY_SMS_TICKET);
-            return true;
+            case R.id.actionbar_item_reverse:
+                reverseJourneyQuery();
+                return true;
+            case R.id.actionbar_item_star:
+                handleStarAction();
+                supportInvalidateOptionsMenu();
+                return true;
+            case R.id.actionbar_item_sms:
+                Analytics.getInstance(this).event("Ticket", "Click on ab");
+                showDialog(DIALOG_BUY_SMS_TICKET);
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -257,6 +282,9 @@ public class RoutesActivity extends BaseListActivity
         if (intent.hasExtra(EXTRA_JOURNEY_QUERY)) {
             journeyQuery = intent.getExtras().getParcelable(EXTRA_JOURNEY_QUERY);
         } else {
+
+            Log.e(TAG, intent.getData().toString());
+
             journeyQuery = getJourneyQueryFromUri(intent.getData());
         }
         return journeyQuery;
@@ -265,7 +293,7 @@ public class RoutesActivity extends BaseListActivity
     private JourneyQuery getJourneyQueryFromUri(Uri uri) {
         JourneyQuery jq = new JourneyQuery();
 
-        jq.origin = new Planner.Location();        
+        jq.origin = new Planner.Location();
         jq.origin.name = uri.getQueryParameter("start_point");
         if (!TextUtils.isEmpty(uri.getQueryParameter("start_point_id"))) {
             jq.origin.id = Integer.parseInt(uri.getQueryParameter("start_point_id"));
@@ -273,9 +301,9 @@ public class RoutesActivity extends BaseListActivity
         if (!TextUtils.isEmpty(uri.getQueryParameter("start_point_lat"))
                 && !TextUtils.isEmpty(uri.getQueryParameter("start_point_lng"))) {
             jq.origin.latitude =
-                (int) (Double.parseDouble(uri.getQueryParameter("start_point_lat")) * 1E6);
+                    (int) (Double.parseDouble(uri.getQueryParameter("start_point_lat")) * 1E6);
             jq.origin.longitude =
-                (int) (Double.parseDouble(uri.getQueryParameter("start_point_lng")) * 1E6);
+                    (int) (Double.parseDouble(uri.getQueryParameter("start_point_lng")) * 1E6);
         }
 
         jq.destination = new Planner.Location();
@@ -286,9 +314,9 @@ public class RoutesActivity extends BaseListActivity
         if (!TextUtils.isEmpty(uri.getQueryParameter("end_point_lat"))
                 && !TextUtils.isEmpty(uri.getQueryParameter("end_point_lng"))) {
             jq.destination.latitude =
-                (int) (Double.parseDouble(uri.getQueryParameter("end_point_lat")) * 1E6);
+                    (int) (Double.parseDouble(uri.getQueryParameter("end_point_lat")) * 1E6);
             jq.destination.longitude =
-                (int) (Double.parseDouble(uri.getQueryParameter("end_point_lng")) * 1E6);
+                    (int) (Double.parseDouble(uri.getQueryParameter("end_point_lng")) * 1E6);
         }
 
         jq.isTimeDeparture = true;
@@ -310,39 +338,23 @@ public class RoutesActivity extends BaseListActivity
 
     /**
      * Search for routes. Will first check if we already have data stored.
+     *
      * @param journeyQuery The journey query
      */
     private void initRoutes(JourneyQuery journeyQuery) {
-        final Planner.Response savedResponse = (Planner.Response) getLastNonConfigurationInstance();
-        if (savedResponse != null) {
-            onSearchRoutesResult(savedResponse);
+//        final Planner.Response savedResponse = (Planner.Response) getLastNonConfigurationInstance();
+        if (mPlannerResponse != null) {
+            onSearchRoutesResult(mPlannerResponse);
         } else {
             if (journeyQuery.origin.isMyLocation()
                     || journeyQuery.destination.isMyLocation()) {
-                Location location = mMyLocationManager.getLastKnownLocation();
-                if (mMyLocationManager.shouldAcceptLocation(location)) {
-                    onMyLocationFound(location);
-                } else {
-                    mMyLocationManager.requestLocationUpdates(this);
-                    mToast = Toast.makeText(this, getText(R.string.determining_your_position), Toast.LENGTH_LONG);
-                    mToast.show();
-                }
+                mMyLocationManager.requestLocation();
             } else {
                 mSearchRoutesTask = new SearchRoutesTask();
                 //mSearchRoutesTask.setOnSearchRoutesResultListener(this);
                 mSearchRoutesTask.execute(mJourneyQuery);
             }
         }
-    }
-
-    /**
-     * Called before this activity is destroyed, returns the previous details.
-     * This data is used if the screen is rotated. Then we don't need to ask for the data again.
-     * @return the trip
-     */
-    @Override
-    public Object onRetainNonConfigurationInstance() {
-        return mPlannerResponse;
     }
 
     @Override
@@ -354,10 +366,11 @@ public class RoutesActivity extends BaseListActivity
 
     /**
      * Restores the local state.
+     *
      * @param savedInstanceState the bundle containing the saved state
      */
     private void restoreLocalState(Bundle savedInstanceState) {
-        restoreJourneyQuery(savedInstanceState);
+//        restoreJourneyQuery(savedInstanceState);
         restoreSearchRoutesTask(savedInstanceState);
         restoreGetEarlierRoutesTask(savedInstanceState);
         restoreGetLaterRoutesTask(savedInstanceState);
@@ -365,6 +378,8 @@ public class RoutesActivity extends BaseListActivity
         if (savedInstanceState.containsKey(STATE_ROUTE_ERROR_CODE)) {
             mRouteErrorCode = savedInstanceState.getString(STATE_ROUTE_ERROR_CODE);
         }
+
+        mPlannerResponse = savedInstanceState.getParcelable(STATE_PLANNER_RESPONSE);
     }
 
     @Override
@@ -374,6 +389,8 @@ public class RoutesActivity extends BaseListActivity
         saveSearchRoutesTask(outState);
         saveGetEarlierRoutesTask(outState);
         saveGetLaterRoutesTask(outState);
+
+        outState.putParcelable(STATE_PLANNER_RESPONSE, mPlannerResponse);
 
         if (!TextUtils.isEmpty(mRouteErrorCode)) {
             outState.putString(STATE_ROUTE_ERROR_CODE, mRouteErrorCode);
@@ -416,6 +433,7 @@ public class RoutesActivity extends BaseListActivity
 
     /**
      * Restores the search routes task.
+     *
      * @param savedInstanceState the saved state
      */
     private void restoreJourneyQuery(Bundle savedInstanceState) {
@@ -425,8 +443,9 @@ public class RoutesActivity extends BaseListActivity
     }
 
     /**
-     * If there is any running search for routes, save it and process it later 
+     * If there is any running search for routes, save it and process it later
      * on.
+     *
      * @param outState the out state
      */
     private void saveJourneyQuery(Bundle outState) {
@@ -443,9 +462,10 @@ public class RoutesActivity extends BaseListActivity
             mSearchRoutesTask = null;
         }
     }
-    
+
     /**
      * Restores the search routes task.
+     *
      * @param savedInstanceState the saved state
      */
     private void restoreSearchRoutesTask(Bundle savedInstanceState) {
@@ -457,8 +477,9 @@ public class RoutesActivity extends BaseListActivity
     }
 
     /**
-     * If there is any running search for routes, save it and process it later 
+     * If there is any running search for routes, save it and process it later
      * on.
+     *
      * @param outState the out state
      */
     private void saveSearchRoutesTask(Bundle outState) {
@@ -482,9 +503,10 @@ public class RoutesActivity extends BaseListActivity
             mGetEarlierRoutesTask = null;
         }
     }
-    
+
     /**
      * Restores the task for getting earlier routes task.
+     *
      * @param savedInstanceState the saved state
      */
     private void restoreGetEarlierRoutesTask(Bundle savedInstanceState) {
@@ -497,6 +519,7 @@ public class RoutesActivity extends BaseListActivity
 
     /**
      * Save the state for the task for getting earlier routes.
+     *
      * @param outState the out state
      */
     private void saveGetEarlierRoutesTask(Bundle outState) {
@@ -523,6 +546,7 @@ public class RoutesActivity extends BaseListActivity
 
     /**
      * Restores the task for getting earlier routes task.
+     *
      * @param savedInstanceState the saved state
      */
     private void restoreGetLaterRoutesTask(Bundle savedInstanceState) {
@@ -535,6 +559,7 @@ public class RoutesActivity extends BaseListActivity
 
     /**
      * Save the state for the task for getting earlier routes.
+     *
      * @param outState the out state
      */
     private void saveGetLaterRoutesTask(Bundle outState) {
@@ -559,22 +584,7 @@ public class RoutesActivity extends BaseListActivity
     }
 
     private void createSections() {
-        // Date and time adapter.
-    	mDateAdapterData = new ArrayList<HashMap<String,String>>(1);
-        HashMap<String, String> item = new HashMap<String, String>();
-        item.put("title", buildDateString());
-        mDateAdapterData.add(item);
-        SimpleAdapter dateTimeAdapter = new SimpleAdapter(
-                this,
-                mDateAdapterData,
-                R.layout.date_and_time,
-                new String[] { "title" },
-                new int[] { R.id.date_time } );
-
-        // Earlier routes
         SimpleAdapter earlierAdapter = createEarlierLaterAdapter(R.drawable.arrow_up_float);
-
-        // Later routes
         SimpleAdapter laterAdapter = createEarlierLaterAdapter(R.drawable.arrow_down_float);
 
         mMultipleListAdapter = new MultipleListAdapter();
@@ -582,28 +592,14 @@ public class RoutesActivity extends BaseListActivity
         mMultipleListAdapter.addAdapter(ADAPTER_ROUTES, mRouteAdapter);
         mMultipleListAdapter.addAdapter(ADAPTER_LATER, laterAdapter);
 
-        mSectionedAdapter.addSection(SECTION_CHANGE_TIME, getString(R.string.date_and_time_label), dateTimeAdapter);
-        mSectionedAdapter.addSection(SECTION_ROUTES, getString(R.string.route_alternatives_label), mMultipleListAdapter);
+        setListAdapter(mMultipleListAdapter);
 
-        setListAdapter(mSectionedAdapter);
-        ViewHelper.crossfade(getListView().getEmptyView(), getListView());
+        ViewHelper.crossfade(mEmptyView, getListView());
     }
 
-    SectionedAdapter mSectionedAdapter = new SectionedAdapter() {
-        protected View getHeaderView(Section section, int index, View convertView, ViewGroup parent) {
-            TextView result = (TextView) convertView;
-
-            if (convertView == null) {
-                result = (TextView) getLayoutInflater().inflate(R.layout.header, null);
-            }
-
-            result.setText(section.caption);
-            return (result);
-        }
-    };
-    
     /**
      * Helper to create earlier or later adapter.
+     *
      * @param resource the image resource to show in the list
      * @return a prepared adapter
      */
@@ -613,23 +609,23 @@ public class RoutesActivity extends BaseListActivity
         map.put("image", resource);
         list.add(map);
 
-        SimpleAdapter adapter = new SimpleAdapter(this, list, 
+        SimpleAdapter adapter = new SimpleAdapter(this, list,
                 R.layout.earlier_later_routes_row,
-                new String[] { "image"},
-                new int[] { 
-                    R.id.earlier_later,
+                new String[]{"image"},
+                new int[]{
+                        R.id.earlier_later,
                 }
         );
 
         adapter.setViewBinder(new ViewBinder() {
             @Override
             public boolean setViewValue(View view, Object data,
-                    String textRepresentation) {
+                                        String textRepresentation) {
                 switch (view.getId()) {
-                case R.id.earlier_later:
-                    ImageView imageView = (ImageView) view;
-                    imageView.setImageResource((Integer) data);
-                    return true;
+                    case R.id.earlier_later:
+                        ImageView imageView = (ImageView) view;
+                        imageView.setImageResource((Integer) data);
+                        return true;
                 }
                 return false;
             }
@@ -642,19 +638,10 @@ public class RoutesActivity extends BaseListActivity
         super.onListItemClick(l, v, position, id);
 
         int headerViewsCount = getListView().getHeaderViewsCount();
-        // Compensate for the added header views. Is this how we do it?
         position -= headerViewsCount;
 
-        Section section = mSectionedAdapter.getSection(position);
-        int sectionId = section.id;
-        int innerPosition = mSectionedAdapter.getSectionIndex(position);
-        Adapter adapter = section.adapter;
-
-        switch (sectionId) {
-        case SECTION_ROUTES:
-            MultipleListAdapter multipleListAdapter = (MultipleListAdapter) adapter;
-            int adapterId = multipleListAdapter.getAdapterId(innerPosition);
-            switch(adapterId) {
+        int adapterId = mMultipleListAdapter.getAdapterId(position);
+        switch (adapterId) {
             case ADAPTER_EARLIER:
                 mGetEarlierRoutesTask = new GetEarlierRoutesTask();
                 mGetEarlierRoutesTask.execute(mJourneyQuery);
@@ -664,26 +651,18 @@ public class RoutesActivity extends BaseListActivity
                 mGetLaterRoutesTask.execute(mJourneyQuery);
                 break;
             case ADAPTER_ROUTES:
-                Trip2 trip = (Trip2) mSectionedAdapter.getItem(position);
+                Trip2 trip = (Trip2) mMultipleListAdapter.getItem(position);
                 findRouteDetails(trip);
                 break;
-            }
-            break;
-        case SECTION_CHANGE_TIME:
-            Intent i = new Intent(this, ChangeRouteTimeActivity.class);
-            i.putExtra(EXTRA_JOURNEY_QUERY, mJourneyQuery);
-            startActivityForResult(i, REQUEST_CODE_CHANGE_TIME);
-            break;
         }
     }
 
     public void onSearchRoutesResult(Planner.Response response) {
         mPlannerResponse = response;
-        //mTrip = trip;
-        //updateStartAndEndPointViews(trip.getStartPoint(), trip.getEndPoint());
-
         mJourneyQuery.ident = response.ident;
         mJourneyQuery.seqnr = response.seqnr;
+        mJourneyQuery.hasPromotions = response.hasPromotions;
+        mJourneyQuery.promotionNetwork = response.promotionNetwork;
 
         if (mRouteAdapter == null) {
             mRouteAdapter = new RoutesAdapter(this, response.trips);
@@ -691,7 +670,7 @@ public class RoutesActivity extends BaseListActivity
         } else {
             // TODO: Scroll and animate to the new result.
             mRouteAdapter.refill(response.trips);
-            mSectionedAdapter.notifyDataSetChanged();
+            mMultipleListAdapter.notifyDataSetChanged();
         }
 
         supportInvalidateOptionsMenu();
@@ -723,7 +702,7 @@ public class RoutesActivity extends BaseListActivity
 
         mMyLocationManager.removeUpdates();
 
-        if (mToast != null ) mToast.cancel();
+        if (mToast != null) mToast.cancel();
 
         Planner.Location startPoint = mJourneyQuery.origin;
         Planner.Location endPoint = mJourneyQuery.destination;
@@ -732,7 +711,7 @@ public class RoutesActivity extends BaseListActivity
         tmpStop.setLocation(location);
 
         if (startPoint.isMyLocation()) {
-            if (!mMyLocationManager.shouldAcceptLocation(location)) {
+            if (!mMyLocationManager.isLocationAcceptable(location)) {
                 Intent i = new Intent(this, PointOnMapActivity.class);
                 i.putExtra(PointOnMapActivity.EXTRA_STOP, tmpStop);
                 i.putExtra(PointOnMapActivity.EXTRA_HELP_TEXT,
@@ -744,7 +723,7 @@ public class RoutesActivity extends BaseListActivity
             }
         }
         if (endPoint.isMyLocation()) {
-            if (!mMyLocationManager.shouldAcceptLocation(location)) {
+            if (!mMyLocationManager.isLocationAcceptable(location)) {
                 Intent i = new Intent(this, PointOnMapActivity.class);
                 i.putExtra(PointOnMapActivity.EXTRA_STOP, tmpStop);
                 i.putExtra(PointOnMapActivity.EXTRA_HELP_TEXT,
@@ -764,7 +743,8 @@ public class RoutesActivity extends BaseListActivity
     }
 
     /**
-     * Find route details. Will start {@link RouteDetailActivity}. 
+     * Find route details. Will start {@link RouteDetailActivity}.
+     *
      * @param trip the route to find details for
      */
     private void findRouteDetails(final Trip2 trip) {
@@ -778,69 +758,70 @@ public class RoutesActivity extends BaseListActivity
     /**
      * This method is called when the sending activity has finished, with the
      * result it supplied.
-     * 
+     *
      * @param requestCode The original request code as given to startActivity().
-     * @param resultCode From sending activity as per setResult().
-     * @param data From sending activity as per setResult().
+     * @param resultCode  From sending activity as per setResult().
+     * @param data        From sending activity as per setResult().
      */
     @Override
-    protected void onActivityResult(int requestCode, int resultCode,
-                Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
-        case REQUEST_CODE_CHANGE_TIME:
-            if (resultCode == RESULT_CANCELED) {
-                Log.d(TAG, "Change time activity cancelled.");
-            } else {
-                mJourneyQuery = data.getParcelableExtra(EXTRA_JOURNEY_QUERY);
+            case REQUEST_CODE_CHANGE_TIME:
+                if (resultCode == RESULT_CANCELED) {
+                    Log.d(TAG, "Change time activity cancelled.");
+                } else {
+                    mJourneyQuery = data.getParcelableExtra(EXTRA_JOURNEY_QUERY);
 
-                HashMap<String, String> item = mDateAdapterData.get(0);
-                item.put("title", buildDateString());
+                    updateStartAndEndPointViews(mJourneyQuery);
+                    updateJourneyHistory();
 
-                mSearchRoutesTask = new SearchRoutesTask();
-                mSearchRoutesTask.execute(mJourneyQuery);
-            }
-            break;
-        case REQUEST_CODE_POINT_ON_MAP_START:
-            if (resultCode == RESULT_CANCELED) {
-                Log.d(TAG, "action canceled");
-                finish();
-                return;
-            } else {
-                Site startPoint = data.getParcelableExtra(PointOnMapActivity.EXTRA_STOP);
-                Log.d(TAG, "Got Stop " + startPoint);
+                    mTimeAndDate.setText(buildDateString());
 
-                mJourneyQuery.origin.name = Planner.Location.TYPE_MY_LOCATION;
-                mJourneyQuery.origin.latitude = (int) (startPoint.getLocation().getLatitude() * 1E6);
-                mJourneyQuery.origin.longitude = (int) (startPoint.getLocation().getLongitude() * 1E6);
+                    mSearchRoutesTask = new SearchRoutesTask();
+                    mSearchRoutesTask.execute(mJourneyQuery);
+                }
+                break;
+            case REQUEST_CODE_POINT_ON_MAP_START:
+                if (resultCode == RESULT_CANCELED) {
+                    Log.d(TAG, "action canceled");
+                    finish();
+                    return;
+                } else {
+                    Site startPoint = data.getParcelableExtra(PointOnMapActivity.EXTRA_STOP);
+                    Log.d(TAG, "Got Stop " + startPoint);
 
-                mSearchRoutesTask = new SearchRoutesTask();
-                mSearchRoutesTask.execute(mJourneyQuery);
+                    mJourneyQuery.origin.name = Planner.Location.TYPE_MY_LOCATION;
+                    mJourneyQuery.origin.latitude = (int) (startPoint.getLocation().getLatitude() * 1E6);
+                    mJourneyQuery.origin.longitude = (int) (startPoint.getLocation().getLongitude() * 1E6);
 
-                // TODO: Is this call really needed?
-                updateStartAndEndPointViews(mJourneyQuery);
-            }
-            break;
-        case REQUEST_CODE_POINT_ON_MAP_END:
-            if (resultCode == RESULT_CANCELED) {
-                Log.d(TAG, "action canceled");
-                finish();
-                return;
-            } else {
-                Site endPoint = data.getParcelableExtra(PointOnMapActivity.EXTRA_STOP);
-                Log.d(TAG, "Got Stop " + endPoint);
+                    mSearchRoutesTask = new SearchRoutesTask();
+                    mSearchRoutesTask.execute(mJourneyQuery);
 
-                mJourneyQuery.destination.name = Planner.Location.TYPE_MY_LOCATION;
-                mJourneyQuery.destination.latitude = (int) (endPoint.getLocation().getLatitude() * 1E6);
-                mJourneyQuery.destination.longitude = (int) (endPoint.getLocation().getLongitude() * 1E6);
+                    // TODO: Is this call really needed?
+                    updateStartAndEndPointViews(mJourneyQuery);
+                }
+                break;
+            case REQUEST_CODE_POINT_ON_MAP_END:
+                if (resultCode == RESULT_CANCELED) {
+                    Log.d(TAG, "action canceled");
+                    finish();
+                    return;
+                } else {
+                    Site endPoint = data.getParcelableExtra(PointOnMapActivity.EXTRA_STOP);
+                    Log.d(TAG, "Got Stop " + endPoint);
 
-                mSearchRoutesTask = new SearchRoutesTask();
-                mSearchRoutesTask.execute(mJourneyQuery);
+                    mJourneyQuery.destination.name = Planner.Location.TYPE_MY_LOCATION;
+                    mJourneyQuery.destination.latitude = (int) (endPoint.getLocation().getLatitude() * 1E6);
+                    mJourneyQuery.destination.longitude = (int) (endPoint.getLocation().getLongitude() * 1E6);
 
-                // TODO: Is this call really needed?
-                updateStartAndEndPointViews(mJourneyQuery);
-            }
-            
-            break;
+                    mSearchRoutesTask = new SearchRoutesTask();
+                    mSearchRoutesTask.execute(mJourneyQuery);
+
+                    // TODO: Is this call really needed?
+                    updateStartAndEndPointViews(mJourneyQuery);
+                }
+
+                break;
         }
     }
 
@@ -864,72 +845,72 @@ public class RoutesActivity extends BaseListActivity
 
     @Override
     protected Dialog onCreateDialog(int id) {
-        switch(id) {
-        case DIALOG_ILLEGAL_PARAMETERS:
-            return new AlertDialog.Builder(this)
-                .setIcon(android.R.drawable.ic_dialog_alert)
-                .setTitle(getText(R.string.attention_label))
-                .setMessage(getText(R.string.bad_routes_parameters_message))
-                .setCancelable(true)
-                .setNeutralButton(getText(android.R.string.ok), null)
-                .create();
-        case DIALOG_SEARCH_ROUTES_NETWORK_PROBLEM:
-            return DialogHelper.createNetworkProblemDialog(this, new OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    mSearchRoutesTask = new SearchRoutesTask();
-                    mSearchRoutesTask.execute(mJourneyQuery);
-                }
-            });
-        case DIALOG_GET_EARLIER_ROUTES_NETWORK_PROBLEM:
-            return DialogHelper.createNetworkProblemDialog(this, new OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    mGetEarlierRoutesTask = new GetEarlierRoutesTask();
-                    mGetEarlierRoutesTask.execute(mJourneyQuery);
-                }
-            });
-        case DIALOG_GET_LATER_ROUTES_NETWORK_PROBLEM:
-            return DialogHelper.createNetworkProblemDialog(this, new OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    mGetLaterRoutesTask = new GetLaterRoutesTask();
-                    mGetLaterRoutesTask.execute(mJourneyQuery);
-                }
-            });
-        case DIALOG_GET_ROUTES_SESSION_TIMEOUT:
-            return new AlertDialog.Builder(this)
-            .setIcon(android.R.drawable.ic_dialog_alert)
-            .setTitle(getText(R.string.attention_label))
-            .setMessage(getText(R.string.session_timeout_message))
-            .setNeutralButton(getText(android.R.string.ok), null)
-            .create();
-        case DIALOG_SEARCH_ROUTES_NO_RESULT:
-            return new AlertDialog.Builder(this)
-            .setTitle(getText(R.string.no_routes_found_label))
-            .setMessage(getText(R.string.no_routes_found_message))
-            .setPositiveButton(getText(R.string.back), new OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    finish();
-                }
-            })
-            .setNegativeButton(getText(R.string.cancel), null)
-            .create();
-        case DIALOG_SEARCH_ROUTES_ERROR:
+        switch (id) {
+            case DIALOG_ILLEGAL_PARAMETERS:
+                return new AlertDialog.Builder(this)
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .setTitle(getText(R.string.attention_label))
+                        .setMessage(getText(R.string.bad_routes_parameters_message))
+                        .setCancelable(true)
+                        .setNeutralButton(getText(android.R.string.ok), null)
+                        .create();
+            case DIALOG_SEARCH_ROUTES_NETWORK_PROBLEM:
+                return DialogHelper.createNetworkProblemDialog(this, new OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        mSearchRoutesTask = new SearchRoutesTask();
+                        mSearchRoutesTask.execute(mJourneyQuery);
+                    }
+                });
+            case DIALOG_GET_EARLIER_ROUTES_NETWORK_PROBLEM:
+                return DialogHelper.createNetworkProblemDialog(this, new OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        mGetEarlierRoutesTask = new GetEarlierRoutesTask();
+                        mGetEarlierRoutesTask.execute(mJourneyQuery);
+                    }
+                });
+            case DIALOG_GET_LATER_ROUTES_NETWORK_PROBLEM:
+                return DialogHelper.createNetworkProblemDialog(this, new OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        mGetLaterRoutesTask = new GetLaterRoutesTask();
+                        mGetLaterRoutesTask.execute(mJourneyQuery);
+                    }
+                });
+            case DIALOG_GET_ROUTES_SESSION_TIMEOUT:
+                return new AlertDialog.Builder(this)
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .setTitle(getText(R.string.attention_label))
+                        .setMessage(getText(R.string.session_timeout_message))
+                        .setNeutralButton(getText(android.R.string.ok), null)
+                        .create();
+            case DIALOG_SEARCH_ROUTES_NO_RESULT:
+                return new AlertDialog.Builder(this)
+                        .setTitle(getText(R.string.no_routes_found_label))
+                        .setMessage(getText(R.string.no_routes_found_message))
+                        .setPositiveButton(getText(R.string.back), new OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                finish();
+                            }
+                        })
+                        .setNegativeButton(getText(R.string.cancel), null)
+                        .create();
+            case DIALOG_SEARCH_ROUTES_ERROR:
 
-            return new AlertDialog.Builder(this)
-            .setTitle(R.string.planner_error_title)
-            .setMessage(Planner.plannerErrorCodeToStringRes(mRouteErrorCode))
-            .setPositiveButton(getText(R.string.back), new OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    finish();
-                }
-            })
-            .setNegativeButton(getText(R.string.cancel), null)
-            .create();
-        case DIALOG_START_POINT_ALTERNATIVES:
+                return new AlertDialog.Builder(this)
+                        .setTitle(R.string.planner_error_title)
+                        .setMessage(Planner.plannerErrorCodeToStringRes(mRouteErrorCode))
+                        .setPositiveButton(getText(R.string.back), new OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                finish();
+                            }
+                        })
+                        .setNegativeButton(getText(R.string.cancel), null)
+                        .create();
+            case DIALOG_START_POINT_ALTERNATIVES:
             /*
             ArrayAdapter<Site> startAlternativesAdapter =
                 new ArrayAdapter<Site>(this, android.R.layout.simple_dropdown_item_1line,
@@ -949,8 +930,8 @@ public class RoutesActivity extends BaseListActivity
                 })
                 .create();
             */
-            break;
-        case DIALOG_END_POINT_ALTERNATIVES:
+                break;
+            case DIALOG_END_POINT_ALTERNATIVES:
             /*
             ArrayAdapter<Site> endAlternativesAdapter =
                 new ArrayAdapter<Site>(this, android.R.layout.simple_dropdown_item_1line,
@@ -970,7 +951,7 @@ public class RoutesActivity extends BaseListActivity
                 })
                 .create();
             */
-            break;
+                break;
             case DIALOG_BUY_SMS_TICKET:
                 return SmsTicketDialog.createDialog(this, mPlannerResponse.getTariffZones());
         }
@@ -979,14 +960,15 @@ public class RoutesActivity extends BaseListActivity
 
     /**
      * Constructs a search routes data URI.
-     * @param startPoint the start point
-     * @param endPoint the end point
-     * @param time the time, pass null for now
+     *
+     * @param startPoint      the start point
+     * @param endPoint        the end point
+     * @param time            the time, pass null for now
      * @param isTimeDeparture true if the time is departure time, false if arrival
      * @return the data uri
      */
     public static Uri createRoutesUri(Site startPoint, Site endPoint, Time time,
-            boolean isTimeDeparture) {
+                                      boolean isTimeDeparture) {
         Uri routesUri;
 
         String timeString = "";
@@ -1008,20 +990,20 @@ public class RoutesActivity extends BaseListActivity
         }
 
         routesUri = Uri.parse(
-                    String.format("journeyplanner://routes?" 
-                            + "start_point=%s"
-                            + "&start_point_id=%s"
-                            + "&start_point_lat=%s"
-                            + "&start_point_lng=%s"
-                            + "&end_point=%s"
-                            + "&end_point_id=%s"
-                            + "&end_point_lat=%s"
-                            + "&end_point_lng=%s"
-                            + "&time=%s"
-                            + "&isTimeDeparture=%s",
-                            Uri.encode(startPoint.getName()), startPoint.getId(), startLat, startLng,
-                            Uri.encode(endPoint.getName()), endPoint.getId(), endLat, endLng,
-                            timeString, isTimeDeparture));
+                String.format("journeyplanner://routes?"
+                                + "start_point=%s"
+                                + "&start_point_id=%s"
+                                + "&start_point_lat=%s"
+                                + "&start_point_lng=%s"
+                                + "&end_point=%s"
+                                + "&end_point_id=%s"
+                                + "&end_point_lat=%s"
+                                + "&end_point_lng=%s"
+                                + "&time=%s"
+                                + "&isTimeDeparture=%s",
+                        Uri.encode(startPoint.getName()), startPoint.getId(), startLat, startLng,
+                        Uri.encode(endPoint.getName()), endPoint.getId(), endLat, endLng,
+                        timeString, isTimeDeparture));
 
         return routesUri;
     }
@@ -1033,6 +1015,18 @@ public class RoutesActivity extends BaseListActivity
         startActivity(i);
         return true;
     }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.date_time:
+                Intent i = new Intent(RoutesActivity.this, ChangeRouteTimeActivity.class);
+                i.putExtra(EXTRA_JOURNEY_QUERY, mJourneyQuery);
+                startActivityForResult(i, REQUEST_CODE_CHANGE_TIME);
+                break;
+        }
+    }
+
 
     private class RoutesAdapter extends BaseAdapter {
 
@@ -1092,19 +1086,91 @@ public class RoutesActivity extends BaseListActivity
         setSupportProgressBarIndeterminateVisibility(false);
     }
 
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        onRotationChange(newConfig);
+    protected void initAutoHideHeader(ListView listView) {
+        mActionBarAutoHideEnabled = true;
+        mActionBarAutoHideMinY = getResources().getDimensionPixelSize(
+                R.dimen.action_bar_auto_hide_min_y);
+        mActionBarAutoHideSensivity = getResources().getDimensionPixelSize(
+                R.dimen.action_bar_auto_hide_sensivity);
 
-        super.onConfigurationChanged(newConfig);
+        listView.setOnScrollListener(new AbsListView.OnScrollListener() {
+            final static int ITEMS_THRESHOLD = 1;
+            int lastFvi = 0;
+
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                onMainContentScrolled(firstVisibleItem <= ITEMS_THRESHOLD ? 0 : Integer.MAX_VALUE,
+                        lastFvi - firstVisibleItem > 0 ? Integer.MIN_VALUE :
+                                lastFvi == firstVisibleItem ? 0 : Integer.MAX_VALUE
+                );
+                lastFvi = firstVisibleItem;
+            }
+        });
     }
 
-    private void onRotationChange(Configuration newConfig) {
-        /*
-        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-        } else {
+    /**
+     * Indicates that the main content has scrolled (for the purposes of showing/hiding
+     * the action bar for the "action bar auto hide" effect). currentY and deltaY may be exact
+     * (if the underlying view supports it) or may be approximate indications:
+     * deltaY may be INT_MAX to mean "scrolled forward indeterminately" and INT_MIN to mean
+     * "scrolled backward indeterminately".  currentY may be 0 to mean "somewhere close to the
+     * start of the list" and INT_MAX to mean "we don't know, but not at the start of the list"
+     */
+    private void onMainContentScrolled(int currentY, int deltaY) {
+        if (deltaY > mActionBarAutoHideSensivity) {
+            deltaY = mActionBarAutoHideSensivity;
+        } else if (deltaY < -mActionBarAutoHideSensivity) {
+            deltaY = -mActionBarAutoHideSensivity;
         }
-        */
+
+        if (Math.signum(deltaY) * Math.signum(mActionBarAutoHideSignal) < 0) {
+            // deltaY is a motion opposite to the accumulated signal, so reset signal
+            mActionBarAutoHideSignal = deltaY;
+        } else {
+            // add to accumulated signal
+            mActionBarAutoHideSignal += deltaY;
+        }
+
+        boolean shouldShow = currentY < mActionBarAutoHideMinY ||
+                (mActionBarAutoHideSignal <= -mActionBarAutoHideSensivity);
+        autoShowOrHideActionBar(shouldShow);
+    }
+
+    protected void autoShowOrHideActionBar(boolean show) {
+        if (show == mActionBarShown) {
+            return;
+        }
+
+        mActionBarShown = show;
+        onActionBarAutoShowOrHide(show);
+    }
+
+    protected void onActionBarAutoShowOrHide(boolean shown) {
+        if (shown) {
+            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR1) {
+                mHeaderbarView.animate()
+                        .translationY(0)
+                        .alpha(1)
+                        .setDuration(HEADER_HIDE_ANIM_DURATION)
+                        .setInterpolator(new DecelerateInterpolator());
+            } else {
+                mHeaderbarView.setVisibility(View.VISIBLE);
+            }
+        } else {
+            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR1) {
+                mHeaderbarView.animate()
+                        .translationY(-mHeaderbarView.getBottom())
+                        .alpha(0)
+                        .setDuration(HEADER_HIDE_ANIM_DURATION)
+                        .setInterpolator(new DecelerateInterpolator());
+            } else {
+                mHeaderbarView.setVisibility(View.GONE);
+            }
+        }
     }
 
     /**
@@ -1139,17 +1205,18 @@ public class RoutesActivity extends BaseListActivity
             dismissProgress();
 
             if (result != null && !result.trips.isEmpty()) {
+                mEmptyView.setVisibility(View.GONE);
                 onSearchRoutesResult(result);
             } else if (!mWasSuccess) {
                 if (TextUtils.isEmpty(mErrorCode)) {
-                    getListView().getEmptyView().setVisibility(View.GONE);
+                    mEmptyView.setVisibility(View.GONE);
                     try {
                         showDialog(DIALOG_SEARCH_ROUTES_NETWORK_PROBLEM);
                     } catch (BadTokenException e) {
                         Log.w(TAG, "Caught BadTokenException when trying to show network error dialog.");
                     }
                 } else {
-                    getListView().getEmptyView().setVisibility(View.GONE);
+                    mEmptyView.setVisibility(View.GONE);
                     mRouteErrorCode = mErrorCode;
                     try {
                         showDialog(DIALOG_SEARCH_ROUTES_ERROR);
@@ -1160,7 +1227,7 @@ public class RoutesActivity extends BaseListActivity
             }/* else if (result.hasAlternatives()) {
                 onSiteAlternatives(result);
             }*/ else {
-                getListView().getEmptyView().setVisibility(View.GONE);
+                mEmptyView.setVisibility(View.GONE);
                 try {
                     showDialog(DIALOG_SEARCH_ROUTES_NO_RESULT);
                 } catch (BadTokenException e) {
@@ -1291,10 +1358,10 @@ public class RoutesActivity extends BaseListActivity
             return false;
         }
 
-        String[] projection = new String[] { Journeys.JOURNEY_DATA, };
+        String[] projection = new String[]{Journeys.JOURNEY_DATA,};
         Uri uri = Journeys.CONTENT_URI;
         String selection = Journeys.STARRED + " = ? AND " + Journeys.JOURNEY_DATA + " = ?";
-        String[] selectionArgs = new String[] { "1", json };
+        String[] selectionArgs = new String[]{"1", json};
         Cursor cursor = managedQuery(uri, projection, selection, selectionArgs, null);
         startManagingCursor(cursor);
 
@@ -1318,7 +1385,7 @@ public class RoutesActivity extends BaseListActivity
         values.put(Journeys.JOURNEY_DATA, json);
         Uri uri = Journeys.CONTENT_URI;
         String where = Journeys.JOURNEY_DATA + "= ?";
-        String[] selectionArgs = new String[] { json };
+        String[] selectionArgs = new String[]{json};
         // TODO: Replace button with a checkbox and check with that instead?
         if (isStarredJourney(mJourneyQuery)) {
             values.put(Journeys.STARRED, "0");
@@ -1347,15 +1414,15 @@ public class RoutesActivity extends BaseListActivity
             Log.e(TAG, "Failed to convert journey to a json document.");
             return;
         }
-        String[] projection = new String[] {
+        String[] projection = new String[]{
                 Journeys._ID,           // 0
                 Journeys.JOURNEY_DATA,  // 1
                 Journeys.STARRED,       // 2
-            };
+        };
         String selection = Journeys.JOURNEY_DATA + " = ?";
 
         Cursor cursor = managedQuery(Journeys.CONTENT_URI, projection,
-                selection, new String[] { json }, null);
+                selection, new String[]{json}, null);
         startManagingCursor(cursor);
 
         ContentValues values = new ContentValues();
@@ -1375,7 +1442,7 @@ public class RoutesActivity extends BaseListActivity
             Cursor notStarredCursor = managedQuery(Journeys.CONTENT_URI,
                     projection,
                     Journeys.STARRED + " = ? OR " + Journeys.STARRED + " IS NULL",
-                    new String[] { "0" },
+                    new String[]{"0"},
                     Journeys.DEFAULT_SORT_ORDER);
             startManagingCursor(notStarredCursor);
             // +1 because the position is zero-based.
@@ -1390,7 +1457,7 @@ public class RoutesActivity extends BaseListActivity
         }
         stopManagingCursor(cursor);
         // TODO: Store created id and work on that while toggling if starred or not.
-        
+
     }
 
 }

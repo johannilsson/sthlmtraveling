@@ -16,24 +16,20 @@
 
 package com.markupartist.sthlmtraveling;
 
+import android.content.res.Resources;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
 
-import com.actionbarsherlock.app.ActionBar;
 import com.markupartist.sthlmtraveling.service.DeviationService;
-import com.markupartist.sthlmtraveling.utils.Analytics;
+import com.markupartist.sthlmtraveling.ui.view.PageFragmentAdapter;
+import com.markupartist.sthlmtraveling.ui.view.SlidingTabLayout;
+import com.markupartist.sthlmtraveling.utils.BeaconManager;
 import com.markupartist.sthlmtraveling.utils.ErrorReporter;
-
-import java.util.ArrayList;
-//import com.viewpagerindicator.TitleProvider;
 
 public class StartActivity extends BaseFragmentActivity {
     private ViewPager mPager;
+    private SlidingTabLayout mSlidingTabLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,123 +41,39 @@ public class StartActivity extends BaseFragmentActivity {
 
         final PageFragmentAdapter pageAdapter = new PageFragmentAdapter(this, getSupportFragmentManager());
 
-        pageAdapter.addPage(new PageInfo(getString(R.string.search_label), PlannerFragment.class, null, "Planner"));
-        pageAdapter.addPage(new PageInfo(getString(R.string.favorites_label), FavoritesFragment.class, null, "Favorites"));
-        pageAdapter.addPage(new PageInfo(getString(R.string.departures), SearchDeparturesFragment.class, null, "Search departures"));
-        pageAdapter.addPage(new PageInfo(getString(R.string.deviations_label), TrafficStatusFragment.class, null, "Traffic status"));
+        pageAdapter.addPage(new PageFragmentAdapter.PageInfo(getString(R.string.search_label),
+                PlannerFragment.class, null, R.drawable.ic_action_location_directions_active));
+        pageAdapter.addPage(new PageFragmentAdapter.PageInfo(getString(R.string.favorites_label),
+                FavoritesFragment.class, null, R.drawable.ic_action_star_on_active));
+        pageAdapter.addPage(new PageFragmentAdapter.PageInfo(getString(R.string.departures),
+                SearchDeparturesFragment.class, null, R.drawable.ic_action_time_active));
+        pageAdapter.addPage(new PageFragmentAdapter.PageInfo(getString(R.string.deviations_label),
+                TrafficStatusFragment.class, null, R.drawable.ic_action_deviations_active));
 
         mPager = (ViewPager) findViewById(R.id.pager);
         mPager.setPageMarginDrawable(R.color.light_grey);
         mPager.setPageMargin(25);  // TODO: Compensate with denisity to get it right on all screens
         mPager.setAdapter(pageAdapter);
-        mPager.setOnPageChangeListener(
-                new ViewPager.SimpleOnPageChangeListener() {
-                    @Override
-                    public void onPageSelected(int position) {
-                        getSupportActionBar().setSelectedNavigationItem(position);
-                    }
-                }
-        );
+
+        mSlidingTabLayout = (SlidingTabLayout) findViewById(R.id.sliding_tabs);
+        Resources res = getResources();
+        mSlidingTabLayout.setSelectedIndicatorColors(res.getColor(R.color.tab_selected_strip));
+        mSlidingTabLayout.setDistributeEvenly(true);
+        mSlidingTabLayout.setViewPager(mPager);
 
         //TabPageIndicator tabPageIndicator = (TabPageIndicator) findViewById(R.id.indicator);
         //tabPageIndicator.setViewPager(mPager);
 
         ActionBar ab = getSupportActionBar();
+        ab.hide();
         ab.setDisplayShowTitleEnabled(false);
         ab.setDisplayShowHomeEnabled(false);
-        ab.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-
-        ActionBar.TabListener tabListener = new ActionBar.TabListener() {
-            public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft) {
-                mPager.setCurrentItem(tab.getPosition());
-                Analytics.getInstance(StartActivity.this).registerScreen(
-                        pageAdapter.getName(tab.getPosition()));
-            }
-
-            public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction ft) {
-            }
-
-            public void onTabReselected(ActionBar.Tab tab, FragmentTransaction ft) {
-            }
-        };
-
-        ab.addTab(ab.newTab().setIcon(R.drawable.tab_planner).setTabListener(tabListener));
-        ab.addTab(ab.newTab().setIcon(R.drawable.tab_favorites).setTabListener(tabListener));
-        ab.addTab(ab.newTab().setIcon(R.drawable.tab_departures).setTabListener(tabListener));
-        ab.addTab(ab.newTab().setIcon(R.drawable.tab_deviations).setTabListener(tabListener));
 
         final ErrorReporter reporter = ErrorReporter.getInstance();
         reporter.checkErrorAndReport(this);
 
         // Start background service.
         DeviationService.startAsRepeating(getApplicationContext());
-    }
-
-    public class PageFragmentAdapter extends FragmentPagerAdapter /*implements TitleProvider*/ {
-
-        private ArrayList<PageInfo> mPages = new ArrayList<PageInfo>();
-        private FragmentActivity mContext;
-
-        public PageFragmentAdapter(FragmentActivity activity, FragmentManager fm) {
-            super(fm);
-            mContext = activity;
-        }
-
-        public void addPage(PageInfo page) {
-            mPages.add(page);
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            PageInfo page = mPages.get(position);
-            return Fragment.instantiate(mContext,
-                    page.getFragmentClass().getName(), page.getArgs());
-        }
-
-        @Override
-        public int getCount() {
-            return mPages.size();
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return mPages.get(position).getTextResource().toUpperCase();
-        }
-
-        public String getName(final int position) {
-            return mPages.get(position).getName();
-        }
-    }
-
-    public class PageInfo {
-        private String mTextResource;
-        private Class<?> mFragmentClass;
-        private Bundle mArgs;
-        private String mName;
-
-        public PageInfo(final String textResource, final Class<?> fragmentClass,
-                        final Bundle args, final String name) {
-            mTextResource = textResource;
-            mFragmentClass = fragmentClass;
-            mArgs = args;
-            mName = name;
-        }
-
-        public String getTextResource() {
-            return mTextResource;
-        }
-
-        public Class<?> getFragmentClass() {
-            return mFragmentClass;
-        }
-
-        public Bundle getArgs() {
-            return mArgs;
-        }
-
-        public String getName() {
-            return mName;
-        }
     }
 
     @Override
@@ -178,4 +90,19 @@ public class StartActivity extends BaseFragmentActivity {
         }
         return false;
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        BeaconManager.getInstance(this).start();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        BeaconManager.getInstance(this).stop();
+    }
+
 }

@@ -2,33 +2,29 @@ package com.markupartist.sthlmtraveling;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
+import android.view.MenuItem;
 
-import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.app.SherlockActivity;
-import com.actionbarsherlock.view.MenuItem;
-import com.flurry.android.FlurryAgent;
 import com.markupartist.sthlmtraveling.utils.Analytics;
 
 import java.util.Map;
 
-public class BaseActivity extends SherlockActivity {
+public class BaseActivity extends ActionBarActivity {
 
     @Override
     protected void onStart() {
        super.onStart();
-       FlurryAgent.onStartSession(this, MyApplication.ANALYTICS_KEY);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        FlurryAgent.onPageView();
     }
 
     @Override
     protected void onStop() {
        super.onStop();
-       FlurryAgent.onEndSession(this);
     }
 
     protected ActionBar initActionBar() {
@@ -52,12 +48,10 @@ public class BaseActivity extends SherlockActivity {
     }
 
     protected void registerScreen(String event) {
-        FlurryAgent.onEvent(event);
         Analytics.getInstance(this).registerScreen(event);
     }
 
     protected void registerEvent(String event, Map<String, String> parameters) {
-        FlurryAgent.onEvent(event, parameters);
     }
 
 }

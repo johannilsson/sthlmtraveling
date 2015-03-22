@@ -16,11 +16,11 @@
 
 package com.markupartist.sthlmtraveling;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.DatePickerDialog;
 import android.app.Dialog;
-import android.app.TimePickerDialog;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
@@ -29,42 +29,36 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.CursorLoader;
+import android.support.v4.view.ViewCompat;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.text.format.Time;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.CursorAdapter;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.SimpleAdapter;
-import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.TimePicker;
 
 import com.markupartist.sthlmtraveling.provider.HistoryDbAdapter;
 import com.markupartist.sthlmtraveling.provider.JourneysProvider.Journey.Journeys;
@@ -74,6 +68,7 @@ import com.markupartist.sthlmtraveling.provider.planner.Planner;
 import com.markupartist.sthlmtraveling.provider.planner.Planner.Location;
 import com.markupartist.sthlmtraveling.provider.site.Site;
 import com.markupartist.sthlmtraveling.ui.view.DelayAutoCompleteTextView;
+import com.markupartist.sthlmtraveling.utils.ViewHelper;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -81,27 +76,29 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class PlannerFragment extends BaseListFragment implements
-        OnCheckedChangeListener {
+public class PlannerFragment extends BaseListFragment {
     private static final String TAG = "PlannerFragment";
     protected static final int REQUEST_CODE_POINT_ON_MAP_START = 0;
     protected static final int REQUEST_CODE_POINT_ON_MAP_END = 1;
+    private static final int REQUEST_CODE_ROUTE_OPTIONS = 2;
+
+    /**
+     * The Journey
+     */
+    static final String EXTRA_JOURNEY_QUERY = "sthlmtraveling.intent.action.JOURNEY_QUERY";
 
     private DelayAutoCompleteTextView mStartPointAutoComplete;
     private DelayAutoCompleteTextView mEndPointAutoComplete;
     private DelayAutoCompleteTextView mViaPointAutoComplete;
     private Site mStartPoint = new Site();
     private Site mEndPoint = new Site();
-    private Site mViaPoint = new Site();
     private HistoryDbAdapter mHistoryDbAdapter;
     private boolean mCreateShortcut;
-    private Time mTime;
-    private Button mDateButton;
-    private Button mTimeButton;
-    private LinearLayout mChangeTimeLayout;
-    private Spinner mWhenSpinner;
     private View mSearchView;
     private JourneyAdapter mAdapter;
+    private JourneyQuery mJourneyQuery;
+    private int mStackLevel;
+
 
     /**
      * The columns needed by the cursor adapter
@@ -126,6 +123,7 @@ public class PlannerFragment extends BaseListFragment implements
      * The index of the starred column
      */
     private static final int COLUMN_INDEX_STARRED = 3;
+    private View mOptionsBarView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -139,6 +137,7 @@ public class PlannerFragment extends BaseListFragment implements
 
         if (savedInstanceState != null) {
             mStackLevel = savedInstanceState.getInt("level");
+            mJourneyQuery = savedInstanceState.getParcelable(EXTRA_JOURNEY_QUERY);
         }
 
         CursorLoader cursorLoader = new CursorLoader(
@@ -157,19 +156,10 @@ public class PlannerFragment extends BaseListFragment implements
             Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.planner_list_fragment, container, false);
 
-        Button searchButton = (Button) rootView.findViewById(R.id.btn_search);
-        if (mCreateShortcut) {
-            searchButton.setText(getText(R.string.create_shortcut_label));
-        }
-        searchButton.setText(((String)searchButton.getText()).toUpperCase());
-
-        searchButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                handleSearchAction();
-            }
-        });
         ImageButton preferenceButton = (ImageButton) rootView.findViewById(R.id.btn_settings);
+
+        ViewHelper.tintIcon(preferenceButton.getDrawable(), Color.GRAY);
+
         preferenceButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -182,14 +172,11 @@ public class PlannerFragment extends BaseListFragment implements
     }
 
     public void initViews() {
+        getListView().setVerticalFadingEdgeEnabled(false);
+        getListView().setHorizontalFadingEdgeEnabled(false);
+
         mSearchView = getActivity().getLayoutInflater().inflate(R.layout.search, null);
         getListView().addHeaderView(mSearchView, null, false);
-
-        final TextView historyView = (TextView) getActivity()
-                .getLayoutInflater().inflate(R.layout.header, null);
-        historyView.setText(R.string.history_label);
-        historyView.setOnClickListener(null); // Makes the header un-clickable, hack!
-        getListView().addHeaderView(historyView);
 
         // Hide dividers on the header view.
         getListView().setHeaderDividersEnabled(false);
@@ -201,8 +188,6 @@ public class PlannerFragment extends BaseListFragment implements
                 /*R.id.from_progress*/ -1, mStartPoint);
         mEndPointAutoComplete = createAutoCompleteTextView(R.id.to,
                 /*R.id.to_progress*/ -1, mEndPoint);
-        mViaPointAutoComplete = createAutoCompleteTextView(R.id.via,
-                /*R.id.via_progress*/ -1, mViaPoint, true);
 
         try {
             mHistoryDbAdapter = new HistoryDbAdapter(getActivity()).open();
@@ -228,64 +213,93 @@ public class PlannerFragment extends BaseListFragment implements
                 showDialog(createDialogEndPoint());
             }
         });
-        final ImageButton viaDialog = (ImageButton) mSearchView.findViewById(R.id.via_menu);
-        viaDialog.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(final View v) {
-                mViaPointAutoComplete.setError(null);
-                showDialog(createDialogViaPoint());
-            }
-        });
-        // Views for date and time
-        mChangeTimeLayout = (LinearLayout)
-                mSearchView.findViewById(R.id.planner_change_time_layout);
 
-        mDateButton = (Button) mSearchView.findViewById(R.id.planner_route_date);
-        mDateButton.setOnClickListener(new OnClickListener() {
+        Button searchButton = (Button) mSearchView.findViewById(R.id.do_search);
+        if (mCreateShortcut) {
+            searchButton.setText(getText(R.string.create_shortcut_label));
+        }
+        searchButton.setText(((String)searchButton.getText()).toUpperCase());
+        searchButton.setOnClickListener(new OnClickListener() {
             @Override
-            public void onClick(final View v) {
-                showDialog(createDialogDate());
+            public void onClick(View v) {
+                handleSearchAction();
             }
         });
 
-        mTimeButton = (Button) mSearchView.findViewById(R.id.planner_route_time);
-        mTimeButton.setOnClickListener(new OnClickListener() {
+        Button optionsButton = (Button) mSearchView.findViewById(R.id.btn_options);
+        optionsButton.setOnClickListener(new OnClickListener() {
             @Override
-            public void onClick(final View v) {
-                showDialog(createDialogTime());
+            public void onClick(View v) {
+                if (mJourneyQuery == null) {
+                    mJourneyQuery = new JourneyQuery.Builder().create();
+                }
+
+                Intent i = new Intent(getActivity(), ChangeRouteTimeActivity.class);
+                i.putExtra(EXTRA_JOURNEY_QUERY, mJourneyQuery);
+                startActivityForResult(i, REQUEST_CODE_ROUTE_OPTIONS);
             }
         });
 
-        // Views for radio buttons
-        final RadioButton nowRadioButton = (RadioButton)
-                mSearchView.findViewById(R.id.planner_check_now);
-        nowRadioButton.setOnCheckedChangeListener(this);
-        final RadioButton laterRadioButton = (RadioButton)
-                mSearchView.findViewById(R.id.planner_check_more_choices);
-        laterRadioButton.setOnCheckedChangeListener(this);
-
-        mWhenSpinner = (Spinner) mSearchView.findViewById(R.id.departure_arrival_choice);
-        final ArrayAdapter<CharSequence> whenChoiceAdapter =
-                ArrayAdapter.createFromResource(getActivity(),
-                        R.array.when_choice, android.R.layout.simple_spinner_item);
-        whenChoiceAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        mWhenSpinner.setAdapter(whenChoiceAdapter);
+        mOptionsBarView = mSearchView.findViewById(R.id.options_active_container);
 
         // Handle create shortcut.
         if (mCreateShortcut) {
             registerScreen("Planner create shortcut");
             getActivity().setTitle(R.string.create_shortcut_label);
 
-            // Add search label to button
-
-            RadioGroup chooseTimeGroup = (RadioGroup) mSearchView
-                    .findViewById(R.id.planner_choose_time_group);
-            chooseTimeGroup.setVisibility(View.GONE);
-            historyView.setVisibility(View.GONE);
             // Fake an adapter. This needs to be fixed later on so we can use the history.
             setListAdapter(new ArrayAdapter<String>(getActivity(), R.layout.journey_history_row));
         } else {
             setListAdapter(mAdapter);
+        }
+
+        showOrHideOptionsBar();
+    }
+
+    public void showOrHideOptionsBar() {
+        if (mJourneyQuery != null) {
+            mOptionsBarView.setVisibility(View.VISIBLE);
+
+            ViewCompat.setAlpha(mOptionsBarView, 1);
+
+            TextView optionsTimeView = (TextView) mOptionsBarView.findViewById(R.id.options_summary);
+            String timeString = mJourneyQuery.time.format("%R");
+            String dateString = mJourneyQuery.time.format("%e %B");
+
+            if (mJourneyQuery.isTimeDeparture) {
+                optionsTimeView.setText(getString(R.string.departing_on, timeString, dateString));
+            } else {
+                optionsTimeView.setText(getString(R.string.arriving_by, timeString, dateString));
+            }
+
+            mOptionsBarView.findViewById(R.id.btn_clear_options).setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mJourneyQuery = null;
+                    if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR1) {
+                        mOptionsBarView.animate()
+                                .alpha(0)
+                                .setDuration(200)
+                                .setInterpolator(new DecelerateInterpolator())
+                                .setListener(new AnimatorListenerAdapter() {
+                                    @Override
+                                    public void onAnimationEnd(Animator animation) {
+                                        mOptionsBarView.setVisibility(View.GONE);
+                                    }
+                                });
+                    } else {
+                        mOptionsBarView.setVisibility(View.GONE);
+                    }
+                }
+            });
+
+            if (mJourneyQuery.hasAdditionalFiltering()) {
+                mOptionsBarView.findViewById(R.id.options_summary_with_options).setVisibility(View.VISIBLE);
+            } else {
+                mOptionsBarView.findViewById(R.id.options_summary_with_options).setVisibility(View.GONE);
+            }
+        } else {
+            mOptionsBarView.setVisibility(View.GONE);
         }
     }
 
@@ -327,10 +341,6 @@ public class PlannerFragment extends BaseListFragment implements
         if (mEndPoint != null && !mEndPoint.hasName()) {
             mEndPointAutoComplete.setText("");
         }
-
-        if (mViaPoint != null && !mViaPoint.hasName()) {
-            mViaPointAutoComplete.setText("");
-        }
     }
 
     private Site buildStop(Site site, AutoCompleteTextView auTextView) {
@@ -356,7 +366,7 @@ public class PlannerFragment extends BaseListFragment implements
         outState.putInt("level", mStackLevel);
         if (mStartPoint != null) outState.putParcelable("startPoint", mStartPoint);
         if (mEndPoint != null) outState.putParcelable("endPoint", mEndPoint);
-        if (mViaPoint != null) outState.putParcelable("viaPoint", mViaPoint);
+        if (mJourneyQuery != null) outState.putParcelable(EXTRA_JOURNEY_QUERY, mJourneyQuery);
 
         super.onSaveInstanceState(outState);
     }
@@ -364,14 +374,12 @@ public class PlannerFragment extends BaseListFragment implements
     private void restoreState(Bundle state) {
         mStartPoint = new Site();
         mEndPoint = new Site();
-        mViaPoint = new Site();
         if (state != null) {
             Site startPoint = state.getParcelable("startPoint");
             Site endPoint = state.getParcelable("endPoint");
             Site viaPoint = state.getParcelable("viaPoint");
             if (startPoint != null) mStartPoint.fromSite(startPoint);
             if (endPoint != null) mEndPoint.fromSite(endPoint);
-            if (viaPoint != null) mViaPoint.fromSite(viaPoint);
         }
     }
 
@@ -418,20 +426,6 @@ public class PlannerFragment extends BaseListFragment implements
         }
         autoCompleteTextView.setText(name);
 
-        /*
-        stopAdapter.setFilterListener(new FilterListener() {
-            @Override
-            public void onPublishFiltering() {
-                progress.setVisibility(View.INVISIBLE);
-            }
-
-            @Override
-            public void onPerformFiltering() {
-                progress.setVisibility(View.VISIBLE);
-            }
-        });
-        */
-
         autoCompleteTextView.setSelectAllOnFocus(true);
         autoCompleteTextView.setAdapter(stopAdapter);
 
@@ -445,45 +439,8 @@ public class PlannerFragment extends BaseListFragment implements
             }
         });
 
-        /*
-         * OLD autoCompleteTextView.setOnTouchListener(new OnTouchListener() {
-         * 
-         * @Override public boolean onTouch(View v, MotionEvent event) { int
-         * stop = autoCompleteTextView.getText().length();
-         * autoCompleteTextView.setSelection(0, stop); return false; } });
-         */
-
         return autoCompleteTextView;
     }
-
-    /**
-     * On date set listener for the date picker. Sets the new date to the time
-     * member and updates views if the date was changed.
-     */
-    private DatePickerDialog.OnDateSetListener mDateSetListener = new DatePickerDialog.OnDateSetListener() {
-        @Override
-        public void onDateSet(DatePicker view, int year, int monthOfYear,
-                int dayOfMonth) {
-            mTime.year = year;
-            mTime.month = monthOfYear;
-            mTime.monthDay = dayOfMonth;
-            onTimeChanged();
-        }
-    };
-
-    /**
-     * On time set listener for the time picker. Sets the new time to the time
-     * member and updates views if the time was changed.
-     */
-    private TimePickerDialog.OnTimeSetListener mTimeSetListener = new TimePickerDialog.OnTimeSetListener() {
-        @Override
-        public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-            mTime.hour = hourOfDay;
-            mTime.minute = minute;
-            onTimeChanged();
-        }
-    };
-    private int mStackLevel;
 
     /**
      * Start the search.
@@ -492,11 +449,8 @@ public class PlannerFragment extends BaseListFragment implements
      *            the start point
      * @param endPoint
      *            the end point
-     * @param time
-     *            the departure time or null to use current time
      */
-    private void onSearchRoutes(Site startPoint, Site endPoint, Site viaPoint,
-            Time time) {
+    private void onSearchRoutes(Site startPoint, Site endPoint) {
         // TODO: We should not handle point-on-map this way. But for now we just
         // want it to work.
         if (!mStartPointAutoComplete.getText().toString().equals(getString(R.string.point_on_map))) {
@@ -505,26 +459,6 @@ public class PlannerFragment extends BaseListFragment implements
         if (!mEndPointAutoComplete.getText().toString().equals(getString(R.string.point_on_map))) {
             mHistoryDbAdapter.create(HistoryDbAdapter.TYPE_JOURNEY_PLANNER_SITE, endPoint);
         }
-        if (!TextUtils.isEmpty(mViaPointAutoComplete.getText().toString())) {
-            mHistoryDbAdapter.create(HistoryDbAdapter.TYPE_JOURNEY_PLANNER_SITE, endPoint);
-        }
-
-        boolean alternativeStops = false;
-        boolean isTimeDeparture = true;
-        RadioGroup chooseTimeGroup = (RadioGroup) mSearchView
-                .findViewById(R.id.planner_choose_time_group);
-        int checkedId = chooseTimeGroup.getCheckedRadioButtonId();
-        if (checkedId == R.id.planner_check_more_choices) {
-            isTimeDeparture = mWhenSpinner.getSelectedItemId() == 0;
-
-            CheckBox alternativeCheckBox = (CheckBox) getActivity()
-                    .findViewById(R.id.planner_alternative_stops);
-            alternativeStops = alternativeCheckBox.isChecked();
-        } else {
-            // User has checked the "now" checkbox, this forces the time to
-            // be set in the RoutesActivity upon search.
-            time = null;
-        }
 
         Log.i(TAG, "START POINT: " + startPoint.toDump());
         Log.i(TAG, "END POINT: " + endPoint.toDump());
@@ -532,60 +466,22 @@ public class PlannerFragment extends BaseListFragment implements
         JourneyQuery journeyQuery = new JourneyQuery.Builder()
                 .origin(startPoint)
                 .destination(endPoint)
-                .via(viaPoint)
-                .isTimeDeparture(isTimeDeparture)
-                .time(time)
-                .transportModes(getSelectedTransportModes())
-                .alternativeStops(alternativeStops)
                 .create();
+
+        if (mJourneyQuery != null) {
+            // todo: replace with a merge method.
+            journeyQuery.via = mJourneyQuery.via;
+            journeyQuery.alternativeStops = mJourneyQuery.alternativeStops;
+            journeyQuery.time = mJourneyQuery.time;
+            journeyQuery.isTimeDeparture = mJourneyQuery.isTimeDeparture;
+            journeyQuery.transportModes = mJourneyQuery.transportModes;
+        }
 
         Intent routesIntent = new Intent(getActivity(), RoutesActivity.class);
         routesIntent.putExtra(RoutesActivity.EXTRA_JOURNEY_QUERY, journeyQuery);
         startActivity(routesIntent);
-
-        /*
-         * Uri routesUri = RoutesActivity.createRoutesUri( startPoint, endPoint,
-         * time, isTimeDeparture); Intent i = new Intent(Intent.ACTION_VIEW,
-         * routesUri, this, RoutesActivity.class); startActivity(i);
-         */
     }
 
-    private ArrayList<String> getSelectedTransportModes() {
-        CheckBox transportBus = (CheckBox) mSearchView
-                .findViewById(R.id.planner_transport_bus);
-        CheckBox transportMetro = (CheckBox) mSearchView
-                .findViewById(R.id.planner_transport_metro);
-        CheckBox transportNar = (CheckBox) mSearchView
-                .findViewById(R.id.planner_transport_nar);
-        CheckBox transportTrain = (CheckBox) mSearchView
-                .findViewById(R.id.planner_transport_train);
-        CheckBox transportTram = (CheckBox) mSearchView
-                .findViewById(R.id.planner_transport_tram);
-        CheckBox transportWax = (CheckBox) mSearchView
-                .findViewById(R.id.planner_transport_wax);
-
-        ArrayList<String> transportModes = new ArrayList<String>();
-        if (transportBus.isChecked()) {
-            transportModes.add(TransportMode.BUS);
-        }
-        if (transportMetro.isChecked()) {
-            transportModes.add(TransportMode.METRO);
-        }
-        if (transportNar.isChecked()) {
-            transportModes.add(TransportMode.NAR);
-        }
-        if (transportTrain.isChecked()) {
-            transportModes.add(TransportMode.TRAIN);
-        }
-        if (transportTram.isChecked()) {
-            transportModes.add(TransportMode.TRAM);
-        }
-        if (transportWax.isChecked()) {
-            transportModes.add(TransportMode.WAX);
-        }
-
-        return transportModes;
-    }
 
     /**
      * Setup a search short cut.
@@ -616,23 +512,6 @@ public class PlannerFragment extends BaseListFragment implements
 
     private void showDialog(Dialog dialog) {
         mStackLevel++;
-
-        // DialogFragment.show() will take care of adding the fragment
-        // in a transaction. We also want to remove any currently showing
-        // dialog, so make our own transaction and take care of that here.
-
-//        FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-//        Fragment prev = getActivity().getSupportFragmentManager().findFragmentByTag("dialog");
-//        if (prev != null) {
-//            ft.remove(prev);
-//        }
-//        ft.addToBackStack(null);
-//
-//         // Create and show the dialog. DialogFragment newFragment =
-//        DialogFragment newFragment = PlannerDialogFragment.newInstance(dialog);
-//        newFragment.show(ft, "dialog");
-        // TODO: This resolves an issue that raises a IllegalStateException on
-        // ICS, Investigate if the above is really needed.
         FragmentTransaction ft = getFragmentManager().beginTransaction();
         DialogFragment newFragment = PlannerDialogFragment.newInstance(dialog);
         ft.add(newFragment, null);
@@ -690,48 +569,12 @@ public class PlannerFragment extends BaseListFragment implements
                         }).create();
     }
 
-    private Dialog createDialogTime() {
-        // TODO: Base 24 hour on locale, same with the format.
-        return new TimePickerDialog(getActivity(), mTimeSetListener,
-                mTime.hour, mTime.minute, true);
-    }
-
-    private Dialog createDialogDate() {
-        return new DatePickerDialog(getActivity(), mDateSetListener,
-                mTime.year, mTime.month, mTime.monthDay);
-    }
-
     private Dialog createDialogNoLocation() {
         return new AlertDialog.Builder(getActivity())
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .setTitle(getText(R.string.no_location_title))
                 .setMessage(getText(R.string.no_location_message))
                 .setPositiveButton(android.R.string.ok, null).create();
-    }
-
-    private Dialog createDialogViaPoint() {
-        AlertDialog.Builder viaPointDialogBuilder = new AlertDialog.Builder(
-                getActivity());
-        viaPointDialogBuilder.setTitle(getText(R.string.via));
-        final Cursor historyViaCursor = mHistoryDbAdapter.fetchLatest();
-        getActivity().startManagingCursor(historyViaCursor);
-        final SelectPointAdapter viaPointAdapter = new SelectPointAdapter(
-                getActivity(), historyViaCursor, true, true);
-        getActivity().stopManagingCursor(historyViaCursor);
-        viaPointDialogBuilder.setAdapter(viaPointAdapter,
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        switch (which) {
-                        default:
-                            Site viaPoint = (Site) viaPointAdapter.getItem(which);
-                            mViaPoint = viaPoint;
-                            mViaPointAutoComplete.setText(mViaPoint.getName());
-                            mViaPointAutoComplete.clearFocus();
-                        }
-                    }
-                });
-        return viaPointDialogBuilder.create();
     }
 
     private Dialog createDialogEndPoint() {
@@ -813,16 +656,6 @@ public class PlannerFragment extends BaseListFragment implements
         return startPointDialogBuilder.create();
     }
 
-    /**
-     * Update time on the buttons.
-     */
-    private void onTimeChanged() {
-        String formattedDate = mTime.format("%x");
-        String formattedTime = mTime.format("%R");
-        mDateButton.setText(formattedDate);
-        mTimeButton.setText(formattedTime);
-    }
-
     private void handleSearchAction() {
         if (TextUtils.isEmpty(mStartPointAutoComplete.getText())) {
             Log.d(TAG, "Start auto was empty");
@@ -856,20 +689,13 @@ public class PlannerFragment extends BaseListFragment implements
                     looksValid = false;
                 }
             }
-            if (!TextUtils.isEmpty(mViaPointAutoComplete.getText())) {
-                mViaPoint = buildStop(mViaPoint, mViaPointAutoComplete);
-                if (!mViaPoint.looksValid()) {
-                    Log.d(TAG, "Via was not valid");
-                    mViaPointAutoComplete.setError(getText(R.string.empty_value));
-                    looksValid = false;
-                }
-            }
+
             if (looksValid) {
                 if (mCreateShortcut) {
                     showDialog(createDialogShortcutName());
                     // onCreateShortCut(mStartPoint, mEndPoint);
                 } else {
-                    onSearchRoutes(mStartPoint, mEndPoint, mViaPoint, mTime);
+                    onSearchRoutes(mStartPoint, mEndPoint);
                 }
             }
         }
@@ -900,26 +726,13 @@ public class PlannerFragment extends BaseListFragment implements
                 Log.d(TAG, "Got Stop " + mEndPoint);
             }
             break;
-        }
-    }
-
-    @Override
-    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        // We only check the state for later radio button.
-        if (isChecked && buttonView.getId() == R.id.planner_check_more_choices) {
-            // Set time to now, and notify buttons about the new time.
-            if (mTime == null) {
-                mTime = new Time();
-                mTime.setToNow();
-                onTimeChanged();
-            }
-
-            mChangeTimeLayout.setVisibility(View.VISIBLE);
-        } else if (!isChecked
-                && buttonView.getId() == R.id.planner_check_more_choices) {
-            mViaPoint = new Site();
-            mViaPointAutoComplete.setText("");
-            mChangeTimeLayout.setVisibility(View.GONE);
+            case REQUEST_CODE_ROUTE_OPTIONS:
+                if (resultCode == Activity.RESULT_CANCELED) {
+                    Log.d(TAG, "Route options cancelled.");
+                } else {
+                    mJourneyQuery = data.getParcelableExtra(EXTRA_JOURNEY_QUERY);
+                    showOrHideOptionsBar();
+                }
         }
     }
 
@@ -985,7 +798,7 @@ public class PlannerFragment extends BaseListFragment implements
             if (mRemoveText == false
                     && s.toString().equals(mReservedName.toString())) {
                 mRemoveText = true;
-                mViewToWatch.setTextColor(Color.BLACK);
+//                mViewToWatch.setTextColor(Color.BLACK);
             }
         }
 
@@ -994,9 +807,9 @@ public class PlannerFragment extends BaseListFragment implements
                 int count) {
             mNewText = s.toString().substring(start, start + count);
 
-            if (s.toString().equals(mReservedName.toString())) {
-                mViewToWatch.setTextColor(0xFF4F94CD);
-            }
+//            if (s.toString().equals(mReservedName.toString())) {
+//                mViewToWatch.setTextColor(0xFF4F94CD);
+//            }
         }
     }
 
@@ -1132,8 +945,7 @@ public class PlannerFragment extends BaseListFragment implements
 
             CheckBox starred = (CheckBox) v
                     .findViewById(R.id.journey_star_check);
-            boolean isStarred = c.getInt(COLUMN_INDEX_STARRED) == 1 ? true
-                    : false;
+            boolean isStarred = c.getInt(COLUMN_INDEX_STARRED) == 1 ? true : false;
             if (isStarred) {
                 starred.setChecked(true);
             } else {
@@ -1150,8 +962,7 @@ public class PlannerFragment extends BaseListFragment implements
                 @Override
                 public void onClick(View v) {
                     boolean isChecked = ((CheckBox) v).isChecked();
-                    Uri uri = ContentUris.withAppendedId(Journeys.CONTENT_URI,
-                            id);
+                    Uri uri = ContentUris.withAppendedId(Journeys.CONTENT_URI, id);
                     ContentValues values = new ContentValues();
                     if (isChecked) {
                         values.put(Journeys.STARRED, 1);

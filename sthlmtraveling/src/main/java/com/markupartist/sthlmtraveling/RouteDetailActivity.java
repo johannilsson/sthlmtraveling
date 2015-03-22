@@ -25,8 +25,13 @@ import android.location.Location;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.util.Pair;
+import android.support.v7.app.ActionBar;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
@@ -41,10 +46,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
-import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
 import com.crashlytics.android.Crashlytics;
 import com.markupartist.sthlmtraveling.provider.JourneysProvider.Journey.Journeys;
 import com.markupartist.sthlmtraveling.provider.planner.JourneyQuery;
@@ -52,7 +53,9 @@ import com.markupartist.sthlmtraveling.provider.planner.Planner;
 import com.markupartist.sthlmtraveling.provider.planner.Planner.IntermediateStop;
 import com.markupartist.sthlmtraveling.provider.planner.Planner.SubTrip;
 import com.markupartist.sthlmtraveling.provider.planner.Planner.Trip2;
+import com.markupartist.sthlmtraveling.provider.site.Site;
 import com.markupartist.sthlmtraveling.ui.view.SmsTicketDialog;
+import com.markupartist.sthlmtraveling.utils.AdProxy;
 import com.markupartist.sthlmtraveling.utils.Analytics;
 import com.markupartist.sthlmtraveling.utils.DateTimeUtil;
 
@@ -63,7 +66,7 @@ import java.util.List;
 
 public class RouteDetailActivity extends BaseListActivity {
     public static final String TAG = "RouteDetailActivity";
-    
+
     public static final String EXTRA_JOURNEY_TRIP = "sthlmtraveling.intent.action.JOURNEY_TRIP";
     public static final String EXTRA_JOURNEY_QUERY = "sthlmtraveling.intent.action.JOURNEY_QUERY";
 
@@ -76,6 +79,7 @@ public class RouteDetailActivity extends BaseListActivity {
     private ImageButton mFavoriteButton;
 
     private ActionBar mActionBar;
+    private AdProxy mAdProxy;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,6 +102,18 @@ public class RouteDetailActivity extends BaseListActivity {
         updateStartAndEndPointViews(mJourneyQuery);
 
         View headerView = getLayoutInflater().inflate(R.layout.route_header_details, null);
+
+        if (shouldShowAds(mJourneyQuery.hasPromotions)) {
+            Pair<AdProxy.Provider, String> adConf = AppConfig.getAdConfForRouteDetails(mJourneyQuery.promotionNetwork);
+            mAdProxy = new AdProxy(this, adConf.first, adConf.second);
+        }
+
+        ViewGroup adContainer = null;
+        if (mAdProxy != null && AdProxy.Provider.WIDESPACE == mAdProxy.getProvider()) {
+            mAdProxy.load();
+            adContainer = mAdProxy.getAdWithContainer(getListView(), false);
+        }
+
         TextView timeView = (TextView) headerView.findViewById(R.id.route_date_time);
         timeView.setText(getString(R.string.time_to, mTrip.getDurationText(), mTrip.destination.getCleanName()));
         if (mTrip.canBuySmsTicket()) {
@@ -116,14 +132,35 @@ public class RouteDetailActivity extends BaseListActivity {
             zoneView.setText(mTrip.tariffZones);
         }
 
+        if (adContainer != null) {
+            getListView().addHeaderView(adContainer, null, false);
+        }
         getListView().addHeaderView(headerView, null, false);
 
         onRouteDetailsResult(mTrip);
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (mAdProxy != null) {
+            mAdProxy.onResume();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        if (mAdProxy != null) {
+            mAdProxy.onPause();
+        }
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getSupportMenuInflater();
+        MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.actionbar_route_detail, menu);
         return true;
     }
@@ -136,6 +173,7 @@ public class RouteDetailActivity extends BaseListActivity {
         } else {
             starItem.setIcon(R.drawable.ic_action_star_off);
         }
+        // Disable the menu action for SMS tickets for now.
         if (!mTrip.canBuySmsTicket()) {
             menu.removeItem(R.id.actionbar_item_sms);
         }
@@ -148,8 +186,8 @@ public class RouteDetailActivity extends BaseListActivity {
         switch (item.getItemId()) {
         case R.id.actionbar_item_time:
             Intent departuresIntent = new Intent(this, DeparturesActivity.class);
-            departuresIntent.putExtra(DeparturesActivity.EXTRA_SITE_NAME,
-                    mTrip.origin.name);
+            Site s = Site.fromPlannerLocation(mTrip.origin);
+            departuresIntent.putExtra(DeparturesActivity.EXTRA_SITE, s);
             startActivity(departuresIntent);
             return true;
         case R.id.actionbar_item_sms:
@@ -195,10 +233,10 @@ public class RouteDetailActivity extends BaseListActivity {
      * 
      * @return route details
      */
-    @Override
-    public Object onRetainNonConfigurationInstance() {
-        return mTrip;
-    }
+//    @Override
+//    public Object onRetainNonConfigurationInstance() {
+//        return mTrip;
+//    }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
@@ -220,6 +258,9 @@ public class RouteDetailActivity extends BaseListActivity {
 
     @Override
     protected void onDestroy() {
+        if (mAdProxy != null) {
+            mAdProxy.onDestroy();
+        }
         super.onDestroy();
     }
 
@@ -245,7 +286,7 @@ public class RouteDetailActivity extends BaseListActivity {
 
         View convertView = getLayoutInflater().inflate(R.layout.trip_row_stop_layout, null);
         Button nameView = (Button) convertView.findViewById(R.id.trip_stop_title);
-        nameView.setText(getLocationName(lastSubTrip.destination));
+        nameView.setText(getLocationName(mJourneyQuery.destination));
         nameView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -385,6 +426,7 @@ public class RouteDetailActivity extends BaseListActivity {
             final SubTrip subTrip = getItem(position);
 
             convertView = mInflater.inflate(R.layout.trip_row_stop_layout, null);
+            boolean isFirst = false;
 
             if (position > 0) {
                 final SubTrip previousSubTrip = getItem(position - 1);
@@ -397,10 +439,11 @@ public class RouteDetailActivity extends BaseListActivity {
             } else {
                 convertView.findViewById(R.id.trip_layout_intermediate_stop).setVisibility(View.GONE);
                 convertView.findViewById(R.id.trip_line_segment_start).setVisibility(View.VISIBLE);
+                isFirst = true;
             }
 
             Button nameView = (Button) convertView.findViewById(R.id.trip_stop_title);
-            nameView.setText(getLocationName(subTrip.origin));
+            nameView.setText(isFirst ? getLocationName(mJourneyQuery.origin) : getLocationName(subTrip.origin));
             nameView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

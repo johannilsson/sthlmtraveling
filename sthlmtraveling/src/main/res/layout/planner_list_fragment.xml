@@ -15,7 +15,7 @@
   ~ limitations under the License.
   -->
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
@@ -27,13 +27,16 @@
         android:layout_height="fill_parent"
         android:id="@id/android:list"
         android:layout_above="@+id/search_layout"
+        android:paddingBottom="48dp"
+        android:clipToPadding="false"
         />
 
     <include layout="@layout/search_button_view"
         android:id="@+id/search_layout"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:layout_width="match_parent"
+        android:layout_gravity="bottom"
         android:layout_alignParentBottom="true"
         />
 
-</RelativeLayout>
+</FrameLayout>

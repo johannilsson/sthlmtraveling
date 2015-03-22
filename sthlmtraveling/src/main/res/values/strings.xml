@@ -19,6 +19,7 @@
 
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name">STHLM Traveling</string>
+    <string name="ok">Ok</string>
     <string name="done">Done</string>
     <string name="discard">Discard</string>
     <string name="from">From</string>
@@ -37,18 +38,18 @@
     <string name="session_timeout_message">Most likely this search was too old.</string>
     <string name="attention_label">Attention</string>
     <string name="bad_routes_parameters_message">Start point or end point must not be empty.</string>
-    <string name="new_search">Search</string>
+    <string name="new_search">SEARCH</string>
     <string name="empty_value">Missing or invalid</string>
-    <string name="loading">Searching. Please wait...</string>
+    <string name="loading">Searching. Please wait…</string>
     <string name="my_location">My location</string>
     <string name="change_date_and_time">Change date &amp; time</string>
     <string name="reverse_start_end">Reverse from &amp; to</string>
     <string name="about">About</string>
-    <string name="about_this_app">STHLM Traveling is developed by Johan Nilsson. Please contact him if you have ideas or experience any problems\n\nAll traffic data is gathered with permission from SL - Stockholm Public Transport.\n\nTo improve the app further anonymous analytics is gathered with Flurry and Google Analytics.\n\n<b>Credits</b>\n<li>Robert Johansson\nhttps://twitter.com/likebobby</li>\n<li>App icon &amp; ideas Olof Brickarp\nhttp://www.yay.se</li>\n<li>Swedish translation Jean Diarbakerli</li>\n<li>Spanish translation Valeria Padilla and Miguel Ángel Domínguez Coloma</li>\n<li>Patches by Fredrik Jönsson\nhttp://github.com/lk95jofr</li>\n<li>Patches by Adam Nybäck\nhttp://anyro.se</li>\n<li>Patches by Morgan Christiansson\nhttp://screeninteraction.com</li>\n<li>Icons by Fredrik Broman\nhttp://fredrikbroman.com</li>\n<li>Icons by Android Icons\nhttp://androidicons.com</li>\n<li>Feedback from Swedroid\nhttp://swedroid.se</li>\n\nSource code http://github.com/johannilsson/sthlmtraveling\n\n Johan Nilsson johan@markupartist.com\nhttp://markupartist.com\n\n</string>
+    <string name="about_this_app">STHLM Traveling is developed by Johan Nilsson. Please contact him if you have ideas or experience any problems\n\nAll traffic data is gathered with permission from Trafiklab and SL - Stockholm Public Transport.\n\nTo improve the app further anonymous analytics is gathered with Flurry and Google Analytics.\n\n<b>Credits</b>\n<li>Robert Johansson\nhttps://twitter.com/likebobby</li>\n<li>App icon &amp; ideas Olof Brickarp\nhttp://www.yay.se</li>\n<li>Swedish translation Jean Diarbakerli</li>\n<li>Spanish translation Valeria Padilla and Miguel Ángel Domínguez Coloma</li>\n<li>Patches by Fredrik Jönsson\nhttp://github.com/lk95jofr</li>\n<li>Patches by Adam Nybäck\nhttp://anyro.se</li>\n<li>Patches by Morgan Christiansson\nhttp://screeninteraction.com</li>\n<li>Icons by Fredrik Broman\nhttp://fredrikbroman.com</li>\n<li>Icons by Android Icons\nhttp://androidicons.com</li>\n<li>Feedback from Swedroid\nhttp://swedroid.se</li>\n\nSource code http://github.com/johannilsson/sthlmtraveling\n\n Johan Nilsson johan@markupartist.com\nhttp://markupartist.com\n\n</string>
     <string name="donate">Donate</string>
     <string name="donate_url">http://pledgie.com/campaigns/6527</string>
     <string name="feedback">Feedback</string>
-    <string name="send_email">Send email...</string>
+    <string name="send_email">Send email…</string>
     <string name="favorites_label">Favorites</string>
     <string name="no_favorites"><b>No favorites yet...</b>\nAdd and remove favorites by pressing the star button after a search.</string>
     <string name="reverse_search">Reverse search</string>
@@ -79,8 +80,8 @@
     <string name="tap_your_end_point_on_map">Tap your end point on the map</string>
     <string name="tap_your_start_point_on_map">Tap your start point on the map</string>
     <string name="tap_your_location_on_map">Failed to determine your location. Tap your location on the map</string>
-    <string name="departing_on">Departing after <xliff:g id="time">%s</xliff:g> on <xliff:g id="date">%s</xliff:g></string>
-    <string name="arriving_by">Arriving latest <xliff:g id="time">%s</xliff:g> on <xliff:g id="date">%s</xliff:g></string>
+    <string name="departing_on">Departs at <xliff:g id="time">%s</xliff:g> on <xliff:g id="date">%s</xliff:g></string>
+    <string name="arriving_by">Arrives at <xliff:g id="time">%s</xliff:g> on <xliff:g id="date">%s</xliff:g></string>
     <string name="departures">Departures</string>
     <string name="departures_for">Departures for <xliff:g id="site_name">%s</xliff:g></string>
     <string name="date_of_trip">Date of Trip: <xliff:g id="date">%s</xliff:g></string>
@@ -108,7 +109,8 @@
     <string name="my_location_source_disabled">Please enable a My Location source in system settings</string>
     <string name="title_settings">Settings</string>
     <string name="now_label">Now</string>
-    <string name="more_choices_label">More choices</string>
+    <string name="more_choices_label">OPTIONS</string>
+    <string name="route_options_active">With additional route options</string>
     <string name="alternative_stops_label">Alternative stops</string>
     <string name="date_and_time_label">Date &amp; Time</string>
     <string name="determining_your_position">Determining your position</string>
@@ -205,4 +207,13 @@
     <string name="search_favorites_cleared">Favorites cleared</string>
     <string name="help">Help</string>
     <string name="support">Support</string>
+    <string name="transport_type">Transport type</string>
+
+    <!-- Ads -->
+    <string name="ads">Ads</string>
+    <string name="ads_title">Why Ads?</string>
+    <string name="ads_turn_off">Turn off ads</string>
+    <string name="ads_message">This app has remained ad free since 2009, during the years the cost for servers and maintenance has increased.\n\nTo be able to continue the development and give the support needed ads is sometimes shown.\n\nIf you have problems with the ads it’s possible to turn them off below. In the future there might be a small fee related to turning off ads instead.\n\nThanks for your support!\nJohan</string>
+    <string name="ads_summary">Why does this app have ads?</string>
+
 </resources>

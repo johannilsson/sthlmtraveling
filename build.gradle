@@ -1,1 +1,23 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
+
+buildscript {
+    repositories {
+        jcenter()
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:1.0.0'
+    }
+}
+
+allprojects {
+    repositories {
+        jcenter()
+        mavenCentral()
+    }
+}
+
+task wrapper(type: Wrapper) {
+    description = 'Install wrapper for gradle. Simplifies compilation on new PCs'
+    gradleVersion = '2.1'
+}

@@ -1,63 +1,114 @@
 package com.markupartist.sthlmtraveling;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.MenuItem;
 
-import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.app.SherlockFragmentActivity;
-import com.actionbarsherlock.view.MenuItem;
-import com.flurry.android.FlurryAgent;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
 import com.markupartist.sthlmtraveling.utils.Analytics;
+import com.markupartist.sthlmtraveling.utils.PlayService;
+import com.markupartist.sthlmtraveling.utils.PlayServicesUtils;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
-public class BaseFragmentActivity extends SherlockFragmentActivity {
+public class BaseFragmentActivity extends ActionBarActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+
+    private Toolbar mActionBarToolbar;
+
+    private List<PlayService> mPlayServices;
+    private GoogleApiClient mGoogleApiClient;
+
+    public void registerPlayService(PlayService playService) {
+        if (mPlayServices == null) {
+            mPlayServices = new ArrayList<>();
+        }
+        mPlayServices.add(playService);
+    }
+
+    public synchronized void initGoogleApiClient() {
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addApi(LocationServices.API)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .build();
+    }
+
+    public GoogleApiClient getGoogleApiClient() {
+        return mGoogleApiClient;
+    }
 
     @Override
     protected void onStart() {
-       super.onStart();
-       FlurryAgent.onStartSession(this, MyApplication.ANALYTICS_KEY);
+        super.onStart();
+
+        if (mGoogleApiClient != null) {
+            mGoogleApiClient.connect();
+        }
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        FlurryAgent.onPageView();
     }
 
     @Override
     protected void onStop() {
-       super.onStop();
-       FlurryAgent.onEndSession(this);
+        if (mGoogleApiClient != null) {
+            mGoogleApiClient.disconnect();
+        }
+
+        if (mPlayServices != null) {
+            for (PlayService ps : mPlayServices) {
+                ps.onStop();
+            }
+        }
+
+        super.onStop();
     }
 
     protected ActionBar initActionBar() {
         ActionBar actionBar = getSupportActionBar();
         actionBar.setHomeButtonEnabled(true);
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
         actionBar.setDisplayShowHomeEnabled(true);
+        actionBar.setDisplayHomeAsUpEnabled(true);
         return actionBar;
+    }
+
+    @Override
+    public void setSupportActionBar(final Toolbar toolbar) {
+        mActionBarToolbar = toolbar;
+        super.setSupportActionBar(toolbar);
+    }
+
+    public Toolbar getActionBarToolbar() {
+        return mActionBarToolbar;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-        case android.R.id.home:
-            final Intent startIntent = new Intent(this, StartActivity.class);
-            startIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(startIntent);
-            return true;
+            case android.R.id.home:
+                onBackPressed();
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
     protected void registerScreen(String event) {
-        FlurryAgent.onEvent(event);
         Analytics.getInstance(this).registerScreen(event);
     }
 
     protected void registerEvent(String event, Map<String, String> parameters) {
-        FlurryAgent.onEvent(event, parameters);
     }
 
     @Override
@@ -72,5 +123,45 @@ public class BaseFragmentActivity extends SherlockFragmentActivity {
 
         // Need to know if we are on the top level, then we should not apply this.
         //overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+    }
+
+    protected boolean shouldShowAds(boolean isPromotionsActivated) {
+        if (getResources().getBoolean(R.bool.is_landscape)) {
+            return false;
+        }
+
+        if (AppConfig.shouldServeAds() && isPromotionsActivated) {
+            final SharedPreferences sharedPreferences = PreferenceManager
+                    .getDefaultSharedPreferences(getApplicationContext());
+            boolean isDisabled = sharedPreferences.getBoolean("is_ads_disabled", false);
+            if (isDisabled) {
+                Log.d("BaseFragmentActivity", "Ads disabled by the user");
+                Analytics.getInstance(this).event("Ads", "Ad view disabled");
+                return false;
+            }
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public void onConnected(Bundle bundle) {
+        if (mPlayServices != null) {
+            for (PlayService ps : mPlayServices) {
+                ps.onConnected();
+            }
+        }
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        if (mGoogleApiClient != null) {
+            mGoogleApiClient.connect();
+        }
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+        PlayServicesUtils.checkGooglePlaySevices(this);
     }
 }

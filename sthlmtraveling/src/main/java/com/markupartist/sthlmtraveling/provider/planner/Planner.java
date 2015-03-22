@@ -277,12 +277,18 @@ public class Planner {
                 b.appendQueryParameter("arrival", "1");
             }
             if (query.hasVia()) {
-                b.appendQueryParameter("via", query.via.name);
+                if (query.via.id == 0) {
+                    b.appendQueryParameter("via", query.via.name);
+                } else {
+                    b.appendQueryParameter("via", String.valueOf(query.via.id));
+                }
             }
             if (query.alternativeStops) {
                 b.appendQueryParameter("alternative", "1");
             }
         }
+
+        b.appendQueryParameter("with_site_id", "1");
 
         // Include intermediate stops.
         //b.appendQueryParameter("intermediate_stops", "1");
@@ -372,6 +378,8 @@ public class Planner {
         public int    numberOfTrips;
         public ArrayList<Trip2> trips = new ArrayList<Trip2>();
         private String tariffZones;
+        public boolean hasPromotions;
+        public int promotionNetwork = -1;
 
         public Response() {
         }
@@ -380,8 +388,10 @@ public class Planner {
             ident = parcel.readString();
             seqnr = parcel.readString();
             trips = new ArrayList<Trip2>();
-            seqnr = parcel.readString();
             parcel.readTypedList(trips, Trip2.CREATOR);
+            tariffZones = parcel.readString();
+            hasPromotions = (parcel.readInt() == 1);
+            promotionNetwork = parcel.readInt();
         }
 
         @Override
@@ -395,6 +405,8 @@ public class Planner {
             dest.writeString(seqnr);
             dest.writeTypedList(trips);
             dest.writeString(tariffZones);
+            dest.writeInt(hasPromotions ? 1 : 0);
+            dest.writeInt(promotionNetwork);
         }
 
         public boolean canBuySmsTicket() {
@@ -432,6 +444,7 @@ public class Planner {
                     ", seqnr='" + seqnr + '\'' +
                     ", numberOfTrips=" + numberOfTrips +
                     ", trips=" + trips +
+                    ", hasPromotions=" + hasPromotions +
                     '}';
         }
 
@@ -443,6 +456,12 @@ public class Planner {
             }
             if (json.has("seqnr")) {
                 r.seqnr = json.getString("seqnr");
+            }
+            if (json.has("has_promotions")) {
+                r.hasPromotions = json.getBoolean("has_promotions");
+            }
+            if (json.has("promotion_network")) {
+                r.promotionNetwork = json.getInt("promotion_network");
             }
 
             JSONArray jsonTrips = json.getJSONArray("trips");
@@ -468,10 +487,12 @@ public class Planner {
             }
         };
 
-
     }
 
     public static class Trip2 implements Parcelable {
+
+        private static DateFormat DURATION_FORMAT = new SimpleDateFormat("H:mm");
+
         public Location origin;
         public Location destination;
         public String   departureDate; // TODO: Combine date and time
@@ -610,8 +631,7 @@ public class Planner {
         public String toText() {
             String durationInMinutes = duration;
             try {
-                DateFormat df = new SimpleDateFormat("H:mm");
-                Date tripDate = df.parse(duration);
+                Date tripDate = DURATION_FORMAT.parse(duration);
                 if (tripDate.getHours() == 0) {
                     int start = duration.indexOf(":") + 1;
                     if (duration.substring(start).startsWith("0")) {

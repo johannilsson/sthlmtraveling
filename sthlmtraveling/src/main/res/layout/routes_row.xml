@@ -16,39 +16,44 @@
 ** limitations under the License.
 */
 -->
- 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
-    android:orientation="vertical"
-    android:layout_width="fill_parent" 
-    android:layout_height="wrap_content"
-    android:padding="5dip">
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="fill_parent"
+              android:layout_height="wrap_content"
+              android:padding="5dip">
+
     <LinearLayout
         android:orientation="horizontal"
-	    android:layout_width="wrap_content" 
-	    android:layout_height="wrap_content"
-    >
-	    <TextView
-	        android:id="@+id/route_startpoint_departure"
-	        android:text="10.23"
-	        android:textStyle="bold"
-	        android:layout_width="fill_parent"
-	        android:layout_height="wrap_content"
-	        android:textColor="?android:attr/textColorPrimary"
-	        />
-           <TextView
-               android:id="@+id/route_startpoint_label"
-               android:layout_marginLeft="10dip"
-               android:text="Telefonplan"
-               android:layout_width="fill_parent"
-               android:layout_height="wrap_content"
-               android:textColor="?android:attr/textColorPrimary"
-               />
-    </LinearLayout>
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="wrap_content" 
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-    >
+        >
+
+        <TextView
+            android:id="@+id/route_startpoint_departure"
+            android:text="10.23"
+            android:textStyle="bold"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textColor="?android:attr/textColorPrimary"
+            />
+
+        <TextView
+            android:id="@+id/route_startpoint_label"
+            android:layout_marginLeft="10dip"
+            android:text="Telefonplan"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textColor="?android:attr/textColorPrimary"
+            />
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        >
+
         <TextView
             android:id="@+id/route_endpoint_arrival"
             android:text="10.23-approx"
@@ -57,45 +62,49 @@
             android:layout_height="wrap_content"
             android:textColor="?android:attr/textColorPrimary"
             />
-           <TextView
-               android:id="@+id/route_endpoint_label"
-               android:layout_marginLeft="10dip"
-               android:text="T-Centralen"
-               android:layout_width="fill_parent"
-               android:layout_height="wrap_content"
-               android:textColor="?android:attr/textColorPrimary"
-               />
+
+        <TextView
+            android:id="@+id/route_endpoint_label"
+            android:layout_marginLeft="10dip"
+            android:text="T-Centralen"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textColor="?android:attr/textColorPrimary"
+            />
     </LinearLayout>
+
     <LinearLayout
         android:orientation="horizontal"
-        android:layout_width="wrap_content" 
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dip"
-    >
-	    <LinearLayout
-	            android:id="@+id/route_changes"
-	            android:layout_width="fill_parent"
-	            android:layout_height="wrap_content"
-	            android:addStatesFromChildren="true"
-	            android:gravity="center_vertical"
-	            android:paddingRight="0dip"
-	        >
-	        <!--
-		    <ImageView 
-		        android:id="@+id/routes_image_changes"
-		        android:src="@drawable/metro"
-		        android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"
-		        android:paddingRight="3dip"
-		    />
-		    <ImageView 
-		        android:id="@+id/routes_image_changes2"
-		        android:src="@drawable/metro"
-		        android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"
-		    />
-	       -->
-	    </LinearLayout>
+        >
+
+        <LinearLayout
+            android:id="@+id/route_changes"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:addStatesFromChildren="true"
+            android:gravity="center_vertical"
+            android:paddingRight="0dip"
+            >
+            <!--
+            <ImageView
+                android:id="@+id/routes_image_changes"
+                android:src="@drawable/metro"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingRight="3dip"
+            />
+            <ImageView
+                android:id="@+id/routes_image_changes2"
+                android:src="@drawable/metro"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+            />
+           -->
+        </LinearLayout>
+
         <TextView
             android:id="@+id/route_duration_and_changes"
             android:layout_marginLeft="10dip"

@@ -1,37 +1,70 @@
 buildscript {
     repositories {
         mavenCentral()
-        maven { url 'http://download.crashlytics.com/maven' }
+        maven { url 'https://maven.fabric.io/public' }
 
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.12.+'
+        //classpath 'com.android.tools.build:gradle:0+'
         // https://github.com/JakeWharton/hugo
         //classpath 'com.jakewharton.hugo:hugo-plugin:1.0.+'
-        classpath 'com.crashlytics.tools.gradle:crashlytics-gradle:1.+'
-
+        classpath 'io.fabric.tools:gradle:1.14.4'
     }
 }
 
-apply plugin: 'com.android.application'
-apply plugin: 'crashlytics'
-//apply plugin: 'hugo'
 
 repositories {
     mavenCentral()
-    maven { url 'http://download.crashlytics.com/maven' }
+    maven { url 'https://maven.fabric.io/public' }
+}
 
+apply plugin: 'com.android.application'
+apply plugin: 'io.fabric'
+//apply plugin: 'hugo'
+
+// Load application build configuration.
+def Properties buildProperties = new Properties()
+def buildProdFile = new File('build_prod.properties')
+if (buildProdFile.canRead()) {
+    buildProperties.load(new FileInputStream(buildProdFile))
+} else {
+    buildProdFile = new File('build_default.properties')
+    buildProperties.load(new FileInputStream(buildProdFile))
+}
+
+dependencies {
+    //compile 'com.google.android.gms:play-services:6.1.71'
+    compile 'com.google.android.gms:play-services-base:6.5.87'
+    compile 'com.google.android.gms:play-services-maps:6.5.87'
+    compile 'com.google.android.gms:play-services-location:6.5.87'
+    compile 'com.android.support:appcompat-v7:21.0.3'
+    compile 'com.android.support:support-v4:21.0.3'
+    compile 'com.squareup.okhttp:okhttp:1.3.0'
+    compile 'com.google.code.gson:gson:2.2.4'
+    compile files('libs/katalysator_android_sdk.jar')
+    compile files('libs/nmdp_speech_kit.jar')
+    compile files('libs/widespace-sdk-4.4.0.jar')
+//    compile files('libs/widespace-sdk-develop-3aabb63.jar')
+    compile('com.crashlytics.sdk.android:crashlytics:2.1.0@aar') {
+        transitive = true;
+    }
 }
 
 android {
-    compileSdkVersion 20
-    buildToolsVersion "19.1.0"
+    compileSdkVersion 21
+    buildToolsVersion "21.1.2"
 
     defaultConfig {
         minSdkVersion 9
-        targetSdkVersion 20
-        versionName "2.9.1"
-        versionCode 115
+        targetSdkVersion 21
+        versionName "2.10.1-dev"
+        versionCode 130
+
+        buildConfigField "boolean", "APP_IS_ADS_ENABLED", buildProperties['IS_ADS_ENABLED']
+        buildConfigField "String", "APP_WIDESPACE_SID", buildProperties['WIDESPACE_SID']
+        buildConfigField "String", "APP_KATALYST_API_KEY", buildProperties['KATALYST_API_KEY']
+        buildConfigField "String", "APP_STHLMTRAVELING_API_KEY", buildProperties['STHLMTRAVELING_API_KEY']
+        buildConfigField "String", "APP_ANALYTICS_PROPERTY_KEY", buildProperties['ANALYTICS_PROPERTY_KEY']
     }
 
     signingConfigs {
@@ -40,7 +73,8 @@ android {
 
     buildTypes {
         release {
-            runProguard true
+            minifyEnabled true
+            shrinkResources true
             proguardFile getDefaultProguardFile('proguard-android.txt')
             signingConfig signingConfigs.release
         }
@@ -57,23 +91,28 @@ android {
     }
 
     applicationVariants.all { variant ->
-        def file = variant.outputFile
-        variant.outputFile = new File(
-                file.parent, file.name.replace(".apk",
-                "-" + defaultConfig.versionName + "." +defaultConfig.versionCode + ".apk"))
+        def packageName = "com.markupartist.sthlmtraveling"
+        def versionCode = defaultConfig.versionCode
+        def versionName = defaultConfig.versionName
+        def versionType = variant.name
+
+        variant.outputs.each { output ->
+            def outputFile = output.outputFile
+            if (outputFile != null && outputFile.name.endsWith('.apk')) {
+                def version = versionName + "." + versionCode
+                def newFilename = packageName + "-" + version + "-" + versionType + ".apk"
+                output.outputFile = new File(outputFile.parent, newFilename)
+            }
+        }
+
+    }
+
+    packagingOptions {
+        exclude 'META-INF/pom.properties'
+        exclude 'META-INF/pom.xml'
     }
 }
 
-dependencies {
-    compile 'com.actionbarsherlock:actionbarsherlock:4.4.0@aar'
-    compile 'com.android.support:support-v4:20.+'
-    compile 'com.google.android.gms:play-services:5.0.+'
-    //compile project(':ViewPageIndicator')
-    compile 'com.squareup.okhttp:okhttp:1.3.0'
-    compile files('libs/FlurryAgent.jar')
-    compile 'com.crashlytics.android:crashlytics:1.+'
-
-}
 
 // Fetch properties for signing
 def Properties props = new Properties()

@@ -20,22 +20,26 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.ListFragment;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.ActionBar;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager.BadTokenException;
@@ -43,12 +47,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.app.SherlockListFragment;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
-import com.actionbarsherlock.view.Window;
 import com.markupartist.sthlmtraveling.provider.HistoryDbAdapter;
 import com.markupartist.sthlmtraveling.provider.PlacesProvider.Place.Places;
 import com.markupartist.sthlmtraveling.provider.TransportMode;
@@ -57,6 +55,8 @@ import com.markupartist.sthlmtraveling.provider.departure.DeparturesStore.Depart
 import com.markupartist.sthlmtraveling.provider.departure.DeparturesStore.Departures;
 import com.markupartist.sthlmtraveling.provider.site.Site;
 import com.markupartist.sthlmtraveling.provider.site.SitesStore;
+import com.markupartist.sthlmtraveling.ui.view.PageFragmentAdapter;
+import com.markupartist.sthlmtraveling.ui.view.SlidingTabLayout;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -100,12 +100,12 @@ public class DeparturesActivity extends BaseFragmentActivity {
     private HistoryDbAdapter mHistoryDbAdapter;
     private ViewPager mPager;
     private PageFragmentAdapter mPageAdapter;
+    private SlidingTabLayout mSlidingTabLayout;
+//    private SwipeRefreshLayout mSwipeRefreshLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 
         setContentView(R.layout.departures);
 
@@ -124,24 +124,35 @@ public class DeparturesActivity extends BaseFragmentActivity {
             finish();
         }
 
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setHomeButtonEnabled(true);
+        actionBar.setDisplayShowHomeEnabled(true);
+        actionBar.setDisplayHomeAsUpEnabled(true);
+
         mPageAdapter = new PageFragmentAdapter(this, getSupportFragmentManager());
-        mPageAdapter.setCount(4);
 
         Bundle metroArg = new Bundle();
         metroArg.putInt(DepartureFragment.ARG_TRANSPORT_TYPE, TransportMode.METRO_INDEX);
-        mPageAdapter.addPage(new PageInfo(getString(R.string.departure_metro), DepartureFragment.class, metroArg));
+
+        mPageAdapter.addPage(new PageFragmentAdapter.PageInfo(getString(R.string.departure_metro),
+                DepartureFragment.class, metroArg, R.drawable.tab_transport_metro_selected));
 
         Bundle busArg = new Bundle();
         busArg.putInt(DepartureFragment.ARG_TRANSPORT_TYPE, TransportMode.BUS_INDEX);
-        mPageAdapter.addPage(new PageInfo(getString(R.string.departure_bus), DepartureFragment.class, busArg));
+        mPageAdapter.addPage(new PageFragmentAdapter.PageInfo(getString(R.string.departure_bus),
+                DepartureFragment.class, busArg, R.drawable.tab_transport_bus_selected));
 
         Bundle trainArg = new Bundle();
         trainArg.putInt(DepartureFragment.ARG_TRANSPORT_TYPE, TransportMode.TRAIN_INDEX);
-        mPageAdapter.addPage(new PageInfo(getString(R.string.departures), DepartureFragment.class, trainArg));
+        mPageAdapter.addPage(new PageFragmentAdapter.PageInfo(getString(R.string.departures),
+                DepartureFragment.class, trainArg, R.drawable.tab_transport_train_selected));
 
         Bundle tramArg = new Bundle();
         tramArg.putInt(DepartureFragment.ARG_TRANSPORT_TYPE, TransportMode.LOKALBANA_INDEX);
-        mPageAdapter.addPage(new PageInfo(getString(R.string.deviations_label), DepartureFragment.class, tramArg));
+        mPageAdapter.addPage(new PageFragmentAdapter.PageInfo(getString(R.string.deviations_label),
+                DepartureFragment.class, tramArg, R.drawable.tab_transport_tram_car_selected));
 
         mPager = (ViewPager) findViewById(R.id.pager);
         mPager.setPageMarginDrawable(R.color.light_grey);
@@ -152,43 +163,24 @@ public class DeparturesActivity extends BaseFragmentActivity {
                     @Override
                     public void onPageSelected(int position) {
                         mPreferredTrafficMode = position;
-                        getSupportActionBar().setSelectedNavigationItem(position);
                     }
                 }
         );
 
-        initActionBar();
+        mSlidingTabLayout = (SlidingTabLayout) findViewById(R.id.sliding_tabs);
+        Resources res = getResources();
+        mSlidingTabLayout.setSelectedIndicatorColors(res.getColor(R.color.tab_selected_strip));
+        mSlidingTabLayout.setDistributeEvenly(true);
+        mSlidingTabLayout.setViewPager(mPager);
+        mSlidingTabLayout.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+            @Override
+            public void onPageSelected(int position) {
+                mPreferredTrafficMode = position;
+            }
+        });
 
         // Not ideal.
         mHistoryDbAdapter = new HistoryDbAdapter(this).open();
-    }
-
-    @Override
-    protected ActionBar initActionBar() {
-        ActionBar ab = super.initActionBar();
-        ab.setDisplayHomeAsUpEnabled(true);
-        ab.setDisplayUseLogoEnabled(false);
-        ab.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-
-        ActionBar.TabListener tabListener = new ActionBar.TabListener() {
-            public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft) {
-                mPager.setCurrentItem(tab.getPosition());
-                mPreferredTrafficMode = tab.getPosition();
-            }
-
-            public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction ft) {
-            }
-
-            public void onTabReselected(ActionBar.Tab tab, FragmentTransaction ft) {
-            }
-        };
-
-        ab.addTab(ab.newTab().setIcon(R.drawable.transport_metro).setTabListener(tabListener));
-        ab.addTab(ab.newTab().setIcon(R.drawable.transport_bus).setTabListener(tabListener));
-        ab.addTab(ab.newTab().setIcon(R.drawable.transport_train).setTabListener(tabListener));
-        ab.addTab(ab.newTab().setIcon(R.drawable.transport_tram_car).setTabListener(tabListener));
-
-        return ab;
     }
 
     private void selectPreferredTransport() {
@@ -208,19 +200,13 @@ public class DeparturesActivity extends BaseFragmentActivity {
                 break;
         }
         mPager.setCurrentItem(selectedItem, true);
-        getSupportActionBar().setSelectedNavigationItem(selectedItem);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getSupportMenuInflater();
+        MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.actionbar_departures, menu);
         return true;
-    }
-
-    @Override
-    public void setTitle(CharSequence title) {
-        getSupportActionBar().setTitle(title);
     }
 
     @Override
@@ -485,14 +471,14 @@ public class DeparturesActivity extends BaseFragmentActivity {
      * Show progress dialog.
      */
     private void showProgress() {
-        setSupportProgressBarIndeterminateVisibility(true);
+//        mSwipeRefreshLayout.setRefreshing(true);
     }
 
     /**
      * Dismiss the progress dialog.
      */
     private void dismissProgress() {
-        setSupportProgressBarIndeterminateVisibility(false);
+//        mSwipeRefreshLayout.setRefreshing(false);
     }
 
     @Override
@@ -511,6 +497,10 @@ public class DeparturesActivity extends BaseFragmentActivity {
         i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(i);
         return true;
+    }
+
+    public void onRefresh() {
+        new GetDeparturesTask().execute(mSite);
     }
 
     /**
@@ -644,6 +634,7 @@ public class DeparturesActivity extends BaseFragmentActivity {
                 } catch (BadTokenException e) {
                     Log.w(TAG, "Caught BadTokenException when trying to show network error dialog.");
                 }
+                onData(null);
             }
         }
     }
@@ -693,83 +684,14 @@ public class DeparturesActivity extends BaseFragmentActivity {
         return "android:switcher:"+R.id.pager+":"+pos;
     }
 
-    public class PageFragmentAdapter extends FragmentPagerAdapter /*implements TitleProvider*/ {
 
-        private ArrayList<PageInfo> mPages = new ArrayList<PageInfo>();
-        private Context mContext;
-        private int mCount;
-
-        public PageFragmentAdapter(Context activity, FragmentManager fm) {
-            super(fm);
-            mContext = activity;
-        }
-
-        public void setCount(final int count) {
-            mCount = count;
-        }
-
-        public Bundle getPageArgs(int position) {
-            return mPages.get(position).mArgs;
-        }
-
-        public void updatePageArgs(int position, Bundle args) {
-            mPages.get(position).mArgs = args;
-        }
-
-        public void addPage(PageInfo page) {
-            mPages.add(page);
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            PageInfo page = mPages.get(position);
-            return Fragment.instantiate(mContext,
-                    page.getFragmentClass().getName(), page.getArgs());
-        }
-
-        @Override
-        public int getCount() {
-            return mCount;
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return mPages.get(position).getTextResource().toUpperCase();
-        }
-
-    }
-
-    public class PageInfo {
-        private String mTextResource;
-        private Class<?> mFragmentClass;
-        private Bundle mArgs;
-
-        public PageInfo(String textResource, Class<?> fragmentClass,
-                        Bundle args) {
-            mTextResource = textResource;
-            mFragmentClass = fragmentClass;
-            mArgs = args;
-        }
-
-        public String getTextResource() {
-            return mTextResource;
-        }
-
-        public Class<?> getFragmentClass() {
-            return mFragmentClass;
-        }
-
-        public Bundle getArgs() {
-            return mArgs;
-        }
-    }
-
-    public static class DepartureFragment extends SherlockListFragment {
+    public static class DepartureFragment extends ListFragment implements SwipeRefreshLayout.OnRefreshListener {
         public static String ARG_DEPARTURES = "ARG_DEPARTURES";
         public static String ARG_TRANSPORT_TYPE = "ARG_TRANSPORT_TYPE";
 
         private DepartureAdapter mSectionedAdapter;
         private Departures mDepartureResult;
+        private SwipeRefreshLayout mSwipeRefreshLayout;
 
         public DepartureFragment() {
             setRetainInstance(true);
@@ -806,6 +728,9 @@ public class DeparturesActivity extends BaseFragmentActivity {
 
             View view = inflater.inflate(R.layout.departures_list, container, false);
 
+            mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh);
+            mSwipeRefreshLayout.setOnRefreshListener(this);
+
             return view;
         }
 
@@ -835,9 +760,20 @@ public class DeparturesActivity extends BaseFragmentActivity {
         }
 
         public void update(Departures result) {
-            mDepartureResult = result;
-            if (isVisible()) {
-                updateViews();
+            mSwipeRefreshLayout.setRefreshing(false);
+
+            if (result != null) {
+                mDepartureResult = result;
+                if (isVisible()) {
+                    updateViews();
+                }
+            }
+        }
+
+        @Override
+        public void onRefresh() {
+            if (getActivity() != null) {
+                ((DeparturesActivity) getActivity()).onRefresh();
             }
         }
     }

@@ -16,18 +16,21 @@
 
 package com.markupartist.sthlmtraveling.provider.planner;
 
-import java.util.ArrayList;
+import android.os.Parcel;
+import android.os.Parcelable;
+import android.text.format.Time;
+
+import com.markupartist.sthlmtraveling.provider.TransportMode;
+import com.markupartist.sthlmtraveling.provider.planner.Planner.Location;
+import com.markupartist.sthlmtraveling.provider.site.Site;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-import android.text.format.Time;
-
-import com.markupartist.sthlmtraveling.provider.planner.Planner.Location;
-import com.markupartist.sthlmtraveling.provider.site.Site;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class JourneyQuery implements Parcelable {
     public Location origin;
@@ -36,9 +39,11 @@ public class JourneyQuery implements Parcelable {
     public Time time;
     public boolean isTimeDeparture = true;
     public boolean alternativeStops = false;
-    public ArrayList<String> transportModes = new ArrayList<String>();
+    public List<String> transportModes = new ArrayList<String>();
     public String ident;
     public String seqnr;
+    public boolean hasPromotions;
+    public int promotionNetwork = -1;
 
     public JourneyQuery() {
     }
@@ -55,6 +60,8 @@ public class JourneyQuery implements Parcelable {
         parcel.readStringList(transportModes);
         ident = parcel.readString();
         seqnr = parcel.readString();
+        hasPromotions = (parcel.readInt() == 1);
+        promotionNetwork = parcel.readInt();
     }
 
     @Override
@@ -73,6 +80,8 @@ public class JourneyQuery implements Parcelable {
         dest.writeStringList(transportModes);
         dest.writeString(ident);
         dest.writeString(seqnr);
+        dest.writeInt(hasPromotions ? 1 : 0);
+        dest.writeInt(promotionNetwork);
     }
 
     /**
@@ -84,6 +93,30 @@ public class JourneyQuery implements Parcelable {
     public boolean hasVia() {
         return via != null && via.hasName();
     }
+
+    /**
+     * Returns true if anything has than the defaults has been modified.
+     *
+     * @return true if any filtering is active.
+     */
+    public boolean hasAdditionalFiltering() {
+        if (hasVia()) {
+            return true;
+        }
+        if (alternativeStops) {
+            return true;
+        }
+        if (transportModes != null) {
+            List<String> defaults = Arrays.asList(TransportMode.METRO, TransportMode.BUS,
+                    TransportMode.WAX, TransportMode.TRAIN, TransportMode.TRAM);
+            if (!transportModes.containsAll(defaults)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
 
     public static final Creator<JourneyQuery> CREATOR = new Creator<JourneyQuery>() {
         public JourneyQuery createFromParcel(Parcel parcel) {
@@ -170,14 +203,13 @@ public class JourneyQuery implements Parcelable {
             JSONObject jsonVia = jsonObject.getJSONObject("via");
             Location via = new Location();
             via.name = jsonVia.getString("name");
+            via.id = jsonVia.getInt("id");
             journeyQuery.via = via;
         }
 
         return journeyQuery;
     }
 
-    
-    
     /* (non-Javadoc)
      * @see java.lang.Object#toString()
      */
@@ -197,7 +229,7 @@ public class JourneyQuery implements Parcelable {
         private Time mTime;
         private boolean mIsTimeDeparture = true;
         private boolean mAlternativeStops;
-        private ArrayList<String> mTransportModes;        
+        private List<String> mTransportModes;
 
         public Builder() {
             
@@ -305,12 +337,16 @@ public class JourneyQuery implements Parcelable {
             journeyQuery.time = mTime;
             journeyQuery.isTimeDeparture = mIsTimeDeparture;
             journeyQuery.alternativeStops = mAlternativeStops;
+            if (mTransportModes == null) {
+                mTransportModes = Arrays.asList(TransportMode.METRO, TransportMode.BUS,
+                        TransportMode.WAX, TransportMode.TRAIN, TransportMode.TRAM);
+            }
             journeyQuery.transportModes = mTransportModes;
 
             return journeyQuery;
         }
 
-        private Planner.Location buildLocationFromStop(Site site) {
+        public static Planner.Location buildLocationFromStop(Site site) {
             Planner.Location location = new Planner.Location();
             location.id = site.getId();
             location.name = site.getName();

@@ -17,23 +17,23 @@
 */
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:paddingTop="@dimen/list_vertical_padding"
+    android:paddingBottom="@dimen/list_vertical_padding"
     android:orientation="horizontal"
-    android:padding="5dip"
     >
     <ImageView
         android:id="@+id/traffic_status_event_status"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_trip_deviation"
-        android:layout_marginTop="5dp"
         />
     <TextView
         android:id="@+id/traffic_status_event_message"
         android:layout_width="fill_parent" 
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dip"
+        android:layout_marginLeft="16dip"
         android:text="På grund av banarbeten stannar inte södergående pendeltåg vid station Årstaberg lördag 12 juni kl 09:18 – 18:40 samt söndag 13 juni kl 11:18 - 18:40. Avstigande hänvisas att åka via Älvsjö. Påstigande hänvisas att åka via Stockholms södra."
         android:layout_weight="1"
         />

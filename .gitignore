@@ -1,11 +1,12 @@
-sthlmtraveling/src/main/java/com/markupartist/sthlmtraveling/provider/ApiConf.java
 /local.properties
+build_prod.properties
 /signing.properties
 build
 /.idea
 *.iml
 .gradle
 *.DS_Store
+*.apk
 com_crashlytics_export_strings.xml
 sthlmtraveling/crashlytics.properties
 sthlmtraveling/src/main/assets/crashlytics-build.properties

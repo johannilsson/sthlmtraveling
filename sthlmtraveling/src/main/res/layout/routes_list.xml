@@ -16,32 +16,49 @@
 ** limitations under the License.
 */
 -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             android:orientation="vertical"
+             android:layout_width="fill_parent"
+             android:layout_height="fill_parent">
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
-
-    <!-- <ImageView
-        android:layout_width="fill_parent"
-        android:layout_height="1px"
-        android:src="@drawable/stroke"
-        /> -->
-    <RelativeLayout
-        android:id="@+id/ad_holder"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        >
-    </RelativeLayout>
     <ListView
-        android:layout_above="@id/ad_holder"
         style="@style/AppListView"
         android:id="@id/android:list"
         android:divider="@null"
-        android:layout_width="fill_parent" 
+        android:layout_width="fill_parent"
         android:layout_height="fill_parent"
+        android:paddingTop="56dp"
+        android:clipToPadding="false"
         />
-    <include layout="@layout/progress_bar" android:id="@id/android:empty" />
-</RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/headerbar"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="@color/primary_dark"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        >
+
+        <Button
+            android:id="@+id/date_time"
+            style="?attr/borderlessButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:textColor="@color/primary_light"
+            android:paddingLeft="@dimen/list_horizontal_padding"
+            android:paddingRight="@dimen/list_horizontal_padding"
+            android:textSize="14dp"
+            android:drawableLeft="@drawable/ic_settings"
+            android:drawablePadding="@dimen/list_horizontal_padding"
+            />
+
+    </LinearLayout>
+
+    <include
+        layout="@layout/progress_bar"
+        android:id="@+id/empty_view"/>
+</FrameLayout>
+
+
 

@@ -20,8 +20,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
-import java.util.HashMap;
-import java.util.Map.Entry;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Adapter that represent the data of several other adapters. 
@@ -49,8 +49,7 @@ public class MultipleListAdapter extends BaseAdapter {
     /**
      * Represents all adapters.
      */
-    private HashMap<Integer, BaseAdapter> mAdapters = 
-        new HashMap<Integer, BaseAdapter>();
+    private List<BaseAdapter> mAdapters = new ArrayList<BaseAdapter>();
 
     /**
      * Lock used when adding new adapters.
@@ -61,7 +60,7 @@ public class MultipleListAdapter extends BaseAdapter {
      * Get all adapters that that is handled by this adapter.
      * @return Adapters added to this adapter.
      */
-    public HashMap<Integer, BaseAdapter> getAdapters() {
+    public List<BaseAdapter> getAdapters() {
         return mAdapters;
     }
 
@@ -71,7 +70,8 @@ public class MultipleListAdapter extends BaseAdapter {
      */
     public void addAdapter(int id, BaseAdapter adapter) {
         synchronized (mLock) {
-            mAdapters.put(id, adapter);
+            //mAdapters.put(id, adapter);
+            mAdapters.add(id, adapter);
         }
     }
 
@@ -84,18 +84,23 @@ public class MultipleListAdapter extends BaseAdapter {
      * @return The adapter id.
      */
     public int getAdapterId(int position) {
-        for (Entry<Integer, BaseAdapter> e : mAdapters.entrySet()) {
-            if (position == 0)
-                return e.getKey();
+        int currentAdapterId = 0;
+        for (BaseAdapter adapter : mAdapters) {
+            if (position == 0) {
+                return currentAdapterId;
+            }
 
-            int size = e.getValue().getCount();
+            int size = adapter.getCount();
 
-            if (position < size)
-                return e.getKey();
+            if (position < size) {
+                return currentAdapterId;
+            }
 
             position -= size;
+            currentAdapterId++;
         }
-        return -1;        
+
+        return -1;
     }
 
     /**
@@ -106,8 +111,9 @@ public class MultipleListAdapter extends BaseAdapter {
     public int getCount() {
         int total = 0;
 
-        for (BaseAdapter adapter: mAdapters.values())
+        for (BaseAdapter adapter: mAdapters) {
             total += adapter.getCount();
+        }
 
         return total;
     }
@@ -121,14 +127,16 @@ public class MultipleListAdapter extends BaseAdapter {
     public int getAdapterPosition(int position) {
         int sectionIndex = 0;
 
-        for (BaseAdapter adapter : mAdapters.values()) {
-            if (position == 0)
+        for (BaseAdapter adapter : mAdapters) {
+            if (position == 0) {
                 return position;
+            }
 
             int size = adapter.getCount();
 
-            if (position < size)
+            if (position < size) {
                 return position;
+            }
 
             position -= size;
             sectionIndex++;
@@ -143,14 +151,16 @@ public class MultipleListAdapter extends BaseAdapter {
      * @return The adapter.
      */
     public BaseAdapter getAdapter(int position) {
-        for (BaseAdapter adapter: mAdapters.values()) {
-            if (position == 0)
+        for (BaseAdapter adapter: mAdapters) {
+            if (position == 0) {
                 return adapter;
-            
+            }
+
             int size = adapter.getCount();
 
-            if (position < size)
+            if (position < size) {
                 return adapter;
+            }
 
             position -= size;
         }
@@ -165,14 +175,16 @@ public class MultipleListAdapter extends BaseAdapter {
      */
     @Override
     public Object getItem(int position) {
-        for (BaseAdapter adapter: mAdapters.values()) {
-            if (position == 0)
+        for (BaseAdapter adapter: mAdapters) {
+            if (position == 0) {
                 return adapter.getItem(position);
+            }
 
             int size = adapter.getCount();
 
-            if (position < size)
+            if (position < size) {
                 return adapter.getItem(position);
+            }
 
             position -= size;
         }
@@ -190,14 +202,16 @@ public class MultipleListAdapter extends BaseAdapter {
     public long getItemId(int position) {
         int sectionIndex = 0;
 
-        for (BaseAdapter adapter: mAdapters.values()) {
-            if (position == 0)
+        for (BaseAdapter adapter: mAdapters) {
+            if (position == 0) {
                 return adapter.getItemId(position);
+            }
 
             int size = adapter.getCount();
 
-            if (position < size)
+            if (position < size) {
                 return adapter.getItemId(position);
+            }
 
             position -= size;
             sectionIndex++;
@@ -215,8 +229,9 @@ public class MultipleListAdapter extends BaseAdapter {
     public int getViewTypeCount() {
         int total = 0;
 
-        for (BaseAdapter adapter: mAdapters.values())
+        for (BaseAdapter adapter: mAdapters) {
             total += adapter.getViewTypeCount();
+        }
 
         return total;
     }
@@ -229,7 +244,7 @@ public class MultipleListAdapter extends BaseAdapter {
     public int getItemViewType(int position) {
         int typeOffset = 0; // start counting from here
 
-        for (BaseAdapter adapter : mAdapters.values()) {
+        for (BaseAdapter adapter : mAdapters) {
             int size = adapter.getCount();
 
             if (position < size) {
@@ -249,19 +264,18 @@ public class MultipleListAdapter extends BaseAdapter {
      */
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {        
-        int sectionIndex = 0;
-
-        for (BaseAdapter adapter: mAdapters.values()) {
-            if (position == 0)
+        for (BaseAdapter adapter: mAdapters) {
+            if (position == 0) {
                 return adapter.getView(position, convertView, parent);
+            }
             
             int size = adapter.getCount();
 
-            if (position < size)
+            if (position < size) {
                 return adapter.getView(position, convertView, parent);
+            }
 
             position -= size;
-            sectionIndex++;
         }
 
         return null;
@@ -274,14 +288,16 @@ public class MultipleListAdapter extends BaseAdapter {
      */
     @Override
     public boolean isEnabled(int position) {
-        for (BaseAdapter adapter: mAdapters.values()) {
-            if (position == 0)
+        for (BaseAdapter adapter: mAdapters) {
+            if (position == 0) {
                 return adapter.isEnabled(position);
+            }
              
             int size = adapter.getCount();
 
-            if (position < size)
+            if (position < size) {
                 return adapter.isEnabled(position);
+            }
 
             position -= size;
         }

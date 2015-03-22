@@ -1,111 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools" xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <style name="Theme.App.SplitActionBar" parent="@style/Theme.Sherlock.Light.DarkActionBar">
+    <style name="Theme.App" parent="BaseTheme">
         <item name="borderlessButtonStyle">@style/LegacyBorderlessButton</item>
         <item name="borderlessButtonSmallStyle">@style/LegacyBorderlessSmallButton</item>
-        <item name="windowContentOverlay">@null</item>
-        <item name="android:icon">@android:color/transparent</item>
+    </style>
+
+    <style name="Theme.AppNoActionBar" parent="BaseThemeNoActionBar">
+        <item name="borderlessButtonStyle">@style/LegacyBorderlessButton</item>
+        <item name="borderlessButtonSmallStyle">@style/LegacyBorderlessSmallButton</item>
+    </style>
+
+    <style name="BaseTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryDark">@color/primary_dark</item>
+        <item name="colorAccent">@color/accent</item>
+        <item name="colorControlActivated">@color/primary_dark</item>
+        <item name="colorControlNormal">@color/primary_dark</item>
+
+        <item name="android:windowContentOverlay">@null</item>
         <item name="android:windowBackground">@color/background</item>
-        <item name="actionBarDivider">@drawable/abs__list_divider_holo_light</item>
-
-        <!-- ActionBar related -->
-        <item name="actionBarItemBackground">@drawable/selectable_background_app</item>
-        <item name="popupMenuStyle">@style/PopupMenu.App</item>
-        <item name="dropDownListViewStyle">@style/DropDownListView.App</item>
-        <item name="actionBarTabStyle">@style/ActionBarTabStyle.App</item>
-        <item name="actionDropDownStyle">@style/DropDownNav.App</item>
-        <item name="actionBarStyle">@style/ActionBar.Solid.App</item>
-        <item name="actionModeBackground">@drawable/cab_background_top_app</item>
-        <item name="actionModeSplitBackground">@drawable/cab_background_bottom_app</item>
-        <item name="actionModeCloseButtonStyle">@style/ActionButton.CloseMode.App</item>
-
-        <!-- Light.DarkActionBar specific -->
-        <item name="actionBarWidgetTheme">@style/Theme.App.Widget</item>
     </style>
 
-    <style name="Theme.App" parent="@style/Theme.Sherlock.Light">
-        <item name="android:icon">@android:color/transparent</item>
-        <item name="borderlessButtonStyle">@style/LegacyBorderlessButton</item>
-        <item name="borderlessButtonSmallStyle">@style/LegacyBorderlessSmallButton</item>
-        <item name="windowContentOverlay">@null</item>
+    <style name="BaseThemeNoActionBar" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryDark">@color/primary_dark</item>
+        <item name="colorAccent">@color/accent</item>
+        <item name="colorControlActivated">@color/primary_dark</item>
+        <item name="colorControlNormal">@color/primary_dark</item>
 
-        <!-- ActionBar related -->
-        <item name="actionBarItemBackground">@drawable/selectable_background_app</item>
-        <item name="popupMenuStyle">@style/PopupMenu.App</item>
-        <item name="dropDownListViewStyle">@style/DropDownListView.App</item>
-        <item name="actionBarTabStyle">@style/ActionBarTabStyle.App</item>
-        <item name="actionDropDownStyle">@style/DropDownNav.App</item>
-        <item name="actionBarStyle">@style/ActionBar.Solid.App</item>
-        <item name="actionModeBackground">@drawable/cab_background_top_app</item>
-        <item name="actionModeSplitBackground">@drawable/cab_background_bottom_app</item>
-        <item name="actionModeCloseButtonStyle">@style/ActionButton.CloseMode.App</item>
-
-        <!-- Light.DarkActionBar specific -->
-        <item name="actionBarWidgetTheme">@style/Theme.App.Widget</item>
-
-    </style>
-
-    <style name="ActionBar.Solid.App" parent="@style/Widget.Sherlock.Light.ActionBar.Solid.Inverse">
-        <item name="background">@drawable/ab_stacked_solid_app</item>
-        <item name="backgroundStacked">@drawable/ab_stacked_solid_app</item>
-        <item name="backgroundSplit">@color/sl_blue</item>
-        <item name="progressBarStyle">@style/ProgressBar.App</item>
-    </style>
-
-    <style name="ActionBar.Transparent.App" parent="@style/Widget.Sherlock.ActionBar">
-        <item name="background">@drawable/ab_transparent_app</item>
-        <item name="progressBarStyle">@style/ProgressBar.App</item>
-    </style>
-
-    <style name="PopupMenu.App" parent="@style/Widget.Sherlock.ListPopupWindow">
-        <item name="android:popupBackground">@drawable/menu_dropdown_panel_app</item>
-    </style>
-
-    <style name="DropDownListView.App" parent="@style/Widget.Sherlock.ListView.DropDown">
-        <item name="android:listSelector">@drawable/selectable_background_app</item>
-    </style>
-
-    <style name="ActionBarTabStyle.App" parent="@style/Widget.Sherlock.ActionBar.TabView">
-        <item name="android:background">@drawable/tab_indicator_ab_app</item>
-    </style>
-
-    <style name="DropDownNav.App" parent="@style/Widget.Sherlock.Spinner.DropDown.ActionBar">
-        <item name="android:background">@drawable/spinner_background_ab_app</item>
-        <item name="android:popupBackground">@drawable/menu_dropdown_panel_app</item>
-        <item name="android:dropDownSelector">@drawable/selectable_background_app</item>
-    </style>
-
-    <style name="ProgressBar.App" parent="@style/Widget.Sherlock.ProgressBar.Horizontal">
-        <item name="android:progressDrawable">@drawable/progress_horizontal_app</item>
-    </style>
-
-    <style name="ActionButton.CloseMode.App" parent="@style/Widget.Sherlock.ActionButton.CloseMode">
-        <item name="android:background">@drawable/btn_cab_done_app</item>
-    </style>
-
-    <!-- this style is only referenced in a Light.DarkActionBar based theme -->
-    <style name="Theme.App.Widget" parent="@style/Theme.Sherlock">
-        <item name="popupMenuStyle">@style/PopupMenu.App</item>
-        <item name="dropDownListViewStyle">@style/DropDownListView.App</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowBackground">@color/background</item>
     </style>
 
     <!-- General styles -->
     <style name="AppBaseListView" parent="@android:style/Widget.ListView.White">
+        <item name="android:height">?attr/actionBarSize</item>
     </style>
 
     <style name="AppListView" parent="AppBaseListView">
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:paddingLeft">16dp</item>
-        <item name="android:paddingRight">16dp</item>
-        <item name="android:scrollbars">none</item><!-- TODO: We should adapt each view to the new margins instead. -->
-    </style>
-
-    <style name="Container">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:padding">16dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:cacheColorHint">@color/background</item>
+        <item name="android:fastScrollEnabled">false</item>
+        <item name="android:divider">@null</item>
+        <item name="android:dividerHeight">0dp</item>
+        <!--<item name="android:overScrollMode">never</item>-->
+        <item name="android:overScrollHeader">@null</item>
     </style>
 
     <style name="LegacyBorderlessButton" parent="@android:style/Widget.Button">
@@ -122,4 +63,45 @@
     <style name="Title" parent="@android:style/TextAppearance.Large">
         <item name="android:fontFamily" tools:ignore="NewApi">sans-serif-light</item>
     </style>
+
+    <style name="Container">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingRight">@dimen/list_horizontal_padding</item>
+        <item name="android:paddingLeft">@dimen/list_horizontal_padding</item>
+        <item name="android:paddingBottom">@dimen/list_vertical_padding</item>
+        <item name="android:paddingTop">@dimen/list_vertical_padding</item>
+    </style>
+
+    <style name="ListContainer">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingRight">@dimen/list_horizontal_padding</item>
+        <item name="android:paddingLeft">@dimen/list_horizontal_padding</item>
+        <item name="android:paddingBottom">@dimen/list_vertical_padding</item>
+        <item name="android:paddingTop">@dimen/list_vertical_padding</item>
+    </style>
+
+    <style name="AutoComplete">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:completionThreshold">3</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:dropDownVerticalOffset">5dip</item>
+        <item name="android:dropDownWidth">fill_parent</item>
+        <item name="android:ems">10</item>
+        <item name="android:imeOptions">actionNext</item>
+        <item name="android:inputType">text</item>
+        <item name="android:lines">1</item>
+        <item name="android:nextFocusDown">@+id/to</item>
+        <item name="android:nextFocusRight">@+id/from_menu</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:textColorHint">?android:attr/textColorPrimary</item>
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
+        <item name="android:background">@null</item>
+        <item name="android:paddingTop">16dp</item>
+        <item name="android:paddingBottom">16dp</item>
+        <item name="android:textCursorDrawable" tools:ignore="NewApi">@null</item>
+    </style>
+
 </resources>

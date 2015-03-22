@@ -22,7 +22,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.widget.Toast;
 
-import com.flurry.android.FlurryAgent;
 import com.markupartist.sthlmtraveling.R;
 import com.markupartist.sthlmtraveling.utils.Analytics;
 import com.markupartist.sthlmtraveling.utils.IntentUtil;
@@ -74,8 +73,6 @@ public class SmsTicketDialog {
      * @param reducedPrice True if the price is reduced, false otherwise.
      */
     private static void sendSms(final Context context, final boolean reducedPrice, final String tariffZones) {
-        FlurryAgent.onEvent("Buy SMS Ticket");
-
         Toast.makeText(context, R.string.sms_ticket_notice_message, Toast.LENGTH_LONG).show();
         String price = reducedPrice ? "R" : "H";
 

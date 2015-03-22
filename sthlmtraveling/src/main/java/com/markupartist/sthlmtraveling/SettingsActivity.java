@@ -10,7 +10,12 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.Preference;
+import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
+import android.support.v7.widget.SwitchCompat;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.Toast;
 
 import com.markupartist.sthlmtraveling.provider.HistoryDbAdapter;
@@ -23,6 +28,7 @@ public class SettingsActivity extends BasePreferenceActivity
     private static final String TAG = "SettingsActivity";
     private static final int DIALOG_CLEAR_SEARCH_HISTORY = 0;
     private static final int DIALOG_CLEAR_FAVORITES = 1;
+    private static final int DIALOG_WHY_ADS = 2;
 
     private HistoryDbAdapter mHistoryDbAdapter;
     private int mClickCount;
@@ -38,7 +44,7 @@ public class SettingsActivity extends BasePreferenceActivity
         mHistoryDbAdapter = new HistoryDbAdapter(this).open();
 
         Preference customPref = findPreference("about_version");
-        customPref.setSummary("Version " + MyApplication.APP_VERSION);
+        customPref.setSummary("Version " + AppConfig.APP_VERSION);
     }
 
     @Override
@@ -58,16 +64,14 @@ public class SettingsActivity extends BasePreferenceActivity
         } else if (key.equals("notification_deviations_enabled")) {
             boolean enabled = sharedPreferences.getBoolean("notification_deviations_enabled", false);
             if (enabled) {
-                registerEvent("Starting deviation service", null);
                 Analytics.getInstance(this).event("Settings", "Deviation Service", "start");
             } else {
-                registerEvent("Disabled deviation service", null);
                 Analytics.getInstance(this).event("Settings", "Deviation Service", "stop");
             }
             DeviationService.startAsRepeating(SettingsActivity.this);
         }
 
-        Toast.makeText(this, R.string.settings_saved, Toast.LENGTH_LONG).show();
+        Toast.makeText(this, R.string.settings_saved, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -104,6 +108,8 @@ public class SettingsActivity extends BasePreferenceActivity
             if (mClickCount == 20) {
                 ((String) null).trim();
             }
+        } else if (preference.getKey().equals("about_ads")) {
+            showDialog(DIALOG_WHY_ADS);
         }
         return super.onPreferenceTreeClick(preferenceScreen, preference);
     }
@@ -171,6 +177,37 @@ public class SettingsActivity extends BasePreferenceActivity
                             }
                         })
                         .setNegativeButton(R.string.no, new OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                            }
+                        })
+                        .create();
+            case DIALOG_WHY_ADS:
+                View adDialogView = LayoutInflater.from(this).inflate(R.layout.dialog_ads, null);
+                final SharedPreferences sharedPreferences = PreferenceManager
+                        .getDefaultSharedPreferences(getApplicationContext());
+                boolean isDisabled = sharedPreferences.getBoolean("is_ads_disabled", false);
+                SwitchCompat switchAds = (SwitchCompat) adDialogView.findViewById(R.id.switch_ads);
+                switchAds.setChecked(isDisabled);
+                switchAds.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                        if (isChecked) {
+                            Analytics.getInstance(SettingsActivity.this).event("Ads", "Disabled");
+                            sharedPreferences.edit().putBoolean("is_ads_disabled", true).apply();
+                        } else {
+                            Analytics.getInstance(SettingsActivity.this).event("Ads", "Enabled");
+                            sharedPreferences.edit().putBoolean("is_ads_disabled", false).apply();
+                        }
+                    }
+                });
+
+                return new AlertDialog.Builder(this)
+                        .setTitle(R.string.ads_title)
+                        .setCancelable(true)
+                        .setView(adDialogView)
+                        .setPositiveButton(R.string.ok, new OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.cancel();

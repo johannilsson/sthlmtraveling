@@ -17,14 +17,10 @@
 */
 -->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
-    android:orientation="vertical"
-    android:layout_width="fill_parent" 
-    android:layout_height="wrap_content"
-    android:paddingTop="8dip"
-    android:paddingBottom="8dip"
-    android:paddingLeft="5dip"
-    android:paddingRight="5dip"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:orientation="vertical"
+              style="@style/ListContainer"
     >
     <LinearLayout
         android:layout_width="fill_parent"
@@ -45,8 +41,10 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textColor="?android:attr/textColorPrimary"
-            android:padding="2dip"
-            android:text="Telefonplan"
+            android:paddingTop="2dip"
+            android:paddingBottom="2dip"
+            android:paddingLeft="8dip"
+            tools:text="Telefonplan"
             />
     </LinearLayout>
     <LinearLayout
@@ -67,8 +65,10 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textColor="?android:attr/textColorPrimary"
-            android:padding="2dip"
-            android:text="T-Centralen"
+            android:paddingTop="2dip"
+            android:paddingBottom="2dip"
+            android:paddingLeft="8dip"
+            tools:text="T-Centralen"
             />
     </LinearLayout>
     <LinearLayout
@@ -90,7 +90,9 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textColor="?android:attr/textColorPrimary"
-            android:padding="2dip"
+            android:paddingTop="2dip"
+            android:paddingBottom="2dip"
+            android:paddingLeft="8dip"
             />
     </LinearLayout>
     <LinearLayout

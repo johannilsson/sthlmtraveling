@@ -16,41 +16,147 @@
 ** limitations under the License.
 */
 -->
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:padding="16dp"
-    >
-   <TextView
-       android:layout_width="fill_parent"
-       android:layout_height="wrap_content"
-       android:text="@string/change_date_and_time"
-       android:textAppearance="?android:attr/textAppearanceLarge"
-       />
-    <Spinner 
-        android:id="@+id/departure_arrival_choice"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:drawSelectorOnTop="true"
-        android:layout_marginTop="5dp"
-    />    
-	<LinearLayout
-	    android:orientation="horizontal"
-	    android:layout_width="fill_parent"
-	    android:layout_height="wrap_content"
-	    android:layout_marginTop="5dp"
-	    >
-	    <Button
-	        android:id="@+id/change_route_time"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        />
-	    <Button
-	        android:id="@+id/change_route_date"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        />
-	</LinearLayout>
-</LinearLayout>
+    <LinearLayout
+        style="@style/Container"
+        android:orientation="vertical"
+        >
+
+        <View
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:focusable="true"
+            android:focusableInTouchMode="true"/>
+
+        <TextView
+            style="?android:textAppearanceMedium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/date_and_time_label"
+            android:layout_marginBottom="8dp"
+            />
+
+        <Spinner
+            android:id="@+id/departure_arrival_choice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawSelectorOnTop="true"
+            android:layout_marginBottom="8dp"
+            />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            >
+
+            <Button
+                android:id="@+id/change_route_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                />
+
+            <Button
+                android:id="@+id/change_route_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                />
+
+            <ImageButton
+                android:id="@+id/btn_set_to_now"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="?attr/borderlessButtonStyle"
+                android:src="@drawable/ic_action_refresh"
+                />
+        </LinearLayout>
+
+        <TextView
+            style="?android:textAppearanceMedium"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="8dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/transport_type"
+            />
+
+        <CheckBox
+            android:id="@+id/planner_transport_metro"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/metros"
+            android:checked="false"/>
+
+        <CheckBox
+            android:id="@+id/planner_transport_bus"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/buses"
+            android:checked="false"/>
+
+        <CheckBox
+            android:id="@+id/planner_transport_tram"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/trams"
+            android:checked="false"/>
+
+        <CheckBox
+            android:id="@+id/planner_transport_train"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/trains"
+            android:checked="false"/>
+
+        <CheckBox
+            android:id="@+id/planner_transport_wax"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Waxholmsbolagets båttrafik"
+            android:checked="false"/>
+
+        <CheckBox
+            android:id="@+id/planner_transport_nar"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Närtrafiken"
+            android:checked="false"/>
+
+        <TextView
+            style="?android:textAppearanceMedium"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="8dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/routes_label"
+            />
+
+        <com.markupartist.sthlmtraveling.ui.view.DelayAutoCompleteTextView
+            android:id="@+id/via"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:completionThreshold="3"
+            android:layout_weight="1"
+            android:dropDownVerticalOffset="5dip"
+            android:dropDownWidth="fill_parent"
+            android:ems="10"
+            android:hint="@string/via"
+            android:imeOptions="actionNext"
+            android:inputType="text"
+            android:lines="1"
+            android:singleLine="true"
+            android:textColor="?android:attr/textColorPrimary"/>
+
+        <CheckBox
+            android:id="@+id/planner_alternative_stops"
+            android:layout_marginTop="8dp"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/alternative_stops_label"/>
+
+
+    </LinearLayout>
+</ScrollView>

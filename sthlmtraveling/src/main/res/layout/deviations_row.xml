@@ -16,44 +16,51 @@
 ** limitations under the License.
 */
 -->
- 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
-    android:orientation="vertical"
-    android:layout_width="fill_parent" 
-    android:layout_height="wrap_content"
-    android:padding="5dip">
-	    <TextView
-	        android:id="@+id/deviation_header"
-	        android:text="Inställd avgång"
-	        android:textStyle="bold"
-	        android:textAppearance="?android:attr/textAppearanceMedium"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:textColor="?android:attr/textColorPrimary"
-	        />
-           <TextView
-               android:id="@+id/deviation_details"
-               android:text="Barkarby station - Jakobsbergs station kl 19:35 är inställd 2010-02-01 på grund av olyckshändelse."
-               android:layout_width="fill_parent"
-               android:layout_height="wrap_content"
-               android:layout_marginBottom="2dip"
-               android:textColor="?android:attr/textColorPrimary"
-               />
-           <TextView
-               android:id="@+id/deviation_scope"
-               android:text="Buss 709"
-               android:layout_width="wrap_content"
-               android:layout_height="wrap_content"
-               android:textSize="12dip"
-               android:textColor="?android:attr/textColorSecondary"
-               />
-           <TextView
-               android:id="@+id/deviation_created"
-               android:text="2010-02-01 06:45:23"
-               android:layout_width="wrap_content"
-               android:layout_height="wrap_content"
-               android:textSize="12dip"
-               android:textColor="?android:attr/textColorSecondary"
-               />
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="fill_parent"
+              android:layout_height="wrap_content"
+              android:padding="@dimen/list_horizontal_padding">
+
+    <TextView
+        android:id="@+id/deviation_header"
+        android:text="Inställd avgång"
+        android:textStyle="bold"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="22dp"
+        android:textColor="?android:attr/textColorPrimary"
+        />
+
+    <TextView
+        android:id="@+id/deviation_details"
+        android:text="Barkarby station - Jakobsbergs station kl 19:35 är inställd 2010-02-01 på grund av olyckshändelse."
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="2dip"
+        android:textSize="16dp"
+        android:textColor="?android:attr/textColorPrimary"
+        />
+
+    <TextView
+        android:id="@+id/deviation_scope"
+        android:text="Buss 709"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="14dip"
+        android:textColor="?android:attr/textColorSecondary"
+        android:paddingTop="8dp"
+        />
+
+    <TextView
+        android:id="@+id/deviation_created"
+        android:text="2010-02-01 06:45:23"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="14dip"
+        android:textColor="?android:attr/textColorSecondary"
+        />
 </LinearLayout>
 

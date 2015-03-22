@@ -74,9 +74,15 @@
             android:key="about_contact"
             android:title="Email"
             />
+        <!--<Preference-->
+            <!--android:key="about_donate"-->
+            <!--android:title="@string/donate"-->
+            <!--/>-->
         <Preference
-            android:key="about_donate"
-            android:title="@string/donate"
+            android:key="about_ads"
+            android:title="@string/ads"
+            android:enabled="true"
+            android:summary="@string/ads_summary"
             />
         <Preference
             android:key="about_version"

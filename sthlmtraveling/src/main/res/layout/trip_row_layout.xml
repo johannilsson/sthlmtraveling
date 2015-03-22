@@ -17,19 +17,25 @@
   -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:paddingLeft="@dimen/list_horizontal_padding"
+              android:paddingRight="@dimen/list_horizontal_padding"
+    >
 
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         >
+
         <LinearLayout
             android:layout_width="80dp"
             android:layout_height="match_parent"
             android:orientation="horizontal"
             >
+
             <LinearLayout
                 android:layout_width="40dp"
                 android:layout_height="wrap_content"
@@ -38,6 +44,7 @@
                 android:paddingTop="12dp"
                 android:paddingBottom="12dp"
                 >
+
                 <TextView
                     android:id="@+id/trip_arrival_time"
                     android:layout_width="wrap_content"
@@ -47,6 +54,7 @@
                     android:text="13:57"
                     android:layout_gravity="right"
                     />
+
                 <TextView
                     android:id="@+id/trip_departure_time"
                     android:layout_width="wrap_content"
@@ -93,18 +101,21 @@
                 android:layout_width="wrap_content"
                 android:layout_height="fill_parent"
                 >
+
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="fill_parent"
                     android:src="@drawable/line_segment_walk"
                     android:layout_gravity="center_vertical|center_horizontal"
                     />
+
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="32dp"
                     android:src="@drawable/line_segment_white"
                     android:layout_gravity="center_horizontal|top"
                     />
+
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -114,6 +125,7 @@
             </FrameLayout>
 
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
@@ -123,6 +135,7 @@
             android:paddingTop="12dp"
             android:paddingBottom="12dp"
             >
+
             <TextView
                 android:id="@+id/trip_stop_title"
                 android:layout_width="wrap_content"
@@ -131,6 +144,7 @@
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="Min position"
                 />
+
             <TextView
                 android:id="@+id/trip_description"
                 android:layout_width="wrap_content"
@@ -154,11 +168,13 @@
         android:orientation="horizontal"
         android:visibility="gone"
         >
+
         <LinearLayout
             android:layout_width="80dp"
             android:layout_height="match_parent"
             android:orientation="horizontal"
             >
+
             <LinearLayout
                 android:layout_width="40dp"
                 android:layout_height="wrap_content"
@@ -167,6 +183,7 @@
                 android:paddingTop="12dp"
                 android:paddingBottom="12dp"
                 >
+
                 <ImageView
                     android:id="@+id/traffic_status_event_status"
                     android:layout_width="wrap_content"
@@ -175,12 +192,14 @@
                     android:layout_gravity="right"
                     />
             </LinearLayout>
+
             <FrameLayout
                 android:paddingLeft="12dp"
                 android:paddingRight="12dp"
                 android:layout_width="36dp"
                 android:layout_height="fill_parent"
                 >
+
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="fill_parent"
@@ -189,6 +208,7 @@
                     />
             </FrameLayout>
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
@@ -200,9 +220,9 @@
             >
             <!-- EVENT TO INFLATE -->
             <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
+                          android:layout_width="fill_parent"
+                          android:layout_height="wrap_content"
+                          android:orientation="horizontal"
                 >
 
                 <TextView
@@ -228,11 +248,13 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         >
+
         <LinearLayout
             android:layout_width="80dp"
             android:layout_height="match_parent"
             android:orientation="horizontal"
             >
+
             <LinearLayout
                 android:layout_width="40dp"
                 android:layout_height="wrap_content"
@@ -241,12 +263,14 @@
                 android:paddingTop="12dp"
                 android:paddingBottom="12dp"
                 />
+
             <FrameLayout
                 android:paddingLeft="12dp"
                 android:paddingRight="12dp"
                 android:layout_width="36dp"
                 android:layout_height="fill_parent"
                 >
+
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="fill_parent"
@@ -255,6 +279,7 @@
                     />
             </FrameLayout>
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -262,6 +287,7 @@
             android:layout_gravity="center"
             android:gravity="center_vertical"
             >
+
             <ToggleButton
                 android:id="@+id/show_hide_intermediate_stops"
                 android:checked="false"

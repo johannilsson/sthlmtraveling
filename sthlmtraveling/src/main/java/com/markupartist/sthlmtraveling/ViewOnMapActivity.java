@@ -19,17 +19,16 @@ package com.markupartist.sthlmtraveling;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.MenuItem;
 
-import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.app.SherlockFragmentActivity;
-import com.actionbarsherlock.view.MenuItem;
-import com.actionbarsherlock.view.Window;
-import com.flurry.android.FlurryAgent;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
@@ -40,11 +39,12 @@ import com.markupartist.sthlmtraveling.provider.planner.Planner;
 import com.markupartist.sthlmtraveling.provider.planner.Planner.IntermediateStop;
 import com.markupartist.sthlmtraveling.provider.planner.Planner.SubTrip;
 import com.markupartist.sthlmtraveling.provider.planner.Planner.Trip2;
+import com.markupartist.sthlmtraveling.utils.Analytics;
 import com.markupartist.sthlmtraveling.utils.StringUtils;
 
 import java.io.IOException;
 
-public class ViewOnMapActivity extends SherlockFragmentActivity {
+public class ViewOnMapActivity extends ActionBarActivity {
 
     private static final String TAG = "ViewOnMapActivity";
     public static String EXTRA_LOCATION = "com.markupartist.sthlmtraveling.extra.Location";
@@ -62,13 +62,11 @@ public class ViewOnMapActivity extends SherlockFragmentActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        FlurryAgent.onStartSession(this, MyApplication.ANALYTICS_KEY);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        FlurryAgent.onEndSession(this);
      }
 
     @Override
@@ -89,12 +87,10 @@ public class ViewOnMapActivity extends SherlockFragmentActivity {
 
         // TODO: Use transparent action bar, fix location of my location btn.
 
+        Analytics.getInstance(this).registerScreen("View on map");
         //requestWindowFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
-        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+//        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         setContentView(R.layout.map);
-
-        FlurryAgent.onPageView();
-        FlurryAgent.onEvent("View on map");
 
         ActionBar actionBar = getSupportActionBar();
         //actionBar.setBackgroundDrawable(getResources().getDrawable(R.drawable.ab_bg_black));
@@ -265,8 +261,10 @@ public class ViewOnMapActivity extends SherlockFragmentActivity {
     private void setUpMap() {
         fetchRoute(mTrip, mJourneyQuery);
 
-        
-        
+        UiSettings settings = mMap.getUiSettings();
+        settings.setAllGesturesEnabled(true);
+        settings.setMapToolbarEnabled(false);
+
         mMap.setMyLocationEnabled(true);
 
         mMap.moveCamera(CameraUpdateFactory.newCameraPosition(

@@ -16,33 +16,35 @@
 
 package com.markupartist.sthlmtraveling;
 
-import java.io.IOException;
-import java.util.List;
-
 import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.app.SherlockFragmentActivity;
-import com.flurry.android.FlurryAgent;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.markupartist.sthlmtraveling.provider.site.Site;
+import com.markupartist.sthlmtraveling.utils.Analytics;
 
-public class PointOnMapActivity extends SherlockFragmentActivity
+import java.io.IOException;
+import java.util.List;
+
+public class PointOnMapActivity extends ActionBarActivity
         implements OnMapClickListener, OnInfoWindowClickListener {
 
     public static String EXTRA_STOP = "com.markupartist.sthlmtraveling.pointonmap.stop";
@@ -60,13 +62,11 @@ public class PointOnMapActivity extends SherlockFragmentActivity
     @Override
     protected void onStart() {
         super.onStart();
-        FlurryAgent.onStartSession(this, MyApplication.ANALYTICS_KEY);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        FlurryAgent.onEndSession(this);
      }
  
     @Override
@@ -78,8 +78,7 @@ public class PointOnMapActivity extends SherlockFragmentActivity
         //requestWindowFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
         setContentView(R.layout.map);
 
-        FlurryAgent.onPageView();
-        FlurryAgent.onEvent("Point on map");
+        Analytics.getInstance(this).registerScreen("Point on map");
 
         ActionBar actionBar = getSupportActionBar();
         //actionBar.setBackgroundDrawable(getResources().getDrawable(R.drawable.ab_bg_black));
@@ -111,6 +110,7 @@ public class PointOnMapActivity extends SherlockFragmentActivity
             // activity life cycle. There is no need to reinitialize it.
             mMap = mapFragment.getMap();
         }
+
         setUpMapIfNeeded();
     }
 
@@ -119,6 +119,16 @@ public class PointOnMapActivity extends SherlockFragmentActivity
         super.onResume();
 
         setUpMapIfNeeded();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void showHelpToast(String helpText) {
@@ -144,6 +154,10 @@ public class PointOnMapActivity extends SherlockFragmentActivity
         mMap.setMyLocationEnabled(true);
         mMap.setOnMapClickListener(this);
         mMap.setOnInfoWindowClickListener(this);
+
+        UiSettings settings = mMap.getUiSettings();
+        settings.setAllGesturesEnabled(true);
+        settings.setMapToolbarEnabled(false);
 
         // Use stops location if present, otherwise set a geo point in 
         // central Stockholm.

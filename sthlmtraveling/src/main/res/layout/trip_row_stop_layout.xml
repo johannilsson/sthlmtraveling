@@ -19,7 +19,10 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:paddingLeft="@dimen/list_horizontal_padding"
+    android:paddingRight="@dimen/list_horizontal_padding"
+    >
 
     <include layout="@layout/trip_row_intermediate_stop"
         android:id="@+id/trip_layout_intermediate_stop"/>

@@ -19,6 +19,7 @@
 
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name">STHLM Traveling</string>
+    <string name="ok">Ok</string>
     <string name="done">Utför</string>
     <string name="discard">Avbryt</string>
     <string name="from">Från</string>
@@ -37,14 +38,14 @@
     <string name="session_timeout_message">Sökningen är troligtvis utdaterad.</string>
     <string name="attention_label">Varning</string>
     <string name="bad_routes_parameters_message">Från- eller Till-fältet får inte lämnas blankt.</string>
-    <string name="new_search">Sök</string>
+    <string name="new_search">SÖK</string>
     <string name="empty_value">Saknas eller ogiltigt</string>
-    <string name="loading">Söker... Var god dröj</string>
+    <string name="loading">Söker… Var god dröj</string>
     <string name="my_location">Min position</string>
     <string name="change_date_and_time">Ändra datum &amp; tid</string>
     <string name="reverse_start_end">Ändra ordning på från &amp; till</string>
     <string name="about">Om</string>
-    <string name="about_this_app">STHLM Traveling är utvecklat av Johan Nilsson. Kontakta honom om du har idéer på vidare förbättringar eller vid problem.\n\nAll trafikdata är hämtad från AB Storstockholms Lokaltrafik.\n\nFör att kunna förbättra appen samlas anonym data kring användning in mha Flurry och Google Analytics.\n\n<b>Credits</b>\n<li>Robert Johansson\nhttps://twitter.com/likebobby</li>\n<li>Programikon &amp; idéer av Olof Brickarp\nhttp://www.yay.se</li>\n<li>Svensk översättning Jean Diarbakerli</li>\n<li>Spansk översättning Valeria Padilla and Miguel Ángel Domínguez Coloma</li>\n<li>Patchar av Fredrik Jönsson\nhttp://github.com/lk95jofr</li>\n<li>Patchar av Adam Nybäck\nhttp://anyro.se</li>\n<li>Patchar av Morgan Christiansson\nhttp://screeninteraction.com</li>\n<li>Ikoner av Fredrik Broman\nhttp://fredrikbroman.com</li>\n<li>Ikoner av Android Icons\nhttp://androidicons.com</li>\n<li>Feedback från Swedroid\nhttp://swedroid.se</li>\n\nKällkod på http://github.com/johannilsson/sthlmtraveling.\n\nJohan Nilsson johan@markupartist.com\nhttp://markupartist.com\n\n</string>
+    <string name="about_this_app">STHLM Traveling är utvecklat av Johan Nilsson. Kontakta honom om du har idéer på vidare förbättringar eller vid problem.\n\nAll trafikdata är hämtad från Trafiklab och AB Storstockholms Lokaltrafik.\n\nFör att kunna förbättra appen samlas anonym data kring användning in mha Flurry och Google Analytics.\n\n<b>Credits</b>\n<li>Robert Johansson\nhttps://twitter.com/likebobby</li>\n<li>Programikon &amp; idéer av Olof Brickarp\nhttp://www.yay.se</li>\n<li>Svensk översättning Jean Diarbakerli</li>\n<li>Spansk översättning Valeria Padilla and Miguel Ángel Domínguez Coloma</li>\n<li>Patchar av Fredrik Jönsson\nhttp://github.com/lk95jofr</li>\n<li>Patchar av Adam Nybäck\nhttp://anyro.se</li>\n<li>Patchar av Morgan Christiansson\nhttp://screeninteraction.com</li>\n<li>Ikoner av Fredrik Broman\nhttp://fredrikbroman.com</li>\n<li>Ikoner av Android Icons\nhttp://androidicons.com</li>\n<li>Feedback från Swedroid\nhttp://swedroid.se</li>\n\nKällkod på http://github.com/johannilsson/sthlmtraveling.\n\nJohan Nilsson johan@markupartist.com\nhttp://markupartist.com\n\n</string>
     <string name="donate">Donera</string>
     <string name="donate_url">http://pledgie.com/campaigns/6527</string>
     <string name="feedback">Feedback</string>
@@ -79,8 +80,8 @@
     <string name="tap_your_end_point_on_map">Välj ankomstpunkt på kartan</string>
     <string name="tap_your_start_point_on_map">Välj avgångspunkt på kartan</string>
     <string name="tap_your_location_on_map">Misslyckades med att bestämma din position. Välj denna på kartan.</string>
-    <string name="departing_on">Avgår tidigast <xliff:g id="time">%s</xliff:g> den <xliff:g id="date">%s</xliff:g></string>
-    <string name="arriving_by">Anländer senast <xliff:g id="time">%s</xliff:g> den <xliff:g id="date">%s</xliff:g></string>
+    <string name="departing_on">Avgår <xliff:g id="time">%s</xliff:g> den <xliff:g id="date">%s</xliff:g></string>
+    <string name="arriving_by">Anländer <xliff:g id="time">%s</xliff:g> den <xliff:g id="date">%s</xliff:g></string>
     <string name="departures">Avgångar</string>
     <string name="departures_for">Avgångar för <xliff:g id="site_name">%s</xliff:g></string>
     <string name="date_of_trip">Datum för resa: <xliff:g id="date">%s</xliff:g></string>
@@ -108,7 +109,8 @@
     <string name="my_location_source_disabled">Lägg till "Min position" källa under systeminställningar.</string>
     <string name="title_settings">Inställningar</string>
     <string name="now_label">Nu</string>
-    <string name="more_choices_label">Fler val</string>
+    <string name="more_choices_label">ALTERNATIV</string>
+    <string name="route_options_active">Med fler val för filtering</string>
     <string name="alternative_stops_label">Jag kan gå till annan hållplats om det ger en snabbare resa.</string>
     <string name="date_and_time_label">Sökt Datum &amp; Tid</string>
     <string name="determining_your_position">Fastställer din position</string>
@@ -202,5 +204,14 @@
     <string name="search_favorites_cleared">Favoriter raderade</string>
     <string name="help">Hjälp</string>
     <string name="support">Support och hjälpforum</string>
+    <string name="transport_type">Färdmedel</string>
+
+    <!-- Ads -->
+    <string name="ads">Annonser</string>
+    <string name="ads_title">Varför visas annonser?</string>
+    <string name="ads_turn_off">Stäng av annonser</string>
+    <string name="ads_message">Sedan 2009 har den här appen varit fri från annonser. Genom åren har serverkostnaden och underhållskostnaderna ökat.\n\nFör att kunna fortsätta utvecklingen och ge den support som krävs visas det annonser ibland.\n\nOm ni har problem med att annonser visas går det att stänga av dem nedan. I framtiden kanske det istället blir möjligt att för en mindre summa slippa annonserna.\n\nTack för er support!\nJohan
+</string>
+    <string name="ads_summary">Varför visas annonser?</string>
 </resources>
 

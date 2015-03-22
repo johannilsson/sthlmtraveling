@@ -17,11 +17,12 @@
 */
 -->
 
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/actionbar_item_sms"
         android:icon="@drawable/ic_action_sms"
-        android:showAsAction="always"
+        app:showAsAction="always"
         android:title="@string/sms_ticket_label"
         android:visible="false"
         />
@@ -29,12 +30,12 @@
         android:id="@+id/actionbar_item_reverse"
         android:icon="@drawable/ic_action_reverse"
         android:title="@string/reverse_start_end"
-        android:showAsAction="always"
+        app:showAsAction="always"
         />
     <item
         android:id="@+id/actionbar_item_star"
         android:icon="@drawable/ic_action_star_off"
         android:title="@string/reverse_start_end"
-        android:showAsAction="always"
+        app:showAsAction="always"
         />
 </menu>

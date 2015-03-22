@@ -1,13 +1,15 @@
 package com.markupartist.sthlmtraveling.provider.site;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.location.Location;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
 import android.util.Log;
+
+import com.markupartist.sthlmtraveling.provider.planner.Planner;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class Site implements Parcelable {
     public static String TYPE_MY_LOCATION = "MY_LOCATION";
@@ -23,7 +25,7 @@ public class Site implements Parcelable {
 
     /**
      * Create a new Stop that is a copy of the given Stop.
-     * @param stop the stop
+     * @param site the site
      */
     public Site(Site site) {
         mName = site.getName();
@@ -141,6 +143,14 @@ public class Site implements Parcelable {
             return new Site[size];
         }
     };
+
+    public static Site fromPlannerLocation(Planner.Location loc) {
+        Site s = new Site();
+        s.setId(loc.id);
+        s.setLocation(loc.latitude, loc.longitude);
+        s.setName(loc.name);
+        return s;
+    }
 
     public static Site fromJson(JSONObject json) throws JSONException {
         Site site = new Site();

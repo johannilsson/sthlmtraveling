@@ -18,9 +18,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal"
-    android:divider="@drawable/abs__list_divider_holo_light"
-    android:showDividers="middle"
-    android:dividerPadding="12dp">
+    >
     <include layout="@layout/actionbar_discard_button" />
     <include layout="@layout/actionbar_done_button" />
 </LinearLayout>

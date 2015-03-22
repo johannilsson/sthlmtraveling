@@ -3,8 +3,14 @@
 
     <declare-styleable name="AppTheme">
         <!-- Style for buttons without an explicit border, often used in groups. -->
-        <attr name="borderlessButtonStyle" format="reference" />
-        <attr name="borderlessButtonSmallStyle" format="reference" />
+        <attr name="borderlessButtonStyle" format="reference"/>
+        <attr name="borderlessButtonSmallStyle" format="reference"/>
     </declare-styleable>
 
+    <declare-styleable name="AdSpace">
+        <attr name="sid" format="string"/>
+        <attr name="autostart" format="boolean"/>
+        <attr name="autoupdate" format="boolean"/>
+        <attr name="gpsenabled" format="boolean"/>
+    </declare-styleable>
 </resources>

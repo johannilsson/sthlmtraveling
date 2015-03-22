@@ -17,15 +17,14 @@
 package com.markupartist.sthlmtraveling;
 
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 
-import com.actionbarsherlock.app.SherlockFragmentActivity;
 
+public class SearchDeparturesFragmentActivity extends ActionBarActivity {
 
-public class SearchDeparturesFragmentActivity extends SherlockFragmentActivity {
-	
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.search_departures);
-	}
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.search_departures);
+    }
 }

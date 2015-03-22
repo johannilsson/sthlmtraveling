@@ -1,0 +1,174 @@
+/*
+ * Copyright (C) 2009-2014 Johan Nilsson <http://markupartist.com>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.markupartist.sthlmtraveling.utils;
+
+import android.content.Context;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.RelativeLayout;
+
+import com.crashlytics.android.Crashlytics;
+import com.markupartist.sthlmtraveling.R;
+import com.widespace.AdInfo;
+import com.widespace.AdSpace;
+import com.widespace.adspace.PrefetchStatus;
+import com.widespace.exception.ExceptionTypes;
+import com.widespace.interfaces.AdErrorEventListener;
+import com.widespace.interfaces.AdEventListener;
+
+/**
+ * Created by johan on 02/12/14.
+ */
+public class AdProxy {
+
+    private final static String TAG = "AdProxy";
+
+    private final Provider mProvider;
+    private final Context mContext;
+    private View mAdView;
+    private boolean mIsDestroyed;
+
+    public enum Provider {
+        WIDESPACE,
+    }
+
+    public AdProxy(Context context, Provider provider, String id) {
+        mContext = context;
+        mProvider = provider;
+
+        mAdView = createAdView(id);
+    }
+
+    public Provider getProvider() {
+        return mProvider;
+    }
+
+    public void onDestroy() {
+        mIsDestroyed = true;
+
+        if (mProvider == Provider.WIDESPACE) {
+            mAdView = null;
+        }
+    }
+
+    public void onPause() {
+        if (mProvider == Provider.WIDESPACE) {
+            ((AdSpace) mAdView).pause();
+        }
+    }
+
+    public void onResume() {
+        if (mProvider == Provider.WIDESPACE) {
+            ((AdSpace) mAdView).resume();
+        }
+    }
+
+    public void load() {
+        if (mProvider == Provider.WIDESPACE) {
+            //((AdSpace) mAdView).runAd();
+        }
+    }
+
+    public View getAdView() {
+        return mAdView;
+    }
+
+    public ViewGroup getAdWithContainer(ViewGroup root, boolean attachToRoot) {
+        int containerId = R.layout.ad_container_no_margins;
+
+        RelativeLayout mAdContainer = (RelativeLayout) LayoutInflater.from(mContext).inflate(
+                containerId, root, attachToRoot);
+
+        mAdContainer.addView(mAdView);
+        return mAdContainer;
+    }
+
+    protected View createAdView(String id) {
+        switch (mProvider) {
+            case WIDESPACE:
+                return createAdSpace(id);
+        }
+        throw new IllegalArgumentException("Unknown ad provider");
+    }
+
+    protected AdSpace createAdSpace(String id) {
+        AdSpace adSpace = new AdSpace(mContext, id, true, true);
+
+//        if (adSpace.getQueueSize() < 1) {
+//            adSpace.prefetchAd();
+//        }
+
+        adSpace.setAdEventListener(new AdEventListener() {
+            @Override
+            public void onAdClosing(AdSpace adSpace, AdInfo.AdType adType) {
+
+            }
+
+            @Override
+            public void onAdClosed(AdSpace adSpace, AdInfo.AdType adType) {
+
+            }
+
+            @Override
+            public void onAdLoading(AdSpace adSpace) {
+            }
+
+            @Override
+            public void onAdLoaded(AdSpace adSpace, AdInfo.AdType adType) {
+            }
+
+            @Override
+            public void onNoAdRecieved(AdSpace adSpace) {
+            }
+
+            @Override
+            public void onPrefetchAd(AdSpace adSpace, PrefetchStatus prefetchStatus) {
+
+            }
+
+            @Override
+            public void onAdPresenting(AdSpace adSpace, boolean b, AdInfo.AdType adType) {
+
+            }
+
+            @Override
+            public void onAdPresented(final AdSpace adSpace, boolean b, AdInfo.AdType adType) {
+            }
+
+            @Override
+            public void onAdDismissing(AdSpace adSpace, boolean b, AdInfo.AdType adType) {
+
+            }
+
+            @Override
+            public void onAdDismissed(AdSpace adSpace, boolean b, AdInfo.AdType adType) {
+
+            }
+        });
+        adSpace.setAdErrorEventListener(new AdErrorEventListener() {
+            @Override
+            public void onFailedWithError(Object o, ExceptionTypes exceptionTypes, String s, Exception e) {
+                Crashlytics.log("Widespace: " + s);
+                Crashlytics.logException(e);
+            }
+        });
+
+        return adSpace;
+    }
+
+}

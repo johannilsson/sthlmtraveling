@@ -16,30 +16,23 @@
   ~ limitations under the License.
   -->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="?attr/actionBarSize"
-    android:background="@color/sl_blue"
+    android:layout_height="48dp"
     >
-    <Button
-        android:id="@+id/btn_search"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="@string/search_routes_label"
-        style="?attr/borderlessButtonStyle"
-        android:textSize="12sp"
-        android:gravity="center"
-        android:textStyle="bold"
-        android:layout_weight="1"
-        />
+
     <ImageButton
         android:id="@+id/btn_settings"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/search_routes_label"
         style="?attr/borderlessButtonStyle"
-        android:gravity="center"
-        android:src="@drawable/ic_action_settings"
-        />
-</LinearLayout>
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:layout_margin="0dp"
+        android:layout_marginLeft="0dp"
+        android:layout_marginRight="0dp"
+        android:minWidth="20dip"
+        android:layout_alignParentRight="true"
+        android:paddingLeft="@dimen/list_horizontal_padding"
+        android:paddingRight="@dimen/list_horizontal_padding"
+        android:src="@drawable/ic_settings_applications_white_24dp"/>
+</RelativeLayout>

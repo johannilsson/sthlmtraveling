@@ -19,8 +19,12 @@ package com.markupartist.sthlmtraveling;
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,6 +32,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
@@ -37,6 +42,7 @@ import com.markupartist.sthlmtraveling.provider.HistoryDbAdapter;
 import com.markupartist.sthlmtraveling.provider.planner.Planner;
 import com.markupartist.sthlmtraveling.provider.site.Site;
 import com.markupartist.sthlmtraveling.ui.view.DelayAutoCompleteTextView;
+import com.markupartist.sthlmtraveling.utils.ViewHelper;
 
 public class SearchDeparturesFragment extends BaseListFragment implements AdapterView.OnItemClickListener {
     static String TAG = "SearchDeparturesActivity";
@@ -61,22 +67,31 @@ public class SearchDeparturesFragment extends BaseListFragment implements Adapte
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState) {
+                             Bundle savedInstanceState) {
         return inflater.inflate(R.layout.search_departures_fragment, container,
                 false);
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
-        findViews();
+        initViews();
         fillData();
         super.onActivityCreated(savedInstanceState);
     }
 
-    private void findViews() {
+    private void initViews() {
         View searchHeader = getActivity().getLayoutInflater().inflate(
                 R.layout.search_departures_header, null);
         getListView().addHeaderView(searchHeader, null, false);
+
+        final ImageButton clearButton = (ImageButton) searchHeader.findViewById(R.id.btn_clear);
+        ViewHelper.tintIcon(clearButton.getDrawable(), Color.GRAY);
+        clearButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mSiteTextView.setText("");
+            }
+        });
 
         mSiteTextView = (DelayAutoCompleteTextView) searchHeader
                 .findViewById(R.id.sites);
@@ -90,7 +105,7 @@ public class SearchDeparturesFragment extends BaseListFragment implements Adapte
         mSiteTextView.setOnEditorActionListener(new OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId,
-                    KeyEvent event) {
+                                          KeyEvent event) {
                 boolean isEnterKey = (null != event && event.getKeyCode() == KeyEvent.KEYCODE_ENTER);
                 if (actionId == EditorInfo.IME_ACTION_SEARCH
                         || true == isEnterKey) {
@@ -98,6 +113,24 @@ public class SearchDeparturesFragment extends BaseListFragment implements Adapte
                     return true;
                 }
                 return false;
+            }
+        });
+        mSiteTextView.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (TextUtils.isEmpty(s)) {
+                    clearButton.setVisibility(View.INVISIBLE);
+                } else {
+                    clearButton.setVisibility(View.VISIBLE);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
             }
         });
         mSiteTextView.setOnItemClickListener(this);
@@ -110,7 +143,7 @@ public class SearchDeparturesFragment extends BaseListFragment implements Adapte
                 startActivity(i);
             }
         });
-        
+
     }
 
     @Override
@@ -131,9 +164,9 @@ public class SearchDeparturesFragment extends BaseListFragment implements Adapte
 
         getActivity().startManagingCursor(historyCursor);
 
-        String[] from = new String[] { HistoryDbAdapter.KEY_NAME };
+        String[] from = new String[]{HistoryDbAdapter.KEY_NAME};
 
-        int[] to = new int[] { android.R.id.text1 };
+        int[] to = new int[]{android.R.id.text1};
 
         final SimpleCursorAdapter favorites = new SimpleCursorAdapter(
                 getActivity(), android.R.layout.simple_list_item_1,
@@ -165,7 +198,7 @@ public class SearchDeparturesFragment extends BaseListFragment implements Adapte
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Site site = ((AutoCompleteStopAdapter)mSiteTextView.getAdapter()).getValue(position);
+        Site site = ((AutoCompleteStopAdapter) mSiteTextView.getAdapter()).getValue(position);
         if (mCreateShortcut) {
             onCreateShortCut(site);
         } else {

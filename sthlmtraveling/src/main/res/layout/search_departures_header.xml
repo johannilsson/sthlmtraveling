@@ -17,51 +17,71 @@
 -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content">
+              android:orientation="vertical"
+              android:layout_width="fill_parent"
+              android:layout_height="wrap_content">
 
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
 
-        <LinearLayout
-            android:layout_width="fill_parent"
+        <com.markupartist.sthlmtraveling.ui.view.DelayAutoCompleteTextView
+            style="@style/AutoComplete"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:addStatesFromChildren="true"
-            android:gravity="center_vertical"
-            android:paddingTop="16dip"
-            android:paddingBottom="10dip">
+            android:id="@+id/sites"
+            android:hint="@string/site_name"
+            android:paddingLeft="@dimen/list_horizontal_padding"
+            android:layout_marginRight="60dp"
+            android:paddingTop="@dimen/list_horizontal_padding"
+            android:paddingBottom="@dimen/list_horizontal_padding"
+            android:textColorHint="@color/stroke"
+            android:layout_centerVertical="true"
+            />
 
-            <com.markupartist.sthlmtraveling.ui.view.DelayAutoCompleteTextView
-                android:id="@+id/sites"
-                android:completionThreshold="3"
-                android:hint="@string/site_name"
-                android:dropDownWidth="fill_parent"
-                android:layout_width="0dip"
-                android:layout_height="fill_parent"
-                android:layout_weight="1"
-                android:imeOptions="actionSearch"
-                android:lines="1"
-                android:inputType="text"
-                android:textColor="?android:attr/textColorPrimary" />
-        </LinearLayout>
-    </LinearLayout>
+        <ImageButton
+            android:id="@+id/btn_clear"
+            style="?borderlessButtonStyle"
+            android:layout_centerInParent="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_close"
+            android:layout_centerVertical="true"
+            android:padding="@dimen/list_horizontal_padding"
+            android:layout_alignParentRight="true"
+            android:visibility="invisible"
+            />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="@color/stroke"
+            android:layout_marginLeft="@dimen/list_horizontal_padding"
+            android:layout_marginRight="@dimen/list_horizontal_padding"
+            android:layout_alignBottom="@id/sites"
+            />
+
+    </RelativeLayout>
 
     <Button
         android:id="@+id/btn_nearby_stops"
-        android:layout_width="wrap_content"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/nearby_stops"
+        android:gravity="left|center_vertical"
         android:drawableLeft="@drawable/ic_place"
         style="?attr/borderlessButtonStyle"
-        android:textColor="?android:attr/textColorPrimary" />
+        android:textColor="?android:attr/textColorPrimary"/>
 
     <TextView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         style="?android:attr/listSeparatorTextViewStyle"
-        android:text="@string/history_label" />
+        android:paddingLeft="@dimen/list_horizontal_padding"
+        android:paddingRight="@dimen/list_horizontal_padding"
+        android:text="@string/history_label"/>
 </LinearLayout>
 

@@ -62,7 +62,11 @@ public class TripView extends LinearLayout {
 
         float scale = getResources().getDisplayMetrics().density;
 
-        this.setPadding((int)(5 * scale), 0, (int)(5 * scale), 0);
+        this.setPadding(
+                getResources().getDimensionPixelSize(R.dimen.list_horizontal_padding),
+                getResources().getDimensionPixelSize(R.dimen.list_vertical_padding),
+                getResources().getDimensionPixelSize(R.dimen.list_horizontal_padding),
+                getResources().getDimensionPixelSize(R.dimen.list_vertical_padding));
 
         LinearLayout timeLayout = new LinearLayout(getContext());
 
@@ -70,7 +74,7 @@ public class TripView extends LinearLayout {
         routeDetail.setText(trip.toText());
         routeDetail.setTextColor(Color.BLACK);
         routeDetail.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
-        routeDetail.setPadding(0, (int)(12 * scale), 0, (int)(2 * scale));
+        routeDetail.setPadding(0, 0, 0, (int)(2 * scale));
         //routeDetail.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
 
         timeLayout.addView(routeDetail);
@@ -90,7 +94,7 @@ public class TripView extends LinearLayout {
         startAndEndPoint.setPadding(0, (int)(2 * scale), 0, (int)(2 * scale));
 
         LinearLayout routeChanges = new LinearLayout(getContext());
-        routeChanges.setPadding((int) (5 * scale), (int) (10 * scale), 0, (int) (12 * scale));
+        routeChanges.setPadding(0, (int) (10 * scale), (int) (5 * scale), 0);
         //routeChanges.setGravity(Gravity.CENTER_VERTICAL);
 
         int currentTransportCount = 1;
@@ -141,7 +145,7 @@ public class TripView extends LinearLayout {
         View divider = new View(getContext());
         ViewGroup.LayoutParams dividerParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 1);
         divider.setLayoutParams(dividerParams);
-        divider.setBackgroundResource(R.drawable.abs__list_divider_holo_light);
+        //divider.setBackgroundResource(R.drawable.abs__list_divider_holo_light);
 
         this.addView(timeLayout);
         this.addView(startAndEndPoint);

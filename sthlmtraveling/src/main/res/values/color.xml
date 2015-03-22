@@ -17,8 +17,33 @@
 
 <resources>
     <color name="background">#ffffff</color>
+
+    <color name="primary">#1976D2</color>
+    <color name="primary_light">#BBDEFB</color>
+    <color name="primary_dark">#1565C0</color>
+
+    <color name="primary_light_alpha">#CCBBDEFB</color>
+
+    <color name="accent">#0b9444</color>
+    <color name="accent_light">#69F0AE</color>
+    <color name="accent_dark">#00C853</color>
+
+    <color name="tab_selected_strip">@color/primary_light</color>
+
+    <color name="icon_default">#ffffff</color>
+
+    <color name="transparent">#00000000</color>
+
+    <color name="body_text_1">#de000000</color>
+    <color name="body_text_2">#8a000000</color>
+    <color name="body_text_3">#60000000</color>
+    <color name="body_text_disabled">#44000000</color>
+
+    <color name="body_text_1_inverse">#deffffff</color>
+    <color name="body_text_2_inverse">#8affffff</color>
+
     <color name="search_plate">#D1EEEE</color>
-    <color name="plate_background">#2c82c0</color>
+    <color name="plate_background">#2196F3</color>
     <color name="plate_extra_background">#e4e4e4</color>
     <color name="light_grey">#F0F0F0</color>
     <color name="stroke">#807e77</color>

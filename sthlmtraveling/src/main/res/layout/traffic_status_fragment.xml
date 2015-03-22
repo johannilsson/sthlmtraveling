@@ -17,17 +17,19 @@
 */
 -->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:padding="16dp"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
     >
-    <include layout="@layout/progress_bar" />
-    <RelativeLayout 
+
+    <include layout="@layout/progress_bar"/>
+
+    <RelativeLayout
         android:id="@+id/traffic_status_more_plate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         >
+
         <Button
             android:id="@+id/traffic_status_btn_all_deviations"
             android:layout_width="fill_parent"
@@ -35,13 +37,15 @@
             android:layout_marginTop="5dip"
             android:text="@string/show_all"
             />
-       </RelativeLayout>
-	<ScrollView
-	    android:orientation="vertical"
-	    android:layout_width="fill_parent"
-	    android:layout_height="fill_parent"
-	    android:layout_above="@id/traffic_status_more_plate"
-	    >
+    </RelativeLayout>
+
+    <ScrollView
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_above="@id/traffic_status_more_plate"
+        >
+
         <LinearLayout
             android:id="@+id/traffic_status_types"
             android:layout_width="fill_parent"

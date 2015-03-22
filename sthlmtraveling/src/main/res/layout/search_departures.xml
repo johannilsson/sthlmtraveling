@@ -18,15 +18,16 @@
 -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res/com.markupartist.sthlmtraveling"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:orientation="vertical" >
+              android:layout_width="fill_parent"
+              android:layout_height="fill_parent"
+              android:orientation="vertical">
 
     <fragment
+        android:id="@+id/fragment_search_departure"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:name="com.markupartist.sthlmtraveling.SearchDeparturesFragment" />
+        android:name="com.markupartist.sthlmtraveling.SearchDeparturesFragment"
+        />
 
 </LinearLayout>
 

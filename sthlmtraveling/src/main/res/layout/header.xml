@@ -22,8 +22,9 @@
     style="?android:attr/listSeparatorTextViewStyle"
     android:paddingTop="16dp"
     android:paddingBottom="10dp"
+    android:paddingLeft="@dimen/list_horizontal_padding"
+    android:paddingRight="@dimen/list_horizontal_padding"
     android:layout_marginBottom="10dp"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:text="djskdjskd"
     />

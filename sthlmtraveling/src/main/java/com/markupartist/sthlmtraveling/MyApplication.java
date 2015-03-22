@@ -17,17 +17,15 @@ import com.markupartist.sthlmtraveling.utils.ErrorReporter;
 
 import java.util.Locale;
 
+import io.fabric.sdk.android.Fabric;
+
 public class MyApplication extends Application {
     static String TAG = "StApplication";
-    public static String ANALYTICS_KEY = "JUSQKB45DEN62VRQVBU9";
-    public static String ANALYTICS_PROPERY_KEY = "UA-6205540-15";
-    public static String APP_VERSION = BuildConfig.VERSION_NAME + " (" + BuildConfig.VERSION_CODE + ")";
 
     @Override
     public void onCreate() {
         super.onCreate();
-
-        Crashlytics.start(this);
+        Fabric.with(this, new Crashlytics());
 
         final ErrorReporter reporter = ErrorReporter.getInstance();
         reporter.init(getApplicationContext());
@@ -84,6 +82,6 @@ public class MyApplication extends Application {
         if (BuildConfig.DEBUG) {
             analytics.getLogger().setLogLevel(Logger.LogLevel.VERBOSE);
         }
-        return analytics.newTracker(ANALYTICS_PROPERY_KEY);
+        return analytics.newTracker(AppConfig.ANALYTICS_PROPERTY_KEY);
     }
 }
