@@ -286,7 +286,11 @@ public class RouteDetailActivity extends BaseListActivity {
 
         View convertView = getLayoutInflater().inflate(R.layout.trip_row_stop_layout, null);
         Button nameView = (Button) convertView.findViewById(R.id.trip_stop_title);
-        nameView.setText(getLocationName(mJourneyQuery.destination));
+        if ("Walk".equals(lastSubTrip.transport.type)) {
+            nameView.setText(getLocationName(mJourneyQuery.destination));
+        } else {
+            nameView.setText(lastSubTrip.destination.name);
+        }
         nameView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
