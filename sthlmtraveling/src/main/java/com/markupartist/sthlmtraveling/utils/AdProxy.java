@@ -26,7 +26,7 @@ import com.crashlytics.android.Crashlytics;
 import com.markupartist.sthlmtraveling.R;
 import com.widespace.AdInfo;
 import com.widespace.AdSpace;
-import com.widespace.adspace.PrefetchStatus;
+import com.widespace.adspace.models.PrefetchStatus;
 import com.widespace.exception.ExceptionTypes;
 import com.widespace.interfaces.AdErrorEventListener;
 import com.widespace.interfaces.AdEventListener;
@@ -138,12 +138,10 @@ public class AdProxy {
 
             @Override
             public void onPrefetchAd(AdSpace adSpace, PrefetchStatus prefetchStatus) {
-
             }
 
             @Override
             public void onAdPresenting(AdSpace adSpace, boolean b, AdInfo.AdType adType) {
-
             }
 
             @Override
