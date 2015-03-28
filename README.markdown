@@ -23,8 +23,9 @@ fork the app. I will do my best help you out if you have any problems. The docum
 
 Changelog
 ---------
-* 2.10.1
-  * Dutch translations by Bastiaan Franssen
+* 2.11.0
+  * Add Dutch translations by Bastiaan Franssen
+  * Update third party apis, Google Play Services is now on 7.0.0.
   * Fix issue with using via with the planner
   * Fix falsy validation when changing preferences for a journey
   * Change to use location lookups using the fused location provider from play services
@@ -89,14 +90,14 @@ Changelog
   * Remove beta flag from Nearby Activity.
   * Fix NullPointerException in RoutesActivities. 
 * 2.5.3
-	* Fix issue with shortcuts.
+  * Fix issue with shortcuts.
 * 2.5.2
-	* Add ActionBarSherlock.
-	* Update ViewPagerIndicator to latest version.
-	* Add new logo from [Olof Brickarp](http://www.yay.se).
+  * Add ActionBarSherlock.
+  * Update ViewPagerIndicator to latest version.
+  * Add new logo from [Olof Brickarp](http://www.yay.se).
 * 2.5.1
-	* Fix issue with black text on black background in dialogs on Samsung
-	  Galaxy S2 devices that has been updated to ICS. 
+  * Fix issue with black text on black background in dialogs on Samsung
+    Galaxy S2 devices that has been updated to ICS.
 * 2.5.0
     * Add Gzip support for API request/response.
     * Add map of a selected route.
