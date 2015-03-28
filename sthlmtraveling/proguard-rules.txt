@@ -15,9 +15,12 @@
 #-keepclassmembers class com.widespace.internal.views.** {
 #   public *;
 #}
+
+# Widespace
 -keep class com.widespace.internal.interfaces.** {
    *;
 }
+-dontwarn com.widespace.adspace.helpers.AttributesParseHelper
 
 # Google Play Services
 
@@ -110,3 +113,4 @@
 }
 
 -keep public class * extends android.app.Service
+
