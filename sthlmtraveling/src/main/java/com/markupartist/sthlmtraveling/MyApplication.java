@@ -53,12 +53,19 @@ public class MyApplication extends Application {
         Log.d(TAG, "Preferred language: " + language);
 
         Locale locale = null;
-        if ("sv".equals(language)) {
-            locale = new Locale("sv", "SE");
-        } else if ("es".equals(language)) {
-            locale = new Locale("es", "ES");
-        } else if ("en".equals(language)) {
-            locale = Locale.ENGLISH;
+        switch (language) {
+            case "sv":
+                locale = new Locale("sv", "SE");
+                break;
+            case "es":
+                locale = new Locale("es", "ES");
+                break;
+            case "nl":
+                locale = new Locale("nl", "NL");
+                break;
+            case "en":
+                locale = Locale.ENGLISH;
+                break;
         }
 
         if (locale != null) {

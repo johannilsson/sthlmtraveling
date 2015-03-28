@@ -23,6 +23,18 @@ fork the app. I will do my best help you out if you have any problems. The docum
 
 Changelog
 ---------
+* 2.10.1
+  * Dutch translations by Bastiaan Franssen
+  * Fix issue with using via with the planner
+  * Fix falsy validation when changing preferences for a journey
+  * Change to use location lookups using the fused location provider from play services
+  * Remove Flurry Analytics
+
+* 2.10.0
+  * Update the general design of the app
+  * Add Google Analytics
+  * Add support for showing ads
+
 * 2.9.0 (2014-07-11)
   * Fix order of nearby stops. Thanks [Henrik Sandström](https://github.com/heinrisch)
   * New icon for SMS Ticket and button in route details

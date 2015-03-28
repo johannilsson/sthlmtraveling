@@ -22,18 +22,4 @@
         <item>Avgång</item>
         <item>Ankomst</item>
     </string-array>
-
-    <!-- Preferences -->
-    <string-array name="entries_language_preference">
-        <item>Systemets Locale</item>
-        <item>Svenska</item><!-- Do not translate -->
-        <item>English</item><!-- Do not translate -->
-        <item>Español</item><!-- Do not translate -->
-    </string-array>
-    <string-array name="entryvalues_language_preference">
-        <item>system</item><!-- Do not translate -->
-        <item>sv</item><!-- Do not translate -->
-        <item>en</item><!-- Do not translate -->
-        <item>es</item><!-- Do not translate -->
-    </string-array>
 </resources>
