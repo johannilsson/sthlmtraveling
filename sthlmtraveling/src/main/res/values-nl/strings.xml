@@ -31,17 +31,17 @@
     <string name="arriving">Aankomst</string>
     <string name="no_routes_found_label">Er is helaas geen route beschikbaar</string>
     <string name="no_routes_found_message">Waarschijnlijk wordt je start- of eindstation niet bediend op het aangegeven tijdstip.(Sommige haltes worden niet bediend op bepaalde tijden/dagen).</string>
-    <string name="routes_label">Routes</string>
+    <string name="routes_label">Route</string>
     <string name="route_alternatives_label">Alternatieven</string>
     <string name="route_details_label">Route details</string>
     <string name="no_route_details">Helaas kon er geen route gevonden worden. De zoekopdracht is waarschijnlijk verlopen.</string>
     <string name="session_timeout_message">De zoekopdracht is verlopen.</string>
     <string name="attention_label">Let op</string>
     <string name="bad_routes_parameters_message">Vertrek- en aankomstpunt kunnen niet leeg zijn.</string>
-    <string name="new_search">ZOEK</string>
+    <string name="new_search">ZOEKEN</string>
     <string name="empty_value">Ontbrekend of ongeldig</string>
     <string name="loading">Zoeken. Een ogenblik geduld…</string>
-    <string name="my_location">Mijn positie</string>
+    <string name="my_location">Huidige locatie</string>
     <string name="change_date_and_time">Wijzig datum &amp; tijd</string>
     <string name="reverse_start_end">Vertrek- &amp; aankomstpunt omdraaien</string>
     <string name="about">Over</string>
@@ -51,7 +51,7 @@
     <string name="feedback">Geef je mening</string>
     <string name="send_email">Email versturen…</string>
     <string name="favorites_label">Favorieten</string>
-    <string name="no_favorites"><b>Nog geen favorieten...</b>\nVoeg een favoriet toe met het ster icoon bij zoekopdrachten.</string>
+    <string name="no_favorites"><b>Nog geen favorieten...</b>\nVoeg een favoriet toe door op het ster icoon te killen na een zoekopdracht.</string>
     <string name="reverse_search">Omgekeerd zoeken</string>
     <string name="delete">Verwijderen</string>
     <string name="no_location_title">GPS probleem</string>
@@ -74,18 +74,18 @@
     <string name="retry">Opnieuw</string>
     <string name="requires_barcode_scanner_message">Deze applicatie heeft Barcode Scanner nodig. Wil je deze installeren?</string>
     <string name="install_barcode_scanner_title">Installeer Barcode Scanner?</string>
-    <string name="point_on_map">Aangeven op kaart</string>
+    <string name="point_on_map">Op kaart</string>
     <string name="tap_to_select_this_point">Tik om deze locatie te selecteren</string>
     <string name="point_selected">Locatie geselecteerd</string>
     <string name="tap_your_end_point_on_map">Tik het aankomstpunt aan op de kaart</string>
     <string name="tap_your_start_point_on_map">Tik het vertrekpunt aan op de kaart</string>
     <string name="tap_your_location_on_map">Kan locatie niet bepalen. Selecteer je locatie op de kaart</string>
-    <string name="departing_on">Vertrekt om <xliff:g id="time">%s</xliff:g> op <xliff:g id="date">%s</xliff:g></string>
+    <string name="departing_on">Vertrekken om <xliff:g id="time">%s</xliff:g> op <xliff:g id="date">%s</xliff:g></string>
     <string name="arriving_by">Arriveert om <xliff:g id="time">%s</xliff:g> op <xliff:g id="date">%s</xliff:g></string>
     <string name="departures">Vertrektijden</string>
     <string name="departures_for">Vertrektijden voor <xliff:g id="site_name">%s</xliff:g></string>
     <string name="date_of_trip">Datum van trip: <xliff:g id="date">%s</xliff:g></string>
-    <string name="no_departures_for_transport_type">Geen vertrekken voor het geselecteerde vervoer op dit moment.</string>
+    <string name="no_departures_for_transport_type">Dit vervoerstype wordt hier niet aangeboden.</string>
     <string name="no_departures">Geen vertrekken op dit moment.</string>
     <string name="site_name">Locatie</string>
     <string name="stop_label">Halte</string>
@@ -109,9 +109,9 @@
     <string name="my_location_source_disabled">Activeer Mijn locatie in je telefoon instellingen</string>
     <string name="title_settings">Instellingen</string>
     <string name="now_label">Nu</string>
-    <string name="more_choices_label">EXTRA</string>
+    <string name="more_choices_label">OPTIES</string>
     <string name="route_options_active">Extra route opties</string>
-    <string name="alternative_stops_label">Alternatieve haltes</string>
+    <string name="alternative_stops_label">Via halte</string>
     <string name="date_and_time_label">Datum &amp; Tijd</string>
     <string name="determining_your_position">Locatie bepalen</string>
     <string name="back">Terug</string>
@@ -133,7 +133,7 @@
     <string name="trip_map_description_walk" formatted="false">%s Loop richting %s</string>
     <string name="trip_map_description_normal" formatted="false">%s %s richting %s.</string>
     <string name="show_all">Alles weergeven</string>
-    <string name="direction">Richting</string>
+    <string name="direction">perron</string>
     <string name="no_intermediate_stops">Er zijn geen overige haltes beschikbaar.</string>
     <string name="show_intermediate_stops">Overige haltes weergeven</string>
     <string name="hide_intermediate_stops">Overige haltes verbergen</string>
@@ -189,25 +189,25 @@
     <string name="dialog_title_language_preference">Kies taal</string>
     <string name="settings_saved">Opgeslagen</string>
     <string name="deviation_notification_preference">Vertragingsmeldingen</string>
-    <string name="deviation_notification_summary_preference">Experimenteel. Dit kan je batterij leeg trekken en heeft een permanente internetverbinding nodig.</string>
+    <string name="deviation_notification_summary_preference">Experimenteel. Dit kan je batterij snel leeg trekken en heeft een permanente internetverbinding nodig.</string>
     <string name="deviation_update_interval_preference">Ververs interval</string>
-    <string name="deviation_update_interval_summary_preference">Langere intervallen besparen je battery.</string>
-    <string name="deviation_lines_preference">Lijnen</string>
-    <string name="deviation_lines_summary_preference">Plaats komma\'s in de lijst van de lijnen. Bijvoorbeeld: \'42,28,707\'.</string>
-    <string name="deviation_lines_dialog_message_preference">Scheid de lijnen met een komma. Bijvoorbeeld: \'42,28,707\'.</string>
-    <string name="search_include_addresses_preference">Adressen toevoegen in auto aanvullen</string>
+    <string name="deviation_update_interval_summary_preference">Langere verversingsintervallen besparen je batterij</string>
+    <string name="deviation_lines_preference">Vertragingsmeldingen per lijn</string>
+    <string name="deviation_lines_summary_preference">Geef de bus, tram of treinlijn aan.</string>
+    <string name="deviation_lines_dialog_message_preference">Geef hier de bus, tram of treinlijn aan waarvoor je vertragingsmeldingen wilt ontvangen. Bij meerdere lijnen plaats je een komma tussen elke lijn, bijv: \'42,28,707\'.</string>
+    <string name="search_include_addresses_preference">Adressen toevoegen in auto aanvulling</string>
     <string name="search_include_addresses_summary_preference">Kan ervoor zorgen dat suggesties wat langzamer zijn als dit aan staat.</string>
     <string name="search_clear_history_preference">Zoekgeschiedenis verwijderen</string>
-    <string name="search_clear_history_summary_preference">Verwijderd de geschiedenis voor haltes en routes</string>
+    <string name="search_clear_history_summary_preference">Alle zoekopdrachten verwijderen</string>
     <string name="search_clear_history_confirm">Weet je zeker dat je de zoekgeschiedenis wilt verwijderen?</string>
     <string name="search_history_cleared">Geschiedenis verwijderd</string>
     <string name="search_clear_favorites_preference">Favorieten verwijderen</string>
-    <string name="search_clear_favorites_summary_preference">Verwijderd alle favorieten.</string>
+    <string name="search_clear_favorites_summary_preference">Alle favorieten verwijderen</string>
     <string name="search_clear_favorites_confirm">Weet je zeker dat je alle favorieten wilt verwijderen?</string>
-    <string name="search_favorites_cleared">Favorieten verwijderd</string>
+    <string name="search_favorites_cleared">Favorieten zijn verwijderd</string>
     <string name="help">Help</string>
     <string name="support">Ondersteuning</string>
-    <string name="transport_type">Vervoerstype</string>
+    <string name="transport_type">Vervoersmiddel</string>
 
     <!-- Ads -->
     <string name="ads">Advertenties</string>
