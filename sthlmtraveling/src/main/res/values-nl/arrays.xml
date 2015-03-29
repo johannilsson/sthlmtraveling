@@ -1,7 +1,7 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
     <string-array name="when_choice">
-        <item>Departure time</item>
-        <item>Arrival time</item>
+        <item>Vertrektijd</item>
+        <item>Aankomsttijd</item>
     </string-array>
 
     <string-array name="entries_deviations_preference">
@@ -9,7 +9,7 @@
         <item>15 min</item>
         <item>30 min</item>
         <item>45 min</item>
-        <item>1 h</item>
+        <item>1 u</item>
     </string-array>
 
 </resources>
