@@ -45,7 +45,7 @@ dependencies {
     compile files('libs/nmdp_speech_kit.jar')
 //    compile files('libs/widespace-sdk-4.4.0.jar')
     compile files('libs/widespace-sdk-4.5.0-05d6dac.jar')
-    compile('com.crashlytics.sdk.android:crashlytics:2.1.0@aar') {
+    compile('com.crashlytics.sdk.android:crashlytics:2.2.2@aar') {
         transitive = true;
     }
 }
@@ -58,7 +58,7 @@ android {
         minSdkVersion 9
         targetSdkVersion 22
         versionName "2.11.0"
-        versionCode 132
+        versionCode 134
 
         buildConfigField "boolean", "APP_IS_ADS_ENABLED", buildProperties['IS_ADS_ENABLED']
         buildConfigField "String", "APP_WIDESPACE_SID", buildProperties['WIDESPACE_SID']
