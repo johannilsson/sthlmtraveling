@@ -36,11 +36,13 @@ public class BaseFragmentActivity extends ActionBarActivity implements GoogleApi
     }
 
     public synchronized void initGoogleApiClient() {
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .addApi(LocationServices.API)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .build();
+        if (PlayServicesUtils.checkGooglePlaySevices(this)) {
+            mGoogleApiClient = new GoogleApiClient.Builder(this)
+                    .addApi(LocationServices.API)
+                    .addConnectionCallbacks(this)
+                    .addOnConnectionFailedListener(this)
+                    .build();
+        }
     }
 
     public GoogleApiClient getGoogleApiClient() {

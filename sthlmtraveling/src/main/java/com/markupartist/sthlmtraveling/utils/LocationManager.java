@@ -113,6 +113,9 @@ public class LocationManager implements PlayService, LocationListener {
     }
 
     public void requestLocation() {
+        if (mGoogleApiClient == null) {
+            return;
+        }
         if (!mGoogleApiClient.isConnected()) {
             mLocationRequested = true;
         } else {
@@ -121,6 +124,10 @@ public class LocationManager implements PlayService, LocationListener {
     }
 
     void requestLocationOrDeliverCurrent() {
+        if (mGoogleApiClient == null) {
+            return;
+        }
+
         final Location location = getLastLocation();
         if (isLocationAcceptable(location)) {
             onLocationChanged(location);
@@ -132,6 +139,10 @@ public class LocationManager implements PlayService, LocationListener {
     }
 
     public void removeUpdates() {
+        if (mGoogleApiClient == null) {
+            return;
+        }
+
         mLocationRequestTimeOut.cancel();
         if (mGoogleApiClient.isConnected()) {
             LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
