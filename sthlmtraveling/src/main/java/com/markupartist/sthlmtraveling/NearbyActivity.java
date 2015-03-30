@@ -129,6 +129,11 @@ public class NearbyActivity extends BaseListActivity implements LocationManager.
 
     @Override
     public void onMyLocationFound(Location location) {
+        // TODO: We need to handle this.
+        if (location == null) {
+            Log.e(TAG, "Location was null");
+            return;
+        }
         setTitle(getString(R.string.nearby) + " ("+ location.getAccuracy() +"m)");
         new FindNearbyStopAsyncTask(location).execute();
     }
