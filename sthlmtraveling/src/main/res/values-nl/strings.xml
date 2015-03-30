@@ -85,7 +85,7 @@
     <string name="departures">Vertrektijden</string>
     <string name="departures_for">Vertrektijden voor <xliff:g id="site_name">%s</xliff:g></string>
     <string name="date_of_trip">Datum van trip: <xliff:g id="date">%s</xliff:g></string>
-    <string name="no_departures_for_transport_type">Dit type vervoersmiddel wordt hiet niet aangeboden</string>
+    <string name="no_departures_for_transport_type">Dit type vervoersmiddel wordt hier niet aangeboden</string>
     <string name="no_departures">Geen vertrekken op dit moment</string>
     <string name="site_name">Locatie</string>
     <string name="stop_label">Halte</string>
