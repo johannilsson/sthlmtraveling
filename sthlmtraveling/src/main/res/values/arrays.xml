@@ -23,21 +23,24 @@
         <item>Arrival time</item>
     </string-array>
 
-    <!-- Preferences -->
+    <!-- Do not translate -->
     <string-array name="entries_language_preference">
         <item>System Locale</item>
-        <item>Svenska</item><!-- Do not translate -->
-        <item>English</item><!-- Do not translate -->
-        <item>Español</item><!-- Do not translate -->
-        <item>Dutch</item><!-- Do not translate -->
+        <item>Svenska</item>
+        <item>English</item>
+        <item>Español</item>
+        <item>Dutch</item>
     </string-array>
+    <!-- Do not translate -->
     <string-array name="entryvalues_language_preference">
-        <item>system</item><!-- Do not translate -->
-        <item>sv</item><!-- Do not translate -->
-        <item>en</item><!-- Do not translate -->
-        <item>es</item><!-- Do not translate -->
-        <item>nl</item><!-- Do not translate -->
+        <item>system</item>
+        <item>sv</item>
+        <item>en</item>
+        <item>es</item>
+        <item>nl</item>
     </string-array>
+
+    <!-- Deviation update preference -->
     <string-array name="entries_deviations_preference">
         <item>10 min</item>
         <item>15 min</item>
@@ -45,11 +48,12 @@
         <item>45 min</item>
         <item>1 h</item>
     </string-array>
+    <!-- Do not translate -->
     <string-array name="entryvalues_deviations_preference">
-        <item>600000</item><!-- Do not translate -->
-        <item>900000</item><!-- Do not translate -->
-        <item>1800000</item><!-- Do not translate -->
-        <item>2700000</item><!-- Do not translate -->
-        <item>3600000</item><!-- Do not translate -->
+        <item>600000</item>
+        <item>900000</item>
+        <item>1800000</item>
+        <item>2700000</item>
+        <item>3600000</item>
     </string-array>
 </resources>
