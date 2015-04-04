@@ -16,11 +16,11 @@
 ** limitations under the License.
 */
 -->
-
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <!-- Do not translate -->
     <string name="app_name">STHLM Traveling</string>
     <string name="ok">Ok</string>
-    <string name="done">Utför</string>
+    <string name="done">Klar</string>
     <string name="discard">Avbryt</string>
     <string name="from">Från</string>
     <string name="to">Till</string>
@@ -29,11 +29,11 @@
     <string name="search_routes_label">Hämta resvägar</string>
     <string name="departing">Avgår</string>
     <string name="arriving">Ankommer</string>
-    <string name="no_routes_found_label">Ingen resa kunde hittas</string>
+    <string name="no_routes_found_label">Tyvär ingen resväg hittades</string>
     <string name="no_routes_found_message">Någon av de hållplatser du angav kanske inte trafikeras av de färdmedelsslag du valt. Vissa hållplatser trafikeras inte hela dygnet alla dagar.</string>
     <string name="routes_label">Resvägar</string>
     <string name="route_alternatives_label">Alternativ</string>
-    <string name="route_details_label">Detaljerad beskrivning</string> 
+    <string name="route_details_label">Detaljerad beskrivning</string>
     <string name="no_route_details">Inga resvägar hittades. Detta antagligen beroende på att avgångstiden har passerat.</string>
     <string name="session_timeout_message">Sökningen är troligtvis utdaterad.</string>
     <string name="attention_label">Varning</string>
@@ -45,7 +45,7 @@
     <string name="change_date_and_time">Ändra datum &amp; tid</string>
     <string name="reverse_start_end">Ändra ordning på från &amp; till</string>
     <string name="about">Om</string>
-    <string name="about_this_app">STHLM Traveling är utvecklat av Johan Nilsson. Kontakta honom om du har idéer på vidare förbättringar eller vid problem.\n\nAll trafikdata är hämtad från Trafiklab och AB Storstockholms Lokaltrafik.\n\nFör att kunna förbättra appen samlas anonym data kring användning in mha Flurry och Google Analytics.\n\n<b>Credits</b>\n<li>Robert Johansson\nhttps://twitter.com/likebobby</li>\n<li>Programikon &amp; idéer av Olof Brickarp\nhttp://www.yay.se</li>\n<li>Svensk översättning Jean Diarbakerli</li>\n<li>Spansk översättning Valeria Padilla and Miguel Ángel Domínguez Coloma</li>\n<li>Patchar av Fredrik Jönsson\nhttp://github.com/lk95jofr</li>\n<li>Patchar av Adam Nybäck\nhttp://anyro.se</li>\n<li>Patchar av Morgan Christiansson\nhttp://screeninteraction.com</li>\n<li>Ikoner av Fredrik Broman\nhttp://fredrikbroman.com</li>\n<li>Ikoner av Android Icons\nhttp://androidicons.com</li>\n<li>Feedback från Swedroid\nhttp://swedroid.se</li>\n\nKällkod på http://github.com/johannilsson/sthlmtraveling.\n\nJohan Nilsson johan@markupartist.com\nhttp://markupartist.com\n\n</string>
+    <string name="about_this_app">STHLM Traveling är utvecklat av Johan Nilsson. Kontakta honom om du har idéer på vidare förbättringar eller vid problem.\n\nAll trafikdata är hämtad från Trafiklab och AB Storstockholms Lokaltrafik.\n\nFör att kunna förbättra appen samlas anonym data kring användning in mha Flurry och Google Analytics.\n\n<b>Credits</b>\n&lt;li&gt;Robert Johansson\nhttps://twitter.com/likebobby&lt;/li&gt;\n&lt;li&gt;Programikon &amp; idéer av Olof Brickarp\nhttp://www.yay.se&lt;/li&gt;\n&lt;li&gt;Svensk översättning Jean Diarbakerli&lt;/li&gt;\n&lt;li&gt;Spansk översättning Valeria Padilla and Miguel Ángel Domínguez Coloma&lt;/li&gt;\n&lt;li&gt;Patchar av Fredrik Jönsson\nhttp://github.com/lk95jofr&lt;/li&gt;\n&lt;li&gt;Patchar av Adam Nybäck\nhttp://anyro.se&lt;/li&gt;\n&lt;li&gt;Patchar av Morgan Christiansson\nhttp://screeninteraction.com&lt;/li&gt;\n&lt;li&gt;Ikoner av Fredrik Broman\nhttp://fredrikbroman.com&lt;/li&gt;\n&lt;li&gt;Ikoner av Android Icons\nhttp://androidicons.com&lt;/li&gt;\n&lt;li&gt;Feedback från Swedroid\nhttp://swedroid.se&lt;/li&gt;\n\nKällkod på http://github.com/johannilsson/sthlmtraveling.\n\nJohan Nilsson johan@markupartist.com\nhttp://markupartist.com\n\n</string>
     <string name="donate">Donera</string>
     <string name="donate_url">http://pledgie.com/campaigns/6527</string>
     <string name="feedback">Feedback</string>
@@ -104,9 +104,9 @@
     <string name="departure_tram">Lokalb.</string>
     <string name="now">Nu</string>
     <string name="journey_planner_label">Reseplanerare</string>
-    <string name="crash_report_mail_subject">STHLM Traveling Crash Report</string><!-- Do not translate -->
+    <string name="crash_report_mail_subject">STHLM Traveling Crash Report</string>
     <string name="crash_report_mail_body">By sending this crash report you are helping me to fix the bug. I won\'t use the information for any other thing.</string>
-    <string name="my_location_source_disabled">Lägg till "Min position" källa under systeminställningar.</string>
+    <string name="my_location_source_disabled">Lägg till \"Min position\" källa under systeminställningar.</string>
     <string name="title_settings">Inställningar</string>
     <string name="now_label">Nu</string>
     <string name="more_choices_label">ALTERNATIV</string>
@@ -140,43 +140,61 @@
     <string name="nearby_stops">Närliggande hållplatser</string>
     <string name="nearby">Närliggande</string>
     <string name="time_to" formatted="false">%s till %s</string>
-
+    <!-- Phrase describing a time duration using seconds [CHAR LIMIT=16] -->
     <plurals name="duration_seconds">
         <item quantity="one">1 sekund</item>
         <item quantity="other"><xliff:g id="COUNT">%d</xliff:g> sekunder</item>
     </plurals>
+    <!-- Phrase describing a time duration using minutes [CHAR LIMIT=16] -->
     <plurals name="duration_minutes">
         <item quantity="one">1 minut</item>
         <item quantity="other"><xliff:g id="COUNT">%d</xliff:g> minuter</item>
     </plurals>
+    <!-- Phrase describing a time duration using hours [CHAR LIMIT=16] -->
     <plurals name="duration_hours">
         <item quantity="one">1 timme</item>
         <item quantity="other"><xliff:g id="COUNT">%d</xliff:g> timmar</item>
     </plurals>
-
-    <!-- Planner error messages -->
-    <string name="planner_error_title">Felmeddelande</string>
+    <!-- Planner error message -->
     <string name="planner_error_unknown">Sökningen misslyckades.</string>
+    <!-- Planner error message -->
     <string name="planner_error_H9300">Tyvärr kan din resa inte beräknas. Försök igen.</string>
+    <!-- Planner error message -->
     <string name="planner_error_H9360">Fel i datumfältet.</string>
+    <!-- Planner error message -->
     <string name="planner_error_H9380">Start, mål eller via är samma hållplats eller ligger för nära varandra.</string>
+    <!-- Planner error message -->
     <string name="planner_error_H9320">Hållplatsnamnet finns inte.</string>
+    <!-- Planner error message -->
     <string name="planner_error_H9280">Hållplatsnamnet finns inte.</string>
+    <!-- Planner error message -->
     <string name="planner_error_H9260">Hållplatsnamnet finns inte.</string>
+    <!-- Planner error message -->
     <string name="planner_error_H9250">Sökningen avbröts.</string>
+    <!-- Planner error message -->
     <string name="planner_error_H9240">Inget svar kunde hittas.</string>
+    <!-- Planner error message -->
     <string name="planner_error_H9230">Försök igen.</string>
+    <!-- Planner error message -->
     <string name="planner_error_H9220">Det finns ingen hållplats i närheten av den angivna adressen.</string>
+    <!-- Planner error message -->
     <string name="planner_error_H900">Det finns ingen aktuell tidtabell för den sökta resan.</string>
+    <!-- Planner error message -->
     <string name="planner_error_H892">Resan blev för lång, prova att välja bort viahållplatsen.</string>
+    <!-- Planner error message -->
     <string name="planner_error_H891">Ingen resa hittades, prova att välja en viahållplats.</string>
+    <!-- Planner error message -->
     <string name="planner_error_H890">Ingen resa hittades.</string>
+    <!-- Planner error message -->
     <string name="planner_error_H500">Ingen resa hittades.</string>
+    <!-- Planner error message -->
     <string name="planner_error_H455">Förlängt uppehåll.</string>
+    <!-- Planner error message -->
     <string name="planner_error_H410">Uppgifterna kan vara ofullständiga på grund av tidtabellsbyte.</string>
+    <!-- Planner error message -->
     <string name="planner_error_H390">Start- eller målhållplatsen ersattes av en närbelägen hållplats.</string>
+    <!-- Planner error message -->
     <string name="planner_error_H895">Start och mål ligger för nära varandra.</string>
-
     <!-- Preferences -->
     <string name="restart_app_for_full_effect">Starta om appen för att ändringen ska slå igenom fullt.</string>
     <string name="dialog_general_preferences">Grundläggande</string>
@@ -205,13 +223,10 @@
     <string name="help">Hjälp</string>
     <string name="support">Support och hjälpforum</string>
     <string name="transport_type">Färdmedel</string>
-
     <!-- Ads -->
     <string name="ads">Annonser</string>
     <string name="ads_title">Varför visas annonser?</string>
     <string name="ads_turn_off">Stäng av annonser</string>
-    <string name="ads_message">Sedan 2009 har den här appen varit fri från annonser. Genom åren har serverkostnaden och underhållskostnaderna ökat.\n\nFör att kunna fortsätta utvecklingen och ge den support som krävs visas det annonser ibland.\n\nOm ni har problem med att annonser visas går det att stänga av dem nedan. I framtiden kanske det istället blir möjligt att för en mindre summa slippa annonserna.\n\nTack för er support!\nJohan
-</string>
+    <string name="ads_message">Sedan 2009 har den här appen varit fri från annonser. Genom åren har serverkostnaden och underhållskostnaderna ökat.\n\nFör att kunna fortsätta utvecklingen och ge den support som krävs visas det annonser ibland.\n\nOm ni har problem med att annonser visas går det att stänga av dem nedan. I framtiden kanske det istället blir möjligt att för en mindre summa slippa annonserna.\n\nTack för er support!\nJohan</string>
     <string name="ads_summary">Varför visas annonser?</string>
 </resources>
-
