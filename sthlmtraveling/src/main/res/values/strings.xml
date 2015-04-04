@@ -20,6 +20,8 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- Do not translate -->
     <string name="app_name">STHLM Traveling</string>
+
+    <!-- General strings -->
     <string name="ok">OK</string>
     <string name="done">Done</string>
     <string name="discard">Discard</string>
@@ -92,7 +94,7 @@
     <string name="stop_label">Stop</string>
     <string name="address_label">Address</string>
     <string name="refresh">Refresh</string>
-    <string name="show_departures_for_start">Dep. for start</string>
+    <string name="show_departures_for_start">Show departures</string>
     <string name="metros">Metros</string>
     <string name="buses">Buses</string>
     <string name="trains">Trains</string>
