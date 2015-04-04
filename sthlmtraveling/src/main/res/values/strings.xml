@@ -161,6 +161,8 @@
     </plurals>
 
     <!-- Planner error message -->
+    <string name="planner_error_title">The search failed</string>
+    <!-- Planner error message -->
     <string name="planner_error_unknown">The search failed, please try again.</string>
     <!-- Planner error message -->
     <string name="planner_error_H9300">Unfortunately no route was found. please try again.</string>
