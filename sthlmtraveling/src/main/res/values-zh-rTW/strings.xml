@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <!--
+/*
+** Copyright (C) 2009 Johan Nilsson <http://markupartist.com>
+**
+** Licensed under the Apache License, Version 2.0 (the "License"); 
+** you may not use this file except in compliance with the License. 
+** You may obtain a copy of the License at 
+**
+**     http://www.apache.org/licenses/LICENSE-2.0 
+**
+** Unless required by applicable law or agreed to in writing, software 
+** distributed under the License is distributed on an "AS IS" BASIS, 
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+** See the License for the specific language governing permissions and 
+** limitations under the License.
+*/
+-->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <!-- Do not translate -->
+    <string name="done">完成</string>
+    <string name="discard">放棄</string>
+    <string name="from">從</string>
+    <string name="to">到</string>
+    <string name="via">經</string>
+    <string name="search_label">查找</string>
+    <string name="search_routes_label">獲取路線</string>
+    <string name="departing">出發</string>
+    <string name="arriving">到達</string>
+    <string name="no_routes_found_label">非常抱歉，沒有找到合適路線</string>
+    <string name="no_routes_found_message">可能您提供的起點或終點無交通信息，或者您所選擇的交通方式在您要求的時間內無交通信息（如有時有的站點在週末暫停服務）</string>
+    <string name="routes_label">路線</string>
+    <string name="route_alternatives_label">其他</string>
+    <string name="route_details_label">詳細路線</string>
+    <string name="no_route_details">哎喲，沒有發現合適路線，這個搜索可能過時了</string>
+    <string name="session_timeout_message">很可能這個搜索過時了</string>
+    <string name="attention_label">注意</string>
+    <string name="bad_routes_parameters_message">起點或終點不能為空</string>
+    <string name="new_search">查找</string>
+    <string name="empty_value">缺少或無效</string>
+    <string name="loading">正在查找，請稍後</string>
+    <string name="my_location">我的位置</string>
+    <string name="change_date_and_time">修改時間</string>
+    <string name="reverse_start_end">交換起點和終點</string>
+    <string name="about">關於</string>
+    <!-- Phrase describing a time duration using seconds [CHAR LIMIT=16] -->
+    <!-- Phrase describing a time duration using minutes [CHAR LIMIT=16] -->
+    <!-- Phrase describing a time duration using hours [CHAR LIMIT=16] -->
+    <!-- Planner error message -->
+    <!-- Planner error message -->
+    <!-- Planner error message -->
+    <!-- Planner error message -->
+    <!-- Planner error message -->
+    <!-- Planner error message -->
+    <!-- Planner error message -->
+    <!-- Planner error message -->
+    <!-- Planner error message -->
+    <!-- Planner error message -->
+    <!-- Planner error message -->
+    <!-- Planner error message -->
+    <!-- Planner error message -->
+    <!-- Planner error message -->
+    <!-- Planner error message -->
+    <!-- Planner error message -->
+    <!-- Planner error message -->
+    <!-- Planner error message -->
+    <!-- Planner error message -->
+    <!-- Planner error message -->
+    <!-- Preferences -->
+    <!-- Ads -->
+</resources>

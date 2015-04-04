@@ -30,6 +30,8 @@
         <item>English</item>
         <item>Español</item>
         <item>Dutch</item>
+        <item>简体中文</item>
+        <item>繁體中文</item>
     </string-array>
     <!-- Do not translate -->
     <string-array name="entryvalues_language_preference">
@@ -38,6 +40,8 @@
         <item>en</item>
         <item>es</item>
         <item>nl</item>
+        <item>zh_CN</item>
+        <item>zh_TW</item>
     </string-array>
 
     <!-- Deviation update preference -->

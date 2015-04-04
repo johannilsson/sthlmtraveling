@@ -63,6 +63,12 @@ public class MyApplication extends Application {
             case "nl":
                 locale = new Locale("nl", "NL");
                 break;
+            case "zh_CN":
+                locale = new Locale("zh", "CN");
+                break;
+            case "zh_TW":
+                locale = new Locale("zh", "TW");
+                break;
             case "en":
                 locale = Locale.ENGLISH;
                 break;

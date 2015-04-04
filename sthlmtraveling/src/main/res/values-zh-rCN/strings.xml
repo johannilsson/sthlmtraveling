@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <!--
+/*
+** Copyright (C) 2009 Johan Nilsson <http://markupartist.com>
+**
+** Licensed under the Apache License, Version 2.0 (the "License"); 
+** you may not use this file except in compliance with the License. 
+** You may obtain a copy of the License at 
+**
+**     http://www.apache.org/licenses/LICENSE-2.0 
+**
+** Unless required by applicable law or agreed to in writing, software 
+** distributed under the License is distributed on an "AS IS" BASIS, 
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+** See the License for the specific language governing permissions and 
+** limitations under the License.
+*/
+-->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <!-- Do not translate -->
+    <string name="done">完成</string>
+    <string name="discard">放弃</string>
+    <string name="from">从</string>
+    <string name="to">到</string>
+    <string name="via">经</string>
+    <string name="search_label">查找</string>
+    <string name="search_routes_label">获取路线</string>
+    <string name="departing">出发</string>
+    <string name="arriving">到达</string>
+    <string name="no_routes_found_label">非常抱歉，没有找到合适路线</string>
+    <string name="no_routes_found_message">可能您提供的起点或终点无交通信息，或者您所选择交通方式在您要求的时间内无交通信息（如有时有的站点在周末暂停服务）</string>
+    <string name="routes_label">路线</string>
+    <string name="route_alternatives_label">其他</string>
+    <string name="route_details_label">详细路线</string>
+    <string name="no_route_details">哎哟，没有发现合适路线，这个搜索可能过时了</string>
+    <string name="session_timeout_message">这个搜索可能过时了</string>
+    <string name="attention_label">注意</string>
+    <string name="bad_routes_parameters_message">起点或终点不能为空</string>
+    <string name="new_search">查找</string>
+    <string name="empty_value">缺少或无效</string>
+    <string name="loading">正在查找，请稍后</string>
+    <string name="my_location">我的位置</string>
+    <string name="change_date_and_time">修改时间</string>
+    <string name="reverse_start_end">交换起点和终点</string>
+    <string name="about">关于</string>
+    <string name="about_this_app">STHLM Traveling由Johan Nilsson开发，如果您有好的想法或者问题请联系他。\n\n所有的交通信息数据均来自于Trafiklab和Stockholm Public Transport并得到他们的许可\n\nFlurry和Google Analytics会分析匿名数据来进一步提升应用的使用体验\n\n<b>归功于</b>\n&lt;li&gt;Robert Johansson\nhttps://twitter.com/likebobby&lt;/li&gt;\n&lt;li&gt;应用图标&amp; ideas Olof Brickarp\nhttp://www.yay.se&lt;/li&gt;\n&lt;li&gt;瑞典语翻译 Jean Diarbakerli&lt;/li&gt;\n&lt;li&gt;西班牙语翻译 Valeria Padilla and Miguel Ángel Domínguez Coloma&lt;/li&gt;\n&lt;li&gt;修正 Fredrik Jönsson\nhttp://github.com/lk95jofr&lt;/li&gt;\n&lt;li&gt;修正 Adam Nybäck\nhttp://anyro.se&lt;/li&gt;\n&lt;li&gt;修正 Morgan Christiansson\nhttp://screeninteraction.com&lt;/li&gt;\n&lt;li&gt;图标制作 Fredrik Broman\nhttp://fredrikbroman.com&lt;/li&gt;\n&lt;li&gt;图标制作 Android Icons\nhttp://androidicons.com&lt;/li&gt;\n&lt;li&gt;反馈来自于 Swedroid\nhttp://swedroid.se&lt;/li&gt;\n\n源码 http://github.com/johannilsson/sthlmtraveling\n\n Johan Nilsson johan@markupartist.com\nJohan Nilsson johan@markupartist.com\n\n</string>
+    <!-- Phrase describing a time duration using seconds [CHAR LIMIT=16] -->
+    <!-- Phrase describing a time duration using minutes [CHAR LIMIT=16] -->
+    <!-- Phrase describing a time duration using hours [CHAR LIMIT=16] -->
+    <!-- Planner error message -->
+    <!-- Planner error message -->
+    <!-- Planner error message -->
+    <!-- Planner error message -->
+    <!-- Planner error message -->
+    <!-- Planner error message -->
+    <!-- Planner error message -->
+    <!-- Planner error message -->
+    <!-- Planner error message -->
+    <!-- Planner error message -->
+    <!-- Planner error message -->
+    <!-- Planner error message -->
+    <!-- Planner error message -->
+    <!-- Planner error message -->
+    <!-- Planner error message -->
+    <!-- Planner error message -->
+    <!-- Planner error message -->
+    <!-- Planner error message -->
+    <!-- Planner error message -->
+    <!-- Planner error message -->
+    <!-- Preferences -->
+    <!-- Ads -->
+</resources>
