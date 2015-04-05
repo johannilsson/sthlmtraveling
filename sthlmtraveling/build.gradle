@@ -58,7 +58,7 @@ android {
         minSdkVersion 9
         targetSdkVersion 22
         versionName "2.11.1-dev"
-        versionCode 137
+        versionCode 138
 
         buildConfigField "boolean", "APP_IS_ADS_ENABLED", buildProperties['IS_ADS_ENABLED']
         buildConfigField "String", "APP_WIDESPACE_SID", buildProperties['WIDESPACE_SID']
