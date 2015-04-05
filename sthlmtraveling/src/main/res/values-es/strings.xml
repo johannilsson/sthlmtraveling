@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
+    <!--
 /*
 ** Copyright (C) 2009 Johan Nilsson <http://markupartist.com>
 **
@@ -16,52 +16,56 @@
 ** limitations under the License.
 */
 -->
-
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <!-- Do not translate -->
     <string name="app_name">STHLM Traveling</string>
-    <string name="from">Origen</string>
-    <string name="to">Destino</string>
-    <string name="via">Via</string> <!-- TODO: Needs translation -->
+    <!-- General strings -->
+    <string name="done">Listo</string>
+    <string name="discard">Cancelar</string>
+    <string name="from">Desde</string>
+    <string name="to">Hacia</string>
+    <string name="via">Vía</string>
     <string name="search_label">Buscar</string>
+    <string name="search_routes_label">Obtener itinerario</string>
     <string name="departing">Salida</string>
     <string name="arriving">Llegada</string>
-    <string name="no_routes_found_label">Lo sentimos, pero la ruta no ha podido ser encontrada</string>
-    <string name="no_routes_found_message">Es posible que el Origen o Destino no sean válido o que el modo de transporte seleccionado a ciertas horas o días tampoco (p. ej. a veces las estaciones/paradas no están disponibles los fines de semana.</string>
+    <string name="no_routes_found_label">Lo sentimos, pero la ruta no pudo ser encontrada</string>
+    <string name="no_routes_found_message">Es posible que el origen o destino no sean válidos en absoluto o con el medio de transporte en la fecha/hora solicitadas (p. ej. a veces las estaciones/paradas no están disponibles los fines de semana).</string>
     <string name="routes_label">Rutas</string>
     <string name="route_alternatives_label">Alternativas</string>
     <string name="route_details_label">Detalles de la ruta</string>
-    <string name="no_route_details">Desafortunadamente no se encontró la ruta. Quizás la búsqueda sea demasiado antigua.</string>
+    <string name="no_route_details">Desafortunadamente no se encontró la ruta. Seguramente esta búsqueda sea demasiado antigua.</string>
     <string name="session_timeout_message">Seguramente esta búsqueda sea demasiado antigua.</string>
     <string name="attention_label">Atención</string>
-    <string name="bad_routes_parameters_message">El punto de partida y origen no deben estar vacíos.</string>
+    <string name="bad_routes_parameters_message">El punto de origen o destino no deben estar vacíos.</string>
     <string name="new_search">Buscar</string>
-    <string name="empty_value">Falta un valor</string>
-    <string name="loading">Buscando, un momento por favor</string>
+    <string name="empty_value">Falta un valor o es inválido</string>
+    <string name="loading">Buscando, un momento por favor...</string>
     <string name="my_location">Mi ubicación</string>
     <string name="change_date_and_time">Cambiar la fecha y hora</string>
     <string name="reverse_start_end">Buscar ruta para el trayecto inverso</string>
     <string name="about">Acerca de</string>
-    <string name="about_this_app">STHLM Traveling ha sido desarrollado por by Johan Nilsson, por favor, contacte con el si tiene ideas o ha experimentado problemas usando el botón Comentar.\n\nToda la información es almacenada con el consentimiento de SL - Stockholm Public Transport.\n\nPara mejorar más la aplicación, información anónima es almacenada usando Flurry, Google Analytics\n\n<b>Créditos</b>\n<li>Robert Johansson\nhttps://twitter.com/likebobby</li>\n<li>Icono de aplicación &amp; ideas Olof Brickarp\nhttp://www.yay.se</li>\n<li>Traducción al sueco por Jean Diarbakerli</li>\n<li>Traducción al español por Valeria Padilla y Miguel Ángel Domínguez Coloma</li>\n<li>Parches por Fredrik Jönsson\nhttp://github.com/lk95jofr</li>\n<li>Parches por Adam Nybäck\nhttp://anyro.se</li>\n<li>Parches por Morgan Christiansson\nhttp://screeninteraction.com</li>\n<li>Iconos por Fredrik Broman\nhttp://fredrikbroman.com</li>\n<li>Iconos por Android Icons\nhttp://androidicons.com</li>\n<li>Comentarios por Swedroid\nhttp://swedroid.se</li>\n\nCódigo fuente http://github.com/johannilsson/sthlmtraveling</string>
+    <string name="about_this_app">STHLM Traveling ha sido desarrollado por Johan Nilsson. Por favor, póngase en contacto con él si tiene ideas o ha experimentado problemas.\n\nToda la información del transporte público es obtenida con la autorización de Trafiklab y SL - Transporte Público de Estocolmo.\n\nPara mejorar más la aplicación, información anónima es recogida usando Flurry y Google Analytics.\n\n<b>Créditos</b>\n&lt;li&gt;Robert Johansson\nhttps://twitter.com/likebobby&lt;/li&gt;\n&lt;li&gt;Icono de aplicación &amp; ideas Olof Brickarp\nhttp://www.yay.se&lt;/li&gt;\n&lt;li&gt;Traducción a sueco: Jean Diarbakerli&lt;/li&gt;\n&lt;li&gt;Traducción a español: Valeria Padilla y Miguel Ángel Domínguez Coloma&lt;/li&gt;\n&lt;li&gt;Parches: Fredrik Jönsson\nhttp://github.com/lk95jofr&lt;/li&gt;\n&lt;li&gt;Parches: Adam Nybäck\nhttp://anyro.se&lt;/li&gt;\n&lt;li&gt;Parches: Morgan Christiansson\nhttp://screeninteraction.com&lt;/li&gt;\n&lt;li&gt;Iconos: Fredrik Broman\nhttp://fredrikbroman.com&lt;/li&gt;\n&lt;li&gt;Iconos: Android Icons\nhttp://androidicons.com&lt;/li&gt;\n&lt;li&gt;Comentarios de Swedroid\nhttp://swedroid.se&lt;/li&gt;\n\nCódigo fuente http://github.com/johannilsson/sthlmtraveling\n\nJohan Nilsson johan@markupartist.com\nhttp://markupartist.com</string>
     <string name="donate">Donar</string>
     <string name="donate_url">http://pledgie.com/campaigns/6527</string>
-    <string name="feedback">Comentar</string>
+    <string name="feedback">Comentarios</string>
     <string name="send_email">Enviar un e-mail</string>
     <string name="favorites_label">Favoritos</string>
     <string name="no_favorites"><b>No hay favoritos aún...</b>\nAñade o borra favoritos pulsando el botón en forma de estrella después de una búsqueda.</string>
-    <string name="reverse_search">Reverse search</string>
-    <string name="delete">Delete</string>
+    <string name="reverse_search">Búsqueda de trayecto inverso</string>
+    <string name="delete">Borrar</string>
     <string name="no_location_title">Problema de localización</string>
-    <string name="no_location_message">Problema al determinar su localización.</string>
+    <string name="no_location_message">Problema para determinar su localización.</string>
     <string name="network_problem_label">Problemas en la red</string>
-    <string name="network_problem_message">Hubo una sobrecarga en la red, un problema de red o no se pudo contactar con SL.</string>
+    <string name="network_problem_message">Hubo una sobrecarga en la red, un problema de red o no se pudo contactar a SL.</string>
     <string name="activity_create_shortcut">Rutas</string>
     <string name="activity_create_departure_shortcut">Salidas</string>
     <string name="name_of_shortcut">Nombre del acceso directo</string>
     <string name="create_shortcut_label">Crear acceso directo</string>
     <string name="create_shortcut_for_departure_label">Crear acceso directo para la ida</string>
-    <string name="choose_start_point_label">Elegir punto de partida</string>
-    <string name="choose_end_point_label">Elegir punto de llegada</string>
-    <string name="send_feedback_email_title">STHLM Traveling comentarios</string>
+    <string name="choose_start_point_label">Elegir origen</string>
+    <string name="choose_end_point_label">Elegir destino</string>
+    <string name="send_feedback_email_title">Comentarios sobre STHLM Traveling</string>
     <string name="send_feedback_email_emailaddress">sthlmtraveling@markupartist.com</string>
     <string name="history_label">Historial</string>
     <string name="show_qr_code">Mostrar código de barras</string>
@@ -73,79 +77,135 @@
     <string name="point_on_map">Punto en el mapa</string>
     <string name="tap_to_select_this_point">Pulsa para seleccionar este punto</string>
     <string name="point_selected">Punto seleccionado</string>
-    <string name="tap_your_end_point_on_map">Elige tu ubicación de llegada en el mapa</string>
-    <string name="tap_your_start_point_on_map">Elige tu ubicación de partida en el mapa</string>
-    <string name="tap_your_location_on_map">Problema al determinar su localización. Elija su localización en el mapa.</string>
-    <string name="departing_on">Salida a las <xliff:g id="time">%s</xliff:g> en <xliff:g id="date">%s</xliff:g></string>
-    <string name="arriving_by">Llegada a las <xliff:g id="time">%s</xliff:g> en <xliff:g id="date">%s</xliff:g></string>
+    <string name="tap_your_end_point_on_map">Elige tu destino en el mapa</string>
+    <string name="tap_your_start_point_on_map">Elige tu lugar de partida en el mapa</string>
+    <string name="tap_your_location_on_map">Problema para determinar su localización. Elija su localización en el mapa.</string>
+    <string name="departing_on">Sale a las <xliff:g id="time">%s</xliff:g> el <xliff:g id="date">%s</xliff:g></string>
+    <string name="arriving_by">Llega a las <xliff:g id="time">%s</xliff:g> el <xliff:g id="date">%s</xliff:g></string>
     <string name="departures">Salidas</string>
     <string name="departures_for">Salidas desde <xliff:g id="site_name">%s</xliff:g></string>
     <string name="date_of_trip">Fecha del viaje: <xliff:g id="date">%s</xliff:g></string>
-    <string name="no_departures_for_transport_type">No hay salidas en este momento.</string>
+    <string name="no_departures_for_transport_type">No hay salidas en este momento para el medio de transporte seleccionado.</string>
     <string name="no_departures">No hay salidas en este momento.</string>
-    <string name="site_name">Ubicación</string>
+    <string name="site_name">Localización</string>
     <string name="stop_label">Parada</string>
+    <string name="address_label">Dirección</string>
     <string name="refresh">Actualizar</string>
-    <string name="show_departures_for_start">Sal. desde el inicio</string>
+    <string name="show_departures_for_start">Mostrar salidas</string>
     <string name="metros">Metros</string>
-    <string name="buses">Autobuses</string>
+    <string name="buses">Buses</string>
     <string name="trains">Trenes</string>
-    <string name="trams">Tram</string>
+    <string name="trams">Tren ligero</string>
     <string name="tram_cars">Tranvía</string>
+    <string name="boats">Barcos</string>
     <string name="departure_metro">Metro</string>
     <string name="departure_bus">Bus</string>
-    <string name="departure_train">Train</string>
-    <string name="departure_tram">Lokalb.</string>
+    <string name="departure_train">Tren</string>
+    <string name="departure_tram">Tren ligero</string>
     <string name="now">ahora</string>
-    <string name="journey_planner_label">Planear viaje</string>
-    <string name="crash_report_mail_subject">STHLM Traveling Crash Report</string>
-    <string name="crash_report_mail_body">Mandando este informe de fallo me estás ayudando a repararlo. No usaré la información para ningún otro fin.</string>
-    <string name="my_location_source_disabled">Por favor habilita Mi Ubicación en la configuración del sistema</string>
+    <string name="journey_planner_label">Planificador de viajes</string>
+    <string name="crash_report_mail_subject">Reporte de caída de STHLM Traveling</string>
+    <string name="crash_report_mail_body">Al enviar este informe de caída, estás ayudando a reparar el problema. No usaré la información para ningún otro fin.</string>
+    <string name="my_location_source_disabled">Por favor habilitar Mi Ubicación en la configuración del sistema</string>
     <string name="title_settings">Configuración</string>
     <string name="now_label">Ahora</string>
+    <string name="more_choices_label">OPCIONES</string>
+    <string name="route_options_active">Con opciones de rutas adicionales</string>
+    <string name="alternative_stops_label">Paradas alternativas</string>
     <string name="date_and_time_label">Fecha y hora</string>
     <string name="determining_your_position">Determinando su posición</string>
     <string name="back">Volver</string>
     <string name="cancel">Cancelar</string>
     <string name="change">Cambiar</string>
-    <string name="deviations_label">Desviación</string>
-    <string name="new_deviations">Nueva desviación.</string>
-    <string name="no_deviations"><b>Desviación desconocida</b></string>
-    <string name="reinstall_app_message">Necesita reinstalar STHLM Traveling para utilizar la aplicación correctamente.\n\nÉsto ha sido causado por un error en Android. Puedes leer más sobres este error en mi blog, http://bit.ly/fcissue.\n\n¡Lo siento mucho!</string>
+    <string name="deviations_label">Anomalías del tráfico</string>
+    <string name="new_deviations">Nuevas Anomalías del tráfico.</string>
+    <string name="no_deviations"><b>Anomalía de tráfico desconocida</b></string>
+    <string name="reinstall_app_message">Necesita reinstalar STHLM Traveling para utilizar la aplicación correctamente.\n\nÉsto ha sido causado por un error en Android. Puedes leer más sobre este error en mi blog, http://bit.ly/fcissue.\n\n¡Lo siento mucho!</string>
     <string name="did_you_mean">¿Qué quería decir?</string>
     <string name="share_label">Compartir</string>
-    <string name="sms_ticket_label">Buy ticket</string>
+    <string name="sms_ticket_label">Comprar</string>
     <string name="sms_ticket_price_reduced">Tarifa reducida</string>
-    <string name="sms_ticket_price_full">Tarifa general</string>
+    <string name="sms_ticket_price_full">Tarifa general (20-64 años)</string>
+    <string name="sms_ticket_notice_message">Por favor, verificar los detalles antes de comprar su boleto. STHML Traveling no puede garantizar que el boleto es válido para su viaje.</string>
+    <string name="sms_ticket_notice_disabled">No hay Boletos de Mensaje de Texto disponibles para esta ruta.</string>
     <string name="trip_description_walk" formatted="false">Caminar</string>
-    <string name="trip_description_normal" formatted="false">%s dirección %s</string>
+    <string name="trip_description_normal" formatted="false">Toma %s hacia %s</string>
     <string name="trip_map_description_walk" formatted="false">%s Caminar a %s</string>
     <string name="trip_map_description_normal" formatted="false">%s %s hacia %s.</string>
     <string name="show_all">Mostrar todo</string>
-    <string name="direction">Direction</string>
-
+    <string name="direction">Dirección</string>
+    <string name="no_intermediate_stops">Paradas intermedias no fueron encontradas.</string>
+    <string name="show_intermediate_stops">Mostrar paradas intermedias</string>
+    <string name="hide_intermediate_stops">Ocultar paradas intermedias</string>
+    <string name="nearby_stops">Paradas cercanas</string>
+    <string name="nearby">Cerca</string>
+    <string name="time_to" formatted="false">%s a %s</string>
+    <!-- Phrase describing a time duration using seconds [CHAR LIMIT=16] -->
     <plurals name="duration_seconds">
         <item quantity="one">1 segundo</item>
         <item quantity="other"><xliff:g id="COUNT">%d</xliff:g> segundos</item>
     </plurals>
+    <!-- Phrase describing a time duration using minutes [CHAR LIMIT=16] -->
     <plurals name="duration_minutes">
-        <item quantity="one">1 minuto"</item>
+        <item quantity="one">1 minuto</item>
         <item quantity="other"><xliff:g id="COUNT">%d</xliff:g> minutos</item>
     </plurals>
+    <!-- Phrase describing a time duration using hours [CHAR LIMIT=16] -->
     <plurals name="duration_hours">
         <item quantity="one">1 hora</item>
         <item quantity="other"><xliff:g id="COUNT">%d</xliff:g> horas</item>
     </plurals>
-
+    <!-- Planner error message -->
+    <string name="planner_error_title">La búsqueda falló</string>
+    <!-- Planner error message -->
+    <string name="planner_error_unknown">La búsqueda falló, por favor inténtelo de nuevo.</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H9300">Desafortunadamente la ruta no fue encontrada. Por favor inténtelo de nuevo.</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H9360">Fecha no válida, por favor cambie la fecha.</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H9380">Origen y destino están demasiado cerca.</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H9320">La parada no existe.</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H9280">La parada no existe.</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H9260">La parada no existe.</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H9250">La búsqueda fue interrumpida, por favor inténtelo de nuevo.</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H9240">El viaje no fue encontrado.</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H9230">Por favor, inténtelo de nuevo.</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H9220">No hay paradas cerca de esta dirección.</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H900">No existe un horario para este viaje.</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H892">Este viaje es demasiado largo, intente excluir el desvío.</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H891">Ningún viaje pudo ser encontrado, intente agregar un desvío.</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H890">Ningún viaje pudo ser encontrado.</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H500">Ningún viaje pudo ser encontrado.</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H455">Pausa extendida.</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H410">Ha ocurrido un problema que podría estar relacionado con un cambio en los horarios.</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H390">El origen o destino fue reemplazado por una parada cercana.</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H895">El origen y el destino están demasiado cerca.</string>
     <!-- Preferences -->
     <string name="restart_app_for_full_effect">Reinicie la aplicación para la que los cambios surjan efecto.</string>
-    <string name="dialog_general_preferences">Básico</string>
-    <string name="dialog_notification_preferences">Notificación</string>
+    <string name="dialog_general_preferences">Lo esencial</string>
+    <string name="dialog_notification_preferences">Notificaciones.</string>
     <string name="title_language_preference">Idioma</string>
     <string name="summary_language_preference">Escoja su idioma preferido.</string>
     <string name="dialog_title_language_preference">Escoja idioma</string>
     <string name="settings_saved">Guardado</string>
-    <string name="deviation_notification_preference">Notificaciones de desviación</string>
+    <string name="deviation_notification_preference">Notificaciones de anomalías del tráfico</string>
     <string name="deviation_notification_summary_preference">Experimental. Habilitando ésto, se consumirá más batería y requerirá conexión permanente a Internet.</string>
     <string name="deviation_update_interval_preference">Intervalo de actualización</string>
     <string name="deviation_update_interval_summary_preference">Mayor intervalo de actualización ahorrará batería.</string>
@@ -153,13 +213,22 @@
     <string name="deviation_lines_summary_preference">Lista con números separados por coma. Ej: \'42,28,707\'.</string>
     <string name="deviation_lines_dialog_message_preference">Separe la línea de números con comas. Ej: \'42,28,707\'.</string>
     <string name="search_include_addresses_preference">Incluir direcciones en auto-completado</string>
-    <string name="search_include_addresses_summary_preference">Recibir sugerencias podría llevar más tiempo si se habilita.</string>
+    <string name="search_include_addresses_summary_preference">Al habilitarlo, la recepción de sugerencias podría llevar más tiempo.</string>
     <string name="search_clear_history_preference">Borrar historial de búsqueda</string>
-    <string name="search_clear_history_summary_preference">Borra todo el historial de búsqueda.</string>
+    <string name="search_clear_history_summary_preference">Borra el historial de búsqueda de paradas y viajes.</string>
     <string name="search_clear_history_confirm">¿Está seguro que desea borrar todo el historial de búsqueda?</string>
     <string name="search_history_cleared">Historial borrado</string>
     <string name="search_clear_favorites_preference">Borrar favoritos</string>
     <string name="search_clear_favorites_summary_preference">Borrar todos los favoritos.</string>
     <string name="search_clear_favorites_confirm">¿Está seguro que desea borrar todos los favoritos?</string>
     <string name="search_favorites_cleared">Favoritos borrados</string>
+    <string name="help">Ayuda</string>
+    <string name="support">Soporte</string>
+    <string name="transport_type">Medio de transporte</string>
+    <!-- Ads -->
+    <string name="ads">Anuncios publicitarios</string>
+    <string name="ads_title">Por qué anuncios publicitarios?</string>
+    <string name="ads_turn_off">Apagar anuncios publicitarios</string>
+    <string name="ads_message">Esta aplicación ha sido gratuita desde el 2009, con el paso de los años el costo de los servicios y mantenimiento se han incrementado.\n\nPara poder continuar con el desarrollo y brindar soporte, anuncios publicitarios necesarios se muestran a veces.\n\nSi tiene problemas con los anuncios publicitarios, es posible apagarlos. En el futuro, podría haber un costo relacionado a apagar los anuncios publicitarios.\n\nGracias por tu apoyo!\nJohan</string>
+    <string name="ads_summary">Por qué esta aplicación tiene anuncios publicitarios?</string>
 </resources>

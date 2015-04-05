@@ -58,7 +58,7 @@
     <string name="no_location_title">位置问题</string>
     <string name="no_location_message">无法定位您的位置</string>
     <string name="network_problem_label">网络问题</string>
-    <string name="network_problem_message">服务器可能过载、网络问题或者和SL通信中断</string>
+    <string name="network_problem_message">可能服务器过载、网络问题或者和SL通信中断</string>
     <string name="activity_create_shortcut">路线</string>
     <string name="activity_create_departure_shortcut">出发</string>
     <string name="name_of_shortcut">快捷名称</string>
@@ -153,6 +153,7 @@
     <plurals name="duration_hours">
         <item quantity="other"><xliff:g id="count">%d</xliff:g> 小时</item>
     </plurals>
+    <!-- Planner error message -->
     <!-- Planner error message -->
     <string name="planner_error_unknown">搜索失败，请重试</string>
     <!-- Planner error message -->

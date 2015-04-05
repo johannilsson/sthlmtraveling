@@ -18,6 +18,7 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- Do not translate -->
+    <!-- General strings -->
     <string name="done">完成</string>
     <string name="discard">放棄</string>
     <string name="from">從</string>
@@ -43,9 +44,26 @@
     <string name="change_date_and_time">修改時間</string>
     <string name="reverse_start_end">交換起點和終點</string>
     <string name="about">關於</string>
+    <string name="about_this_app">STHLM Traveling由Johan Nilsson開發，如果您有好的想法或者問題請聯繫他\n\n所有的交通信息均來自於Traficlab和Stockholm Public Transport并得到他們的許可\n\nFlurry和Google Analytics會分析匿名數據來進一步提升應用的使用體驗\n\n<b>歸功於</b>\n&lt;li&gt;Robert Johansson\nhttps://twitter.com/likebobby&lt;/li&gt;\n&lt;li&gt;應用圖標 &amp; ideas Olof Brickarp\nhttp://www.yay.se&lt;/li&gt;\n&lt;li&gt;瑞典語翻譯 Jean Diarbakerli&lt;/li&gt;\n&lt;li&gt;西班牙語翻譯 Valeria Padilla and Miguel Ángel Domínguez Coloma&lt;/li&gt;\n&lt;li&gt;修正 Fredrik Jönsson\nhttp://github.com/lk95jofr&lt;/li&gt;\n&lt;li&gt;修正 Adam Nybäck\nhttp://anyro.se&lt;/li&gt;\n&lt;li&gt;修正 Morgan Christiansson\nhttp://screeninteraction.com&lt;/li&gt;\n&lt;li&gt;圖標製作 Fredrik Broman\nhttp://fredrikbroman.com&lt;/li&gt;\n&lt;li&gt;图标制作 Android Icons\nhttp://androidicons.com&lt;/li&gt;\n&lt;li&gt;反饋來自 Swedroid\nhttp://swedroid.se&lt;/li&gt;\n\n源碼 http://github.com/johannilsson/sthlmtraveling\n\n Johan Nilsson johan@markupartist.com\nhttp://markupartist.com\n\n</string>
+    <string name="donate">捐贈</string>
+    <string name="donate_url">http://pledgie.com/campaigns/6527</string>
+    <string name="feedback">反饋</string>
+    <string name="send_email">發送郵件</string>
+    <string name="favorites_label">收藏</string>
+    <string name="no_favorites"><b>還沒有收藏...</b>\n搜索后，按星號可以添加或刪除收藏</string>
+    <string name="reverse_search">反向搜索</string>
+    <string name="delete">刪除</string>
+    <string name="no_location_title">位置問題</string>
+    <string name="no_location_message">無法定位您的位置</string>
+    <string name="network_problem_label">網絡問題</string>
+    <string name="network_problem_message">可能服務器過載、網絡問題或與SL通信中斷</string>
+    <string name="activity_create_shortcut">路線</string>
+    <string name="activity_create_departure_shortcut">出發</string>
+    <string name="name_of_shortcut">快捷名稱</string>
     <!-- Phrase describing a time duration using seconds [CHAR LIMIT=16] -->
     <!-- Phrase describing a time duration using minutes [CHAR LIMIT=16] -->
     <!-- Phrase describing a time duration using hours [CHAR LIMIT=16] -->
+    <!-- Planner error message -->
     <!-- Planner error message -->
     <!-- Planner error message -->
     <!-- Planner error message -->
