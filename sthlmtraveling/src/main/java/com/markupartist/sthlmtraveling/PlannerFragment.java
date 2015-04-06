@@ -745,6 +745,9 @@ public class PlannerFragment extends BaseListFragment {
 
         @Override
         public void afterTextChanged(Editable s) {
+            if (!isAdded()) {
+                return;
+            }
             if (!getString(R.string.my_location).equals(s.toString())
                     || getString(R.string.point_on_map).equals(s.toString())) {
                 if (!s.toString().equals(mSite.getName())) {
