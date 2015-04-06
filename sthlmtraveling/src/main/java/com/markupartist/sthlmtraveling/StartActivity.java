@@ -25,7 +25,6 @@ import com.markupartist.sthlmtraveling.service.DeviationService;
 import com.markupartist.sthlmtraveling.ui.view.PageFragmentAdapter;
 import com.markupartist.sthlmtraveling.ui.view.SlidingTabLayout;
 import com.markupartist.sthlmtraveling.utils.BeaconManager;
-import com.markupartist.sthlmtraveling.utils.ErrorReporter;
 
 public class StartActivity extends BaseFragmentActivity {
     private ViewPager mPager;
@@ -68,9 +67,6 @@ public class StartActivity extends BaseFragmentActivity {
         ab.hide();
         ab.setDisplayShowTitleEnabled(false);
         ab.setDisplayShowHomeEnabled(false);
-
-        final ErrorReporter reporter = ErrorReporter.getInstance();
-        reporter.checkErrorAndReport(this);
 
         // Start background service.
         DeviationService.startAsRepeating(getApplicationContext());

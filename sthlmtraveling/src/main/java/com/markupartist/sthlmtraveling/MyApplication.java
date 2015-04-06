@@ -13,7 +13,6 @@ import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.Logger;
 import com.google.android.gms.analytics.Tracker;
 import com.markupartist.sthlmtraveling.service.DataMigrationService;
-import com.markupartist.sthlmtraveling.utils.ErrorReporter;
 
 import java.util.Locale;
 
@@ -26,9 +25,6 @@ public class MyApplication extends Application {
     public void onCreate() {
         super.onCreate();
         Fabric.with(this, new Crashlytics());
-
-        final ErrorReporter reporter = ErrorReporter.getInstance();
-        reporter.init(getApplicationContext());
 
         reloadLocaleForApplication();
 
