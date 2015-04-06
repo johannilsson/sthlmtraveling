@@ -760,7 +760,9 @@ public class DeparturesActivity extends BaseFragmentActivity {
         }
 
         public void update(Departures result) {
-            mSwipeRefreshLayout.setRefreshing(false);
+            if (mSwipeRefreshLayout != null) {
+                mSwipeRefreshLayout.setRefreshing(false);
+            }
 
             if (result != null) {
                 mDepartureResult = result;
