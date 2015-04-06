@@ -222,7 +222,7 @@ public class DeparturesActivity extends BaseFragmentActivity {
                 onBackPressed();
                 return true;
             case R.id.actionbar_item_refresh:
-                new GetDeparturesTask().execute(mSite);
+                loadDepartures();
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -242,13 +242,7 @@ public class DeparturesActivity extends BaseFragmentActivity {
     }
 
     private void loadDepartures() {
-        @SuppressWarnings("unchecked")
-//        final Departures departureResult =
-//                (Departures) getLastNonConfigurationInstance();
-        Departures departureResult = null;
-        if (departureResult != null) {
-            onData(departureResult);
-        } else if (mSite != null && mSite.getId() > 0) {
+        if (mSite != null && mSite.getId() > 0) {
             mGetDeparturesTask = new GetDeparturesTask();
             mGetDeparturesTask.execute(mSite);
         } else {
@@ -434,6 +428,8 @@ public class DeparturesActivity extends BaseFragmentActivity {
                         .setAdapter(siteAdapter, new OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
+                                // Save the selected site to avoid asking for it again.
+                                mSite = mSiteAlternatives.get(which);
                                 new GetDeparturesTask().execute(
                                         mSiteAlternatives.get(which));
                             }
