@@ -53,20 +53,26 @@ public class MyApplication extends Application {
             case "sv":
                 locale = new Locale("sv", "SE");
                 break;
+            case "en":
+                locale = Locale.ENGLISH;
+                break;
+            case "fr":
+                locale = Locale.FRENCH;
+                break;
             case "es":
-                locale = new Locale("es", "ES");
+                locale = new Locale("es", "");
+                break;
+            case "de":
+                locale = new Locale("de", "");
                 break;
             case "nl":
-                locale = new Locale("nl", "NL");
+                locale = new Locale("nl", "");
                 break;
             case "zh_CN":
                 locale = new Locale("zh", "CN");
                 break;
             case "zh_TW":
                 locale = new Locale("zh", "TW");
-                break;
-            case "en":
-                locale = Locale.ENGLISH;
                 break;
         }
 

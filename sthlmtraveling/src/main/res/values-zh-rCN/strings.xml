@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-    <!--
+<!--
 /*
 ** Copyright (C) 2009 Johan Nilsson <http://markupartist.com>
 **
@@ -78,9 +78,9 @@
     <string name="point_on_map">地图上的点</string>
     <string name="tap_to_select_this_point">点击选取地图上的点</string>
     <string name="point_selected">已选取</string>
-    <string name="tap_your_end_point_on_map">单击在地图上选取终点</string>
-    <string name="tap_your_start_point_on_map">单击在地图上选取起点</string>
-    <string name="tap_your_location_on_map">无法定位您的位置，请在地图上单击选取您的位置</string>
+    <string name="tap_your_end_point_on_map">在地图上点击选取终点</string>
+    <string name="tap_your_start_point_on_map">在地图上点击选取起点</string>
+    <string name="tap_your_location_on_map">无法定位您的位置，请在地图上点击选取您的位置</string>
     <string name="departing_on">出发 <xliff:g id="time">%s</xliff:g> 于 <xliff:g id="date">%s</xliff:g></string>
     <string name="arriving_by">到达 <xliff:g id="time">%s</xliff:g> 于 <xliff:g id="date">%s</xliff:g></string>
     <string name="departures">出发</string>
@@ -89,7 +89,7 @@
     <string name="no_departures_for_transport_type">在选择的交通方式下，当前没有查到出发信息</string>
     <string name="no_departures">现在没有出发信息</string>
     <string name="site_name">位置</string>
-    <string name="stop_label">站点</string>
+    <string name="stop_label">站</string>
     <string name="address_label">地址</string>
     <string name="refresh">刷新</string>
     <string name="show_departures_for_start">显示出发</string>
@@ -98,7 +98,7 @@
     <string name="trains">火车</string>
     <string name="trams">市内火车</string>
     <string name="tram_cars">电车</string>
-    <string name="boats">船</string>
+    <string name="boats">轮船</string>
     <string name="departure_metro">地铁</string>
     <string name="departure_bus">公交</string>
     <string name="departure_train">火车</string>
@@ -106,7 +106,7 @@
     <string name="now">现在</string>
     <string name="journey_planner_label">行程规划</string>
     <string name="crash_report_mail_subject">STHLM Traveling 崩溃报告</string>
-    <string name="crash_report_mail_body">发送崩溃报告来帮助我们修复问题，我们不会用做其他用途</string>
+    <string name="crash_report_mail_body">发送崩溃报告来帮助我们修复问题，我们不会将这些数据用做其他用途</string>
     <string name="my_location_source_disabled">请在系统设置中开启位置源</string>
     <string name="title_settings">设置</string>
     <string name="now_label">现在</string>
@@ -127,9 +127,9 @@
     <string name="sms_ticket_label">买票</string>
     <string name="sms_ticket_price_reduced">折扣票</string>
     <string name="sms_ticket_price_full">全价票 (20–64 岁)</string>
-    <string name="sms_ticket_notice_message">买票前请仔细核对详细信息，STHLM Traveling不保证您买的票符合你的行程</string>
+    <string name="sms_ticket_notice_message">买票前请仔细核对详细信息，STHLM Traveling不保证您买的票符合你的实际行程</string>
     <string name="sms_ticket_notice_disabled">此路线不支持短信车票</string>
-    <string name="trip_description_walk" formatted="false">走路</string>
+    <string name="trip_description_walk" formatted="false">走</string>
     <string name="trip_description_normal" formatted="false">经 %s 朝 %s.</string>
     <string name="trip_map_description_walk" formatted="false">%s 走到 %s</string>
     <string name="trip_map_description_normal" formatted="false">%s %s 朝 %s.</string>
@@ -155,13 +155,13 @@
     </plurals>
     <!-- Planner error message -->
     <!-- Planner error message -->
-    <string name="planner_error_unknown">搜索失败，请重试</string>
+    <string name="planner_error_unknown">查找失败，请重试</string>
     <!-- Planner error message -->
     <string name="planner_error_H9300">非常抱歉没有找到路线，请再试试吧</string>
     <!-- Planner error message -->
     <string name="planner_error_H9360">不支持的时间，请修改时间后再试</string>
     <!-- Planner error message -->
-    <string name="planner_error_H9380">起点和重点太近了</string>
+    <string name="planner_error_H9380">起点和终点太近了</string>
     <!-- Planner error message -->
     <string name="planner_error_H9320">终点不存在</string>
     <!-- Planner error message -->
@@ -189,20 +189,20 @@
     <!-- Planner error message -->
     <string name="planner_error_H455">延伸站点</string>
     <!-- Planner error message -->
-    <string name="planner_error_H410">这个问题可能是由于时刻表的变化引起的</string>
+    <string name="planner_error_H410">发生了一个可能由于时刻表变化引起的问题</string>
     <!-- Planner error message -->
-    <string name="planner_error_H390">起点或终点由临近站点替代</string>
+    <string name="planner_error_H390">起点或终点被临近站替代了</string>
     <!-- Planner error message -->
     <string name="planner_error_H895">起点和重点太靠近了</string>
     <!-- Preferences -->
     <string name="restart_app_for_full_effect">重启应用生效</string>
-    <string name="dialog_general_preferences">基础</string>
+    <string name="dialog_general_preferences">基本</string>
     <string name="dialog_notification_preferences">通知</string>
     <string name="title_language_preference">语言</string>
     <string name="summary_language_preference">选择您的语言</string>
     <string name="dialog_title_language_preference">选择语言</string>
     <string name="settings_saved">已保存</string>
-    <string name="deviation_notification_preference">通知偏差</string>
+    <string name="deviation_notification_preference">偏差通知</string>
     <string name="deviation_notification_summary_preference">实验功能。需要永久的网络连接</string>
     <string name="deviation_update_interval_preference">刷新间隔</string>
     <string name="deviation_update_interval_summary_preference">较长的刷新间隔可以节省电池续航时间</string>
@@ -210,12 +210,12 @@
     <string name="deviation_lines_summary_preference">逗号分隔线路号，例如: \'42,28,707\'.</string>
     <string name="deviation_lines_dialog_message_preference">用逗号分隔线路号，例如</string>
     <string name="search_include_addresses_preference">包括地址自动完成</string>
-    <string name="search_include_addresses_summary_preference">当开启时，可能需要花更多的时间接收建议</string>
+    <string name="search_include_addresses_summary_preference">当开启时，可能需要花更多的时间获取建议</string>
     <string name="search_clear_history_preference">清除搜索记录</string>
-    <string name="search_clear_history_summary_preference">清除站点和行程的搜索记录</string>
+    <string name="search_clear_history_summary_preference">清除搜索站和行程记录</string>
     <string name="search_clear_history_confirm">确认清除所有搜索记录？</string>
     <string name="search_history_cleared">历史记录已清除</string>
-    <string name="search_clear_favorites_preference">清除收藏夹</string>
+    <string name="search_clear_favorites_preference">清除收藏</string>
     <string name="search_clear_favorites_summary_preference">清除所有收藏内容</string>
     <string name="search_clear_favorites_confirm">确认清除所有收藏内容？</string>
     <string name="search_favorites_cleared">收藏已清除</string>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-    <!--
+<!--
 /*
 ** Copyright (C) 2009 Johan Nilsson <http://markupartist.com>
 **
@@ -60,30 +60,166 @@
     <string name="activity_create_shortcut">路線</string>
     <string name="activity_create_departure_shortcut">出發</string>
     <string name="name_of_shortcut">快捷名稱</string>
+    <string name="create_shortcut_label">創建快捷訪問</string>
+    <string name="create_shortcut_for_departure_label">創建出發地快捷訪問</string>
+    <string name="choose_start_point_label">選擇起點</string>
+    <string name="choose_end_point_label">選擇終點</string>
+    <string name="send_feedback_email_title">STHLM Traveling 反饋</string>
+    <string name="history_label">歷史</string>
+    <string name="show_qr_code">顯示條形碼</string>
+    <string name="yes">是</string>
+    <string name="no">否</string>
+    <string name="retry">重試</string>
+    <string name="requires_barcode_scanner_message">需要Barcode Scanner，您願意現在就安裝嗎？</string>
+    <string name="install_barcode_scanner_title">安裝Barcode Scanner？</string>
+    <string name="point_on_map">地圖上的點</string>
+    <string name="tap_to_select_this_point">點擊選擇地圖上的點</string>
+    <string name="point_selected">已選取</string>
+    <string name="tap_your_end_point_on_map">在地圖上點擊選取終點</string>
+    <string name="tap_your_start_point_on_map">在地圖上點擊選擇終點</string>
+    <string name="tap_your_location_on_map">無法定位您的位置，請在地圖上點擊選取您的位置</string>
+    <string name="departing_on">從 <xliff:g id="time">%s</xliff:g> 出發，于 <xliff:g id="date">%s</xliff:g></string>
+    <string name="arriving_by">到達 <xliff:g id="time">%s</xliff:g> 于 <xliff:g id="date">%s</xliff:g></string>
+    <string name="departures">出發</string>
+    <string name="departures_for">出發去 <xliff:g id="site_name">%s</xliff:g></string>
+    <string name="date_of_trip">行程時間: <xliff:g id="date">%s</xliff:g></string>
+    <string name="no_departures_for_transport_type">在選擇的交通方式下，當前沒有查到出發信息</string>
+    <string name="no_departures">現在無出發信息</string>
+    <string name="site_name">位置</string>
+    <string name="stop_label">站</string>
+    <string name="address_label">地址</string>
+    <string name="refresh">刷新</string>
+    <string name="show_departures_for_start">顯示出發</string>
+    <string name="metros">地鐵</string>
+    <string name="buses">公交</string>
+    <string name="trains">火車</string>
+    <string name="trams">市內火車</string>
+    <string name="tram_cars">電車</string>
+    <string name="boats">輪船</string>
+    <string name="departure_metro">地鐵</string>
+    <string name="departure_bus">公交</string>
+    <string name="departure_train">火車</string>
+    <string name="departure_tram">市內火車</string>
+    <string name="now">現在</string>
+    <string name="journey_planner_label">行程規劃</string>
+    <string name="crash_report_mail_subject">STHLM Traveling 崩潰報告</string>
+    <string name="crash_report_mail_body">發送崩潰報告來幫助我們修復問題，我們不會將這些數據用做其他用途</string>
+    <string name="my_location_source_disabled">請在系統設置中打開位置源</string>
+    <string name="title_settings">設置</string>
+    <string name="now_label">現在</string>
+    <string name="more_choices_label">選項</string>
+    <string name="route_options_active">額外路線選項</string>
+    <string name="alternative_stops_label">其他站點</string>
+    <string name="date_and_time_label">日期時間</string>
+    <string name="determining_your_position">定位您的位置</string>
+    <string name="back">回退</string>
+    <string name="cancel">取消</string>
+    <string name="change">修改</string>
+    <string name="deviations_label">偏差</string>
+    <string name="new_deviations">新偏差</string>
+    <string name="no_deviations"><b>無已知偏差</b></string>
+    <string name="reinstall_app_message">您需要重新安裝STHLM Traveling才能正常使用\n\n這是由於安卓的一個缺陷導致，在我的博客上您可以獲取更多相關信息 http://bit.ly/fcissue\n\n對此我感到非常抱歉！</string>
+    <string name="did_you_mean">您是想？</string>
+    <string name="share_label">分享</string>
+    <string name="sms_ticket_label">買票</string>
+    <string name="sms_ticket_price_reduced">折扣票</string>
+    <string name="sms_ticket_price_full">全價票（20﹣64歲）</string>
+    <string name="sms_ticket_notice_message">買票前請仔細核對詳細信息， STHLM Traveling不保證您買的票符合您的實際行程</string>
+    <string name="sms_ticket_notice_disabled">此路線不支持短信車票</string>
+    <string name="trip_description_normal" formatted="false">經 %s 朝 %s.</string>
+    <string name="trip_map_description_walk" formatted="false">%s 走向 %s</string>
+    <string name="trip_map_description_normal" formatted="false">%s %s 朝 %s.</string>
+    <string name="show_all">顯示所有</string>
+    <string name="direction">方向</string>
+    <string name="no_intermediate_stops">無中轉站</string>
+    <string name="show_intermediate_stops">顯示中轉站</string>
+    <string name="hide_intermediate_stops">隱藏中轉站</string>
+    <string name="nearby_stops">附近站點</string>
+    <string name="nearby">附近</string>
+    <string name="time_to" formatted="false">%s 去 %s</string>
     <!-- Phrase describing a time duration using seconds [CHAR LIMIT=16] -->
+    <plurals name="duration_seconds">
+        <item quantity="other"><xliff:g id="count">%d</xliff:g> 秒</item>
+    </plurals>
     <!-- Phrase describing a time duration using minutes [CHAR LIMIT=16] -->
+    <plurals name="duration_minutes">
+        <item quantity="other"><xliff:g id="count">%d</xliff:g> 分</item>
+    </plurals>
     <!-- Phrase describing a time duration using hours [CHAR LIMIT=16] -->
+    <plurals name="duration_hours">
+        <item quantity="other"><xliff:g id="count">%d</xliff:g> 小時</item>
+    </plurals>
+    <!-- Planner error message -->
+    <string name="planner_error_title">查找失敗</string>
+    <!-- Planner error message -->
+    <string name="planner_error_unknown">查找失敗，請重試</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H9300">非常抱歉，沒有找到路線，請重試</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H9360">不支持的時間，請修改時間</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H9380">起點和終點太近了</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H9320">終點不存在</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H9280">終點不存在</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H9260">終點不存在</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H9250">查找中斷，請重試</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H9240">未找到行程</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H9230">請重試</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H9220">這個地址附近沒有站點</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H900">這個行程沒有時刻表</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H892">行程太長了，請去掉經停站點再試試</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H891">找不到合適行程，請增加一個經停站試試吧</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H890">找不到合適行程</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H500">找不到合適行程</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H455">延伸站點</string>
     <!-- Planner error message -->
     <!-- Planner error message -->
+    <string name="planner_error_H390">起點站或終點站被一個臨近站替代了</string>
     <!-- Planner error message -->
-    <!-- Planner error message -->
-    <!-- Planner error message -->
-    <!-- Planner error message -->
-    <!-- Planner error message -->
-    <!-- Planner error message -->
-    <!-- Planner error message -->
-    <!-- Planner error message -->
-    <!-- Planner error message -->
-    <!-- Planner error message -->
-    <!-- Planner error message -->
-    <!-- Planner error message -->
-    <!-- Planner error message -->
-    <!-- Planner error message -->
-    <!-- Planner error message -->
-    <!-- Planner error message -->
-    <!-- Planner error message -->
-    <!-- Planner error message -->
-    <!-- Planner error message -->
+    <string name="planner_error_H895">起點和終點太靠近了</string>
     <!-- Preferences -->
+    <string name="restart_app_for_full_effect">重啟應用生效</string>
+    <string name="dialog_notification_preferences">通知</string>
+    <string name="title_language_preference">語言</string>
+    <string name="summary_language_preference">選擇您的語言</string>
+    <string name="dialog_title_language_preference">選擇語言</string>
+    <string name="settings_saved">已保存</string>
+    <string name="deviation_notification_preference">偏差通知</string>
+    <string name="deviation_notification_summary_preference">實驗功能，需要永久網絡連接</string>
+    <string name="deviation_update_interval_preference">刷新間隔</string>
+    <string name="deviation_update_interval_summary_preference">較長的刷新間隔可以節省電池續航時間</string>
+    <string name="deviation_lines_preference">線路</string>
+    <string name="deviation_lines_summary_preference">逗號分隔線路號，例如 \'42,28,707\'</string>
+    <string name="deviation_lines_dialog_message_preference">用逗號分隔線路號，例如： \'42,28,707\'.</string>
+    <string name="search_include_addresses_preference">包括地址自動完成</string>
+    <string name="search_include_addresses_summary_preference">當開啟時可能花更多時間獲取建議</string>
+    <string name="search_clear_history_preference">清除歷史</string>
+    <string name="search_clear_history_summary_preference">清除搜索站和行程記錄</string>
+    <string name="search_clear_history_confirm">您確定清除所有搜索記錄？</string>
+    <string name="search_clear_favorites_preference">清除收藏</string>
+    <string name="search_clear_favorites_summary_preference">清除所有收藏</string>
+    <string name="search_clear_favorites_confirm">您確定清除所有收藏內容？</string>
+    <string name="search_favorites_cleared">收藏已清除</string>
+    <string name="help">幫助</string>
+    <string name="support">支持</string>
+    <string name="transport_type">交通類型</string>
     <!-- Ads -->
+    <string name="ads">廣告</string>
+    <string name="ads_title">為什麼有廣告？</string>
+    <string name="ads_turn_off">關閉廣告</string>
+    <string name="ads_message">這款應用自從2009年就沒有廣告，這些年服務器和維護費用逐年攀升。\n\n為了繼續開發和維護這款應用，我們不得不加入廣告。\n\n如果您對廣告有什麼意見，您可以再下方關閉它。將來您可能要花一小筆費用才能關閉廣告\n\n多謝您的支持\n約翰/Johan</string>
+    <string name="ads_summary">為什麼這款應用有廣告？</string>
 </resources>

@@ -18,8 +18,7 @@
 -->
 
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <!-- Do not translate -->
-    <string name="app_name">STHLM Traveling</string>
+    <string name="app_name" translatable="false">STHLM Traveling</string>
 
     <!-- General strings -->
     <string name="ok">OK</string>
