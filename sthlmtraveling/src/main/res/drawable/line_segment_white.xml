@@ -18,5 +18,5 @@
     android:shape="rectangle"
     >
     <size android:width="4dp"/>
-    <solid android:color="#ffffff"/>
+    <solid android:color="@color/background"/>
 </shape>

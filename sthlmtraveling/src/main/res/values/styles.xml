@@ -19,7 +19,6 @@
         <item name="colorControlNormal">@color/primary_dark</item>
 
         <item name="android:windowContentOverlay">@null</item>
-        <item name="android:windowBackground">@color/background</item>
     </style>
 
     <style name="BaseThemeNoActionBar" parent="Theme.AppCompat.Light.NoActionBar">
@@ -30,7 +29,6 @@
         <item name="colorControlNormal">@color/primary_dark</item>
 
         <item name="android:windowContentOverlay">@null</item>
-        <item name="android:windowBackground">@color/background</item>
     </style>
 
     <!-- General styles -->

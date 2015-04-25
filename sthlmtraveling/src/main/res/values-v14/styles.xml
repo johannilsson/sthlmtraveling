@@ -28,7 +28,7 @@
         <item name="borderlessButtonSmallStyle">@android:style/Widget.Holo.Button.Borderless.Small</item>
     </style>
 
-    <style name="AppBaseListView" parent="@android:style/Widget.Holo.ListView">
+    <style name="AppBaseListView" parent="Widget.AppCompat.ListView">
     </style>
 
 </resources>
