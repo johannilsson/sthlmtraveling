@@ -187,7 +187,6 @@ public class RoutesActivity extends BaseListActivity implements
 
         registerScreen("Routes");
 
-
         // Get the journey query.
         mJourneyQuery = getJourneyQueryFromIntent(getIntent());
         if (savedInstanceState != null) {
