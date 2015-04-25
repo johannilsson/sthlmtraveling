@@ -34,7 +34,7 @@
     </style>
 
     <!-- General styles -->
-    <style name="AppBaseListView" parent="Base.Widget.AppCompat.ListView">
+    <style name="AppBaseListView" parent="Widget.AppCompat.ListView">
         <item name="android:height">?attr/actionBarSize</item>
     </style>
 
@@ -49,12 +49,12 @@
         <item name="android:overScrollHeader">@null</item>
     </style>
 
-    <style name="LegacyBorderlessButton" parent="Base.Widget.AppCompat.Button.Borderless">
+    <style name="LegacyBorderlessButton" parent="Widget.AppCompat.Button.Borderless">
         <!-- Add proper background selector. -->
         <!--<item name="android:background">@android:drawable/list_selector_background</item>-->
     </style>
 
-    <style name="LegacyBorderlessSmallButton" parent="Base.Widget.AppCompat.Button.Borderless">
+    <style name="LegacyBorderlessSmallButton" parent="Widget.AppCompat.Button.Borderless">
         <!-- Add proper background selector. -->
         <!--<item name="android:background">@android:drawable/list_selector_background</item>-->
         <item name="android:textSize">14sp</item>

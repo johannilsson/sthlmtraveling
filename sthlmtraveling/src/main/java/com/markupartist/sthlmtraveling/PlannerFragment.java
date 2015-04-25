@@ -848,7 +848,7 @@ public class PlannerFragment extends BaseListFragment {
                 items.add(pointOnMapItem);
 
                 SimpleAdapter itemsAdapter = new SimpleAdapter(context, items,
-                        android.R.layout.simple_list_item_1,
+                        R.layout.simple_list_row,
                         new String[] { "item" },
                         new int[] { android.R.id.text1 });
 
@@ -878,7 +878,7 @@ public class PlannerFragment extends BaseListFragment {
             historyCursor.close();
             ArrayAdapter<Site> historyAdapter =
                     new ArrayAdapter<Site>(context,
-                            android.R.layout.simple_list_item_1, historyList);
+                            R.layout.simple_list_row, historyList);
 
             mHistoryWrapperAdapter.addSection(0,
                     getString(R.string.history_label), historyAdapter);

@@ -16,13 +16,21 @@
 ** limitations under the License.
 */
 -->
- 
+
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
-	android:id="@+id/simple_list_row"
-	android:layout_width="fill_parent"
-	android:layout_height="wrap_content"
-	android:textStyle="bold"
-	android:textColor="#ffffff"
-	android:padding="10dip"
-	/>
+          xmlns:tools="http://schemas.android.com/tools"
+          android:id="@android:id/text1"
+          style="?attr/textAppearanceListItem"
+          android:background="?attr/listChoiceBackgroundIndicator"
+          android:textAppearance="?attr/textAppearanceListItemSmall"
+          android:gravity="center_vertical"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          tools:text="List item"
+          android:paddingLeft="?attr/listPreferredItemPaddingLeft"
+          android:paddingRight="?attr/listPreferredItemPaddingRight"
+          android:minHeight="?attr/listPreferredItemHeightSmall"
+
+
+    />
 
