@@ -17,6 +17,9 @@
 package com.markupartist.sthlmtraveling.utils;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,6 +40,8 @@ import com.widespace.interfaces.AdEventListener;
 public class AdProxy {
 
     private final static String TAG = "AdProxy";
+    private static final String AD_DISMISSED_AT_KEY = "ad_dismissed_at";
+    private static final long AD_DISMISSED_GRACE_PERIOD = 60 * 1 * 1000;
 
     private final Provider mProvider;
     private final Context mContext;
@@ -67,12 +72,20 @@ public class AdProxy {
     }
 
     public void onPause() {
+        if (mAdView == null) {
+            return;
+        }
+
         if (mProvider == Provider.WIDESPACE) {
             ((AdSpace) mAdView).pause();
         }
     }
 
     public void onResume() {
+        if (mAdView == null) {
+            return;
+        }
+
         if (mProvider == Provider.WIDESPACE) {
             ((AdSpace) mAdView).resume();
         }
@@ -94,7 +107,9 @@ public class AdProxy {
         RelativeLayout mAdContainer = (RelativeLayout) LayoutInflater.from(mContext).inflate(
                 containerId, root, attachToRoot);
 
-        mAdContainer.addView(mAdView);
+        if (mAdView != null) {
+            mAdContainer.addView(mAdView);
+        }
         return mAdContainer;
     }
 
@@ -107,6 +122,15 @@ public class AdProxy {
     }
 
     protected AdSpace createAdSpace(String id) {
+        final SharedPreferences sharedPreferences = PreferenceManager
+                .getDefaultSharedPreferences(mContext.getApplicationContext());
+
+        long dismissedAt = sharedPreferences.getLong(AD_DISMISSED_AT_KEY, 0);
+        long timePassed = System.currentTimeMillis() - dismissedAt;
+        if (timePassed < AD_DISMISSED_GRACE_PERIOD) {
+            return null;
+        }
+
         AdSpace adSpace = new AdSpace(mContext, id, true, true);
 
 //        if (adSpace.getQueueSize() < 1) {
@@ -121,7 +145,6 @@ public class AdProxy {
 
             @Override
             public void onAdClosed(AdSpace adSpace, AdInfo.AdType adType) {
-
             }
 
             @Override
@@ -155,7 +178,11 @@ public class AdProxy {
 
             @Override
             public void onAdDismissed(AdSpace adSpace, boolean b, AdInfo.AdType adType) {
-
+                Log.e(TAG, "onAdDismissed");
+                final SharedPreferences sharedPreferences = PreferenceManager
+                        .getDefaultSharedPreferences(mContext.getApplicationContext());
+                sharedPreferences.edit()
+                        .putLong(AD_DISMISSED_AT_KEY, System.currentTimeMillis()).apply();
             }
         });
         adSpace.setAdErrorEventListener(new AdErrorEventListener() {
