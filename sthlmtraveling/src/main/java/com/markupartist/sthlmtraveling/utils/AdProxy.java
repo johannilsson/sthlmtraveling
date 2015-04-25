@@ -87,6 +87,12 @@ public class AdProxy {
         }
 
         if (mProvider == Provider.WIDESPACE) {
+
+            if (shouldShowAfterDismiss()) {
+                ((AdSpace) mAdView).setAutoStart(true);
+                ((AdSpace) mAdView).setAutoUpdate(true);
+            }
+
             ((AdSpace) mAdView).resume();
         }
     }
@@ -121,13 +127,16 @@ public class AdProxy {
         throw new IllegalArgumentException("Unknown ad provider");
     }
 
-    protected AdSpace createAdSpace(String id) {
+    public boolean shouldShowAfterDismiss() {
         final SharedPreferences sharedPreferences = PreferenceManager
                 .getDefaultSharedPreferences(mContext.getApplicationContext());
-
         long dismissedAt = sharedPreferences.getLong(AD_DISMISSED_AT_KEY, 0);
         long timePassed = System.currentTimeMillis() - dismissedAt;
-        if (timePassed < AD_DISMISSED_GRACE_PERIOD) {
+        return timePassed >= AD_DISMISSED_GRACE_PERIOD;
+    }
+
+    protected AdSpace createAdSpace(String id) {
+        if (!shouldShowAfterDismiss()) {
             return null;
         }
 
@@ -183,6 +192,9 @@ public class AdProxy {
                         .getDefaultSharedPreferences(mContext.getApplicationContext());
                 sharedPreferences.edit()
                         .putLong(AD_DISMISSED_AT_KEY, System.currentTimeMillis()).apply();
+                ((AdSpace)mAdView).setAutoStart(false);
+                ((AdSpace)mAdView).setAutoUpdate(false);
+//                mAdView = null;
             }
         });
         adSpace.setAdErrorEventListener(new AdErrorEventListener() {
