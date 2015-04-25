@@ -447,7 +447,9 @@ public class RouteDetailActivity extends BaseListActivity {
             }
 
             Button nameView = (Button) convertView.findViewById(R.id.trip_stop_title);
-            nameView.setText(isFirst ? getLocationName(mJourneyQuery.origin) : getLocationName(subTrip.origin));
+            boolean shouldUseOriginName = isFirst && subTrip.transport.type.equals("Walk");
+            nameView.setText(shouldUseOriginName ?
+                    getLocationName(mJourneyQuery.origin) : getLocationName(subTrip.origin));
             nameView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
