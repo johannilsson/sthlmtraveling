@@ -20,7 +20,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
@@ -44,7 +44,7 @@ import com.markupartist.sthlmtraveling.utils.StringUtils;
 
 import java.io.IOException;
 
-public class ViewOnMapActivity extends ActionBarActivity {
+public class ViewOnMapActivity extends AppCompatActivity {
 
     private static final String TAG = "ViewOnMapActivity";
     public static String EXTRA_LOCATION = "com.markupartist.sthlmtraveling.extra.Location";

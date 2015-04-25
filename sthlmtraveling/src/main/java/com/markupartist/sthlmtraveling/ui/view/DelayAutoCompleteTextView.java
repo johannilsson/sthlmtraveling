@@ -19,15 +19,15 @@ package com.markupartist.sthlmtraveling.ui.view;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v7.widget.AppCompatAutoCompleteTextView;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.AutoCompleteTextView;
 import android.widget.ProgressBar;
 
 /**
  * Created by johan on 27/10/14.
  */
-public class DelayAutoCompleteTextView extends AutoCompleteTextView {
+public class DelayAutoCompleteTextView extends AppCompatAutoCompleteTextView {
 
     private static final int MESSAGE_TEXT_CHANGED = 100;
     private static final int DEFAULT_AUTO_COMPLETE_DELAY = 600;
