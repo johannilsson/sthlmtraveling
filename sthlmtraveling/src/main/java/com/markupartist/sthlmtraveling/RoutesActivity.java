@@ -187,10 +187,6 @@ public class RoutesActivity extends BaseListActivity implements
 
         registerScreen("Routes");
 
-        initGoogleApiClient();
-        mMyLocationManager = new LocationManager(this, getGoogleApiClient());
-        mMyLocationManager.setLocationListener(this);
-        registerPlayService(mMyLocationManager);
 
         // Get the journey query.
         mJourneyQuery = getJourneyQueryFromIntent(getIntent());
@@ -205,6 +201,13 @@ public class RoutesActivity extends BaseListActivity implements
             // If passed with bad parameters, break the execution.
             return;
         }
+
+        if (mJourneyQuery.origin.isMyLocation() || mJourneyQuery.destination.isMyLocation()) {
+            initGoogleApiClient();
+        }
+        mMyLocationManager = new LocationManager(this, getGoogleApiClient());
+        mMyLocationManager.setLocationListener(this);
+        registerPlayService(mMyLocationManager);
 
         mHeaderbarView = findViewById(R.id.headerbar);
 
