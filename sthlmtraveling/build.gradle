@@ -53,12 +53,12 @@ dependencies {
 
 android {
     compileSdkVersion 22
-    buildToolsVersion "21.1.2"
+    buildToolsVersion "22.0.1"
 
     defaultConfig {
         minSdkVersion 9
         targetSdkVersion 22
-        versionName "2.11.2-dev"
+        versionName "2.12.0"
         versionCode 140
 
         buildConfigField "boolean", "APP_IS_ADS_ENABLED", buildProperties['IS_ADS_ENABLED']
