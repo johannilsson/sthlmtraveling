@@ -137,6 +137,7 @@ public class AdProxy {
 
     protected AdSpace createAdSpace(String id) {
         if (!shouldShowAfterDismiss()) {
+            Analytics.getInstance(mContext).event("Ads", "Ad view grace period");
             return null;
         }
 
