@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+    <string-array name="when_choice">
+        <item>Orario di partenza</item>
+        <item>Orario d\'arrivo</item>
+    </string-array>
+
+    <!-- Deviation update preference -->
+    <string-array name="entries_deviations_preference">
+        <item>10 min</item>
+        <item>15 min</item>
+        <item>30 min</item>
+        <item>45 min</item>
+        <item>1 ora</item>
+    </string-array>
+</resources>

@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <!-- General strings -->
+    <string name="ok">OK</string>
+    <string name="done">Fatto</string>
+    <string name="discard">Annulla</string>
+    <string name="from">Da</string>
+    <string name="to">A</string>
+    <string name="via">Via</string>
+    <string name="search_label">Cerca</string>
+    <string name="search_routes_label">Cerca percorsi</string>
+    <string name="departing">Partendo</string>
+    <string name="arriving">Arrivando</string>
+    <string name="no_routes_found_label">Purtroppo non è stato trovato alcun percorso</string>
+    <string name="no_routes_found_message">Il tuo punto di partenza o di arrivo potrebbe non essere più servito da servizio pubblico oppure potrebbe non essere servito nelle modalità di trasporto selezionate (ad esempio alcune stazioni/fermate non sono servite durante il fine settimana).</string>
+    <string name="routes_label">Percorsi</string>
+    <string name="route_alternatives_label">Alternative</string>
+    <string name="route_details_label">Dettagli del percorso</string>
+    <string name="no_route_details">Purtroppo non è stato trovato alcun percorso. Molto probabilmente questa ricerca era troppo vecchia.</string>
+    <string name="session_timeout_message">Molto probabilmente questa ricerca era troppo vecchia.</string>
+    <string name="attention_label">Attenzione</string>
+    <string name="bad_routes_parameters_message">Il punto di partenza o di arrivo non può essere vuoto.</string>
+    <string name="new_search">Cerca</string>
+    <string name="empty_value">Mancante o non valido</string>
+    <string name="loading">Ricerca in corso...</string>
+    <string name="my_location">Mia posizione</string>
+    <string name="change_date_and_time">Cambia data e ora</string>
+    <string name="reverse_start_end">Inverti da e a</string>
+    <string name="about">Chi siamo</string>
+    <string name="about_this_app">STHLM Traveling è sviluppata da Johan Nilsson. Ti preghiamo di contattare lui se hai qualche idea o se riscontri qualche problema.\n\nTutti i dati sul traffico vengono raccolti con il permesso di Trafiklab e SL - Stockholm Public Transport.\n\nPer migliorare l\'applicazione alcune statistiche vengono raccolte anonimamente con Flurry e Google Analytics.\n\n<b>Riconoscimenti</b>\n<li>Robert Johansson\nhttps://twitter.com/likebobby</li>\n<li>Icona dell\'app e idee Olof Brickarp\nhttp://www.yay.se</li>\n<li>Traduzione Svedese Jean Diarbakerli</li>\n<li>Traduzione Spagnola Valeria Padilla e Miguel Ángel Domínguez Coloma</li>\n<li>Traduzione Italiana Sergio Cucinella</li>\n<li>Miglioramenti e risoluzione problemi Fredrik Jönsson\nhttp://github.com/lk95jofr</li>\n<li>Miglioramenti e risoluzione problemi Adam Nybäck\nhttp://anyro.se</li>\n<li>Miglioramenti e risoluzione problemi Morgan Christiansson\nhttp://screeninteraction.com</li>\n<li>Icone Fredrik Broman\nhttp://fredrikbroman.com</li>\n<li>Icone Android Icons\nhttp://androidicons.com</li>\n<li>Suggerimenti da Swedroid\nhttp://swedroid.se</li>\n\nCodice sorgente http://github.com/johannilsson/sthlmtraveling\n\n Johan Nilsson johan@markupartist.com\nhttp://markupartist.com\n\n</string>
+    <string name="donate">Fai una donazione</string>
+    <string name="donate_url">http://pledgie.com/campaigns/6527</string>
+    <string name="feedback">Suggerimenti</string>
+    <string name="send_email">Invia email...</string>
+    <string name="favorites_label">Preferiti</string>
+    <string name="no_favorites"><b>Non hai ancora salvato alcun percorso preferito...</b>\nAggiungi e rimuovi percorsi preferiti selezionando la stella dopo una ricerca.</string>
+    <string name="reverse_search">Inverti ricerca</string>
+    <string name="delete">Rimuovi</string>
+    <string name="no_location_title">Errore</string>
+    <string name="no_location_message">Impossibile determinare la tua posizione.</string>
+    <string name="network_problem_label">Errore</string>
+    <string name="network_problem_message">Ci potrebbe essere un sovraccarico di richieste, un problema di rete o non è stato possibile collegarsi con SL.</string>
+    <string name="activity_create_shortcut">Percorsi</string>
+    <string name="activity_create_departure_shortcut">Partenze</string>
+    <string name="name_of_shortcut">Nome collegamento rapido</string>
+    <string name="create_shortcut_label">Crea collegamento rapido</string>
+    <string name="create_shortcut_for_departure_label">Crea collegamento rapido per partenze</string>
+    <string name="choose_start_point_label">Seleziona il punto di partenza</string>
+    <string name="choose_end_point_label">Seleziona il punto di arrivo</string>
+    <string name="send_feedback_email_title">Suggerimenti per STHLM Traveling</string>
+    <string name="send_feedback_email_emailaddress">sthlmtraveling@markupartist.com</string>
+    <string name="history_label">Cronologia</string>
+    <string name="show_qr_code">Mostra codice a barre</string>
+    <string name="yes">Si</string>
+    <string name="no">No</string>
+    <string name="retry">Riprova</string>
+    <string name="requires_barcode_scanner_message">Questa applicazione richiede un lettore di codici a barre. Desideri installarlo?</string>
+    <string name="install_barcode_scanner_title">Installa lettore di codici a barre?</string>
+    <string name="point_on_map">Punto sulla mappa</string>
+    <string name="tap_to_select_this_point">Tocca per selezionare questo punto</string>
+    <string name="point_selected">Punto selezionato</string>
+    <string name="tap_your_end_point_on_map">Seleziona il tuo punto di arrivo sulla mappa</string>
+    <string name="tap_your_start_point_on_map">Seleziona il tuo punto di partenza sulla mappa</string>
+    <string name="tap_your_location_on_map">Impossibile determinare la tua posizione. Selezionala sulla mappa</string>
+    <string name="departing_on">Partendo dopo le <xliff:g id="time">%s</xliff:g> il <xliff:g id="date">%s</xliff:g></string>
+    <string name="arriving_by">Arrivando al più alle <xliff:g id="time">%s</xliff:g> il <xliff:g id="date">%s</xliff:g></string>
+    <string name="departures">Partenze</string>
+    <string name="departures_for">Partenze per <xliff:g id="site_name">%s</xliff:g></string>
+    <string name="date_of_trip">Data di viaggio: <xliff:g id="date">%s</xliff:g></string>
+    <string name="no_departures_for_transport_type">Non ci sono al momento partenze per il tipo di trasporto selezionato.</string>
+    <string name="no_departures">Nessun partenze adesso.</string>
+    <string name="site_name">Posizione</string>
+    <string name="stop_label">Fermata</string>
+    <string name="address_label">Indirizzo</string>
+    <string name="refresh">Aggiorna</string>
+    <string name="show_departures_for_start">Partenze come inizio</string>
+    <string name="metros">Metro</string>
+    <string name="buses">Pullman</string>
+    <string name="trains">Treno</string>
+    <string name="trams">Tram</string>
+    <string name="tram_cars">Tram</string>
+    <string name="boats">Navi</string>
+    <string name="departure_metro">Metro</string>
+    <string name="departure_bus">Pullman</string>
+    <string name="departure_train">Treni</string>
+    <string name="departure_tram">Tram</string>
+    <string name="now">adesso</string>
+    <string name="journey_planner_label">Pianificatore di viaggio</string>
+    <string name="my_location_source_disabled">Si prega di abilitare nelle impostazioni di sistema una fonte per la Mia Posizione</string>
+    <string name="title_settings">Impostazioni</string>
+    <string name="now_label">Ora</string>
+    <string name="more_choices_label">Più opzioni</string>
+    <string name="route_options_active">Con ulteriori opzioni di percorso</string>
+    <string name="alternative_stops_label">Fermate alternative</string>
+    <string name="date_and_time_label">Data e Ora</string>
+    <string name="determining_your_position">Rilevamento della tua posizione</string>
+    <string name="back">Indietro</string>
+    <string name="cancel">Annulla</string>
+    <string name="change">Cambia</string>
+    <string name="deviations_label">Deviazioni</string>
+    <string name="new_deviations">Nuove deviazioni.</string>
+    <string name="no_deviations"><b>Nessuna deviazione presente</b></string>
+    <string name="reinstall_app_message">È necessario reinstallare STHLM Traveling per poterla usare correttamente.\n\nQuesto è causato da un problema in Android. Puoi leggere maggiori informazioni su questo problema sul mio blog, http://bit.ly/fcissue.\n\nSono davvero spiacente per questo!</string>
+    <string name="did_you_mean">Intendevi?</string>
+    <string name="share_label">Condividi</string>
+    <string name="sms_ticket_label">Acquista biglietto</string>
+    <string name="sms_ticket_price_reduced">Prezzo ridotto</string>
+    <string name="sms_ticket_price_full">Prezzo intero (20–64 anni)</string>
+    <string name="sms_ticket_notice_message">Si prega di verificare i dettagli prima di proseguire con l\'acquisto. STHLM Traveling non può garantire che il biglietto selezionato è valido per il tuo percorso.</string>
+    <string name="sms_ticket_notice_disabled">Non è possibile acquistare biglietti via SMS per questo percorso.</string>
+    <string name="trip_description_walk" formatted="false">Cammina</string>
+    <string name="trip_description_normal" formatted="false">Prendi %s verso %s.</string>
+    <string name="trip_map_description_walk" formatted="false">%s Cammina verso %s</string>
+    <string name="trip_map_description_normal" formatted="false">%s %s verso %s.</string>
+    <string name="show_all">Mostra tutto</string>
+    <string name="direction">Direzione</string>
+    <string name="no_intermediate_stops">Non sono state trovate fermate intermedie.</string>
+    <string name="show_intermediate_stops">Mostra fermate intermedie</string>
+    <string name="hide_intermediate_stops">Nascondi fermate intermedie</string>
+    <string name="nearby_stops">Fermate nelle vicinanze</string>
+    <string name="nearby">Nelle vicinanze</string>
+    <string name="time_to" formatted="false">%s alle %s</string>
+
+    <!-- Phrase describing a time duration using seconds [CHAR LIMIT=16] -->
+    <plurals name="duration_seconds">
+        <item quantity="one">1 secondo</item>
+        <item quantity="other"><xliff:g id="count">%d</xliff:g> secondi</item>
+    </plurals>
+    <!-- Phrase describing a time duration using minutes [CHAR LIMIT=16] -->
+    <plurals name="duration_minutes">
+        <item quantity="one">1 minuto</item>
+        <item quantity="other"><xliff:g id="count">%d</xliff:g> minuti</item>
+    </plurals>
+    <!-- Phrase describing a time duration using hours [CHAR LIMIT=16] -->
+    <plurals name="duration_hours">
+        <item quantity="one">1 ora</item>
+        <item quantity="other"><xliff:g id="count">%d</xliff:g> ore</item>
+    </plurals>
+
+    <!-- Planner error messages -->
+    <string name="planner_error_title">Errore</string>
+    <!-- Planner error message -->
+    <string name="planner_error_unknown">La ricerca non è riuscita correttamente.</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H9300">Purtroppo non è stato possibile calcolare il viaggio. Riprova più tardi.</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H9360">Errore nella data</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H9380">I punti di partenza, arrivo o di passaggio o coincidono o sono troppo vicini l\'uno all\'altro.</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H9320">Nome della fermata inesistente.</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H9280">Nome della fermata inesistente.</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H9260">Nome della fermata inesistente.</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H9250">La ricerca è stata sospesa.</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H9240">Non è stato trovato alcun percorso.</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H9230">Riprova.</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H9220">Non c\'è alcuna fermata vicino l\'indirizzo specificato.</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H900">Non c\'è alcun evento nel calendario per il viaggio selezionato.</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H892">Il viaggio era troppo lungo. Prova a rimuovere i punti intermedi.</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H891">Nessun viaggio trovato. Prova a scegliere un punto intermedio.</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H890">Nessun viaggio trovato.</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H500">Nessun viaggio trovato.</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H455">Cambia indirizzo.</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H410">Le informazioni potrebbero essere incomplete a causa di qualche cambiamento nell\'orario.</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H390">Il punto di partenza o di arrivo è stato sostituito con una fermata nelle vicinanze.</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H895">Il punto di partenza e quello di arrivo sono troppo vicini.</string>
+
+    <!-- Preferences -->
+    <string name="restart_app_for_full_effect">Riavvia l\'applicazione per un effetto completo.</string>
+    <string name="dialog_general_preferences">Generali</string>
+    <string name="dialog_notification_preferences">Notfiche</string>
+    <string name="title_language_preference">Lingua</string>
+    <string name="summary_language_preference">Scegli la tua lingua preferita.</string>
+    <string name="dialog_title_language_preference">Scegli la lingua</string>
+    <string name="settings_saved">Salvato</string>
+    <string name="deviation_notification_preference">Notifiche per deviazioni</string>
+    <string name="deviation_notification_summary_preference">Sperimentale. Questa funzione utilizza molta batteria e richiede una connessione a internet permanente.</string>
+    <string name="deviation_update_interval_preference">Intervallo di aggiornamento</string>
+    <string name="deviation_update_interval_summary_preference">Intervalli di aggiornamento più lunghi aiutano a ridurre il consumo di batteria.</string>
+    <string name="deviation_lines_preference">Linee</string>
+    <string name="deviation_lines_summary_preference">Elenco delle linee separato da virgola. Es: \'42,28,707\'.</string>
+    <string name="deviation_lines_dialog_message_preference">Separa i numeri delle linee con una virgola. Es: \'42,28,707\'.</string>
+    <string name="search_include_addresses_preference">Includi gli indirizzi nel completamento automatico</string>
+    <string name="search_include_addresses_summary_preference">Putrebbe richiedere più tempo ricevere suggerimenti quando abilitata.</string>
+    <string name="search_clear_history_preference">Elimina cronologia ricerche</string>
+    <string name="search_clear_history_summary_preference">Elimina la cronologia delle ricerche per fermate e percorsi</string>
+    <string name="search_clear_history_confirm">Sei sicuro di voler rimuovere tutta la cronologia di ricerca?</string>
+    <string name="search_history_cleared">Cronologia eliminata</string>
+    <string name="search_clear_favorites_preference">Elimina preferiti</string>
+    <string name="search_clear_favorites_summary_preference">Elimina tutti i preferiti.</string>
+    <string name="search_clear_favorites_confirm">Sei sicuro di voler rimuovere tutti i preferiti?</string>
+    <string name="search_favorites_cleared">Preferiti eliminati</string>
+    <string name="help">Aiuto</string>
+    <string name="support">Supporto</string>
+    <string name="transport_type">Mezzi di trasporto</string>
+
+    <!-- Ads -->
+    <string name="ads">Annuncio</string>
+    <string name="ads_title">Perchè annunci?</string>
+    <string name="ads_turn_off">Rimuovi annunci</string>
+    <string name="ads_message">Questa applicazione è stata gratuita sin dal 2009, durante questi anni il costo dei server e della manutenzione è aumentato.\n\nGli annunci sono a volte mostrati per poter continuare lo sviluppo e fornire il supporto necessario.\n\nSe hai problemi con gli annunci è possibile rimuoverli qui sotto. In futuro potrebbe essere richiesto un piccolo contributo per poter avere una versione senza annunci.\n\nGrazie per il tuo supporto!\nJohan</string>
+    <string name="ads_summary">Perchè questa applicazione ha gli annunci?</string>
+
+</resources>

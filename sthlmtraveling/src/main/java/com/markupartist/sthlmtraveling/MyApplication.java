@@ -74,12 +74,15 @@ public class MyApplication extends Application {
             case "zh_TW":
                 locale = new Locale("zh", "TW");
                 break;
+            case "it":
+                locale = new Locale("it", "IT");
+                break;
         }
 
         if (locale != null) {
             Log.d(TAG, "setting locale " + locale);
-            Resources res = getResources(); 
-            DisplayMetrics dm = res.getDisplayMetrics(); 
+            Resources res = getResources();
+            DisplayMetrics dm = res.getDisplayMetrics();
             Configuration conf = res.getConfiguration();
             conf.locale = locale;
             res.updateConfiguration(conf, dm);
