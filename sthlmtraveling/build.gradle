@@ -44,7 +44,6 @@ dependencies {
     compile 'com.google.code.gson:gson:2.2.4'
     compile files('libs/katalysator_android_sdk.jar')
     compile files('libs/nmdp_speech_kit.jar')
-//    compile files('libs/widespace-sdk-4.4.0.jar')
     compile files('libs/widespace-sdk-4.5.0-05d6dac.jar')
     compile('com.crashlytics.sdk.android:crashlytics:2.2.2@aar') {
         transitive = true;
