@@ -23,18 +23,20 @@ fork the app. I will do my best help you out if you have any problems. The docum
 
 Changelog
 ---------
-* 2.12.0
+* 2.12.0 (2015-05-10)
   * Fixed white text on white background on some HTC devices
   * Updated to recent AppCompat library
   * Fix crash in departures
   * Fix styling, mainly for 2.3 devices
   * Fix to not show dialog about google play services if the library is not needed
+  * Fix issue with description when distance between current location and first step was short
+  * Add grace period for ads if the ads has been dismissed
   * Remove old error reporter
   * Add French translation by Sebastien
   * Add Chinese translation by Tangood
   * Add German translation by Anja
   * Update Swedish and English translations
-* 2.11.0
+* 2.11.0 (2015-03-31)
   * Add Dutch translations by Bastiaan Franssen
   * Update third party apis, Google Play Services is now on 7.0.0.
   * Fix issue with using via with the planner
