@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <!--
+/*
+** Copyright (C) 2009 Johan Nilsson <http://markupartist.com>
+**
+** Licensed under the Apache License, Version 2.0 (the "License"); 
+** you may not use this file except in compliance with the License. 
+** You may obtain a copy of the License at 
+**
+**     http://www.apache.org/licenses/LICENSE-2.0 
+**
+** Unless required by applicable law or agreed to in writing, software 
+** distributed under the License is distributed on an "AS IS" BASIS, 
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+** See the License for the specific language governing permissions and 
+** limitations under the License.
+*/
+-->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <!-- Do not translate -->
+    <!-- General strings -->
+    <string name="done">تم</string>
+    <string name="discard">الغاء</string>
+    <string name="from">من</string>
+    <string name="to">الى</string>
+    <string name="via">عن طريق</string>
+    <string name="search_label">ابحث</string>
+    <string name="search_routes_label">اجلب الطرق</string>
+    <string name="departing">يغادر</string>
+    <string name="arriving">يصل</string>
+    <string name="no_routes_found_label">للاسف لم يتم العثور على طريق</string>
+    <string name="no_routes_found_message">ربما نقطة وصولك غير مخدمة نهائياً بالانماط النقلية المحددة في التوقيت المطلوب (على سبيل المثال بعض المواقف قد تكون غير مخدمة ايام العطل و نهاية الاسبوع )</string>
+    <string name="routes_label">الطرق</string>
+    <string name="route_alternatives_label">البدائل</string>
+    <string name="route_details_label">خصائص الطريق</string>
+    <string name="no_route_details">للاسف لم يتم العثور على طريق. على الاغلب هذا البحث قديم جداً</string>
+    <string name="session_timeout_message">على الاغلب البحث قديم جداً</string>
+    <string name="attention_label">انتباه</string>
+    <string name="bad_routes_parameters_message">نقطة البداية او نقطة النهاية يجب الا تكون فارغة</string>
+    <string name="new_search">بحث</string>
+    <string name="empty_value">مفقود او خاطىء</string>
+    <string name="loading">جاري البحث.فضلاً انتظر</string>
+    <string name="my_location">موقعي</string>
+    <string name="change_date_and_time">تغيير التاريخ و التوقيت</string>
+    <string name="reverse_start_end">عكس من والى</string>
+    <string name="about">عن</string>
+    <string name="about_this_app">STHLM Traveling يتم تطويره بواسطة Johan Nilsson يرجى التواصل معه ان كنت تملك افكار او اية مشاكل\n\nكافة معلومات السير يتم جلبها بواسطة تصريح من Trafiklab و SL - Stockholm Public Transport.\n\nلتطوير التطبيق يتم جمع معلومات بشكل مجهولة بواسطة Flurry و Google Analytics.\n\n<b>الحقوق</b>\n&lt;li&gt;Robert Johansson\nhttps://twitter.com/likebobby&lt;/li&gt;\n&lt;li&gt;ايقونة التطبيقة &amp; فكرة Olof Brickarp\nhttp://www.yay.se&lt;/li&gt;\n&lt;li&gt;الترجمة السويدية بواسطة Jean Diarbakerli&lt;/li&gt;\n&lt;li&gt;الترجمة الاسبانية Valeria Padilla و Miguel Ángel Domínguez Coloma&lt;/li&gt;\n&lt;li&gt;الترقيع بواسطة Fredrik Jönsson\nhttp://github.com/lk95jofr&lt;/li&gt;\n&lt;li&gt;الترقيع بواسطة Adam Nybäck\nhttp://anyro.se&lt;/li&gt;\n&lt;li&gt;الترقيع بواسطة Morgan Christiansson\nhttp://screeninteraction.com&lt;/li&gt;\n&lt;li&gt;الايقونات بواسطة Fredrik Broman\nhttp://fredrikbroman.com&lt;/li&gt;\n&lt;li&gt;الايقونات بواسطة Android Icons\nhttp://androidicons.com&lt;/li&gt;\n&lt;li&gt;التقييم  من Swedroid\nhttp://swedroid.se&lt;/li&gt;\n\nالكود المصدري http://github.com/johannilsson/sthlmtraveling\n\n Johan Nilsson johan@markupartist.com\nhttp://markupartist.com\n\n</string>
+    <string name="donate">التبرع</string>
+    <string name="donate_url">http://pledgie.com/campaigns/6527</string>
+    <string name="feedback">تقديم رأي</string>
+    <string name="send_email">ارسال بريد الكتروني</string>
+    <string name="favorites_label">المفضلات</string>
+    <string name="no_favorites"><b>لا يوجد مفضلات...</b>\nاضف و امسح مفضلات عن طريق الضغط على زر النجمة بعد البحث</string>
+    <string name="reverse_search">بحث عكسي</string>
+    <string name="delete">امسح</string>
+    <string name="no_location_title">خطأ في المنطقة</string>
+    <string name="no_location_message">فشل تحديد موقعك</string>
+    <string name="network_problem_label">مشكلة في الشبكة</string>
+    <string name="network_problem_message">ضغط كبير محتمل . خطأ في الشبة او عدم القدر على الاتصال بموقع SL.</string>
+    <string name="activity_create_shortcut">الطرق</string>
+    <string name="activity_create_departure_shortcut">المغادرة</string>
+    <string name="name_of_shortcut">اسم الاختصار</string>
+    <string name="create_shortcut_label">انشاء الاختصار</string>
+    <string name="create_shortcut_for_departure_label">انشاء اختصار للمغادرة</string>
+    <string name="choose_start_point_label">اختيار نقطة البدء</string>
+    <string name="choose_end_point_label">اختيار نقطة النهاية</string>
+    <string name="send_feedback_email_title">اراء عن STHLM Traveling</string>
+    <string name="send_feedback_email_emailaddress">sthlmtraveling@markupartist.com</string>
+    <string name="history_label">التاريخ</string>
+    <string name="show_qr_code">اظهار الباركود</string>
+    <string name="yes">نعم</string>
+    <string name="no">لا</string>
+    <string name="retry">اعادة المحاولة</string>
+    <string name="requires_barcode_scanner_message">هذا التطبيق يتطلب قارىء باركود.
+هل ترغب بتثبيته ؟</string>
+    <string name="install_barcode_scanner_title">تثبيت قارىء الباركود ؟</string>
+    <string name="point_on_map">الاشارة على الخريطة</string>
+    <string name="tap_to_select_this_point">المس لتحديد هذه النقطة</string>
+    <string name="point_selected">تم تحديد النقطة</string>
+    <string name="tap_your_end_point_on_map">المس لتحديد نقطة النهاية على الخريطة</string>
+    <string name="tap_your_start_point_on_map">المس على نقطة البداية على الخريطة</string>
+    <string name="tap_your_location_on_map">فشل تحديد موقعك , المس على موقعك على الخريطة</string>
+    <string name="departing_on">يغادر <xliff:g id="time">%s</xliff:g> في <xliff:g id="date">%s</xliff:g></string>
+    <string name="arriving_by">يصل <xliff:g id="time">%s</xliff:g> في <xliff:g id="date">%s</xliff:g></string>
+    <string name="departures">المغادرات</string>
+    <string name="departures_for">المغادرات الى <xliff:g id="site_name">%s</xliff:g></string>
+    <string name="date_of_trip">تاريخ الرحلة: <xliff:g id="date">%s</xliff:g></string>
+    <string name="no_departures_for_transport_type">لا يوجد اية مغادرات لطريقة التنقل المختارة في الوقت الحاضر</string>
+    <string name="no_departures">لا يوجد مغادرات حالياً</string>
+    <string name="site_name">الموقع</string>
+    <string name="stop_label">موقف (توقف)</string>
+    <string name="address_label">العنوان</string>
+    <string name="refresh">تحديث</string>
+    <string name="show_departures_for_start">اظهار المغادرات</string>
+    <string name="metros">مترو الانفاق</string>
+    <string name="buses">الباصات</string>
+    <string name="trains">القطارات</string>
+    <string name="trams">القطار المحلي</string>
+    <string name="tram_cars">الترامواي</string>
+    <string name="boats">قوارب</string>
+    <string name="departure_metro">مترو الانفاق</string>
+    <string name="departure_bus">باص</string>
+    <string name="departure_train">قطار</string>
+    <string name="departure_tram">ق. محلي</string>
+    <string name="now">الان</string>
+    <string name="journey_planner_label">مخطط الرحل</string>
+    <string name="crash_report_mail_subject">تقرير خطأ STHLM Traveling</string>
+    <string name="crash_report_mail_body">عن طريق ارسال تقرير الخطأ هذا انت تساعدني في اصلاح هذه المشكلة , لن استخدم المعلومات في اي شيء اخر</string>
+    <string name="my_location_source_disabled">رجاء قم بتفعيل خدمة موقعي لهذا التطبيق باعدادات النظام</string>
+    <string name="title_settings">الاعدادات</string>
+    <string name="now_label">الان</string>
+    <string name="more_choices_label">الخيارات</string>
+    <string name="route_options_active">مع خيارات طرق اضافية</string>
+    <string name="alternative_stops_label">مواقف بديلة</string>
+    <string name="date_and_time_label">التاريخ و الوقت</string>
+    <string name="determining_your_position">جاري تحديد موقعك</string>
+    <string name="back">خلف</string>
+    <string name="cancel">الغاء</string>
+    <string name="change">تغيير</string>
+    <string name="deviations_label">الانحرافات</string>
+    <string name="new_deviations">انحراف جديد</string>
+    <string name="no_deviations"><b>لا يوجد انحراف معروف</b></string>
+    <string name="reinstall_app_message">عليك اعادة تثبيت STHLM Traveling لكي تكون قادراً على استخدامه بشكل صحيح.\n\nهذه المشكلة هي بسبب ثغرة بنظام اندرويد. يمكنك القراء عنها اكثر في مدونتي \nhttp://bit.ly/fcissue.\n\nانا اسف جداً على هذا !</string>
+    <string name="did_you_mean">هل قصدت ؟</string>
+    <string name="share_label">مشاركة</string>
+    <string name="sms_ticket_label">شراء تذكرة</string>
+    <string name="sms_ticket_price_reduced">السعر المخفض</string>
+    <string name="sms_ticket_price_full">السعر الكامل (20-64 سنة)</string>
+    <string name="sms_ticket_notice_message">رجاءً قم بالتأكد قبل شراء التذكرة . STHLM Traveling لا يضمن لك ان التذكرة الصحيحة لرحلتك.</string>
+    <string name="sms_ticket_notice_disabled">تذاكر ال SMS غير صالحة لهذه الوجهة.</string>
+    <string name="trip_description_walk" formatted="false">امشِ</string>
+    <string name="trip_description_normal" formatted="false">خذ %s باتجاه %s.</string>
+    <string name="trip_map_description_walk" formatted="false">%s امشِ الى %s</string>
+    <string name="trip_map_description_normal" formatted="false">%s %s باتجاه %s.</string>
+    <string name="show_all">اظهر الكل</string>
+    <string name="direction">الاتجاه</string>
+    <string name="no_intermediate_stops">لم يتم العثور على مواقف متوسطة</string>
+    <string name="show_intermediate_stops">اظهار المواقف المتوسطة</string>
+    <string name="hide_intermediate_stops">اخفاء المواقف المتوسطة</string>
+    <string name="nearby_stops">المواقف القريبة</string>
+    <string name="nearby">قريب</string>
+    <string name="time_to" formatted="false">%s الى %s</string>
+    <!-- Phrase describing a time duration using seconds [CHAR LIMIT=16] -->
+    <plurals name="duration_seconds">
+        <item quantity="one">1 ثانية</item>
+        <item quantity="other"><xliff:g id="COUNT">%d</xliff:g> ثواني</item>
+        <item quantity="few"></item>
+        <item quantity="many"></item>
+        <item quantity="two"></item>
+        <item quantity="zero"></item>
+    </plurals>
+    <!-- Phrase describing a time duration using minutes [CHAR LIMIT=16] -->
+    <plurals name="duration_minutes">
+        <item quantity="one">1 دقيقة</item>
+        <item quantity="other"><xliff:g id="count">%d</xliff:g> دقائق</item>
+        <item quantity="few"></item>
+        <item quantity="many"></item>
+        <item quantity="two"></item>
+        <item quantity="zero"></item>
+    </plurals>
+    <!-- Phrase describing a time duration using hours [CHAR LIMIT=16] -->
+    <plurals name="duration_hours">
+        <item quantity="one">1 ساعة</item>
+        <item quantity="other"><xliff:g id="count">%d</xliff:g> ساعات</item>
+        <item quantity="few"></item>
+        <item quantity="many"></item>
+        <item quantity="two"></item>
+        <item quantity="zero"></item>
+    </plurals>
+    <!-- Planner error message -->
+    <string name="planner_error_title">فشل البحث</string>
+    <!-- Planner error message -->
+    <string name="planner_error_unknown">فشل البحث , يرجى المحاولة مجدداً.</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H9300">للاسف لم يتم العثور على طريق , يرجى المحاولة مجدداً.</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H9360">تاريخ غير مدعوم, يرجى تغيير التاريخ.</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H9380">نقطة البداية و النهاية قريبان جداً.</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H9320">الموقف غير موجود.</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H9280">الموقف غير موجود</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H9260">الموقف غير موجود</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H9250">انقطع البحث، يرجى المحاولة مرة أخرى.</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H9240">لم يتم العثور على رحلة.</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H9230">يرجى المحاولة مجدداً</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H9220">لا يوجد موقف قريب من العنوان المطلوب.</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H900">لا يوجد جدول زمني لهذه الرحلة.</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H892">الرحلة طويلة جداً. حاول ازالة موقف وسيط.</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H891">لم يتم العثور على رحلة.حاول اضافة موقف وسيط.</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H890">لك يتم العثور على رحلة.</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H500">لم يتم العثور على رحلة.</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H455">موقف موسّع</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H410">لقد حصلت مشكلة قد تكون متعلقة بتغيير جداول المواعيد.</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H390">تم استبدال موقف البداية او النهاية بموقف قريب منه.</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H895">موقف البداية و النهاية قريبان جداً الى بعض.</string>
+    <!-- Preferences -->
+    <string name="restart_app_for_full_effect">أعد تشغيل التطبيق لتقديم الاداء الكامل.</string>
+    <string name="dialog_general_preferences">الاساسيات</string>
+    <string name="dialog_notification_preferences">التنبيهات</string>
+    <string name="title_language_preference">اللغة</string>
+    <string name="summary_language_preference">اختر لغتك المفضلة.</string>
+    <string name="dialog_title_language_preference">اختر لغة</string>
+    <string name="settings_saved">تم الحفظ (محفوظ)</string>
+    <string name="deviation_notification_preference">تبيهات الانحراف.</string>
+    <string name="deviation_notification_summary_preference">تجريبي . التفعيل يؤدي الى استهلاك البطارية و يتطلب اتصال دائماً بالانترنت.</string>
+    <string name="deviation_update_interval_preference">المدة مابين التحديث</string>
+    <string name="deviation_update_interval_summary_preference">المدة الاطول بين التحديثات توفر لك البطارية.</string>
+    <string name="deviation_lines_preference">خطوط</string>
+    <string name="deviation_lines_summary_preference">قائمة بارقام الخطوط مفصولة بفواصل, مثلاً : \'42,28,707\'.</string>
+    <string name="deviation_lines_dialog_message_preference">قم بفصل ارقام الخطوط بفاصلة , مثلاً : \'42,28,707\'.</string>
+    <string name="search_include_addresses_preference">ضمّن العنوان في الاكمال التلقائي</string>
+    <string name="search_include_addresses_summary_preference">قد يأخذ وقتاً اطول للحصول على الاقتراحات في حال تم التفعيل.</string>
+    <string name="search_clear_history_preference">مسح سجل البحث</string>
+    <string name="search_clear_history_summary_preference">يمسح سجل البحث للمواقف و الرحلات.</string>
+    <string name="search_clear_history_confirm">هل انت متأكد من انك تريد مسح كل سجلات البحث ؟</string>
+    <string name="search_history_cleared">تم مسح السجل</string>
+    <string name="search_clear_favorites_preference">مسح المفضلات</string>
+    <string name="search_clear_favorites_summary_preference">مسح كافة المفضلات</string>
+    <string name="search_clear_favorites_confirm">هل انت متأكد من انك تريد مسح كافة المفضلات ؟</string>
+    <string name="search_favorites_cleared">تم مسح المفضلات</string>
+    <string name="help">مساعدة</string>
+    <string name="support">دعم</string>
+    <string name="transport_type">نوع النقل</string>
+    <!-- Ads -->
+    <string name="ads">اعلانات</string>
+    <string name="ads_title">لماذا الاعلانات ؟</string>
+    <string name="ads_turn_off">ايقاف الاعلانات</string>
+    <string name="ads_message">ان هذا التطبيق مجاني منذ عام 2009 , خلال هذه السنوات كلفة المخدمات و الصيانة قد ازدادت.\n\nلكي نكون قادرين على مواصلة التطوير و تقديم الدعم نحتاج لعرض الاعلانات في بعض الاحيان.\n\nاذا كانت لديك مشكلة مع الاعلانات فيمكنك ايقافها في الاسفل . في المستقبل قد يكون هناك كلفة لايقاف الاعلانات بدلاً عن ذلك.\n\nشكراً لدعمكم لنا !\nJohan (يوهان)</string>
+    <string name="ads_summary">لماذا يحوي هذا التطبيق اعلانات ؟</string>
+</resources>
