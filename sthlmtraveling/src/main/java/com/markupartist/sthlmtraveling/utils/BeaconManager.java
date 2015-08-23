@@ -65,7 +65,7 @@ public class BeaconManager implements KATEvent {
             return;
         }
 
-        mKatManager.startMonitoring(this);
+        mKatManager.startMonitoring();
         mKatManager.getAudiencesAndGeotags();
         HashMap keyValue = new HashMap();
         mKatManager.collect(keyValue);
@@ -80,7 +80,7 @@ public class BeaconManager implements KATEvent {
     }
 
     @Override
-    public void regionDataReceived(KATAssets katAssets) {
+    public void regionDataReceived(KATAssets katAssets, boolean isDelayed) {
         Log.d(TAG, "regionDataReceived: " + katAssets);
     }
 

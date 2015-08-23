@@ -6,13 +6,13 @@ import android.util.Log;
 import android.util.TimeFormatException;
 
 import com.markupartist.sthlmtraveling.utils.HttpHelper;
+import com.squareup.okhttp.Response;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -70,13 +70,15 @@ public class DeviationStore {
         final String endpoint = apiEndpoint2() + "v1/deviation/";
 
         HttpHelper httpHelper = HttpHelper.getInstance(context);
-        HttpURLConnection connection = httpHelper.getConnection(endpoint);
+        Response response = httpHelper.getClient().newCall(
+                httpHelper.createRequest(endpoint)
+        ).execute();
 
-        if (connection.getResponseCode() != 200) {
+        if (!response.isSuccessful()) {
             throw new IOException("A remote server error occurred when getting deviations.");
         }
 
-        return httpHelper.getBody(connection);
+        return response.body().string();
     }
 
     public static ArrayList<Deviation> filterByLineNumbers(
@@ -141,13 +143,14 @@ public class DeviationStore {
         final String endpoint = apiEndpoint2() + "v1/trafficstatus/";
 
         HttpHelper httpHelper = HttpHelper.getInstance(context);
-        HttpURLConnection connection = httpHelper.getConnection(endpoint);
+        Response response = httpHelper.getClient().newCall(
+                httpHelper.createRequest(endpoint)).execute();
 
-        if (connection.getResponseCode() != 200) {
+        if (!response.isSuccessful()) {
             throw new IOException("A remote server error occurred when getting traffic status.");
         }
 
-        String rawContent = httpHelper.getBody(connection);
+        String rawContent = response.body().string();
 
         TrafficStatus ts = null;
         try {

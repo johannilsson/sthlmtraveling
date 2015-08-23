@@ -19,18 +19,18 @@ package com.markupartist.sthlmtraveling.utils;
 import android.content.Context;
 import android.util.Log;
 
+import com.markupartist.sthlmtraveling.BuildConfig;
 import com.markupartist.sthlmtraveling.provider.ApiConf;
-import com.squareup.okhttp.HttpResponseCache;
+import com.squareup.okhttp.Cache;
 import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.concurrent.TimeUnit;
 
 public class HttpHelper {
+    private static String USER_AGENT = "STHLMTraveling-Android/" + BuildConfig.VERSION_NAME;
     static final int DISK_CACHE_SIZE = 50 * 1024 * 1024; // 50MB
     private static HttpHelper sInstance;
     OkHttpClient mClient;
@@ -54,57 +54,26 @@ public class HttpHelper {
     private void installHttpCache(final Context context) {
         // Install an HTTP cache in the application cache directory.
         try {
+            // Install an HTTP cache in the application cache directory.
             File cacheDir = new File(context.getCacheDir(), "http");
-            HttpResponseCache cache = new HttpResponseCache(cacheDir, DISK_CACHE_SIZE);
-            mClient.setResponseCache(cache);
-        } catch (IOException e) {
+            Cache cache = new Cache(cacheDir, DISK_CACHE_SIZE);
+            mClient.setCache(cache);
+        } catch (Throwable e) {
             Log.e("HttpHelper", "Unable to install disk cache.");
         }
     }
 
-    public OkHttpClient getHttpClient() {
+    public Request createRequest(final String endpoint) throws IOException {
+        return new Request.Builder()
+                .get()
+                .url(endpoint)
+                .addHeader("X-STHLMTraveling-API-Key", ApiConf.get(ApiConf.KEY))
+                .header("User-Agent", USER_AGENT)
+                .build();
+    }
+
+    public OkHttpClient getClient() {
         return mClient;
     }
 
-    public HttpURLConnection getConnection(final String endpoint) throws IOException {
-        URL url = new URL(endpoint);
-        HttpURLConnection connection = mClient.open(url);
-        connection.setRequestProperty("X-STHLMTraveling-API-Key", ApiConf.get(ApiConf.KEY));
-        //connection.setUseCaches(true);
-        return connection;
-    }
-
-    public String getBody(final HttpURLConnection connection) throws IOException {
-        InputStream in = null;
-        try {
-            in = connection.getInputStream();
-            return StreamUtils.toString(in);
-        } finally {
-            if (in != null) in.close();
-        }
-    }
-
-    public String getErrorBody(final HttpURLConnection connection) throws IOException {
-        InputStream in = null;
-        try {
-            in = connection.getErrorStream();
-            return StreamUtils.toString(in);
-        } finally {
-            if (in != null) in.close();
-        }
-    }
-
-    public String get(String urlStr) throws IOException {
-        URL url = new URL(urlStr);
-        HttpURLConnection connection = mClient.open(url);
-        connection.setRequestProperty("X-STHLMTraveling-API-Key", ApiConf.get(ApiConf.KEY));
-
-        InputStream in = null;
-        try {
-            in = connection.getInputStream();
-            return StreamUtils.toString(in);
-        } finally {
-            if (in != null) in.close();
-        }
-    }
 }

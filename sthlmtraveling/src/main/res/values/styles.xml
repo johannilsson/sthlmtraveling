@@ -2,13 +2,9 @@
 <resources xmlns:tools="http://schemas.android.com/tools" xmlns:android="http://schemas.android.com/apk/res/android">
 
     <style name="Theme.App" parent="BaseTheme">
-        <item name="borderlessButtonStyle">@style/LegacyBorderlessButton</item>
-        <item name="borderlessButtonSmallStyle">@style/LegacyBorderlessSmallButton</item>
     </style>
 
     <style name="Theme.AppNoActionBar" parent="BaseThemeNoActionBar">
-        <item name="borderlessButtonStyle">@style/LegacyBorderlessButton</item>
-        <item name="borderlessButtonSmallStyle">@style/LegacyBorderlessSmallButton</item>
     </style>
 
     <style name="BaseTheme" parent="Theme.AppCompat.Light.DarkActionBar">
@@ -45,17 +41,6 @@
         <item name="android:dividerHeight">0dp</item>
         <!--<item name="android:overScrollMode">never</item>-->
         <item name="android:overScrollHeader">@null</item>
-    </style>
-
-    <style name="LegacyBorderlessButton" parent="Widget.AppCompat.Button.Borderless">
-        <!-- Add proper background selector. -->
-        <!--<item name="android:background">@android:drawable/list_selector_background</item>-->
-    </style>
-
-    <style name="LegacyBorderlessSmallButton" parent="Widget.AppCompat.Button.Borderless">
-        <!-- Add proper background selector. -->
-        <!--<item name="android:background">@android:drawable/list_selector_background</item>-->
-        <item name="android:textSize">14sp</item>
     </style>
 
     <style name="Title" parent="@android:style/TextAppearance.Large">

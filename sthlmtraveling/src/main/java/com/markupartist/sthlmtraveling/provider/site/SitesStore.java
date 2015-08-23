@@ -6,13 +6,13 @@ import android.util.Log;
 
 import com.markupartist.sthlmtraveling.utils.HttpHelper;
 import com.markupartist.sthlmtraveling.utils.LocationUtils;
+import com.squareup.okhttp.Response;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.net.HttpURLConnection;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 
@@ -42,17 +42,19 @@ public class SitesStore {
     public ArrayList<Site> getSiteV2(final Context context, final String name, final boolean onlyStations) throws IOException {
         HttpHelper httpHelper = HttpHelper.getInstance(context);
         String onlyStationsParam = onlyStations ? "true" : "false";
-        HttpURLConnection connection = httpHelper.getConnection(apiEndpoint2() + "v1/site/"
+        String url = apiEndpoint2() + "v1/site/"
                 + "?q=" + URLEncoder.encode(name, "UTF-8")
-                + "&onlyStations=" + onlyStationsParam);
+                + "&onlyStations=" + onlyStationsParam;
+        Response response = httpHelper.getClient().newCall(
+                httpHelper.createRequest(url)).execute();
 
-        if (connection.getResponseCode() != 200) {
+        if (!response.isSuccessful()) {
             throw new IOException("Server error while fetching sites");
         }
 
         ArrayList<Site> sites = new ArrayList<Site>();
         try {
-            JSONObject jsonResponse = new JSONObject(httpHelper.getBody(connection));
+            JSONObject jsonResponse = new JSONObject(response.body().string());
             if (!jsonResponse.has("sites")) {
                 throw new IOException("Invalid input.");
             }
@@ -87,14 +89,15 @@ public class SitesStore {
                 + "&max_results=20";
 
         HttpHelper httpHelper = HttpHelper.getInstance(context);
-        HttpURLConnection connection = httpHelper.getConnection(endpoint);
+        Response response = httpHelper.getClient().newCall(
+                httpHelper.createRequest(endpoint)).execute();
 
-        if (connection.getResponseCode() != 200) {
-            Log.w("SiteStore", "Expected 200, got " + connection.getResponseCode());
+        if (!response.isSuccessful()) {
+            Log.w("SiteStore", "Expected 200, got " + response.code());
             throw new IOException("A remote server error occurred when getting sites.");
         }
 
-        String rawContent = httpHelper.getBody(connection);
+        String rawContent = response.body().string();
         ArrayList<Site> stopPoints = new ArrayList<Site>();
         try {
             JSONObject jsonSites = new JSONObject(rawContent);

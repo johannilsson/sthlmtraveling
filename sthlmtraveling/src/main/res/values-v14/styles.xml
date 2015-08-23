@@ -19,13 +19,9 @@
 
 <resources>
     <style name="Theme.App" parent="BaseTheme">
-        <item name="borderlessButtonStyle">@android:style/Widget.Holo.Button.Borderless</item>
-        <item name="borderlessButtonSmallStyle">@android:style/Widget.Holo.Button.Borderless.Small</item>
     </style>
 
     <style name="Theme.AppNoActionBar" parent="BaseThemeNoActionBar">
-        <item name="borderlessButtonStyle">@android:style/Widget.Holo.Button.Borderless</item>
-        <item name="borderlessButtonSmallStyle">@android:style/Widget.Holo.Button.Borderless.Small</item>
     </style>
 
     <style name="AppBaseListView" parent="Widget.AppCompat.ListView">

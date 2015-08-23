@@ -33,7 +33,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.net.HttpURLConnection;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -136,13 +135,14 @@ public class Planner {
         }
 
         HttpHelper httpHelper = HttpHelper.getInstance(context);
-        HttpURLConnection connection = httpHelper.getConnection(u.toString());
+        com.squareup.okhttp.Response response = httpHelper.getClient().newCall(
+                httpHelper.createRequest(u.toString())).execute();
 
         String rawContent;
-        int statusCode = connection.getResponseCode();
+        int statusCode = response.code();
         switch (statusCode) {
         case 200:
-            rawContent = httpHelper.getBody(connection);
+            rawContent = response.body().string();
             try {
                 JSONObject baseResponse = new JSONObject(rawContent);
                 if (baseResponse.has("stops")) {
@@ -179,7 +179,7 @@ public class Planner {
             }
             break;
         case 400:  // Bad request
-            rawContent = httpHelper.getErrorBody(connection);
+            rawContent = response.body().string();
             try {
                 BadResponse br = BadResponse.fromJson(new JSONObject(rawContent));
                 Log.e(TAG, "Invalid response for intermediate stops: " + br.toString());
@@ -205,13 +205,14 @@ public class Planner {
         u = b.build();
 
         HttpHelper httpHelper = HttpHelper.getInstance(context);
-        HttpURLConnection connection = httpHelper.getConnection(u.toString());
+        com.squareup.okhttp.Response response = httpHelper.getClient().newCall(
+                httpHelper.createRequest(u.toString())).execute();
 
         String rawContent;
-        int statusCode = connection.getResponseCode();
+        int statusCode = response.code();
         switch (statusCode) {
         case 200:
-            rawContent = httpHelper.getBody(connection);
+            rawContent = response.body().string();
             try {
                 JSONObject baseResponse = new JSONObject(rawContent);
                 if (baseResponse.has("stops")) {
@@ -228,7 +229,7 @@ public class Planner {
             }
             break;
         case 400:
-            rawContent = httpHelper.getErrorBody(connection);
+            rawContent = response.body().string();
             try {
                 BadResponse br = BadResponse.fromJson(new JSONObject(rawContent));
                 Log.e(TAG, "Invalid response for intermediate stops: " + br.toString());
@@ -296,14 +297,15 @@ public class Planner {
         u = b.build();
 
         HttpHelper httpHelper = HttpHelper.getInstance(context);
-        HttpURLConnection connection = httpHelper.getConnection(u.toString());
+        com.squareup.okhttp.Response response = httpHelper.getClient().newCall(
+                httpHelper.createRequest(u.toString())).execute();
 
         Response r = null;
         String rawContent;
-        int statusCode = connection.getResponseCode();
+        int statusCode = response.code();
         switch (statusCode) {
         case 200:
-            rawContent = httpHelper.getBody(connection);
+            rawContent = response.body().string();
             try {
                 JSONObject baseResponse = new JSONObject(rawContent);
                 if (baseResponse.has("journey")) {
@@ -317,7 +319,7 @@ public class Planner {
             }
             break;
         case 400:
-            rawContent = httpHelper.getErrorBody(connection);
+            rawContent = response.body().string();
             BadResponse br;
             try {
                 br = BadResponse.fromJson(new JSONObject(rawContent));

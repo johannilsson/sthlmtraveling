@@ -23,6 +23,9 @@ import android.util.Log;
 import com.crashlytics.android.Crashlytics;
 import com.markupartist.sthlmtraveling.provider.site.Site;
 import com.markupartist.sthlmtraveling.utils.HttpHelper;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -30,7 +33,6 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.net.HttpURLConnection;
 import java.util.ArrayList;
 
 import static com.markupartist.sthlmtraveling.provider.ApiConf.KEY;
@@ -56,16 +58,20 @@ public class DeparturesStore {
                 + "&timewindow=30";
 
         HttpHelper httpHelper = HttpHelper.getInstance(context);
-        HttpURLConnection connection = httpHelper.getConnection(endpoint);
+        Request request = httpHelper.createRequest(endpoint);
 
-        if (connection.getResponseCode() != 200) {
+        OkHttpClient client = httpHelper.getClient();
+
+        Response response = client.newCall(request).execute();
+
+        if (!response.isSuccessful()) {
             Log.w(TAG, "A remote server error occurred when getting departures, status code: " +
-                    connection.getResponseCode());
+                    response.code());
             throw new IOException("A remote server error occurred when getting departures.");
         }
 
         Departures departures;
-        String rawContent = httpHelper.getBody(connection);
+        String rawContent = response.body().string();
         try {
             departures = Departures.fromJson(new JSONObject(rawContent));
         } catch (JSONException e) {
