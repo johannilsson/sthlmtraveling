@@ -23,9 +23,13 @@ fork the app. I will do my best help you out if you have any problems. The docum
 
 Changelog
 ---------
+* NEXT
+  * Add Arabic translation
+  * Add Italian translation
+  * Update third party libraries (Google Play Services, OkHttpClient & Katalysator)
 * 2.12.0 (2015-05-10)
-  * Fixed white text on white background on some HTC devices
-  * Updated to recent AppCompat library
+  * Fix white text on white background on some HTC devices
+  * Update to recent AppCompat library
   * Fix crash in departures
   * Fix styling, mainly for 2.3 devices
   * Fix to not show dialog about google play services if the library is not needed
