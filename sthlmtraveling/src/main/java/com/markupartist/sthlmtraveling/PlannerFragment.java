@@ -39,6 +39,7 @@ import android.support.v4.view.ViewCompat;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -263,8 +264,9 @@ public class PlannerFragment extends BaseListFragment {
             ViewCompat.setAlpha(mOptionsBarView, 1);
 
             TextView optionsTimeView = (TextView) mOptionsBarView.findViewById(R.id.options_summary);
-            String timeString = mJourneyQuery.time.format("%R");
-            String dateString = mJourneyQuery.time.format("%e %B");
+
+            String timeString = DateFormat.getTimeFormat(getActivity()).format(mJourneyQuery.time);
+            String dateString = DateFormat.getMediumDateFormat(getActivity()).format(mJourneyQuery.time);
 
             if (mJourneyQuery.isTimeDeparture) {
                 optionsTimeView.setText(getString(R.string.departing_on, timeString, dateString));

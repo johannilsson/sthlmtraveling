@@ -17,74 +17,68 @@
 -->
 
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:orientation="vertical"
-              android:layout_width="fill_parent"
-              android:layout_height="fill_parent"
-              android:visibility="visible"
-              android:paddingTop="@dimen/list_vertical_padding"
-              android:paddingLeft="@dimen/list_horizontal_padding"
-              android:paddingRight="@dimen/list_horizontal_padding"
-              android:paddingBottom="16dp">
+<FrameLayout
+    android:id="@+id/header_details"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="24dp"
+    android:paddingLeft="@dimen/list_horizontal_padding"
+    android:paddingRight="@dimen/list_horizontal_padding"
+    android:paddingTop="32dp"
+    android:visibility="visible">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                  android:orientation="horizontal"
-                  android:layout_width="fill_parent"
-                  android:layout_height="fill_parent"
-                  android:id="@+id/header_details"
-                  android:visibility="visible"
-                  android:paddingTop="@dimen/list_horizontal_padding"
+    <LinearLayout
+        android:id="@+id/route_buy_ticket"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        tools:visibility="visible"
+        android:orientation="horizontal"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_gravity="end"
         >
-
         <TextView
-            android:id="@+id/route_date_time"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:paddingRight="@dimen/list_vertical_padding"
-            style="@style/Title"
-            tools:text="Time to station 45 min"
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:layout_gravity="center|end"
+            android:background="@drawable/zone_buy_ticket_background"
+            android:gravity="center_vertical"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:text="@string/sms_ticket_label"
+            android:textColor="@color/primary_dark"
+            android:textSize="14sp"
+            android:singleLine="true"
             />
 
-        <LinearLayout
-            android:id="@+id/route_buy_ticket"
+        <TextView
+            android:id="@+id/route_zones"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            tools:visibility="visible"
-            >
-
-            <TextView
-                android:text="@string/sms_ticket_label"
-                android:layout_gravity="center|right"
-                android:gravity="center_vertical"
-                android:background="@drawable/zone_buy_ticket_background"
-                android:layout_width="wrap_content"
-                android:layout_height="32dp"
-                android:textColor="@color/primary_dark"
-                android:textSize="14sp"
-                android:paddingLeft="8dp"
-                android:paddingRight="8dp"
-                />
-
-            <TextView
-                android:id="@+id/route_zones"
-                android:layout_gravity="center|right"
-                android:gravity="center_vertical"
-                android:background="@drawable/zone_background"
-                android:layout_width="wrap_content"
-                android:layout_height="32dp"
-                android:textColor="#fff"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                android:paddingLeft="8dip"
-                android:paddingRight="8dip"
-                tools:text="AB"
-                />
-        </LinearLayout>
-
+            android:layout_height="32dp"
+            android:layout_gravity="center|end"
+            android:background="@drawable/zone_background"
+            android:gravity="center_vertical"
+            android:paddingLeft="8dip"
+            android:paddingRight="8dip"
+            android:textColor="#fff"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:singleLine="true"
+            tools:text="AB"
+            />
 
     </LinearLayout>
 
-</LinearLayout>
+    <TextView
+        android:layout_gravity="start"
+        android:gravity="start"
+        android:id="@+id/route_date_time"
+        style="@style/Title"
+        android:layout_width="160dp"
+        android:layout_height="wrap_content"
+        tools:text="Time to station 45 min"
+        />
+</FrameLayout>

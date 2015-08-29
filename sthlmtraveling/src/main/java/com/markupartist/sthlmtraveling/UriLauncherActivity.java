@@ -21,7 +21,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.text.format.Time;
 
 import com.crashlytics.android.Crashlytics;
 import com.markupartist.sthlmtraveling.provider.planner.JourneyQuery;
@@ -29,6 +28,7 @@ import com.markupartist.sthlmtraveling.provider.site.Site;
 import com.markupartist.sthlmtraveling.utils.Analytics;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 
 public class UriLauncherActivity extends Activity {
@@ -124,7 +124,7 @@ public class UriLauncherActivity extends Activity {
         return null;
     }
 
-    private Time parseTime(String part) {
+    private Date parseTime(String part) {
         // TODO: Date time is not supported atm.
         if (TextUtils.isEmpty(part) || "null".equals(part)) {
             return null;

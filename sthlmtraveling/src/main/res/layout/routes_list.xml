@@ -48,8 +48,9 @@
             android:textColor="@color/primary_light"
             android:paddingLeft="@dimen/list_horizontal_padding"
             android:paddingRight="@dimen/list_horizontal_padding"
-            android:textSize="14dp"
+            android:textSize="14sp"
             android:drawableLeft="@drawable/ic_settings"
+            android:drawableStart="@drawable/ic_settings"
             android:drawablePadding="@dimen/list_horizontal_padding"
             />
 

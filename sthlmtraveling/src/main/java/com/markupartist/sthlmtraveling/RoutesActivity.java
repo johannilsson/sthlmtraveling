@@ -65,8 +65,12 @@ import com.markupartist.sthlmtraveling.utils.ViewHelper;
 import org.json.JSONException;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -213,7 +217,7 @@ public class RoutesActivity extends BaseListActivity implements
         mEmptyView = findViewById(R.id.empty_view);
 
         mTimeAndDate = (Button) findViewById(R.id.date_time);
-        mTimeAndDate.setText(buildDateString());
+        mTimeAndDate.setText(buildDateTimeString());
         mTimeAndDate.setOnClickListener(this);
         ViewHelper.tintIcon(mTimeAndDate.getCompoundDrawables()[0],
                 getResources().getColor(R.color.primary_light));
@@ -327,12 +331,14 @@ public class RoutesActivity extends BaseListActivity implements
                     uri.getQueryParameter("isTimeDeparture"));
         }
 
-        jq.time = new Time();
+        jq.time = new Date();
         String timeString = uri.getQueryParameter("time");
         if (!TextUtils.isEmpty(timeString)) {
-            jq.time.parse(timeString);
+            Log.e(TAG, "DATE FORMAT: " + timeString);
+            // TODO: What is the format here?
+            //jq.time.parse(timeString);
         } else {
-            jq.time.setToNow();
+            jq.time.setTime(System.currentTimeMillis());
         }
 
         return jq;
@@ -574,14 +580,14 @@ public class RoutesActivity extends BaseListActivity implements
         }
     }
 
-    private String buildDateString() {
-        String timeString = mJourneyQuery.time.format("%R");
-        String dateString = mJourneyQuery.time.format("%e %B");
-
-        if (mJourneyQuery.isTimeDeparture) {
-            return getString(R.string.departing_on, timeString, dateString);
+    private String buildDateTimeString() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            String pattern = android.text.format.DateFormat.getBestDateTimePattern(Locale.getDefault(), "MMMMdd HHmm");
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern, Locale.getDefault());
+            return simpleDateFormat.format(mJourneyQuery.time);
         } else {
-            return getString(R.string.arriving_by, timeString, dateString);
+            DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, Locale.getDefault());
+            return dateFormat.format(mJourneyQuery.time);
         }
     }
 
@@ -777,7 +783,7 @@ public class RoutesActivity extends BaseListActivity implements
                     updateStartAndEndPointViews(mJourneyQuery);
                     updateJourneyHistory();
 
-                    mTimeAndDate.setText(buildDateString());
+                    mTimeAndDate.setText(buildDateTimeString());
 
                     mSearchRoutesTask = new SearchRoutesTask();
                     mSearchRoutesTask.execute(mJourneyQuery);

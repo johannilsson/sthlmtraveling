@@ -38,6 +38,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Locale;
 
 import static com.markupartist.sthlmtraveling.provider.ApiConf.apiEndpoint2;
 
@@ -46,6 +47,10 @@ import static com.markupartist.sthlmtraveling.provider.ApiConf.apiEndpoint2;
  */
 public class Planner {
     private static final String TAG = "Planner";
+
+    private static SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("HH:mm", Locale.ENGLISH);
+    private static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd.MM.yyyy", Locale.ENGLISH);
+
     private static Planner instance = null;
 
     /**
@@ -271,8 +276,8 @@ public class Planner {
                 b.appendQueryParameter("transport", transportMode);
             }
             if (query.time != null) {
-                b.appendQueryParameter("date", query.time.format("%d.%m.%Y"));
-                b.appendQueryParameter("time", query.time.format("%H:%M"));
+                b.appendQueryParameter("date", DATE_FORMAT.format(query.time));//query.time.format("%d.%m.%Y"));
+                b.appendQueryParameter("time", TIME_FORMAT.format(query.time)); //query.time.format("%H:%M"));
             }
             if (!query.isTimeDeparture) {
                 b.appendQueryParameter("arrival", "1");
@@ -295,6 +300,8 @@ public class Planner {
         //b.appendQueryParameter("intermediate_stops", "1");
 
         u = b.build();
+
+        Log.e(TAG, "Query: " + u.toString());
 
         HttpHelper httpHelper = HttpHelper.getInstance(context);
         com.squareup.okhttp.Response response = httpHelper.getClient().newCall(

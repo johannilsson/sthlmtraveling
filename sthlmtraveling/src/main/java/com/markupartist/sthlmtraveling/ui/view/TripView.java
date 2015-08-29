@@ -17,7 +17,10 @@
 package com.markupartist.sthlmtraveling.ui.view;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.graphics.Color;
+import android.os.Build;
+import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.View;
@@ -73,8 +76,8 @@ public class TripView extends LinearLayout {
         TextView routeDetail = new TextView(getContext());
         routeDetail.setText(trip.toText());
         routeDetail.setTextColor(Color.BLACK);
-        routeDetail.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
-        routeDetail.setPadding(0, 0, 0, (int)(2 * scale));
+        routeDetail.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
+        ViewCompat.setPaddingRelative(routeDetail, 0, 0, 0, (int) (2 * scale));
         //routeDetail.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
 
         timeLayout.addView(routeDetail);
@@ -82,19 +85,26 @@ public class TripView extends LinearLayout {
         if (trip.mt6MessageExist || trip.remarksMessageExist || trip.rtuMessageExist) {
             ImageView warning = new ImageView(getContext());
             warning.setImageResource(R.drawable.ic_trip_deviation);
-            warning.setPadding((int)(8 * scale), (int)(16 * scale), 0, 0);
-
+            ViewCompat.setPaddingRelative(warning, (int)(8 * scale), (int)(16 * scale), 0, 0);
             timeLayout.addView(warning);
         }
 
+        LinearLayout startAndEndPointLayout = new LinearLayout(getContext());
         TextView startAndEndPoint = new TextView(getContext());
         startAndEndPoint.setText(trip.origin.name + " — " + trip.destination.name);
         startAndEndPoint.setTextColor(0xFF444444); // Dark gray
-        startAndEndPoint.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
-        startAndEndPoint.setPadding(0, (int)(2 * scale), 0, (int)(2 * scale));
+        startAndEndPoint.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            Configuration config = getResources().getConfiguration();
+            if (config.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL) {
+                startAndEndPoint.setTextDirection(View.TEXT_DIRECTION_RTL);
+            }
+        }
+        ViewCompat.setPaddingRelative(startAndEndPoint, 0, (int) (2 * scale), 0, (int) (2 * scale));
+        startAndEndPointLayout.addView(startAndEndPoint);
 
         LinearLayout routeChanges = new LinearLayout(getContext());
-        routeChanges.setPadding(0, (int) (10 * scale), (int) (5 * scale), 0);
+        ViewCompat.setPaddingRelative(routeChanges, 0, (int) (10 * scale), (int) (5 * scale), 0);
         //routeChanges.setGravity(Gravity.CENTER_VERTICAL);
 
         int currentTransportCount = 1;
@@ -103,28 +113,17 @@ public class TripView extends LinearLayout {
         for (Planner.SubTrip subTrip : trip.subTrips) {
             ImageView change = new ImageView(getContext());
             change.setImageResource(subTrip.transport.getImageResource());
-            change.setPadding(0, 0, 0, 0);
+            ViewCompat.setPaddingRelative(change, 0, 0, 0, 0);
             routeChanges.addView(change);
 
-                /*
-                RoundRectShape rr = new RoundRectShape(new float[]{6, 6, 6, 6, 6, 6, 6, 6}, null, null);
-                ShapeDrawable ds = new ShapeDrawable();
-                ds.setShape(rr);
-                ds.setColorFilter(transport.getColor(), Mode.SCREEN);
-                */
-
-            // Okey, this is _not_ okey!!
-            ArrayList<Integer> lineNumbers = new ArrayList<Integer>();
+            ArrayList<Integer> lineNumbers = new ArrayList<>();
             lineNumbers = DeviationStore.extractLineNumbers(subTrip.transport.name, lineNumbers);
             if (!lineNumbers.isEmpty()) {
                 TextView lineNumberView = new TextView(getContext());
                 lineNumberView.setTextColor(Color.BLACK);
-                lineNumberView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
-                //lineNumberView.setBackgroundDrawable(ds);
-                //lineNumberView.setText(transport.getShortName());
+                lineNumberView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
                 lineNumberView.setText(Integer.toString(lineNumbers.get(0)));
-                //lineNumberView.setPadding(7, 2, 7, 2);
-                lineNumberView.setPadding((int)(5 * scale), (int)(0 * scale), (int)(2 * scale), (int)(4 * scale));
+                ViewCompat.setPaddingRelative(lineNumberView, (int) (5 * scale), (int) (0 * scale), (int) (2 * scale), (int) (4 * scale));
                 routeChanges.addView(lineNumberView);
             } else {
 
@@ -133,22 +132,19 @@ public class TripView extends LinearLayout {
             if (transportCount > currentTransportCount) {
                 ImageView separator = new ImageView(getContext());
                 separator.setImageResource(R.drawable.transport_separator);
-                //separator.setPadding(9, 7, 9, 0);
-                separator.setPadding((int)(5 * scale), (int)(5 * scale), (int)(5 * scale), 0);
+                ViewCompat.setPaddingRelative(separator, (int)(5 * scale), (int)(5 * scale), (int)(5 * scale), 0);
                 routeChanges.addView(separator);
             }
 
             currentTransportCount++;
         }
 
-
         View divider = new View(getContext());
         ViewGroup.LayoutParams dividerParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 1);
         divider.setLayoutParams(dividerParams);
-        //divider.setBackgroundResource(R.drawable.abs__list_divider_holo_light);
 
         this.addView(timeLayout);
-        this.addView(startAndEndPoint);
+        this.addView(startAndEndPointLayout);
         this.addView(routeChanges);
         if (mShowDivider) {
             this.addView(divider);

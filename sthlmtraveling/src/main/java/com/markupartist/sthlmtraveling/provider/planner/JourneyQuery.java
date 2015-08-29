@@ -18,7 +18,6 @@ package com.markupartist.sthlmtraveling.provider.planner;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.text.format.Time;
 
 import com.markupartist.sthlmtraveling.provider.TransportMode;
 import com.markupartist.sthlmtraveling.provider.planner.Planner.Location;
@@ -30,13 +29,14 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 public class JourneyQuery implements Parcelable {
     public Location origin;
     public Location destination;
     public Location via;
-    public Time time;
+    public Date time;
     public boolean isTimeDeparture = true;
     public boolean alternativeStops = false;
     public List<String> transportModes = new ArrayList<String>();
@@ -52,8 +52,7 @@ public class JourneyQuery implements Parcelable {
         origin = parcel.readParcelable(Location.class.getClassLoader());
         destination = parcel.readParcelable(Location.class.getClassLoader());
         via = parcel.readParcelable(Location.class.getClassLoader());
-        time = new Time();
-        time.parse(parcel.readString());
+        time = new Date(parcel.readLong());
         isTimeDeparture = (parcel.readInt() == 1) ? true : false;
         alternativeStops = (parcel.readInt() == 1) ? true : false;
         transportModes = new ArrayList<String>();
@@ -74,7 +73,7 @@ public class JourneyQuery implements Parcelable {
         dest.writeParcelable(origin, 0);
         dest.writeParcelable(destination, 0);
         dest.writeParcelable(via, 0);
-        dest.writeString(time.format2445());
+        dest.writeLong(time.getTime());
         dest.writeInt(isTimeDeparture ? 1 : 0);
         dest.writeInt(alternativeStops ? 1 : 0);
         dest.writeStringList(transportModes);
@@ -128,10 +127,6 @@ public class JourneyQuery implements Parcelable {
         }
     };
 
-    public JSONObject toJson() throws JSONException {
-        return toJson(true);
-    }
-
     public JSONObject toJson(boolean all) throws JSONException {
         JSONObject jsonOrigin = new JSONObject();
         jsonOrigin.put("id", origin.id);
@@ -172,12 +167,12 @@ public class JourneyQuery implements Parcelable {
         jsonQuery.put("origin", jsonOrigin);
         jsonQuery.put("destination", jsonDestination);
 
-        if (all) {
-            jsonQuery.put("ident", ident);
-            jsonQuery.put("seqnr", seqnr);
-            jsonQuery.put("time", time.format("%F %R"));
-            jsonQuery.put("isTimeDeparture", this.isTimeDeparture);
-        }
+//        if (all) {
+//            jsonQuery.put("ident", ident);
+//            jsonQuery.put("seqnr", seqnr);
+//            jsonQuery.put("time", time.format("%F %R"));
+//            jsonQuery.put("isTimeDeparture", this.isTimeDeparture);
+//        }
 
         return jsonQuery;
     }
@@ -226,7 +221,7 @@ public class JourneyQuery implements Parcelable {
         private Planner.Location mOrigin;
         private Planner.Location mDestination;
         private Planner.Location mVia;
-        private Time mTime;
+        private Date mTime;
         private boolean mIsTimeDeparture = true;
         private boolean mAlternativeStops;
         private List<String> mTransportModes;
@@ -293,7 +288,7 @@ public class JourneyQuery implements Parcelable {
             return this;
         }
 
-        public Builder time(Time time) {
+        public Builder time(Date time) {
             mTime = time;
             return this;
         }
@@ -331,8 +326,7 @@ public class JourneyQuery implements Parcelable {
             journeyQuery.via = mVia;
 
             if (mTime == null) {
-                mTime = new Time();
-                mTime.setToNow();
+                mTime = new Date();
             }
             journeyQuery.time = mTime;
             journeyQuery.isTimeDeparture = mIsTimeDeparture;

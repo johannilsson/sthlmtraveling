@@ -17,9 +17,10 @@
   -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal">
+              android:layout_width="fill_parent"
+              android:layout_height="wrap_content"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:orientation="horizontal">
 
     <LinearLayout
         android:layout_width="80dp"
@@ -38,12 +39,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/transport_walk"
-                android:layout_gravity="right" />
+                android:layout_gravity="end" />
         </LinearLayout>
 
         <FrameLayout
             android:paddingLeft="12dp"
+            android:paddingStart="12dp"
             android:paddingRight="8dp"
+            android:paddingEnd="8dp"
             android:layout_width="36dp"
             android:layout_height="fill_parent">
 
@@ -61,13 +64,15 @@
         android:orientation="vertical"
         android:layout_gravity="center"
         android:gravity="center_vertical"
-        android:paddingLeft="4dp">
+        android:paddingLeft="4dp"
+        android:paddingStart="4dp"
+        >
 
         <TextView
             android:id="@+id/trip_description"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Walk to Midsommarkransen"
+            tools:text="Walk to Midsommarkransen"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:visibility="visible" />
 

@@ -16,9 +16,21 @@
 ** limitations under the License.
 */
 -->
-<set xmlns:android="http://schemas.android.com/apk/res/android" >
-    <translate android:fromXDelta="-50%p" android:toXDelta="0"
-        android:duration="300"/>
-    <alpha android:fromAlpha="0.0" android:toAlpha="1.0"
-        android:duration="300" />
+<set xmlns:android="http://schemas.android.com/apk/res/android">
+    <!--
+    <translate
+        android:fromXDelta="0" android:toXDelta="-50%p"
+        android:duration="500"/>
+    -->
+    <alpha android:fromAlpha="1.0" android:toAlpha="0.0"
+           android:duration="600" />
+    <scale
+        android:duration="500"
+        android:fromXScale="1.0"
+        android:fromYScale="1.0"
+        android:pivotX="50%"
+        android:pivotY="50%"
+        android:toXScale="0.5"
+        android:toYScale="0.7" />
+
 </set>

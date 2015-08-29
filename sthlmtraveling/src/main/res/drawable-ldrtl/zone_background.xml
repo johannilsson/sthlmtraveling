@@ -1,5 +1,5 @@
 <!--
-  ~ Copyright (C) 2009-2014 Johan Nilsson <http://markupartist.com>
+  ~ Copyright (C) 2009-2015 Johan Nilsson <http://markupartist.com>
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
   ~ you may not use this file except in compliance with the License.
@@ -14,16 +14,15 @@
   ~ limitations under the License.
   -->
 
-<resources>
-    <!-- Default screen margins, per the Android Design guidelines. -->
-    <dimen name="activity_horizontal_margin">16dp</dimen>
-    <dimen name="activity_vertical_margin">16dp</dimen>
-
-    <dimen name="list_horizontal_padding">16dp</dimen>
-    <dimen name="list_vertical_padding">12dp</dimen>
-
-    <!-- Action Bar auto-hide-on-scroll behavior parameters -->
-    <dimen name="action_bar_auto_hide_min_y">80dp</dimen>
-    <dimen name="action_bar_auto_hide_sensivity">48dp</dimen>
-
-</resources>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+android:shape="rectangle">
+    <stroke android:color="#FBBB" />
+    <size android:height="1dp" />
+    <solid android:color="@color/primary_dark"/>
+    <!-- <layout_margin android:layout_margin="1dp"/> -->
+    <corners 
+        android:bottomRightRadius="0dip"
+        android:bottomLeftRadius="6dip"
+        android:topLeftRadius="6dip"
+        android:topRightRadius="0dip"/>
+</shape>

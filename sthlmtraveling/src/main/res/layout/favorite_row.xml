@@ -44,6 +44,7 @@
             android:paddingTop="2dip"
             android:paddingBottom="2dip"
             android:paddingLeft="8dip"
+            android:paddingRight="8dip"
             tools:text="Telefonplan"
             />
     </LinearLayout>
@@ -68,6 +69,7 @@
             android:paddingTop="2dip"
             android:paddingBottom="2dip"
             android:paddingLeft="8dip"
+            android:paddingRight="8dip"
             tools:text="T-Centralen"
             />
     </LinearLayout>
@@ -93,6 +95,7 @@
             android:paddingTop="2dip"
             android:paddingBottom="2dip"
             android:paddingLeft="8dip"
+            android:paddingRight="8dip"
             />
     </LinearLayout>
     <LinearLayout
@@ -102,6 +105,7 @@
             android:addStatesFromChildren="true"
             android:gravity="center_vertical"
             android:paddingRight="0dip"
+            android:paddingEnd="0dip"
             android:layout_marginTop="8dip"
         >
         <ImageView
@@ -111,6 +115,7 @@
             android:layout_height="wrap_content"
             android:visibility="gone"
             android:paddingRight="5dip"
+            android:paddingEnd="5dip"
         />
         <ImageView 
             android:id="@+id/favorite_transport_mode_bus"
@@ -119,6 +124,7 @@
             android:layout_height="wrap_content"
             android:visibility="gone"
             android:paddingRight="5dip"
+            android:paddingEnd="5dip"
         />
         <ImageView
             android:id="@+id/favorite_transport_mode_train"
@@ -127,6 +133,7 @@
             android:layout_height="wrap_content"
             android:visibility="gone"
             android:paddingRight="5dip"
+            android:paddingEnd="5dip"
         />
         <ImageView 
             android:id="@+id/favorite_transport_mode_tram"
@@ -135,6 +142,7 @@
             android:layout_height="wrap_content"
             android:visibility="gone"
             android:paddingRight="5dip"
+            android:paddingEnd="5dip"
         />
         <ImageView
             android:id="@+id/favorite_transport_mode_wax"
@@ -143,6 +151,7 @@
             android:layout_height="wrap_content"
             android:visibility="gone"
             android:paddingRight="5dip"
+            android:paddingEnd="5dip"
         />
         <ImageView 
             android:id="@+id/favorite_transport_mode_fly"
@@ -151,6 +160,7 @@
             android:layout_height="wrap_content"
             android:visibility="gone"
             android:paddingRight="5dip"
+            android:paddingEnd="5dip"
         />
         <ImageView 
             android:id="@+id/favorite_transport_mode_nar"
@@ -159,6 +169,7 @@
             android:layout_height="wrap_content"
             android:visibility="gone"
             android:paddingRight="5dip"
+            android:paddingEnd="5dip"
         />
         <ImageView 
             android:id="@+id/favorite_transport_mode_aex"
@@ -167,6 +178,7 @@
             android:layout_height="wrap_content"
             android:visibility="gone"
             android:paddingRight="5dip"
+            android:paddingEnd="5dip"
         />
     </LinearLayout>
 </LinearLayout>

@@ -24,6 +24,7 @@ import android.database.Cursor;
 import android.location.Location;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.util.Pair;
 import android.support.v7.app.ActionBar;
@@ -116,6 +117,9 @@ public class RouteDetailActivity extends BaseListActivity {
 
         TextView timeView = (TextView) headerView.findViewById(R.id.route_date_time);
         timeView.setText(getString(R.string.time_to, mTrip.getDurationText(), mTrip.destination.getCleanName()));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            timeView.setTextDirection(View.TEXT_DIRECTION_ANY_RTL);
+        }
         if (mTrip.canBuySmsTicket()) {
 
             View buySmsTicketView = headerView.findViewById(R.id.route_buy_ticket);

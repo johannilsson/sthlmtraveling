@@ -17,18 +17,19 @@
   -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingLeft="@dimen/list_horizontal_padding"
-    android:paddingRight="@dimen/list_horizontal_padding"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:paddingLeft="@dimen/list_horizontal_padding"
+              android:paddingRight="@dimen/list_horizontal_padding"
     >
 
     <include layout="@layout/trip_row_intermediate_stop"
         android:id="@+id/trip_layout_intermediate_stop"/>
 
     <LinearLayout
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
@@ -60,13 +61,15 @@
                     android:id="@+id/trip_departure_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="right"
+                    android:layout_gravity="end"
                     android:text="13:57" />
             </LinearLayout>
 
             <FrameLayout
                 android:paddingLeft="12dp"
+                android:paddingStart="12dp"
                 android:paddingRight="8dp"
+                android:paddingEnd="8dp"
                 android:layout_width="36dp"
                 android:layout_height="50dp">
 
@@ -104,22 +107,24 @@
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
             android:layout_gravity="center"
             android:gravity="center_vertical">
 
+            <!-- Might need to change text pos through code here.-->
             <Button
                 android:id="@+id/trip_stop_title"
                 style="?attr/borderlessButtonStyle"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="45dp"
                 android:textColor="?android:attr/textColorPrimary"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:gravity="left|center_vertical"
-                android:text="Min position"
-                android:paddingLeft="4dp" />
+                android:gravity="start|center_vertical"
+                tools:text="Min position"
+                android:paddingLeft="4dp"
+                android:paddingRight="4dp"/>
         </LinearLayout>
     </LinearLayout>
 

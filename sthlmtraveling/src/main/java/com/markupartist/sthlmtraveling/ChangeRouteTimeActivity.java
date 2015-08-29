@@ -26,7 +26,6 @@ import android.support.v7.app.ActionBar;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.text.format.Time;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -52,7 +51,11 @@ import com.markupartist.sthlmtraveling.provider.site.Site;
 import com.markupartist.sthlmtraveling.ui.view.DelayAutoCompleteTextView;
 import com.markupartist.sthlmtraveling.utils.ViewHelper;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 public class ChangeRouteTimeActivity extends BaseActivity implements OnClickListener {
     static final String TAG = "ChangeRouteTimeActivity";
@@ -60,7 +63,7 @@ public class ChangeRouteTimeActivity extends BaseActivity implements OnClickList
     static final int DIALOG_TIME = 1;
 
     private Site mViaPoint = new Site();
-    private Time mTime;
+    private Date mTime;
     private JourneyQuery mJourneyQuery;
 
     private Button mDateButton;
@@ -104,7 +107,7 @@ public class ChangeRouteTimeActivity extends BaseActivity implements OnClickList
             @Override
             public void onClick(View v) {
                 if (mJourneyQuery.time != null) {
-                    mJourneyQuery.time.setToNow();
+                    mJourneyQuery.time.setTime(System.currentTimeMillis());
                     updateTimeViews();
                 }
             }
@@ -218,8 +221,12 @@ public class ChangeRouteTimeActivity extends BaseActivity implements OnClickList
     }
 
     private void updateTimeViews() {
-        String formattedDate = mTime.format("%x");
-        String formattedTime = mTime.format("%R");
+        // TODO: Move this to a date util.
+        Locale currentLocale = Locale.getDefault();
+        DateFormat timeFormatter = DateFormat.getTimeInstance(DateFormat.SHORT, currentLocale);
+        DateFormat dateFormatter = DateFormat.getDateInstance(DateFormat.SHORT, currentLocale);
+        String formattedDate = dateFormatter.format(mTime); //mTime.format("%x");
+        String formattedTime = timeFormatter.format(mTime); //mTime.format("%R");
         mDateButton.setText(formattedDate);
         mTimeButton.setText(formattedTime);
     }
@@ -236,26 +243,33 @@ public class ChangeRouteTimeActivity extends BaseActivity implements OnClickList
 
     @Override
     protected Dialog onCreateDialog(int id) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(mTime);
         switch (id) {
             case DIALOG_DATE:
                 return new DatePickerDialog(this, mDateSetListener,
-                        mTime.year, mTime.month, mTime.monthDay);
+                        calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
             case DIALOG_TIME:
                 // TODO: Base 24 hour on locale, same with the format.
                 return new TimePickerDialog(this, mTimeSetListener,
-                        mTime.hour, mTime.minute, true);
+                        calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), true);
         }
         return null;
     }
 
     @Override
     protected void onPrepareDialog(int id, Dialog dialog) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(mTime);
         switch (id) {
             case DIALOG_DATE:
-                ((DatePickerDialog) dialog).updateDate(mTime.year, mTime.month, mTime.monthDay);
+                ((DatePickerDialog) dialog).updateDate(
+                        calendar.get(Calendar.YEAR),
+                        calendar.get(Calendar.MONTH),
+                        calendar.get(Calendar.DAY_OF_MONTH));
                 break;
             case DIALOG_TIME:
-                ((TimePickerDialog) dialog).updateTime(mTime.hour, mTime.minute);
+                ((TimePickerDialog) dialog).updateTime(calendar.get(Calendar.HOUR), calendar.get(Calendar.MINUTE));
                 break;
         }
     }
@@ -273,9 +287,12 @@ public class ChangeRouteTimeActivity extends BaseActivity implements OnClickList
 
                 public void onDateSet(DatePicker view, int year, int monthOfYear,
                                       int dayOfMonth) {
-                    mTime.year = year;
-                    mTime.month = monthOfYear;
-                    mTime.monthDay = dayOfMonth;
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.setTime(mTime);
+                    calendar.set(Calendar.YEAR, year);
+                    calendar.set(Calendar.MONTH, monthOfYear);
+                    calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                    mTime = calendar.getTime();
                     updateViews();
                 }
             };
@@ -284,8 +301,11 @@ public class ChangeRouteTimeActivity extends BaseActivity implements OnClickList
             new TimePickerDialog.OnTimeSetListener() {
 
                 public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                    mTime.hour = hourOfDay;
-                    mTime.minute = minute;
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.setTime(mTime);
+                    calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                    calendar.set(Calendar.MINUTE, minute);
+                    mTime = calendar.getTime();
                     updateViews();
                 }
             };

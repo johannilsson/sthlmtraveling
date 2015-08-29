@@ -17,10 +17,10 @@
 */
 -->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
-    android:layout_marginBottom="0dip"
-    style="@style/ListContainer">
+<LinearLayout style="@style/ListContainer"
+              xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_marginBottom="0dip"
+              android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="fill_parent"
@@ -32,166 +32,187 @@
             android:layout_weight="1">
 
             <TableRow
-                android:layout_marginTop="2dip"
-                android:layout_marginBottom="2dip">
+                android:layout_marginBottom="2dip"
+                android:layout_marginTop="2dip">
 
                 <LinearLayout
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical">
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
-                        android:src="@drawable/bullet_white" />
+                        android:src="@drawable/bullet_white"/>
 
                     <TextView
                         android:id="@+id/favorite_start_point"
-                        android:lines="1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="?android:attr/textColorPrimary"
-                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:lines="1"
                         android:paddingLeft="8dip"
-                        android:textStyle="normal" />
+                        android:paddingRight="8dip"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:textColor="?android:attr/textColorPrimary"
+                        android:textStyle="normal"/>
                 </LinearLayout>
             </TableRow>
 
             <TableRow
-                android:layout_marginTop="2dip"
-                android:layout_marginBottom="2dip">
+                android:layout_marginBottom="2dip"
+                android:layout_marginTop="2dip">
 
                 <LinearLayout
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical">
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
-                        android:src="@drawable/bullet_black" />
+                        android:src="@drawable/bullet_black"/>
 
                     <TextView
                         android:id="@+id/favorite_end_point"
-                        android:lines="1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="?android:attr/textColorPrimary"
+                        android:lines="1"
+                        android:paddingLeft="8dp"
+                        android:paddingRight="8dp"
                         android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:paddingLeft="8dip"
-                        android:textStyle="normal" />
+                        android:textColor="?android:attr/textColorPrimary"
+                        android:textStyle="normal"/>
                 </LinearLayout>
             </TableRow>
 
             <TableRow
                 android:id="@+id/via_row"
-                android:layout_marginTop="2dip"
-                android:layout_marginBottom="2dip">
+                android:layout_marginBottom="2dip"
+                android:layout_marginTop="2dip">
 
                 <LinearLayout
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical">
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
-                        android:src="@drawable/ic_via" />
+                        android:src="@drawable/ic_via"/>
 
                     <TextView
                         android:id="@+id/favorite_via_point"
-                        android:lines="1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="?android:attr/textColorPrimary"
+                        android:lines="1"
+                        android:paddingLeft="8dp"
+                        android:paddingRight="8dp"
                         android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:paddingLeft="8dip"
-                        android:textStyle="normal" />
+                        android:textColor="?android:attr/textColorPrimary"
+                        android:textStyle="normal"/>
                 </LinearLayout>
             </TableRow>
 
             <TableRow
-                android:layout_marginTop="2dip"
-                android:layout_marginBottom="2dip">
+                android:layout_marginBottom="2dip"
+                android:layout_marginTop="2dip">
 
                 <LinearLayout
                     android:id="@+id/favorite_transport_modes"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="8dip"
                     android:addStatesFromChildren="true"
                     android:gravity="center_vertical"
-                    android:paddingRight="0dip"
-                    android:layout_marginTop="8dip">
+                    android:paddingEnd="0dip"
+                    android:paddingRight="0dip">
 
                     <ImageView
                         android:id="@+id/favorite_transport_mode_metro"
-                        android:src="@drawable/transport_metro"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:paddingEnd="5dp"
+                        android:paddingRight="5dp"
+                        android:src="@drawable/transport_metro"
                         android:visibility="gone"
-                        android:paddingRight="5dip" />
+                        />
 
                     <ImageView
                         android:id="@+id/favorite_transport_mode_bus"
-                        android:src="@drawable/transport_bus"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:paddingEnd="5dip"
+                        android:paddingRight="5dip"
+                        android:src="@drawable/transport_bus"
                         android:visibility="gone"
-                        android:paddingRight="5dip" />
+                        />
 
                     <ImageView
                         android:id="@+id/favorite_transport_mode_train"
-                        android:src="@drawable/transport_train"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:paddingEnd="5dip"
+                        android:paddingRight="5dip"
+                        android:src="@drawable/transport_train"
                         android:visibility="gone"
-                        android:paddingRight="5dip" />
+                        />
 
                     <ImageView
                         android:id="@+id/favorite_transport_mode_tram"
-                        android:src="@drawable/transport_tram_car"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:paddingEnd="5dip"
+                        android:paddingRight="5dip"
+                        android:src="@drawable/transport_tram_car"
                         android:visibility="gone"
-                        android:paddingRight="5dip" />
+                        />
 
                     <ImageView
                         android:id="@+id/favorite_transport_mode_wax"
-                        android:src="@drawable/transport_boat"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:paddingEnd="5dp"
+                        android:paddingRight="5dp"
+                        android:src="@drawable/transport_boat"
                         android:visibility="gone"
-                        android:paddingRight="5dip" />
+
+                        />
 
                     <ImageView
                         android:id="@+id/favorite_transport_mode_fly"
-                        android:src="@drawable/transport_fly"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:paddingEnd="5dp"
+                        android:paddingRight="5dp"
+                        android:src="@drawable/transport_fly"
                         android:visibility="gone"
-                        android:paddingRight="5dip" />
+                        />
 
                     <ImageView
                         android:id="@+id/favorite_transport_mode_nar"
-                        android:src="@drawable/transport_nar"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:paddingEnd="5dp"
+                        android:paddingRight="5dp"
+                        android:src="@drawable/transport_nar"
                         android:visibility="gone"
-                        android:paddingRight="5dip" />
+                        />
 
                     <ImageView
                         android:id="@+id/favorite_transport_mode_aex"
-                        android:src="@drawable/transport_aex"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:paddingEnd="5dp"
+                        android:paddingRight="5dp"
+                        android:src="@drawable/transport_aex"
                         android:visibility="gone"
-                        android:paddingRight="5dip" />
+                        />
                 </LinearLayout>
 
             </TableRow>
@@ -199,11 +220,11 @@
 
         <CheckBox
             android:id="@+id/journey_star_check"
-            android:layout_gravity="center_horizontal|center_vertical"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:focusable="false"
-            android:button="@drawable/btn_check_star" />
+            android:layout_gravity="center_horizontal|center_vertical"
+            android:button="@drawable/btn_check_star"
+            android:focusable="false"/>
         <!--
         <ImageButton
             android:id="@+id/route_favorite"
