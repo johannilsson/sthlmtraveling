@@ -27,6 +27,11 @@ import com.markupartist.sthlmtraveling.ui.view.SlidingTabLayout;
 import com.markupartist.sthlmtraveling.utils.BeaconManager;
 
 public class StartActivity extends BaseFragmentActivity {
+    private static final int PAGE_SEARCH_POS = 0;
+    private static final int PAGE_FAVORITES_POS = 1;
+    private static final int PAGE_DEPARTURES_POS = 2;
+    private static final int PAGE_DEVIATIONS_POS = 3;
+
     private ViewPager mPager;
     private SlidingTabLayout mSlidingTabLayout;
 
@@ -37,6 +42,7 @@ public class StartActivity extends BaseFragmentActivity {
         setContentView(R.layout.start);
 
         registerScreen("Start");
+        registerScreen("Planner"); // Planner is the first tab so register it.
 
         final PageFragmentAdapter pageAdapter = new PageFragmentAdapter(this, getSupportFragmentManager());
 
@@ -53,6 +59,25 @@ public class StartActivity extends BaseFragmentActivity {
         mPager.setPageMarginDrawable(R.color.light_grey);
         mPager.setPageMargin(25);  // TODO: Compensate with denisity to get it right on all screens
         mPager.setAdapter(pageAdapter);
+        mPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+            @Override
+            public void onPageSelected(int position) {
+                switch (position) {
+                    case PAGE_SEARCH_POS:
+                        registerScreen("Planner");
+                        break;
+                    case PAGE_FAVORITES_POS:
+                        registerScreen("Favorites");
+                        break;
+                    case PAGE_DEPARTURES_POS:
+                        registerScreen("Search departures");
+                        break;
+                    case PAGE_DEVIATIONS_POS:
+                        registerScreen("Traffic status");
+                        break;
+                }
+            }
+        });
 
         mSlidingTabLayout = (SlidingTabLayout) findViewById(R.id.sliding_tabs);
         Resources res = getResources();
@@ -81,7 +106,7 @@ public class StartActivity extends BaseFragmentActivity {
     @Override
     public boolean onSearchRequested() {
         if (mPager.getCurrentItem() != 0) {
-            mPager.setCurrentItem(0); // Search.
+            mPager.setCurrentItem(PAGE_SEARCH_POS); // Search.
             return true;
         }
         return false;
