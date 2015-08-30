@@ -34,15 +34,16 @@
             android:layout_height="wrap_content"
             android:src="@drawable/transport_train"
             android:layout_marginRight="16dip"
+            android:layout_marginEnd="16dip"
             android:layout_gravity="center"
             />
 
         <TextView
             android:id="@+id/traffic_status_type_transport"
             android:layout_width="0dp"
+            android:layout_weight="1"
             android:layout_height="wrap_content"
             android:text="@string/metros"
-            android:layout_weight="1"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textColor="?android:attr/textColorPrimary"
             />
@@ -51,7 +52,7 @@
             android:id="@+id/traffic_status_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:layout_gravity="center|end"
             android:src="@drawable/traffic_status_minor"
             />
     </LinearLayout>
