@@ -19,6 +19,7 @@ package com.markupartist.sthlmtraveling.utils;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -119,10 +120,17 @@ public class AdProxy {
         return mAdContainer;
     }
 
+    @Nullable
     protected View createAdView(String id) {
         switch (mProvider) {
             case WIDESPACE:
-                return createAdSpace(id);
+                try {
+                    return createAdSpace(id);
+                } catch (Throwable t) {
+                    Crashlytics.log("Failed to initialize Widespace");
+                    Crashlytics.logException(t);
+                    return null;
+                }
         }
         throw new IllegalArgumentException("Unknown ad provider");
     }
@@ -193,9 +201,8 @@ public class AdProxy {
                         .getDefaultSharedPreferences(mContext.getApplicationContext());
                 sharedPreferences.edit()
                         .putLong(AD_DISMISSED_AT_KEY, System.currentTimeMillis()).apply();
-                ((AdSpace)mAdView).setAutoStart(false);
-                ((AdSpace)mAdView).setAutoUpdate(false);
-//                mAdView = null;
+                adSpace.setAutoStart(false);
+                adSpace.setAutoUpdate(false);
             }
         });
         adSpace.setAdErrorEventListener(new AdErrorEventListener() {
