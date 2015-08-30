@@ -16,13 +16,17 @@
 
 package com.markupartist.sthlmtraveling;
 
+import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
+import android.support.v7.internal.view.ContextThemeWrapper;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -241,18 +245,28 @@ public class ChangeRouteTimeActivity extends BaseActivity implements OnClickList
         return super.onOptionsItemSelected(item);
     }
 
+    @SuppressLint("InlinedApi")
     @Override
     protected Dialog onCreateDialog(int id) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(mTime);
         switch (id) {
             case DIALOG_DATE:
-                return new DatePickerDialog(this, mDateSetListener,
-                        calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+                // Workaround for broken date time picker on some Samsung devices.
+                // http://stackoverflow.com/questions/28618405/datepicker-crashes-on-my-device-when-clicked-with-personal-app
+                Context context = this;
+                if (isBrokenSamsungDevice()) {
+                    context = new ContextThemeWrapper(this, android.R.style.Theme_Holo_Light_Dialog);
+                }
+                return new DatePickerDialog(context, mDateSetListener,
+                        calendar.get(Calendar.YEAR),
+                        calendar.get(Calendar.MONTH),
+                        calendar.get(Calendar.DAY_OF_MONTH));
             case DIALOG_TIME:
-                // TODO: Base 24 hour on locale, same with the format.
                 return new TimePickerDialog(this, mTimeSetListener,
-                        calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), true);
+                        calendar.get(Calendar.HOUR_OF_DAY),
+                        calendar.get(Calendar.MINUTE),
+                        android.text.format.DateFormat.is24HourFormat(this));
         }
         return null;
     }
@@ -418,6 +432,17 @@ public class ChangeRouteTimeActivity extends BaseActivity implements OnClickList
                 break;
         }
 
+    }
+
+    private static boolean isBrokenSamsungDevice() {
+        return (Build.MANUFACTURER.equalsIgnoreCase("samsung")
+                && isBetweenAndroidVersions(
+                Build.VERSION_CODES.LOLLIPOP,
+                Build.VERSION_CODES.LOLLIPOP_MR1));
+    }
+
+    private static boolean isBetweenAndroidVersions(int min, int max) {
+        return Build.VERSION.SDK_INT >= min && Build.VERSION.SDK_INT <= max;
     }
 
     private class UpdateStopTextWatcher implements TextWatcher {
