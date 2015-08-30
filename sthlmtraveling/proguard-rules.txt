@@ -53,6 +53,10 @@
 
 # okhttp
 -dontwarn com.squareup.okhttp.**
+-dontwarn org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement
+-dontwarn java.nio.file.Files
+-dontwarn java.nio.file.OpenOption
+-dontwarn java.nio.file.Path
 
 # Facebook
 -keep class com.facebook.** { *; }
