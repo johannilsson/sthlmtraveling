@@ -18,6 +18,9 @@ package com.markupartist.sthlmtraveling.utils;
 
 import android.content.Context;
 
+import com.crashlytics.android.answers.Answers;
+import com.crashlytics.android.answers.ContentViewEvent;
+import com.crashlytics.android.answers.CustomEvent;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.markupartist.sthlmtraveling.MyApplication;
@@ -44,6 +47,8 @@ public class Analytics {
         Tracker tracker = ((MyApplication) mContext.getApplicationContext()).getTracker();
         tracker.setScreenName(screenName);
         tracker.send(new HitBuilders.AppViewBuilder().build());
+
+        Answers.getInstance().logContentView(new ContentViewEvent().putContentName(screenName));
     }
 
     public void event(final String category, final String action) {
@@ -57,6 +62,15 @@ public class Analytics {
                 .setAction(action)
                 .setLabel(label)
                 .build());
+
+        CustomEvent answerEvent = new CustomEvent(category);
+        if (action != null) {
+            answerEvent.putCustomAttribute("action", action);
+        }
+        if (label != null) {
+            answerEvent.putCustomAttribute("label", label);
+        }
+        Answers.getInstance().logCustom(answerEvent);
     }
 
 }
