@@ -17,12 +17,14 @@
 package com.markupartist.sthlmtraveling.utils;
 
 import android.content.res.Resources;
+import android.support.annotation.NonNull;
 
 import com.markupartist.sthlmtraveling.R;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Date & Time utils
@@ -71,5 +73,34 @@ public class DateTimeUtil {
             final int seconds = (int) ((millis + 500) / SECOND_IN_MILLIS);
             return res.getQuantityString(R.plurals.duration_seconds, seconds, seconds);
         }
+    }
+
+    /**
+     * Format duration without rounding. Seconds are still rounded though.
+     *
+     * @param resources a resource
+     * @param millis    duration in millis
+     * @return A string representing the duration
+     */
+    public static CharSequence formatDetailedDuration(@NonNull final Resources resources, long millis) {
+        int days = 0, hours = 0, minutes = 0;
+        if (millis > 0) {
+            days = (int) TimeUnit.MILLISECONDS.toDays(millis);
+            millis -= TimeUnit.DAYS.toMillis(days);
+            hours = (int) TimeUnit.MILLISECONDS.toHours(millis);
+            millis -= TimeUnit.HOURS.toMillis(hours);
+            minutes = (int) TimeUnit.MILLISECONDS.toMinutes(millis);
+        }
+        if (days > 0) {
+            return resources.getQuantityString(R.plurals.duration_days, days, days);
+        }
+        if (hours > 0) {
+            if (minutes > 0) {
+                return resources.getString(R.string.duration_short_hours_minutes, hours, minutes);
+            } else {
+                return resources.getQuantityString(R.plurals.duration_short_hours, hours, hours);
+            }
+        }
+        return resources.getQuantityString(R.plurals.duration_short_minutes, minutes, minutes);
     }
 }
