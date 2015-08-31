@@ -58,7 +58,6 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
@@ -91,7 +90,6 @@ public class PlannerFragment extends BaseListFragment {
 
     private DelayAutoCompleteTextView mStartPointAutoComplete;
     private DelayAutoCompleteTextView mEndPointAutoComplete;
-    private DelayAutoCompleteTextView mViaPointAutoComplete;
     private Site mStartPoint = new Site();
     private Site mEndPoint = new Site();
     private HistoryDbAdapter mHistoryDbAdapter;
@@ -177,7 +175,7 @@ public class PlannerFragment extends BaseListFragment {
         getListView().setVerticalFadingEdgeEnabled(false);
         getListView().setHorizontalFadingEdgeEnabled(false);
 
-        mSearchView = getActivity().getLayoutInflater().inflate(R.layout.search, null);
+        mSearchView = getActivity().getLayoutInflater().inflate(R.layout.search, getListView(), false);
         getListView().addHeaderView(mSearchView, null, false);
 
         // Hide dividers on the header view.
@@ -186,10 +184,8 @@ public class PlannerFragment extends BaseListFragment {
         if (!mStartPoint.hasName()) {
             mStartPoint.setName(Site.TYPE_MY_LOCATION);
         }
-        mStartPointAutoComplete = createAutoCompleteTextView(R.id.from,
-                /*R.id.from_progress*/ -1, mStartPoint);
-        mEndPointAutoComplete = createAutoCompleteTextView(R.id.to,
-                /*R.id.to_progress*/ -1, mEndPoint);
+        mStartPointAutoComplete = createAutoCompleteTextView(R.id.from, mStartPoint);
+        mEndPointAutoComplete = createAutoCompleteTextView(R.id.to, mEndPoint);
 
         try {
             mHistoryDbAdapter = new HistoryDbAdapter(getActivity()).open();
@@ -380,16 +376,14 @@ public class PlannerFragment extends BaseListFragment {
         if (state != null) {
             Site startPoint = state.getParcelable("startPoint");
             Site endPoint = state.getParcelable("endPoint");
-            Site viaPoint = state.getParcelable("viaPoint");
             if (startPoint != null) mStartPoint.fromSite(startPoint);
             if (endPoint != null) mEndPoint.fromSite(endPoint);
         }
     }
 
     private DelayAutoCompleteTextView createAutoCompleteTextView(
-            int autoCompleteResId, int progressResId, final Site site) {
-        return createAutoCompleteTextView(autoCompleteResId, progressResId,
-                site, false);
+            int autoCompleteResId, final Site site) {
+        return createAutoCompleteTextView(autoCompleteResId, site, false);
     }
 
     /**
@@ -397,22 +391,16 @@ public class PlannerFragment extends BaseListFragment {
      * 
      * @param autoCompleteResId
      *            The {@link AutoCompleteTextView} resource id.
-     * @param progressResId
-     *            The {@link ProgressBar} resource id.
      * @param site
      *            The stop.
      * @param includeAddresses
      *            If addresses should be included.
-     * @return
+     * @return A AutoCompleteTextView
      */
     private DelayAutoCompleteTextView createAutoCompleteTextView(
-            int autoCompleteResId, int progressResId, final Site site,
-            boolean includeAddresses) {
-        // TODO: Wrap the auto complete view in a custom view...
+            int autoCompleteResId, final Site site, boolean includeAddresses) {
         final DelayAutoCompleteTextView autoCompleteTextView = (DelayAutoCompleteTextView)
                 mSearchView.findViewById(autoCompleteResId);
-        //final ProgressBar progress = (ProgressBar)
-        //        mSearchView.findViewById(progressResId);
         final AutoCompleteStopAdapter stopAdapter = new AutoCompleteStopAdapter(
                 getActivity(), R.layout.autocomplete_item_2line,
                 Planner.getInstance(), includeAddresses);
@@ -530,8 +518,7 @@ public class PlannerFragment extends BaseListFragment {
 
         static PlannerDialogFragment newInstance(Dialog dialog) {
             mDialog = dialog;
-            PlannerDialogFragment f = new PlannerDialogFragment();
-            return f;
+            return new PlannerDialogFragment();
         }
 
         @NonNull
@@ -556,7 +543,7 @@ public class PlannerFragment extends BaseListFragment {
 
     private Dialog createDialogShortcutName() {
         final View chooseShortcutName = getActivity().getLayoutInflater()
-                .inflate(R.layout.create_shortcut_name, null);
+                .inflate(R.layout.create_shortcut_name, null, false);
         final EditText shortCutName = (EditText) chooseShortcutName
                 .findViewById(R.id.shortcut_name);
         return new AlertDialog.Builder(getActivity())
@@ -571,13 +558,6 @@ public class PlannerFragment extends BaseListFragment {
                                         shortCutName.getText().toString());
                             }
                         }).create();
-    }
-
-    private Dialog createDialogNoLocation() {
-        return new AlertDialog.Builder(getActivity())
-                .setTitle(getText(R.string.no_location_title))
-                .setMessage(getText(R.string.no_location_message))
-                .setPositiveButton(android.R.string.ok, null).create();
     }
 
     private Dialog createDialogEndPoint() {
@@ -801,10 +781,8 @@ public class PlannerFragment extends BaseListFragment {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count,
                 int after) {
-            if (mRemoveText == false
-                    && s.toString().equals(mReservedName.toString())) {
+            if (!mRemoveText && s.toString().equals(mReservedName.toString())) {
                 mRemoveText = true;
-//                mViewToWatch.setTextColor(Color.BLACK);
             }
         }
 
@@ -812,10 +790,6 @@ public class PlannerFragment extends BaseListFragment {
         public void onTextChanged(CharSequence s, int start, int before,
                 int count) {
             mNewText = s.toString().substring(start, start + count);
-
-//            if (s.toString().equals(mReservedName.toString())) {
-//                mViewToWatch.setTextColor(0xFF4F94CD);
-//            }
         }
     }
 
@@ -828,7 +802,7 @@ public class PlannerFragment extends BaseListFragment {
                 TextView result = (TextView) convertView;
                 if (convertView == null) {
                     LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                    result = (TextView) inflater.inflate(R.layout.header, null);
+                    result = (TextView) inflater.inflate(R.layout.header, null, false);
                 }
                 result.setText(section.caption);
                 return (result);
@@ -951,7 +925,7 @@ public class PlannerFragment extends BaseListFragment {
 
             CheckBox starred = (CheckBox) v
                     .findViewById(R.id.journey_star_check);
-            boolean isStarred = c.getInt(COLUMN_INDEX_STARRED) == 1 ? true : false;
+            boolean isStarred = c.getInt(COLUMN_INDEX_STARRED) == 1;
             if (isStarred) {
                 starred.setChecked(true);
             } else {
@@ -1009,18 +983,25 @@ public class PlannerFragment extends BaseListFragment {
 
             if (journeyQuery.transportModes != null) {
                 for (String transportMode : journeyQuery.transportModes) {
-                    if (transportMode.equals(TransportMode.METRO)) {
-                        metroView.setVisibility(View.VISIBLE);
-                    } else if (transportMode.equals(TransportMode.BUS)) {
-                        busView.setVisibility(View.VISIBLE);
-                    } else if (transportMode.equals(TransportMode.TRAIN)) {
-                        trainView.setVisibility(View.VISIBLE);
-                    } else if (transportMode.equals(TransportMode.TRAM)) {
-                        tramView.setVisibility(View.VISIBLE);
-                    } else if (transportMode.equals(TransportMode.WAX)) {
-                        waxView.setVisibility(View.VISIBLE);
-                    } else if (transportMode.equals(TransportMode.NAR)) {
-                        narView.setVisibility(View.VISIBLE);
+                    switch (transportMode) {
+                        case TransportMode.METRO:
+                            metroView.setVisibility(View.VISIBLE);
+                            break;
+                        case TransportMode.BUS:
+                            busView.setVisibility(View.VISIBLE);
+                            break;
+                        case TransportMode.TRAIN:
+                            trainView.setVisibility(View.VISIBLE);
+                            break;
+                        case TransportMode.TRAM:
+                            tramView.setVisibility(View.VISIBLE);
+                            break;
+                        case TransportMode.WAX:
+                            waxView.setVisibility(View.VISIBLE);
+                            break;
+                        case TransportMode.NAR:
+                            narView.setVisibility(View.VISIBLE);
+                            break;
                     }
                 }
             } else {
