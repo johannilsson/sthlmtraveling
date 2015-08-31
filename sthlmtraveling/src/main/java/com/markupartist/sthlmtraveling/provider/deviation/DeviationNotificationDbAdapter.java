@@ -19,6 +19,7 @@ package com.markupartist.sthlmtraveling.provider.deviation;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -38,7 +39,7 @@ public class DeviationNotificationDbAdapter {
     private static final String DATABASE_TABLE = "deviation_notifications";
     private static final int DATABASE_VERSION = 3;
 
-    private static final String TAG = "DeviationNotificationDbAdapter";
+    private static final String TAG = "DeviationNotificationDb";
 
     private DatabaseHelper mDbHelper;
     private SQLiteDatabase mDb;
@@ -97,7 +98,7 @@ public class DeviationNotificationDbAdapter {
      */
     public long create(long reference, int version) {
         // Create a sql date time format
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
         Date date = new Date();
 
         ContentValues initialValues = new ContentValues();
@@ -115,19 +116,19 @@ public class DeviationNotificationDbAdapter {
      * @return a Cursor object positioned at the first entry
      */
     public boolean containsReference(long reference, int version) {
-        Cursor mCursor =
+        Cursor cursor =
             mDb.query(true, DATABASE_TABLE, new String[] {KEY_ROWID, KEY_REFERENCE},
                     KEY_REFERENCE + "=\"" + reference + "\" "
                     + "AND " + KEY_VERSION + "=" + version, 
                     null, null, null, null, null);
 
         boolean exists = false;
-        if (mCursor != null) {
-            exists = mCursor.moveToFirst();
+
+        if (cursor != null) {
+            exists = cursor.moveToFirst();
+            cursor.close();
         }
 
-        mCursor.close();
-        
         return exists;
     }
 

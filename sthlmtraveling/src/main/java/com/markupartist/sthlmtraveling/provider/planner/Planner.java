@@ -48,8 +48,8 @@ import static com.markupartist.sthlmtraveling.provider.ApiConf.apiEndpoint2;
 public class Planner {
     private static final String TAG = "Planner";
 
-    private static SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("HH:mm", Locale.ENGLISH);
-    private static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd.MM.yyyy", Locale.ENGLISH);
+    private static SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("HH:mm", Locale.US);
+    private static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd.MM.yyyy", Locale.US);
 
     private static Planner instance = null;
 
@@ -500,7 +500,7 @@ public class Planner {
 
     public static class Trip2 implements Parcelable {
 
-        private static DateFormat DURATION_FORMAT = new SimpleDateFormat("H:mm");
+        private static DateFormat DURATION_FORMAT = new SimpleDateFormat("H:mm", Locale.US);
 
         public Location origin;
         public Location destination;
@@ -673,7 +673,7 @@ public class Planner {
         public String getDurationText() {
             String durationInMinutes = duration;
             try {
-                DateFormat df = new SimpleDateFormat("H:mm");
+                DateFormat df = new SimpleDateFormat("H:mm", Locale.US);
                 Date tripDate = df.parse(duration);
                 if (tripDate.getHours() == 0) {
                     int start = duration.indexOf(":") + 1;

@@ -19,6 +19,7 @@ package com.markupartist.sthlmtraveling.provider;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 import com.markupartist.sthlmtraveling.provider.site.Site;
 
@@ -141,7 +142,7 @@ public class HistoryDbAdapter {
         Log.d(TAG, "Storing: " + site);
 
         // Create a sql date time format
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
         Date date = new Date();
 
         ContentValues initialValues = new ContentValues();

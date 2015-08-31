@@ -24,6 +24,7 @@ import com.markupartist.sthlmtraveling.R;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -46,7 +47,7 @@ public class DateTimeUtil {
     public static Date fromSlDateTime(final String dateString, final String timeString) {
         String dateTime = String.format("%s %s", dateString, timeString);
         Date date = null;
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yy HH:mm");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yy HH:mm", Locale.US);
         try {
             date = simpleDateFormat.parse(dateTime);
         } catch (ParseException e) {

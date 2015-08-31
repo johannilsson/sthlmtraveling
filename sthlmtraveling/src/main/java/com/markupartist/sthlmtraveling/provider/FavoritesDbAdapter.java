@@ -20,6 +20,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Locale;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -134,7 +135,7 @@ public class FavoritesDbAdapter {
         }
 
         // Create a sql date time format
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
         Date date = new Date();
         initialValues.put(KEY_CREATED, dateFormat.format(date));
 
@@ -209,13 +210,13 @@ public class FavoritesDbAdapter {
      * @return a Cursor object
      */
     public Cursor fetch() {
-        Cursor mCursor =
+        Cursor cursor =
             mDb.query(true, DATABASE_TABLE, new String[] { KEY_ROWID,
                     KEY_START_POINT, KEY_START_POINT_LATITUDE,
                     KEY_START_POINT_LONGITUDE, KEY_END_POINT,
                     KEY_END_POINT_LATITUDE, KEY_END_POINT_LONGITUDE, KEY_CREATED },
                     null, null, null, null, KEY_CREATED + " DESC", null);
-        return mCursor;        
+        return cursor;
     }
 
     /**
