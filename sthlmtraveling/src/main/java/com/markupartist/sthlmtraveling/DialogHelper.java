@@ -14,7 +14,6 @@ public class DialogHelper {
     public static AlertDialog createNetworkProblemDialog(Activity activity,
             OnClickListener onClickListener) {
         return new AlertDialog.Builder(activity)
-            .setIcon(android.R.drawable.ic_dialog_alert)
             .setTitle(activity.getText(R.string.attention_label))
             .setMessage(activity.getText(R.string.network_problem_message))
             .setPositiveButton(activity.getText(R.string.retry), onClickListener)
