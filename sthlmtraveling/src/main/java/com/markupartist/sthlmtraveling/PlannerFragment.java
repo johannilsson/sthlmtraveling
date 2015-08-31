@@ -545,7 +545,6 @@ public class PlannerFragment extends BaseListFragment {
 
     private Dialog createDialogReinstallApp() {
         return new AlertDialog.Builder(getActivity())
-                .setIcon(android.R.drawable.ic_dialog_alert)
                 .setTitle(getText(R.string.attention_label))
                 .setMessage(getText(R.string.reinstall_app_message))
                 .setPositiveButton(android.R.string.ok, null)
@@ -573,7 +572,6 @@ public class PlannerFragment extends BaseListFragment {
 
     private Dialog createDialogNoLocation() {
         return new AlertDialog.Builder(getActivity())
-                .setIcon(android.R.drawable.ic_dialog_alert)
                 .setTitle(getText(R.string.no_location_title))
                 .setMessage(getText(R.string.no_location_message))
                 .setPositiveButton(android.R.string.ok, null).create();
