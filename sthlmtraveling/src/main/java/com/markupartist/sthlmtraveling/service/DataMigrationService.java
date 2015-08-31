@@ -1,14 +1,5 @@
 package com.markupartist.sthlmtraveling.service;
 
-import java.util.ArrayList;
-
-import org.json.JSONException;
-
-import com.markupartist.sthlmtraveling.provider.FavoritesDbAdapter;
-import com.markupartist.sthlmtraveling.provider.TransportMode;
-import com.markupartist.sthlmtraveling.provider.JourneysProvider.Journey.Journeys;
-import com.markupartist.sthlmtraveling.provider.planner.JourneyQuery;
-
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
@@ -16,6 +7,15 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.util.Log;
+
+import com.markupartist.sthlmtraveling.provider.FavoritesDbAdapter;
+import com.markupartist.sthlmtraveling.provider.JourneysProvider.Journey.Journeys;
+import com.markupartist.sthlmtraveling.provider.TransportMode;
+import com.markupartist.sthlmtraveling.provider.planner.JourneyQuery;
+
+import org.json.JSONException;
+
+import java.util.ArrayList;
 
 public class DataMigrationService extends WakefulIntentService {
 
@@ -47,10 +47,10 @@ public class DataMigrationService extends WakefulIntentService {
             SharedPreferences settings = context.getSharedPreferences("sthlmtraveling", MODE_PRIVATE);
             SharedPreferences.Editor editor = settings.edit();
             editor.putBoolean("converted_favorites", true);
-            editor.commit();
-        }        
+            editor.apply();
+        }
     }
-    
+
     private void convertFavorites(Context context) {
         Log.d(TAG, "About to convert favorites...");
 
@@ -69,16 +69,16 @@ public class DataMigrationService extends WakefulIntentService {
             transportModes.add(TransportMode.WAX);
             do {
                 JourneyQuery journeyQuery = new JourneyQuery.Builder()
-                    .transportModes(transportModes)
-                    .origin(
-                            cursor.getString(FavoritesDbAdapter.INDEX_START_POINT),
-                            cursor.getInt(FavoritesDbAdapter.INDEX_START_POINT_LATITUDE),
-                            cursor.getInt(FavoritesDbAdapter.INDEX_START_POINT_LONGITUDE))
-                    .destination(
-                            cursor.getString(FavoritesDbAdapter.INDEX_END_POINT),
-                            cursor.getInt(FavoritesDbAdapter.INDEX_END_POINT_LATITUDE),
-                            cursor.getInt(FavoritesDbAdapter.INDEX_END_POINT_LONGITUDE))
-                    .create();
+                        .transportModes(transportModes)
+                        .origin(
+                                cursor.getString(FavoritesDbAdapter.INDEX_START_POINT),
+                                cursor.getInt(FavoritesDbAdapter.INDEX_START_POINT_LATITUDE),
+                                cursor.getInt(FavoritesDbAdapter.INDEX_START_POINT_LONGITUDE))
+                        .destination(
+                                cursor.getString(FavoritesDbAdapter.INDEX_END_POINT),
+                                cursor.getInt(FavoritesDbAdapter.INDEX_END_POINT_LATITUDE),
+                                cursor.getInt(FavoritesDbAdapter.INDEX_END_POINT_LONGITUDE))
+                        .create();
 
                 // Store new journey
                 String json = null;
@@ -96,7 +96,7 @@ public class DataMigrationService extends WakefulIntentService {
                     values.put(Journeys.CREATED_AT,
                             cursor.getString(FavoritesDbAdapter.INDEX_CREATED));
                     getContentResolver().insert(Journeys.CONTENT_URI, values);
-    
+
                     Log.d(TAG, String.format("Converted favorite journey %s -> %s.",
                             journeyQuery.origin.name, journeyQuery.destination.name));
                 }
@@ -110,7 +110,7 @@ public class DataMigrationService extends WakefulIntentService {
     private static boolean isFavoritesMigrated(Context context) {
         SharedPreferences settings = context.getSharedPreferences("sthlmtraveling", MODE_PRIVATE);
         boolean migrated =
-            settings.getBoolean("converted_favorites", false);
+                settings.getBoolean("converted_favorites", false);
         if (migrated) {
             Log.d(TAG, "Favorites converted.");
             return true;
@@ -125,7 +125,7 @@ public class DataMigrationService extends WakefulIntentService {
                 // Also mark it as migrated to avoid sending an intent.
                 SharedPreferences.Editor editor = settings.edit();
                 editor.putBoolean("converted_favorites", true);
-                editor.commit();
+                editor.apply();
                 migrated = true;
             }
         } finally {
@@ -138,20 +138,22 @@ public class DataMigrationService extends WakefulIntentService {
             return true;
         }
 
-        String[] projection = new String[] {
+        String[] projection = new String[]{
                 Journeys._ID, // 0
-            };
+        };
         ContentResolver resolver = context.getContentResolver();
         Cursor journeyCursor = resolver.query(Journeys.CONTENT_URI, projection, null, null, null);
         if (journeyCursor.getCount() > 0) {
+            journeyCursor.close();
             // Also mark it as migrated to avoid sending an intent.
             SharedPreferences.Editor editor = settings.edit();
             editor.putBoolean("converted_favorites", true);
-            editor.commit();
-            
+            editor.apply();
+
             Log.d(TAG, "Existing journeys, treat as converted.");
             return true;
         }
+        journeyCursor.close();
 
         return false;
     }
