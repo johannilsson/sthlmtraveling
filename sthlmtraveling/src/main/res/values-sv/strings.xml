@@ -17,7 +17,6 @@
 */
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <!-- Do not translate -->
     <string name="app_name">STHLM Traveling</string>
     <!-- General strings -->
     <string name="ok">Ok</string>
@@ -27,13 +26,9 @@
     <string name="to">Till</string>
     <string name="via">Via</string>
     <string name="search_label">Sök</string>
-    <string name="search_routes_label">Hämta resvägar</string>
-    <string name="departing">Avgår</string>
-    <string name="arriving">Ankommer</string>
     <string name="no_routes_found_label">Tyvär ingen resväg hittades</string>
     <string name="no_routes_found_message">Någon av de hållplatser du angav kanske inte trafikeras av de färdmedelsslag du valt. Vissa hållplatser trafikeras inte hela dygnet alla dagar.</string>
     <string name="routes_label">Resvägar</string>
-    <string name="route_alternatives_label">Alternativ</string>
     <string name="route_details_label">Detaljerad beskrivning</string>
     <string name="no_route_details">Inga resvägar hittades. Detta antagligen beroende på att avgångstiden har passerat.</string>
     <string name="session_timeout_message">Sökningen är troligtvis utdaterad.</string>
@@ -47,7 +42,6 @@
     <string name="reverse_start_end">Ändra ordning på från &amp; till</string>
     <string name="about">Om</string>
     <string name="about_this_app">STHLM Traveling är utvecklat av Johan Nilsson. Kontakta honom om du har idéer på vidare förbättringar eller vid problem.\n\nAll trafikdata är hämtad från Trafiklab och AB Storstockholms Lokaltrafik.\n\nFör att kunna förbättra appen samlas anonym data kring användning in mha Flurry och Google Analytics.\n\n<b>Credits</b>\n&lt;li&gt;Robert Johansson\nhttps://twitter.com/likebobby&lt;/li&gt;\n&lt;li&gt;Programikon &amp; idéer av Olof Brickarp\nhttp://www.yay.se&lt;/li&gt;\n&lt;li&gt;Svensk översättning Jean Diarbakerli&lt;/li&gt;\n&lt;li&gt;Spansk översättning Valeria Padilla and Miguel Ángel Domínguez Coloma&lt;/li&gt;\n&lt;li&gt;Patchar av Fredrik Jönsson\nhttp://github.com/lk95jofr&lt;/li&gt;\n&lt;li&gt;Patchar av Adam Nybäck\nhttp://anyro.se&lt;/li&gt;\n&lt;li&gt;Patchar av Morgan Christiansson\nhttp://screeninteraction.com&lt;/li&gt;\n&lt;li&gt;Ikoner av Fredrik Broman\nhttp://fredrikbroman.com&lt;/li&gt;\n&lt;li&gt;Ikoner av Android Icons\nhttp://androidicons.com&lt;/li&gt;\n&lt;li&gt;Feedback från Swedroid\nhttp://swedroid.se&lt;/li&gt;\n\nKällkod på http://github.com/johannilsson/sthlmtraveling.\n\nJohan Nilsson johan@markupartist.com\nhttp://markupartist.com\n\n</string>
-    <string name="donate">Donera</string>
     <string name="donate_url">http://pledgie.com/campaigns/6527</string>
     <string name="feedback">Feedback</string>
     <string name="send_email">Skicka e-mail</string>
@@ -69,12 +63,9 @@
     <string name="send_feedback_email_title">STHLM Traveling feedback</string>
     <string name="send_feedback_email_emailaddress">sthlmtraveling@markupartist.com</string>
     <string name="history_label">Historik</string>
-    <string name="show_qr_code">Visa QR Kod</string>
     <string name="yes">Ja</string>
     <string name="no">Nej</string>
     <string name="retry">Försök igen</string>
-    <string name="requires_barcode_scanner_message">Detta program kräver att användaren har programmet Barcode Scanner installerat. Vill du installera det?</string>
-    <string name="install_barcode_scanner_title">Installera Barcode Scanner?</string>
     <string name="point_on_map">Välj en plats på kartan</string>
     <string name="tap_to_select_this_point">Tryck för att välja denna plats</string>
     <string name="point_selected">Plats vald</string>
@@ -84,8 +75,6 @@
     <string name="departing_on">Avgår <xliff:g id="time">%s</xliff:g> den <xliff:g id="date">%s</xliff:g></string>
     <string name="arriving_by">Anländer <xliff:g id="time">%s</xliff:g> den <xliff:g id="date">%s</xliff:g></string>
     <string name="departures">Avgångar</string>
-    <string name="departures_for">Avgångar för <xliff:g id="site_name">%s</xliff:g></string>
-    <string name="date_of_trip">Datum för resa: <xliff:g id="date">%s</xliff:g></string>
     <string name="no_departures_for_transport_type">Inga avgångar hittades för valt färdslag just nu.</string>
     <string name="no_departures">Inga avgångar just nu.</string>
     <string name="site_name">Hållplatsnamn</string>
@@ -104,9 +93,6 @@
     <string name="departure_train">Tåg</string>
     <string name="departure_tram">Lokalb.</string>
     <string name="now">Nu</string>
-    <string name="journey_planner_label">Reseplanerare</string>
-    <string name="crash_report_mail_subject">STHLM Traveling Crash Report</string>
-    <string name="crash_report_mail_body">By sending this crash report you are helping me to fix the bug. I won\'t use the information for any other thing.</string>
     <string name="my_location_source_disabled">Lägg till \"Min position\" källa under systeminställningar.</string>
     <string name="title_settings">Inställningar</string>
     <string name="now_label">Nu</string>

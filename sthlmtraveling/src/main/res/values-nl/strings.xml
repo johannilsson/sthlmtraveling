@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
+    <!--
 /*
 ** Copyright (C) 2009 Johan Nilsson <http://markupartist.com>
 **
@@ -16,9 +16,9 @@
 ** limitations under the License.
 */
 -->
-
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name">STHLM Traveling</string>
+    <!-- General strings -->
     <string name="ok">Ok</string>
     <string name="done">Gereed</string>
     <string name="discard">Annuleren</string>
@@ -26,13 +26,9 @@
     <string name="to">Naar</string>
     <string name="via">Via</string>
     <string name="search_label">Zoek</string>
-    <string name="search_routes_label">Route ophalen</string>
-    <string name="departing">Vertrek</string>
-    <string name="arriving">Aankomst</string>
     <string name="no_routes_found_label">Er is helaas geen route beschikbaar</string>
     <string name="no_routes_found_message">Waarschijnlijk wordt je start- of eindstation niet bediend op het aangegeven tijdstip.(Sommige haltes worden niet bediend op bepaalde tijden/dagen).</string>
     <string name="routes_label">Route</string>
-    <string name="route_alternatives_label">Alternatieven</string>
     <string name="route_details_label">Route details</string>
     <string name="no_route_details">Helaas kon er geen route gevonden worden. De zoekopdracht is waarschijnlijk verlopen.</string>
     <string name="session_timeout_message">De zoekopdracht is verlopen.</string>
@@ -45,8 +41,7 @@
     <string name="change_date_and_time">Wijzig datum &amp; tijd</string>
     <string name="reverse_start_end">Vertrek- &amp; aankomstpunt omdraaien</string>
     <string name="about">Over</string>
-    <string name="about_this_app">STHLM Traveling is gemaakt door Johan Nilsson. Neem contact met hem op bij problemen of suggesties\n\nAlle informatie is verzameld met toestemming van Trafiklab en SL - Stockholm Public Transport.\n\nTer verbetering van de app verzamelen we anonieme informatie via Flurry en Google Analytics.\n\n<b>Dankwoord</b>\n<li>Robert Johansson\nhttps://twitter.com/likebobby</li>\n<li>App icoon &amp; ideas Olof Brickarp\nhttp://www.yay.se</li>\n<li>Zweedse vertaling Jean Diarbakerli</li>\n<li>Spaanse vertaling Valeria Padilla en Miguel Ángel Domínguez Coloma</li>\n<li>Nederlandse vertaling Bastiaan Franssen</li>\n<li>Patches door Fredrik Jönsson\nhttp://github.com/lk95jofr</li>\n<li>Patches door Adam Nybäck\nhttp://anyro.se</li>\n<li>Patches door Morgan Christiansson\nhttp://screeninteraction.com</li>\n<li>Pictogrammen door Fredrik Broman\nhttp://fredrikbroman.com</li>\n<li>Pictogrammen door Android Icons\nhttp://androidicons.com</li>\n<li>Feedback van Swedroid\nhttp://swedroid.se</li>\n\nBroncode http://github.com/johannilsson/sthlmtraveling\n\n Johan Nilsson johan@markupartist.com\nhttp://markupartist.com\n\n</string>
-    <string name="donate">Doneren</string>
+    <string name="about_this_app">STHLM Traveling is gemaakt door Johan Nilsson. Neem contact met hem op bij problemen of suggesties\n\nAlle informatie is verzameld met toestemming van Trafiklab en SL - Stockholm Public Transport.\n\nTer verbetering van de app verzamelen we anonieme informatie via Flurry en Google Analytics.\n\n<b>Dankwoord</b>\n&lt;li&gt;Robert Johansson\nhttps://twitter.com/likebobby&lt;/li&gt;\n&lt;li&gt;App icoon &amp; ideas Olof Brickarp\nhttp://www.yay.se&lt;/li&gt;\n&lt;li&gt;Zweedse vertaling Jean Diarbakerli&lt;/li&gt;\n&lt;li&gt;Spaanse vertaling Valeria Padilla en Miguel Ángel Domínguez Coloma&lt;/li&gt;\n&lt;li&gt;Nederlandse vertaling Bastiaan Franssen&lt;/li&gt;\n&lt;li&gt;Patches door Fredrik Jönsson\nhttp://github.com/lk95jofr&lt;/li&gt;\n&lt;li&gt;Patches door Adam Nybäck\nhttp://anyro.se&lt;/li&gt;\n&lt;li&gt;Patches door Morgan Christiansson\nhttp://screeninteraction.com&lt;/li&gt;\n&lt;li&gt;Pictogrammen door Fredrik Broman\nhttp://fredrikbroman.com&lt;/li&gt;\n&lt;li&gt;Pictogrammen door Android Icons\nhttp://androidicons.com&lt;/li&gt;\n&lt;li&gt;Feedback van Swedroid\nhttp://swedroid.se&lt;/li&gt;\n\nBroncode http://github.com/johannilsson/sthlmtraveling\n\n Johan Nilsson johan@markupartist.com\nhttp://markupartist.com\n\n</string>
     <string name="donate_url">http://pledgie.com/campaigns/6527</string>
     <string name="feedback">Geef je mening</string>
     <string name="send_email">Email versturen…</string>
@@ -68,12 +63,9 @@
     <string name="send_feedback_email_title">STHLM Traveling ondersteuning</string>
     <string name="send_feedback_email_emailaddress">sthlmtraveling@markupartist.com</string>
     <string name="history_label">Geschiedenis</string>
-    <string name="show_qr_code">Barcode weergeven</string>
     <string name="yes">Ja</string>
     <string name="no">Nee</string>
     <string name="retry">Opnieuw</string>
-    <string name="requires_barcode_scanner_message">Deze applicatie heeft Barcode Scanner nodig. Wil je deze installeren?</string>
-    <string name="install_barcode_scanner_title">Installeer Barcode Scanner?</string>
     <string name="point_on_map">Op kaart</string>
     <string name="tap_to_select_this_point">Tik om deze locatie te selecteren</string>
     <string name="point_selected">Locatie geselecteerd</string>
@@ -83,8 +75,6 @@
     <string name="departing_on">Vertrekken om <xliff:g id="time">%s</xliff:g> op <xliff:g id="date">%s</xliff:g></string>
     <string name="arriving_by">Arriveert om <xliff:g id="time">%s</xliff:g> op <xliff:g id="date">%s</xliff:g></string>
     <string name="departures">Vertrektijden</string>
-    <string name="departures_for">Vertrektijden voor <xliff:g id="site_name">%s</xliff:g></string>
-    <string name="date_of_trip">Datum van trip: <xliff:g id="date">%s</xliff:g></string>
     <string name="no_departures_for_transport_type">Dit type vervoersmiddel wordt hier niet aangeboden</string>
     <string name="no_departures">Geen vertrekken op dit moment</string>
     <string name="site_name">Locatie</string>
@@ -103,9 +93,6 @@
     <string name="departure_train">Trein</string>
     <string name="departure_tram">Tram</string>
     <string name="now">Nu</string>
-    <string name="journey_planner_label">Routeplanner</string>
-    <string name="crash_report_mail_subject">STHLM Traveling Crash Rapport</string>
-    <string name="crash_report_mail_body">Het versturen van een crash rapport helpt ter verbetering van de app. Wij gebruiken de informatie nergens anders voor.</string>
     <string name="my_location_source_disabled">Activeer Mijn locatie in je telefoon instellingen</string>
     <string name="title_settings">Instellingen</string>
     <string name="now_label">Nu</string>
@@ -140,7 +127,6 @@
     <string name="nearby_stops">Haltes dichtbij</string>
     <string name="nearby">Dichtbij</string>
     <string name="time_to" formatted="false">%s richting %s</string>
-
     <!-- Phrase describing a time duration using seconds [CHAR LIMIT=16] -->
     <plurals name="duration_seconds">
         <item quantity="one">1 seconde</item>
@@ -156,30 +142,48 @@
         <item quantity="one">1 uur</item>
         <item quantity="other"><xliff:g id="count">%d</xliff:g> uren</item>
     </plurals>
-
-    <!-- Planner error messages -->
+    <!-- Planner error message -->
     <string name="planner_error_title">Foutmelding</string>
+    <!-- Planner error message -->
     <string name="planner_error_unknown">Zoekopdracht mislukt.</string>
+    <!-- Planner error message -->
     <string name="planner_error_H9300">Sorry, de route kan niet worden berekend. Probeer opnieuw.</string>
+    <!-- Planner error message -->
     <string name="planner_error_H9360">Fout in datum.</string>
+    <!-- Planner error message -->
     <string name="planner_error_H9380">Vertrek- aankomst- of tussen halte te dicht bij op elkaar.</string>
+    <!-- Planner error message -->
     <string name="planner_error_H9320">Halte bestaat niet.</string>
+    <!-- Planner error message -->
     <string name="planner_error_H9280">Halte bestaat niet.</string>
+    <!-- Planner error message -->
     <string name="planner_error_H9260">Halte bestaat niet.</string>
+    <!-- Planner error message -->
     <string name="planner_error_H9250">Zoekopdracht geannuleerd.</string>
+    <!-- Planner error message -->
     <string name="planner_error_H9240">Kan geen halte vinden.</string>
+    <!-- Planner error message -->
     <string name="planner_error_H9230">Probeer opnieuw.</string>
+    <!-- Planner error message -->
     <string name="planner_error_H9220">Er is geen halte in de buurt van het opgegeven adres.</string>
+    <!-- Planner error message -->
     <string name="planner_error_H900">Er is geen reisinformatie beschikbaar voor deze route.</string>
+    <!-- Planner error message -->
     <string name="planner_error_H892">De route is te lang, probeer de reis via een andere route.</string>
+    <!-- Planner error message -->
     <string name="planner_error_H891">Geen route gevonden, probeer een andere route.</string>
+    <!-- Planner error message -->
     <string name="planner_error_H890">Geen route gevonden.</string>
+    <!-- Planner error message -->
     <string name="planner_error_H500">Geen route gevonden.</string>
+    <!-- Planner error message -->
     <string name="planner_error_H455">Uitlopende vertraging.</string>
+    <!-- Planner error message -->
     <string name="planner_error_H410">De reisinformatie kan onvolledig zijn door recente wijzigingen in het tijdsschema.</string>
+    <!-- Planner error message -->
     <string name="planner_error_H390">Vertek- of aankomst punt zijn vervallen, of vervangen door een andere halte.</string>
+    <!-- Planner error message -->
     <string name="planner_error_H895">Vertek- en eindpunt zijn te dicht bij op elkaar.</string>
-
     <!-- Preferences -->
     <string name="restart_app_for_full_effect">Start de app opnieuw om de wijzigingen toe te passen.</string>
     <string name="dialog_general_preferences">Basis</string>
@@ -208,12 +212,10 @@
     <string name="help">Help</string>
     <string name="support">Ondersteuning</string>
     <string name="transport_type">Vervoersmiddel</string>
-
     <!-- Ads -->
     <string name="ads">Advertenties</string>
     <string name="ads_title">Waarom advertenties?</string>
     <string name="ads_turn_off">Advertenties uitschakelen</string>
     <string name="ads_message">Deze app was gratis sinds 2009. Gedurende de jaren de onderhoudskosten zijn gegroeid voor de servers.\n\nOm verdere ontwikkeling en ondersteuning op de app te garanderen, zullen we soms advertenties weergeven.\n\nAls je problemen hebt met advertenties, dan kun je ze hier beneden uitschakelen. In de toekomst zal er waarschijnlijk om een kleine bijdrage gevraagd worden voor dit.\n\nBedankt voor je donatie!\nJohan</string>
     <string name="ads_summary">Waarom heeft deze app plotseling advertenties?</string>
-
 </resources>

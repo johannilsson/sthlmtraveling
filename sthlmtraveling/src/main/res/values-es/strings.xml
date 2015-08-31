@@ -1,23 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
     <!--
-/*
-** Copyright (C) 2009 Johan Nilsson <http://markupartist.com>
-**
-** Licensed under the Apache License, Version 2.0 (the "License"); 
-** you may not use this file except in compliance with the License. 
-** You may obtain a copy of the License at 
-**
-**     http://www.apache.org/licenses/LICENSE-2.0 
-**
-** Unless required by applicable law or agreed to in writing, software 
-** distributed under the License is distributed on an "AS IS" BASIS, 
-** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
-** See the License for the specific language governing permissions and 
-** limitations under the License.
-*/
--->
+  ~ Copyright (C) 2009-2015 Johan Nilsson <http://markupartist.com>
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <!-- Do not translate -->
     <string name="app_name">STHLM Traveling</string>
     <!-- General strings -->
     <string name="done">Listo</string>
@@ -26,13 +23,9 @@
     <string name="to">Hacia</string>
     <string name="via">Vía</string>
     <string name="search_label">Buscar</string>
-    <string name="search_routes_label">Obtener itinerario</string>
-    <string name="departing">Salida</string>
-    <string name="arriving">Llegada</string>
     <string name="no_routes_found_label">Lo sentimos, pero la ruta no pudo ser encontrada</string>
     <string name="no_routes_found_message">Es posible que el origen o destino no sean válidos en absoluto o con el medio de transporte en la fecha/hora solicitadas (p. ej. a veces las estaciones/paradas no están disponibles los fines de semana).</string>
     <string name="routes_label">Rutas</string>
-    <string name="route_alternatives_label">Alternativas</string>
     <string name="route_details_label">Detalles de la ruta</string>
     <string name="no_route_details">Desafortunadamente no se encontró la ruta. Seguramente esta búsqueda sea demasiado antigua.</string>
     <string name="session_timeout_message">Seguramente esta búsqueda sea demasiado antigua.</string>
@@ -40,13 +33,12 @@
     <string name="bad_routes_parameters_message">El punto de origen o destino no deben estar vacíos.</string>
     <string name="new_search">Buscar</string>
     <string name="empty_value">Falta un valor o es inválido</string>
-    <string name="loading">Buscando, un momento por favor...</string>
+    <string name="loading">Buscando, un momento por favor…</string>
     <string name="my_location">Mi ubicación</string>
     <string name="change_date_and_time">Cambiar la fecha y hora</string>
     <string name="reverse_start_end">Buscar ruta para el trayecto inverso</string>
     <string name="about">Acerca de</string>
     <string name="about_this_app">STHLM Traveling ha sido desarrollado por Johan Nilsson. Por favor, póngase en contacto con él si tiene ideas o ha experimentado problemas.\n\nToda la información del transporte público es obtenida con la autorización de Trafiklab y SL - Transporte Público de Estocolmo.\n\nPara mejorar más la aplicación, información anónima es recogida usando Flurry y Google Analytics.\n\n<b>Créditos</b>\n&lt;li&gt;Robert Johansson\nhttps://twitter.com/likebobby&lt;/li&gt;\n&lt;li&gt;Icono de aplicación &amp; ideas Olof Brickarp\nhttp://www.yay.se&lt;/li&gt;\n&lt;li&gt;Traducción a sueco: Jean Diarbakerli&lt;/li&gt;\n&lt;li&gt;Traducción a español: Valeria Padilla y Miguel Ángel Domínguez Coloma&lt;/li&gt;\n&lt;li&gt;Parches: Fredrik Jönsson\nhttp://github.com/lk95jofr&lt;/li&gt;\n&lt;li&gt;Parches: Adam Nybäck\nhttp://anyro.se&lt;/li&gt;\n&lt;li&gt;Parches: Morgan Christiansson\nhttp://screeninteraction.com&lt;/li&gt;\n&lt;li&gt;Iconos: Fredrik Broman\nhttp://fredrikbroman.com&lt;/li&gt;\n&lt;li&gt;Iconos: Android Icons\nhttp://androidicons.com&lt;/li&gt;\n&lt;li&gt;Comentarios de Swedroid\nhttp://swedroid.se&lt;/li&gt;\n\nCódigo fuente http://github.com/johannilsson/sthlmtraveling\n\nJohan Nilsson johan@markupartist.com\nhttp://markupartist.com</string>
-    <string name="donate">Donar</string>
     <string name="donate_url">http://pledgie.com/campaigns/6527</string>
     <string name="feedback">Comentarios</string>
     <string name="send_email">Enviar un e-mail</string>
@@ -68,12 +60,9 @@
     <string name="send_feedback_email_title">Comentarios sobre STHLM Traveling</string>
     <string name="send_feedback_email_emailaddress">sthlmtraveling@markupartist.com</string>
     <string name="history_label">Historial</string>
-    <string name="show_qr_code">Mostrar código de barras</string>
     <string name="yes">Sí</string>
     <string name="no">No</string>
     <string name="retry">Intentar de nuevo</string>
-    <string name="requires_barcode_scanner_message">Esta aplicación necesita Barcode Scanner, ¿desea instalarlo?</string>
-    <string name="install_barcode_scanner_title">¿Instalar Barcode Scanner?</string>
     <string name="point_on_map">Punto en el mapa</string>
     <string name="tap_to_select_this_point">Pulsa para seleccionar este punto</string>
     <string name="point_selected">Punto seleccionado</string>
@@ -83,8 +72,6 @@
     <string name="departing_on">Sale a las <xliff:g id="time">%s</xliff:g> el <xliff:g id="date">%s</xliff:g></string>
     <string name="arriving_by">Llega a las <xliff:g id="time">%s</xliff:g> el <xliff:g id="date">%s</xliff:g></string>
     <string name="departures">Salidas</string>
-    <string name="departures_for">Salidas desde <xliff:g id="site_name">%s</xliff:g></string>
-    <string name="date_of_trip">Fecha del viaje: <xliff:g id="date">%s</xliff:g></string>
     <string name="no_departures_for_transport_type">No hay salidas en este momento para el medio de transporte seleccionado.</string>
     <string name="no_departures">No hay salidas en este momento.</string>
     <string name="site_name">Localización</string>
@@ -103,9 +90,6 @@
     <string name="departure_train">Tren</string>
     <string name="departure_tram">Tren ligero</string>
     <string name="now">ahora</string>
-    <string name="journey_planner_label">Planificador de viajes</string>
-    <string name="crash_report_mail_subject">Reporte de caída de STHLM Traveling</string>
-    <string name="crash_report_mail_body">Al enviar este informe de caída, estás ayudando a reparar el problema. No usaré la información para ningún otro fin.</string>
     <string name="my_location_source_disabled">Por favor habilitar Mi Ubicación en la configuración del sistema</string>
     <string name="title_settings">Configuración</string>
     <string name="now_label">Ahora</string>

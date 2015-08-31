@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
+    <!--
 /*
 ** Copyright (C) 2009 Johan Nilsson <http://markupartist.com>
 **
@@ -17,7 +17,6 @@
 */
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <!-- Do not translate -->
     <!-- General strings -->
     <string name="done">完成</string>
     <string name="discard">放棄</string>
@@ -25,13 +24,9 @@
     <string name="to">到</string>
     <string name="via">經</string>
     <string name="search_label">查找</string>
-    <string name="search_routes_label">獲取路線</string>
-    <string name="departing">出發</string>
-    <string name="arriving">到達</string>
     <string name="no_routes_found_label">非常抱歉，沒有找到合適路線</string>
     <string name="no_routes_found_message">可能您提供的起點或終點無交通信息，或者您所選擇的交通方式在您要求的時間內無交通信息（如有時有的站點在週末暫停服務）</string>
     <string name="routes_label">路線</string>
-    <string name="route_alternatives_label">其他</string>
     <string name="route_details_label">詳細路線</string>
     <string name="no_route_details">哎喲，沒有發現合適路線，這個搜索可能過時了</string>
     <string name="session_timeout_message">很可能這個搜索過時了</string>
@@ -45,7 +40,6 @@
     <string name="reverse_start_end">交換起點和終點</string>
     <string name="about">關於</string>
     <string name="about_this_app">STHLM Traveling由Johan Nilsson開發，如果您有好的想法或者問題請聯繫他\n\n所有的交通信息均來自於Traficlab和Stockholm Public Transport并得到他們的許可\n\nFlurry和Google Analytics會分析匿名數據來進一步提升應用的使用體驗\n\n<b>歸功於</b>\n&lt;li&gt;Robert Johansson\nhttps://twitter.com/likebobby&lt;/li&gt;\n&lt;li&gt;應用圖標 &amp; ideas Olof Brickarp\nhttp://www.yay.se&lt;/li&gt;\n&lt;li&gt;瑞典語翻譯 Jean Diarbakerli&lt;/li&gt;\n&lt;li&gt;西班牙語翻譯 Valeria Padilla and Miguel Ángel Domínguez Coloma&lt;/li&gt;\n&lt;li&gt;修正 Fredrik Jönsson\nhttp://github.com/lk95jofr&lt;/li&gt;\n&lt;li&gt;修正 Adam Nybäck\nhttp://anyro.se&lt;/li&gt;\n&lt;li&gt;修正 Morgan Christiansson\nhttp://screeninteraction.com&lt;/li&gt;\n&lt;li&gt;圖標製作 Fredrik Broman\nhttp://fredrikbroman.com&lt;/li&gt;\n&lt;li&gt;图标制作 Android Icons\nhttp://androidicons.com&lt;/li&gt;\n&lt;li&gt;反饋來自 Swedroid\nhttp://swedroid.se&lt;/li&gt;\n\n源碼 http://github.com/johannilsson/sthlmtraveling\n\n Johan Nilsson johan@markupartist.com\nhttp://markupartist.com\n\n</string>
-    <string name="donate">捐贈</string>
     <string name="donate_url">http://pledgie.com/campaigns/6527</string>
     <string name="feedback">反饋</string>
     <string name="send_email">發送郵件</string>
@@ -66,12 +60,9 @@
     <string name="choose_end_point_label">選擇終點</string>
     <string name="send_feedback_email_title">STHLM Traveling 反饋</string>
     <string name="history_label">歷史</string>
-    <string name="show_qr_code">顯示條形碼</string>
     <string name="yes">是</string>
     <string name="no">否</string>
     <string name="retry">重試</string>
-    <string name="requires_barcode_scanner_message">需要Barcode Scanner，您願意現在就安裝嗎？</string>
-    <string name="install_barcode_scanner_title">安裝Barcode Scanner？</string>
     <string name="point_on_map">地圖上的點</string>
     <string name="tap_to_select_this_point">點擊選擇地圖上的點</string>
     <string name="point_selected">已選取</string>
@@ -81,8 +72,6 @@
     <string name="departing_on">從 <xliff:g id="time">%s</xliff:g> 出發，于 <xliff:g id="date">%s</xliff:g></string>
     <string name="arriving_by">到達 <xliff:g id="time">%s</xliff:g> 于 <xliff:g id="date">%s</xliff:g></string>
     <string name="departures">出發</string>
-    <string name="departures_for">出發去 <xliff:g id="site_name">%s</xliff:g></string>
-    <string name="date_of_trip">行程時間: <xliff:g id="date">%s</xliff:g></string>
     <string name="no_departures_for_transport_type">在選擇的交通方式下，當前沒有查到出發信息</string>
     <string name="no_departures">現在無出發信息</string>
     <string name="site_name">位置</string>
@@ -101,9 +90,6 @@
     <string name="departure_train">火車</string>
     <string name="departure_tram">市內火車</string>
     <string name="now">現在</string>
-    <string name="journey_planner_label">行程規劃</string>
-    <string name="crash_report_mail_subject">STHLM Traveling 崩潰報告</string>
-    <string name="crash_report_mail_body">發送崩潰報告來幫助我們修復問題，我們不會將這些數據用做其他用途</string>
     <string name="my_location_source_disabled">請在系統設置中打開位置源</string>
     <string name="title_settings">設置</string>
     <string name="now_label">現在</string>

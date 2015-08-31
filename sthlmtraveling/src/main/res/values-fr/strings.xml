@@ -15,7 +15,6 @@
   ~ limitations under the License.
   -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <!-- Do not translate -->
     <string name="app_name">STHLM Traveling</string>
     <!-- General strings -->
     <string name="ok">OK</string>
@@ -25,13 +24,9 @@
     <string name="to">Vers</string>
     <string name="via">Pars</string>
     <string name="search_label">Recherche</string>
-    <string name="search_routes_label">Récupérer les routes</string>
-    <string name="departing">Départ</string>
-    <string name="arriving">Arrivée</string>
     <string name="no_routes_found_label">Aucune route a été trouvée</string>
     <string name="no_routes_found_message">Il est possible que le départ ou la destination ne soient pas desservies, ou que le moyen de transport choisi ne soit pas disponible aux dates et heures sélectionnées (ex : certaines stations/arrêts ne sont pas desservis le week-end).</string>
     <string name="routes_label">Routes</string>
-    <string name="route_alternatives_label">Alternatives</string>
     <string name="route_details_label">Détails du parcours</string>
     <string name="no_route_details">Aucune route n\'a été trouvée. La recherche est peut-être trop vieille.</string>
     <string name="session_timeout_message">Cette recherche est probablement trop vieille.</string>
@@ -45,7 +40,6 @@
     <string name="reverse_start_end">Intervertir départ et arrivée</string>
     <string name="about">A propos</string>
     <string name="about_this_app">STHLM Traveling est développé par Johan Nilsson. Contactez  le pour soumettre des idées ou si vous rencontrez des problèmes.\n\nToutes les données sur le trafic sont récupérées avec la permission de Trafiklab et de SL - Transport Public de Stockholm.\n\nAfin d\'encore améliorer cette application, des données anonymes sont récupérées avec Flurry et Google Analytics.\n\n<b>Crédits</b>\n&lt;li&gt;Robert Johansson\nhttps://twitter.com/likebobby&lt;/li&gt;\n&lt;li&gt;Icône de l\'application &amp; idées Olof Brickarp\nhttp://www.yay.se&lt;/li&gt;\n&lt;li&gt;Traduction suédoise par Jean Diarbakerli&lt;/li&gt;\n&lt;li&gt;Traduction espagnole par Valeria Padilla et Miguel Ángel Domínguez Coloma&lt;/li&gt;\n&lt;li&gt;Patches par Fredrik Jönsson\nhttp://github.com/lk95jofr&lt;/li&gt;\n&lt;li&gt;Patches par Adam Nybäck\nhttp://anyro.se&lt;/li&gt;\n&lt;li&gt;Patches par Morgan Christiansson\nhttp://screeninteraction.com&lt;/li&gt;\n&lt;li&gt;Icônes par Fredrik Broman\nhttp://fredrikbroman.com&lt;/li&gt;\n&lt;li&gt;Icônes par Android Icons\nhttp://androidicons.com&lt;/li&gt;\n&lt;li&gt;Retours d\'expériences par Swedroid\nhttp://swedroid.se&lt;/li&gt;\n\nCode source http://github.com/johannilsson/sthlmtraveling\n\nJohan Nilsson johan@markupartist.com\nhttp://markupartist.com\n\n</string>
-    <string name="donate">Donation</string>
     <string name="donate_url">http://pledgie.com/campaigns/6527</string>
     <string name="feedback">Retours d\'expérience</string>
     <string name="send_email">Envoyer un email…</string>
@@ -67,12 +61,9 @@
     <string name="send_feedback_email_title">STHLM Traveling retours d\'expérience</string>
     <string name="send_feedback_email_emailaddress">sthlmtraveling@markupartist.com</string>
     <string name="history_label">Historique</string>
-    <string name="show_qr_code">Afficher le code-barre</string>
     <string name="yes">Oui</string>
     <string name="no">Non</string>
     <string name="retry">Réessayer</string>
-    <string name="requires_barcode_scanner_message">Cette application nécessite Barcode Scanner. Souhaitez-vous l\'installer ?</string>
-    <string name="install_barcode_scanner_title">Installer Barcode Scanner ?</string>
     <string name="point_on_map">Un point sur la carte</string>
     <string name="tap_to_select_this_point">Cliquez pour sélectionner ce point</string>
     <string name="point_selected">Point sélectionné</string>
@@ -82,8 +73,6 @@
     <string name="departing_on">A partir de <xliff:g id="time">%s</xliff:g> le <xliff:g id="date">%s</xliff:g></string>
     <string name="arriving_by">Arrive à <xliff:g id="time">%s</xliff:g> à <xliff:g id="date">%s</xliff:g></string>
     <string name="departures">Départs</string>
-    <string name="departures_for">Départs pour <xliff:g id="site_name">%s</xliff:g></string>
-    <string name="date_of_trip">Date du trajet : <xliff:g id="date">%s</xliff:g></string>
     <string name="no_departures_for_transport_type">Pas de départ pour le moyen de transport sélectionné à ce moment.</string>
     <string name="no_departures">Pas de départ à ce moment.</string>
     <string name="site_name">Localisation</string>
@@ -102,9 +91,6 @@
     <string name="departure_train">Train</string>
     <string name="departure_tram">Trains locaux</string>
     <string name="now">maintenant</string>
-    <string name="journey_planner_label">Planification d\'itinéraire</string>
-    <string name="crash_report_mail_subject">STHLM Traveling rapport de plantage</string>
-    <string name="crash_report_mail_body">En envoyant ce rapport vous m\'aidez à corriger un bug, les informations fournies seront uniquement utilisées à cette fin.</string>
     <string name="my_location_source_disabled">Veuillez activer la localisation dans les paramètres système</string>
     <string name="title_settings">Paramètres</string>
     <string name="now_label">Maintenant</string>

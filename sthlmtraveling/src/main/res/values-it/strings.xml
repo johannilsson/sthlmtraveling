@@ -1,4 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
+    <!--
+  ~ Copyright (C) 2009-2015 Johan Nilsson <http://markupartist.com>
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- General strings -->
     <string name="ok">OK</string>
@@ -8,13 +23,9 @@
     <string name="to">A</string>
     <string name="via">Via</string>
     <string name="search_label">Cerca</string>
-    <string name="search_routes_label">Cerca percorsi</string>
-    <string name="departing">Partendo</string>
-    <string name="arriving">Arrivando</string>
     <string name="no_routes_found_label">Purtroppo non è stato trovato alcun percorso</string>
     <string name="no_routes_found_message">Il tuo punto di partenza o di arrivo potrebbe non essere più servito da servizio pubblico oppure potrebbe non essere servito nelle modalità di trasporto selezionate (ad esempio alcune stazioni/fermate non sono servite durante il fine settimana).</string>
     <string name="routes_label">Percorsi</string>
-    <string name="route_alternatives_label">Alternative</string>
     <string name="route_details_label">Dettagli del percorso</string>
     <string name="no_route_details">Purtroppo non è stato trovato alcun percorso. Molto probabilmente questa ricerca era troppo vecchia.</string>
     <string name="session_timeout_message">Molto probabilmente questa ricerca era troppo vecchia.</string>
@@ -22,16 +33,15 @@
     <string name="bad_routes_parameters_message">Il punto di partenza o di arrivo non può essere vuoto.</string>
     <string name="new_search">Cerca</string>
     <string name="empty_value">Mancante o non valido</string>
-    <string name="loading">Ricerca in corso...</string>
+    <string name="loading">Ricerca in corso…</string>
     <string name="my_location">Mia posizione</string>
     <string name="change_date_and_time">Cambia data e ora</string>
     <string name="reverse_start_end">Inverti da e a</string>
     <string name="about">Chi siamo</string>
-    <string name="about_this_app">STHLM Traveling è sviluppata da Johan Nilsson. Ti preghiamo di contattare lui se hai qualche idea o se riscontri qualche problema.\n\nTutti i dati sul traffico vengono raccolti con il permesso di Trafiklab e SL - Stockholm Public Transport.\n\nPer migliorare l\'applicazione alcune statistiche vengono raccolte anonimamente con Flurry e Google Analytics.\n\n<b>Riconoscimenti</b>\n<li>Robert Johansson\nhttps://twitter.com/likebobby</li>\n<li>Icona dell\'app e idee Olof Brickarp\nhttp://www.yay.se</li>\n<li>Traduzione Svedese Jean Diarbakerli</li>\n<li>Traduzione Spagnola Valeria Padilla e Miguel Ángel Domínguez Coloma</li>\n<li>Traduzione Italiana Sergio Cucinella</li>\n<li>Miglioramenti e risoluzione problemi Fredrik Jönsson\nhttp://github.com/lk95jofr</li>\n<li>Miglioramenti e risoluzione problemi Adam Nybäck\nhttp://anyro.se</li>\n<li>Miglioramenti e risoluzione problemi Morgan Christiansson\nhttp://screeninteraction.com</li>\n<li>Icone Fredrik Broman\nhttp://fredrikbroman.com</li>\n<li>Icone Android Icons\nhttp://androidicons.com</li>\n<li>Suggerimenti da Swedroid\nhttp://swedroid.se</li>\n\nCodice sorgente http://github.com/johannilsson/sthlmtraveling\n\n Johan Nilsson johan@markupartist.com\nhttp://markupartist.com\n\n</string>
-    <string name="donate">Fai una donazione</string>
+    <string name="about_this_app">STHLM Traveling è sviluppata da Johan Nilsson. Ti preghiamo di contattare lui se hai qualche idea o se riscontri qualche problema.\n\nTutti i dati sul traffico vengono raccolti con il permesso di Trafiklab e SL - Stockholm Public Transport.\n\nPer migliorare l\'applicazione alcune statistiche vengono raccolte anonimamente con Flurry e Google Analytics.\n\n<b>Riconoscimenti</b>\n&lt;li&gt;Robert Johansson\nhttps://twitter.com/likebobby&lt;/li&gt;\n&lt;li&gt;Icona dell\'app e idee Olof Brickarp\nhttp://www.yay.se&lt;/li&gt;\n&lt;li&gt;Traduzione Svedese Jean Diarbakerli&lt;/li&gt;\n&lt;li&gt;Traduzione Spagnola Valeria Padilla e Miguel Ángel Domínguez Coloma&lt;/li&gt;\n&lt;li&gt;Traduzione Italiana Sergio Cucinella&lt;/li&gt;\n&lt;li&gt;Miglioramenti e risoluzione problemi Fredrik Jönsson\nhttp://github.com/lk95jofr&lt;/li&gt;\n&lt;li&gt;Miglioramenti e risoluzione problemi Adam Nybäck\nhttp://anyro.se&lt;/li&gt;\n&lt;li&gt;Miglioramenti e risoluzione problemi Morgan Christiansson\nhttp://screeninteraction.com&lt;/li&gt;\n&lt;li&gt;Icone Fredrik Broman\nhttp://fredrikbroman.com&lt;/li&gt;\n&lt;li&gt;Icone Android Icons\nhttp://androidicons.com&lt;/li&gt;\n&lt;li&gt;Suggerimenti da Swedroid\nhttp://swedroid.se&lt;/li&gt;\n\nCodice sorgente http://github.com/johannilsson/sthlmtraveling\n\n Johan Nilsson johan@markupartist.com\nhttp://markupartist.com\n\n</string>
     <string name="donate_url">http://pledgie.com/campaigns/6527</string>
     <string name="feedback">Suggerimenti</string>
-    <string name="send_email">Invia email...</string>
+    <string name="send_email">Invia email…</string>
     <string name="favorites_label">Preferiti</string>
     <string name="no_favorites"><b>Non hai ancora salvato alcun percorso preferito...</b>\nAggiungi e rimuovi percorsi preferiti selezionando la stella dopo una ricerca.</string>
     <string name="reverse_search">Inverti ricerca</string>
@@ -50,12 +60,9 @@
     <string name="send_feedback_email_title">Suggerimenti per STHLM Traveling</string>
     <string name="send_feedback_email_emailaddress">sthlmtraveling@markupartist.com</string>
     <string name="history_label">Cronologia</string>
-    <string name="show_qr_code">Mostra codice a barre</string>
     <string name="yes">Si</string>
     <string name="no">No</string>
     <string name="retry">Riprova</string>
-    <string name="requires_barcode_scanner_message">Questa applicazione richiede un lettore di codici a barre. Desideri installarlo?</string>
-    <string name="install_barcode_scanner_title">Installa lettore di codici a barre?</string>
     <string name="point_on_map">Punto sulla mappa</string>
     <string name="tap_to_select_this_point">Tocca per selezionare questo punto</string>
     <string name="point_selected">Punto selezionato</string>
@@ -65,8 +72,6 @@
     <string name="departing_on">Partendo dopo le <xliff:g id="time">%s</xliff:g> il <xliff:g id="date">%s</xliff:g></string>
     <string name="arriving_by">Arrivando al più alle <xliff:g id="time">%s</xliff:g> il <xliff:g id="date">%s</xliff:g></string>
     <string name="departures">Partenze</string>
-    <string name="departures_for">Partenze per <xliff:g id="site_name">%s</xliff:g></string>
-    <string name="date_of_trip">Data di viaggio: <xliff:g id="date">%s</xliff:g></string>
     <string name="no_departures_for_transport_type">Non ci sono al momento partenze per il tipo di trasporto selezionato.</string>
     <string name="no_departures">Nessun partenze adesso.</string>
     <string name="site_name">Posizione</string>
@@ -85,7 +90,6 @@
     <string name="departure_train">Treni</string>
     <string name="departure_tram">Tram</string>
     <string name="now">adesso</string>
-    <string name="journey_planner_label">Pianificatore di viaggio</string>
     <string name="my_location_source_disabled">Si prega di abilitare nelle impostazioni di sistema una fonte per la Mia Posizione</string>
     <string name="title_settings">Impostazioni</string>
     <string name="now_label">Ora</string>
@@ -120,7 +124,6 @@
     <string name="nearby_stops">Fermate nelle vicinanze</string>
     <string name="nearby">Nelle vicinanze</string>
     <string name="time_to" formatted="false">%s alle %s</string>
-
     <!-- Phrase describing a time duration using seconds [CHAR LIMIT=16] -->
     <plurals name="duration_seconds">
         <item quantity="one">1 secondo</item>
@@ -136,8 +139,7 @@
         <item quantity="one">1 ora</item>
         <item quantity="other"><xliff:g id="count">%d</xliff:g> ore</item>
     </plurals>
-
-    <!-- Planner error messages -->
+    <!-- Planner error message -->
     <string name="planner_error_title">Errore</string>
     <!-- Planner error message -->
     <string name="planner_error_unknown">La ricerca non è riuscita correttamente.</string>
@@ -179,7 +181,6 @@
     <string name="planner_error_H390">Il punto di partenza o di arrivo è stato sostituito con una fermata nelle vicinanze.</string>
     <!-- Planner error message -->
     <string name="planner_error_H895">Il punto di partenza e quello di arrivo sono troppo vicini.</string>
-
     <!-- Preferences -->
     <string name="restart_app_for_full_effect">Riavvia l\'applicazione per un effetto completo.</string>
     <string name="dialog_general_preferences">Generali</string>
@@ -208,12 +209,10 @@
     <string name="help">Aiuto</string>
     <string name="support">Supporto</string>
     <string name="transport_type">Mezzi di trasporto</string>
-
     <!-- Ads -->
     <string name="ads">Annuncio</string>
     <string name="ads_title">Perchè annunci?</string>
     <string name="ads_turn_off">Rimuovi annunci</string>
     <string name="ads_message">Questa applicazione è stata gratuita sin dal 2009, durante questi anni il costo dei server e della manutenzione è aumentato.\n\nGli annunci sono a volte mostrati per poter continuare lo sviluppo e fornire il supporto necessario.\n\nSe hai problemi con gli annunci è possibile rimuoverli qui sotto. In futuro potrebbe essere richiesto un piccolo contributo per poter avere una versione senza annunci.\n\nGrazie per il tuo supporto!\nJohan</string>
     <string name="ads_summary">Perchè questa applicazione ha gli annunci?</string>
-
 </resources>
