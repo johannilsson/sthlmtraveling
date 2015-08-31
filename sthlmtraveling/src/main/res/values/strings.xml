@@ -18,7 +18,7 @@
 -->
 
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="app_name" translatable="false">STHLM Traveling</string>
+    <string name="app_name">STHLM Traveling</string>
 
     <!-- General strings -->
     <string name="ok">OK</string>
@@ -28,13 +28,9 @@
     <string name="to">To</string>
     <string name="via">Via</string>
     <string name="search_label">Search</string>
-    <string name="search_routes_label">Fetch routes</string>
-    <string name="departing">Departing</string>
-    <string name="arriving">Arriving</string>
     <string name="no_routes_found_label">Unfortunately there was no route found</string>
     <string name="no_routes_found_message">Perhaps your start or destination is not served at all or with the selected modes of transport on the required date/time (e. g. sometimes stations/stops are not served on weekends).</string>
     <string name="routes_label">Routes</string>
-    <string name="route_alternatives_label">Alternatives</string>
     <string name="route_details_label">Route details</string>
     <string name="no_route_details">Unfortunately there was no route found. Most likely this search was too old.</string>
     <string name="session_timeout_message">Most likely this search was too old.</string>
@@ -48,7 +44,6 @@
     <string name="reverse_start_end">Reverse from &amp; to</string>
     <string name="about">About</string>
     <string name="about_this_app">STHLM Traveling is developed by Johan Nilsson. Please contact him if you have ideas or experience any problems\n\nAll traffic data is gathered with permission from Trafiklab and SL - Stockholm Public Transport.\n\nTo improve the app further anonymous analytics is gathered with Flurry and Google Analytics.\n\n<b>Credits</b>\n<li>Robert Johansson\nhttps://twitter.com/likebobby</li>\n<li>App icon &amp; ideas Olof Brickarp\nhttp://www.yay.se</li>\n<li>Swedish translation Jean Diarbakerli</li>\n<li>Spanish translation Valeria Padilla and Miguel Ángel Domínguez Coloma</li>\n<li>Italian translation Sergio Cucinella</li>\n<li>Patches by Fredrik Jönsson\nhttp://github.com/lk95jofr</li>\n<li>Patches by Adam Nybäck\nhttp://anyro.se</li>\n<li>Patches by Morgan Christiansson\nhttp://screeninteraction.com</li>\n<li>Icons by Fredrik Broman\nhttp://fredrikbroman.com</li>\n<li>Icons by Android Icons\nhttp://androidicons.com</li>\n<li>Feedback from Swedroid\nhttp://swedroid.se</li>\n\nSource code http://github.com/johannilsson/sthlmtraveling\n\n Johan Nilsson johan@markupartist.com\nhttp://markupartist.com\n\n</string>
-    <string name="donate">Donate</string>
     <string name="donate_url">http://pledgie.com/campaigns/6527</string>
     <string name="feedback">Feedback</string>
     <string name="send_email">Send email…</string>
@@ -70,13 +65,10 @@
     <string name="send_feedback_email_title">STHLM Traveling feedback</string>
     <string name="send_feedback_email_emailaddress">sthlmtraveling@markupartist.com</string>
     <string name="history_label">History</string>
-    <string name="show_qr_code">Show barcode</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="retry">Retry</string>
-    <string name="requires_barcode_scanner_message">This application requires Barcode Scanner. Would you like to install it?</string>
-    <string name="install_barcode_scanner_title">Install Barcode Scanner?</string>
-    <string name="point_on_map">Point on map</string>
+     <string name="point_on_map">Point on map</string>
     <string name="tap_to_select_this_point">Tap to select this point</string>
     <string name="point_selected">Point selected</string>
     <string name="tap_your_end_point_on_map">Tap your end point on the map</string>
@@ -85,8 +77,6 @@
     <string name="departing_on">Departs at <xliff:g id="time">%s</xliff:g> on <xliff:g id="date">%s</xliff:g></string>
     <string name="arriving_by">Arrives at <xliff:g id="time">%s</xliff:g> on <xliff:g id="date">%s</xliff:g></string>
     <string name="departures">Departures</string>
-    <string name="departures_for">Departures for <xliff:g id="site_name">%s</xliff:g></string>
-    <string name="date_of_trip">Date of Trip: <xliff:g id="date">%s</xliff:g></string>
     <string name="no_departures_for_transport_type">No departures for the selected transport type at the moment.</string>
     <string name="no_departures">No departures right now.</string>
     <string name="site_name">Location</string>
@@ -105,7 +95,6 @@
     <string name="departure_train">Train</string>
     <string name="departure_tram">Lokalb.</string>
     <string name="now">now</string>
-    <string name="journey_planner_label">Journey Planner</string>
     <string name="my_location_source_disabled">Please enable a My Location source in system settings</string>
     <string name="title_settings">Settings</string>
     <string name="now_label">Now</string>
@@ -156,6 +145,20 @@
         <item quantity="one">1 hour</item>
         <item quantity="other"><xliff:g id="count">%d</xliff:g> hours</item>
     </plurals>
+    <plurals name="duration_days">
+        <item quantity="one">1 day</item>
+        <item quantity="other"><xliff:g id="count">%d</xliff:g> days</item>
+    </plurals>
+
+    <plurals name="duration_short_minutes">
+        <item quantity="one">1 min</item>
+        <item quantity="other"><xliff:g id="count">%d</xliff:g> min</item>
+    </plurals>
+    <plurals name="duration_short_hours">
+        <item quantity="one">1 hr</item>
+        <item quantity="other"><xliff:g id="count">%d</xliff:g> hr</item>
+    </plurals>
+    <string name="duration_short_hours_minutes" formatted="false">%s hr %s min</string>
 
     <!-- Planner error message -->
     <string name="planner_error_title">The search failed</string>
