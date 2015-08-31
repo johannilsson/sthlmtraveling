@@ -32,6 +32,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.CursorLoader;
@@ -514,6 +515,9 @@ public class PlannerFragment extends BaseListFragment {
 
     private void showDialog(Dialog dialog) {
         mStackLevel++;
+        // DialogFragment.show() will take care of adding the fragment
+        // in a transaction. We also want to remove any currently showing
+        // dialog, so make our own transaction and take care of that here.
         FragmentTransaction ft = getFragmentManager().beginTransaction();
         DialogFragment newFragment = PlannerDialogFragment.newInstance(dialog);
         ft.add(newFragment, null);
@@ -530,14 +534,13 @@ public class PlannerFragment extends BaseListFragment {
             return f;
         }
 
+        @NonNull
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-
             // Quick fix to avoid crash when resuming.
-            if (savedInstanceState != null) {
-                this.dismiss();
-            }
+            // if (savedInstanceState != null) {
+            //    this.dismiss();
+            // }
 
             return mDialog;
         }
