@@ -23,6 +23,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  * Created by johan on 18/11/14.
@@ -73,6 +74,12 @@ public class PageFragmentAdapter extends FragmentPagerAdapter implements Sliding
 
     public Bundle getPageArgs(int position) {
         return mPages.get(position).mArgs;
+    }
+
+    public void setLayoutDirection(boolean isRtl) {
+        if (isRtl) {
+            Collections.reverse(mPages);
+        }
     }
 
     public static class PageInfo {

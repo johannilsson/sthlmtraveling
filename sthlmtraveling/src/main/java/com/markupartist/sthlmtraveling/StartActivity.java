@@ -18,6 +18,7 @@ package com.markupartist.sthlmtraveling;
 
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 
@@ -25,12 +26,20 @@ import com.markupartist.sthlmtraveling.service.DeviationService;
 import com.markupartist.sthlmtraveling.ui.view.PageFragmentAdapter;
 import com.markupartist.sthlmtraveling.ui.view.SlidingTabLayout;
 import com.markupartist.sthlmtraveling.utils.BeaconManager;
+import com.markupartist.sthlmtraveling.utils.RtlUtils;
+
+import java.util.Locale;
 
 public class StartActivity extends BaseFragmentActivity {
     private static final int PAGE_SEARCH_POS = 0;
     private static final int PAGE_FAVORITES_POS = 1;
     private static final int PAGE_DEPARTURES_POS = 2;
     private static final int PAGE_DEVIATIONS_POS = 3;
+
+    private static final int PAGE_RTL_SEARCH_POS = 3;
+    private static final int PAGE_RTL_FAVORITES_POS = 2;
+    private static final int PAGE_RTL_DEPARTURES_POS = 1;
+    private static final int PAGE_RTL_DEVIATIONS_POS = 0;
 
     private ViewPager mPager;
     private SlidingTabLayout mSlidingTabLayout;
@@ -55,6 +64,8 @@ public class StartActivity extends BaseFragmentActivity {
         pageAdapter.addPage(new PageFragmentAdapter.PageInfo(getString(R.string.deviations_label),
                 TrafficStatusFragment.class, null, R.drawable.ic_action_deviations_active));
 
+        pageAdapter.setLayoutDirection(RtlUtils.isRtl(Locale.getDefault()));
+
         mPager = (ViewPager) findViewById(R.id.pager);
         mPager.setPageMarginDrawable(R.color.light_grey);
         mPager.setPageMargin(25);  // TODO: Compensate with denisity to get it right on all screens
@@ -62,7 +73,8 @@ public class StartActivity extends BaseFragmentActivity {
         mPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override
             public void onPageSelected(int position) {
-                switch (position) {
+                int pos = getPagePos(position);
+                switch (pos) {
                     case PAGE_SEARCH_POS:
                         registerScreen("Planner");
                         break;
@@ -85,8 +97,10 @@ public class StartActivity extends BaseFragmentActivity {
         mSlidingTabLayout.setDistributeEvenly(true);
         mSlidingTabLayout.setViewPager(mPager);
 
-        //TabPageIndicator tabPageIndicator = (TabPageIndicator) findViewById(R.id.indicator);
-        //tabPageIndicator.setViewPager(mPager);
+        // We force the tab layout to LTR and instead reverse the order for RTL languages.
+        ViewCompat.setLayoutDirection(mSlidingTabLayout, ViewCompat.LAYOUT_DIRECTION_LTR);
+
+        mPager.setCurrentItem(getPagePos(PAGE_SEARCH_POS));
 
         ActionBar ab = getSupportActionBar();
         ab.hide();
@@ -97,6 +111,22 @@ public class StartActivity extends BaseFragmentActivity {
         DeviationService.startAsRepeating(getApplicationContext());
     }
 
+    public int getPagePos(int pos) {
+        if (RtlUtils.isRtl(Locale.getDefault())) {
+            switch (pos) {
+                case PAGE_SEARCH_POS:
+                    return PAGE_RTL_SEARCH_POS;
+                case PAGE_FAVORITES_POS:
+                    return PAGE_RTL_FAVORITES_POS;
+                case PAGE_DEPARTURES_POS:
+                    return PAGE_RTL_DEPARTURES_POS;
+                case PAGE_DEVIATIONS_POS:
+                    return PAGE_RTL_DEVIATIONS_POS;
+            }
+        }
+        return pos;
+    }
+
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -105,8 +135,9 @@ public class StartActivity extends BaseFragmentActivity {
 
     @Override
     public boolean onSearchRequested() {
-        if (mPager.getCurrentItem() != 0) {
-            mPager.setCurrentItem(PAGE_SEARCH_POS); // Search.
+        int currentPos = mPager.getCurrentItem();
+        if (currentPos != getPagePos(PAGE_SEARCH_POS)) {
+            mPager.setCurrentItem(getPagePos(PAGE_SEARCH_POS));
             return true;
         }
         return false;
