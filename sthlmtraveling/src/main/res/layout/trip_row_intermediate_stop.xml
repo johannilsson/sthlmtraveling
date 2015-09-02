@@ -41,13 +41,14 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/sl_grey"
                 android:textSize="12sp"
-                android:layout_gravity="right|end" />
+                android:layout_gravity="start"
+                tools:text="12:00 fm" />
 
             <TextView
                 android:id="@+id/trip_intermediate_departure_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="end"
+                android:layout_gravity="start"
                 />
         </LinearLayout>
 
