@@ -1,37 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
     <!--
-/*
-** Copyright (C) 2009 Johan Nilsson <http://markupartist.com>
-**
-** Licensed under the Apache License, Version 2.0 (the "License"); 
-** you may not use this file except in compliance with the License. 
-** You may obtain a copy of the License at 
-**
-**     http://www.apache.org/licenses/LICENSE-2.0 
-**
-** Unless required by applicable law or agreed to in writing, software 
-** distributed under the License is distributed on an "AS IS" BASIS, 
-** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
-** See the License for the specific language governing permissions and 
-** limitations under the License.
-*/
--->
+  ~ Copyright (C) 2009-2015 Johan Nilsson <http://markupartist.com>
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <!-- Do not translate -->
     <!-- General strings -->
+    <string name="ok">موافق</string>
     <string name="done">تم</string>
     <string name="discard">الغاء</string>
     <string name="from">من</string>
     <string name="to">الى</string>
     <string name="via">عن طريق</string>
     <string name="search_label">ابحث</string>
-    <string name="search_routes_label">اجلب الطرق</string>
-    <string name="departing">يغادر</string>
-    <string name="arriving">يصل</string>
     <string name="no_routes_found_label">للاسف لم يتم العثور على طريق</string>
     <string name="no_routes_found_message">ربما نقطة وصولك غير مخدمة نهائياً بالانماط النقلية المحددة في التوقيت المطلوب (على سبيل المثال بعض المواقف قد تكون غير مخدمة ايام العطل و نهاية الاسبوع )</string>
     <string name="routes_label">الطرق</string>
-    <string name="route_alternatives_label">البدائل</string>
     <string name="route_details_label">خصائص الطريق</string>
     <string name="no_route_details">للاسف لم يتم العثور على طريق. على الاغلب هذا البحث قديم جداً</string>
     <string name="session_timeout_message">على الاغلب البحث قديم جداً</string>
@@ -44,8 +38,7 @@
     <string name="change_date_and_time">تغيير التاريخ و التوقيت</string>
     <string name="reverse_start_end">عكس من والى</string>
     <string name="about">عن</string>
-    <string name="about_this_app">STHLM Traveling يتم تطويره بواسطة Johan Nilsson يرجى التواصل معه ان كنت تملك افكار او اية مشاكل\n\nكافة معلومات السير يتم جلبها بواسطة تصريح من Trafiklab و SL - Stockholm Public Transport.\n\nلتطوير التطبيق يتم جمع معلومات بشكل مجهولة بواسطة Flurry و Google Analytics.\n\n<b>الحقوق</b>\n&lt;li&gt;Robert Johansson\nhttps://twitter.com/likebobby&lt;/li&gt;\n&lt;li&gt;ايقونة التطبيقة &amp; فكرة Olof Brickarp\nhttp://www.yay.se&lt;/li&gt;\n&lt;li&gt;الترجمة السويدية بواسطة Jean Diarbakerli&lt;/li&gt;\n&lt;li&gt;الترجمة الاسبانية Valeria Padilla و Miguel Ángel Domínguez Coloma&lt;/li&gt;\n&lt;li&gt;الترقيع بواسطة Fredrik Jönsson\nhttp://github.com/lk95jofr&lt;/li&gt;\n&lt;li&gt;الترقيع بواسطة Adam Nybäck\nhttp://anyro.se&lt;/li&gt;\n&lt;li&gt;الترقيع بواسطة Morgan Christiansson\nhttp://screeninteraction.com&lt;/li&gt;\n&lt;li&gt;الايقونات بواسطة Fredrik Broman\nhttp://fredrikbroman.com&lt;/li&gt;\n&lt;li&gt;الايقونات بواسطة Android Icons\nhttp://androidicons.com&lt;/li&gt;\n&lt;li&gt;التقييم  من Swedroid\nhttp://swedroid.se&lt;/li&gt;\n\nالكود المصدري http://github.com/johannilsson/sthlmtraveling\n\n Johan Nilsson johan@markupartist.com\nhttp://markupartist.com\n\n</string>
-    <string name="donate">التبرع</string>
+    <string name="about_this_app">STHLM Traveling يتم تطويره بواسطة Johan Nilsson يرجى التواصل معه ان كنت تملك افكار او اية مشاكل\n\nكافة معلومات السير يتم جلبها بواسطة تصريح من Trafiklab و SL - Stockholm Public Transport.\n\nلتطوير التطبيق يتم جمع معلومات بشكل مجهولة بواسطة Flurry و Google Analytics.\n\n<b>الحقوق</b>\n&lt;li&gt;Robert Johansson\nhttps://twitter.com/likebobby&lt;/li&gt;\n&lt;li&gt;ايقونة التطبيقة &amp; فكرة Olof Brickarp\nhttp://www.yay.se&lt;/li&gt;\n&lt;li&gt;الترجمة السويدية بواسطة Jean Diarbakerli&lt;/li&gt;\n&lt;li&gt;الترجمة الاسبانية Valeria Padilla و Miguel Ángel Domínguez Coloma&lt;/li&gt;\n&lt;li&gt;الترجمة العربية بواسطة Simon Bnaio&lt;/li&gt;\n&lt;li&gt;الترقيع بواسطة Fredrik Jönsson\nhttp://github.com/lk95jofr&lt;/li&gt;\n&lt;li&gt;الترقيع بواسطة Adam Nybäck\nhttp://anyro.se&lt;/li&gt;\n&lt;li&gt;الترقيع بواسطة Morgan Christiansson\nhttp://screeninteraction.com&lt;/li&gt;\n&lt;li&gt;الايقونات بواسطة Fredrik Broman\nhttp://fredrikbroman.com&lt;/li&gt;\n&lt;li&gt;الايقونات بواسطة Android Icons\nhttp://androidicons.com&lt;/li&gt;\n&lt;li&gt;التقييم  من Swedroid\nhttp://swedroid.se&lt;/li&gt;\n\nالكود المصدري http://github.com/johannilsson/sthlmtraveling\n\n Johan Nilsson johan@markupartist.com\nhttp://markupartist.com\n\n</string>
     <string name="donate_url">http://pledgie.com/campaigns/6527</string>
     <string name="feedback">تقديم رأي</string>
     <string name="send_email">ارسال بريد الكتروني</string>
@@ -62,18 +55,14 @@
     <string name="name_of_shortcut">اسم الاختصار</string>
     <string name="create_shortcut_label">انشاء الاختصار</string>
     <string name="create_shortcut_for_departure_label">انشاء اختصار للمغادرة</string>
-    <string name="choose_start_point_label">اختيار نقطة البدء</string>
-    <string name="choose_end_point_label">اختيار نقطة النهاية</string>
+    <string name="choose_start_point_label">اختر نقطة البدء</string>
+    <string name="choose_end_point_label">اختر نقطة النهاية</string>
     <string name="send_feedback_email_title">اراء عن STHLM Traveling</string>
     <string name="send_feedback_email_emailaddress">sthlmtraveling@markupartist.com</string>
     <string name="history_label">التاريخ</string>
-    <string name="show_qr_code">اظهار الباركود</string>
     <string name="yes">نعم</string>
     <string name="no">لا</string>
     <string name="retry">اعادة المحاولة</string>
-    <string name="requires_barcode_scanner_message">هذا التطبيق يتطلب قارىء باركود.
-هل ترغب بتثبيته ؟</string>
-    <string name="install_barcode_scanner_title">تثبيت قارىء الباركود ؟</string>
     <string name="point_on_map">الاشارة على الخريطة</string>
     <string name="tap_to_select_this_point">المس لتحديد هذه النقطة</string>
     <string name="point_selected">تم تحديد النقطة</string>
@@ -83,12 +72,10 @@
     <string name="departing_on">يغادر <xliff:g id="time">%s</xliff:g> في <xliff:g id="date">%s</xliff:g></string>
     <string name="arriving_by">يصل <xliff:g id="time">%s</xliff:g> في <xliff:g id="date">%s</xliff:g></string>
     <string name="departures">المغادرات</string>
-    <string name="departures_for">المغادرات الى <xliff:g id="site_name">%s</xliff:g></string>
-    <string name="date_of_trip">تاريخ الرحلة: <xliff:g id="date">%s</xliff:g></string>
     <string name="no_departures_for_transport_type">لا يوجد اية مغادرات لطريقة التنقل المختارة في الوقت الحاضر</string>
     <string name="no_departures">لا يوجد مغادرات حالياً</string>
     <string name="site_name">الموقع</string>
-    <string name="stop_label">موقف (توقف)</string>
+    <string name="stop_label">موقف</string>
     <string name="address_label">العنوان</string>
     <string name="refresh">تحديث</string>
     <string name="show_departures_for_start">اظهار المغادرات</string>
@@ -103,9 +90,6 @@
     <string name="departure_train">قطار</string>
     <string name="departure_tram">ق. محلي</string>
     <string name="now">الان</string>
-    <string name="journey_planner_label">مخطط الرحل</string>
-    <string name="crash_report_mail_subject">تقرير خطأ STHLM Traveling</string>
-    <string name="crash_report_mail_body">عن طريق ارسال تقرير الخطأ هذا انت تساعدني في اصلاح هذه المشكلة , لن استخدم المعلومات في اي شيء اخر</string>
     <string name="my_location_source_disabled">رجاء قم بتفعيل خدمة موقعي لهذا التطبيق باعدادات النظام</string>
     <string name="title_settings">الاعدادات</string>
     <string name="now_label">الان</string>
@@ -144,15 +128,15 @@
     <plurals name="duration_seconds">
         <item quantity="one">1 ثانية</item>
         <item quantity="other"><xliff:g id="COUNT">%d</xliff:g> ثواني</item>
-        <item quantity="few"></item>
-        <item quantity="many"></item>
-        <item quantity="two"></item>
-        <item quantity="zero"></item>
+        <item quantity="few">"القليل "</item>
+        <item quantity="many">"العديد "</item>
+        <item quantity="two">اثنين</item>
+        <item quantity="zero">صفر</item>
     </plurals>
     <!-- Phrase describing a time duration using minutes [CHAR LIMIT=16] -->
     <plurals name="duration_minutes">
         <item quantity="one">1 دقيقة</item>
-        <item quantity="other"><xliff:g id="count">%d</xliff:g> دقائق</item>
+        <item quantity="other"><xliff:g id="count">%d</xliff:g> دقيقة</item>
         <item quantity="few"><xliff:g id="count">%d</xliff:g> دقائق</item>
         <item quantity="many"><xliff:g id="count">%d</xliff:g> دقائق</item>
         <item quantity="two"><xliff:g id="count">%d</xliff:g> دقائق</item>
@@ -162,10 +146,10 @@
     <plurals name="duration_hours">
         <item quantity="one">1 ساعة</item>
         <item quantity="other"><xliff:g id="count">%d</xliff:g> ساعات</item>
-        <item quantity="few"></item>
-        <item quantity="many"></item>
-        <item quantity="two"></item>
-        <item quantity="zero"></item>
+        <item quantity="few"><xliff:g id="count">%d</xliff:g> ساعات</item>
+        <item quantity="many"><xliff:g id="count">%d</xliff:g> ساعات</item>
+        <item quantity="two"><xliff:g id="count">%d</xliff:g> ساعات</item>
+        <item quantity="zero"><xliff:g id="count">%d</xliff:g> ساعات</item>
     </plurals>
 
     <string name="trip_time_origin_destination">
@@ -223,7 +207,7 @@
     <string name="dialog_title_language_preference">اختر لغة</string>
     <string name="settings_saved">تم الحفظ (محفوظ)</string>
     <string name="deviation_notification_preference">تبيهات الانحراف.</string>
-    <string name="deviation_notification_summary_preference">تجريبي . التفعيل يؤدي الى استهلاك البطارية و يتطلب اتصال دائماً بالانترنت.</string>
+    <string name="deviation_notification_summary_preference">تجريبي . التفعيل يؤدي الى استهلاك البطارية و يتطلب اتصالاً دائماً بالانترنت.</string>
     <string name="deviation_update_interval_preference">المدة مابين التحديث</string>
     <string name="deviation_update_interval_summary_preference">المدة الاطول بين التحديثات توفر لك البطارية.</string>
     <string name="deviation_lines_preference">خطوط</string>
