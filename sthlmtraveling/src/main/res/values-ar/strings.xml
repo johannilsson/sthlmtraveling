@@ -1,19 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-    <!--
-  ~ Copyright (C) 2009-2015 Johan Nilsson <http://markupartist.com>
-  ~
-  ~ Licensed under the Apache License, Version 2.0 (the "License");
-  ~ you may not use this file except in compliance with the License.
-  ~ You may obtain a copy of the License at
-  ~
-  ~      http://www.apache.org/licenses/LICENSE-2.0
-  ~
-  ~ Unless required by applicable law or agreed to in writing, software
-  ~ distributed under the License is distributed on an "AS IS" BASIS,
-  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  ~ See the License for the specific language governing permissions and
-  ~ limitations under the License.
-  -->
+<!--
+/*
+** Copyright (C) 2009 Johan Nilsson <http://markupartist.com>
+**
+** Licensed under the Apache License, Version 2.0 (the "License"); 
+** you may not use this file except in compliance with the License. 
+** You may obtain a copy of the License at 
+**
+**     http://www.apache.org/licenses/LICENSE-2.0 
+**
+** Unless required by applicable law or agreed to in writing, software 
+** distributed under the License is distributed on an "AS IS" BASIS, 
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+** See the License for the specific language governing permissions and 
+** limitations under the License.
+*/
+-->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- General strings -->
     <string name="ok">موافق</string>
@@ -123,24 +125,24 @@
     <string name="hide_intermediate_stops">اخفاء المواقف المتوسطة</string>
     <string name="nearby_stops">المواقف القريبة</string>
     <string name="nearby">قريب</string>
-    <string name="time_to" formatted="false">%s الى %s</string>
+    <string name="time_to" formatted="false"><xliff:g id="stop">%2$s</xliff:g> الى <xliff:g id="duration">%1$s</xliff:g></string>
     <!-- Phrase describing a time duration using seconds [CHAR LIMIT=16] -->
     <plurals name="duration_seconds">
-        <item quantity="one">1 ثانية</item>
-        <item quantity="other"><xliff:g id="COUNT">%d</xliff:g> ثواني</item>
+        <item quantity="one">"1 ثانية"</item>
+        <item quantity="other">"<xliff:g id="COUNT">%d</xliff:g> ثواني"</item>
         <item quantity="few">"القليل "</item>
         <item quantity="many">"العديد "</item>
-        <item quantity="two">اثنين</item>
-        <item quantity="zero">صفر</item>
+        <item quantity="two">"اثنين"</item>
+        <item quantity="zero">"صفر"</item>
     </plurals>
     <!-- Phrase describing a time duration using minutes [CHAR LIMIT=16] -->
     <plurals name="duration_minutes">
         <item quantity="one">1 دقيقة</item>
-        <item quantity="other"><xliff:g id="count">%d</xliff:g> دقيقة</item>
-        <item quantity="few"><xliff:g id="count">%d</xliff:g> دقائق</item>
-        <item quantity="many"><xliff:g id="count">%d</xliff:g> دقائق</item>
-        <item quantity="two"><xliff:g id="count">%d</xliff:g> دقائق</item>
-        <item quantity="zero"><xliff:g id="count">%d</xliff:g> دقائق</item>
+        <item quantity="other"><xliff:g id="count">%d</xliff:g> دقيقة‎</item>
+        <item quantity="few"><xliff:g id="count">%d</xliff:g> دقيقة‎</item>
+        <item quantity="many"><xliff:g id="count">%d</xliff:g> دقيقة‎</item>
+        <item quantity="two"><xliff:g id="count">%d</xliff:g> دقيقة‎</item>
+        <item quantity="zero"><xliff:g id="count">%d</xliff:g> دقيقة‎</item>
     </plurals>
     <!-- Phrase describing a time duration using hours [CHAR LIMIT=16] -->
     <plurals name="duration_hours">
@@ -151,11 +153,7 @@
         <item quantity="two"><xliff:g id="count">%d</xliff:g> ساعات</item>
         <item quantity="zero"><xliff:g id="count">%d</xliff:g> ساعات</item>
     </plurals>
-
-    <string name="trip_time_origin_destination">
-         <xliff:g id="destination">%2$s</xliff:g> – <xliff:g id="origin">%1$s</xliff:g>
-    </string>
-
+    <string name="trip_time_origin_destination"><xliff:g id="destination">%2$s</xliff:g> – <xliff:g id="origin">%1$s</xliff:g></string>
     <!-- Planner error message -->
     <string name="planner_error_title">فشل البحث</string>
     <!-- Planner error message -->
