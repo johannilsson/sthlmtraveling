@@ -120,18 +120,19 @@ public class TripView extends LinearLayout {
             changeImageView.setLayoutParams(changesLayoutParams);
             routeChanges.addView(changeImageView);
 
-
-            ArrayList<Integer> lineNumbers = new ArrayList<>();
-            lineNumbers = DeviationStore.extractLineNumbers(subTrip.transport.name, lineNumbers);
-            if (!lineNumbers.isEmpty()) {
-                TextView lineNumberView = new TextView(getContext());
-                lineNumberView.setTextColor(Color.BLACK);
-                lineNumberView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 13);
-                lineNumberView.setTypeface(Typeface.DEFAULT_BOLD);
-                lineNumberView.setText(Integer.toString(lineNumbers.get(0)));
-                ViewCompat.setPaddingRelative(lineNumberView, (int) (5 * scale), 0, (int) (2 * scale), 0);
-                lineNumberView.setLayoutParams(changesLayoutParams);
-                routeChanges.addView(lineNumberView);
+            if (currentTransportCount <= 3) {
+                ArrayList<Integer> lineNumbers = new ArrayList<>();
+                lineNumbers = DeviationStore.extractLineNumbers(subTrip.transport.name, lineNumbers);
+                if (!lineNumbers.isEmpty()) {
+                    TextView lineNumberView = new TextView(getContext());
+                    lineNumberView.setTextColor(Color.BLACK);
+                    lineNumberView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 13);
+                    lineNumberView.setTypeface(Typeface.DEFAULT_BOLD);
+                    lineNumberView.setText(Integer.toString(lineNumbers.get(0)));
+                    ViewCompat.setPaddingRelative(lineNumberView, (int) (5 * scale), 0, (int) (2 * scale), 0);
+                    lineNumberView.setLayoutParams(changesLayoutParams);
+                    routeChanges.addView(lineNumberView);
+                }
             }
 
             if (transportCount > currentTransportCount) {
