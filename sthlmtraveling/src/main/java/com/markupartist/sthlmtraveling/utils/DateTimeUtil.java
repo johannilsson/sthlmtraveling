@@ -57,6 +57,26 @@ public class DateTimeUtil {
     }
 
     /**
+     * Constructs a Date from the provided date and time.
+     *
+     * @param dateString In the yyyy-MM-dd format
+     * @param timeString In the HH:mm format
+     * @return A Date or null if failed to process the provided strings.
+     */
+    public static Date fromDateTime(final String dateString, final String timeString) {
+        String dateTime = String.format("%s %s", dateString, timeString);
+        Date date = null;
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.US);
+        try {
+            date = simpleDateFormat.parse(dateTime);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return date;
+    }
+
+
+    /**
      * Return given duration in a human-friendly format. For example, "4
      * minutes" or "1 second". Returns only largest meaningful unit of time,
      * from seconds up to hours.

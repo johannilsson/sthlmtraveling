@@ -28,6 +28,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.util.Pair;
 import android.support.v7.app.ActionBar;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -315,7 +316,7 @@ public class RouteDetailActivity extends BaseListActivity {
 //        arrivalTimeView.setVisibility(View.GONE);
 
         TextView departureTimeView = (TextView) convertView.findViewById(R.id.trip_departure_time);
-        departureTimeView.setText(lastSubTrip.arrivalTime);
+        departureTimeView.setText(DateFormat.getTimeFormat(this).format(lastSubTrip.getArrival()));
 
         convertView.findViewById(R.id.trip_intermediate_stops_layout).setVisibility(View.GONE);
 
@@ -443,7 +444,7 @@ public class RouteDetailActivity extends BaseListActivity {
                 descView.setTextSize(12);
                 descView.setText(getLocationName(previousSubTrip.destination));
                 TextView arrivalView = (TextView) convertView.findViewById(R.id.trip_intermediate_arrival_time);
-                arrivalView.setText(previousSubTrip.arrivalTime);
+                arrivalView.setText(DateFormat.getTimeFormat(getContext()).format(previousSubTrip.getArrival()));
             } else {
                 convertView.findViewById(R.id.trip_layout_intermediate_stop).setVisibility(View.GONE);
                 convertView.findViewById(R.id.trip_line_segment_start).setVisibility(View.VISIBLE);
@@ -479,7 +480,7 @@ public class RouteDetailActivity extends BaseListActivity {
             }
             */
             TextView departureTimeView = (TextView) convertView.findViewById(R.id.trip_departure_time);
-            departureTimeView.setText(subTrip.departureTime);
+            departureTimeView.setText(DateFormat.getTimeFormat(getContext()).format(subTrip.getDeparture()));
 
             // Add description data
             ViewStub descriptionStub = (ViewStub) convertView.findViewById(R.id.trip_description_stub);
@@ -559,7 +560,7 @@ public class RouteDetailActivity extends BaseListActivity {
             descView.setTextSize(12);
             descView.setText(stop.location.name);
             TextView arrivalView = (TextView) view.findViewById(R.id.trip_intermediate_arrival_time);
-            arrivalView.setText(stop.arrivalTime);
+            arrivalView.setText(DateFormat.getTimeFormat(getContext()).format(stop.arrival()));
             return view;
         }
 

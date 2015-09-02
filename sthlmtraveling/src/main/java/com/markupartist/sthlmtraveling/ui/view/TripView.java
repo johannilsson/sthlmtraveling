@@ -76,11 +76,18 @@ public class TripView extends LinearLayout {
                 getResources().getDimensionPixelSize(R.dimen.list_vertical_padding));
 
 
+        LinearLayout timeStartEndLayout = new LinearLayout(getContext());
         TextView timeStartEndText = new TextView(getContext());
         timeStartEndText.setText(trip.toTimeDisplay(getContext()));
         timeStartEndText.setTextColor(0xFF444444);
         timeStartEndText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
         ViewCompat.setPaddingRelative(timeStartEndText, 0, 0, 0, (int) (2 * scale));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            if (RtlUtils.isRtl(Locale.getDefault())) {
+                timeStartEndText.setTextDirection(View.TEXT_DIRECTION_RTL);
+            }
+        }
+        timeStartEndLayout.addView(timeStartEndText);
 
         LinearLayout startAndEndPointLayout = new LinearLayout(getContext());
         TextView startAndEndPoint = new TextView(getContext());
@@ -165,7 +172,6 @@ public class TripView extends LinearLayout {
             timeLayout.addView(warning);
         }
 
-
         View divider = new View(getContext());
         ViewGroup.LayoutParams dividerParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 1);
         divider.setLayoutParams(dividerParams);
@@ -178,7 +184,7 @@ public class TripView extends LinearLayout {
         routeChanges.setLayoutParams(params);
 
         this.addView(startAndEndPointLayout);
-        this.addView(timeStartEndText);
+        this.addView(timeStartEndLayout);
         if (mShowDivider) {
             this.addView(divider);
         }

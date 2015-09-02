@@ -699,6 +699,7 @@ public class Planner {
         public String   arrivalDate;
         public String   arrivalTime;
         public Location location;
+        private Date arrivalDateTime;
 
         public IntermediateStop(Parcel parcel) {
             arrivalDate = parcel.readString();
@@ -730,6 +731,13 @@ public class Planner {
             return is;
         }
 
+        public Date arrival() {
+            if (arrivalDateTime == null) {
+                arrivalDateTime = DateTimeUtil.fromDateTime(arrivalDate, arrivalTime);
+            }
+            return arrivalDateTime;
+        }
+
         @Override
         public String toString() {
             return "IntermediateStop [arrivalDate=" + arrivalDate
@@ -746,6 +754,7 @@ public class Planner {
                 return new IntermediateStop[size];
             }
         };
+
     }
 
     public static class SubTrip implements Parcelable {
