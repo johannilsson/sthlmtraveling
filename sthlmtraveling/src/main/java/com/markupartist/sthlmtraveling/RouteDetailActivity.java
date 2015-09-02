@@ -116,7 +116,7 @@ public class RouteDetailActivity extends BaseListActivity {
         }
 
         TextView timeView = (TextView) headerView.findViewById(R.id.route_date_time);
-        timeView.setText(getString(R.string.time_to, mTrip.getDurationText(), mTrip.destination.getCleanName()));
+        timeView.setText(getString(R.string.time_to, mTrip.getDurationText(getResources()), mTrip.destination.getCleanName()));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
             timeView.setTextDirection(View.TEXT_DIRECTION_ANY_RTL);
         }

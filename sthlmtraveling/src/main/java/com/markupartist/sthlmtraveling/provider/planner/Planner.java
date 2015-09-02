@@ -17,6 +17,7 @@
 package com.markupartist.sthlmtraveling.provider.planner;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Parcel;
@@ -517,6 +518,8 @@ public class Planner {
         public boolean  rtuMessageExist;
         public boolean  remarksMessageExist;
         public ArrayList<SubTrip> subTrips = new ArrayList<SubTrip>();
+        private Date departureDateTime;
+        private Date arrivalDateTime;
 
         public Trip2() {
         }
@@ -637,28 +640,45 @@ public class Planner {
                     '}';
         }
 
-        public String toText() {
+        public Date departure() {
+            if (departureDateTime == null) {
+                departureDateTime = DateTimeUtil.fromSlDateTime(departureDate, departureTime);
+            }
+            return departureDateTime;
+        }
+
+        public Date arrival() {
+            if (arrivalDateTime == null) {
+                arrivalDateTime = DateTimeUtil.fromSlDateTime(arrivalDate, arrivalTime);
+            }
+            return arrivalDateTime;
+        }
+
+        public String toTimeDisplay(Context context) {
+            DateFormat format = android.text.format.DateFormat.getTimeFormat(context);
+            return context.getResources().getString(R.string.trip_time_origin_destination,
+                    format.format(departure()), format.format(arrival()));
+        }
+
+        public String getDurationText(Resources resources) {
             String durationInMinutes = duration;
             try {
-                Date tripDate = DURATION_FORMAT.parse(duration);
+                DateFormat df = new SimpleDateFormat("H:mm", Locale.US);
+                Date tripDate = df.parse(duration);
                 if (tripDate.getHours() == 0) {
                     int start = duration.indexOf(":") + 1;
                     if (duration.substring(start).startsWith("0")) {
                         start++;
                     }
-                    durationInMinutes = duration.substring(start) + " min";
+                    int minutes = Integer.parseInt(duration.substring(start));
+                    durationInMinutes = resources.getQuantityString(R.plurals.duration_minutes, minutes, minutes);
                 }
             } catch (ParseException e) {
                 Log.e(TAG, "Error parsing duration, " + e.getMessage());
             }
-
-            /*int end = departureDate.lastIndexOf(".");
-            String departureDateString =
-                departureDate.substring(0, end).replace(".", "/");*/
-
-            return String.format("%s — %s (%s)",
-                    departureTime, arrivalTime, durationInMinutes);
+            return durationInMinutes;
         }
+
 
         public static final Creator<Trip2> CREATOR = new Creator<Trip2>() {
             public Trip2 createFromParcel(Parcel parcel) {
@@ -669,24 +689,6 @@ public class Planner {
                 return new Trip2[size];
             }
         };
-
-        public String getDurationText() {
-            String durationInMinutes = duration;
-            try {
-                DateFormat df = new SimpleDateFormat("H:mm", Locale.US);
-                Date tripDate = df.parse(duration);
-                if (tripDate.getHours() == 0) {
-                    int start = duration.indexOf(":") + 1;
-                    if (duration.substring(start).startsWith("0")) {
-                        start++;
-                    }
-                    durationInMinutes = duration.substring(start) + " min";
-                }
-            } catch (ParseException e) {
-                Log.e(TAG, "Error parsing duration, " + e.getMessage());
-            }
-            return durationInMinutes;
-        }
     }
 
     /**

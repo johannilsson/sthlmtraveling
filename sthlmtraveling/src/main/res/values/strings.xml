@@ -138,7 +138,7 @@
     <!-- Phrase describing a time duration using minutes [CHAR LIMIT=16] -->
     <plurals name="duration_minutes">
         <item quantity="one">1 minute</item>
-        <item quantity="other"><xliff:g id="count">%d</xliff:g> minutes</item>
+        <item quantity="other"><xliff:g id="count">%d</xliff:g> min</item>
     </plurals>
     <!-- Phrase describing a time duration using hours [CHAR LIMIT=16] -->
     <plurals name="duration_hours">
@@ -159,6 +159,10 @@
         <item quantity="other"><xliff:g id="count">%d</xliff:g> hr</item>
     </plurals>
     <string name="duration_short_hours_minutes" formatted="false">%s hr %s min</string>
+
+    <string name="trip_time_origin_destination">
+        <xliff:g id="origin">%1$s</xliff:g> – <xliff:g id="destination">%2$s</xliff:g>
+    </string>
 
     <!-- Planner error message -->
     <string name="planner_error_title">The search failed</string>

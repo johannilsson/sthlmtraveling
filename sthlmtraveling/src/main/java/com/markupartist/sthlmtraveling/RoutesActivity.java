@@ -582,7 +582,7 @@ public class RoutesActivity extends BaseListActivity implements
 
     private String buildDateTimeString() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-            String pattern = android.text.format.DateFormat.getBestDateTimePattern(Locale.getDefault(), "MMMMdd HHmm");
+            String pattern = android.text.format.DateFormat.getBestDateTimePattern(Locale.getDefault(), "MMMMd HHmm");
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern, Locale.getDefault());
             return simpleDateFormat.format(mJourneyQuery.time);
         } else {

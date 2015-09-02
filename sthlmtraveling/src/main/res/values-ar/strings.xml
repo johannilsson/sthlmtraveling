@@ -153,10 +153,10 @@
     <plurals name="duration_minutes">
         <item quantity="one">1 دقيقة</item>
         <item quantity="other"><xliff:g id="count">%d</xliff:g> دقائق</item>
-        <item quantity="few"></item>
-        <item quantity="many"></item>
-        <item quantity="two"></item>
-        <item quantity="zero"></item>
+        <item quantity="few"><xliff:g id="count">%d</xliff:g> دقائق</item>
+        <item quantity="many"><xliff:g id="count">%d</xliff:g> دقائق</item>
+        <item quantity="two"><xliff:g id="count">%d</xliff:g> دقائق</item>
+        <item quantity="zero"><xliff:g id="count">%d</xliff:g> دقائق</item>
     </plurals>
     <!-- Phrase describing a time duration using hours [CHAR LIMIT=16] -->
     <plurals name="duration_hours">
@@ -167,6 +167,11 @@
         <item quantity="two"></item>
         <item quantity="zero"></item>
     </plurals>
+
+    <string name="trip_time_origin_destination">
+         <xliff:g id="destination">%2$s</xliff:g> – <xliff:g id="origin">%1$s</xliff:g>
+    </string>
+
     <!-- Planner error message -->
     <string name="planner_error_title">فشل البحث</string>
     <!-- Planner error message -->

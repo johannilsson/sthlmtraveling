@@ -131,7 +131,7 @@
     </plurals>
     <!-- Phrase describing a time duration using minutes [CHAR LIMIT=16] -->
     <plurals name="duration_minutes">
-        <item quantity="one">1 minuto</item>
+        <item quantity="one">1 min</item>
         <item quantity="other"><xliff:g id="COUNT">%d</xliff:g> minutos</item>
     </plurals>
     <!-- Phrase describing a time duration using hours [CHAR LIMIT=16] -->
