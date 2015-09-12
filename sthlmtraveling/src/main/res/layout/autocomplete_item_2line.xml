@@ -18,10 +18,11 @@
 -->
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
+    xmlns:tool="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="3dip"
+    android:padding="4dp"
     style="?android:attr/dropDownItemStyle"
     >
     <!-- android:textAppearance="?android:attr/textAppearanceLarge" -->
@@ -30,10 +31,11 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="?android:attr/textColorPrimary"
         android:singleLine="true"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ellipsize="marquee"
-        android:text="Telefonplan (Stockholm)"
+        android:textDirection="locale"
+        tool:text="Telefonplan (Stockholm)"
         />
 
     <TextView
@@ -42,5 +44,6 @@
         android:textColor="#999999"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        tool:text="@string/stop_label"
         />
 </LinearLayout>
