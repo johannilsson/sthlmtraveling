@@ -20,6 +20,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Build;
+import android.support.v4.text.BidiFormatter;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 import android.util.TypedValue;
@@ -91,7 +92,11 @@ public class TripView extends LinearLayout {
 
         LinearLayout startAndEndPointLayout = new LinearLayout(getContext());
         TextView startAndEndPoint = new TextView(getContext());
-        startAndEndPoint.setText(getResources().getString(R.string.trip_time_origin_destination, trip.origin.name, trip.destination.name));
+        BidiFormatter bidiFormatter = BidiFormatter.getInstance(RtlUtils.isRtl(Locale.getDefault()));
+        startAndEndPoint.setText(String.format("%s – %s",
+                bidiFormatter.unicodeWrap(trip.origin.name),
+                bidiFormatter.unicodeWrap(trip.destination.name)));
+
         startAndEndPoint.setTextColor(0xFF444444); // Dark gray
         startAndEndPoint.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {

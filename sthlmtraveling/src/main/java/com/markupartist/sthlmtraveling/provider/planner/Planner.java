@@ -22,12 +22,14 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.v4.text.BidiFormatter;
 import android.text.TextUtils;
 import android.util.Log;
 
 import com.markupartist.sthlmtraveling.R;
 import com.markupartist.sthlmtraveling.utils.DateTimeUtil;
 import com.markupartist.sthlmtraveling.utils.HttpHelper;
+import com.markupartist.sthlmtraveling.utils.RtlUtils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -656,8 +658,10 @@ public class Planner {
 
         public String toTimeDisplay(Context context) {
             DateFormat format = android.text.format.DateFormat.getTimeFormat(context);
-            return context.getResources().getString(R.string.trip_time_origin_destination,
-                    format.format(departure()), format.format(arrival()));
+            BidiFormatter bidiFormatter = BidiFormatter.getInstance(RtlUtils.isRtl(Locale.getDefault()));
+            return String.format("%s – %s",
+                    bidiFormatter.unicodeWrap(format.format(departure())),
+                    bidiFormatter.unicodeWrap(format.format(arrival())));
         }
 
         public String getDurationText(Resources resources) {
