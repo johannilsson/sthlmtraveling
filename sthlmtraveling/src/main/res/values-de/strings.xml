@@ -129,18 +129,18 @@
     <string name="time_to" formatted="false">%s nach %s</string>
     <!-- Phrase describing a time duration using seconds [CHAR LIMIT=16] -->
     <plurals name="duration_seconds">
-        <item quantity="one">Sekunde</item>
-        <item quantity="other">Sekunden</item>
+        <item quantity="one">1 Sekunde</item>
+        <item quantity="other"><xliff:g id="count">%d</xliff:g> Sekunden</item>
     </plurals>
     <!-- Phrase describing a time duration using minutes [CHAR LIMIT=16] -->
     <plurals name="duration_minutes">
-        <item quantity="one">Minute</item>
-        <item quantity="other">Min</item>
+        <item quantity="one">1 Minute</item>
+        <item quantity="other"><xliff:g id="count">%d</xliff:g> Min</item>
     </plurals>
     <!-- Phrase describing a time duration using hours [CHAR LIMIT=16] -->
     <plurals name="duration_hours">
-        <item quantity="one">Stunde</item>
-        <item quantity="other">Stunden</item>
+        <item quantity="one">1 Stunde</item>
+        <item quantity="other"><xliff:g id="count">%d</xliff:g> Stunden</item>
     </plurals>
     <!-- Planner error message -->
     <string name="planner_error_title">Die Suche ist mißglückt.</string>
