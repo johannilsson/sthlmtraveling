@@ -118,7 +118,7 @@
     <string name="trip_description_walk" formatted="false">Walk</string>
     <string name="trip_description_normal" formatted="false">Take <xliff:g id="transport">%1$s</xliff:g> towards <xliff:g id="towards">%2$s</xliff:g>.</string>
     <string name="trip_map_description_walk" formatted="false"><xliff:g id="time">%1$s</xliff:g> Walk to <xliff:g id="stop">%2$s</xliff:g></string>
-    <string name="trip_map_description_normal" formatted="false"><xliff:g id="time">%1$s</xliff:g> <xliff:g id="transport">%2$s</xliff:g> towards <xliff:g id="towards">%1$s</xliff:g>.</string>
+    <string name="trip_map_description_normal" formatted="false"><xliff:g id="time">%1$s</xliff:g> <xliff:g id="transport">%2$s</xliff:g> towards <xliff:g id="towards">%3$s</xliff:g>.</string>
     <string name="show_all">Show all</string>
     <string name="direction">Direction</string>
     <string name="no_intermediate_stops">No intermediate stops were found.</string>
