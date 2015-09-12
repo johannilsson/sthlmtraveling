@@ -22,47 +22,4 @@
         <item>Departure time</item>
         <item>Arrival time</item>
     </string-array>
-
-    <string-array name="entries_language_preference" translatable="false">
-        <item>System Locale</item>
-        <item>Svenska</item>
-        <item>English</item>
-        <item>العربية</item>
-        <item>Deutsch</item>
-        <item>Español</item>
-        <item>Français</item>
-        <item>Italiano</item>
-        <item>Nederlands</item>
-        <item>简体中文</item>
-        <item>繁體中文</item>
-    </string-array>
-    <string-array name="entryvalues_language_preference" translatable="false">
-        <item>system</item>
-        <item>sv</item>
-        <item>en</item>
-        <item>ar</item>
-        <item>de</item>
-        <item>es</item>
-        <item>fr</item>
-        <item>it</item>
-        <item>nl</item>
-        <item>zh_CN</item>
-        <item>zh_TW</item>
-    </string-array>
-
-    <!-- Deviation update preference -->
-    <string-array name="entries_deviations_preference">
-        <item>10 min</item>
-        <item>15 min</item>
-        <item>30 min</item>
-        <item>45 min</item>
-        <item>1 h</item>
-    </string-array>
-    <string-array name="entryvalues_deviations_preference" translatable="false">
-        <item>600000</item>
-        <item>900000</item>
-        <item>1800000</item>
-        <item>2700000</item>
-        <item>3600000</item>
-    </string-array>
 </resources>
