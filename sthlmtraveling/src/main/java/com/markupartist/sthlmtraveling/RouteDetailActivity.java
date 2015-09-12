@@ -26,6 +26,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.text.BidiFormatter;
 import android.support.v4.util.Pair;
 import android.support.v7.app.ActionBar;
 import android.text.format.DateFormat;
@@ -65,6 +66,7 @@ import org.json.JSONException;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Locale;
 
 public class RouteDetailActivity extends BaseListActivity {
     public static final String TAG = "RouteDetailActivity";
@@ -117,7 +119,12 @@ public class RouteDetailActivity extends BaseListActivity {
         }
 
         TextView timeView = (TextView) headerView.findViewById(R.id.route_date_time);
-        timeView.setText(getString(R.string.time_to, mTrip.getDurationText(getResources()), mTrip.destination.getCleanName()));
+
+        BidiFormatter bidiFormatter = BidiFormatter.getInstance(Locale.getDefault());
+        String timeStr = getString(R.string.time_to,
+                bidiFormatter.unicodeWrap(mTrip.getDurationText(getResources())),
+                bidiFormatter.unicodeWrap((String) mTrip.destination.getCleanName()));
+        timeView.setText(timeStr);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
             timeView.setTextDirection(View.TEXT_DIRECTION_ANY_RTL);
         }
