@@ -21,11 +21,11 @@ import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
 
+// Based on http://stackoverflow.com/questions/18996183/identifyng-rtl-language-in-android
 public class RtlUtils {
 
     private static final Set<String> RTL_LANGUAGES;
 
-    // Based on http://stackoverflow.com/questions/18996183/identifyng-rtl-language-in-android
     static {
         Set<String> lang = new HashSet<String>();
         lang.add("ar"); // Arabic
