@@ -85,7 +85,7 @@ public class AutoCompleteStopAdapter extends ArrayAdapter<String> implements Fil
     @Override
     public Filter getFilter() {
         Filter nameFilter = new Filter() {
-            private boolean mWasSuccess = true; // We are optimistic ones...
+            private boolean mWasSuccess = true; // We are optimistic...
 
             @Override
             protected FilterResults performFiltering(CharSequence constraint) {
@@ -94,13 +94,9 @@ public class AutoCompleteStopAdapter extends ArrayAdapter<String> implements Fil
 
                 FilterResults filterResults = new FilterResults();
 
-                // TODO: Remove hard coded strings here.
                 if (constraint != null
-                        && !constraint.equals("My location")
-                        && !constraint.equals("Min position")
-                        && !constraint.equals("Välj en plats på kartan")
-                        && !constraint.equals("Point on map")) {
-
+                        && !constraint.equals(getContext().getString(R.string.my_location))
+                        && !constraint.equals(getContext().getString(R.string.point_on_map))) {
                     List<Site> values = new ArrayList<Site>();
 
                     ArrayList<Site> list = null;
@@ -193,8 +189,8 @@ public class AutoCompleteStopAdapter extends ArrayAdapter<String> implements Fil
         sFilterListener = listener;
     }
 
-    public static interface FilterListener {
-        public void onPerformFiltering();
-        public void onPublishFiltering();
+    public interface FilterListener {
+        void onPerformFiltering();
+        void onPublishFiltering();
     }
 }
