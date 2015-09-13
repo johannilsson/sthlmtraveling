@@ -16,15 +16,18 @@
 
 package com.markupartist.sthlmtraveling;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,6 +35,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
@@ -42,6 +46,7 @@ import com.markupartist.sthlmtraveling.provider.HistoryDbAdapter;
 import com.markupartist.sthlmtraveling.provider.planner.Planner;
 import com.markupartist.sthlmtraveling.provider.site.Site;
 import com.markupartist.sthlmtraveling.ui.view.DelayAutoCompleteTextView;
+import com.markupartist.sthlmtraveling.utils.RtlUtils;
 import com.markupartist.sthlmtraveling.utils.ViewHelper;
 
 public class SearchDeparturesFragment extends BaseListFragment implements AdapterView.OnItemClickListener {
@@ -108,7 +113,7 @@ public class SearchDeparturesFragment extends BaseListFragment implements Adapte
                                           KeyEvent event) {
                 boolean isEnterKey = (null != event && event.getKeyCode() == KeyEvent.KEYCODE_ENTER);
                 if (actionId == EditorInfo.IME_ACTION_SEARCH
-                        || true == isEnterKey) {
+                        || isEnterKey) {
                     dispatchSearch();
                     return true;
                 }
@@ -120,11 +125,22 @@ public class SearchDeparturesFragment extends BaseListFragment implements Adapte
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
 
+            @SuppressLint("RtlHardcoded")
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (TextUtils.isEmpty(s)) {
                     clearButton.setVisibility(View.INVISIBLE);
                 } else {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+                        FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) clearButton.getLayoutParams();
+                        if (RtlUtils.isRtl(s)) {
+                            layoutParams.gravity = Gravity.LEFT;
+                        } else {
+                            layoutParams.gravity = Gravity.RIGHT;
+                        }
+                        clearButton.setLayoutParams(layoutParams);
+                    }
+
                     clearButton.setVisibility(View.VISIBLE);
                 }
             }
