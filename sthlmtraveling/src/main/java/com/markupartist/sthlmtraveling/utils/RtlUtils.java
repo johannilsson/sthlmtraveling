@@ -44,4 +44,17 @@ public class RtlUtils {
     public static boolean isRtl(Locale locale) {
         return locale != null && RTL_LANGUAGES.contains(locale.getLanguage());
     }
+
+    public static boolean isRtl(CharSequence s) {
+        if (s == null || s.length() == 0) {
+            return false;
+        }
+        switch(Character.getDirectionality(s.charAt(0))) {
+            case Character.DIRECTIONALITY_RIGHT_TO_LEFT:
+            case Character.DIRECTIONALITY_RIGHT_TO_LEFT_ARABIC:
+                return true;
+            default:
+                return false;
+        }
+    }
 }
