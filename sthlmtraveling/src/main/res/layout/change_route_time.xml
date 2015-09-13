@@ -115,15 +115,15 @@
             android:id="@+id/planner_transport_wax"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="Waxholmsbolagets båttrafik"
+            android:text="@string/boats"
             android:checked="false"/>
 
-        <CheckBox
-            android:id="@+id/planner_transport_nar"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="Närtrafiken"
-            android:checked="false"/>
+        <!--<CheckBox-->
+            <!--android:id="@+id/planner_transport_nar"-->
+            <!--android:layout_width="fill_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="Närtrafiken"-->
+            <!--android:checked="false"/>-->
 
         <TextView
             style="?android:textAppearanceMedium"
