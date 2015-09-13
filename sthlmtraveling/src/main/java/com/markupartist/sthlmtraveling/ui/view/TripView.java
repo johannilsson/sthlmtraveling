@@ -120,7 +120,11 @@ public class TripView extends LinearLayout {
         int transportCount = trip.subTrips.size();
         for (Planner.SubTrip subTrip : trip.subTrips) {
             ImageView changeImageView = new ImageView(getContext());
-            changeImageView.setImageResource(subTrip.transport.getImageResource());
+            int transportDrawableRes = subTrip.transport.getImageResource();
+            changeImageView.setImageResource(transportDrawableRes);
+            if (transportDrawableRes == R.drawable.transport_walk && RtlUtils.isRtl(Locale.getDefault())) {
+                ViewCompat.setScaleX(changeImageView, -1f);
+            }
             ViewCompat.setPaddingRelative(changeImageView, 0, 0, 0, 0);
             changeImageView.setLayoutParams(changesLayoutParams);
             routeChanges.addView(changeImageView);
