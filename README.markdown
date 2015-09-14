@@ -26,6 +26,8 @@ Changelog
 * NEXT
   * Add Arabic translation by Simon Benyo
   * Add Italian translation by Sergio Cucinella
+  * Update German translation by Anja Mesenholl and Holtzbahn
+  * Update Dutch translations by Bastiaan Franssen
   * Fix crash when changing the date of departure / arrival on some devices
   * Update third party libraries (Google Play Services, OkHttpClient & Katalysator)
 * 2.12.0 (2015-05-10)
