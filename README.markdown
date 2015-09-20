@@ -23,7 +23,7 @@ fork the app. I will do my best help you out if you have any problems. The docum
 
 Changelog
 ---------
-* 2.13.0 (2015-11-20)
+* 2.13.0 (2015-09-20)
   * Add Arabic translation by Simon Benyo
   * Add Italian translation by Sergio Cucinella
   * Update German translation by Anja Mesenholl and Holtzbahn
