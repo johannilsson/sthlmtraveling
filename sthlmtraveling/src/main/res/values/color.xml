@@ -24,6 +24,11 @@
 
     <color name="primary_light_alpha">#CCBBDEFB</color>
 
+    <!--<color name="primary">#3d3a51</color>-->
+    <!--<color name="primary_light">#857eac</color>-->
+    <!--<color name="primary_dark">#383549</color>-->
+    <!--<color name="primary_light_alpha">#337c7c7c</color>-->
+
     <color name="accent">#0b9444</color>
     <color name="accent_light">#69F0AE</color>
     <color name="accent_dark">#00C853</color>

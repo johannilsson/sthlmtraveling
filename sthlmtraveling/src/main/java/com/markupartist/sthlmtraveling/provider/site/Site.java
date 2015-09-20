@@ -226,6 +226,12 @@ public class Site implements Parcelable {
         return mLocation != null;
     }
 
+    public void setLocation(double lat, double lng) {
+        mLocation = new Location("sthlmtraveling");
+        mLocation.setLatitude(lat);
+        mLocation.setLongitude(lng);
+    }
+
     public void setLocation(int lat, int lng) {
         if (lat == 0 || lng == 0) {
             return;

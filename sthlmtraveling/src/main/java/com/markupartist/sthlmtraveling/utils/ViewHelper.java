@@ -7,7 +7,11 @@ import android.content.res.Resources;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.support.annotation.ColorInt;
+import android.support.annotation.NonNull;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.markupartist.sthlmtraveling.R;
 
@@ -58,10 +62,20 @@ public class ViewHelper {
         return tintIcon(d, res.getColor(R.color.icon_default));
     }
 
-    public static Drawable tintIcon(Drawable d, int color) {
+    public static Drawable tintIcon(Drawable d, @ColorInt int color) {
         Drawable m = d.mutate();
         m.setColorFilter(color, PorterDuff.Mode.SRC_IN);
         m.setAlpha(255);
         return d;
+    }
+
+    public static void tint(@NonNull ImageView v, @ColorInt int color) {
+        v.setImageDrawable(tintIcon(v.getDrawable(), color));
+    }
+
+    public static void setText(@NonNull TextView v, @NonNull CharSequence t) {
+        if (!t.equals(v.getText())) {
+            v.setText(t);
+        }
     }
 }

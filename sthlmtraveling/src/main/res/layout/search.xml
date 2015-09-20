@@ -15,207 +15,200 @@
 ** limitations under the License.
 */
 -->
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:tools="http://schemas.android.com/tools"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content">
+<RelativeLayout
+    style="@style/Container"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="match_parent"
+    android:background="@color/primary"
+    android:orientation="vertical"
+    android:paddingBottom="0dp"
+    android:paddingLeft="0dp"
+    android:paddingRight="0dp"
+    android:paddingTop="0dp"
+    >
 
     <LinearLayout
-        style="@style/Container"
-        android:paddingTop="0dp"
-        android:paddingBottom="0dp"
-        android:paddingLeft="0dp"
-        android:paddingRight="0dp"
+        android:id="@+id/start_end_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:background="@color/primary"
+        android:layout_weight="1"
         >
-        <!-- Start from -->
-        <LinearLayout
+
+        <TextView
+            android:id="@+id/from"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            >
-
-            <com.markupartist.sthlmtraveling.ui.view.DelayAutoCompleteTextView
-                style="@style/AutoComplete"
-                android:id="@+id/from"
-                android:hint="@string/from"
-                android:gravity="center_vertical"
-                android:paddingLeft="@dimen/list_horizontal_padding"
-                android:paddingRight="@dimen/list_horizontal_padding"
-                android:textColorHint="#88ffffff"
-                android:textColorHighlight="#33ffffff"
-                android:textColor="?android:attr/textColorPrimaryInverse"
-                />
-
-            <ImageButton
-                android:id="@+id/from_menu"
-                style="?attr/borderlessButtonStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="fill_parent"
-                android:layout_margin="0dp"
-                android:layout_marginLeft="0dp"
-                android:layout_marginRight="0dp"
-                android:minWidth="20dip"
-                android:paddingLeft="@dimen/list_horizontal_padding"
-                android:paddingRight="@dimen/list_horizontal_padding"
-                android:src="@drawable/ic_more_vert_white_18dp"/>
-
-        </LinearLayout>
-        <!-- End from -->
+            android:layout_height="?attr/listPreferredItemHeight"
+            android:gravity="center_vertical"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:hint="@string/from"
+            android:paddingBottom="16dp"
+            android:paddingLeft="@dimen/list_horizontal_padding"
+            android:paddingRight="@dimen/list_horizontal_padding"
+            android:paddingTop="16dp"
+            android:textColor="?android:attr/textColorPrimaryInverse"
+            android:textColorHighlight="#33ffffff"
+            android:textColorHint="#88ffffff"
+            android:textSize="18sp"
+            />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1px"
-            android:background="@color/primary_light_alpha"
             android:layout_marginLeft="@dimen/list_horizontal_padding"
-            android:layout_marginRight="@dimen/list_horizontal_padding"
+            android:layout_marginStart="@dimen/list_horizontal_padding"
+            android:background="@color/primary_light_alpha"
             />
 
-        <!-- Start to -->
-        <LinearLayout
+        <TextView
+            android:id="@+id/to"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <com.markupartist.sthlmtraveling.ui.view.DelayAutoCompleteTextView
-                style="@style/AutoComplete"
-                android:id="@+id/to"
-                android:hint="@string/to"
-                android:gravity="center_vertical"
-                android:textColorHint="#88ffffff"
-                android:textColorHighlight="#33ffffff"
-                android:textColor="?android:attr/textColorPrimaryInverse"
-                android:paddingLeft="@dimen/list_horizontal_padding"
-                android:paddingRight="@dimen/list_horizontal_padding"
-                />
-
-            <ImageButton
-                android:id="@+id/to_menu"
-                style="?attr/borderlessButtonStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="fill_parent"
-                android:layout_margin="0dp"
-                android:layout_marginLeft="0dp"
-                android:layout_marginRight="0dp"
-                android:minWidth="20dip"
-                android:paddingLeft="@dimen/list_horizontal_padding"
-                android:paddingRight="@dimen/list_horizontal_padding"
-                android:src="@drawable/ic_more_vert_white_18dp"/>
-        </LinearLayout>
-        <!-- End to -->
-
-        <RelativeLayout
-            android:id="@+id/options_active_container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:minHeight="48dp"
-            android:background="@color/primary"
-            android:visibility="visible"
-            tools:visibility="visible"
-            >
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1px"
-                android:background="@color/primary_light_alpha"
-                android:layout_marginLeft="@dimen/list_horizontal_padding"
-                android:layout_marginRight="@dimen/list_horizontal_padding"
-                />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_centerVertical="true"
-                android:paddingTop="@dimen/list_vertical_padding"
-                android:paddingBottom="@dimen/list_vertical_padding"
-                android:layout_marginRight="48dp"
-                android:layout_marginEnd="48dp"
-                >
-
-                <TextView
-                    android:id="@+id/options_summary"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="?android:attr/textColorSecondaryInverse"
-                    android:paddingLeft="@dimen/list_horizontal_padding"
-                    android:paddingRight="@dimen/list_horizontal_padding"
-                    tools:text="Departs at 20.00"
-                    />
-
-                <TextView
-                    android:id="@+id/options_summary_with_options"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="12dp"
-                    android:textColor="@color/primary_light_alpha"
-                    android:paddingLeft="@dimen/list_horizontal_padding"
-                    android:paddingRight="@dimen/list_horizontal_padding"
-                    android:text="@string/route_options_active"
-                    android:visibility="gone"
-                    tools:visibility="visible"
-                    />
-
-            </LinearLayout>
-
-            <ImageButton
-                android:id="@+id/btn_clear_options"
-                style="?attr/borderlessButtonStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:src="@drawable/ic_close"
-                android:padding="@dimen/list_horizontal_padding"
-                android:textSize="14dp"
-                />
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:background="@color/primary_dark">
-
-            <Button
-                android:id="@+id/btn_options"
-                style="?attr/borderlessButtonStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="@string/more_choices_label"
-                android:textColor="@color/primary_light"
-                android:layout_toLeftOf="@+id/action_divider"
-                android:layout_toStartOf="@+id/action_divider"
-                android:paddingLeft="@dimen/list_horizontal_padding"
-                android:paddingRight="@dimen/list_horizontal_padding"
-                android:textSize="14dp"
-                />
-
-            <View
-                android:id="@+id/action_divider"
-                android:layout_toLeftOf="@+id/do_search"
-                android:layout_toStartOf="@+id/do_search"
-                android:layout_width="1px"
-                android:layout_height="match_parent"
-                android:layout_marginTop="@dimen/list_vertical_padding"
-                android:layout_marginBottom="@dimen/list_vertical_padding"
-                android:background="@color/primary_light"
-                />
-
-            <Button
-                android:id="@+id/do_search"
-                style="?attr/borderlessButtonStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="@string/new_search"
-                android:textColor="@color/primary_light"
-                android:paddingLeft="@dimen/list_horizontal_padding"
-                android:paddingRight="@dimen/list_horizontal_padding"
-                android:textSize="14dp"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true"
-                />
-        </RelativeLayout>
+            android:layout_height="?attr/listPreferredItemHeight"
+            android:gravity="center_vertical"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:hint="@string/to"
+            android:paddingBottom="16dp"
+            android:paddingLeft="@dimen/list_horizontal_padding"
+            android:paddingRight="@dimen/list_horizontal_padding"
+            android:paddingTop="16dp"
+            android:textColor="?android:attr/textColorPrimaryInverse"
+            android:textColorHighlight="#33ffffff"
+            android:textColorHint="#88ffffff"
+            android:textSize="18sp"
+            />
 
     </LinearLayout>
 
-</ScrollView>
+    <ImageButton
+        android:id="@+id/reverse_start_end"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:layout_gravity="center_vertical"
+        android:layout_width="?attr/listPreferredItemHeight"
+        android:layout_height="?attr/listPreferredItemHeight"
+        android:padding="@dimen/list_horizontal_padding"
+        android:src="@drawable/ic_action_reverse"
+        />
+    </LinearLayout>
+
+
+    <RelativeLayout
+        android:id="@+id/options_active_container"
+        android:layout_below="@id/start_end_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/primary"
+        android:minHeight="48dp"
+        android:visibility="visible"
+        tools:visibility="visible"
+        >
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:layout_marginLeft="@dimen/list_horizontal_padding"
+            android:layout_marginStart="@dimen/list_horizontal_padding"
+            android:layout_marginRight="?attr/listPreferredItemHeight"
+            android:layout_marginEnd="?attr/listPreferredItemHeight"
+            android:background="@color/primary_light_alpha"
+            />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="?attr/listPreferredItemHeight"
+            android:gravity="center_vertical"
+            android:layout_marginEnd="?attr/listPreferredItemHeight"
+            android:layout_marginRight="?attr/listPreferredItemHeight"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/list_vertical_padding"
+            android:paddingTop="@dimen/list_vertical_padding"
+            >
+
+            <TextView
+                android:id="@+id/options_summary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/list_horizontal_padding"
+                android:paddingRight="@dimen/list_horizontal_padding"
+                android:textColor="?android:attr/textColorSecondaryInverse"
+                tools:text="Departs at 20.00"
+                />
+
+            <TextView
+                android:id="@+id/options_summary_with_options"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/list_horizontal_padding"
+                android:paddingRight="@dimen/list_horizontal_padding"
+                android:text="@string/route_options_active"
+                android:textColor="@color/body_text_2_inverse"
+                android:textSize="12sp"
+                android:visibility="gone"
+                tools:visibility="gone"
+                />
+
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/btn_clear_options"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:layout_width="?attr/listPreferredItemHeight"
+            android:layout_height="?attr/listPreferredItemHeight"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:padding="@dimen/list_horizontal_padding"
+            android:src="@drawable/ic_close"
+            />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_below="@id/options_active_container"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/primary_dark">
+
+        <Button
+            android:id="@+id/btn_options"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_toLeftOf="@+id/action_divider"
+            android:layout_toStartOf="@+id/action_divider"
+            android:paddingLeft="@dimen/list_horizontal_padding"
+            android:paddingRight="@dimen/list_horizontal_padding"
+            android:text="@string/more_choices_label"
+            android:textColor="@color/primary_light"
+            />
+
+        <View
+            android:id="@+id/action_divider"
+            android:layout_width="1px"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="@dimen/list_vertical_padding"
+            android:layout_marginTop="@dimen/list_vertical_padding"
+            android:layout_toLeftOf="@+id/do_search"
+            android:layout_toStartOf="@+id/do_search"
+            android:background="@color/primary_light"
+            />
+
+        <Button
+            android:id="@+id/do_search"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:paddingLeft="@dimen/list_horizontal_padding"
+            android:paddingRight="@dimen/list_horizontal_padding"
+            android:text="@string/new_search"
+            android:textColor="@color/primary_light"
+            />
+    </RelativeLayout>
+
+</RelativeLayout>
