@@ -23,12 +23,12 @@ fork the app. I will do my best help you out if you have any problems. The docum
 
 Changelog
 ---------
-* NEXT
+* 2.13.0 (2015-11-20)
   * Add Arabic translation by Simon Benyo
   * Add Italian translation by Sergio Cucinella
   * Update German translation by Anja Mesenholl and Holtzbahn
   * Update Dutch translations by Bastiaan Franssen
-  * Fix crash when changing the date of departure / arrival on some devices
+  * Fix crash when changing the date of departure / arrival on some Samsung devices
   * Update third party libraries (Google Play Services, OkHttpClient & Katalysator)
 * 2.12.0 (2015-05-10)
   * Fix white text on white background on some HTC devices
