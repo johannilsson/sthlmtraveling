@@ -56,6 +56,7 @@
             android:textColorHighlight="#33ffffff"
             android:textColorHint="#88ffffff"
             android:textSize="18sp"
+            android:singleLine="true"
             />
 
         <View
@@ -81,6 +82,7 @@
             android:textColorHighlight="#33ffffff"
             android:textColorHint="#88ffffff"
             android:textSize="18sp"
+            android:singleLine="true"
             />
 
     </LinearLayout>
