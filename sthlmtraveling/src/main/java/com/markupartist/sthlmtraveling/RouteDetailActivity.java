@@ -327,6 +327,9 @@ public class RouteDetailActivity extends BaseListActivity {
 
         convertView.findViewById(R.id.trip_intermediate_stops_layout).setVisibility(View.GONE);
 
+        // Add attributions if dealing with a Google result.
+
+
         return convertView;
     }
 
@@ -638,8 +641,8 @@ public class RouteDetailActivity extends BaseListActivity {
             mCallback.onResult(result);
         }
 
-        private static interface OnResult {
-            public void onResult(SubTrip subTrip);
+        private interface OnResult {
+            void onResult(SubTrip subTrip);
         }
     }
 }

@@ -65,7 +65,11 @@ public class SiteFilter extends PlaceSearchResultAdapter.PlaceFilter {
 
     @Override
     public void setResultCallback(PlaceItem item, PlaceItemResultCallback resultCallback) {
-        resultCallback.onResult(((SiteResult) item).site);
+        if (item instanceof SiteResult) {
+            resultCallback.onResult(((SiteResult) item).site);
+        } else {
+            resultCallback.onError();
+        }
     }
 
     public static class SiteResult implements PlaceItem {
@@ -76,23 +80,25 @@ public class SiteFilter extends PlaceSearchResultAdapter.PlaceFilter {
         public SiteResult(Site site) {
             this.site = site;
 
-            makeTitleAndSubtitle(site.getName());
+//            makeTitleAndSubtitle(site.getName());
         }
 
         void makeTitleAndSubtitle(String s) {
-            Pair<String, String> titleAndSubtitle = SitesStore.nameAsTitleAndSubtitle(s);
+            Pair<String, String> titleAndSubtitle = SitesStore.nameAsNameAndLocality(s);
             title = titleAndSubtitle.first;
             subtitle = titleAndSubtitle.second;
         }
 
         @Override
         public String getTitle() {
-            return title;
+//            return title;
+            return site.getName();
         }
 
         @Override
         public String getSubtitle() {
-            return subtitle;
+//            return subtitle;
+            return site.getLocality();
         }
     }
 }

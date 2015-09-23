@@ -116,7 +116,6 @@ public class JourneyQuery implements Parcelable {
     }
 
 
-
     public static final Creator<JourneyQuery> CREATOR = new Creator<JourneyQuery>() {
         public JourneyQuery createFromParcel(Parcel parcel) {
             return new JourneyQuery(parcel);
@@ -342,7 +341,9 @@ public class JourneyQuery implements Parcelable {
 
         public static Planner.Location buildLocationFromStop(Site site) {
             Planner.Location location = new Planner.Location();
-            location.id = site.getId();
+            if (site.getSource() == Site.SOURCE_STHLM_TRAVELING && site.getId() != null) {
+                location.id = Integer.parseInt(site.getId());
+            }
             location.name = site.getName();
             if (site.getLocation() != null) {
                 location.latitude =

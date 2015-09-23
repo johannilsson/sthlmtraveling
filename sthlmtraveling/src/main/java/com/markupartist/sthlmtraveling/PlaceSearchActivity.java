@@ -29,7 +29,6 @@ import android.support.annotation.LayoutRes;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.support.v4.util.Pair;
 import android.support.v4.widget.ContentLoadingProgressBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -52,7 +51,6 @@ import android.widget.Toast;
 import com.google.android.gms.common.ConnectionResult;
 import com.markupartist.sthlmtraveling.provider.HistoryDbAdapter;
 import com.markupartist.sthlmtraveling.provider.site.Site;
-import com.markupartist.sthlmtraveling.provider.site.SitesStore;
 import com.markupartist.sthlmtraveling.ui.adapter.GooglePlacesFilter;
 import com.markupartist.sthlmtraveling.ui.adapter.PlaceItem;
 import com.markupartist.sthlmtraveling.ui.adapter.PlaceSearchResultAdapter;
@@ -316,13 +314,7 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements LoaderM
         ArrayList<Site> historyList = new ArrayList<Site>();
         data.moveToFirst();
         for (int i = 0; i < data.getCount(); i++) {
-            Site site = new Site();
-
-            site.setName(data.getString(HistoryDbAdapter.INDEX_NAME));
-            site.setLocation(
-                    data.getInt(HistoryDbAdapter.INDEX_LATITUDE),
-                    data.getInt(HistoryDbAdapter.INDEX_LONGITUDE));
-            site.setId(data.getInt(HistoryDbAdapter.INDEX_SITE_ID));
+            Site site = mHistoryDbAdapter.mapToSite(data);
             historyList.add(site);
             data.moveToNext();
         }
@@ -571,9 +563,11 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements LoaderM
             Site place = mData.get(position);
 
             // TODO: cache this.
-            Pair<String, String> titleAndSubtitle = SitesStore.nameAsTitleAndSubtitle(place.getName());
-            String title = titleAndSubtitle.first;
-            String subtitle = titleAndSubtitle.second;
+//            Pair<String, String> titleAndSubtitle = SitesStore.nameAsNameAndLocality(place.getName());
+//            String title = titleAndSubtitle.first;
+//            String subtitle = titleAndSubtitle.second;
+            String title = place.getName();
+            String subtitle = place.getLocality();
 
             // Use this for adding an astrix for google places results and to show attribution at the end.
 //            title = title + "*";

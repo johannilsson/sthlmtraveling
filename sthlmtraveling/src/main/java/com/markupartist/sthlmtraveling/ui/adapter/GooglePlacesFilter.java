@@ -106,8 +106,13 @@ public class GooglePlacesFilter extends PlaceSearchResultAdapter.PlaceFilter {
 
     @Override
     public void setResultCallback(PlaceItem item, final PlaceItemResultCallback resultCallback) {
-        final GooglePlacesFilter.GooglePlaceResult googlePlaceResult =
-                (GooglePlacesFilter.GooglePlaceResult) item;
+        if (!(item instanceof GooglePlaceResult)) {
+            resultCallback.onError();
+            return;
+        }
+
+        final GooglePlaceResult googlePlaceResult =
+                (GooglePlaceResult) item;
         final String placeId = String.valueOf(googlePlaceResult.placeId);
         PendingResult<PlaceBuffer> placeResult = Places.GeoDataApi
                 .getPlaceById(mGoogleApiClient, placeId);
@@ -130,8 +135,11 @@ public class GooglePlacesFilter extends PlaceSearchResultAdapter.PlaceFilter {
                         Log.e("LOOOOG", "Attribution: " + thirdPartyAttribution.toString());
                     }
                     Site convertedPlace = new Site();
+                    convertedPlace.setId(place.getId());
+                    convertedPlace.setSource(Site.SOURCE_GOOGLE_PLACES);
                     convertedPlace.setLocation(place.getLatLng().latitude, place.getLatLng().longitude);
                     convertedPlace.setName((String) place.getName());
+                    convertedPlace.setLocality((String) place.getAddress());
 
                     places.release();
                     resultCallback.onResult(convertedPlace);

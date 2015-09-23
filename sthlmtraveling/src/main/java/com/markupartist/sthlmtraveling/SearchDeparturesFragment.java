@@ -199,9 +199,7 @@ public class SearchDeparturesFragment extends BaseListFragment implements Adapte
                 .getCursor();
         getActivity().startManagingCursor(historyCursor);
 
-        Site site = new Site();
-        site.setName(historyCursor.getString(HistoryDbAdapter.INDEX_NAME));
-        site.setId(historyCursor.getInt(HistoryDbAdapter.INDEX_SITE_ID));
+        Site site = mHistoryDbAdapter.mapToSite(historyCursor);
 
         getActivity().stopManagingCursor(historyCursor);
 

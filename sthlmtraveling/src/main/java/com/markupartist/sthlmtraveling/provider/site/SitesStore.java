@@ -113,8 +113,12 @@ public class SitesStore {
                         JSONObject jsonStop = jsonSitesArray.getJSONObject(i);
 
                         Site site = new Site();
-                        site.setName(jsonStop.getString("name"));
+                        Pair<String, String> nameAndLocality =
+                                nameAsNameAndLocality(jsonStop.getString("name"));
+                        site.setName(nameAndLocality.first);
+                        site.setLocality(nameAndLocality.second);
                         site.setId(jsonStop.getInt("site_id"));
+                        site.setSource(Site.SOURCE_STHLM_TRAVELING);
                         String locationData = jsonStop.optString("location");
                         if(locationData != null) {
                             site.setLocation(LocationUtils.parseLocation(locationData));
@@ -135,7 +139,7 @@ public class SitesStore {
         return stopPoints;
     }
 
-    public static Pair<String, String> nameAsTitleAndSubtitle(String name) {
+    public static Pair<String, String> nameAsNameAndLocality(String name) {
         Matcher m = SITE_NAME_PATTERN.matcher(name);
         String title = name;
         String subtitle = null;

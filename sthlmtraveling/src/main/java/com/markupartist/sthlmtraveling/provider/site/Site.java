@@ -3,6 +3,7 @@ package com.markupartist.sthlmtraveling.provider.site;
 import android.location.Location;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.v4.util.Pair;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -13,12 +14,16 @@ import org.json.JSONObject;
 
 public class Site implements Parcelable {
     public static String TYPE_MY_LOCATION = "MY_LOCATION";
+    public static int SOURCE_STHLM_TRAVELING = 1;
+    public static int SOURCE_GOOGLE_PLACES = 2;
     private static String NAME_RE = "[^\\p{Alnum}\\(\\)\\s]";
 
-    private int mId;
+    private String mId;
     private String mName;
+    private String mLocality;
     private String mType;
     private Location mLocation;
+    private int mSource = SOURCE_STHLM_TRAVELING;
 
     public Site() {
     }
@@ -29,9 +34,11 @@ public class Site implements Parcelable {
      */
     public Site(Site site) {
         mName = site.getName();
+        mLocality = site.getLocality();
         mLocation = site.getLocation();
         mId = site.getId();
         mType = site.getType();
+        mSource = site.getSource();
     }
 
     private String getType() {
@@ -39,7 +46,7 @@ public class Site implements Parcelable {
     }
 
     public Site(Parcel parcel) {
-        mId = parcel.readInt();
+        mId = parcel.readString();
         mName = parcel.readString();
         mType = parcel.readString();
         double latitude = parcel.readDouble();
@@ -50,12 +57,14 @@ public class Site implements Parcelable {
             location.setLongitude(longitude);
             setLocation(location);
         }
+        mLocality = parcel.readString();
+        mSource = parcel.readInt();
     }
 
     /**
      * @return the id
      */
-    public int getId() {
+    public String getId() {
         return mId;
     }
 
@@ -70,6 +79,13 @@ public class Site implements Parcelable {
      * @param id the id to set
      */
     public void setId(int id) {
+        mId = String.valueOf(id);
+    }
+
+    /**
+     * @param id the id to set
+     */
+    public void setId(String id) {
         mId = id;
     }
 
@@ -85,6 +101,22 @@ public class Site implements Parcelable {
                 mName = name;
             }
         }
+    }
+
+    public void setLocality(String locality) {
+        mLocality = locality;
+    }
+
+    public String getLocality() {
+        return mLocality;
+    }
+
+    public int getSource() {
+        return mSource;
+    }
+
+    public void setSource(int source) {
+        this.mSource = source;
     }
 
     public void setType(String type) {
@@ -122,7 +154,7 @@ public class Site implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeInt(mId);
+        parcel.writeString(mId);
         parcel.writeString(mName);
         parcel.writeString(mType);
         if (this.hasLocation()) {
@@ -132,6 +164,8 @@ public class Site implements Parcelable {
             parcel.writeDouble(0);
             parcel.writeDouble(0);
         }
+        parcel.writeString(mLocality);
+        parcel.writeInt(mSource);
     }
 
     public static final Parcelable.Creator<Site> CREATOR = new Parcelable.Creator<Site>() {
@@ -146,7 +180,7 @@ public class Site implements Parcelable {
 
     public static Site fromPlannerLocation(Planner.Location loc) {
         Site s = new Site();
-        s.setId(loc.id);
+        s.setId(String.valueOf(loc.id));
         s.setLocation(loc.latitude, loc.longitude);
         s.setName(loc.name);
         return s;
@@ -154,8 +188,13 @@ public class Site implements Parcelable {
 
     public static Site fromJson(JSONObject json) throws JSONException {
         Site site = new Site();
-        site.setId(json.getInt("site_id"));
-        site.setName(json.getString("name"));
+        site.setSource(Site.SOURCE_STHLM_TRAVELING);
+        site.setId(String.valueOf(json.getInt("site_id")));
+
+        Pair<String, String> nameAndLocality =
+                SitesStore.nameAsNameAndLocality(json.getString("name"));
+        site.setName(nameAndLocality.first);
+        site.setLocality(nameAndLocality.second);
         if (json.has("type")) {
             site.setType(json.getString("type"));
         }
@@ -181,10 +220,10 @@ public class Site implements Parcelable {
         if (isMyLocation()) {
             return true;
         }
-        if (hasLocation() && hasName() && mId == 0) {
+        if (hasLocation() && hasName() && mId == null) {
             return true;
         }
-        if (hasName() && mId > 0) {
+        if (hasName() && mId != null) {
             return true;
         }
         return false;
@@ -207,16 +246,18 @@ public class Site implements Parcelable {
             mLocation = value.mLocation;
             mName = value.mName;
             mType = value.mType;
+            mLocality = value.mLocality;
         } else {
-            mId = 0;
+            mId = null;
             mLocation = null;
             mName = null;
             mType = null;
+            mLocality = null;
         }
     }
 
     public String getNameOrId() {
-        if (hasLocation() || mId == 0) {
+        if (hasLocation() || mId == null) {
             return mName;
         }
         return String.valueOf(mId);
@@ -242,8 +283,15 @@ public class Site implements Parcelable {
     }
 
     public String toDump() {
-        return "Site [mId=" + mId + ", mName=" + mName + ", mType=" + mType
-                + ", mLocation=" + mLocation + "]";
+        return "Site [mId=" + mId
+                + ", mName=" + mName
+                + ", mType=" + mType
+                + ", mLocation=" + mLocation
+                + ", mSource=" + mSource
+                + ", mLocality=" + mLocality
+                + "]";
     }
+
+
 
 }

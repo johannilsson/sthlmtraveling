@@ -16,30 +16,37 @@
 
 package com.markupartist.sthlmtraveling.provider;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
-
-import com.markupartist.sthlmtraveling.provider.site.Site;
-
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.database.sqlite.SQLiteQueryBuilder;
 import android.util.Log;
 
+import com.markupartist.sthlmtraveling.provider.site.Site;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 public class HistoryDbAdapter {
+    private static final String DATABASE_NAME = "history";
+    private static final String DATABASE_TABLE = "history";
+    private static final int DATABASE_VERSION = 7;
+
     public static final String KEY_ROWID = "_id";
     public static final String KEY_TYPE = "type";
     public static final String KEY_NAME = "name";
     public static final String KEY_CREATED = "created";
     public static final String KEY_LATITUDE = "latitude";
     public static final String KEY_LONGITUDE = "longitude";
-    public static final String KEY_SITE_ID = "site_id";
+//    @Deprecated
+//    public static final String KEY_SITE_ID = "site_id";
+    public static final String KEY_LOCALITY = "locality";
+    public static final String KEY_PLACE_ID = "place_id";
+    public static final String KEY_SOURCE = "source";
 
     public static final int INDEX_ROWID = 0;
     public static final int INDEX_TYPE = 1;
@@ -47,15 +54,21 @@ public class HistoryDbAdapter {
     public static final int INDEX_CREATED = 3;
     public static final int INDEX_LATITUDE = 4;
     public static final int INDEX_LONGITUDE = 5;
-    public static final int INDEX_SITE_ID = 6;
+//    @Deprecated
+//    public static final int INDEX_SITE_ID = 6;
+    public static final int INDEX_LOCALITY = 6;
+    public static final int INDEX_PLACE_ID = 7;
+    public static final int INDEX_SOURCE = 8;
 
     /**
      * @deprecated
      */
+    @Deprecated
     public static final int TYPE_START_POINT = 0;
     /**
      * @deprecated
      */
+    @Deprecated
     public static final int TYPE_END_POINT = 1;
     /**
      * Value for the departure type.
@@ -64,17 +77,27 @@ public class HistoryDbAdapter {
     /**
      * @deprecated
      */
+    @Deprecated
     public static final int TYPE_VIA_POINT = 3;
     /**
      * Value for the journey planner site.
      */
     public static final int TYPE_JOURNEY_PLANNER_SITE = 4;
 
-    private static final String DATABASE_NAME = "history";
-    private static final String DATABASE_TABLE = "history";
-    private static final int DATABASE_VERSION = 6;
 
     private static final String TAG = "HistoryDbAdapter";
+    private static final String[] ALL = new String[] {
+            KEY_ROWID,
+            KEY_TYPE,
+            KEY_NAME,
+            KEY_CREATED,
+            KEY_LATITUDE,
+            KEY_LONGITUDE,
+//            KEY_SITE_ID,
+            KEY_LOCALITY,
+            KEY_PLACE_ID,
+            KEY_SOURCE
+    };
 
     private DatabaseHelper mDbHelper;
     private SQLiteDatabase mDb;
@@ -91,7 +114,10 @@ public class HistoryDbAdapter {
                 + ", created date"
                 + ", latitude INTEGER NULL"
                 + ", longitude INTEGER NULL"
-                + ", site_id INTEGER NULL"
+//                + ", site_id INTEGER NULL"
+                + ", locality TEXT NULL"
+                + ", place_id TEXT NULL"
+                + ", source INTEGER NULL"
                 + ");";
 
     /**
@@ -130,7 +156,7 @@ public class HistoryDbAdapter {
      * Creates a new entry. If the entry already exists it will be updated
      * with a new time stamp.
      * @param type the type
-     * @param name the name
+     * @param site a site
      * @return the row id associated with the created entry or -1 of an error
      * occurred
      */
@@ -148,13 +174,13 @@ public class HistoryDbAdapter {
         ContentValues initialValues = new ContentValues();
         initialValues.put(KEY_TYPE, type);
         initialValues.put(KEY_NAME, site.getName());
+        initialValues.put(KEY_LOCALITY, site.getLocality());
         if (site.hasLocation()) {
             initialValues.put(KEY_LATITUDE, (int)(site.getLocation().getLatitude() * 1E6));
             initialValues.put(KEY_LONGITUDE, (int)(site.getLocation().getLongitude() * 1E6));
         }
-        if (site.getId() > 0) {
-            initialValues.put(KEY_SITE_ID, site.getId());
-        }
+        initialValues.put(KEY_PLACE_ID, site.getId());
+        initialValues.put(KEY_SOURCE, site.getSource());
 
         initialValues.put(KEY_CREATED, dateFormat.format(date));
 
@@ -175,10 +201,9 @@ public class HistoryDbAdapter {
      * @return a Cursor object positioned at the first entry
      */
     public Cursor fetchByName(int type, String name) {
-        String[] columns = new String[] {KEY_ROWID, KEY_TYPE, KEY_NAME};
         String selection = KEY_NAME + "=? AND " + KEY_TYPE + "=?";
         String[] selectionArgs = new String[] {name, String.valueOf(type)};
-        Cursor cursor = mDb.query(DATABASE_TABLE, columns, selection,
+        Cursor cursor = mDb.query(DATABASE_TABLE, ALL, selection,
                 selectionArgs, null, null, null);
         if (cursor != null) {
             cursor.moveToFirst();
@@ -192,34 +217,36 @@ public class HistoryDbAdapter {
      * @return a Cursor object
      */
     public Cursor fetchByType(int type) {
-        Cursor mCursor =
-            mDb.query(true, DATABASE_TABLE, new String[] {
-                    KEY_ROWID, KEY_TYPE, KEY_NAME, KEY_CREATED,
-                    KEY_LATITUDE, KEY_LONGITUDE, KEY_SITE_ID},
-                    KEY_TYPE + "= ?",
-                    new String[]{String.valueOf(type)}, null, null,
-                    KEY_CREATED + " DESC", "10");
-        return mCursor;        
+        return mDb.query(true, DATABASE_TABLE, ALL,
+                KEY_TYPE + "= ?", new String[]{String.valueOf(type)}, null, null,
+                KEY_CREATED + " DESC", "10");
     }
 
     /**
      * Fetch all entries for a specific type.
-     * @param type the type
      * @return a Cursor object
      */
     public Cursor fetchLatest() {
-        Cursor mCursor =
-            mDb.query(true, DATABASE_TABLE, new String[] {
-                    KEY_ROWID, KEY_TYPE, KEY_NAME, KEY_CREATED,
-                    KEY_LATITUDE, KEY_LONGITUDE, KEY_SITE_ID},
-                    null, null, null, null,
-                    KEY_CREATED + " DESC", "10");
-        return mCursor;
+        return mDb.query(true, DATABASE_TABLE, ALL,
+                null, null, null, null,
+                KEY_CREATED + " DESC", "10");
     }
 
     
     public void deleteAll() {
         mDb.delete(DATABASE_TABLE, null, null);
+    }
+
+    public Site mapToSite(Cursor cursor) {
+        Site site = new Site();
+        site.setName(cursor.getString(HistoryDbAdapter.INDEX_NAME));
+        site.setLocation(
+                cursor.getInt(HistoryDbAdapter.INDEX_LATITUDE),
+                cursor.getInt(HistoryDbAdapter.INDEX_LONGITUDE));
+        site.setId(cursor.getString(HistoryDbAdapter.INDEX_PLACE_ID));
+        site.setSource(cursor.getInt(HistoryDbAdapter.INDEX_SOURCE));
+        site.setLocality(cursor.getString(HistoryDbAdapter.INDEX_LOCALITY));
+        return site;
     }
 
     /**
@@ -257,6 +284,9 @@ public class HistoryDbAdapter {
                     case 6:
                         success = upgradeToVersion6(db);
                         break;
+                    case 7:
+                        success = upgradeToVersion7(db);
+                        break;
                 }
             }
 
@@ -266,28 +296,42 @@ public class HistoryDbAdapter {
             db.endTransaction();
         }
 
+        private boolean upgradeToVersion7(SQLiteDatabase db) {
+            try {
+                db.execSQL("ALTER TABLE history ADD COLUMN locality TEXT NULL;");
+                db.execSQL("ALTER TABLE history ADD COLUMN source INTEGER NULL;");
+                db.execSQL("ALTER TABLE history ADD COLUMN place_id TEXT NULL;");
+                db.execSQL("UPDATE history SET place_id = site_id;");
+            } catch (SQLException e) {
+                Log.e(TAG, "Upgrade to version 7 failed, " + e.getMessage());
+                return false;
+            }
+
+            return true;
+        }
+
         private boolean upgradeToVersion6(SQLiteDatabase db) {
-        	try {
-	            db.execSQL("ALTER TABLE history ADD COLUMN latitude INTEGER NULL;");
-	            db.execSQL("ALTER TABLE history ADD COLUMN longitude INTEGER NULL;");
-	            db.execSQL("ALTER TABLE history ADD COLUMN site_id INTEGER NULL;");
-        	} catch (SQLException e) {
-        		Log.e(TAG, "Upgrade to version 6 failed, " + e.getMessage());
-        		return false;
-        	}
-        	
+            try {
+                db.execSQL("ALTER TABLE history ADD COLUMN latitude INTEGER NULL;");
+                db.execSQL("ALTER TABLE history ADD COLUMN longitude INTEGER NULL;");
+                db.execSQL("ALTER TABLE history ADD COLUMN site_id INTEGER NULL;");
+            } catch (SQLException e) {
+                Log.e(TAG, "Upgrade to version 6 failed, " + e.getMessage());
+                return false;
+            }
+
             return true;
         }
 
         private boolean upgradeToVersion5(SQLiteDatabase db) {
-        	try {
-	            db.execSQL("DROP TABLE IF EXISTS history");
-	            onCreate(db);
-        	} catch (SQLException e) {
-        		Log.e(TAG, "Upgrade to version 5 failed, " + e.getMessage());
-        		return false;
-        	}
-        	
+            try {
+                db.execSQL("DROP TABLE IF EXISTS history");
+                onCreate(db);
+            } catch (SQLException e) {
+                Log.e(TAG, "Upgrade to version 5 failed, " + e.getMessage());
+                return false;
+            }
+
             return true;
         }
     }
