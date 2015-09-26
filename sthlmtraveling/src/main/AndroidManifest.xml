@@ -187,8 +187,12 @@
         <activity
             android:name=".SettingsActivity"
             android:label="@string/title_settings"
-            android:configChanges="locale"
-            />
+            android:configChanges="locale">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".StartActivity" />
+        </activity>
+
         <activity
             android:name=".AboutActivity"
             android:label="@string/about"
@@ -211,7 +215,6 @@
                     android:scheme="http"
                     android:host="www.sl.se"/>
             </intent-filter>
-
         </activity>
 
         <receiver
