@@ -39,6 +39,7 @@ import com.markupartist.sthlmtraveling.provider.planner.Planner;
 import com.markupartist.sthlmtraveling.provider.planner.Planner.IntermediateStop;
 import com.markupartist.sthlmtraveling.provider.planner.Planner.SubTrip;
 import com.markupartist.sthlmtraveling.provider.planner.Planner.Trip2;
+import com.markupartist.sthlmtraveling.provider.site.Site;
 import com.markupartist.sthlmtraveling.utils.Analytics;
 import com.markupartist.sthlmtraveling.utils.StringUtils;
 
@@ -104,9 +105,11 @@ public class ViewOnMapActivity extends AppCompatActivity {
 
         mTrip = extras.getParcelable(EXTRA_TRIP);
         mJourneyQuery = extras.getParcelable(EXTRA_JOURNEY_QUERY);
-        final Planner.Location focusedLocation = extras.getParcelable(EXTRA_LOCATION);
+        final Site focusedLocation = extras.getParcelable(EXTRA_LOCATION);
 
-        mFocusedLatLng = new LatLng(focusedLocation.latitude / 1E6, focusedLocation.longitude / 1E6);
+        mFocusedLatLng = new LatLng(
+                focusedLocation.getLocation().getLatitude(),
+                focusedLocation.getLocation().getLongitude());
 
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -158,8 +161,8 @@ public class ViewOnMapActivity extends AppCompatActivity {
             PolylineOptions options = new PolylineOptions();
 
             LatLng origin = new LatLng(
-                    subTrip.origin.latitude / 1E6,
-                    subTrip.origin.longitude / 1E6);
+                    subTrip.origin.getLocation().getLatitude(),
+                    subTrip.origin.getLocation().getLongitude());
             options.add(origin);
 
             mMap.addMarker(new MarkerOptions()
@@ -170,8 +173,8 @@ public class ViewOnMapActivity extends AppCompatActivity {
 
             for (IntermediateStop stop : subTrip.intermediateStop) {
                 LatLng intermediateStop = new LatLng(
-                        stop.location.latitude / 1E6,
-                        stop.location.longitude / 1E6);
+                        stop.location.getLocation().getLatitude(),
+                        stop.location.getLocation().getLongitude());
                 options.add(intermediateStop);
                 mMap.addMarker(new MarkerOptions()
                     .position(intermediateStop)
@@ -180,8 +183,8 @@ public class ViewOnMapActivity extends AppCompatActivity {
                     .icon(BitmapDescriptorFactory.defaultMarker(hueColor)));
             }
             LatLng destination = new LatLng(
-                    subTrip.destination.latitude / 1E6,
-                    subTrip.destination.longitude / 1E6);
+                    subTrip.destination.getLocation().getLatitude(),
+                    subTrip.destination.getLocation().getLongitude());
             options.add(destination);
             mMap.addMarker(new MarkerOptions()
                 .position(destination)
@@ -212,7 +215,7 @@ public class ViewOnMapActivity extends AppCompatActivity {
         return description;
     }
 
-    private String getLocationName(Planner.Location location) {
+    private String getLocationName(Site location) {
         // TODO: Copied from RouteDetailActivity, centralize please!
         if (location == null) {
             return "Unknown";
@@ -220,7 +223,7 @@ public class ViewOnMapActivity extends AppCompatActivity {
         if (location.isMyLocation()) {
             return getString(R.string.my_location);
         }
-        return location.name;
+        return location.getName();
     }
 
     @Override
@@ -281,12 +284,12 @@ public class ViewOnMapActivity extends AppCompatActivity {
         if (journeyQuery.origin.isMyLocation()) {
             ab.setTitle(StringUtils.getStyledMyLocationString(this));
         } else {
-            ab.setTitle(journeyQuery.origin.getCleanName());
+            ab.setTitle(journeyQuery.origin.getName());
         }
 
         CharSequence via = null;
         if (journeyQuery.hasVia()) {
-            via = journeyQuery.via.getCleanName();
+            via = journeyQuery.via.getName();
         }
         if (journeyQuery.destination.isMyLocation()) {
             if (via != null) {
@@ -296,9 +299,9 @@ public class ViewOnMapActivity extends AppCompatActivity {
             }
         } else {
             if (via != null) {
-                ab.setSubtitle(TextUtils.join(" • ", new CharSequence[]{via, journeyQuery.destination.getCleanName()}));
+                ab.setSubtitle(TextUtils.join(" • ", new CharSequence[]{via, journeyQuery.destination.getName()}));
             } else {
-                ab.setSubtitle(journeyQuery.destination.name);
+                ab.setSubtitle(journeyQuery.destination.getName());
             }
         }
     }

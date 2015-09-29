@@ -7,8 +7,6 @@ import android.support.v4.util.Pair;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.markupartist.sthlmtraveling.provider.planner.Planner;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -178,13 +176,13 @@ public class Site implements Parcelable {
         }
     };
 
-    public static Site fromPlannerLocation(Planner.Location loc) {
-        Site s = new Site();
-        s.setId(String.valueOf(loc.id));
-        s.setLocation(loc.latitude, loc.longitude);
-        s.setName(loc.name);
-        return s;
-    }
+//    public static Site fromPlannerLocation(Planner.Location loc) {
+//        Site s = new Site();
+//        s.setId(String.valueOf(loc.id));
+//        s.setLocation(loc.latitude, loc.longitude);
+//        s.setName(loc.name);
+//        return s;
+//    }
 
     public static Site fromJson(JSONObject json) throws JSONException {
         Site site = new Site();

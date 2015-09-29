@@ -27,6 +27,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.markupartist.sthlmtraveling.R;
+import com.markupartist.sthlmtraveling.provider.site.Site;
 import com.markupartist.sthlmtraveling.utils.DateTimeUtil;
 import com.markupartist.sthlmtraveling.utils.HttpHelper;
 import com.markupartist.sthlmtraveling.utils.RtlUtils;
@@ -183,16 +184,16 @@ public class Planner {
                     Log.w(TAG, "Invalid response when fetching intermediate stops.");
                 }
             } catch (JSONException e) {
-                Log.w(TAG, "Could not parse the reponse for intermediate stops.");
+                Log.w(TAG, "Could not parse the response for intermediate stops.");
             }
             break;
         case 400:  // Bad request
             rawContent = response.body().string();
             try {
                 BadResponse br = BadResponse.fromJson(new JSONObject(rawContent));
-                Log.e(TAG, "Invalid response for intermediate stops: " + br.toString());
+                Log.e(TAG, "Invalid error response for intermediate stops: " + br.toString());
             } catch (JSONException e) {
-                Log.e(TAG, "Could not parse the reponse for intermediate stops.");
+                Log.e(TAG, "Could not parse the error response for intermediate stops.");
             }
         default:
             Log.e(TAG, "Status code not OK from intermediate stops API, was " + statusCode);
@@ -262,16 +263,16 @@ public class Planner {
             b.appendQueryParameter("seq", query.seqnr);
         } else {
             if (query.origin.hasLocation()) {
-                b.appendQueryParameter("origin", query.origin.name);
-                b.appendQueryParameter("origin_latitude", String.valueOf(query.origin.latitude / 1E6));
-                b.appendQueryParameter("origin_longitude", String.valueOf(query.origin.longitude / 1E6));
+                b.appendQueryParameter("origin", query.origin.getName());
+                b.appendQueryParameter("origin_latitude", String.valueOf(query.origin.getLocation().getLatitude()));
+                b.appendQueryParameter("origin_longitude", String.valueOf(query.origin.getLocation().getLongitude()));
             } else {
                 b.appendQueryParameter("origin", String.valueOf(query.origin.getNameOrId()));
             }
             if (query.destination.hasLocation()) {
-                b.appendQueryParameter("destination", query.destination.name);
-                b.appendQueryParameter("destination_latitude", String.valueOf(query.destination.latitude / 1E6));
-                b.appendQueryParameter("destination_longitude", String.valueOf(query.destination.longitude / 1E6));
+                b.appendQueryParameter("destination", query.destination.getName());
+                b.appendQueryParameter("destination_latitude", String.valueOf(query.destination.getLocation().getLatitude()));
+                b.appendQueryParameter("destination_longitude", String.valueOf(query.destination.getLocation().getLongitude()));
             } else {
                 b.appendQueryParameter("destination", String.valueOf(query.destination.getNameOrId()));
             }
@@ -286,10 +287,10 @@ public class Planner {
                 b.appendQueryParameter("arrival", "1");
             }
             if (query.hasVia()) {
-                if (query.via.id == 0) {
-                    b.appendQueryParameter("via", query.via.name);
+                if (query.via.getId() == null) {
+                    b.appendQueryParameter("via", query.via.getName());
                 } else {
-                    b.appendQueryParameter("via", String.valueOf(query.via.id));
+                    b.appendQueryParameter("via", String.valueOf(query.via.getId()));
                 }
             }
             if (query.alternativeStops) {
@@ -344,6 +345,21 @@ public class Planner {
         }
 
         return r;
+    }
+
+    static Site fromJson(JSONObject json) throws JSONException {
+        Site site = new Site();
+
+        if (json.has("id")) {
+            site.setId(json.getString("id"));
+        }
+        if (json.has("latitude") && json.has("longitude")) {
+            site.setLocation(json.getDouble("latitude"), json.getDouble("longitude"));
+        }
+
+        site.setName(json.getString("name"));
+
+        return site;
     }
 
     /**
@@ -505,8 +521,8 @@ public class Planner {
 
         private static DateFormat DURATION_FORMAT = new SimpleDateFormat("H:mm", Locale.US);
 
-        public Location origin;
-        public Location destination;
+        public Site origin;
+        public Site destination;
         public String   departureDate; // TODO: Combine date and time
         public String   departureTime;
         public String   arrivalDate; // TODO: Combine date and time
@@ -527,8 +543,8 @@ public class Planner {
         }
 
         public Trip2(Parcel parcel) {
-            origin = parcel.readParcelable(Location.class.getClassLoader());
-            destination = parcel.readParcelable(Location.class.getClassLoader());
+            origin = parcel.readParcelable(Site.class.getClassLoader());
+            destination = parcel.readParcelable(Site.class.getClassLoader());
             departureDate = parcel.readString();
             departureTime = parcel.readString();
             arrivalDate = parcel.readString();
@@ -538,9 +554,9 @@ public class Planner {
             tariffZones = parcel.readString();
             tariffRemark = parcel.readString();
             co2 = parcel.readString();
-            mt6MessageExist = (parcel.readInt() == 1) ? true : false;
-            rtuMessageExist = (parcel.readInt() == 1) ? true : false;
-            remarksMessageExist = (parcel.readInt() == 1) ? true : false;
+            mt6MessageExist = (parcel.readInt() == 1);
+            rtuMessageExist = (parcel.readInt() == 1);
+            remarksMessageExist = (parcel.readInt() == 1);
             subTrips = new ArrayList<SubTrip>();
             parcel.readTypedList(subTrips, SubTrip.CREATOR);
         }
@@ -576,9 +592,9 @@ public class Planner {
             dest.writeString(tariffZones);
             dest.writeString(tariffRemark);
             dest.writeString(co2);
-            dest.writeInt((mt6MessageExist == true) ? 1 : 0);
-            dest.writeInt((rtuMessageExist == true) ? 1 : 0);
-            dest.writeInt((remarksMessageExist == true) ? 1 : 0);
+            dest.writeInt((mt6MessageExist) ? 1 : 0);
+            dest.writeInt((rtuMessageExist) ? 1 : 0);
+            dest.writeInt((remarksMessageExist) ? 1 : 0);
             dest.writeTypedList(subTrips);
         }
 
@@ -604,10 +620,10 @@ public class Planner {
             trip.co2 = json.getString("co2");
             trip.departureDate = json.getString("departure_date");
             trip.departureTime = json.getString("departure_time");
-            trip.destination = Location.fromJson(json.getJSONObject("destination"));
+            trip.destination = Planner.fromJson(json.getJSONObject("destination"));
             trip.duration = json.getString("duration");
             trip.mt6MessageExist = json.getBoolean("mt6_messages_exist");
-            trip.origin = Location.fromJson(json.getJSONObject("origin"));
+            trip.origin = Planner.fromJson(json.getJSONObject("origin"));
             if (json.has("tariff_zones")) {
                 trip.tariffZones = json.getString("tariff_zones");
                 trip.tariffZones = trip.tariffZones.trim();
@@ -702,13 +718,13 @@ public class Planner {
 
         public String   arrivalDate;
         public String   arrivalTime;
-        public Location location;
+        public Site location;
         private Date arrivalDateTime;
 
         public IntermediateStop(Parcel parcel) {
             arrivalDate = parcel.readString();
             arrivalTime = parcel.readString();
-            location = parcel.readParcelable(Location.class.getClassLoader());
+            location = parcel.readParcelable(Site.class.getClassLoader());
         }
 
         public IntermediateStop() {
@@ -731,7 +747,7 @@ public class Planner {
             IntermediateStop is = new IntermediateStop();
             is.arrivalDate = json.getString("arrival_date");
             is.arrivalTime = json.getString("arrival_time");
-            is.location = Location.fromJson(json.getJSONObject("location"));
+            is.location = Planner.fromJson(json.getJSONObject("location"));
             return is;
         }
 
@@ -762,8 +778,8 @@ public class Planner {
     }
 
     public static class SubTrip implements Parcelable {
-        public Location      origin;
-        public Location      destination;
+        public Site origin;
+        public Site      destination;
         public String        departureDate; // TODO: Combine date and time
         public String        departureTime;
         public String        arrivalDate; // TODO: Combine date and time
@@ -782,8 +798,8 @@ public class Planner {
         }
 
         public SubTrip(Parcel parcel) {
-            origin = parcel.readParcelable(Location.class.getClassLoader());
-            destination = parcel.readParcelable(Location.class.getClassLoader());
+            origin = parcel.readParcelable(Site.class.getClassLoader());
+            destination = parcel.readParcelable(Site.class.getClassLoader());
             departureDate = parcel.readString();
             departureTime = parcel.readString();
             arrivalDate = parcel.readString();
@@ -797,7 +813,7 @@ public class Planner {
             parcel.readStringList(mt6Messages);
             reference = parcel.readString();
             intermediateStop = new ArrayList<IntermediateStop>();
-            parcel.readList(intermediateStop, Location.class.getClassLoader());
+            parcel.readList(intermediateStop, Site.class.getClassLoader());
         }
 
         @Override
@@ -824,8 +840,8 @@ public class Planner {
         public static SubTrip fromJson(JSONObject json) throws JSONException {
             SubTrip st = new SubTrip();
 
-            st.origin = Location.fromJson(json.getJSONObject("origin"));
-            st.destination = Location.fromJson(json.getJSONObject("destination"));
+            st.origin = Planner.fromJson(json.getJSONObject("origin"));
+            st.destination = Planner.fromJson(json.getJSONObject("destination"));
             st.departureDate = json.getString("departure_date");
             st.departureTime = json.getString("departure_time");
             st.arrivalDate = json.getString("arrival_date");
@@ -904,104 +920,104 @@ public class Planner {
     }
 
 
-    public static class Location implements Parcelable {
-        public static String TYPE_MY_LOCATION = "MY_LOCATION";
-        public int id = 0;
-        public String name;
-        public int latitude;
-        public int longitude;
-
-        public Location() {}
-
-        public Location(Location location) {
-            id = location.id;
-            name = location.name;
-            latitude = location.latitude;
-            longitude = location.longitude;
-        }
-
-        public Location(Parcel parcel) {
-            id = parcel.readInt();
-            name = parcel.readString();
-            latitude = parcel.readInt();
-            longitude = parcel.readInt();
-        }
-
-        public boolean isMyLocation() {
-            return TYPE_MY_LOCATION.equals(name);
-        }
-
-        public boolean hasLocation() {
-            return latitude != 0 && longitude != 0;
-        }
-
-        public String getNameOrId() {
-            if (hasLocation() || id == 0) {
-                return name;
-            }
-            return String.valueOf(id);
-        }
-
-        public static Location fromJson(JSONObject json) throws JSONException {
-            Location l = new Location();
-            if (json.has("id")) {
-                l.id = json.getInt("id");
-            }
-            l.name = json.getString("name");
-            l.longitude = (int) (json.getDouble("longitude") * 1E6);
-            l.latitude = (int) (json.getDouble("latitude") * 1E6);
-            return l;
-        }
-
-        @Override
-        public String toString() {
-            return "Location{" +
-                    "id='" + id + '\'' +
-                    ", name='" + name + '\'' +
-                    ", latitude=" + latitude +
-                    ", longitude=" + longitude +
-                    '}';
-        }
-
-        @Override
-        public int describeContents() {
-            return 0;
-        }
-
-        @Override
-        public void writeToParcel(Parcel dest, int flags) {
-            dest.writeInt(id);
-            dest.writeString(name);
-            dest.writeInt(latitude);
-            dest.writeInt(longitude);
-        }
-
-        public static final Creator<Location> CREATOR = new Creator<Location>() {
-            public Location createFromParcel(Parcel parcel) {
-                return new Location(parcel);
-            }
-
-            public Location[] newArray(int size) {
-                return new Location[size];
-            }
-        };
-
-        public boolean hasName() {
-            return !TextUtils.isEmpty(name);
-        }
-
-        /**
-         * Get a clean representation of the stop name.
-         *
-         * @return The name
-         */
-        public CharSequence getCleanName() {
-            if (TextUtils.isEmpty(name)) {
-                return "";
-            }
-            return name.replaceAll("\\(.*\\)", "");
-        }
-    }
+//    public static class Location implements Parcelable {
+//        public static String TYPE_MY_LOCATION = "MY_LOCATION";
+//        public int id = 0;
+//        public String name;
+//        public int latitude;
+//        public int longitude;
+//
+//        public Location() {}
+//
+//        public Location(Location location) {
+//            id = location.id;
+//            name = location.name;
+//            latitude = location.latitude;
+//            longitude = location.longitude;
+//        }
+//
+//        public Location(Parcel parcel) {
+//            id = parcel.readInt();
+//            name = parcel.readString();
+//            latitude = parcel.readInt();
+//            longitude = parcel.readInt();
+//        }
+//
+//        public boolean isMyLocation() {
+//            return TYPE_MY_LOCATION.equals(name);
+//        }
+//
+//        public boolean hasLocation() {
+//            return latitude != 0 && longitude != 0;
+//        }
+//
+//        public String getNameOrId() {
+//            if (hasLocation() || id == 0) {
+//                return name;
+//            }
+//            return String.valueOf(id);
+//        }
+//
+//        public static Location fromJson(JSONObject json) throws JSONException {
+//            Location l = new Location();
+//            if (json.has("id")) {
+//                l.id = json.getInt("id");
+//            }
+//            l.name = json.getString("name");
+//            l.longitude = (int) (json.getDouble("longitude") * 1E6);
+//            l.latitude = (int) (json.getDouble("latitude") * 1E6);
+//            return l;
+//        }
+//
+//        @Override
+//        public String toString() {
+//            return "Location{" +
+//                    "id='" + id + '\'' +
+//                    ", name='" + name + '\'' +
+//                    ", latitude=" + latitude +
+//                    ", longitude=" + longitude +
+//                    '}';
+//        }
+//
+//        @Override
+//        public int describeContents() {
+//            return 0;
+//        }
+//
+//        @Override
+//        public void writeToParcel(Parcel dest, int flags) {
+//            dest.writeInt(id);
+//            dest.writeString(name);
+//            dest.writeInt(latitude);
+//            dest.writeInt(longitude);
+//        }
+//
+//        public static final Creator<Location> CREATOR = new Creator<Location>() {
+//            public Location createFromParcel(Parcel parcel) {
+//                return new Location(parcel);
+//            }
+//
+//            public Location[] newArray(int size) {
+//                return new Location[size];
+//            }
+//        };
+//
+//        public boolean hasName() {
+//            return !TextUtils.isEmpty(name);
+//        }
+//
+//        /**
+//         * Get a clean representation of the stop name.
+//         *
+//         * @return The name
+//         */
+//        public CharSequence getCleanName() {
+//            if (TextUtils.isEmpty(name)) {
+//                return "";
+//            }
+//            return name.replaceAll("\\(.*\\)", "");
+//        }
+//    }
 
     public static class TransportType implements Parcelable {
         public String type = "";

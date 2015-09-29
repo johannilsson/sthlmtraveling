@@ -43,8 +43,7 @@ import android.widget.Toast;
 import com.markupartist.sthlmtraveling.provider.JourneysProvider.Journey.Journeys;
 import com.markupartist.sthlmtraveling.provider.TransportMode;
 import com.markupartist.sthlmtraveling.provider.planner.JourneyQuery;
-import com.markupartist.sthlmtraveling.provider.planner.Planner;
-import com.markupartist.sthlmtraveling.provider.planner.Planner.Location;
+import com.markupartist.sthlmtraveling.provider.site.Site;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -195,8 +194,8 @@ public class FavoritesFragment extends BaseListFragment {
         JourneyQuery journeyQuery = getJourneyQuery(cursor);
 
         if (reversed) {
-            Planner.Location tmpStartPoint = new Location(journeyQuery.destination);
-            Planner.Location tmpEndPoint = new Location(journeyQuery.origin);
+            Site tmpStartPoint = new Site(journeyQuery.destination);
+            Site tmpEndPoint = new Site(journeyQuery.origin);
             journeyQuery.origin = tmpStartPoint;
             journeyQuery.destination = tmpEndPoint;
         }
@@ -276,25 +275,25 @@ public class FavoritesFragment extends BaseListFragment {
         private View inflate(View v, JourneyQuery journeyQuery) {
             TextView originText =
                 (TextView) v.findViewById(R.id.favorite_start_point);
-            if (Location.TYPE_MY_LOCATION.equals(journeyQuery.origin.name)) {
+            if (journeyQuery.origin.isMyLocation()) {
                 originText.setText(getString(R.string.my_location));
             } else {
-                originText.setText(journeyQuery.origin.name);
+                originText.setText(journeyQuery.origin.getName());
             }
 
             TextView destinationText =
                 (TextView) v.findViewById(R.id.favorite_end_point);
-            if (Location.TYPE_MY_LOCATION.equals(journeyQuery.destination.name)) {
+            if (journeyQuery.destination.isMyLocation()) {
                 destinationText.setText(getString(R.string.my_location));
             } else {
-                destinationText.setText(journeyQuery.destination.name);
+                destinationText.setText(journeyQuery.destination.getName());
             }
 
             View viaView = v.findViewById(R.id.favorite_via_row);
             if (journeyQuery.hasVia()) {
                 viaView.setVisibility(View.VISIBLE);
                 TextView viaText = (TextView) v.findViewById(R.id.favorite_via_point);
-                viaText.setText(journeyQuery.via.name);
+                viaText.setText(journeyQuery.via.getName());
             } else {
                 viaView.setVisibility(View.GONE);
             }

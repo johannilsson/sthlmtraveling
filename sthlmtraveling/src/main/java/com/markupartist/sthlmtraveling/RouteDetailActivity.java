@@ -123,7 +123,7 @@ public class RouteDetailActivity extends BaseListActivity {
         BidiFormatter bidiFormatter = BidiFormatter.getInstance(Locale.getDefault());
         String timeStr = getString(R.string.time_to,
                 bidiFormatter.unicodeWrap(mTrip.getDurationText(getResources())),
-                bidiFormatter.unicodeWrap((String) mTrip.destination.getCleanName()));
+                bidiFormatter.unicodeWrap(mTrip.destination.getName()));
         timeView.setText(timeStr);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
             timeView.setTextDirection(View.TEXT_DIRECTION_ANY_RTL);
@@ -198,7 +198,7 @@ public class RouteDetailActivity extends BaseListActivity {
         switch (item.getItemId()) {
         case R.id.actionbar_item_time:
             Intent departuresIntent = new Intent(this, DeparturesActivity.class);
-            Site s = Site.fromPlannerLocation(mTrip.origin);
+            Site s = mTrip.origin;
             departuresIntent.putExtra(DeparturesActivity.EXTRA_SITE, s);
             startActivity(departuresIntent);
             return true;
@@ -224,14 +224,14 @@ public class RouteDetailActivity extends BaseListActivity {
      * @param location the stop
      * @return a text representation of my location
      */
-    private CharSequence getLocationName(Planner.Location location) {
+    private CharSequence getLocationName(Site location) {
         if (location == null) {
             return "Unknown";
         }
         if (location.isMyLocation()) {
             return getText(R.string.my_location);
         }
-        return location.name;
+        return location.getName();
 
         /*if (location.getLocation() != null) {
             string = String.format("%s (%sm)", string, location.getLocation().getAccuracy());
@@ -301,14 +301,14 @@ public class RouteDetailActivity extends BaseListActivity {
         if ("Walk".equals(lastSubTrip.transport.type)) {
             nameView.setText(getLocationName(mJourneyQuery.destination));
         } else {
-            nameView.setText(lastSubTrip.destination.name);
+            nameView.setText(lastSubTrip.destination.getName());
         }
         nameView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Planner.Location location = lastSubTrip.destination;
-                if (location.hasLocation()) {
-                    startActivity(createViewOnMapIntent(mTrip, mJourneyQuery, location));
+//                Planner.Location location = lastSubTrip.destination;
+                if (lastSubTrip.destination.hasLocation()) {
+                    startActivity(createViewOnMapIntent(mTrip, mJourneyQuery, lastSubTrip.destination));
                 } else {
                     Toast.makeText(RouteDetailActivity.this, "Missing geo data", Toast.LENGTH_LONG).show();
                 }
@@ -351,7 +351,7 @@ public class RouteDetailActivity extends BaseListActivity {
     }
 
     private Intent createViewOnMapIntent(Planner.Trip2 trip,
-            JourneyQuery query, Planner.Location location) {
+            JourneyQuery query, Site location) {
         Intent intent = new Intent(this, ViewOnMapActivity.class);
         intent.putExtra(ViewOnMapActivity.EXTRA_TRIP, trip);
         intent.putExtra(ViewOnMapActivity.EXTRA_JOURNEY_QUERY, query);
@@ -381,7 +381,7 @@ public class RouteDetailActivity extends BaseListActivity {
     private View.OnClickListener mLocationClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            Planner.Location l = (Planner.Location) v.getTag();
+            Site l = (Site) v.getTag();
             if (l.hasLocation()) {
                 startActivity(createViewOnMapIntent(mTrip, mJourneyQuery, l));
             } else {
@@ -468,9 +468,8 @@ public class RouteDetailActivity extends BaseListActivity {
             nameView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Planner.Location location = subTrip.origin;
-                    if (location.hasLocation()) {
-                        startActivity(createViewOnMapIntent(mTrip, mJourneyQuery, location));
+                    if (subTrip.origin.hasLocation()) {
+                        startActivity(createViewOnMapIntent(mTrip, mJourneyQuery, subTrip.origin));
                     } else {
                         Toast.makeText(getContext(), "Missing geo data", Toast.LENGTH_LONG).show();
                     }
@@ -568,7 +567,7 @@ public class RouteDetailActivity extends BaseListActivity {
             view.findViewById(R.id.trip_intermediate_departure_time).setVisibility(View.GONE);
             TextView descView = (TextView) view.findViewById(R.id.trip_intermediate_stop_title);
             descView.setTextSize(12);
-            descView.setText(stop.location.name);
+            descView.setText(stop.location.getName());
             TextView arrivalView = (TextView) view.findViewById(R.id.trip_intermediate_arrival_time);
             arrivalView.setText(DateFormat.getTimeFormat(getContext()).format(stop.arrival()));
             return view;

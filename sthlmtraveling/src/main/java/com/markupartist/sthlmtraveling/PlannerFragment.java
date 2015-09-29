@@ -35,7 +35,9 @@ import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v4.view.ViewCompat;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
@@ -60,20 +62,21 @@ import com.markupartist.sthlmtraveling.provider.HistoryDbAdapter;
 import com.markupartist.sthlmtraveling.provider.JourneysProvider.Journey.Journeys;
 import com.markupartist.sthlmtraveling.provider.TransportMode;
 import com.markupartist.sthlmtraveling.provider.planner.JourneyQuery;
-import com.markupartist.sthlmtraveling.provider.planner.Planner.Location;
 import com.markupartist.sthlmtraveling.provider.site.Site;
 import com.markupartist.sthlmtraveling.utils.ViewHelper;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class PlannerFragment extends BaseListFragment {
+public class PlannerFragment extends BaseListFragment implements LoaderManager.LoaderCallbacks<Cursor> {
     private static final String TAG = "PlannerFragment";
     protected static final int REQUEST_CODE_POINT_ON_MAP_START = 0;
     protected static final int REQUEST_CODE_POINT_ON_MAP_END = 1;
     private static final int REQUEST_CODE_ROUTE_OPTIONS = 2;
     private static final int REQUEST_CODE_PICK_START = 3;
     private static final int REQUEST_CODE_PICK_END = 4;
+
+    private static final int LOADER_JOURNEY_HISTORY = 1;
 
     /**
      * The Journey
@@ -132,15 +135,9 @@ public class PlannerFragment extends BaseListFragment {
             mJourneyQuery = savedInstanceState.getParcelable(EXTRA_JOURNEY_QUERY);
         }
 
-        CursorLoader cursorLoader = new CursorLoader(
-                getActivity(),
-                Journeys.CONTENT_URI,
-                PROJECTION,
-                null, //selection,
-                null, //selectionArgs,
-                Journeys.HISTORY_SORT_ORDER);
-        Cursor cursor = cursorLoader.loadInBackground();
-        mAdapter = new JourneyAdapter(getActivity(), cursor);
+        getLoaderManager().initLoader(LOADER_JOURNEY_HISTORY, null, this);
+
+        mAdapter = new JourneyAdapter(getActivity(), null);
     }
 
     @Override
@@ -489,6 +486,40 @@ public class PlannerFragment extends BaseListFragment {
         ft.commit();
     }
 
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        switch (id) {
+            case LOADER_JOURNEY_HISTORY:
+                return new CursorLoader(
+                        getActivity(),
+                        Journeys.CONTENT_URI,
+                        PROJECTION,
+                        null, //selection,
+                        null, //selectionArgs,
+                        Journeys.HISTORY_SORT_ORDER);
+        }
+        return null;
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        switch (loader.getId()) {
+            case LOADER_JOURNEY_HISTORY:
+                mAdapter.changeCursor(data);
+                break;
+        }
+
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        switch (loader.getId()) {
+            case LOADER_JOURNEY_HISTORY:
+                mAdapter.changeCursor(null);
+                break;
+        }
+    }
+
     public static class PlannerDialogFragment extends DialogFragment {
 
         private static Dialog mDialog;
@@ -617,7 +648,7 @@ public class PlannerFragment extends BaseListFragment {
     private class JourneyAdapter extends CursorAdapter {
 
         public JourneyAdapter(Context context, Cursor c) {
-            super(context, c);
+            super(context, c, true);
         }
 
         @Override
@@ -648,25 +679,25 @@ public class PlannerFragment extends BaseListFragment {
         private View inflateView(View v, JourneyQuery journeyQuery, Cursor c) {
             TextView originText = (TextView) v
                     .findViewById(R.id.favorite_start_point);
-            if (Location.TYPE_MY_LOCATION.equals(journeyQuery.origin.name)) {
+            if (journeyQuery.origin.isMyLocation()) {
                 originText.setText(getString(R.string.my_location));
             } else {
-                originText.setText(journeyQuery.origin.name);
+                originText.setText(journeyQuery.origin.getName());
             }
 
             TextView destinationText = (TextView) v
                     .findViewById(R.id.favorite_end_point);
-            if (Location.TYPE_MY_LOCATION.equals(journeyQuery.destination.name)) {
+            if (journeyQuery.destination.isMyLocation()) {
                 destinationText.setText(getString(R.string.my_location));
             } else {
-                destinationText.setText(journeyQuery.destination.name);
+                destinationText.setText(journeyQuery.destination.getName());
             }
 
             View viaView = v.findViewById(R.id.via_row);
             if (journeyQuery.hasVia()) {
                 TextView viaText = (TextView) v
                         .findViewById(R.id.favorite_via_point);
-                viaText.setText(journeyQuery.via.name);
+                viaText.setText(journeyQuery.via.getName());
                 viaView.setVisibility(View.VISIBLE);
             } else {
                 viaView.setVisibility(View.GONE);
@@ -780,7 +811,8 @@ public class PlannerFragment extends BaseListFragment {
             journeyQuery = JourneyQuery.fromJson(new JSONObject(
                     jsonJourneyQuery));
         } catch (JSONException e) {
-            Log.e(TAG, "Failed to covert to journey from json.");
+            e.printStackTrace();
+            Log.e(TAG, "Failed to convert to journey from json.");
         }
         return journeyQuery;
     }

@@ -77,8 +77,9 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements LoaderM
     private static final int FILTER_TYPE_STHLM_TRAVELING = 2;
     private static final int MESSAGE_TEXT_CHANGED = 100;
 
-    private HistoryDbAdapter mHistoryDbAdapter;
     private static final int LOADER_HISTORY = 1;
+
+    private HistoryDbAdapter mHistoryDbAdapter;
     private RecyclerView mHistoryRecyclerView;
     private RecyclerView mSearchResultRecyclerView;
     private DefaultListAdapter mDefaultListAdapter;
