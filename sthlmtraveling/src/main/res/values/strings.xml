@@ -173,11 +173,11 @@
     <!-- Planner error message -->
     <string name="planner_error_H9380">Start and end is too close to each other.</string>
     <!-- Planner error message -->
-    <string name="planner_error_H9320">Stop does not exists.</string>
+    <string name="planner_error_H9320">Stop does not exist.</string>
     <!-- Planner error message -->
-    <string name="planner_error_H9280">Stop does not exists.</string>
+    <string name="planner_error_H9280">Stop does not exist.</string>
     <!-- Planner error message -->
-    <string name="planner_error_H9260">Stop does not exists.</string>
+    <string name="planner_error_H9260">Stop does not exist.</string>
     <!-- Planner error message -->
     <string name="planner_error_H9250">Search was interrupted, please try again.</string>
     <!-- Planner error message -->
