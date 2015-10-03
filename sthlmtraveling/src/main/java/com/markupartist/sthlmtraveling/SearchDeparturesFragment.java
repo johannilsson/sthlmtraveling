@@ -16,44 +16,26 @@
 
 package com.markupartist.sthlmtraveling;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.text.Editable;
-import android.text.TextUtils;
-import android.text.TextWatcher;
-import android.view.Gravity;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
-import android.widget.AdapterView;
-import android.widget.FrameLayout;
-import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
-import android.widget.TextView;
-import android.widget.TextView.OnEditorActionListener;
 
 import com.markupartist.sthlmtraveling.provider.HistoryDbAdapter;
-import com.markupartist.sthlmtraveling.provider.planner.Planner;
 import com.markupartist.sthlmtraveling.provider.site.Site;
-import com.markupartist.sthlmtraveling.ui.view.DelayAutoCompleteTextView;
-import com.markupartist.sthlmtraveling.utils.RtlUtils;
-import com.markupartist.sthlmtraveling.utils.ViewHelper;
 
-public class SearchDeparturesFragment extends BaseListFragment implements AdapterView.OnItemClickListener {
+public class SearchDeparturesFragment extends BaseListFragment {
+    private static final int REQUEST_CODE_PICK_SITE = 1;
     static String TAG = "SearchDeparturesActivity";
     private boolean mCreateShortcut;
     private HistoryDbAdapter mHistoryDbAdapter;
-    private DelayAutoCompleteTextView mSiteTextView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -89,77 +71,23 @@ public class SearchDeparturesFragment extends BaseListFragment implements Adapte
                 R.layout.search_departures_header, null);
         getListView().addHeaderView(searchHeader, null, false);
 
-        final ImageButton clearButton = (ImageButton) searchHeader.findViewById(R.id.btn_clear);
-        ViewHelper.tintIcon(clearButton.getDrawable(), Color.GRAY);
-        clearButton.setOnClickListener(new OnClickListener() {
+        searchHeader.findViewById(R.id.sites).setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                mSiteTextView.setText("");
+                Intent searchIntent = new Intent(getActivity(), PlaceSearchActivity.class);
+                searchIntent.putExtra(PlaceSearchActivity.ARG_ONLY_STOPS, true);
+                startActivityForResult(searchIntent, REQUEST_CODE_PICK_SITE);
             }
         });
-
-        mSiteTextView = (DelayAutoCompleteTextView) searchHeader
-                .findViewById(R.id.sites);
-        AutoCompleteStopAdapter stopAdapter = new AutoCompleteStopAdapter(
-                getActivity(), R.layout.simple_dropdown_item_1line,
-                Planner.getInstance(), true);
-
-        mSiteTextView.setSelectAllOnFocus(true);
-        mSiteTextView.setAdapter(stopAdapter);
-
-        mSiteTextView.setOnEditorActionListener(new OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId,
-                                          KeyEvent event) {
-                boolean isEnterKey = (null != event && event.getKeyCode() == KeyEvent.KEYCODE_ENTER);
-                if (actionId == EditorInfo.IME_ACTION_SEARCH
-                        || isEnterKey) {
-                    dispatchSearch();
-                    return true;
-                }
-                return false;
-            }
-        });
-        mSiteTextView.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @SuppressLint("RtlHardcoded")
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (TextUtils.isEmpty(s)) {
-                    clearButton.setVisibility(View.INVISIBLE);
-                } else {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-                        FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) clearButton.getLayoutParams();
-                        if (RtlUtils.isRtl(s)) {
-                            layoutParams.gravity = Gravity.LEFT;
-                        } else {
-                            layoutParams.gravity = Gravity.RIGHT;
-                        }
-                        clearButton.setLayoutParams(layoutParams);
-                    }
-
-                    clearButton.setVisibility(View.VISIBLE);
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-            }
-        });
-        mSiteTextView.setOnItemClickListener(this);
 
         searchHeader.findViewById(R.id.btn_nearby_stops).setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(getActivity().getApplicationContext(),
                         NearbyActivity.class);
-                startActivity(i);
+                startActivityWithDefaultTransition(i);
             }
         });
-
     }
 
     @Override
@@ -182,10 +110,10 @@ public class SearchDeparturesFragment extends BaseListFragment implements Adapte
 
         String[] from = new String[]{HistoryDbAdapter.KEY_NAME};
 
-        int[] to = new int[]{android.R.id.text1};
+        int[] to = new int[]{R.id.text1};
 
         final SimpleCursorAdapter favorites = new SimpleCursorAdapter(
-                getActivity(), android.R.layout.simple_list_item_1,
+                getActivity(), R.layout.row_place_search,
                 historyCursor, from, to);
 
         getActivity().stopManagingCursor(historyCursor);
@@ -210,27 +138,8 @@ public class SearchDeparturesFragment extends BaseListFragment implements Adapte
         }
     }
 
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Site site = ((AutoCompleteStopAdapter) mSiteTextView.getAdapter()).getValue(position);
-        if (mCreateShortcut) {
-            onCreateShortCut(site);
-        } else {
-            onSearchDepartures(site);
-        }
-    }
-
-    private void dispatchSearch() {
-        Site stop = new Site();
-        stop.setName(mSiteTextView.getText().toString());
-
-        AutoCompleteStopAdapter autoCompleteAdapter = (AutoCompleteStopAdapter) mSiteTextView.getAdapter();
-        //autoCompleteAdapter.getValue(pos);
-
-        // TODO: Change to use looksValid and make sure site id is passed all the way.
-        if (!stop.hasName()) {
-            mSiteTextView.setError(getText(R.string.empty_value));
-        } else {
+    private void dispatchSearch(Site stop) {
+        if (stop.hasName()) {
             if (mCreateShortcut) {
                 onCreateShortCut(stop);
             } else {
@@ -245,7 +154,7 @@ public class SearchDeparturesFragment extends BaseListFragment implements Adapte
         Intent i = new Intent(getActivity().getApplicationContext(),
                 DeparturesActivity.class);
         i.putExtra(DeparturesActivity.EXTRA_SITE, stop);
-        startActivity(i);
+        startActivityWithDefaultTransition(i);
     }
 
     private void onCreateShortCut(Site stop) {
@@ -267,5 +176,16 @@ public class SearchDeparturesFragment extends BaseListFragment implements Adapte
         // Now, return the result to the launcher
         getActivity().setResult(Activity.RESULT_OK, intent);
         getActivity().finish();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case REQUEST_CODE_PICK_SITE:
+                if (resultCode == Activity.RESULT_OK) {
+                    dispatchSearch((Site) data.getParcelableExtra(PlaceSearchActivity.EXTRA_PLACE));
+                }
+                break;
+        }
     }
 }

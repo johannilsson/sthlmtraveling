@@ -31,10 +31,12 @@ import java.util.List;
  */
 public class SiteFilter extends PlaceSearchResultAdapter.PlaceFilter {
     private final Context mContext;
+    private final boolean mSearchOnlyStops;
 
-    public SiteFilter(PlaceSearchResultAdapter adapter, Context context) {
+    public SiteFilter(PlaceSearchResultAdapter adapter, Context context, boolean searchOnlyStops) {
         super(adapter);
         mContext = context;
+        mSearchOnlyStops = searchOnlyStops;
     }
 
     @Override
@@ -46,7 +48,7 @@ public class SiteFilter extends PlaceSearchResultAdapter.PlaceFilter {
             try {
                 String query = constraint.toString();
                 if (Site.looksValid(query)) {
-                    List<Site> list = SitesStore.getInstance().getSiteV2(mContext, query, false);
+                    List<Site> list = SitesStore.getInstance().getSiteV2(mContext, query, mSearchOnlyStops);
                     for (Site s : list) {
                         results.add(new SiteResult(s));
                     }

@@ -79,6 +79,7 @@
             android:textAppearance="?attr/textAppearanceListItemSmall"
             android:textColor="@color/body_text_2"
             android:textSize="14sp"
+            android:visibility="gone"
             tools:text="Sample sub title"/>
 
     </LinearLayout>

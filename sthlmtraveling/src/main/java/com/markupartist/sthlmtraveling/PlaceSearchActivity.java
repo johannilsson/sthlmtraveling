@@ -68,6 +68,7 @@ import java.util.List;
  * Created by johan on 14/09/15.
  */
 public class PlaceSearchActivity extends BaseFragmentActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+    public static final String ARG_ONLY_STOPS = "com.markupartist.sthlmtraveling.placesearch.only_stops";
     public static final String EXTRA_PLACE = "com.markupartist.sthlmtraveling.placesearch.stop";
 
     protected static final int REQUEST_CODE_POINT_ON_MAP = 0;
@@ -90,9 +91,10 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements LoaderM
     private GooglePlacesFilter mGoogleSearchFilter;
     private int mCurrentSearchFilterType = FILTER_TYPE_GOOGLE;
     private Handler mHandler;
-    private boolean mIsPlayServicesEnabled;
+    private boolean mShouldSearchGooglePlaces;
     private View mSearchFailed;
     private ContentLoadingProgressBar mProgressBar;
+    private boolean mSearchOnlyStops;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,9 +102,18 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements LoaderM
 
         setContentView(R.layout.place_search_layout);
 
-        registerScreen("Routes");
+        registerScreen("Place Search");
 
-        initGoogleApiClient(false);
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            if (extras.containsKey(ARG_ONLY_STOPS)) {
+                mSearchOnlyStops = extras.getBoolean(ARG_ONLY_STOPS);
+            }
+        }
+
+        if (!mSearchOnlyStops) {
+            initGoogleApiClient(false);
+        }
         createSearchHandler();
 
         if (savedInstanceState != null) {
@@ -113,7 +124,6 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements LoaderM
 
         mHistoryDbAdapter = new HistoryDbAdapter(this).open();
 
-        mSearchEdit = (EditText) findViewById(R.id.search_edit);
         ImageButton backButton = (ImageButton) findViewById(R.id.search_back);
         ViewHelper.tint(backButton, getResources().getColor(R.color.primary_dark));
         backButton.setOnClickListener(new View.OnClickListener() {
@@ -122,6 +132,7 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements LoaderM
                 onBackPressed();
             }
         });
+        mSearchEdit = (EditText) findViewById(R.id.search_edit);
         mSearchEdit.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -133,6 +144,7 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements LoaderM
             }
         });
         mSearchEdit.requestFocus();
+
         mClearButton = (ImageButton) findViewById(R.id.search_clear);
         ViewHelper.tintIcon(mClearButton.getDrawable(), Color.GRAY);
         mClearButton.setOnClickListener(new View.OnClickListener() {
@@ -147,9 +159,15 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements LoaderM
         mProgressBar = (ContentLoadingProgressBar) findViewById(R.id.search_progress_bar);
 
         setupHistoryViews();
+        if (!mSearchOnlyStops) {
+            getSupportLoaderManager().initLoader(LOADER_HISTORY, null, this);
+        }
         setupSearchResultViews();
 
-        getSupportLoaderManager().initLoader(LOADER_HISTORY, null, this);
+        if (mSearchOnlyStops) {
+            mShouldSearchGooglePlaces = false;
+            setSearchFilter(FILTER_TYPE_STHLM_TRAVELING);
+        }
     }
 
     public void createSearchHandler() {
@@ -157,6 +175,7 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements LoaderM
             @Override public boolean handleMessage(Message msg) {
                 switch (msg.what) {
                     case MESSAGE_TEXT_CHANGED:
+                        Log.e("LOOOGG", "filter = " + mCurrentSearchFilterType);
                         mSearchResultAdapter.getFilter().filter((String) msg.obj);
                         return true;
                 }
@@ -195,13 +214,15 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements LoaderM
                 break;
         }
 
-        if (mIsPlayServicesEnabled) {
+        if (mShouldSearchGooglePlaces) {
             mSearchResultAdapter.setFooterData(footerItem);
         }
         mCurrentSearchFilterType = filterType;
         if (!TextUtils.isEmpty(mSearchEdit.getText())) {
             mSearchResultAdapter.getFilter().filter(mSearchEdit.getText());
         }
+
+        Log.e("LOOOG", "Set filter " + mCurrentSearchFilterType);
     }
 
     void setupSearchResultViews() {
@@ -217,7 +238,7 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements LoaderM
 
         // Search result filters.
         AutocompleteResultCallback autocompleteResultCallback = new AutocompleteResultCallback();
-        mSthlmTravelingSearchFilter = new SiteFilter(mSearchResultAdapter, this);
+        mSthlmTravelingSearchFilter = new SiteFilter(mSearchResultAdapter, this, mSearchOnlyStops);
         mSthlmTravelingSearchFilter.setFilterResultCallback(autocompleteResultCallback);
         mGoogleSearchFilter = new GooglePlacesFilter(mSearchResultAdapter, getGoogleApiClient());
         mGoogleSearchFilter.setFilterResultCallback(autocompleteResultCallback);
@@ -257,6 +278,11 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements LoaderM
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         mHistoryRecyclerView.setLayoutManager(layoutManager);
         mHistoryRecyclerView.addOnScrollListener(new HideKeyboardOnScroll(this, mSearchEdit));
+
+        // For now, skip the extras if we only searching for stops.
+        if (mSearchOnlyStops) {
+            return;
+        }
 
         mDefaultListAdapter = new DefaultListAdapter(this);
         List<CharSequence> options = new ArrayList<>();
@@ -331,16 +357,13 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements LoaderM
     public void onConnected(Bundle bundle) {
         super.onConnected(bundle);
 
-        mIsPlayServicesEnabled = true;
+        mShouldSearchGooglePlaces = true;
         setSearchFilter(mCurrentSearchFilterType);
     }
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
-        // TODO: Show a snackbar or similar that play services is not available and fallback to other api.
-        //PlayServicesUtils.checkGooglePlaySevices(this);
-        Log.e("LOOOOGG", "onConnectionFailed");
-        mIsPlayServicesEnabled = false;
+        mShouldSearchGooglePlaces = false;
         setSearchFilter(FILTER_TYPE_STHLM_TRAVELING);
     }
 
@@ -388,11 +411,15 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements LoaderM
             final String searchTerm = s.toString();
 
             if (searchTerm.length() > 0) {
-                mHistoryRecyclerView.setVisibility(View.GONE);
+                if (mHistoryRecyclerView != null) {
+                    mHistoryRecyclerView.setVisibility(View.GONE);
+                }
                 mSearchResultRecyclerView.setVisibility(View.VISIBLE);
             } else {
                 mHandler.removeMessages(MESSAGE_TEXT_CHANGED);
-                mHistoryRecyclerView.setVisibility(View.VISIBLE);
+                if (mHistoryRecyclerView != null) {
+                    mHistoryRecyclerView.setVisibility(View.VISIBLE);
+                }
                 mSearchResultRecyclerView.setVisibility(View.GONE);
                 mProgressBar.hide();
             }

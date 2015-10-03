@@ -17,75 +17,72 @@
 -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tool="http://schemas.android.com/tools"
-              android:orientation="vertical"
               android:layout_width="fill_parent"
-              android:layout_height="wrap_content">
-
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        >
-
-        <com.markupartist.sthlmtraveling.ui.view.DelayAutoCompleteTextView
-            style="@style/AutoComplete"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/sites"
-            android:hint="@string/site_name"
-            android:paddingLeft="@dimen/list_horizontal_padding"
-            android:paddingRight="@dimen/list_horizontal_padding"
-            android:paddingEnd="@dimen/list_horizontal_padding"
-            android:paddingTop="@dimen/list_horizontal_padding"
-            android:paddingBottom="@dimen/list_horizontal_padding"
-            android:textColorHint="@color/stroke"
-            />
-        <ImageButton
-            android:id="@+id/btn_clear"
-            style="?borderlessButtonStyle"
-            android:layout_width="60dp"
-            android:layout_height="match_parent"
-            android:src="@drawable/ic_close"
-            android:paddingTop="@dimen/list_horizontal_padding"
-            android:paddingBottom="@dimen/list_horizontal_padding"
-            android:paddingLeft="0dp"
-            android:paddingRight="0dp"
-            android:visibility="invisible"
-            tool:visibility="visible"
-            android:tint="#000000"
-            android:layout_gravity="right"
-            />
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1px"
-            android:background="@color/stroke"
-            android:layout_marginLeft="@dimen/list_horizontal_padding"
-            android:layout_marginRight="@dimen/list_horizontal_padding"
-            android:layout_gravity="bottom"
-            />
-
-    </FrameLayout>
-
-    <Button
-        android:id="@+id/btn_nearby_stops"
-        android:paddingTop="8dp"
-        android:paddingBottom="8dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/nearby_stops"
-        android:gravity="start|center_vertical"
-        android:drawableLeft="@drawable/ic_place"
-        android:drawableStart="@drawable/ic_place"
-        style="?attr/borderlessButtonStyle"
-        android:textColor="?android:attr/textColorPrimary"/>
+              android:layout_height="wrap_content"
+              android:orientation="vertical">
 
     <TextView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        style="?android:attr/listSeparatorTextViewStyle"
+        android:gravity="bottom"
+        android:paddingBottom="8dp"
         android:paddingLeft="@dimen/list_horizontal_padding"
         android:paddingRight="@dimen/list_horizontal_padding"
-        android:text="@string/history_label"/>
+        android:paddingTop="16dp"
+        android:text="@string/search_label"
+        android:textAppearance="?attr/textAppearanceListItemSmall"
+        android:textColor="@color/body_text_2"
+        android:textSize="14sp"
+        />
+
+    <TextView
+        android:id="@+id/sites"
+        android:layout_width="match_parent"
+        android:layout_height="?android:attr/listPreferredItemHeight"
+        android:layout_marginLeft="64dp"
+        android:layout_marginStart="64dp"
+        android:background="?attr/selectableItemBackground"
+        android:gravity="start|center_vertical"
+        android:paddingBottom="8dp"
+        android:paddingEnd="8dp"
+        android:paddingRight="8dp"
+        android:paddingTop="8dp"
+        android:text="@string/site_name"
+        android:textAppearance="?attr/textAppearanceListItemSmall"
+        android:textColor="@color/body_text_1"
+        />
+
+    <TextView
+        android:id="@+id/btn_nearby_stops"
+        android:layout_width="match_parent"
+        android:layout_height="?android:attr/listPreferredItemHeight"
+        android:layout_marginLeft="64dp"
+        android:layout_marginStart="64dp"
+        android:background="?attr/selectableItemBackground"
+        android:gravity="start|center_vertical"
+        android:paddingBottom="8dp"
+        android:paddingEnd="8dp"
+        android:paddingRight="8dp"
+        android:paddingTop="8dp"
+        android:text="@string/nearby_stops"
+        android:textAppearance="?attr/textAppearanceListItemSmall"
+        android:textColor="@color/body_text_1"
+        />
+
+    <TextView
+        android:id="@+id/text1"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="bottom"
+        android:paddingBottom="8dp"
+        android:paddingLeft="@dimen/list_horizontal_padding"
+        android:paddingRight="@dimen/list_horizontal_padding"
+        android:paddingTop="16dp"
+        android:text="@string/history_label"
+        android:textAppearance="?attr/textAppearanceListItemSmall"
+        android:textColor="@color/body_text_2"
+        android:textSize="14sp"
+        />
+
 </LinearLayout>
 
