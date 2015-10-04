@@ -24,12 +24,12 @@
 
     <ImageView
         android:id="@+id/icon"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:layout_centerVertical="true"
         android:paddingBottom="@dimen/list_vertical_padding"
-        android:paddingLeft="8dp"
-        android:paddingRight="8dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginLeft="16dp"
         android:paddingTop="@dimen/list_vertical_padding"
         />
 
@@ -61,8 +61,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
-            android:paddingLeft="8dp"
-            android:paddingRight="8dp"
             android:singleLine="true"
             android:textAppearance="?attr/textAppearanceListItemSmall"
             android:textColor="@color/body_text_1"
@@ -73,13 +71,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
-            android:paddingLeft="8dp"
-            android:paddingRight="8dp"
             android:singleLine="true"
             android:textAppearance="?attr/textAppearanceListItemSmall"
             android:textColor="@color/body_text_2"
             android:textSize="14sp"
             android:visibility="gone"
+            tools:visibility="visible"
             tools:text="Sample sub title"/>
 
     </LinearLayout>
