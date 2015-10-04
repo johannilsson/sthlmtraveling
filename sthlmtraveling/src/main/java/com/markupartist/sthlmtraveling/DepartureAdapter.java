@@ -30,21 +30,11 @@ public class DepartureAdapter extends SectionedAdapter {
 
     @Override
     protected View getHeaderView(Section section, int index, View convertView, ViewGroup parent) {
-
-        TextView result;
-        try {
-            result = (TextView) convertView;
-        } catch (ClassCastException e) {
-            return convertView;
-        }
-
         if (convertView == null) {
-            LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            result = (TextView) inflater.inflate(R.layout.header, null);
+            convertView = LayoutInflater.from(mContext).inflate(R.layout.row_section, parent, false);
         }
-
-        result.setText(section.caption);
-        return result;
+        ((TextView) convertView.findViewById(R.id.text1)).setText(section.caption);
+        return convertView;
     }
 
     public void fillDepartures(Departures departures, int transportType) {
@@ -104,20 +94,16 @@ public class DepartureAdapter extends SectionedAdapter {
 
     public static class DisplayRowAdapter extends ArrayAdapter<DisplayRow> {
 
-        private final LayoutInflater mInflater;
-
         public DisplayRowAdapter(Context context, List<DisplayRow> displayRows) {
             super(context, R.layout.departures_row, displayRows);
-
-            mInflater = (LayoutInflater) context.getSystemService(
-                    Context.LAYOUT_INFLATER_SERVICE);
         }
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             DisplayRow displayRow = getItem(position);
 
-            convertView = mInflater.inflate(R.layout.departures_row, null);
+            convertView = LayoutInflater.from(getContext())
+                    .inflate(R.layout.departures_row, parent, false);
 
             TextView lineView = (TextView) convertView.findViewById(R.id.departure_line);
             TextView destinationView = (TextView) convertView.findViewById(R.id.departure_destination);
