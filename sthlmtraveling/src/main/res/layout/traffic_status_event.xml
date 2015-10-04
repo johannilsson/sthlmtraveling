@@ -16,29 +16,37 @@
 ** limitations under the License.
 */
 -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:orientation="horizontal"
-              android:paddingBottom="@dimen/list_vertical_padding"
-              android:paddingTop="@dimen/list_vertical_padding"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingBottom="@dimen/list_vertical_padding"
+                android:layout_marginRight="16dp"
+                android:layout_marginEnd="16dp"
+                android:paddingTop="@dimen/list_vertical_padding"
     >
 
     <ImageView
         android:id="@+id/traffic_status_event_status"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:scaleType="centerInside"
         android:src="@drawable/ic_trip_deviation"
         />
 
     <TextView
         android:id="@+id/traffic_status_event_message"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/list_horizontal_padding"
-        android:layout_marginStart="@dimen/list_horizontal_padding"
-        android:layout_weight="1"
-        tools:text="På grund av banarbeten stannar inte södergående pendeltåg vid station Årstaberg lördag 12 juni kl 09:18 – 18:40 samt söndag 13 juni kl 11:18 - 18:40. Avstigande hänvisas att åka via Älvsjö. Påstigande hänvisas att åka via Stockholms södra."
+        android:minHeight="52dp"
+        android:gravity="center_vertical"
+        android:layout_marginLeft="72dp"
+        android:layout_marginStart="72dp"
+        android:textSize="14dp"
+        android:textColor="@color/body_text_2"
+        tools:text="På grund av banarbeten stannar På grund av banarbeten stannar På grund av banarbeten stannar På grund av banarbeten stannar På grund av banarbeten stannar"
         />
-</LinearLayout>
+</RelativeLayout>
