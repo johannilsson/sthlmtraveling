@@ -22,17 +22,8 @@
               android:orientation="vertical">
 
     <TextView
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:gravity="bottom"
-        android:paddingBottom="8dp"
-        android:paddingLeft="@dimen/list_horizontal_padding"
-        android:paddingRight="@dimen/list_horizontal_padding"
-        android:paddingTop="16dp"
+        style="@style/Subtitle"
         android:text="@string/search_label"
-        android:textAppearance="?attr/textAppearanceListItemSmall"
-        android:textColor="@color/body_text_2"
-        android:textSize="14sp"
         />
 
     <TextView
@@ -44,8 +35,8 @@
         android:background="?attr/selectableItemBackground"
         android:gravity="start|center_vertical"
         android:paddingBottom="8dp"
-        android:paddingEnd="8dp"
-        android:paddingRight="8dp"
+        android:paddingEnd="16dp"
+        android:paddingRight="16dp"
         android:paddingTop="8dp"
         android:text="@string/site_name"
         android:textAppearance="?attr/textAppearanceListItemSmall"
@@ -61,8 +52,8 @@
         android:background="?attr/selectableItemBackground"
         android:gravity="start|center_vertical"
         android:paddingBottom="8dp"
-        android:paddingEnd="8dp"
-        android:paddingRight="8dp"
+        android:paddingEnd="16dp"
+        android:paddingRight="16dp"
         android:paddingTop="8dp"
         android:text="@string/nearby_stops"
         android:textAppearance="?attr/textAppearanceListItemSmall"
@@ -70,18 +61,8 @@
         />
 
     <TextView
-        android:id="@+id/text1"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:gravity="bottom"
-        android:paddingBottom="8dp"
-        android:paddingLeft="@dimen/list_horizontal_padding"
-        android:paddingRight="@dimen/list_horizontal_padding"
-        android:paddingTop="16dp"
+        style="@style/Subtitle"
         android:text="@string/history_label"
-        android:textAppearance="?attr/textAppearanceListItemSmall"
-        android:textColor="@color/body_text_2"
-        android:textSize="14sp"
         />
 
 </LinearLayout>

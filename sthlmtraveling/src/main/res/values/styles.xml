@@ -86,4 +86,15 @@
         <item name="android:textCursorDrawable" tools:ignore="NewApi">@null</item>
     </style>
 
+    <style name="Subtitle">
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">48dp</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:textColor">@color/body_text_2</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:paddingLeft">@dimen/list_horizontal_padding</item>
+        <item name="android:paddingRight">@dimen/list_horizontal_padding</item>
+        <item name="android:textAppearance">?attr/textAppearanceListItemSmall</item>
+    </style>
+
 </resources>

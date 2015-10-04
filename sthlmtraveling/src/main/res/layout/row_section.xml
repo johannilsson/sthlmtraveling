@@ -19,16 +19,5 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/text1"
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:gravity="bottom"
-    android:paddingBottom="8dp"
-    android:paddingLeft="@dimen/list_horizontal_padding"
-    android:paddingRight="@dimen/list_horizontal_padding"
-    android:paddingTop="16dp"
-    android:textColor="@color/body_text_2"
-    android:textSize="14sp"
-    android:textAppearance="?attr/textAppearanceListItemSmall"
-
     tools:text="@string/history_label"
-    />
+    style="@style/Subtitle"/>
