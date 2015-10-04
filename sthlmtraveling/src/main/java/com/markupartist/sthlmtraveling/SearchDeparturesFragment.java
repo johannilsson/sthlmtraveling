@@ -17,25 +17,32 @@
 package com.markupartist.sthlmtraveling;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
+import android.support.v4.widget.CursorAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ListView;
-import android.widget.SimpleCursorAdapter;
+import android.widget.TextView;
 
 import com.markupartist.sthlmtraveling.provider.HistoryDbAdapter;
 import com.markupartist.sthlmtraveling.provider.site.Site;
 
-public class SearchDeparturesFragment extends BaseListFragment {
+public class SearchDeparturesFragment extends BaseListFragment implements LoaderManager.LoaderCallbacks<Cursor> {
     private static final int REQUEST_CODE_PICK_SITE = 1;
+    private static final int LOADER_HISTORY = 1;
     static String TAG = "SearchDeparturesActivity";
     private boolean mCreateShortcut;
     private HistoryDbAdapter mHistoryDbAdapter;
+    private HistoryAdapter mHistoryAdapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -55,15 +62,24 @@ public class SearchDeparturesFragment extends BaseListFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.search_departures_fragment, container,
-                false);
+        return inflater.inflate(R.layout.search_departures_fragment, container, false);
     }
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        mHistoryAdapter = new HistoryAdapter(getActivity());
+        setListAdapter(mHistoryAdapter);
+
         initViews();
-        fillData();
-        super.onActivityCreated(savedInstanceState);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        getLoaderManager().restartLoader(LOADER_HISTORY, null, this);
     }
 
     private void initViews() {
@@ -102,35 +118,10 @@ public class SearchDeparturesFragment extends BaseListFragment {
         mHistoryDbAdapter.close();
     }
 
-    private void fillData() {
-        final Cursor historyCursor = mHistoryDbAdapter
-                .fetchByType(HistoryDbAdapter.TYPE_DEPARTURE_SITE);
-
-        getActivity().startManagingCursor(historyCursor);
-
-        String[] from = new String[]{HistoryDbAdapter.KEY_NAME};
-
-        int[] to = new int[]{R.id.text1};
-
-        final SimpleCursorAdapter favorites = new SimpleCursorAdapter(
-                getActivity(), R.layout.row_place_search,
-                historyCursor, from, to);
-
-        getActivity().stopManagingCursor(historyCursor);
-
-        setListAdapter(favorites);
-    }
-
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
-        Cursor historyCursor = ((SimpleCursorAdapter) this.getListAdapter())
-                .getCursor();
-        getActivity().startManagingCursor(historyCursor);
-
-        Site site = mHistoryDbAdapter.mapToSite(historyCursor);
-
-        getActivity().stopManagingCursor(historyCursor);
-
+        Cursor historyCursor = ((HistoryAdapter) this.getListAdapter()).getCursor();
+        Site site = HistoryDbAdapter.mapToSite(historyCursor);
         if (mCreateShortcut) {
             onCreateShortCut(site);
         } else {
@@ -180,12 +171,83 @@ public class SearchDeparturesFragment extends BaseListFragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        getLoaderManager().restartLoader(LOADER_HISTORY, null, this);
         switch (requestCode) {
             case REQUEST_CODE_PICK_SITE:
                 if (resultCode == Activity.RESULT_OK) {
                     dispatchSearch((Site) data.getParcelableExtra(PlaceSearchActivity.EXTRA_PLACE));
                 }
                 break;
+        }
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        switch (id) {
+            case LOADER_HISTORY:
+                return new HistoryLoader(getActivity(), mHistoryDbAdapter);
+        }
+        return null;
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        switch (loader.getId()) {
+            case LOADER_HISTORY:
+                mHistoryAdapter.swapCursor(data);
+                break;
+        }
+    }
+
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        switch (loader.getId()) {
+            case LOADER_HISTORY:
+                mHistoryAdapter.swapCursor(null);
+                break;
+        }
+    }
+
+
+    private static class HistoryLoader extends CursorLoader {
+
+        private HistoryDbAdapter mHistoryDbAdapter;
+
+        public HistoryLoader(Context context, HistoryDbAdapter historyDbAdapter) {
+            super(context);
+            mHistoryDbAdapter = historyDbAdapter;
+        }
+
+        @Override
+        public Cursor loadInBackground() {
+            return mHistoryDbAdapter.fetchByType(HistoryDbAdapter.TYPE_DEPARTURE_SITE);
+        }
+
+    }
+
+    private static class HistoryAdapter extends CursorAdapter {
+
+        public HistoryAdapter(Context context) {
+            super(context, null, CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
+        }
+
+        @Override
+        public View newView(Context context, Cursor cursor, ViewGroup parent) {
+            return LayoutInflater.from(context).inflate(R.layout.row_place_search, parent, false);
+        }
+
+        @Override
+        public void bindView(View view, Context context, Cursor cursor) {
+            Site site = HistoryDbAdapter.mapToSite(cursor);
+            ((TextView) view.findViewById(R.id.text1)).setText(site.getName());
+            TextView text2 = (TextView) view.findViewById(R.id.text2);
+            if (site.getLocality() != null) {
+                text2.setText(site.getLocality());
+                text2.setVisibility(View.VISIBLE);
+            } else {
+                text2.setVisibility(View.GONE);
+            }
         }
     }
 }

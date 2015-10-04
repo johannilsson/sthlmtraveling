@@ -80,6 +80,8 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements LoaderM
 
     private static final int LOADER_HISTORY = 1;
 
+    private static final boolean IS_GOOGLE_PLACE_SEARCH_ENABLED = false;
+
     private HistoryDbAdapter mHistoryDbAdapter;
     private RecyclerView mHistoryRecyclerView;
     private RecyclerView mSearchResultRecyclerView;
@@ -111,7 +113,7 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements LoaderM
             }
         }
 
-        if (!mSearchOnlyStops) {
+        if (shouldSearchGooglePlaces()) {
             initGoogleApiClient(false);
         }
         createSearchHandler();
@@ -164,10 +166,17 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements LoaderM
         }
         setupSearchResultViews();
 
-        if (mSearchOnlyStops) {
+        if (!shouldSearchGooglePlaces()) {
             mShouldSearchGooglePlaces = false;
             setSearchFilter(FILTER_TYPE_STHLM_TRAVELING);
         }
+    }
+
+    boolean shouldSearchGooglePlaces() {
+        if (mSearchOnlyStops) {
+            return false;
+        }
+        return IS_GOOGLE_PLACE_SEARCH_ENABLED;
     }
 
     public void createSearchHandler() {
@@ -341,7 +350,7 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements LoaderM
         ArrayList<Site> historyList = new ArrayList<Site>();
         data.moveToFirst();
         for (int i = 0; i < data.getCount(); i++) {
-            Site site = mHistoryDbAdapter.mapToSite(data);
+            Site site = HistoryDbAdapter.mapToSite(data);
             historyList.add(site);
             data.moveToNext();
         }

@@ -237,7 +237,7 @@ public class HistoryDbAdapter {
         mDb.delete(DATABASE_TABLE, null, null);
     }
 
-    public Site mapToSite(Cursor cursor) {
+    public static Site mapToSite(Cursor cursor) {
         Site site = new Site();
         site.setName(cursor.getString(HistoryDbAdapter.INDEX_NAME));
         site.setLocation(
