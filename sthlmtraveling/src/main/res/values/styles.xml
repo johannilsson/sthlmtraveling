@@ -77,7 +77,6 @@
         <item name="android:inputType">text</item>
         <item name="android:lines">1</item>
         <item name="android:nextFocusDown">@+id/to</item>
-        <item name="android:nextFocusRight">@+id/from_menu</item>
         <item name="android:singleLine">true</item>
         <item name="android:textColorHint">?android:attr/textColorPrimary</item>
         <item name="android:textColor">?android:attr/textColorPrimary</item>
