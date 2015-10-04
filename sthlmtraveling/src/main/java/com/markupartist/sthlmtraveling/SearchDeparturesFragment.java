@@ -253,7 +253,7 @@ public class SearchDeparturesFragment extends BaseListFragment implements Adapte
     private void onCreateShortCut(Site stop) {
         // Setup the intent to be launched
         Intent shortcutIntent = new Intent(getActivity()
-                .getApplicationContext(), DeparturesActivity.class);
+                .getApplicationContext(), DeparturesShortcutProxyActivity.class);
         shortcutIntent.setAction(Intent.ACTION_VIEW);
         shortcutIntent.putExtra(DeparturesActivity.EXTRA_SITE_NAME, stop.getName());
         shortcutIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
