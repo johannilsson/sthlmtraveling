@@ -23,16 +23,24 @@
                 android:background="?attr/selectableItemBackground"
     >
 
-    <TextView
+    <!--<TextView-->
+        <!--android:id="@+id/departure_line"-->
+        <!--android:layout_width="40dp"-->
+        <!--android:layout_height="40dp"-->
+        <!--android:layout_centerVertical="true"-->
+        <!--android:layout_marginRight="16dp"-->
+        <!--android:layout_marginLeft="16dp"-->
+        <!--android:gravity="center"-->
+        <!--tools:text="18"-->
+        <!--android:background="@drawable/circular_placeholder"-->
+        <!--/>-->
+    <ImageView
         android:id="@+id/departure_line"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_centerVertical="true"
         android:layout_marginRight="16dp"
         android:layout_marginLeft="16dp"
-        android:gravity="center"
-        tools:text="18"
-        android:background="@drawable/circular_placeholder"
         />
 
     <TextView
@@ -45,7 +53,7 @@
         android:paddingLeft="@dimen/list_horizontal_padding"
         android:paddingRight="@dimen/list_horizontal_padding"
         android:textColor="@color/body_text_1"
-        android:textSize="14sp"
+        android:textAppearance="?attr/textAppearanceListItemSmall"
         android:visibility="visible"
         tools:text="1 min"/>
 
