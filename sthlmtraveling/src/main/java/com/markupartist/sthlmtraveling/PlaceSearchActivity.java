@@ -35,7 +35,6 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -184,7 +183,6 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements LoaderM
             @Override public boolean handleMessage(Message msg) {
                 switch (msg.what) {
                     case MESSAGE_TEXT_CHANGED:
-                        Log.e("LOOOGG", "filter = " + mCurrentSearchFilterType);
                         mSearchResultAdapter.getFilter().filter((String) msg.obj);
                         return true;
                 }
@@ -229,8 +227,6 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements LoaderM
         if (!TextUtils.isEmpty(mSearchEdit.getText())) {
             mSearchResultAdapter.getFilter().filter(mSearchEdit.getText());
         }
-
-        Log.e("LOOOG", "Set filter " + mCurrentSearchFilterType);
     }
 
     void setupSearchResultViews() {
