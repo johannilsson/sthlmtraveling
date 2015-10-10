@@ -235,6 +235,7 @@
     <string name="transport_type">Transport type</string>
     <string name="search_try_with_app_name">Try searching with STHLM Traveling</string>
     <string name="search_try_with_google">Try searching with Google</string>
+    <string name="search_attribution_note">Place search</string>
 
     <string name="language_system_locale">System Locale</string>
     <string name="pref_deviations_interval_1">10 min</string>
