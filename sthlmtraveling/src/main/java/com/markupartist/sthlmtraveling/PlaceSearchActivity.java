@@ -212,13 +212,12 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements LoaderM
         switch (filterType) {
             case FILTER_TYPE_GOOGLE:
                 mSearchResultAdapter.setFilter(mGoogleSearchFilter);
-                footerItem.text1 = "Try searching with STHLM Traveling";
+                footerItem.text1 = getString(R.string.search_try_with_app_name);
                 footerItem.iconResource = R.drawable.powered_by_google_light;
                 break;
-
             case FILTER_TYPE_STHLM_TRAVELING:
                 mSearchResultAdapter.setFilter(mSthlmTravelingSearchFilter);
-                footerItem.text1 = "Try searching with Google";
+                footerItem.text1 = getString(R.string.search_try_with_google);
                 footerItem.iconResource = -1;
                 break;
         }
