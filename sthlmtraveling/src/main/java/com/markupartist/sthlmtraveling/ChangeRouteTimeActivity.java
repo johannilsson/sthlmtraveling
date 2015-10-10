@@ -284,7 +284,7 @@ public class ChangeRouteTimeActivity extends BaseActivity implements OnClickList
                         calendar.get(Calendar.DAY_OF_MONTH));
                 break;
             case DIALOG_TIME:
-                ((TimePickerDialog) dialog).updateTime(calendar.get(Calendar.HOUR), calendar.get(Calendar.MINUTE));
+                ((TimePickerDialog) dialog).updateTime(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE));
                 break;
         }
     }
@@ -314,7 +314,6 @@ public class ChangeRouteTimeActivity extends BaseActivity implements OnClickList
 
     private TimePickerDialog.OnTimeSetListener mTimeSetListener =
             new TimePickerDialog.OnTimeSetListener() {
-
                 public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
                     Calendar calendar = Calendar.getInstance();
                     calendar.setTime(mTime);
