@@ -267,35 +267,35 @@ public class FavoritesFragment extends BaseListFragment {
         @Override
         public View newView(Context context, Cursor cursor, ViewGroup parent) {
             final LayoutInflater inflater = LayoutInflater.from(context);
-            View v = inflater.inflate(R.layout.favorite_row, parent, false);
+            View v = inflater.inflate(R.layout.row_journey, parent, false);
             JourneyQuery journeyQuery = getJourneyQuery(cursor);
             return inflate(v, journeyQuery);
         }
 
         private View inflate(View v, JourneyQuery journeyQuery) {
-            TextView originText =
-                (TextView) v.findViewById(R.id.favorite_start_point);
+            // Hide the checkbox
+            v.findViewById(R.id.journey_star_check).setVisibility(View.GONE);
+
+            TextView originText = (TextView) v.findViewById(R.id.favorite_start_point);
             if (journeyQuery.origin.isMyLocation()) {
                 originText.setText(getString(R.string.my_location));
             } else {
                 originText.setText(journeyQuery.origin.getName());
             }
 
-            TextView destinationText =
-                (TextView) v.findViewById(R.id.favorite_end_point);
+            TextView destinationText = (TextView) v.findViewById(R.id.favorite_end_point);
             if (journeyQuery.destination.isMyLocation()) {
                 destinationText.setText(getString(R.string.my_location));
             } else {
                 destinationText.setText(journeyQuery.destination.getName());
             }
 
-            View viaView = v.findViewById(R.id.favorite_via_row);
+            TextView viaText = (TextView) v.findViewById(R.id.favorite_via_point);
             if (journeyQuery.hasVia()) {
-                viaView.setVisibility(View.VISIBLE);
-                TextView viaText = (TextView) v.findViewById(R.id.favorite_via_point);
+                viaText.setVisibility(View.VISIBLE);
                 viaText.setText(journeyQuery.via.getName());
             } else {
-                viaView.setVisibility(View.GONE);
+                viaText.setVisibility(View.GONE);
             }
 
             addTransportModeViews(journeyQuery, v);

@@ -253,7 +253,7 @@ public class PlannerFragment extends BaseListFragment implements LoaderManager.L
             getActivity().setTitle(R.string.create_shortcut_label);
 
             // Fake an adapter. This needs to be fixed later on so we can use the history.
-            setListAdapter(new ArrayAdapter<String>(getActivity(), R.layout.journey_history_row));
+            setListAdapter(new ArrayAdapter<String>(getActivity(), R.layout.row_journey));
         } else {
             setListAdapter(mAdapter);
         }
@@ -666,7 +666,7 @@ public class PlannerFragment extends BaseListFragment implements LoaderManager.L
             JourneyQuery journeyQuery = getJourneyQuery(cursor);
             View v;
             if (journeyQuery != null) {
-                v = inflater.inflate(R.layout.journey_history_row, parent,
+                v = inflater.inflate(R.layout.row_journey, parent,
                         false);
                 inflateView(v, journeyQuery, cursor);
             } else {
@@ -693,14 +693,12 @@ public class PlannerFragment extends BaseListFragment implements LoaderManager.L
                 destinationText.setText(journeyQuery.destination.getName());
             }
 
-            View viaView = v.findViewById(R.id.via_row);
+            TextView viaText = (TextView) v.findViewById(R.id.favorite_via_point);
             if (journeyQuery.hasVia()) {
-                TextView viaText = (TextView) v
-                        .findViewById(R.id.favorite_via_point);
                 viaText.setText(journeyQuery.via.getName());
-                viaView.setVisibility(View.VISIBLE);
+                viaText.setVisibility(View.VISIBLE);
             } else {
-                viaView.setVisibility(View.GONE);
+                viaText.setVisibility(View.GONE);
             }
 
             addTransportModeViews(journeyQuery, v);
