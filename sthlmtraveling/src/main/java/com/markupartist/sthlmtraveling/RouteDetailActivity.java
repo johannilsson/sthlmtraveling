@@ -123,7 +123,7 @@ public class RouteDetailActivity extends BaseListActivity {
         BidiFormatter bidiFormatter = BidiFormatter.getInstance(Locale.getDefault());
         String timeStr = getString(R.string.time_to,
                 bidiFormatter.unicodeWrap(mTrip.getDurationText(getResources())),
-                bidiFormatter.unicodeWrap(mTrip.destination.getName()));
+                bidiFormatter.unicodeWrap(String.valueOf(getLocationName(mJourneyQuery.destination))));
         timeView.setText(timeStr);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
             timeView.setTextDirection(View.TEXT_DIRECTION_ANY_RTL);
@@ -281,8 +281,13 @@ public class RouteDetailActivity extends BaseListActivity {
      * @param trip the route details
      */
     public void onRouteDetailsResult(Trip2 trip) {
-
         getListView().addFooterView(createFooterView(trip));
+        // Add attributions if dealing with a Google result.
+        if (mJourneyQuery.destination.getSource() == Site.SOURCE_GOOGLE_PLACES) {
+            View attributionView = getLayoutInflater().inflate(
+                    R.layout.trip_row_attribution, null, false);
+            getListView().addFooterView(attributionView);
+        }
 
         setListAdapter(mSubTripAdapter);
 
@@ -296,7 +301,7 @@ public class RouteDetailActivity extends BaseListActivity {
         final SubTrip lastSubTrip = trip.subTrips.get(numSubTrips - 1);
         // todo: make sure this is safe.
 
-        View convertView = getLayoutInflater().inflate(R.layout.trip_row_stop_layout, null);
+        ViewGroup convertView = (ViewGroup) getLayoutInflater().inflate(R.layout.trip_row_stop_layout, null);
         Button nameView = (Button) convertView.findViewById(R.id.trip_stop_title);
         if ("Walk".equals(lastSubTrip.transport.type)) {
             nameView.setText(getLocationName(mJourneyQuery.destination));
@@ -326,9 +331,6 @@ public class RouteDetailActivity extends BaseListActivity {
         departureTimeView.setText(DateFormat.getTimeFormat(this).format(lastSubTrip.getArrival()));
 
         convertView.findViewById(R.id.trip_intermediate_stops_layout).setVisibility(View.GONE);
-
-        // Add attributions if dealing with a Google result.
-
 
         return convertView;
     }
