@@ -90,7 +90,6 @@ public class GooglePlacesFilter extends PlaceSearchResultAdapter.PlaceFilter {
             ArrayList<GooglePlaceResult> resultList = new ArrayList<>(autocompletePredictions.getCount());
             while (iterator.hasNext()) {
                 AutocompletePrediction prediction = iterator.next();
-                Log.e("LOOG", "types: " + prediction.getDescription() + ", " + prediction.getPlaceTypes());
                 resultList.add(new GooglePlaceResult(prediction.getPlaceId(),
                         prediction.getDescription()));
             }
@@ -99,7 +98,6 @@ public class GooglePlacesFilter extends PlaceSearchResultAdapter.PlaceFilter {
 
             return resultList;
         }
-        Log.e("LOOOOG", "Google API client is not connected for autocomplete query.");
         setStatus(false);
         return null;
     }
@@ -121,7 +119,6 @@ public class GooglePlacesFilter extends PlaceSearchResultAdapter.PlaceFilter {
             public void onResult(PlaceBuffer places) {
                 if (!places.getStatus().isSuccess()) {
                     // Request did not complete successfully
-                    Log.e("LOOOG", "Place query did not complete. Error: " + places.getStatus().toString());
                     places.release();
 
                     resultCallback.onError();
@@ -130,9 +127,8 @@ public class GooglePlacesFilter extends PlaceSearchResultAdapter.PlaceFilter {
                 if (places.getCount() > 0) {
                     final Place place = places.get(0);
                     final CharSequence thirdPartyAttribution = places.getAttributions();
-                    if (thirdPartyAttribution == null) {
-                    } else {
-                        Log.e("LOOOOG", "Attribution: " + thirdPartyAttribution.toString());
+                    if (thirdPartyAttribution != null) {
+                        Log.e("GooglePlacesFilter", "Attribution: " + thirdPartyAttribution.toString());
                     }
                     Site convertedPlace = new Site();
                     convertedPlace.setId(place.getId());
