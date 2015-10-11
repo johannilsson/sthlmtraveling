@@ -64,7 +64,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by johan on 14/09/15.
+ * Entry point for searching for address, transit stop and or places.
  */
 public class PlaceSearchActivity extends BaseFragmentActivity implements LoaderManager.LoaderCallbacks<Cursor> {
     public static final String ARG_ONLY_STOPS = "com.markupartist.sthlmtraveling.placesearch.only_stops";
@@ -593,11 +593,6 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements LoaderM
         @Override
         public void bindViewHolder(ViewHolder holder, int position) {
             Site place = mData.get(position);
-
-            // TODO: cache this.
-//            Pair<String, String> titleAndSubtitle = SitesStore.nameAsNameAndLocality(place.getName());
-//            String title = titleAndSubtitle.first;
-//            String subtitle = titleAndSubtitle.second;
             String title = place.getName();
             String subtitle = place.getLocality();
 
