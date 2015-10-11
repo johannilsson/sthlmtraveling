@@ -23,6 +23,8 @@ fork the app. I will do my best help you out if you have any problems. The docum
 
 Changelog
 ---------
+* NEXT
+  * Add backstack for going back to the start activity when opening departure shortcuts by [Victor Häggqvist](https://github.com/victorhaggqvist)
 * 2.13.0 (2015-09-20)
   * Add Arabic translation by Simon Benyo
   * Add Italian translation by Sergio Cucinella
