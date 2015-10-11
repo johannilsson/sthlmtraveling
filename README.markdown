@@ -24,6 +24,9 @@ fork the app. I will do my best help you out if you have any problems. The docum
 Changelog
 ---------
 * NEXT
+  * Add new search for transit stops, address and places
+  * Fix date representation on date picker to not always show as 12hr format
+  * Fix crash when opening some sl.se links
   * Add backstack for going back to the start activity when opening departure shortcuts by [Victor Häggqvist](https://github.com/victorhaggqvist)
   * Add toolbar for settings view by [Victor Häggqvist](https://github.com/victorhaggqvist)
 * 2.13.0 (2015-09-20)
