@@ -16,7 +16,7 @@
   -->
 
 <resources>
-    <color name="background">@color/background_material_light</color>
+    <color name="background">#f9f9f9</color>
 
     <color name="primary">#1976D2</color>
     <color name="primary_light">#BBDEFB</color>
