@@ -3,17 +3,17 @@ package com.markupartist.sthlmtraveling;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
+import android.support.v4.app.NavUtils;
 import android.support.v7.widget.SwitchCompat;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.Toast;
@@ -23,8 +23,8 @@ import com.markupartist.sthlmtraveling.provider.JourneysProvider.Journey.Journey
 import com.markupartist.sthlmtraveling.service.DeviationService;
 import com.markupartist.sthlmtraveling.utils.Analytics;
 
-public class SettingsActivity extends BasePreferenceActivity
-        implements OnSharedPreferenceChangeListener {
+public class SettingsActivity extends AppCompatPreferenceActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
+
     private static final String TAG = "SettingsActivity";
     private static final int DIALOG_CLEAR_SEARCH_HISTORY = 0;
     private static final int DIALOG_CLEAR_FAVORITES = 1;
@@ -36,15 +36,26 @@ public class SettingsActivity extends BasePreferenceActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getSupportActionBar().setDefaultDisplayHomeAsUpEnabled(true);
 
         addPreferencesFromResource(R.xml.preferences);
 
-        registerScreen("Settings");
+        Analytics.getInstance(this).registerScreen("Settings");
 
         mHistoryDbAdapter = new HistoryDbAdapter(this).open();
 
         Preference customPref = findPreference("about_version");
         customPref.setSummary("Version " + AppConfig.APP_VERSION);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                NavUtils.navigateUpFromSameTask(this);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -54,8 +65,7 @@ public class SettingsActivity extends BasePreferenceActivity
     }
 
     @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
-                                          String key) {
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if (key.equals("prefered_language_preference")) {
             MyApplication application = (MyApplication) getApplication();
             application.reloadLocaleForApplication();
@@ -68,7 +78,7 @@ public class SettingsActivity extends BasePreferenceActivity
             } else {
                 Analytics.getInstance(this).event("Settings", "Deviation Service", "stop");
             }
-            DeviationService.startAsRepeating(SettingsActivity.this);
+            DeviationService.startAsRepeating(this);
         }
 
         Toast.makeText(this, R.string.settings_saved, Toast.LENGTH_SHORT).show();
@@ -77,13 +87,13 @@ public class SettingsActivity extends BasePreferenceActivity
     @Override
     public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen, Preference preference) {
         if (preference.getKey().equals("clear_search_history")) {
-            showDialog(DIALOG_CLEAR_SEARCH_HISTORY);
+            onCreateDialog(DIALOG_CLEAR_SEARCH_HISTORY).show();
             return true;
         } else if (preference.getKey().equals("clear_favorites")) {
-            showDialog(DIALOG_CLEAR_FAVORITES);
+            onCreateDialog(DIALOG_CLEAR_FAVORITES).show();
             return true;
         } else if (preference.getKey().equals("about_legal")) {
-            Intent i = new Intent(this, AboutActivity.class);
+            Intent i = new Intent(SettingsActivity.this, AboutActivity.class);
             startActivity(i);
         } else if (preference.getKey().equals("help_support")) {
             Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("http://kundo.se/org/sthlm-traveling/"));
@@ -109,29 +119,27 @@ public class SettingsActivity extends BasePreferenceActivity
                 ((String) null).trim();
             }
         } else if (preference.getKey().equals("about_ads")) {
-            showDialog(DIALOG_WHY_ADS);
+            onCreateDialog(DIALOG_WHY_ADS).show();
         }
         return super.onPreferenceTreeClick(preferenceScreen, preference);
     }
 
-
     @Override
-    protected void onResume() {
+    public void onResume() {
         super.onResume();
-        // Set up a listener whenever a key changes            
+        // Set up a listener whenever a key changes
         getPreferenceScreen().getSharedPreferences()
                 .registerOnSharedPreferenceChangeListener(this);
     }
 
     @Override
-    protected void onPause() {
+    public void onPause() {
         super.onPause();
-        // Unregister the listener whenever a key changes            
+        // Unregister the listener whenever a key changes
         getPreferenceScreen().getSharedPreferences()
                 .unregisterOnSharedPreferenceChangeListener(this);
     }
 
-    @Override
     protected Dialog onCreateDialog(int id) {
         switch (id) {
             case DIALOG_CLEAR_SEARCH_HISTORY:
@@ -139,7 +147,7 @@ public class SettingsActivity extends BasePreferenceActivity
                         .setTitle(R.string.search_clear_history_preference)
                         .setMessage(R.string.search_clear_history_confirm)
                         .setCancelable(true)
-                        .setPositiveButton(R.string.yes, new OnClickListener() {
+                        .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 getContentResolver().delete(Journeys.CONTENT_URI,
@@ -154,7 +162,7 @@ public class SettingsActivity extends BasePreferenceActivity
                                         Toast.LENGTH_SHORT).show();
                             }
                         })
-                        .setNegativeButton(R.string.no, new OnClickListener() {
+                        .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.cancel();
@@ -166,7 +174,7 @@ public class SettingsActivity extends BasePreferenceActivity
                         .setTitle(R.string.search_clear_favorites_preference)
                         .setMessage(R.string.search_clear_favorites_confirm)
                         .setCancelable(true)
-                        .setPositiveButton(R.string.yes, new OnClickListener() {
+                        .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 getContentResolver().delete(Journeys.CONTENT_URI,
@@ -176,7 +184,7 @@ public class SettingsActivity extends BasePreferenceActivity
                                         Toast.LENGTH_SHORT).show();
                             }
                         })
-                        .setNegativeButton(R.string.no, new OnClickListener() {
+                        .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.cancel();
@@ -207,7 +215,7 @@ public class SettingsActivity extends BasePreferenceActivity
                         .setTitle(R.string.ads_title)
                         .setCancelable(true)
                         .setView(adDialogView)
-                        .setPositiveButton(R.string.ok, new OnClickListener() {
+                        .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.cancel();
@@ -218,13 +226,4 @@ public class SettingsActivity extends BasePreferenceActivity
 
         return null;
     }
-
-    @Override
-    public boolean onSearchRequested() {
-        Intent i = new Intent(this, StartActivity.class);
-        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(i);
-        return true;
-    }
-
 }
