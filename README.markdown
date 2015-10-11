@@ -25,6 +25,7 @@ Changelog
 ---------
 * NEXT
   * Add new search for transit stops, address and places
+  * Change layout and styling for departures and traffic status
   * Fix date representation on date picker to not always show as 12hr format
   * Fix crash when opening some sl.se links
   * Add backstack for going back to the start activity when opening departure shortcuts by [Victor Häggqvist](https://github.com/victorhaggqvist)
