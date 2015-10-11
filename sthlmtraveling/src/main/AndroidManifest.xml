@@ -33,6 +33,7 @@
         android:name="MyApplication"
         android:theme="@style/Theme.App"
         android:supportsRtl="true"
+        android:hardwareAccelerated="true"
         >
         <uses-library android:name="com.google.android.maps"/>
         <meta-data
