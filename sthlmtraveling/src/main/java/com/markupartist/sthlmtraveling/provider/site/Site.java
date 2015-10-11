@@ -12,8 +12,8 @@ import org.json.JSONObject;
 
 public class Site implements Parcelable {
     public static String TYPE_MY_LOCATION = "MY_LOCATION";
-    public static int SOURCE_STHLM_TRAVELING = 1;
-    public static int SOURCE_GOOGLE_PLACES = 2;
+    public static int SOURCE_STHLM_TRAVELING = 0;
+    public static int SOURCE_GOOGLE_PLACES = 1;
     private static String NAME_RE = "[^\\p{Alnum}\\(\\)\\s]";
 
     private String mId;
