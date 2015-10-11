@@ -198,8 +198,8 @@ public class RoutesActivity extends BaseListActivity implements
             mJourneyQuery = savedInstanceState.getParcelable(EXTRA_JOURNEY_QUERY);
         }
 
-        if (mJourneyQuery == null || (mJourneyQuery.origin.name == null
-                || mJourneyQuery.destination.name == null)) {
+        if (mJourneyQuery == null || (mJourneyQuery.origin.getName() == null
+                || mJourneyQuery.destination.getName() == null)) {
             showDialog(DIALOG_ILLEGAL_PARAMETERS);
             // If passed with bad parameters, break the execution.
             return;
@@ -299,30 +299,28 @@ public class RoutesActivity extends BaseListActivity implements
     private JourneyQuery getJourneyQueryFromUri(Uri uri) {
         JourneyQuery jq = new JourneyQuery();
 
-        jq.origin = new Planner.Location();
-        jq.origin.name = uri.getQueryParameter("start_point");
+        jq.origin = new Site();
+        jq.origin.setName(uri.getQueryParameter("start_point"));
         if (!TextUtils.isEmpty(uri.getQueryParameter("start_point_id"))) {
-            jq.origin.id = Integer.parseInt(uri.getQueryParameter("start_point_id"));
+            jq.origin.setId(uri.getQueryParameter("start_point_id"));
         }
         if (!TextUtils.isEmpty(uri.getQueryParameter("start_point_lat"))
                 && !TextUtils.isEmpty(uri.getQueryParameter("start_point_lng"))) {
-            jq.origin.latitude =
-                    (int) (Double.parseDouble(uri.getQueryParameter("start_point_lat")) * 1E6);
-            jq.origin.longitude =
-                    (int) (Double.parseDouble(uri.getQueryParameter("start_point_lng")) * 1E6);
+            jq.origin.setLocation(
+                    (int) (Double.parseDouble(uri.getQueryParameter("start_point_lat")) * 1E6),
+                    (int) (Double.parseDouble(uri.getQueryParameter("start_point_lng")) * 1E6));
         }
 
-        jq.destination = new Planner.Location();
-        jq.destination.name = uri.getQueryParameter("end_point");
+        jq.destination = new Site();
+        jq.destination.setName(uri.getQueryParameter("end_point"));
         if (!TextUtils.isEmpty(uri.getQueryParameter("end_point_id"))) {
-            jq.destination.id = Integer.parseInt(uri.getQueryParameter("end_point_id"));
+            jq.destination.setId(uri.getQueryParameter("end_point_id"));
         }
         if (!TextUtils.isEmpty(uri.getQueryParameter("end_point_lat"))
                 && !TextUtils.isEmpty(uri.getQueryParameter("end_point_lng"))) {
-            jq.destination.latitude =
-                    (int) (Double.parseDouble(uri.getQueryParameter("end_point_lat")) * 1E6);
-            jq.destination.longitude =
-                    (int) (Double.parseDouble(uri.getQueryParameter("end_point_lng")) * 1E6);
+            jq.destination.setLocation(
+                    (int) (Double.parseDouble(uri.getQueryParameter("end_point_lat")) * 1E6),
+                    (int) (Double.parseDouble(uri.getQueryParameter("end_point_lng")) * 1E6));
         }
 
         jq.isTimeDeparture = true;
@@ -712,8 +710,8 @@ public class RoutesActivity extends BaseListActivity implements
 
         if (mToast != null) mToast.cancel();
 
-        Planner.Location startPoint = mJourneyQuery.origin;
-        Planner.Location endPoint = mJourneyQuery.destination;
+        Site startPoint = mJourneyQuery.origin;
+        Site endPoint = mJourneyQuery.destination;
 
         Site tmpStop = new Site();
         tmpStop.setLocation(location);
@@ -726,8 +724,7 @@ public class RoutesActivity extends BaseListActivity implements
                         getString(R.string.tap_your_location_on_map));
                 startActivityForResult(i, REQUEST_CODE_POINT_ON_MAP_START);
             } else {
-                startPoint.latitude = (int) (location.getLatitude() * 1E6);
-                startPoint.longitude = (int) (location.getLongitude() * 1E6);
+                startPoint.setLocation(location);
             }
         }
         if (endPoint.isMyLocation()) {
@@ -738,8 +735,7 @@ public class RoutesActivity extends BaseListActivity implements
                         getString(R.string.tap_your_location_on_map));
                 startActivityForResult(i, REQUEST_CODE_POINT_ON_MAP_END);
             } else {
-                endPoint.latitude = (int) (location.getLatitude() * 1E6);
-                endPoint.longitude = (int) (location.getLongitude() * 1E6);
+                endPoint.setLocation(location);
             }
         }
 
@@ -798,9 +794,8 @@ public class RoutesActivity extends BaseListActivity implements
                     Site startPoint = data.getParcelableExtra(PointOnMapActivity.EXTRA_STOP);
                     Log.d(TAG, "Got Stop " + startPoint);
 
-                    mJourneyQuery.origin.name = Planner.Location.TYPE_MY_LOCATION;
-                    mJourneyQuery.origin.latitude = (int) (startPoint.getLocation().getLatitude() * 1E6);
-                    mJourneyQuery.origin.longitude = (int) (startPoint.getLocation().getLongitude() * 1E6);
+                    mJourneyQuery.origin.setName(Site.TYPE_MY_LOCATION);
+                    mJourneyQuery.origin.setLocation(startPoint.getLocation());
 
                     mSearchRoutesTask = new SearchRoutesTask();
                     mSearchRoutesTask.execute(mJourneyQuery);
@@ -818,9 +813,8 @@ public class RoutesActivity extends BaseListActivity implements
                     Site endPoint = data.getParcelableExtra(PointOnMapActivity.EXTRA_STOP);
                     Log.d(TAG, "Got Stop " + endPoint);
 
-                    mJourneyQuery.destination.name = Planner.Location.TYPE_MY_LOCATION;
-                    mJourneyQuery.destination.latitude = (int) (endPoint.getLocation().getLatitude() * 1E6);
-                    mJourneyQuery.destination.longitude = (int) (endPoint.getLocation().getLongitude() * 1E6);
+                    mJourneyQuery.destination.setName(Site.TYPE_MY_LOCATION);
+                    mJourneyQuery.destination.setLocation(endPoint.getLocation());
 
                     mSearchRoutesTask = new SearchRoutesTask();
                     mSearchRoutesTask.execute(mJourneyQuery);
@@ -834,8 +828,8 @@ public class RoutesActivity extends BaseListActivity implements
     }
 
     protected void reverseJourneyQuery() {
-        Planner.Location tmpStartPoint = new Planner.Location(mJourneyQuery.destination);
-        Planner.Location tmpEndPoint = new Planner.Location(mJourneyQuery.origin);
+        Site tmpStartPoint = new Site(mJourneyQuery.destination);
+        Site tmpEndPoint = new Site(mJourneyQuery.origin);
 
         mJourneyQuery.origin = tmpStartPoint;
         mJourneyQuery.destination = tmpEndPoint;

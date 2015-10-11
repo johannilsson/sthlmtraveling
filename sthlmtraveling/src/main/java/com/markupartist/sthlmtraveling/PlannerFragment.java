@@ -35,11 +35,11 @@ import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v4.view.ViewCompat;
-import android.text.Editable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -47,8 +47,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -58,38 +56,35 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 import com.markupartist.sthlmtraveling.provider.HistoryDbAdapter;
 import com.markupartist.sthlmtraveling.provider.JourneysProvider.Journey.Journeys;
 import com.markupartist.sthlmtraveling.provider.TransportMode;
 import com.markupartist.sthlmtraveling.provider.planner.JourneyQuery;
-import com.markupartist.sthlmtraveling.provider.planner.Planner;
-import com.markupartist.sthlmtraveling.provider.planner.Planner.Location;
 import com.markupartist.sthlmtraveling.provider.site.Site;
-import com.markupartist.sthlmtraveling.ui.view.DelayAutoCompleteTextView;
 import com.markupartist.sthlmtraveling.utils.ViewHelper;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
-public class PlannerFragment extends BaseListFragment {
+public class PlannerFragment extends BaseListFragment implements LoaderManager.LoaderCallbacks<Cursor> {
     private static final String TAG = "PlannerFragment";
     protected static final int REQUEST_CODE_POINT_ON_MAP_START = 0;
     protected static final int REQUEST_CODE_POINT_ON_MAP_END = 1;
     private static final int REQUEST_CODE_ROUTE_OPTIONS = 2;
+    private static final int REQUEST_CODE_PICK_START = 3;
+    private static final int REQUEST_CODE_PICK_END = 4;
+
+    private static final int LOADER_JOURNEY_HISTORY = 1;
 
     /**
      * The Journey
      */
     static final String EXTRA_JOURNEY_QUERY = "sthlmtraveling.intent.action.JOURNEY_QUERY";
 
-    private DelayAutoCompleteTextView mStartPointAutoComplete;
-    private DelayAutoCompleteTextView mEndPointAutoComplete;
+    private TextView mStartPointAutoComplete;
+    private TextView mEndPointAutoComplete;
     private Site mStartPoint = new Site();
     private Site mEndPoint = new Site();
     private HistoryDbAdapter mHistoryDbAdapter;
@@ -140,15 +135,9 @@ public class PlannerFragment extends BaseListFragment {
             mJourneyQuery = savedInstanceState.getParcelable(EXTRA_JOURNEY_QUERY);
         }
 
-        CursorLoader cursorLoader = new CursorLoader(
-                getActivity(),
-                Journeys.CONTENT_URI,
-                PROJECTION,
-                null, //selection,
-                null, //selectionArgs,
-                Journeys.HISTORY_SORT_ORDER);
-        Cursor cursor = cursorLoader.loadInBackground();
-        mAdapter = new JourneyAdapter(getActivity(), cursor);
+        getLoaderManager().initLoader(LOADER_JOURNEY_HISTORY, null, this);
+
+        mAdapter = new JourneyAdapter(getActivity(), null);
     }
 
     @Override
@@ -184,8 +173,21 @@ public class PlannerFragment extends BaseListFragment {
         if (!mStartPoint.hasName()) {
             mStartPoint.setName(Site.TYPE_MY_LOCATION);
         }
-        mStartPointAutoComplete = createAutoCompleteTextView(R.id.from, mStartPoint);
-        mEndPointAutoComplete = createAutoCompleteTextView(R.id.to, mEndPoint);
+        mStartPointAutoComplete = createTextViewForStartEnd(R.id.from, mStartPoint);
+        mStartPointAutoComplete.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivityForResult(new Intent(getActivity(), PlaceSearchActivity.class), REQUEST_CODE_PICK_START);
+            }
+        });
+
+        mEndPointAutoComplete = createTextViewForStartEnd(R.id.to, mEndPoint);
+        mEndPointAutoComplete.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivityForResult(new Intent(getActivity(), PlaceSearchActivity.class), REQUEST_CODE_PICK_END);
+            }
+        });
 
         try {
             mHistoryDbAdapter = new HistoryDbAdapter(getActivity()).open();
@@ -193,24 +195,6 @@ public class PlannerFragment extends BaseListFragment {
             showDialog(createDialogReinstallApp());
             return;
         }
-
-        // Setup view for choosing other data for start and end point.
-        final ImageButton fromDialog = (ImageButton) mSearchView.findViewById(R.id.from_menu);
-        fromDialog.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(final View v) {
-                mStartPointAutoComplete.setError(null);
-                showDialog(createDialogStartPoint());
-            }
-        });
-        final ImageButton toDialog = (ImageButton) mSearchView.findViewById(R.id.to_menu);
-        toDialog.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(final View v) {
-                mEndPointAutoComplete.setError(null);
-                showDialog(createDialogEndPoint());
-            }
-        });
 
         Button searchButton = (Button) mSearchView.findViewById(R.id.do_search);
         if (mCreateShortcut) {
@@ -240,13 +224,36 @@ public class PlannerFragment extends BaseListFragment {
 
         mOptionsBarView = mSearchView.findViewById(R.id.options_active_container);
 
+        mSearchView.findViewById(R.id.reverse_start_end).setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Site newStart = new Site(mEndPoint);
+                Site newEnd = new Site(mStartPoint);
+
+                mStartPoint = newStart;
+                mEndPoint = newEnd;
+
+                if (mStartPoint.isMyLocation()) {
+                    mStartPointAutoComplete.setText(getText(R.string.my_location));
+                } else {
+                    mStartPointAutoComplete.setText(mStartPoint.getName());
+                }
+
+                if (mEndPoint.isMyLocation()) {
+                    mEndPointAutoComplete.setText(getText(R.string.my_location));
+                } else {
+                    mEndPointAutoComplete.setText(mEndPoint.getName());
+                }
+            }
+        });
+
         // Handle create shortcut.
         if (mCreateShortcut) {
             registerScreen("Planner create shortcut");
             getActivity().setTitle(R.string.create_shortcut_label);
 
             // Fake an adapter. This needs to be fixed later on so we can use the history.
-            setListAdapter(new ArrayAdapter<String>(getActivity(), R.layout.journey_history_row));
+            setListAdapter(new ArrayAdapter<String>(getActivity(), R.layout.row_journey));
         } else {
             setListAdapter(mAdapter);
         }
@@ -342,16 +349,16 @@ public class PlannerFragment extends BaseListFragment {
         }
     }
 
-    private Site buildStop(Site site, AutoCompleteTextView auTextView) {
+    private Site buildStop(Site site, TextView textView) {
         if (site.hasName()
-                && site.getName().equals(auTextView.getText().toString())) {
+                && site.getName().equals(textView.getText().toString())) {
             return site;
         } else if (site.isMyLocation()
-                && auTextView.getText().toString()
+                && textView.getText().toString()
                         .equals(getString(R.string.my_location))) {
             // Check for my location.
             return site;
-        } else if (auTextView.getText().toString()
+        } else if (textView.getText().toString()
                 .equals(getString(R.string.point_on_map))) {
             // Check for point-on-map.
             return site;
@@ -381,11 +388,6 @@ public class PlannerFragment extends BaseListFragment {
         }
     }
 
-    private DelayAutoCompleteTextView createAutoCompleteTextView(
-            int autoCompleteResId, final Site site) {
-        return createAutoCompleteTextView(autoCompleteResId, site, false);
-    }
-
     /**
      * Creates a new {@link AutoCompleteTextView}.
      * 
@@ -393,43 +395,16 @@ public class PlannerFragment extends BaseListFragment {
      *            The {@link AutoCompleteTextView} resource id.
      * @param site
      *            The stop.
-     * @param includeAddresses
      *            If addresses should be included.
      * @return A AutoCompleteTextView
      */
-    private DelayAutoCompleteTextView createAutoCompleteTextView(
-            int autoCompleteResId, final Site site, boolean includeAddresses) {
-        final DelayAutoCompleteTextView autoCompleteTextView = (DelayAutoCompleteTextView)
-                mSearchView.findViewById(autoCompleteResId);
-        final AutoCompleteStopAdapter stopAdapter = new AutoCompleteStopAdapter(
-                getActivity(), R.layout.autocomplete_item_2line,
-                Planner.getInstance(), includeAddresses);
-
-        autoCompleteTextView.addTextChangedListener(new ReservedNameTextWatcher(
-                getText(R.string.my_location), autoCompleteTextView));
-        autoCompleteTextView.addTextChangedListener(new ReservedNameTextWatcher(
-                getText(R.string.point_on_map), autoCompleteTextView));
-        autoCompleteTextView.addTextChangedListener(new UpdateStopTextWatcher(site));
-
+    private TextView createTextViewForStartEnd(int autoCompleteResId, final Site site) {
+        TextView autoCompleteTextView = (TextView) mSearchView.findViewById(autoCompleteResId);
         String name = site.getName();
         if (site.isMyLocation()) {
             name = getString(R.string.my_location);
         }
         autoCompleteTextView.setText(name);
-
-        autoCompleteTextView.setSelectAllOnFocus(true);
-        autoCompleteTextView.setAdapter(stopAdapter);
-
-        autoCompleteTextView.setOnItemClickListener(new OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view,
-                    int position, long id) {
-                // Sometime site is not properly set here, where is the reference cleared?
-                Site v = stopAdapter.getValue(position);
-                site.fromSite(v);
-            }
-        });
-
         return autoCompleteTextView;
     }
 
@@ -473,7 +448,6 @@ public class PlannerFragment extends BaseListFragment {
         startActivity(routesIntent);
     }
 
-
     /**
      * Setup a search short cut.
      * 
@@ -512,6 +486,40 @@ public class PlannerFragment extends BaseListFragment {
         ft.commit();
     }
 
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        switch (id) {
+            case LOADER_JOURNEY_HISTORY:
+                return new CursorLoader(
+                        getActivity(),
+                        Journeys.CONTENT_URI,
+                        PROJECTION,
+                        null, //selection,
+                        null, //selectionArgs,
+                        Journeys.HISTORY_SORT_ORDER);
+        }
+        return null;
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        switch (loader.getId()) {
+            case LOADER_JOURNEY_HISTORY:
+                mAdapter.changeCursor(data);
+                break;
+        }
+
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        switch (loader.getId()) {
+            case LOADER_JOURNEY_HISTORY:
+                mAdapter.changeCursor(null);
+                break;
+        }
+    }
+
     public static class PlannerDialogFragment extends DialogFragment {
 
         private static Dialog mDialog;
@@ -524,11 +532,6 @@ public class PlannerFragment extends BaseListFragment {
         @NonNull
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
-            // Quick fix to avoid crash when resuming.
-            // if (savedInstanceState != null) {
-            //    this.dismiss();
-            // }
-
             return mDialog;
         }
     }
@@ -560,84 +563,7 @@ public class PlannerFragment extends BaseListFragment {
                         }).create();
     }
 
-    private Dialog createDialogEndPoint() {
-        AlertDialog.Builder endPointDialogBuilder = new AlertDialog.Builder(
-                getActivity());
-        endPointDialogBuilder
-                .setTitle(getText(R.string.choose_end_point_label));
-        final Cursor historyDestinationCursor = mHistoryDbAdapter.fetchLatest();
-        getActivity().startManagingCursor(historyDestinationCursor);
-        final SelectPointAdapter endPointAdapter = new SelectPointAdapter(
-                getActivity(), historyDestinationCursor, false, false);
-        getActivity().stopManagingCursor(historyDestinationCursor);
-        endPointDialogBuilder.setAdapter(endPointAdapter,
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        switch (which) {
-                        case 0:
-                            mEndPoint.setName(Site.TYPE_MY_LOCATION);
-                            mEndPointAutoComplete.setText(getText(R.string.my_location));
-                            mEndPointAutoComplete.clearFocus();
-                            break;
-                        case 1:
-                            Intent i = new Intent(getActivity(), PointOnMapActivity.class);
-                            i.putExtra(PointOnMapActivity.EXTRA_STOP, mEndPoint);
-                            i.putExtra(PointOnMapActivity.EXTRA_HELP_TEXT,
-                                   getString(R.string.tap_your_end_point_on_map));
-                            startActivityForResult(i,
-                                    REQUEST_CODE_POINT_ON_MAP_END);
-                            break;
-                        default:
-                            Site endPoint = (Site) endPointAdapter.getItem(which);
-                            mEndPoint.fromSite(endPoint);
-                            mEndPointAutoComplete.setText(mEndPoint.getName());
-                            mEndPointAutoComplete.clearFocus();
-                        }
-                    }
-                });
-        return endPointDialogBuilder.create();
-    }
 
-    private Dialog createDialogStartPoint() {
-        AlertDialog.Builder startPointDialogBuilder = new AlertDialog.Builder(
-                getActivity());
-        startPointDialogBuilder
-                .setTitle(getText(R.string.choose_start_point_label));
-
-        final Cursor historyOriginCursor = mHistoryDbAdapter.fetchLatest();
-        getActivity().startManagingCursor(historyOriginCursor);
-        final SelectPointAdapter startPointAdapter = new SelectPointAdapter(
-                getActivity(), historyOriginCursor, false, false);
-        getActivity().stopManagingCursor(historyOriginCursor);
-        startPointDialogBuilder.setAdapter(startPointAdapter,
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        switch (which) {
-                        case 0:
-                            mStartPoint.setName(Site.TYPE_MY_LOCATION);
-                            mStartPointAutoComplete.setText(getText(R.string.my_location));
-                            mStartPointAutoComplete.clearFocus();
-                            break;
-                        case 1:
-                            Intent i = new Intent(getActivity(), PointOnMapActivity.class);
-                            i.putExtra(PointOnMapActivity.EXTRA_STOP, mStartPoint);
-                            i.putExtra(PointOnMapActivity.EXTRA_HELP_TEXT,
-                                    getString(R.string.tap_your_start_point_on_map));
-                            startActivityForResult(i,
-                                    REQUEST_CODE_POINT_ON_MAP_START);
-                            break;
-                        default:
-                            Site startPoint = (Site) startPointAdapter.getItem(which);
-                            mStartPoint.fromSite(startPoint);
-                            mStartPointAutoComplete.setText(mStartPoint.getName());
-                            mStartPointAutoComplete.clearFocus();
-                        }
-                    }
-                });
-        return startPointDialogBuilder.create();
-    }
 
     private void handleSearchAction() {
         if (TextUtils.isEmpty(mStartPointAutoComplete.getText())) {
@@ -649,37 +575,11 @@ public class PlannerFragment extends BaseListFragment {
         } else {
             mStartPoint = buildStop(mStartPoint, mStartPointAutoComplete);
             mEndPoint = buildStop(mEndPoint, mEndPointAutoComplete);
-
-            boolean looksValid = true;
-            if (!mStartPoint.looksValid()) {
-                Log.d(TAG, "Start was not valid: " + mStartPoint.toDump());
-
-                AutoCompleteStopAdapter a = (AutoCompleteStopAdapter) mStartPointAutoComplete.getAdapter();
-                Site startPoint = a.findSite(mStartPointAutoComplete.getText().toString());
-                mStartPoint.fromSite(startPoint);
-                if (startPoint == null) {
-                    mStartPointAutoComplete.setError(getText(R.string.empty_value));
-                    looksValid = false;
-                }
-            }
-            if (!mEndPoint.looksValid()) {
-                Log.d(TAG, "End was not valid: " + mEndPoint.toDump());
-                AutoCompleteStopAdapter a = (AutoCompleteStopAdapter) mEndPointAutoComplete.getAdapter();
-                Site endPoint = a.findSite(mEndPointAutoComplete.getText().toString());
-                mEndPoint.fromSite(endPoint);
-                if (endPoint == null) {
-                    mEndPointAutoComplete.setError(getText(R.string.empty_value));
-                    looksValid = false;
-                }
-            }
-
-            if (looksValid) {
-                if (mCreateShortcut) {
-                    showDialog(createDialogShortcutName());
-                    // onCreateShortCut(mStartPoint, mEndPoint);
-                } else {
-                    onSearchRoutes(mStartPoint, mEndPoint);
-                }
+            if (mCreateShortcut) {
+                showDialog(createDialogShortcutName());
+                // onCreateShortCut(mStartPoint, mEndPoint);
+            } else {
+                onSearchRoutes(mStartPoint, mEndPoint);
             }
         }
     }
@@ -687,28 +587,28 @@ public class PlannerFragment extends BaseListFragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
-        case REQUEST_CODE_POINT_ON_MAP_START:
-            if (resultCode == Activity.RESULT_CANCELED) {
-                Log.d(TAG, "action canceled");
-            } else {
-                mStartPoint = data
-                        .getParcelableExtra(PointOnMapActivity.EXTRA_STOP);
-                mStartPointAutoComplete.setText(getText(R.string.point_on_map));
-                // mStartPointAutoComplete.setText(mStartPoint.getName());
-                Log.d(TAG, "Got Stop " + mStartPoint);
-            }
-            break;
-        case REQUEST_CODE_POINT_ON_MAP_END:
-            if (resultCode == Activity.RESULT_CANCELED) {
-                Log.d(TAG, "action canceled");
-            } else {
-                mEndPoint = data
-                        .getParcelableExtra(PointOnMapActivity.EXTRA_STOP);
-                mEndPointAutoComplete.setText(getText(R.string.point_on_map));
-                // mEndPointAutoComplete.setText(mEndPoint.getName());
-                Log.d(TAG, "Got Stop " + mEndPoint);
-            }
-            break;
+            case REQUEST_CODE_POINT_ON_MAP_START:
+                if (resultCode == Activity.RESULT_CANCELED) {
+                    Log.d(TAG, "action canceled");
+                } else {
+                    mStartPoint = data
+                            .getParcelableExtra(PointOnMapActivity.EXTRA_STOP);
+                    mStartPointAutoComplete.setText(getText(R.string.point_on_map));
+                    // mStartPointAutoComplete.setText(mStartPoint.getName());
+                    Log.d(TAG, "Got Stop " + mStartPoint);
+                }
+                break;
+            case REQUEST_CODE_POINT_ON_MAP_END:
+                if (resultCode == Activity.RESULT_CANCELED) {
+                    Log.d(TAG, "action canceled");
+                } else {
+                    mEndPoint = data
+                            .getParcelableExtra(PointOnMapActivity.EXTRA_STOP);
+                    mEndPointAutoComplete.setText(getText(R.string.point_on_map));
+                    // mEndPointAutoComplete.setText(mEndPoint.getName());
+                    Log.d(TAG, "Got Stop " + mEndPoint);
+                }
+                break;
             case REQUEST_CODE_ROUTE_OPTIONS:
                 if (resultCode == Activity.RESULT_CANCELED) {
                     Log.d(TAG, "Route options cancelled.");
@@ -716,157 +616,39 @@ public class PlannerFragment extends BaseListFragment {
                     mJourneyQuery = data.getParcelableExtra(EXTRA_JOURNEY_QUERY);
                     showOrHideOptionsBar();
                 }
-        }
-    }
-
-    private class UpdateStopTextWatcher implements TextWatcher {
-        private final Site mSite;
-
-        public UpdateStopTextWatcher(Site site) {
-            mSite = site;
-        }
-
-        @Override
-        public void afterTextChanged(Editable s) {
-            if (!isAdded()) {
-                return;
-            }
-            if (!getString(R.string.my_location).equals(s.toString())
-                    || getString(R.string.point_on_map).equals(s.toString())) {
-                if (!s.toString().equals(mSite.getName())) {
-                    mSite.setName(s.toString());
-                    mSite.setId(0);
-                    mSite.setType(null);
-                    mSite.setLocation(null);
-                }
-            }
-        }
-
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count,
-                int after) {
-            // Needed by interface, but not used.
-        }
-
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before,
-                int count) {
-            // Needed by interface, but not used.
-        }
-
-    }
-
-    private class ReservedNameTextWatcher implements TextWatcher {
-        private final CharSequence mReservedName;
-        private final AutoCompleteTextView mViewToWatch;
-        private boolean mRemoveText = false;
-        private String mNewText;
-
-        public ReservedNameTextWatcher(CharSequence reservedName,
-                AutoCompleteTextView viewToWatch) {
-            mReservedName = reservedName;
-            mViewToWatch = viewToWatch;
-        }
-
-        @Override
-        public void afterTextChanged(Editable s) {
-            if (mRemoveText) {
-                mRemoveText = false;
-                if (!mViewToWatch.getText().toString().equals(mNewText)) {
-                    mViewToWatch.setText(mNewText);
-                }
-            }
-        }
-
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count,
-                int after) {
-            if (!mRemoveText && s.toString().equals(mReservedName.toString())) {
-                mRemoveText = true;
-            }
-        }
-
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before,
-                int count) {
-            mNewText = s.toString().substring(start, start + count);
-        }
-    }
-
-    private class SelectPointAdapter extends MultipleListAdapter {
-
-        private final Context mContext;
-        private SectionedAdapter mHistoryWrapperAdapter = new SectionedAdapter() {
-            @Override
-            protected View getHeaderView(Section section, int index, View convertView, ViewGroup parent) {
-                TextView result = (TextView) convertView;
-                if (convertView == null) {
-                    LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                    result = (TextView) inflater.inflate(R.layout.header, null, false);
-                }
-                result.setText(section.caption);
-                return (result);
-            }
-        };
-
-        public SelectPointAdapter(Context context, Cursor historyCursor, boolean onlyHistory, boolean isVia) {
-
-            mContext = context;
-
-            if (!onlyHistory) {
-                ArrayList<HashMap<String, String>> items = new ArrayList<HashMap<String, String>>();
-
-                HashMap<String, String> myLocationItem = new HashMap<String, String>();
-                myLocationItem.put("item", getString(R.string.my_location));
-                items.add(myLocationItem);
-
-                HashMap<String, String> pointOnMapItem = new HashMap<String, String>();
-                pointOnMapItem.put("item", getString(R.string.point_on_map));
-                items.add(pointOnMapItem);
-
-                SimpleAdapter itemsAdapter = new SimpleAdapter(context, items,
-                        R.layout.simple_list_row,
-                        new String[] { "item" },
-                        new int[] { android.R.id.text1 });
-
-                addAdapter(0, itemsAdapter);
-            }
-
-            ArrayList<Site> historyList = new ArrayList<Site>();
-            historyCursor.moveToFirst();
-            for (int i = 0; i < historyCursor.getCount(); i++) {
-                Site site = new Site();
-
-                site.setName(historyCursor.getString(HistoryDbAdapter.INDEX_NAME));
-                site.setLocation(
-                        historyCursor.getInt(HistoryDbAdapter.INDEX_LATITUDE),
-                        historyCursor.getInt(HistoryDbAdapter.INDEX_LONGITUDE));
-                site.setId(historyCursor.getInt(HistoryDbAdapter.INDEX_SITE_ID));
-
-                if (isVia) {
-                    if (!site.hasLocation()) {
-                        historyList.add(site);
-                    }
+                break;
+            case REQUEST_CODE_PICK_START:
+                if (resultCode == Activity.RESULT_CANCELED) {
+                    Log.d(TAG, "Pick start cancelled.");
                 } else {
-                    historyList.add(site);
+                    mStartPoint = data.getParcelableExtra(PlaceSearchActivity.EXTRA_PLACE);
+                    if (mStartPoint.isMyLocation()) {
+                        mStartPointAutoComplete.setText(getText(R.string.my_location));
+                    } else {
+                        mStartPointAutoComplete.setText(mStartPoint.getName());
+                    }
                 }
-                historyCursor.moveToNext();
-            }
-            historyCursor.close();
-            ArrayAdapter<Site> historyAdapter =
-                    new ArrayAdapter<Site>(context,
-                            R.layout.simple_list_row, historyList);
-
-            mHistoryWrapperAdapter.addSection(0,
-                    getString(R.string.history_label), historyAdapter);
-            addAdapter(1, mHistoryWrapperAdapter);
+                break;
+            case REQUEST_CODE_PICK_END:
+                if (resultCode == Activity.RESULT_CANCELED) {
+                    Log.d(TAG, "Pick start cancelled.");
+                } else {
+                    mEndPoint = data.getParcelableExtra(PlaceSearchActivity.EXTRA_PLACE);
+                    if (mEndPoint.isMyLocation()) {
+                        mEndPointAutoComplete.setText(getText(R.string.my_location));
+                    } else {
+                        mEndPointAutoComplete.setText(mEndPoint.getName());
+                    }
+                }
+                break;
         }
     }
+
 
     private class JourneyAdapter extends CursorAdapter {
 
         public JourneyAdapter(Context context, Cursor c) {
-            super(context, c);
+            super(context, c, true);
         }
 
         @Override
@@ -884,7 +666,7 @@ public class PlannerFragment extends BaseListFragment {
             JourneyQuery journeyQuery = getJourneyQuery(cursor);
             View v;
             if (journeyQuery != null) {
-                v = inflater.inflate(R.layout.journey_history_row, parent,
+                v = inflater.inflate(R.layout.row_journey, parent,
                         false);
                 inflateView(v, journeyQuery, cursor);
             } else {
@@ -897,28 +679,26 @@ public class PlannerFragment extends BaseListFragment {
         private View inflateView(View v, JourneyQuery journeyQuery, Cursor c) {
             TextView originText = (TextView) v
                     .findViewById(R.id.favorite_start_point);
-            if (Location.TYPE_MY_LOCATION.equals(journeyQuery.origin.name)) {
+            if (journeyQuery.origin.isMyLocation()) {
                 originText.setText(getString(R.string.my_location));
             } else {
-                originText.setText(journeyQuery.origin.name);
+                originText.setText(journeyQuery.origin.getName());
             }
 
             TextView destinationText = (TextView) v
                     .findViewById(R.id.favorite_end_point);
-            if (Location.TYPE_MY_LOCATION.equals(journeyQuery.destination.name)) {
+            if (journeyQuery.destination.isMyLocation()) {
                 destinationText.setText(getString(R.string.my_location));
             } else {
-                destinationText.setText(journeyQuery.destination.name);
+                destinationText.setText(journeyQuery.destination.getName());
             }
 
-            View viaView = v.findViewById(R.id.via_row);
+            TextView viaText = (TextView) v.findViewById(R.id.favorite_via_point);
             if (journeyQuery.hasVia()) {
-                TextView viaText = (TextView) v
-                        .findViewById(R.id.favorite_via_point);
-                viaText.setText(journeyQuery.via.name);
-                viaView.setVisibility(View.VISIBLE);
+                viaText.setText(journeyQuery.via.getName());
+                viaText.setVisibility(View.VISIBLE);
             } else {
-                viaView.setVisibility(View.GONE);
+                viaText.setVisibility(View.GONE);
             }
 
             addTransportModeViews(journeyQuery, v);
@@ -1029,7 +809,8 @@ public class PlannerFragment extends BaseListFragment {
             journeyQuery = JourneyQuery.fromJson(new JSONObject(
                     jsonJourneyQuery));
         } catch (JSONException e) {
-            Log.e(TAG, "Failed to covert to journey from json.");
+            e.printStackTrace();
+            Log.e(TAG, "Failed to convert to journey from json.");
         }
         return journeyQuery;
     }

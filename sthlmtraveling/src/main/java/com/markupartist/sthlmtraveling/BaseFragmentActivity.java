@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.places.Places;
 import com.markupartist.sthlmtraveling.utils.Analytics;
 import com.markupartist.sthlmtraveling.utils.PlayService;
 import com.markupartist.sthlmtraveling.utils.PlayServicesUtils;
@@ -35,14 +36,23 @@ public class BaseFragmentActivity extends AppCompatActivity implements GoogleApi
         mPlayServices.add(playService);
     }
 
-    public synchronized void initGoogleApiClient() {
-        if (PlayServicesUtils.checkGooglePlaySevices(this)) {
+    public synchronized void initGoogleApiClient(boolean checkIfAvailable) {
+        boolean looksGood = true;
+        if (checkIfAvailable) {
+            looksGood = PlayServicesUtils.checkGooglePlaySevices(this);
+        }
+        if (looksGood) {
             mGoogleApiClient = new GoogleApiClient.Builder(this)
                     .addApi(LocationServices.API)
+                    .addApi(Places.GEO_DATA_API)
                     .addConnectionCallbacks(this)
                     .addOnConnectionFailedListener(this)
                     .build();
         }
+    }
+
+    public synchronized void initGoogleApiClient() {
+        initGoogleApiClient(true);
     }
 
     public GoogleApiClient getGoogleApiClient() {

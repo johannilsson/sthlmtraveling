@@ -16,11 +16,6 @@
 
 package com.markupartist.sthlmtraveling.provider;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-
 import android.content.ContentProvider;
 import android.content.ContentUris;
 import android.content.ContentValues;
@@ -36,6 +31,12 @@ import android.provider.BaseColumns;
 import android.util.Log;
 
 import com.markupartist.sthlmtraveling.provider.JourneysProvider.Journey.Journeys;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Locale;
 
 public class JourneysProvider extends ContentProvider {
     private static final String TAG = "JourneysProvider";
@@ -147,7 +148,7 @@ public class JourneysProvider extends ContentProvider {
         }
 
         if (!values.containsKey(Journeys.CREATED_AT)) {
-            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
             Date date = new Date();
 
             values.put(Journeys.CREATED_AT,
@@ -208,7 +209,7 @@ public class JourneysProvider extends ContentProvider {
 
         if (!values.containsKey(Journeys.UPDATED_AT)
                 && !values.containsKey(Journeys.STARRED)) {
-            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
             Date date = new Date();
             values.put(Journeys.UPDATED_AT,
                     dateFormat.format(date));

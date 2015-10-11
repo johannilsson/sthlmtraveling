@@ -20,7 +20,6 @@ import android.content.Context;
 import android.text.SpannableStringBuilder;
 
 import com.markupartist.sthlmtraveling.R;
-import com.markupartist.sthlmtraveling.provider.planner.Planner;
 
 /**
  * String and text utils related to this project.
@@ -42,17 +41,5 @@ public class StringUtils {
         //sb.append(string);
 
         return sb;
-    }
-
-    /**
-     * Helper that returns the my location text representation. If the {@link android.location.Location}
-     * is set the accuracy will also be appended.
-     *
-     * @param stop the stop
-     * @return a text representation of my location
-     */
-    public static CharSequence getMyLocationString(final Context context, final Planner.Location stop) {
-        CharSequence string = context.getText(R.string.my_location);
-        return string;
     }
 }

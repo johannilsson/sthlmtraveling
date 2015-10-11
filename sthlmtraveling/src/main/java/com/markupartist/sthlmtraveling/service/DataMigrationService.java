@@ -98,7 +98,7 @@ public class DataMigrationService extends WakefulIntentService {
                     getContentResolver().insert(Journeys.CONTENT_URI, values);
 
                     Log.d(TAG, String.format("Converted favorite journey %s -> %s.",
-                            journeyQuery.origin.name, journeyQuery.destination.name));
+                            journeyQuery.origin.getName(), journeyQuery.destination.getName()));
                 }
             } while (cursor.moveToNext());
         }

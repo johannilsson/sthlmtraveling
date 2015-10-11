@@ -242,7 +242,7 @@ public class DeparturesActivity extends BaseFragmentActivity {
     }
 
     private void loadDepartures() {
-        if (mSite != null && mSite.getId() > 0) {
+        if (mSite != null && mSite.getSource() == Site.SOURCE_STHLM_TRAVELING && mSite.getId() != null) {
             mGetDeparturesTask = new GetDeparturesTask();
             mGetDeparturesTask.execute(mSite);
         } else {
@@ -578,7 +578,7 @@ public class DeparturesActivity extends BaseFragmentActivity {
 
                 // Update history if site id is not set, we do this to patch old versions
                 // that will end up here without site id set.
-                if (mSite.getId() > 0) {
+                if (mSite.getSource() == Site.SOURCE_STHLM_TRAVELING && mSite.getId() != null) {
                     mHistoryDbAdapter.create(HistoryDbAdapter.TYPE_DEPARTURE_SITE, mSite);
                 }
 

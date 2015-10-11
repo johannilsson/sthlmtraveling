@@ -66,12 +66,12 @@ public class BaseListActivity extends BaseFragmentActivity implements AdapterVie
         if (journeyQuery.origin.isMyLocation()) {
             ab.setTitle(StringUtils.getStyledMyLocationString(this));
         } else {
-            ab.setTitle(journeyQuery.origin.getCleanName());
+            ab.setTitle(journeyQuery.origin.getName());
         }
 
         CharSequence via = null;
         if (journeyQuery.hasVia()) {
-            via = journeyQuery.via.getCleanName();
+            via = journeyQuery.via.getName();
         }
         if (journeyQuery.destination.isMyLocation()) {
             if (via != null) {
@@ -81,9 +81,9 @@ public class BaseListActivity extends BaseFragmentActivity implements AdapterVie
             }
         } else {
             if (via != null) {
-                ab.setSubtitle(TextUtils.join(" • ", new CharSequence[]{via, journeyQuery.destination.getCleanName()}));
+                ab.setSubtitle(TextUtils.join(" • ", new CharSequence[]{via, journeyQuery.destination.getName()}));
             } else {
-                ab.setSubtitle(journeyQuery.destination.name);
+                ab.setSubtitle(journeyQuery.destination.getName());
             }
         }
     }

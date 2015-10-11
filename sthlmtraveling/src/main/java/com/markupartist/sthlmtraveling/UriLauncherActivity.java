@@ -55,7 +55,10 @@ public class UriLauncherActivity extends Activity {
     protected void launchFromIntent(Intent intent) {
         Uri uri = intent.getData();
 
-        String fullUrl = uri.toString();
+        String fullUrl = "";
+        if (uri != null) {
+            fullUrl = uri.toString();
+        }
 
         try {
             if (fullUrl.contains("Travel")) {

@@ -51,8 +51,7 @@ public class TrafficStatusFragment extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.traffic_status_fragment, container,
-                false);
+        return inflater.inflate(R.layout.traffic_status_fragment, container, false);
     }
 
     @Override
@@ -101,34 +100,34 @@ public class TrafficStatusFragment extends BaseFragment {
         TextView transportText = (TextView) v
                 .findViewById(R.id.traffic_status_type_transport);
         transportText.setText(getStringResourceForTransport(tt.type));
-        ImageView status = (ImageView) v
-                .findViewById(R.id.traffic_status_status);
-        status.setImageResource(getImageResourceForStatus(tt.status));
-
-        ImageView transportImage = (ImageView) v
-                .findViewById(R.id.traffic_status_type_transport_image);
-        transportImage.setImageResource(getImageResourceForTransport(tt.type));
 
         LinearLayout events = (LinearLayout) v
                 .findViewById(R.id.traffic_status_type_events);
         events.removeAllViews();
+
+        TrafficEvent previousEvent = null;
         for (TrafficEvent te : tt.events) {
-            events.addView(inflateTrafficEvent(te, events));
+            events.addView(inflateTrafficEvent(te, events, previousEvent));
+            previousEvent = te;
         }
 
         return v;
     }
 
-    private View inflateTrafficEvent(TrafficEvent te, ViewGroup viewGroup) {
+    private View inflateTrafficEvent(TrafficEvent te, ViewGroup viewGroup,
+                                     TrafficEvent previousEvent) {
         View v = getActivity().getLayoutInflater().inflate(
                 R.layout.traffic_status_event, viewGroup, false);
 
-        TextView message = (TextView) v
-                .findViewById(R.id.traffic_status_event_message);
+        TextView message = (TextView) v.findViewById(R.id.traffic_status_event_message);
         message.setText(te.message);
-        ImageView status = (ImageView) v
-                .findViewById(R.id.traffic_status_event_status);
-        status.setImageResource(getImageResourceForStatus(te.status));
+        ImageView status = (ImageView) v.findViewById(R.id.traffic_status_event_status);
+
+        if (previousEvent != null && te.status == previousEvent.status) {
+            status.setVisibility(View.GONE);
+        } else {
+            status.setImageResource(getImageResourceForStatus(te.status));
+        }
 
         return v;
     }

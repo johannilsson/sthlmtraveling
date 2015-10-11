@@ -9,7 +9,7 @@ import android.util.Log;
 abstract public class WakefulIntentService extends IntentService {
     private static String TAG = "WakefulIntentService";
     public static final String LOCK_NAME_STATIC =
-        "com.commonsware.android.syssvc.AppService.Static";
+        "com.markupartist.sthlmtraveling.service.WakefulIntentService.Static";
     private static PowerManager.WakeLock lockStatic = null;
 
     public WakefulIntentService(String name) {
@@ -25,7 +25,7 @@ abstract public class WakefulIntentService extends IntentService {
                     LOCK_NAME_STATIC);
             lockStatic.setReferenceCounted(true);
         }
-        return(lockStatic);
+        return lockStatic;
     }
 
     abstract void doWakefulWork(Intent intent);

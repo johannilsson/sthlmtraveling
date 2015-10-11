@@ -119,10 +119,11 @@ public class ChangeRouteTimeActivity extends BaseActivity implements OnClickList
 
         // Don't fill via if it has been restored.
         if (!mViaPoint.looksValid() && mJourneyQuery.hasVia()) {
-            mViaPoint = new Site();
-            mViaPoint.setId(mJourneyQuery.via.id);
-            mViaPoint.setName(mJourneyQuery.via.name);
-            mViaPoint.setLocation(mJourneyQuery.via.latitude, mJourneyQuery.via.longitude);
+            mViaPoint = mJourneyQuery.via;
+//            new Site();
+//            mViaPoint.setId(mJourneyQuery.via.id);
+//            mViaPoint.setName(mJourneyQuery.via.name);
+//            mViaPoint.setLocation(mJourneyQuery.via.latitude, mJourneyQuery.via.longitude);
         }
 
         mViaPointAutoComplete = createAutoCompleteTextView(R.id.via, mViaPoint, true);
@@ -283,7 +284,7 @@ public class ChangeRouteTimeActivity extends BaseActivity implements OnClickList
                         calendar.get(Calendar.DAY_OF_MONTH));
                 break;
             case DIALOG_TIME:
-                ((TimePickerDialog) dialog).updateTime(calendar.get(Calendar.HOUR), calendar.get(Calendar.MINUTE));
+                ((TimePickerDialog) dialog).updateTime(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE));
                 break;
         }
     }
@@ -313,7 +314,6 @@ public class ChangeRouteTimeActivity extends BaseActivity implements OnClickList
 
     private TimePickerDialog.OnTimeSetListener mTimeSetListener =
             new TimePickerDialog.OnTimeSetListener() {
-
                 public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
                     Calendar calendar = Calendar.getInstance();
                     calendar.setTime(mTime);
@@ -402,7 +402,7 @@ public class ChangeRouteTimeActivity extends BaseActivity implements OnClickList
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.actionbar_done:
-                mJourneyQuery.isTimeDeparture = mWhenSpinner.getSelectedItemId() == 0 ? true : false;
+                mJourneyQuery.isTimeDeparture = mWhenSpinner.getSelectedItemId() == 0;
                 mJourneyQuery.time = mTime;
                 mJourneyQuery.transportModes = getSelectedTransportModes();
                 mJourneyQuery.alternativeStops = getUseAlternatives();
@@ -415,7 +415,7 @@ public class ChangeRouteTimeActivity extends BaseActivity implements OnClickList
                         mViaPointAutoComplete.setError(getText(R.string.empty_value));
                         looksValid = false;
                     }
-                    mJourneyQuery.via = JourneyQuery.Builder.buildLocationFromStop(mViaPoint);
+                    mJourneyQuery.via = mViaPoint; //JourneyQuery.Builder.buildLocationFromStop(mViaPoint);
                 } else {
                     mJourneyQuery.via = null;
                 }

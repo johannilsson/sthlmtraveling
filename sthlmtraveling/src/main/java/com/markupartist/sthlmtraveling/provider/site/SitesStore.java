@@ -2,6 +2,7 @@ package com.markupartist.sthlmtraveling.provider.site;
 
 import android.content.Context;
 import android.location.Location;
+import android.support.v4.util.Pair;
 import android.util.Log;
 
 import com.markupartist.sthlmtraveling.utils.HttpHelper;
@@ -15,10 +16,14 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static com.markupartist.sthlmtraveling.provider.ApiConf.apiEndpoint2;
 
 public class SitesStore {
+    private static Pattern SITE_NAME_PATTERN = Pattern.compile("([\\w\\s0-9-& ]+)");
+
     private static SitesStore sInstance;
 
     private SitesStore() {
@@ -108,8 +113,12 @@ public class SitesStore {
                         JSONObject jsonStop = jsonSitesArray.getJSONObject(i);
 
                         Site site = new Site();
-                        site.setName(jsonStop.getString("name"));
+                        Pair<String, String> nameAndLocality =
+                                nameAsNameAndLocality(jsonStop.getString("name"));
+                        site.setName(nameAndLocality.first);
+                        site.setLocality(nameAndLocality.second);
                         site.setId(jsonStop.getInt("site_id"));
+                        site.setSource(Site.SOURCE_STHLM_TRAVELING);
                         String locationData = jsonStop.optString("location");
                         if(locationData != null) {
                             site.setLocation(LocationUtils.parseLocation(locationData));
@@ -130,4 +139,20 @@ public class SitesStore {
         return stopPoints;
     }
 
+    public static Pair<String, String> nameAsNameAndLocality(String name) {
+        Matcher m = SITE_NAME_PATTERN.matcher(name);
+        String title = name;
+        String subtitle = null;
+        if (m.find()) {
+            if (m.groupCount() > 0) {
+                title = m.group(1).trim();
+            }
+            if (m.find()) {
+                if (m.groupCount() > 0) {
+                    subtitle = m.group(1).trim();
+                }
+            }
+        }
+        return Pair.create(title, subtitle);
+    }
 }

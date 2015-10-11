@@ -94,8 +94,8 @@ public class TripView extends LinearLayout {
         TextView startAndEndPoint = new TextView(getContext());
         BidiFormatter bidiFormatter = BidiFormatter.getInstance(RtlUtils.isRtl(Locale.getDefault()));
         startAndEndPoint.setText(String.format("%s – %s",
-                bidiFormatter.unicodeWrap(trip.origin.name),
-                bidiFormatter.unicodeWrap(trip.destination.name)));
+                bidiFormatter.unicodeWrap(trip.origin.getName()),
+                bidiFormatter.unicodeWrap(trip.destination.getName())));
 
         startAndEndPoint.setTextColor(0xFF444444); // Dark gray
         startAndEndPoint.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);

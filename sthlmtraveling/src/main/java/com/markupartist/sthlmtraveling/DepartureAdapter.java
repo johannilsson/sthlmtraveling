@@ -2,11 +2,11 @@ package com.markupartist.sthlmtraveling;
 
 import android.content.Context;
 import android.text.TextUtils;
-import android.text.format.Time;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.markupartist.sthlmtraveling.provider.TransportMode;
@@ -17,6 +17,8 @@ import com.markupartist.sthlmtraveling.provider.departure.DeparturesStore.GroupO
 import com.markupartist.sthlmtraveling.provider.departure.DeparturesStore.MetroDeparture;
 import com.markupartist.sthlmtraveling.provider.departure.DeparturesStore.TrainDeparture;
 import com.markupartist.sthlmtraveling.provider.departure.DeparturesStore.TramDeparture;
+import com.markupartist.sthlmtraveling.utils.ViewHelper;
+import com.markupartist.sthlmtraveling.utils.text.TextDrawable;
 
 import java.util.List;
 
@@ -30,21 +32,11 @@ public class DepartureAdapter extends SectionedAdapter {
 
     @Override
     protected View getHeaderView(Section section, int index, View convertView, ViewGroup parent) {
-
-        TextView result;
-        try {
-            result = (TextView) convertView;
-        } catch (ClassCastException e) {
-            return convertView;
-        }
-
         if (convertView == null) {
-            LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            result = (TextView) inflater.inflate(R.layout.header, null);
+            convertView = LayoutInflater.from(mContext).inflate(R.layout.row_section, parent, false);
         }
-
-        result.setText(section.caption);
-        return result;
+        ((TextView) convertView.findViewById(R.id.text1)).setText(section.caption);
+        return convertView;
     }
 
     public void fillDepartures(Departures departures, int transportType) {
@@ -62,8 +54,8 @@ public class DepartureAdapter extends SectionedAdapter {
             } else {
                 for (MetroDeparture metroDeparture: departures.metros) {
                     for (GroupOfLine gol : metroDeparture.groupOfLines) {
-                        this.addSection(0, gol.name + ", " + directionString +" 1", createAdapter(gol.direction1));
-                        this.addSection(0, gol.name + ", " + directionString +" 2", createAdapter(gol.direction2));
+                        this.addSection(0, directionString +" 1", createAdapter(gol.direction1, transportType));
+                        this.addSection(0, directionString +" 2", createAdapter(gol.direction2, transportType));
                     }
                 }
             }
@@ -73,7 +65,7 @@ public class DepartureAdapter extends SectionedAdapter {
                 //emptyResultView.setVisibility(View.VISIBLE);
             } else {
                 for (BusDeparture busDeparture : departures.buses) {
-                    this.addSection(0, busDeparture.stopAreaName, createAdapter(busDeparture.departures));
+                    this.addSection(0, busDeparture.stopAreaName, createAdapter(busDeparture.departures, transportType));
                 }
             }
             break;
@@ -82,8 +74,8 @@ public class DepartureAdapter extends SectionedAdapter {
                 //emptyResultView.setVisibility(View.VISIBLE);
             } else {
                 for (TrainDeparture trainDeparture : departures.trains) {
-                    this.addSection(0, trainDeparture.stopAreaName + ", " + directionString +" 1", createAdapter(trainDeparture.direction1));
-                    this.addSection(0, trainDeparture.stopAreaName + ", " + directionString +" 2", createAdapter(trainDeparture.direction2));
+                    this.addSection(0, trainDeparture.stopAreaName + ", " + directionString +" 1", createAdapter(trainDeparture.direction1, transportType));
+                    this.addSection(0, trainDeparture.stopAreaName + ", " + directionString +" 2", createAdapter(trainDeparture.direction2, transportType));
                 }
             }
             break;
@@ -92,8 +84,8 @@ public class DepartureAdapter extends SectionedAdapter {
                 //emptyResultView.setVisibility(View.VISIBLE);
             } else {
                 for (TramDeparture tramDeparture : departures.trams) {
-                    this.addSection(0, tramDeparture.stopAreaName + ", " + directionString +" 1", createAdapter(tramDeparture.direction1));
-                    this.addSection(0, tramDeparture.stopAreaName + ", " + directionString +" 2", createAdapter(tramDeparture.direction2));
+                    this.addSection(0, tramDeparture.stopAreaName + ", " + directionString +" 1", createAdapter(tramDeparture.direction1, transportType));
+                    this.addSection(0, tramDeparture.stopAreaName + ", " + directionString +" 2", createAdapter(tramDeparture.direction2, transportType));
                 }
             }
             break;
@@ -104,26 +96,31 @@ public class DepartureAdapter extends SectionedAdapter {
 
     public static class DisplayRowAdapter extends ArrayAdapter<DisplayRow> {
 
-        private final LayoutInflater mInflater;
+        private final int mTransportType;
 
-        public DisplayRowAdapter(Context context, List<DisplayRow> displayRows) {
+        public DisplayRowAdapter(Context context, List<DisplayRow> displayRows, int transportType) {
             super(context, R.layout.departures_row, displayRows);
-
-            mInflater = (LayoutInflater) context.getSystemService(
-                    Context.LAYOUT_INFLATER_SERVICE);
+            mTransportType = transportType;
         }
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             DisplayRow displayRow = getItem(position);
 
-            convertView = mInflater.inflate(R.layout.departures_row, null);
+            // TODO: Add View Holder
+            convertView = LayoutInflater.from(getContext())
+                    .inflate(R.layout.departures_row, parent, false);
 
-            TextView lineView = (TextView) convertView.findViewById(R.id.departure_line);
+            ImageView lineView = (ImageView) convertView.findViewById(R.id.departure_line);
             TextView destinationView = (TextView) convertView.findViewById(R.id.departure_destination);
             TextView timeToDisplayView = (TextView) convertView.findViewById(R.id.departure_timeToDisplay);
 
-            lineView.setText(displayRow.lineNumber);
+            TextDrawable d = TextDrawable.builder(getContext())
+                    .buildRound(displayRow.lineNumber,
+                            ViewHelper.getLineColor(
+                                    getContext().getResources(),
+                                    mTransportType, displayRow.lineNumber));
+            lineView.setImageDrawable(d);
 
             String destination = displayRow.destination;
             if (!TextUtils.isEmpty(displayRow.message) &&
@@ -144,18 +141,7 @@ public class DepartureAdapter extends SectionedAdapter {
         }
     }
 
-    private DisplayRowAdapter createAdapter(final List<DisplayRow> displayRows) {
-        return new DisplayRowAdapter(mContext, displayRows);
-    }
-
-    private String humanTimeUntil(Time start, Time end) {
-        long distanceInMillis = Math.round(end.toMillis(true) - start.toMillis(true));
-        long distanceInSeconds = Math.round(distanceInMillis / 1000);
-        long distanceInMinutes = Math.round(distanceInSeconds / 60);
-
-        if (distanceInMinutes <= 0.0) {
-            return mContext.getString(R.string.now);
-        }
-        return String.format("%s min", distanceInMinutes);
+    private DisplayRowAdapter createAdapter(final List<DisplayRow> displayRows, int transportType) {
+        return new DisplayRowAdapter(mContext, displayRows, transportType);
     }
 }

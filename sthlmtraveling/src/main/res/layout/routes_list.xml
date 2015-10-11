@@ -17,6 +17,7 @@
 */
 -->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:tools="http://schemas.android.com/tools"
              android:orientation="vertical"
              android:layout_width="fill_parent"
              android:layout_height="fill_parent">
@@ -42,16 +43,18 @@
 
         <Button
             android:id="@+id/date_time"
-            style="?attr/borderlessButtonStyle"
-            android:layout_width="wrap_content"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:textColor="@color/primary_light"
             android:paddingLeft="@dimen/list_horizontal_padding"
             android:paddingRight="@dimen/list_horizontal_padding"
             android:textSize="14sp"
+            android:gravity="start|center_vertical"
             android:drawableLeft="@drawable/ic_settings"
             android:drawableStart="@drawable/ic_settings"
             android:drawablePadding="@dimen/list_horizontal_padding"
+            tools:text="Date"
             />
 
     </LinearLayout>

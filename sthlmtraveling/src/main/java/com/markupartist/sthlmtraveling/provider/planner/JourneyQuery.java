@@ -20,7 +20,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.markupartist.sthlmtraveling.provider.TransportMode;
-import com.markupartist.sthlmtraveling.provider.planner.Planner.Location;
 import com.markupartist.sthlmtraveling.provider.site.Site;
 
 import org.json.JSONArray;
@@ -33,9 +32,9 @@ import java.util.Date;
 import java.util.List;
 
 public class JourneyQuery implements Parcelable {
-    public Location origin;
-    public Location destination;
-    public Location via;
+    public Site origin;
+    public Site destination;
+    public Site via;
     public Date time;
     public boolean isTimeDeparture = true;
     public boolean alternativeStops = false;
@@ -49,12 +48,12 @@ public class JourneyQuery implements Parcelable {
     }
 
     public JourneyQuery(Parcel parcel) {
-        origin = parcel.readParcelable(Location.class.getClassLoader());
-        destination = parcel.readParcelable(Location.class.getClassLoader());
-        via = parcel.readParcelable(Location.class.getClassLoader());
+        origin = parcel.readParcelable(Site.class.getClassLoader());
+        destination = parcel.readParcelable(Site.class.getClassLoader());
+        via = parcel.readParcelable(Site.class.getClassLoader());
         time = new Date(parcel.readLong());
-        isTimeDeparture = (parcel.readInt() == 1) ? true : false;
-        alternativeStops = (parcel.readInt() == 1) ? true : false;
+        isTimeDeparture = (parcel.readInt() == 1);
+        alternativeStops = (parcel.readInt() == 1);
         transportModes = new ArrayList<String>();
         parcel.readStringList(transportModes);
         ident = parcel.readString();
@@ -116,7 +115,6 @@ public class JourneyQuery implements Parcelable {
     }
 
 
-
     public static final Creator<JourneyQuery> CREATOR = new Creator<JourneyQuery>() {
         public JourneyQuery createFromParcel(Parcel parcel) {
             return new JourneyQuery(parcel);
@@ -127,35 +125,53 @@ public class JourneyQuery implements Parcelable {
         }
     };
 
+    public static JSONObject siteToJson(Site site) throws JSONException {
+        JSONObject json = new JSONObject();
+
+        json.put("id", site.getId());
+        json.put("name", site.getName());
+        if (site.isMyLocation()) {
+            json.put("latitude", 0);
+            json.put("longitude", 0);
+        } else if (site.hasLocation()) {
+            json.put("latitude", (int) (site.getLocation().getLatitude() * 1E6));
+            json.put("longitude", (int) (site.getLocation().getLongitude() * 1E6));
+        }
+        json.put("source", site.getSource());
+        json.put("locality", site.getLocality());
+
+        return json;
+    }
+
+    public static Site jsonToSite(JSONObject json) throws JSONException {
+        Site site = new Site();
+
+        if (json.has("id")) {
+            site.setId(json.getString("id"));
+        }
+        if (json.has("locality")) {
+            site.setLocality(json.getString("locality"));
+        }
+        if (json.has("source")) {
+            site.setSource(json.getInt("source"));
+        }
+        if (json.has("latitude") && json.has("longitude")) {
+            site.setLocation(json.getInt("latitude"), json.getInt("longitude"));
+        }
+
+        site.setName(json.getString("name"));
+
+        return site;
+    }
+
+
     public JSONObject toJson(boolean all) throws JSONException {
-        JSONObject jsonOrigin = new JSONObject();
-        jsonOrigin.put("id", origin.id);
-        jsonOrigin.put("name", origin.name);
-        jsonOrigin.put("latitude", origin.latitude);
-        jsonOrigin.put("longitude", origin.longitude);
-
-        if (!all && origin.isMyLocation()) {
-            jsonOrigin.put("latitude", 0);
-            jsonOrigin.put("longitude", 0);
-        }
-
-        JSONObject jsonDestination = new JSONObject();
-        jsonDestination.put("id", destination.id);
-        jsonDestination.put("name", destination.name);
-        jsonDestination.put("latitude", destination.latitude);
-        jsonDestination.put("longitude", destination.longitude);
-
-        if (!all && destination.isMyLocation()) {
-            jsonDestination.put("latitude", 0);
-            jsonDestination.put("longitude", 0);
-        }
+        JSONObject jsonOrigin = siteToJson(origin);
+        JSONObject jsonDestination = siteToJson(destination);
 
         JSONObject jsonQuery = new JSONObject();
         if (via != null) {
-            JSONObject jsonVia = new JSONObject();
-            jsonVia.put("id", via.id);
-            jsonVia.put("name", via.name);
-
+            JSONObject jsonVia = siteToJson(via);
             jsonQuery.put("via", jsonVia);
         }
 
@@ -196,10 +212,7 @@ public class JourneyQuery implements Parcelable {
         }
         if (jsonObject.has("via")) {
             JSONObject jsonVia = jsonObject.getJSONObject("via");
-            Location via = new Location();
-            via.name = jsonVia.getString("name");
-            via.id = jsonVia.getInt("id");
-            journeyQuery.via = via;
+            journeyQuery.via = jsonToSite(jsonVia);
         }
 
         return journeyQuery;
@@ -218,9 +231,9 @@ public class JourneyQuery implements Parcelable {
     }
 
     public static class Builder {
-        private Planner.Location mOrigin;
-        private Planner.Location mDestination;
-        private Planner.Location mVia;
+        private Site mOrigin;
+        private Site mDestination;
+        private Site mVia;
         private Date mTime;
         private boolean mIsTimeDeparture = true;
         private boolean mAlternativeStops;
@@ -231,60 +244,61 @@ public class JourneyQuery implements Parcelable {
         }
 
         public Builder origin(Site origin) {
-            mOrigin = buildLocationFromStop(origin);
+            mOrigin = origin; //buildLocationFromStop(origin);
             return this;
         }
 
         public Builder origin(String name, int latitude, int longitude) {
-            mOrigin = new Location();
-            mOrigin.name = name;
-            mOrigin.latitude = latitude;
-            mOrigin.longitude = longitude;
+            mOrigin = new Site();
+            mOrigin.setName(name);
+            mOrigin.setLocation(latitude, longitude);
             return this;
         }
 
         public Builder origin(JSONObject jsonObject) throws JSONException {
-            mOrigin = new Location();
-            mOrigin.id = jsonObject.getInt("id");
-            mOrigin.name = jsonObject.getString("name");
-            mOrigin.latitude = jsonObject.getInt("latitude");
-            mOrigin.longitude = jsonObject.getInt("longitude");
+            mOrigin = jsonToSite(jsonObject);
+//            mOrigin = new Location();
+//            mOrigin.id = jsonObject.getInt("id");
+//            mOrigin.name = jsonObject.getString("name");
+//            mOrigin.latitude = jsonObject.getInt("latitude");
+//            mOrigin.longitude = jsonObject.getInt("longitude");
             return this;
         }
         
         public Builder destination(Site destination) {
-            mDestination = buildLocationFromStop(destination);
+            mDestination = destination; //buildLocationFromStop(destination);
             return this;
         }
 
         public Builder destination(JSONObject jsonObject) throws JSONException {
-            mDestination = new Location();
-            mDestination.id = jsonObject.getInt("id");
-            mDestination.name = jsonObject.getString("name");
-            mDestination.latitude = jsonObject.getInt("latitude");
-            mDestination.longitude = jsonObject.getInt("longitude");
+//            mDestination = new Location();
+//            mDestination.id = jsonObject.getInt("id");
+//            mDestination.name = jsonObject.getString("name");
+//            mDestination.latitude = jsonObject.getInt("latitude");
+//            mDestination.longitude = jsonObject.getInt("longitude");
+            mDestination = jsonToSite(jsonObject);
             return this;
         }
         
         public Builder destination(String name, int latitude, int longitude) {
-            mDestination = new Location();
-            mDestination.name = name;
-            mDestination.latitude = latitude;
-            mDestination.longitude = longitude;
+            mDestination = new Site();
+            mDestination.setName(name);
+            mDestination.setLocation(latitude, longitude);
             return this;
         }
 
         public Builder via(Site via) {
             if (via != null && via.hasName()) {
-                mVia = buildLocationFromStop(via);
+                mVia = via; //buildLocationFromStop(via);
             }
             return this;
         }
 
         public Builder via(JSONObject jsonObject) throws JSONException {
-            mVia = new Location();
-            mVia.id = jsonObject.getInt("id");
-            mVia.name = jsonObject.getString("name");
+//            mVia = new Location();
+//            mVia.id = jsonObject.getInt("id");
+//            mVia.name = jsonObject.getString("name");
+            mVia = jsonToSite(jsonObject);
             return this;
         }
 
@@ -340,18 +354,20 @@ public class JourneyQuery implements Parcelable {
             return journeyQuery;
         }
 
-        public static Planner.Location buildLocationFromStop(Site site) {
-            Planner.Location location = new Planner.Location();
-            location.id = site.getId();
-            location.name = site.getName();
-            if (site.getLocation() != null) {
-                location.latitude =
-                    (int) (site.getLocation().getLatitude() * 1E6);
-                location.longitude =
-                    (int) (site.getLocation().getLongitude() * 1E6);
-            }    
-            return location;
-        }
+//        public static Planner.Location buildLocationFromStop(Site site) {
+//            Planner.Location location = new Planner.Location();
+//            if (site.getSource() == Site.SOURCE_STHLM_TRAVELING && site.getId() != null) {
+//                location.id = Integer.parseInt(site.getId());
+//            }
+//            location.name = site.getName();
+//            if (site.getLocation() != null) {
+//                location.latitude =
+//                    (int) (site.getLocation().getLatitude() * 1E6);
+//                location.longitude =
+//                    (int) (site.getLocation().getLongitude() * 1E6);
+//            }
+//            return location;
+//        }
     }
 
 }

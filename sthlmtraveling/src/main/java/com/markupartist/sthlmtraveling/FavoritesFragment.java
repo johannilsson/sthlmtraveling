@@ -43,8 +43,7 @@ import android.widget.Toast;
 import com.markupartist.sthlmtraveling.provider.JourneysProvider.Journey.Journeys;
 import com.markupartist.sthlmtraveling.provider.TransportMode;
 import com.markupartist.sthlmtraveling.provider.planner.JourneyQuery;
-import com.markupartist.sthlmtraveling.provider.planner.Planner;
-import com.markupartist.sthlmtraveling.provider.planner.Planner.Location;
+import com.markupartist.sthlmtraveling.provider.site.Site;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -195,8 +194,8 @@ public class FavoritesFragment extends BaseListFragment {
         JourneyQuery journeyQuery = getJourneyQuery(cursor);
 
         if (reversed) {
-            Planner.Location tmpStartPoint = new Location(journeyQuery.destination);
-            Planner.Location tmpEndPoint = new Location(journeyQuery.origin);
+            Site tmpStartPoint = new Site(journeyQuery.destination);
+            Site tmpEndPoint = new Site(journeyQuery.origin);
             journeyQuery.origin = tmpStartPoint;
             journeyQuery.destination = tmpEndPoint;
         }
@@ -268,35 +267,35 @@ public class FavoritesFragment extends BaseListFragment {
         @Override
         public View newView(Context context, Cursor cursor, ViewGroup parent) {
             final LayoutInflater inflater = LayoutInflater.from(context);
-            View v = inflater.inflate(R.layout.favorite_row, parent, false);
+            View v = inflater.inflate(R.layout.row_journey, parent, false);
             JourneyQuery journeyQuery = getJourneyQuery(cursor);
             return inflate(v, journeyQuery);
         }
 
         private View inflate(View v, JourneyQuery journeyQuery) {
-            TextView originText =
-                (TextView) v.findViewById(R.id.favorite_start_point);
-            if (Location.TYPE_MY_LOCATION.equals(journeyQuery.origin.name)) {
+            // Hide the checkbox
+            v.findViewById(R.id.journey_star_check).setVisibility(View.GONE);
+
+            TextView originText = (TextView) v.findViewById(R.id.favorite_start_point);
+            if (journeyQuery.origin.isMyLocation()) {
                 originText.setText(getString(R.string.my_location));
             } else {
-                originText.setText(journeyQuery.origin.name);
+                originText.setText(journeyQuery.origin.getName());
             }
 
-            TextView destinationText =
-                (TextView) v.findViewById(R.id.favorite_end_point);
-            if (Location.TYPE_MY_LOCATION.equals(journeyQuery.destination.name)) {
+            TextView destinationText = (TextView) v.findViewById(R.id.favorite_end_point);
+            if (journeyQuery.destination.isMyLocation()) {
                 destinationText.setText(getString(R.string.my_location));
             } else {
-                destinationText.setText(journeyQuery.destination.name);
+                destinationText.setText(journeyQuery.destination.getName());
             }
 
-            View viaView = v.findViewById(R.id.favorite_via_row);
+            TextView viaText = (TextView) v.findViewById(R.id.favorite_via_point);
             if (journeyQuery.hasVia()) {
-                viaView.setVisibility(View.VISIBLE);
-                TextView viaText = (TextView) v.findViewById(R.id.favorite_via_point);
-                viaText.setText(journeyQuery.via.name);
+                viaText.setVisibility(View.VISIBLE);
+                viaText.setText(journeyQuery.via.getName());
             } else {
-                viaView.setVisibility(View.GONE);
+                viaText.setVisibility(View.GONE);
             }
 
             addTransportModeViews(journeyQuery, v);

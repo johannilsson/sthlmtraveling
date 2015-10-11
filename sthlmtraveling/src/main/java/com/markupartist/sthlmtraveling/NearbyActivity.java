@@ -64,7 +64,6 @@ public class NearbyActivity extends BaseListActivity implements LocationManager.
     }
 
     private void requestUpdate() {
-        setSupportProgressBarIndeterminateVisibility(true);
         mMyLocationManager.requestLocation();
     }
 
@@ -97,8 +96,6 @@ public class NearbyActivity extends BaseListActivity implements LocationManager.
     }
     
     private void fill(ArrayList<Site> stopPoints, final Location location) {
-        setSupportProgressBarIndeterminateVisibility(false);
-
         //Sort stop in order of distance from users location
         Collections.sort(stopPoints, new Comparator<Site>() {
             @Override
@@ -115,7 +112,7 @@ public class NearbyActivity extends BaseListActivity implements LocationManager.
         });
 
         ArrayAdapter<Site> adapter =
-            new ArrayAdapter<Site>(this, android.R.layout.simple_list_item_1, stopPoints);
+            new ArrayAdapter<>(this, R.layout.row_place_search,  R.id.text1, stopPoints);
         setListAdapter(adapter);
     }
 

@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (C) 2009-2015 Johan Nilsson <http://markupartist.com>
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              android:background="#f9f9f9"
+    >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:descendantFocusability="beforeDescendants"
+        android:focusableInTouchMode="true"
+        android:background="#fff"
+        android:elevation="2dp"
+        >
+
+        <ImageButton
+            android:id="@+id/search_back"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:layout_width="64dp"
+            android:layout_height="?attr/actionBarSize"
+            android:layout_centerVertical="true"
+            android:scaleType="center"
+            android:src="@drawable/ic_action_navigation_arrow_back"
+            android:visibility="visible"
+            tools:visibility="visible"/>
+
+        <EditText
+            android:id="@+id/search_edit"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_toEndOf="@id/search_back"
+            android:layout_toRightOf="@id/search_back"
+            android:layout_centerHorizontal="true"
+            android:background="@null"
+            android:hint="@string/search_label"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:singleLine="true"
+            android:textSize="16sp"
+            />
+
+        <ImageButton
+            android:id="@+id/search_clear"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:layout_width="?attr/actionBarSize"
+            android:layout_height="?attr/actionBarSize"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerHorizontal="true"
+            android:paddingLeft="0dp"
+            android:paddingRight="0dp"
+            android:src="@drawable/ic_close"
+            android:tint="#333"
+            android:visibility="visible"
+            tools:visibility="visible"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_alignParentBottom="true"
+            android:visibility="gone"
+            android:background="#FFA19F97"/>
+    </RelativeLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/search_history_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clipToPadding="true"
+        android:visibility="visible"
+        tools:visibility="gone"
+        />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:visibility="visible">
+
+        <android.support.v4.widget.ContentLoadingProgressBar
+            android:id="@+id/search_progress_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="-6dp"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:indeterminate="true"
+            />
+
+        <TextView
+            android:id="@+id/search_result_error"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginLeft="72dp"
+            android:layout_marginStart="72dp"
+            android:gravity="center_vertical"
+            android:text="@string/planner_error_title"
+            android:textColor="@color/metro_red"
+            android:textSize="16sp"
+            android:visibility="gone"
+            tools:visibility="visible"
+            />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/search_results"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="true"
+            android:paddingBottom="0dp"
+            android:visibility="gone"
+            tools:visibility="visible"
+            />
+
+    </RelativeLayout>
+
+</LinearLayout>
