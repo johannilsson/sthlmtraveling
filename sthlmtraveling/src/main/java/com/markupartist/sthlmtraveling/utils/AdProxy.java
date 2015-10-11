@@ -158,15 +158,17 @@ public class AdProxy {
         adSpace.setAdEventListener(new AdEventListener() {
             @Override
             public void onAdClosing(AdSpace adSpace, AdInfo.AdType adType) {
-
+                Log.d(TAG, "onAdClosing");
             }
 
             @Override
             public void onAdClosed(AdSpace adSpace, AdInfo.AdType adType) {
+                Log.d(TAG, "onAdClosed");
             }
 
             @Override
             public void onAdLoading(AdSpace adSpace) {
+                Log.d(TAG, "onAdLoading");
             }
 
             @Override
@@ -175,18 +177,22 @@ public class AdProxy {
 
             @Override
             public void onNoAdRecieved(AdSpace adSpace) {
+                Log.d(TAG, "onNoAdRecieved");
             }
 
             @Override
             public void onPrefetchAd(AdSpace adSpace, PrefetchStatus prefetchStatus) {
+                Log.d(TAG, "onPrefetchAd");
             }
 
             @Override
             public void onAdPresenting(AdSpace adSpace, boolean b, AdInfo.AdType adType) {
+                Log.d(TAG, "onAdPresenting");
             }
 
             @Override
             public void onAdPresented(final AdSpace adSpace, boolean b, AdInfo.AdType adType) {
+                Log.d(TAG, "onAdPresented");
             }
 
             @Override
