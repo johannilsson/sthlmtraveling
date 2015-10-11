@@ -70,9 +70,8 @@ public class SearchDeparturesFragment extends BaseListFragment implements Loader
         super.onViewCreated(view, savedInstanceState);
 
         mHistoryAdapter = new HistoryAdapter(getActivity());
-        setListAdapter(mHistoryAdapter);
-
         initViews();
+        setListAdapter(mHistoryAdapter);
     }
 
     @Override
