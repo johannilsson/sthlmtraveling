@@ -31,6 +31,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.ListFragment;
+import android.support.v4.util.Pair;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
@@ -63,8 +64,11 @@ import java.util.ArrayList;
 
 
 public class DeparturesActivity extends BaseFragmentActivity {
-    static String EXTRA_SITE_NAME = "com.markupartist.sthlmtraveling.siteName";
-    static String EXTRA_SITE = "com.markupartist.sthlmtraveling.site";
+    // Used by shortcuts
+    public static final String EXTRA_SITE_ID = "com.markupartist.sthlmtraveling.siteId";
+    // Used by shortcuts
+    public static final String EXTRA_SITE_NAME = "com.markupartist.sthlmtraveling.siteName";
+    public static final String EXTRA_SITE = "com.markupartist.sthlmtraveling.site";
 
     private static final String STATE_GET_SITES_IN_PROGRESS =
             "com.markupartist.sthlmtraveling.getsites.inprogress";
@@ -116,7 +120,14 @@ public class DeparturesActivity extends BaseFragmentActivity {
         if (extras.containsKey(EXTRA_SITE)) {
             mSite = extras.getParcelable(EXTRA_SITE);
             setTitle(mSite.getName());
+        } else if (extras.containsKey(EXTRA_SITE_ID) && extras.containsKey(EXTRA_SITE_NAME)) {
+            // Used for shortcuts.
+            mSite = new Site();
+            mSite.setId(extras.getString(EXTRA_SITE_ID));
+            mSite.setName(extras.getString(EXTRA_SITE_NAME));
+            mSite.setSource(Site.SOURCE_STHLM_TRAVELING);
         } else if (extras.containsKey(EXTRA_SITE_NAME)) {
+            // This is only for legacy reasons, we should probably transform this to a Site as well.
             mSiteName = extras.getString(EXTRA_SITE_NAME);
             setTitle(mSiteName);
         } else {
@@ -531,8 +542,10 @@ public class DeparturesActivity extends BaseFragmentActivity {
                     new GetDeparturesTask().execute(result.get(0));
                 } else {
                     // Has exact match?
+                    Pair<String, String> nameAndLocality =
+                            SitesStore.nameAsNameAndLocality(mSearchQuery);
                     for (Site site : result) {
-                        if (site.getName().equals(mSearchQuery)) {
+                        if (site.getName().equals(nameAndLocality.first)) {
                             new GetDeparturesTask().execute(result.get(0));
                             return;
                         }

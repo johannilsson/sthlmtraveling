@@ -154,6 +154,7 @@ public class SearchDeparturesFragment extends BaseListFragment implements Loader
                 .getApplicationContext(), DeparturesShortcutProxyActivity.class);
         shortcutIntent.setAction(Intent.ACTION_VIEW);
         shortcutIntent.putExtra(DeparturesActivity.EXTRA_SITE_NAME, stop.getName());
+        shortcutIntent.putExtra(DeparturesActivity.EXTRA_SITE_ID, stop.getId());
         shortcutIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
         // Then, set up the container intent (the response to the caller)
