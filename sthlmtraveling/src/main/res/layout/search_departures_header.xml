@@ -26,39 +26,71 @@
         android:text="@string/search_label"
         />
 
-    <TextView
+    <RelativeLayout
         android:id="@+id/sites"
         android:layout_width="match_parent"
         android:layout_height="?android:attr/listPreferredItemHeight"
-        android:layout_marginLeft="72dp"
-        android:layout_marginStart="72dp"
-        android:background="?attr/selectableItemBackground"
-        android:gravity="start|center_vertical"
-        android:paddingBottom="8dp"
-        android:paddingEnd="16dp"
-        android:paddingRight="16dp"
-        android:paddingTop="8dp"
-        android:text="@string/site_name"
-        android:textAppearance="?attr/textAppearanceListItemSmall"
-        android:textColor="@color/body_text_1"
-        />
+        android:background="?attr/selectableItemBackground">
 
-    <TextView
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:scaleType="center"
+            android:src="@drawable/ic_search_24dp"
+            />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="?android:attr/listPreferredItemHeight"
+            android:layout_marginLeft="72dp"
+            android:layout_marginStart="72dp"
+            android:gravity="start|center_vertical"
+            android:paddingBottom="8dp"
+            android:paddingEnd="16dp"
+            android:paddingRight="16dp"
+            android:paddingTop="8dp"
+            android:text="@string/site_name"
+            android:textAppearance="?attr/textAppearanceListItemSmall"
+            android:textColor="@color/body_text_1"
+            />
+    </RelativeLayout>
+
+
+    <RelativeLayout
         android:id="@+id/btn_nearby_stops"
         android:layout_width="match_parent"
         android:layout_height="?android:attr/listPreferredItemHeight"
-        android:layout_marginLeft="72dp"
-        android:layout_marginStart="72dp"
-        android:background="?attr/selectableItemBackground"
-        android:gravity="start|center_vertical"
-        android:paddingBottom="8dp"
-        android:paddingEnd="16dp"
-        android:paddingRight="16dp"
-        android:paddingTop="8dp"
-        android:text="@string/nearby_stops"
-        android:textAppearance="?attr/textAppearanceListItemSmall"
-        android:textColor="@color/body_text_1"
-        />
+        android:background="?attr/selectableItemBackground">
+
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:scaleType="center"
+            android:src="@drawable/ic_my_location_24dp"
+            />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="?android:attr/listPreferredItemHeight"
+            android:layout_marginLeft="72dp"
+            android:layout_marginStart="72dp"
+            android:gravity="start|center_vertical"
+            android:paddingBottom="8dp"
+            android:paddingEnd="16dp"
+            android:paddingRight="16dp"
+            android:paddingTop="8dp"
+            android:text="@string/nearby_stops"
+            android:textAppearance="?attr/textAppearanceListItemSmall"
+            android:textColor="@color/body_text_1"
+            />
+
+    </RelativeLayout>
 
     <TextView
         style="@style/Subtitle"

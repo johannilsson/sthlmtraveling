@@ -25,6 +25,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.LayoutRes;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -289,9 +290,9 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements LoaderM
         }
 
         mDefaultListAdapter = new DefaultListAdapter(this);
-        List<CharSequence> options = new ArrayList<>();
-        options.add(getText(R.string.my_location));
-        options.add(getText(R.string.point_on_map));
+        List<SimpleItemBinder.Item> options = new ArrayList<>();
+        options.add(new SimpleItemBinder.Item(R.drawable.ic_my_location_24dp, getText(R.string.my_location)));
+        options.add(new SimpleItemBinder.Item(R.drawable.ic_map_24dp, getText(R.string.point_on_map)));
         mDefaultListAdapter.setOptions(options);
         mHistoryRecyclerView.setAdapter(mDefaultListAdapter);
 
@@ -305,7 +306,7 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements LoaderM
                 if (binder instanceof HistoryBinder) {
                     Site site = ((HistoryBinder) binder).getItem(binderPosition);
                     deliverResult(site);
-                } else if (binder instanceof SimpleStringBinder) {
+                } else if (binder instanceof SimpleItemBinder) {
                     switch (binderPosition) {
                         case 0:
                             Site currentLocation = new Site();
@@ -503,8 +504,10 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements LoaderM
 
         public DefaultListAdapter(Context context) {
             addAllBinder(
-                    new SimpleStringBinder(this, R.layout.row_place_search),
-                    new SimpleStringBinder(this, R.layout.row_section, context.getText(R.string.history_label)),
+                    new SimpleItemBinder(this, R.layout.row_place_search),
+                    new SimpleItemBinder(this, R.layout.row_section,
+                            new SimpleItemBinder.Item(
+                                    -1, context.getText(R.string.history_label))),
                     new HistoryBinder(this, context));
         }
 
@@ -512,22 +515,22 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements LoaderM
             ((HistoryBinder) getDataBinder(2)).replaceAll(dataSet);
         }
 
-        public void setOptions(List<CharSequence> options) {
-            ((SimpleStringBinder) getDataBinder(0)).addItems(options);
+        public void setOptions(List<SimpleItemBinder.Item> options) {
+            ((SimpleItemBinder) getDataBinder(0)).addItems(options);
         }
     }
 
-    public static class SimpleStringBinder extends DataBinder<SimpleStringBinder.ViewHolder> {
-
+    public static class SimpleItemBinder extends DataBinder<SimpleItemBinder.ViewHolder> {
+        // TODO: Make it into a simple item binder with a custom item with title and icon...
         private final int mLayoutRes;
-        private List<CharSequence> mData = new ArrayList<>();
+        private List<Item> mData = new ArrayList<>();
 
-        public SimpleStringBinder(DataBindAdapter dataBindAdapter, @LayoutRes int layoutRes) {
+        public SimpleItemBinder(DataBindAdapter dataBindAdapter, @LayoutRes int layoutRes) {
             super(dataBindAdapter);
             mLayoutRes = layoutRes;
         }
 
-        public SimpleStringBinder(DataBindAdapter dataBindAdapter, @LayoutRes int layoutRes, CharSequence item) {
+        public SimpleItemBinder(DataBindAdapter dataBindAdapter, @LayoutRes int layoutRes, Item item) {
             super(dataBindAdapter);
             mLayoutRes = layoutRes;
             mData.add(item);
@@ -541,9 +544,13 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements LoaderM
 
         @Override
         public void bindViewHolder(ViewHolder holder, int position) {
-            ViewHelper.setText(holder.text1, mData.get(position));
+            Item item = mData.get(position);
+            ViewHelper.setText(holder.text1, item.title);
             if (holder.text2 != null) {
                 holder.text2.setVisibility(View.GONE);
+            }
+            if (holder.icon != null) {
+                holder.icon.setImageResource(item.icon);
             }
         }
 
@@ -552,7 +559,7 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements LoaderM
             return mData.size();
         }
 
-        public void addItems(List<CharSequence> items) {
+        public void addItems(List<Item> items) {
             mData.clear();
             mData.addAll(items);
             notifyDataSetChanged();
@@ -570,6 +577,16 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements LoaderM
                 text2 = (TextView) view.findViewById(R.id.text2);
                 distance = (TextView) view.findViewById(R.id.distance);
                 icon = (ImageView) view.findViewById(R.id.icon);
+            }
+        }
+
+        public static class Item {
+            @DrawableRes public int icon;
+            public CharSequence title;
+
+            public Item(@DrawableRes int icon, CharSequence title) {
+                this.icon = icon;
+                this.title = title;
             }
         }
     }
@@ -605,12 +622,12 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements LoaderM
 //            ViewHelper.setText(holder.text1, entryTitle);
             ViewHelper.setText(holder.text1, title);
             if (subtitle != null) {
-
                 ViewHelper.setText(holder.text2, subtitle);
                 holder.text2.setVisibility(View.VISIBLE);
             } else {
                 holder.text2.setVisibility(View.GONE);
             }
+            holder.icon.setImageResource(R.drawable.ic_history_24dp);
         }
 
         @Override

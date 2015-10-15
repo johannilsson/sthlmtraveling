@@ -29,8 +29,8 @@
         android:layout_centerVertical="true"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
-        android:paddingBottom="@dimen/list_vertical_padding"
-        android:paddingTop="@dimen/list_vertical_padding"
+        android:scaleType="center"
+        tools:src="@drawable/ic_search_24dp"
         />
 
     <TextView
@@ -85,7 +85,7 @@
             android:textSize="14sp"
             android:visibility="gone"
             tools:text="Sample sub title"
-            tools:visibility="visible"/>
+            tools:visibility="gone"/>
 
     </LinearLayout>
 

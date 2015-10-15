@@ -142,6 +142,7 @@ public class PlaceSearchResultAdapter extends HeaderFooterRecyclerViewAdapter im
         } else {
             holder.text2.setVisibility(View.GONE);
         }
+        holder.icon.setImageResource(R.drawable.ic_query_24dp);
     }
 
     public PlaceItem getItem(int position) {

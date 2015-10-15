@@ -30,6 +30,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -242,12 +243,14 @@ public class SearchDeparturesFragment extends BaseListFragment implements Loader
             Site site = HistoryDbAdapter.mapToSite(cursor);
             ((TextView) view.findViewById(R.id.text1)).setText(site.getName());
             TextView text2 = (TextView) view.findViewById(R.id.text2);
+            ImageView icon = (ImageView) view.findViewById(R.id.icon);
             if (site.getLocality() != null) {
                 text2.setText(site.getLocality());
                 text2.setVisibility(View.VISIBLE);
             } else {
                 text2.setVisibility(View.GONE);
             }
+            icon.setImageResource(R.drawable.ic_history_24dp);
         }
     }
 }
