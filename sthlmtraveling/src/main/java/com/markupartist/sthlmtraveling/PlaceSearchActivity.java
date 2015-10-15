@@ -181,7 +181,8 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements LoaderM
 
     public void createSearchHandler() {
         mHandler = new Handler(Looper.getMainLooper(), new Handler.Callback() {
-            @Override public boolean handleMessage(Message msg) {
+            @Override
+            public boolean handleMessage(Message msg) {
                 switch (msg.what) {
                     case MESSAGE_TEXT_CHANGED:
                         mSearchResultAdapter.getFilter().filter((String) msg.obj);
@@ -350,7 +351,7 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements LoaderM
             historyList.add(site);
             data.moveToNext();
         }
-        mDefaultListAdapter.setHistoryData(historyList);
+        mDefaultListAdapter.setHistoryData(this, historyList);
     }
 
     @Override
@@ -505,13 +506,17 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements LoaderM
         public DefaultListAdapter(Context context) {
             addAllBinder(
                     new SimpleItemBinder(this, R.layout.row_place_search),
-                    new SimpleItemBinder(this, R.layout.row_section,
-                            new SimpleItemBinder.Item(
-                                    -1, context.getText(R.string.history_label))),
+                    new SimpleItemBinder(this, R.layout.row_section),
                     new HistoryBinder(this, context));
         }
 
-        public void setHistoryData(List<Site> dataSet) {
+        public void setHistoryData(Context context, List<Site> dataSet) {
+            if (getDataBinder(1).getItemCount() == 0 && dataSet.size() > 0) {
+                ((SimpleItemBinder) getDataBinder(1)).addItem(new SimpleItemBinder.Item(
+                        SimpleItemBinder.Item.NO_IMAGE,
+                        context.getText(R.string.history_label)));
+            }
+
             ((HistoryBinder) getDataBinder(2)).replaceAll(dataSet);
         }
 
@@ -565,6 +570,11 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements LoaderM
             notifyDataSetChanged();
         }
 
+        public void addItem(Item item) {
+            mData.add(item);
+            notifyDataSetChanged();
+        }
+
         public class ViewHolder extends RecyclerView.ViewHolder {
             TextView text1;
             TextView text2;
@@ -581,7 +591,10 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements LoaderM
         }
 
         public static class Item {
-            @DrawableRes public int icon;
+            public static final int NO_IMAGE = -1;
+
+            @DrawableRes
+            public int icon;
             public CharSequence title;
 
             public Item(@DrawableRes int icon, CharSequence title) {
