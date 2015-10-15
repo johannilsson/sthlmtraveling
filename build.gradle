@@ -18,5 +18,5 @@ allprojects {
 
 task wrapper(type: Wrapper) {
     description = 'Install wrapper for gradle. Simplifies compilation on new PCs'
-    gradleVersion = '2.4'
+    gradleVersion = '2.7'
 }
