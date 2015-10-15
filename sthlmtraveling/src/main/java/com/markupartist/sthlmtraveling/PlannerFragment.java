@@ -568,10 +568,8 @@ public class PlannerFragment extends BaseListFragment implements LoaderManager.L
     private void handleSearchAction() {
         if (TextUtils.isEmpty(mStartPointAutoComplete.getText())) {
             Log.d(TAG, "Start auto was empty");
-            mStartPointAutoComplete.setError(getText(R.string.empty_value));
         } else if (TextUtils.isEmpty(mEndPointAutoComplete.getText())) {
             Log.d(TAG, "End auto was empty");
-            mEndPointAutoComplete.setError(getText(R.string.empty_value));
         } else {
             mStartPoint = buildStop(mStartPoint, mStartPointAutoComplete);
             mEndPoint = buildStop(mEndPoint, mEndPointAutoComplete);
@@ -591,8 +589,7 @@ public class PlannerFragment extends BaseListFragment implements LoaderManager.L
                 if (resultCode == Activity.RESULT_CANCELED) {
                     Log.d(TAG, "action canceled");
                 } else {
-                    mStartPoint = data
-                            .getParcelableExtra(PointOnMapActivity.EXTRA_STOP);
+                    mStartPoint = data.getParcelableExtra(PointOnMapActivity.EXTRA_STOP);
                     mStartPointAutoComplete.setText(getText(R.string.point_on_map));
                     // mStartPointAutoComplete.setText(mStartPoint.getName());
                     Log.d(TAG, "Got Stop " + mStartPoint);
@@ -602,8 +599,7 @@ public class PlannerFragment extends BaseListFragment implements LoaderManager.L
                 if (resultCode == Activity.RESULT_CANCELED) {
                     Log.d(TAG, "action canceled");
                 } else {
-                    mEndPoint = data
-                            .getParcelableExtra(PointOnMapActivity.EXTRA_STOP);
+                    mEndPoint = data.getParcelableExtra(PointOnMapActivity.EXTRA_STOP);
                     mEndPointAutoComplete.setText(getText(R.string.point_on_map));
                     // mEndPointAutoComplete.setText(mEndPoint.getName());
                     Log.d(TAG, "Got Stop " + mEndPoint);
@@ -625,7 +621,9 @@ public class PlannerFragment extends BaseListFragment implements LoaderManager.L
                     if (mStartPoint.isMyLocation()) {
                         mStartPointAutoComplete.setText(getText(R.string.my_location));
                     } else {
+                        Log.d(TAG, "Got startpoint: " + mStartPoint.toDump());
                         mStartPointAutoComplete.setText(mStartPoint.getName());
+                        mEndPointAutoComplete.requestLayout();
                     }
                 }
                 break;
@@ -637,7 +635,9 @@ public class PlannerFragment extends BaseListFragment implements LoaderManager.L
                     if (mEndPoint.isMyLocation()) {
                         mEndPointAutoComplete.setText(getText(R.string.my_location));
                     } else {
+                        Log.d(TAG, "Got endpoint: " + mEndPoint.toDump());
                         mEndPointAutoComplete.setText(mEndPoint.getName());
+                        mEndPointAutoComplete.requestLayout();
                     }
                 }
                 break;
