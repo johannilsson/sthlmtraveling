@@ -24,7 +24,7 @@
 -dontwarn com.widespace.internal.logging.Logger
 
 # Libraries included
--libraryjars libs
+#-libraryjars libs
 
 # Google Play Services
 
