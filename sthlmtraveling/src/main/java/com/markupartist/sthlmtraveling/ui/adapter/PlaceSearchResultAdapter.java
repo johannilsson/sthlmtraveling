@@ -207,6 +207,7 @@ public class PlaceSearchResultAdapter extends HeaderFooterRecyclerViewAdapter im
             mWasSuccess = wasSuccess;
         }
 
+        @SuppressWarnings("unchecked")
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
             if (mFilterResultCallback != null) {
