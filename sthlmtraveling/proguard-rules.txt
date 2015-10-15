@@ -21,6 +21,10 @@
    *;
 }
 -dontwarn com.widespace.adspace.helpers.AttributesParseHelper
+-dontwarn com.widespace.internal.logging.Logger
+
+# Libraries included
+-libraryjars libs
 
 # Google Play Services
 
@@ -49,8 +53,6 @@
 
 -keepattributes *Annotation*
 
--dontwarn com.actionbarsherlock.internal.**
-
 # okhttp
 -dontwarn com.squareup.okhttp.**
 -dontwarn org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement
@@ -75,38 +77,7 @@
     public static int e(...);
 }
 
-# Glimr
--keepattributes EnclosingMethod
--keep class sun.misc.Unsafe { *; }
--keep class com.google.gson.examples.android.model.** { *; }
--keep class com.katalysator.sdk.KATAdvertType {
-    public <methods>;
-}
--keep class com.katalysator.sdk.KATAssets {
-    public <methods>;
-}
--keep class com.katalysator.sdk.KATBeaconAdvert {
-    public <methods>;
-}
--keep class com.katalysator.sdk.KATConfiguration {
-    public <methods>;
-}
--keep class com.katalysator.sdk.KATEndPoints {
-    public <methods>;
-}
--keep class com.katalysator.sdk.KATRequestBeaconAdvertPayload {
-    public <methods>;
-}
--keep class com.katalysator.sdk.KATAdvertImageActivity {
-    public <methods>;
-}
--keep class com.katalysator.sdk.KATBeaconManager {
-    public <methods>;
-}
 
--keep class com.katalysator.sdk.* {
-    public <methods>;
-}
 -keep public class * extends android.app.
 -keep public class * extends android.app.Activity
 -keepclasseswithmembers class * {
