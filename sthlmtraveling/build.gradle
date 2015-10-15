@@ -61,12 +61,11 @@ android {
     defaultConfig {
         minSdkVersion 9
         targetSdkVersion 22
-        versionName "2.13.3-dev"
-        versionCode 153
+        versionName "2.13.4-dev"
+        versionCode 154
 
         buildConfigField "boolean", "APP_IS_ADS_ENABLED", buildProperties['IS_ADS_ENABLED']
         buildConfigField "String", "APP_WIDESPACE_SID", buildProperties['WIDESPACE_SID']
-        buildConfigField "String", "APP_KATALYST_API_KEY", buildProperties['KATALYST_API_KEY']
         buildConfigField "String", "APP_STHLMTRAVELING_API_KEY", buildProperties['STHLMTRAVELING_API_KEY']
         buildConfigField "String", "APP_ANALYTICS_PROPERTY_KEY", buildProperties['ANALYTICS_PROPERTY_KEY']
     }

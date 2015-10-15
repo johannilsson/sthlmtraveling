@@ -8,7 +8,6 @@ public class AppConfig {
     public static final String ANALYTICS_PROPERTY_KEY = BuildConfig.APP_ANALYTICS_PROPERTY_KEY;
     public static final String APP_VERSION = BuildConfig.VERSION_NAME + " (" + BuildConfig.VERSION_CODE + ")";
     public static final String WIDESPACE_SID = BuildConfig.APP_WIDESPACE_SID;
-    public static final String KATALYST_API_KEY = BuildConfig.APP_KATALYST_API_KEY;
     public static final String STHLM_TRAVELING_API_KEY = BuildConfig.APP_STHLMTRAVELING_API_KEY;
 
     public static boolean shouldServeAds() {
