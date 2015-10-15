@@ -145,15 +145,11 @@ public class StartActivity extends BaseFragmentActivity {
     @Override
     protected void onResume() {
         super.onResume();
-
-//        BeaconManager.getInstance(this).start();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-
-//        BeaconManager.getInstance(this).stop();
     }
 
 }
