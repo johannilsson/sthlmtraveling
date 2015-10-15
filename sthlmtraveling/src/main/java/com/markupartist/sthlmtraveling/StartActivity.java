@@ -25,7 +25,6 @@ import android.support.v7.app.ActionBar;
 import com.markupartist.sthlmtraveling.service.DeviationService;
 import com.markupartist.sthlmtraveling.ui.view.PageFragmentAdapter;
 import com.markupartist.sthlmtraveling.ui.view.SlidingTabLayout;
-import com.markupartist.sthlmtraveling.utils.BeaconManager;
 import com.markupartist.sthlmtraveling.utils.RtlUtils;
 
 import java.util.Locale;
@@ -147,14 +146,14 @@ public class StartActivity extends BaseFragmentActivity {
     protected void onResume() {
         super.onResume();
 
-        BeaconManager.getInstance(this).start();
+//        BeaconManager.getInstance(this).start();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
 
-        BeaconManager.getInstance(this).stop();
+//        BeaconManager.getInstance(this).stop();
     }
 
 }
