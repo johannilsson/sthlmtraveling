@@ -36,6 +36,7 @@ import com.markupartist.sthlmtraveling.provider.site.Site;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -90,8 +91,10 @@ public class GooglePlacesFilter extends PlaceSearchResultAdapter.PlaceFilter {
             ArrayList<GooglePlaceResult> resultList = new ArrayList<>(autocompletePredictions.getCount());
             while (iterator.hasNext()) {
                 AutocompletePrediction prediction = iterator.next();
-                resultList.add(new GooglePlaceResult(prediction.getPlaceId(),
-                        prediction.getDescription()));
+                resultList.add(new GooglePlaceResult(
+                        prediction.getPlaceId(),
+                        prediction.getDescription(),
+                        isTransitStop(prediction.getPlaceTypes())));
             }
             autocompletePredictions.release();
             setStatus(true);
@@ -100,6 +103,14 @@ public class GooglePlacesFilter extends PlaceSearchResultAdapter.PlaceFilter {
         }
         setStatus(false);
         return null;
+    }
+
+    boolean isTransitStop(List<Integer> placeTypes) {
+        boolean isTransitStop = false;
+        if (placeTypes != null) {
+            isTransitStop = placeTypes.contains(Place.TYPE_TRANSIT_STATION);
+        }
+        return isTransitStop;
     }
 
     @Override
@@ -136,7 +147,8 @@ public class GooglePlacesFilter extends PlaceSearchResultAdapter.PlaceFilter {
                     convertedPlace.setLocation(place.getLatLng().latitude, place.getLatLng().longitude);
                     convertedPlace.setName((String) place.getName());
                     convertedPlace.setLocality((String) place.getAddress());
-
+                    boolean isTransitStop = isTransitStop(place.getPlaceTypes());
+                    convertedPlace.setType(isTransitStop ? Site.TYPE_TRANSIT_STOP : Site.TYPE_ADDRESS);
                     places.release();
                     resultCallback.onResult(convertedPlace);
                 } else {
@@ -151,14 +163,16 @@ public class GooglePlacesFilter extends PlaceSearchResultAdapter.PlaceFilter {
      */
     public static class GooglePlaceResult implements PlaceItem {
 
-        public CharSequence placeId;
-        public CharSequence description;
+        public final CharSequence placeId;
+        public final CharSequence description;
+        private final boolean isTransitStop;
         private String title;
         private String subtitle;
 
-        GooglePlaceResult(CharSequence placeId, CharSequence description) {
+        GooglePlaceResult(CharSequence placeId, CharSequence description, boolean isTransitStop) {
             this.placeId = placeId;
             this.description = description;
+            this.isTransitStop = isTransitStop;
         }
 
         public String getTitle() {
@@ -169,6 +183,11 @@ public class GooglePlacesFilter extends PlaceSearchResultAdapter.PlaceFilter {
         public String getSubtitle() {
             makeTitleAndSubtitle((String) description);
             return subtitle;
+        }
+
+        @Override
+        public boolean isTransitStop() {
+            return isTransitStop;
         }
 
         void makeTitleAndSubtitle(String s) {

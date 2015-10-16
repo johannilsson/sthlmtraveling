@@ -23,4 +23,6 @@ public interface PlaceItem {
     String getTitle();
 
     String getSubtitle();
+
+    boolean isTransitStop();
 }

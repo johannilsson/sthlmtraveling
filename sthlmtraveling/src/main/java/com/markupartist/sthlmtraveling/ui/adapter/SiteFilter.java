@@ -17,7 +17,6 @@
 package com.markupartist.sthlmtraveling.ui.adapter;
 
 import android.content.Context;
-import android.support.v4.util.Pair;
 
 import com.markupartist.sthlmtraveling.provider.site.Site;
 import com.markupartist.sthlmtraveling.provider.site.SitesStore;
@@ -82,25 +81,20 @@ public class SiteFilter extends PlaceSearchResultAdapter.PlaceFilter {
         public SiteResult(Site site) {
             this.site = site;
 
-//            makeTitleAndSubtitle(site.getName());
-        }
-
-        void makeTitleAndSubtitle(String s) {
-            Pair<String, String> titleAndSubtitle = SitesStore.nameAsNameAndLocality(s);
-            title = titleAndSubtitle.first;
-            subtitle = titleAndSubtitle.second;
         }
 
         @Override
         public String getTitle() {
-//            return title;
             return site.getName();
         }
 
         @Override
         public String getSubtitle() {
-//            return subtitle;
             return site.getLocality();
+        }
+
+        public boolean isTransitStop() {
+            return site.isTransitStop();
         }
     }
 }

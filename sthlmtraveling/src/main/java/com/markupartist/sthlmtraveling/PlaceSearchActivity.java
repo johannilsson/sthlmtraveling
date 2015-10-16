@@ -526,19 +526,12 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements LoaderM
     }
 
     public static class SimpleItemBinder extends DataBinder<SimpleItemBinder.ViewHolder> {
-        // TODO: Make it into a simple item binder with a custom item with title and icon...
         private final int mLayoutRes;
         private List<Item> mData = new ArrayList<>();
 
         public SimpleItemBinder(DataBindAdapter dataBindAdapter, @LayoutRes int layoutRes) {
             super(dataBindAdapter);
             mLayoutRes = layoutRes;
-        }
-
-        public SimpleItemBinder(DataBindAdapter dataBindAdapter, @LayoutRes int layoutRes, Item item) {
-            super(dataBindAdapter);
-            mLayoutRes = layoutRes;
-            mData.add(item);
         }
 
         @Override
@@ -625,6 +618,7 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements LoaderM
             Site place = mData.get(position);
             String title = place.getName();
             String subtitle = place.getLocality();
+            boolean isTransitStop = place.isTransitStop();
 
             // Use this for adding an astrix for google places results and to show attribution at the end.
 //            title = title + "*";
@@ -640,7 +634,15 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements LoaderM
             } else {
                 holder.text2.setVisibility(View.GONE);
             }
-            holder.icon.setImageResource(R.drawable.ic_history_24dp);
+            if (place.hasType()) {
+                if (place.isTransitStop()) {
+                    holder.icon.setImageResource(R.drawable.ic_directions_transit_24dp);
+                } else {
+                    holder.icon.setImageResource(R.drawable.ic_place_24dp);
+                }
+            } else {
+                holder.icon.setImageResource(R.drawable.ic_history_24dp);
+            }
         }
 
         @Override

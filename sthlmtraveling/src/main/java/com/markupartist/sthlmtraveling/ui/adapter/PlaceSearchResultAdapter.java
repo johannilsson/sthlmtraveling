@@ -142,7 +142,12 @@ public class PlaceSearchResultAdapter extends HeaderFooterRecyclerViewAdapter im
         } else {
             holder.text2.setVisibility(View.GONE);
         }
-        holder.icon.setImageResource(R.drawable.ic_query_24dp);
+        if (placeResult.isTransitStop()) {
+            holder.icon.setImageResource(R.drawable.ic_directions_transit_24dp);
+        } else {
+            holder.icon.setImageResource(R.drawable.ic_place_24dp);
+        }
+
     }
 
     public PlaceItem getItem(int position) {

@@ -11,7 +11,15 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class Site implements Parcelable {
-    public static String TYPE_MY_LOCATION = "MY_LOCATION";
+    public static final String TYPE_MY_LOCATION = "MY_LOCATION";
+
+    public static final String TYPE_TRANSIT_STOP = "S";
+    public static final String TYPE_ADDRESS = "A";
+
+    public static final int CATEGORY_UNKNOWN = 0;
+    public static final int CATEGORY_TRANSIT_STOP = 1;
+    public static final int CATEGORY_ADDRESS = 2;
+
     public static int SOURCE_STHLM_TRAVELING = 0;
     public static int SOURCE_GOOGLE_PLACES = 1;
     private static String NAME_RE = "[^\\p{Alnum}\\(\\)\\s]";
@@ -39,7 +47,7 @@ public class Site implements Parcelable {
         mSource = site.getSource();
     }
 
-    private String getType() {
+    public String getType() {
         return mType;
     }
 
@@ -130,10 +138,15 @@ public class Site implements Parcelable {
     }
 
     public boolean isAddress() {
-        if (mType == null) {
-            return false;
-        }
-        return mType.equals("A");
+        return mType != null && mType.equals("A");
+    }
+
+    public boolean isTransitStop() {
+        return mType != null && mType.equals("S");
+    }
+
+    public boolean hasType() {
+        return !TextUtils.isEmpty(mType);
     }
 
     public boolean hasName() {

@@ -34,7 +34,7 @@ import java.util.Locale;
 public class HistoryDbAdapter {
     private static final String DATABASE_NAME = "history";
     private static final String DATABASE_TABLE = "history";
-    private static final int DATABASE_VERSION = 7;
+    private static final int DATABASE_VERSION = 8;
 
     public static final String KEY_ROWID = "_id";
     public static final String KEY_TYPE = "type";
@@ -47,6 +47,7 @@ public class HistoryDbAdapter {
     public static final String KEY_LOCALITY = "locality";
     public static final String KEY_PLACE_ID = "place_id";
     public static final String KEY_SOURCE = "source";
+    public static final String KEY_CATEGORY = "category";
 
     public static final int INDEX_ROWID = 0;
     public static final int INDEX_TYPE = 1;
@@ -59,6 +60,7 @@ public class HistoryDbAdapter {
     public static final int INDEX_LOCALITY = 6;
     public static final int INDEX_PLACE_ID = 7;
     public static final int INDEX_SOURCE = 8;
+    public static final int INDEX_CATEGORY = 9;
 
     /**
      * @deprecated
@@ -96,7 +98,8 @@ public class HistoryDbAdapter {
 //            KEY_SITE_ID,
             KEY_LOCALITY,
             KEY_PLACE_ID,
-            KEY_SOURCE
+            KEY_SOURCE,
+            KEY_CATEGORY,
     };
 
     private DatabaseHelper mDbHelper;
@@ -118,6 +121,7 @@ public class HistoryDbAdapter {
                 + ", locality TEXT NULL"
                 + ", place_id TEXT NULL"
                 + ", source INTEGER NULL"
+                + ", category INTEGER NULL"
                 + ");";
 
     /**
@@ -184,6 +188,15 @@ public class HistoryDbAdapter {
 
         initialValues.put(KEY_CREATED, dateFormat.format(date));
 
+        int category = Site.CATEGORY_UNKNOWN;
+        if (site.hasType()) {
+            String categoryType = site.getType();
+            category = Site.TYPE_TRANSIT_STOP.equals(categoryType) ?
+                    Site.CATEGORY_TRANSIT_STOP :
+                    Site.CATEGORY_ADDRESS;
+        }
+        initialValues.put(KEY_CATEGORY, category);
+
         Cursor rowCursor = fetchByName(type, site.getName());
         if (rowCursor.getCount() >= 1) {
             initialValues.put(KEY_ROWID, 
@@ -246,6 +259,15 @@ public class HistoryDbAdapter {
         site.setId(cursor.getString(HistoryDbAdapter.INDEX_PLACE_ID));
         site.setSource(cursor.getInt(HistoryDbAdapter.INDEX_SOURCE));
         site.setLocality(cursor.getString(HistoryDbAdapter.INDEX_LOCALITY));
+
+        int category = cursor.getInt(HistoryDbAdapter.INDEX_CATEGORY);
+        String categoryType = null;
+        if (category == Site.CATEGORY_TRANSIT_STOP) {
+            categoryType = Site.TYPE_TRANSIT_STOP;
+        } else if (category == Site.CATEGORY_ADDRESS) {
+            categoryType = Site.TYPE_ADDRESS;
+        }
+        site.setType(categoryType);
         return site;
     }
 
@@ -287,6 +309,9 @@ public class HistoryDbAdapter {
                     case 7:
                         success = upgradeToVersion7(db);
                         break;
+                    case 8:
+                        success = upgradeToVersion8(db);
+                        break;
                 }
             }
 
@@ -294,6 +319,17 @@ public class HistoryDbAdapter {
                 db.setTransactionSuccessful();
             }
             db.endTransaction();
+        }
+
+        private boolean upgradeToVersion8(SQLiteDatabase db) {
+            try {
+                db.execSQL("ALTER TABLE history ADD COLUMN category INTEGER NULL;");
+            } catch (SQLException e) {
+                Log.e(TAG, "Upgrade to version 8 failed, " + e.getMessage());
+                return false;
+            }
+
+            return true;
         }
 
         private boolean upgradeToVersion7(SQLiteDatabase db) {
