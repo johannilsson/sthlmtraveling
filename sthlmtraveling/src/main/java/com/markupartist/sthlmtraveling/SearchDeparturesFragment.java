@@ -44,6 +44,7 @@ public class SearchDeparturesFragment extends BaseListFragment implements Loader
     private boolean mCreateShortcut;
     private HistoryDbAdapter mHistoryDbAdapter;
     private HistoryAdapter mHistoryAdapter;
+    private View mHistorySubtitle;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -104,6 +105,8 @@ public class SearchDeparturesFragment extends BaseListFragment implements Loader
                 startActivityWithDefaultTransition(i);
             }
         });
+
+        mHistorySubtitle = searchHeader.findViewById(R.id.departure_history_subtitle);
     }
 
     @Override
@@ -196,6 +199,11 @@ public class SearchDeparturesFragment extends BaseListFragment implements Loader
         switch (loader.getId()) {
             case LOADER_HISTORY:
                 mHistoryAdapter.swapCursor(data);
+                if (mHistoryAdapter.getCount() > 0) {
+                    mHistorySubtitle.setVisibility(View.VISIBLE);
+                } else {
+                    mHistorySubtitle.setVisibility(View.GONE);
+                }
                 break;
         }
     }

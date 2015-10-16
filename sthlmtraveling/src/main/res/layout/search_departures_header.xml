@@ -93,6 +93,8 @@
     </RelativeLayout>
 
     <TextView
+        android:id="@+id/departure_history_subtitle"
+        android:visibility="gone"
         style="@style/Subtitle"
         android:text="@string/history_label"
         />
