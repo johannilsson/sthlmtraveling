@@ -128,6 +128,8 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements LoaderM
 
         ImageButton backButton = (ImageButton) findViewById(R.id.search_back);
         ViewHelper.tint(backButton, getResources().getColor(R.color.primary_dark));
+        ViewHelper.flipIfRtl(backButton);
+
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

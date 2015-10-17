@@ -39,7 +39,7 @@
             android:layout_height="?attr/actionBarSize"
             android:layout_centerVertical="true"
             android:scaleType="center"
-            android:src="@drawable/ic_action_navigation_arrow_back"
+            android:src="@drawable/ic_arrow_back_24dp"
             android:visibility="visible"
             tools:visibility="visible"/>
 
@@ -54,6 +54,8 @@
             android:hint="@string/search_label"
             android:paddingLeft="8dp"
             android:paddingRight="8dp"
+            android:layout_marginEnd="?attr/actionBarSize"
+            android:layout_marginRight="?attr/actionBarSize"
             android:singleLine="true"
             android:textSize="16sp"
             />

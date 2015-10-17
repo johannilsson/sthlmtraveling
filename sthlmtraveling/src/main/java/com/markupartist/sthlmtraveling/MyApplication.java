@@ -93,6 +93,7 @@ public class MyApplication extends Application {
             } else {
                 conf.locale = locale;
             }
+            Locale.setDefault(locale);
             res.updateConfiguration(conf, dm);
         }
     }
