@@ -230,6 +230,7 @@ public class HistoryDbAdapter {
      * @return a Cursor object
      */
     public Cursor fetchByType(int type) {
+        // TODO: This will be changed to fetch by source = sthlm traveling and category = transit stop.
         return mDb.query(true, DATABASE_TABLE, ALL,
                 KEY_TYPE + "= ?", new String[]{String.valueOf(type)}, null, null,
                 KEY_CREATED + " DESC", "10");
@@ -242,7 +243,7 @@ public class HistoryDbAdapter {
     public Cursor fetchLatest() {
         return mDb.query(true, DATABASE_TABLE, ALL,
                 null, null, null, null,
-                KEY_CREATED + " DESC", "10");
+                KEY_CREATED + " DESC", "20");
     }
 
     
