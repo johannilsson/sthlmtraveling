@@ -37,7 +37,7 @@ public class JourneyQuery implements Parcelable {
     public Site via;
     public Date time;
     public boolean isTimeDeparture = true;
-    public boolean alternativeStops = false;
+    public boolean alternativeStops = true;
     public List<String> transportModes = new ArrayList<String>();
     public String ident;
     public String seqnr;
@@ -236,7 +236,7 @@ public class JourneyQuery implements Parcelable {
         private Site mVia;
         private Date mTime;
         private boolean mIsTimeDeparture = true;
-        private boolean mAlternativeStops;
+        private boolean mAlternativeStops = true;
         private List<String> mTransportModes;
 
         public Builder() {
