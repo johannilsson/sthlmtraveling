@@ -15,7 +15,6 @@
   ~ limitations under the License.
   -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="app_name">STHLM Traveling</string>
     <!-- General strings -->
     <string name="ok">OK</string>
     <string name="done">Terminé</string>
@@ -127,8 +126,8 @@
     <string name="time_to" formatted="false">%s vers %s</string>
     <!-- Phrase describing a time duration using seconds [CHAR LIMIT=16] -->
     <plurals name="duration_seconds">
-        <item quantity="one">1 seconde</item>
-        <item quantity="other"><xliff:g id="count">%d</xliff:g> secondes</item>
+        <item quantity="one">"1 seconde"</item>
+        <item quantity="other">"<xliff:g id="count">%d</xliff:g> secondes"</item>
     </plurals>
     <!-- Phrase describing a time duration using minutes [CHAR LIMIT=16] -->
     <plurals name="duration_minutes">

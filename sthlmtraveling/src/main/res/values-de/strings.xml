@@ -104,13 +104,13 @@
     <string name="deviations_label">Verkehrsstörungen</string>
     <string name="new_deviations">Aktuelle Störungen</string>
     <string name="no_deviations"><b>Keine Störungen bekannt</b></string>
-    <string name="reinstall_app_message">Sie müssen STHLM Traveling neuinstallieren um es korrekt anwenden zu können.\n\nDies wird durch einen Fehler in Android verursacht. Mehr dazu können Sie in meinem Blog http://bit.ly/fcissue lesen.\n\nEs tut mir sehr leid.</string>
+    <string name="reinstall_app_message">Sie müssen STHLM Traveling neu installieren um es korrekt anwenden zu können.\n\nDies wird durch einen Fehler in Android verursacht. Mehr dazu können Sie in meinem Blog http://bit.ly/fcissue lesen.\n\nEs tut mir sehr leid.</string>
     <string name="did_you_mean">Meinten Sie ?</string>
     <string name="share_label">Teilen</string>
     <string name="sms_ticket_label">Ticket kaufen</string>
     <string name="sms_ticket_price_reduced">Reduzierter Preis</string>
     <string name="sms_ticket_price_full">Voller Preis (20 – 64 Jahre)</string>
-    <string name="sms_ticket_notice_message">Bitte bestätigen Sie die Angaben bevor Sie das Ticket kaufen. STHLM Traveling garantiert nicht für die Gültigkeit des Tickets für Ihre Reise.</string>
+    <string name="sms_ticket_notice_message">Bitte bestätigen Sie Ihre Angaben bevor Sie das Ticket kaufen. STHLM Traveling garantiert nicht für die Gültigkeit des Tickets für Ihre Reise.</string>
     <string name="sms_ticket_notice_disabled">Für diese Verbindung ist kein SMS Ticket verfügbar.</string>
     <string name="trip_description_walk" formatted="false">Fussweg</string>
     <string name="trip_description_normal" formatted="false">Nehmen Sie <xliff:g id="transport">%1$s</xliff:g> in Richtung <xliff:g id="towards">%2$s</xliff:g></string>
@@ -119,7 +119,7 @@
     <string name="show_all">Alle anzeigen</string>
     <string name="direction">Richtung</string>
     <string name="no_intermediate_stops">Kein Zwischenhalt gefunden.</string>
-    <string name="show_intermediate_stops">Zwischenhalte anzeigen.</string>
+    <string name="show_intermediate_stops">Zeige Zwischenhalte.</string>
     <string name="hide_intermediate_stops">Zwischenhalte ausblenden.</string>
     <string name="nearby_stops">Haltestellen in der Nähe.</string>
     <string name="nearby">In der Nähe</string>

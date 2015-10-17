@@ -35,7 +35,7 @@
 ** limitations under the License.
 */
 -->
-        <item>Orario di partenza</item>
+        <item>出發時間</item>
     <!--
 /*
 ** Copyright (C) 2009 Johan Nilsson <http://markupartist.com>
@@ -53,6 +53,6 @@
 ** limitations under the License.
 */
 -->
-        <item>Orario d\'arrivo</item>
+        <item>到達時間</item>
     </string-array>
 </resources>

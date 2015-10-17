@@ -15,7 +15,6 @@
   ~ limitations under the License.
   -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="app_name">STHLM Traveling</string>
     <!-- General strings -->
     <string name="done">Listo</string>
     <string name="discard">Cancelar</string>
@@ -109,7 +108,7 @@
     <string name="share_label">Compartir</string>
     <string name="sms_ticket_label">Comprar</string>
     <string name="sms_ticket_price_reduced">Tarifa reducida</string>
-    <string name="sms_ticket_price_full">Tarifa general (20-64 años)</string>
+    <string name="sms_ticket_price_full">Tarifa general (20–64 años)</string>
     <string name="sms_ticket_notice_message">Por favor, verificar los detalles antes de comprar su boleto. STHML Traveling no puede garantizar que el boleto es válido para su viaje.</string>
     <string name="sms_ticket_notice_disabled">No hay Boletos de Mensaje de Texto disponibles para esta ruta.</string>
     <string name="trip_description_walk" formatted="false">Caminar</string>
@@ -126,8 +125,8 @@
     <string name="time_to" formatted="false">%s a %s</string>
     <!-- Phrase describing a time duration using seconds [CHAR LIMIT=16] -->
     <plurals name="duration_seconds">
-        <item quantity="one">1 segundo</item>
-        <item quantity="other"><xliff:g id="COUNT">%d</xliff:g> segundos</item>
+        <item quantity="one">"1 segundo"</item>
+        <item quantity="other">"<xliff:g id="COUNT">%d</xliff:g> segundos"</item>
     </plurals>
     <!-- Phrase describing a time duration using minutes [CHAR LIMIT=16] -->
     <plurals name="duration_minutes">
