@@ -17,6 +17,7 @@ import com.markupartist.sthlmtraveling.provider.departure.DeparturesStore.GroupO
 import com.markupartist.sthlmtraveling.provider.departure.DeparturesStore.MetroDeparture;
 import com.markupartist.sthlmtraveling.provider.departure.DeparturesStore.TrainDeparture;
 import com.markupartist.sthlmtraveling.provider.departure.DeparturesStore.TramDeparture;
+import com.markupartist.sthlmtraveling.utils.DateTimeUtil;
 import com.markupartist.sthlmtraveling.utils.ViewHelper;
 import com.markupartist.sthlmtraveling.utils.text.TextDrawable;
 
@@ -107,35 +108,39 @@ public class DepartureAdapter extends SectionedAdapter {
         public View getView(int position, View convertView, ViewGroup parent) {
             DisplayRow displayRow = getItem(position);
 
-            // TODO: Add View Holder
-            convertView = LayoutInflater.from(getContext())
-                    .inflate(R.layout.departures_row, parent, false);
-
-            ImageView lineView = (ImageView) convertView.findViewById(R.id.departure_line);
-            TextView destinationView = (TextView) convertView.findViewById(R.id.departure_destination);
-            TextView timeToDisplayView = (TextView) convertView.findViewById(R.id.departure_timeToDisplay);
+            ViewHolder holder;
+            if (convertView == null) {
+                convertView = LayoutInflater.from(getContext())
+                        .inflate(R.layout.departures_row, parent, false);
+                holder = new ViewHolder(convertView);
+                convertView.setTag(holder);
+            } else {
+                holder = (ViewHolder) convertView.getTag();
+            }
 
             TextDrawable d = TextDrawable.builder(getContext())
                     .buildRound(displayRow.lineNumber,
                             ViewHelper.getLineColor(
                                     getContext().getResources(),
                                     mTransportType, displayRow.lineNumber));
-            lineView.setImageDrawable(d);
+            holder.lineView.setImageDrawable(d);
 
             String destination = displayRow.destination;
             if (!TextUtils.isEmpty(displayRow.message) &&
                     TextUtils.isEmpty(destination)) {
                 destination = displayRow.message;
             }
-            destinationView.setText(destination);
+            holder.destinationView.setText(destination);
 
             String displayTime = displayRow.displayTime;
-            if (TextUtils.isEmpty(displayTime)
-                    && TextUtils.isEmpty(displayRow.message)
-                    || TextUtils.equals(displayTime, "0 min")) {
-                displayTime = getContext().getString(R.string.now);
-            }
-            timeToDisplayView.setText(displayTime);
+//            if (TextUtils.isEmpty(displayTime)
+//                    && TextUtils.isEmpty(displayRow.message)
+//                    || TextUtils.equals(displayTime, "0 min")
+//                    || TextUtils.equals(displayTime, "Nu")) {
+//                displayTime = getContext().getString(R.string.now);
+//            }
+            holder.timeToDisplayView.setText(
+                    DateTimeUtil.formatDisplayTime(displayTime, getContext()));
 
             return convertView;
         }
@@ -143,5 +148,17 @@ public class DepartureAdapter extends SectionedAdapter {
 
     private DisplayRowAdapter createAdapter(final List<DisplayRow> displayRows, int transportType) {
         return new DisplayRowAdapter(mContext, displayRows, transportType);
+    }
+
+    public static class ViewHolder {
+        ImageView lineView;
+        TextView destinationView;
+        TextView timeToDisplayView;
+
+        public ViewHolder(View view) {
+            lineView = (ImageView) view.findViewById(R.id.departure_line);
+            destinationView = (TextView) view.findViewById(R.id.departure_destination);
+            timeToDisplayView = (TextView) view.findViewById(R.id.departure_timeToDisplay);
+        }
     }
 }

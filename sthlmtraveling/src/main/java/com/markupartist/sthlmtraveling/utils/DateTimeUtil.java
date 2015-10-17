@@ -16,8 +16,12 @@
 
 package com.markupartist.sthlmtraveling.utils;
 
+import android.content.Context;
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.text.TextUtils;
+import android.text.format.DateFormat;
 
 import com.markupartist.sthlmtraveling.R;
 
@@ -36,6 +40,9 @@ public class DateTimeUtil {
     public static final long HOUR_IN_MILLIS = MINUTE_IN_MILLIS * 60;
     public static final long DAY_IN_MILLIS = HOUR_IN_MILLIS * 24;
     public static final long WEEK_IN_MILLIS = DAY_IN_MILLIS * 7;
+    private static final SimpleDateFormat HOUR_MINUTE_FORMAT =
+            new SimpleDateFormat("HH:mm", Locale.US);
+    ;
 
     /**
      * Constructs a Date from the provided date and time.
@@ -123,5 +130,45 @@ public class DateTimeUtil {
             }
         }
         return resources.getQuantityString(R.plurals.duration_short_minutes, minutes, minutes);
+    }
+
+    /**
+     * Formats the passed display time to something translated and human readable.
+     *
+     * @param displayTime The display time, can be null, Nu, HH:MM or in the M min.
+     * @param context     A contect
+     * @return
+     */
+    public static CharSequence formatDisplayTime(@Nullable String displayTime,
+                                                 @NonNull Context context) {
+        // time str can be "Nu", "2 min" or in the "12:00" format, and possible some unknown
+        // ones as well.
+
+        // Maybe we should use some memoization func for this.
+
+        // Catch when we should show "Now"
+        if (TextUtils.isEmpty(displayTime)
+                || TextUtils.equals(displayTime, "0 min")
+                || TextUtils.equals(displayTime, "Nu")) {
+            return context.getString(R.string.now);
+        }
+        // Catch "2 min"
+        if (displayTime.contains("min")) {
+            String minutes = displayTime.replace(" min", "");
+            // Try to convert minutes to millis.
+            try {
+                long minutesConverted = Long.valueOf(minutes);
+                return formatDuration(context.getResources(), minutesConverted * 60000);
+            } catch (NumberFormatException e) {
+                return displayTime;
+            }
+        }
+        // Catch the "HH:MM" format.
+        try {
+            Date date = HOUR_MINUTE_FORMAT.parse(displayTime);
+            return DateFormat.getTimeFormat(context).format(date);
+        } catch (ParseException e) {
+            return displayTime;
+        }
     }
 }
