@@ -45,7 +45,8 @@
         android:gravity="center_vertical"
         android:layout_marginLeft="72dp"
         android:layout_marginStart="72dp"
-        android:textSize="14dp"
+        android:textSize="14sp"
+        android:textIsSelectable="true"
         android:textColor="@color/body_text_2"
         tools:text="På grund av banarbeten stannar På grund av banarbeten stannar På grund av banarbeten stannar På grund av banarbeten stannar På grund av banarbeten stannar"
         />

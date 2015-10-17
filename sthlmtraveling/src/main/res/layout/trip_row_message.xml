@@ -79,6 +79,7 @@
             android:layout_marginRight="12dip"
             android:layout_marginEnd="12dip"
             android:textColor="@color/deviation"
+            android:textIsSelectable="true"
             tools:text="På grund av banarbeten stannar inte södergående pendeltåg vid station Årstaberg lördag 12 juni kl 09:18 – 18:40."
              />
     </LinearLayout>
