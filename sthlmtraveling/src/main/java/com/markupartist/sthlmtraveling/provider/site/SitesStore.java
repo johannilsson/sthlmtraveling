@@ -119,6 +119,7 @@ public class SitesStore {
                         site.setLocality(nameAndLocality.second);
                         site.setId(jsonStop.getInt("site_id"));
                         site.setSource(Site.SOURCE_STHLM_TRAVELING);
+                        site.setType(Site.TYPE_TRANSIT_STOP);
                         String locationData = jsonStop.optString("location");
                         if(locationData != null) {
                             site.setLocation(LocationUtils.parseLocation(locationData));
