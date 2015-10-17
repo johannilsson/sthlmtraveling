@@ -9,6 +9,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
+import android.support.v4.view.ViewCompat;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.ImageView;
@@ -16,6 +17,8 @@ import android.widget.TextView;
 
 import com.markupartist.sthlmtraveling.R;
 import com.markupartist.sthlmtraveling.provider.TransportMode;
+
+import java.util.Locale;
 
 /**
  * Created by johan on 4/6/14.
@@ -78,6 +81,12 @@ public class ViewHelper {
     public static void setText(@NonNull TextView v, @NonNull CharSequence t) {
         if (!t.equals(v.getText())) {
             v.setText(t);
+        }
+    }
+
+    public static void flipIfRtl(View view) {
+        if (RtlUtils.isRtl(Locale.getDefault())) {
+            ViewCompat.setScaleX(view, -1f);
         }
     }
 
