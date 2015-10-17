@@ -41,7 +41,7 @@
     <string name="change_date_and_time">Change date &amp; time</string>
     <string name="reverse_start_end">Reverse from &amp; to</string>
     <string name="about">About</string>
-    <string name="about_this_app">STHLM Traveling is developed by Johan Nilsson. Please contact him if you have ideas or experience any problems\n\nAll traffic data is gathered with permission from Trafiklab and SL - Stockholm Public Transport.\n\nTo improve the app further anonymous analytics is gathered with Flurry and Google Analytics.\n\n<b>Credits</b>\n<li>Robert Johansson\nhttps://twitter.com/likebobby</li>\n<li>App icon &amp; ideas Olof Brickarp\nhttp://www.yay.se</li>\n<li>Swedish translation Jean Diarbakerli</li>\n<li>Spanish translation Valeria Padilla and Miguel Ángel Domínguez Coloma</li>\n<li>Italian translation Sergio Cucinella</li>\n<li>Patches by Fredrik Jönsson\nhttp://github.com/lk95jofr</li>\n<li>Patches by Adam Nybäck\nhttp://anyro.se</li>\n<li>Patches by Morgan Christiansson\nhttp://screeninteraction.com</li>\n<li>Icons by Fredrik Broman\nhttp://fredrikbroman.com</li>\n<li>Icons by Android Icons\nhttp://androidicons.com</li>\n<li>Feedback from Swedroid\nhttp://swedroid.se</li>\n\nSource code http://github.com/johannilsson/sthlmtraveling\n\n Johan Nilsson johan@markupartist.com\nhttp://markupartist.com\n\n</string>
+    <string name="about_this_app">STHLM Traveling is developed by Johan Nilsson. Please contact him if you have ideas or experience any problems\n\nTraffic data is gathered with permission from Trafiklab and SL.\n\nTo improve the app further anonymous analytics is gathered with Google Analytics and Crashlytics.\n\n<b>Credits</b>\n\nMany individuals has contributed to this project, for a full list for these heroes please refer to:\nhttp://www.sthlmtraveling.se\n\n//Johan Nilsson\njohan@markupartist.com\nhttp://markupartist.com\n\nSource code\nhttp://github.com/johannilsson/sthlmtraveling\n\nPrivacy Policy\nhttp://sthlmtraveling.se/privacy.html\n\n</string>
     <string name="donate_url">http://pledgie.com/campaigns/6527</string>
     <string name="feedback">Feedback</string>
     <string name="send_email">Send email…</string>
@@ -77,7 +77,7 @@
     <string name="departures">Departures</string>
     <string name="no_departures_for_transport_type">No departures for the selected transport type at the moment.</string>
     <string name="no_departures">No departures right now.</string>
-    <string name="site_name">Place</string>
+    <string name="site_name">Stop name</string>
     <string name="stop_label">Stop</string>
     <string name="address_label">Address</string>
     <string name="refresh">Refresh</string>
