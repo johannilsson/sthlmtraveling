@@ -81,6 +81,9 @@ public class MyApplication extends Application {
             case "ar":
                 locale = new Locale("ar", "");
                 break;
+            case "ru":
+                locale = new Locale("ru", "RU");
+                break;
         }
 
         if (locale != null) {
