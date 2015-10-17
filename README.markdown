@@ -24,12 +24,16 @@ fork the app. I will do my best help you out if you have any problems. The docum
 Changelog
 ---------
 * NEXT
+  * Add Russian translation by Denis Laure
   * Add new search for transit stops, address and places
-  * Change layout and styling for departures and traffic status
+  * Add backstack for going back to the start activity when opening departure shortcuts by
+    [Victor Häggqvist](https://github.com/victorhaggqvist)
+  * Add toolbar for settings view by [Victor Häggqvist](https://github.com/victorhaggqvist)
+  * Add new layout and styling for departures and traffic status
+  * Fix keylines
   * Fix date representation on date picker to not always show as 12hr format
   * Fix crash when opening some sl.se links
-  * Add backstack for going back to the start activity when opening departure shortcuts by [Victor Häggqvist](https://github.com/victorhaggqvist)
-  * Add toolbar for settings view by [Victor Häggqvist](https://github.com/victorhaggqvist)
+  * Update German and Swedish translations, by Anja & Torkel.
 * 2.13.0 (2015-09-20)
   * Add Arabic translation by Simon Benyo
   * Add Italian translation by Sergio Cucinella
