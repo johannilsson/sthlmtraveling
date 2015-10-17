@@ -61,8 +61,8 @@ android {
     defaultConfig {
         minSdkVersion 9
         targetSdkVersion 22
-        versionName "2.13.5-dev"
-        versionCode 155
+        versionName "2.13.6-dev"
+        versionCode 156
 
         buildConfigField "boolean", "APP_IS_ADS_ENABLED", buildProperties['IS_ADS_ENABLED']
         buildConfigField "String", "APP_WIDESPACE_SID", buildProperties['WIDESPACE_SID']
