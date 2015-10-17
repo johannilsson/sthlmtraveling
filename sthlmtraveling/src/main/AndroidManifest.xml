@@ -258,11 +258,6 @@
             android:exported="false"
             />
 
-        <service android:enabled="true"
-                 android:name="com.katalysator.sdk.geofence.KATGeofenceIntentService"
-                 android:exported="true">
-        </service>
-
         <provider
             android:name=".provider.PlacesProvider"
             android:authorities="com.markupartist.sthlmtraveling.placesprovider"
