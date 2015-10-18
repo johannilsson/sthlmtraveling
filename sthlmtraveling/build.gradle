@@ -45,8 +45,9 @@ dependencies {
     compile 'com.squareup.okhttp:okhttp:2.4.0'
     compile 'com.google.code.gson:gson:2.2.4'
     compile 'com.yqritc:recyclerview-multiple-viewtypes-adapter:1.1.0'
-    compile files('libs/nmdp_speech_kit.jar')
+    compile 'org.slf4j:slf4j-android:1.7.10'
     compile files('libs/widespace-sdk-4.6.1.jar')
+    compile files('libs/nmdp_speech_kit.jar')
     compile('com.crashlytics.sdk.android:crashlytics:2.5.0@aar') {
         transitive = true;
     }
@@ -55,14 +56,13 @@ dependencies {
 android {
     compileSdkVersion 23
     buildToolsVersion "22.0.1"
-
     useLibrary 'org.apache.http.legacy'
 
     defaultConfig {
         minSdkVersion 9
         targetSdkVersion 22
-        versionName "2.13.6-dev"
-        versionCode 156
+        versionName "2.13.8-dev"
+        versionCode 158
 
         buildConfigField "boolean", "APP_IS_ADS_ENABLED", buildProperties['IS_ADS_ENABLED']
         buildConfigField "String", "APP_WIDESPACE_SID", buildProperties['WIDESPACE_SID']
@@ -115,7 +115,6 @@ android {
         exclude 'META-INF/pom.xml'
     }
 }
-
 
 // Fetch properties for signing
 def Properties props = new Properties()
