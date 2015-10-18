@@ -127,6 +127,7 @@ public class AdProxy {
                 try {
                     return createAdSpace(id);
                 } catch (Throwable t) {
+                    Log.e(TAG, "Failed to initialize Widespace", t);
                     Crashlytics.log("Failed to initialize Widespace");
                     Crashlytics.logException(t);
                     return null;
