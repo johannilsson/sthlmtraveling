@@ -305,7 +305,7 @@ public class Planner {
 
         u = b.build();
 
-        Log.e(TAG, "Query: " + u.toString());
+//        Log.e(TAG, "Query: " + u.toString());
 
         HttpHelper httpHelper = HttpHelper.getInstance(context);
         com.squareup.okhttp.Response response = httpHelper.getClient().newCall(
