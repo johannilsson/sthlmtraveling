@@ -17,11 +17,12 @@
 #}
 
 # Widespace
+#-keep class com.widespace.**
 -keep class com.widespace.internal.interfaces.** {
    *;
 }
 -dontwarn com.widespace.adspace.helpers.AttributesParseHelper
--dontwarn com.widespace.internal.logging.Logger
+
 
 # Libraries included
 #-libraryjars libs
