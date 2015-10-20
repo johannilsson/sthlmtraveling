@@ -67,8 +67,13 @@ public class AdProxy {
     public void onDestroy() {
         mIsDestroyed = true;
 
+        if (mAdView == null) {
+            return;
+        }
+
         if (mProvider == Provider.WIDESPACE) {
-            mAdView = null;
+            Log.d(TAG, "AdSpace.destroy");
+            ((AdSpace) mAdView).destroy();
         }
     }
 
@@ -78,6 +83,7 @@ public class AdProxy {
         }
 
         if (mProvider == Provider.WIDESPACE) {
+            Log.d(TAG, "AdSpace.pause");
             ((AdSpace) mAdView).pause();
         }
     }
@@ -94,6 +100,7 @@ public class AdProxy {
                 ((AdSpace) mAdView).setAutoUpdate(true);
             }
 
+            Log.d(TAG, "AdSpace.resume");
             ((AdSpace) mAdView).resume();
         }
     }
@@ -151,6 +158,7 @@ public class AdProxy {
         }
 
         AdSpace adSpace = new AdSpace(mContext, id, true, true);
+        //adSpace.setGPSEnabled(false);
 
 //        if (adSpace.getQueueSize() < 1) {
 //            adSpace.prefetchAd();

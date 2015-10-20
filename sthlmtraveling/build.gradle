@@ -46,7 +46,8 @@ dependencies {
     compile 'com.google.code.gson:gson:2.2.4'
     compile 'com.yqritc:recyclerview-multiple-viewtypes-adapter:1.1.0'
     compile 'org.slf4j:slf4j-android:1.7.10'
-    compile files('libs/widespace-sdk-4.6.1.jar')
+//    compile files('libs/widespace-sdk-4.6.1.jar')
+    compile files('libs/widespace-sdk-4.6.2-f9ac2ef.jar')
     compile files('libs/nmdp_speech_kit.jar')
     compile('com.crashlytics.sdk.android:crashlytics:2.5.0@aar') {
         transitive = true;
@@ -61,8 +62,8 @@ android {
     defaultConfig {
         minSdkVersion 9
         targetSdkVersion 22
-        versionName "2.13.8-dev"
-        versionCode 158
+        versionName "2.13.9-dev"
+        versionCode 159
 
         buildConfigField "boolean", "APP_IS_ADS_ENABLED", buildProperties['IS_ADS_ENABLED']
         buildConfigField "String", "APP_WIDESPACE_SID", buildProperties['WIDESPACE_SID']
