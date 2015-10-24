@@ -80,7 +80,7 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements LoaderM
 
     private static final int LOADER_HISTORY = 1;
 
-    private static final boolean IS_GOOGLE_PLACE_SEARCH_ENABLED = true;
+    private static final boolean IS_GOOGLE_PLACE_SEARCH_ENABLED = false;
 
     private HistoryDbAdapter mHistoryDbAdapter;
     private RecyclerView mHistoryRecyclerView;
