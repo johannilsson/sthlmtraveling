@@ -158,7 +158,7 @@ public class AdProxy {
         }
 
         AdSpace adSpace = new AdSpace(mContext, id, true, true);
-        //adSpace.setGPSEnabled(false);
+        adSpace.setGPSEnabled(false);
 
 //        if (adSpace.getQueueSize() < 1) {
 //            adSpace.prefetchAd();
