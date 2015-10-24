@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceManager;
@@ -69,6 +70,9 @@ public class SettingsActivity extends AppCompatPreferenceActivity implements Sha
         if (key.equals("prefered_language_preference")) {
             MyApplication application = (MyApplication) getApplication();
             application.reloadLocaleForApplication();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+                recreate();
+            }
             Toast.makeText(this, R.string.restart_app_for_full_effect,
                     Toast.LENGTH_LONG).show();
         } else if (key.equals("notification_deviations_enabled")) {
