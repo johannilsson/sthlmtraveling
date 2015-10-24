@@ -40,7 +40,7 @@
     <string name="change_date_and_time">Изменить дату и время</string>
     <string name="reverse_start_end">Поменять местами начало и конец</string>
     <string name="about">О приложении</string>
-    <string name="about_this_app">Приложение STHLM Traveling разработано Johan Nilsson. Пожалуйста, свяжитесь с ним, если у вас есть идеи о том как улучшить приложение или вы обнаружили проблемы\n\nВсе данные о расписании транспорта получены с разрешения Trafiklab и SL - Stockholm Public Transport.\n\nПриложение использует Flurry и Google Analytics для сбора анонимной статистики для последующего улучшения приложения.\n\n<b>Благодарности</b>\n&lt;li&gt;Robert Johansson\nhttps://twitter.com/likebobby&lt;/li&gt;\n&lt;li&gt;Иконка приложения и идеи: Olof Brickarp\nhttp://www.yay.se&lt;/li&gt;\n&lt;li&gt;Перевод на шведский язык: Jean Diarbakerli&lt;/li&gt;\n&lt;li&gt;Перевод на испанский язык: Valeria Padilla и Miguel Ángel Domínguez Coloma&lt;/li&gt;\n&lt;li&gt;Перевод на итальянский язык: Sergio Cucinella&lt;/li&gt;\n&lt;li&gt;Патчи от Fredrik Jönsson\nhttp://github.com/lk95jofr&lt;/li&gt;\n&lt;li&gt;Патчи от Adam Nybäck\nhttp://anyro.se&lt;/li&gt;\n&lt;li&gt;Патчи от Morgan Christiansson\nhttp://screeninteraction.com&lt;/li&gt;\n&lt;li&gt;Иконки от Fredrik Broman\nhttp://fredrikbroman.com&lt;/li&gt;\n&lt;li&gt;Иконки от Android Icons\nhttp://androidicons.com&lt;/li&gt;\n&lt;li&gt;Отзывы от Swedroid\nhttp://swedroid.se&lt;/li&gt;\n\nИсходный код приложения: http://github.com/johannilsson/sthlmtraveling\n\n Johan Nilsson johan@markupartist.com\nhttp://markupartist.com\n\n</string>
+    <string name="about_this_app">"Приложение STHLM Traveling разработано Johan Nilsson. Пожалуйста, свяжитесь с ним, если у вас есть идеи о том как улучшить приложение или вы обнаружили проблемы\n\nВсе данные о расписании транспорта получены с разрешения Trafiklab и SL - Stockholm Public Transport.\n\nПриложение использует Crashlytics и Google Analytics для сбора анонимной статистики для последующего улучшения приложения.\n\n<b>Благодарности</b>\n\nМножество людей внесло свой вклад в развитие данного проекта, для просмотра полного списка этих героев обратитесь к http://www.sthlmtraveling.se\n\n//Johan Nilsson johan@markupartist.com http://markupartist.com \n\nИсходный код \nhttp://github.com/johannilsson/sthlmtraveling \n\nПолитика конфиденциальности \nhttp://sthlmtraveling.se/privacy.html "</string>
     <string name="donate_url">http://pledgie.com/campaigns/6527</string>
     <string name="feedback">Обратная связь</string>
     <string name="send_email">Отправить email...</string>
@@ -76,7 +76,7 @@
     <string name="departures">Отправления</string>
     <string name="no_departures_for_transport_type">В настоящий момент для данного вида транспорта отсутствуют какие-либо обновления.</string>
     <string name="no_departures">В настоящий момент отправления отсутствуют.</string>
-    <string name="site_name">Место</string>
+    <string name="site_name">Название остановки</string>
     <string name="stop_label">Остановка</string>
     <string name="address_label">Адрес</string>
     <string name="refresh">Обновить</string>
