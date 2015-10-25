@@ -262,19 +262,24 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements LoaderM
                         setSearchFilter(FILTER_TYPE_GOOGLE);
                     }
                 } else {
-                    PlaceItem item = mSearchResultAdapter.getItem(position);
-                    mSearchResultAdapter.getFilter().setResultCallback(item, new PlaceSearchResultAdapter.PlaceFilter.PlaceItemResultCallback() {
-                        @Override
-                        public void onResult(Site site) {
-                            deliverResult(site);
-                        }
+                    // We seen some crashes where the provided position did not match the items
+                    // hold by the adapter, this is a guard for these cases.
+                    if (position >= 0 && position < mSearchResultAdapter.getContentItemCount()) {
+                        PlaceItem item = mSearchResultAdapter.getItem(position);
+                        mSearchResultAdapter.getFilter().setResultCallback(item,
+                                new PlaceSearchResultAdapter.PlaceFilter.PlaceItemResultCallback() {
+                            @Override
+                            public void onResult(Site site) {
+                                deliverResult(site);
+                            }
 
-                        @Override
-                        public void onError() {
-                            Toast.makeText(PlaceSearchActivity.this,
-                                    R.string.planner_error_title, Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                            @Override
+                            public void onError() {
+                                Toast.makeText(PlaceSearchActivity.this,
+                                        R.string.planner_error_title, Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
                 }
             }
         });
