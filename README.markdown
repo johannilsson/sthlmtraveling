@@ -23,7 +23,7 @@ fork the app. I will do my best help you out if you have any problems. The docum
 
 Changelog
 ---------
-* 2.14.0
+* 2.14.0 (2015-10-25)
   * Add Russian translation by Denis Laure
   * Add new search for transit stops, address and places
   * Add backstack for going back to the start activity when opening departure shortcuts by
