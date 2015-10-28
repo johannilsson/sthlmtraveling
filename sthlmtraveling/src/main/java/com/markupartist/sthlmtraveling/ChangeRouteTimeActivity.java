@@ -59,7 +59,6 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Locale;
 
 public class ChangeRouteTimeActivity extends BaseActivity implements OnClickListener {
     static final String TAG = "ChangeRouteTimeActivity";
@@ -226,12 +225,10 @@ public class ChangeRouteTimeActivity extends BaseActivity implements OnClickList
     }
 
     private void updateTimeViews() {
-        // TODO: Move this to a date util.
-        Locale currentLocale = Locale.getDefault();
-        DateFormat timeFormatter = DateFormat.getTimeInstance(DateFormat.SHORT, currentLocale);
-        DateFormat dateFormatter = DateFormat.getDateInstance(DateFormat.SHORT, currentLocale);
-        String formattedDate = dateFormatter.format(mTime); //mTime.format("%x");
-        String formattedTime = timeFormatter.format(mTime); //mTime.format("%R");
+        DateFormat timeFormatter = android.text.format.DateFormat.getTimeFormat(this);
+        DateFormat dateFormatter = android.text.format.DateFormat.getDateFormat(this);
+        String formattedDate = dateFormatter.format(mTime);
+        String formattedTime = timeFormatter.format(mTime);
         mDateButton.setText(formattedDate);
         mTimeButton.setText(formattedTime);
     }
