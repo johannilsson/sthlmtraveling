@@ -108,24 +108,33 @@ public class ViewHelper {
                     return res.getColor(R.color.traffic_type_l12);
                 } else if ("21".equals(lineNumber)) {
                     return res.getColor(R.color.traffic_type_l21);
-                } else if ("25".equals(lineNumber) || "26".equals(lineNumber)) {
+                } else if ("25".equals(lineNumber)
+                        || "26".equals(lineNumber)) {
                     return res.getColor(R.color.traffic_type_l2526);
-                } else if ("27".equals(lineNumber) || "28".equals(lineNumber) || "29".equals(lineNumber)) {
+                } else if ("27".equals(lineNumber) || "27S".equals(lineNumber)
+                        || "28".equals(lineNumber) || "28S".equals(lineNumber)
+                        || "29".equals(lineNumber) || "29S".equals(lineNumber)) {
                     return res.getColor(R.color.traffic_type_l272829);
                 }
                 return res.getColor(R.color.train);
             case TransportMode.METRO_INDEX:
-                if ("17".equals(lineNumber) || "18".equals(lineNumber) || "19".equals(lineNumber)) {
+                if ("17".equals(lineNumber)
+                        || "18".equals(lineNumber)
+                        || "19".equals(lineNumber)) {
                     return res.getColor(R.color.metro_green);
-                } else if ("13".contains(lineNumber) || "14".contains(lineNumber)) {
+                } else if ("13".contains(lineNumber)
+                        || "14".contains(lineNumber)) {
                     return res.getColor(R.color.metro_red);
-                } else if ("10".contains(lineNumber) || "11".contains(lineNumber)) {
+                } else if ("10".contains(lineNumber)
+                        || "11".contains(lineNumber)) {
                     return res.getColor(R.color.metro_blue);
                 }
             case TransportMode.TRAIN_INDEX:
                 if ("35".equals(lineNumber)) {
                     return res.getColor(R.color.traffic_type_j35);
-                } else if ("36".equals(lineNumber) || "37".equals(lineNumber) || "38".equals(lineNumber)) {
+                } else if ("36".equals(lineNumber)
+                        || "37".equals(lineNumber)
+                        || "38".equals(lineNumber)) {
                     return res.getColor(R.color.traffic_type_j363738);
                 }
                 return res.getColor(R.color.train);
