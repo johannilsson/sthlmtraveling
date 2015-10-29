@@ -779,18 +779,17 @@ public class Planner {
 
     public static class SubTrip implements Parcelable {
         public Site origin;
-        public Site      destination;
-        public String        departureDate; // TODO: Combine date and time
-        public String        departureTime;
-        public String        arrivalDate; // TODO: Combine date and time
-        public String        arrivalTime;
+        public Site destination;
+        public String departureDate; // TODO: Combine date and time
+        public String departureTime;
+        public String arrivalDate; // TODO: Combine date and time
+        public String arrivalTime;
         public TransportType transport;
-        public ArrayList<String> remarks     = new ArrayList<String>();
+        public ArrayList<String> remarks = new ArrayList<String>();
         public ArrayList<String> rtuMessages = new ArrayList<String>();
         public ArrayList<String> mt6Messages = new ArrayList<String>();
         public String reference;
-        public ArrayList<IntermediateStop> intermediateStop =
-                new ArrayList<IntermediateStop>();
+        public ArrayList<IntermediateStop> intermediateStop = new ArrayList<IntermediateStop>();
         private Date departureDateTime;
         private Date arrivalDateTime;
 
@@ -1056,6 +1055,35 @@ public class Planner {
             t.type = json.getString("type");
             return t;
         }
+
+//        public Drawable getDrawable(Context context) {
+//            Drawable drawable = context.getResources().getDrawable(R.drawable.ic_transport);
+//            if ("BUS".equals(type)) {
+//                if (name.contains("blå")) {
+//                    return ViewHelper.tintIcon(drawable, context.getResources().getColor(R.color.traffic_type_b1));
+//                }
+//                return ViewHelper.tintIcon(drawable, context.getResources().getColor(R.color.bus_red));
+//            } else if ("MET".equals(type)) {
+//                if (name.contains("grön")) {
+//                    return ViewHelper.tintIcon(drawable, context.getResources().getColor(R.color.metro_green));
+//                } else if (name.contains("röd")) {
+//                    return ViewHelper.tintIcon(drawable, context.getResources().getColor(R.color.metro_red));
+//                } else if (name.contains("blå")) {
+//                    return ViewHelper.tintIcon(drawable, context.getResources().getColor(R.color.bus_blue));
+//                }
+//            } else if ("NAR".equals(type)) {
+//                return ViewHelper.tintIcon(drawable, context.getResources().getColor(R.color.train));
+//            } else if ("Walk".equals(type)) {
+//                return ViewHelper.tintIcon(drawable, context.getResources().getColor(R.color.train));
+//            } else if ("TRN".equals(type)) {
+//                return ViewHelper.tintIcon(drawable, context.getResources().getColor(R.color.traffic_type_j363738));
+//            } else if ("TRM".equals(type)) {
+//                return ViewHelper.tintIcon(drawable, context.getResources().getColor(R.color.traffic_type_l2526));
+//            } else if ("SHP".equals(type)) {
+//                return ViewHelper.tintIcon(drawable, context.getResources().getColor(R.color.traffic_type_b4));
+//            }
+//            return ViewHelper.tintIcon(drawable, context.getResources().getColor(R.color.train));
+//        }
 
         public int getImageResource() {
             if ("BUS".equals(type)) {
