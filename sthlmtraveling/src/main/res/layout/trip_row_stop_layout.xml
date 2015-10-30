@@ -18,15 +18,16 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               xmlns:tools="http://schemas.android.com/tools"
-              android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
+              android:orientation="vertical"
               android:paddingLeft="@dimen/list_horizontal_padding"
               android:paddingRight="@dimen/list_horizontal_padding"
     >
 
-    <include layout="@layout/trip_row_intermediate_stop"
-        android:id="@+id/trip_layout_intermediate_stop"/>
+    <include
+        android:id="@+id/trip_layout_intermediate_stop"
+        layout="@layout/trip_row_intermediate_stop"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -41,67 +42,67 @@
             <LinearLayout
                 android:layout_width="40dp"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
                 android:layout_gravity="center"
-                android:paddingTop="12dp"
-                android:paddingBottom="12dp">
-
-                <!--
-                <TextView
-                    android:id="@+id/trip_arrival_time"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/sl_grey"
-                    android:textSize="12dp"
-                    android:text="13:57"
-                    android:layout_gravity="right" />
-                -->
+                android:orientation="vertical"
+                android:paddingBottom="12dp"
+                android:paddingTop="12dp">
 
                 <TextView
                     android:id="@+id/trip_departure_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="start"
-                    tools:text="13:57 fm" />
+                    tools:text="13:57"/>
+
+                <TextView
+                    android:id="@+id/trip_expected_departure_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:visibility="gone"
+                    tools:visibility="visible"
+                    tools:text="13:57"/>
             </LinearLayout>
 
             <FrameLayout
-                android:paddingLeft="12dp"
-                android:paddingStart="12dp"
-                android:paddingRight="8dp"
-                android:paddingEnd="8dp"
                 android:layout_width="36dp"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:paddingEnd="8dp"
+                android:paddingLeft="12dp"
+                android:paddingRight="8dp"
+                android:paddingStart="12dp">
 
                 <ImageView
                     android:id="@+id/trip_line_segment"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:src="@drawable/line_segment_walk"
-                    android:layout_gravity="center_vertical|center_horizontal" />
+                    android:layout_gravity="center_vertical|center_horizontal"
+                    android:src="@drawable/line_segment_walk"/>
 
                 <ImageView
                     android:id="@+id/trip_line_segment_start"
                     android:layout_width="wrap_content"
                     android:layout_height="25dp"
-                    android:src="@drawable/line_segment_white"
                     android:layout_gravity="center_horizontal|top"
+                    android:src="@drawable/line_segment_white"
                     android:visibility="gone"
                     />
+
                 <ImageView
                     android:id="@+id/trip_line_segment_end"
                     android:layout_width="wrap_content"
                     android:layout_height="25dp"
-                    android:src="@drawable/line_segment_white"
                     android:layout_gravity="center_horizontal|bottom"
+                    android:src="@drawable/line_segment_white"
                     android:visibility="gone"
                     />
+
                 <ImageView
                     android:id="@+id/trip_line_segment_stop"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/line_segment_stop"
-                    android:layout_gravity="center" />
+                    android:layout_gravity="center"
+                    android:src="@drawable/line_segment_stop"/>
 
             </FrameLayout>
         </LinearLayout>
@@ -109,9 +110,9 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
             android:layout_gravity="center"
-            android:gravity="center_vertical">
+            android:gravity="center_vertical"
+            android:orientation="vertical">
 
             <!-- Might need to change text pos through code here.-->
             <Button
@@ -119,12 +120,12 @@
                 style="?attr/borderlessButtonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="45dp"
-                android:textColor="?android:attr/textColorPrimary"
-                android:textAppearance="?android:attr/textAppearanceMedium"
                 android:gravity="start|center_vertical"
-                tools:text="Min position"
                 android:paddingLeft="4dp"
-                android:paddingRight="4dp"/>
+                android:paddingRight="4dp"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="?android:attr/textColorPrimary"
+                tools:text="Min position"/>
         </LinearLayout>
     </LinearLayout>
 
@@ -132,21 +133,22 @@
         android:id="@+id/trip_description_stub"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout="@layout/trip_row_description" />
+        android:layout="@layout/trip_row_description"/>
 
     <LinearLayout
         android:id="@+id/trip_messages"
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:orientation="vertical"/>
 
     <include
         android:id="@+id/trip_intermediate_stops_layout"
-        layout="@layout/trip_row_intermediate" />
+        layout="@layout/trip_row_intermediate"/>
+
     <LinearLayout
         android:id="@+id/trip_intermediate_stops"
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:orientation="vertical"/>
 
 </LinearLayout>

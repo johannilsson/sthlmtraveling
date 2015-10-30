@@ -22,6 +22,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
+import android.util.Log;
 
 import com.markupartist.sthlmtraveling.R;
 
@@ -35,6 +36,7 @@ import java.util.concurrent.TimeUnit;
  * Date & Time utils
  */
 public class DateTimeUtil {
+    private static final String TAG = "DateTimeUtil";
     public static final long SECOND_IN_MILLIS = 1000;
     public static final long MINUTE_IN_MILLIS = SECOND_IN_MILLIS * 60;
     public static final long HOUR_IN_MILLIS = MINUTE_IN_MILLIS * 60;
@@ -42,7 +44,9 @@ public class DateTimeUtil {
     public static final long WEEK_IN_MILLIS = DAY_IN_MILLIS * 7;
     private static final SimpleDateFormat HOUR_MINUTE_FORMAT =
             new SimpleDateFormat("HH:mm", Locale.US);
-    ;
+    private static final SimpleDateFormat DATE_TIME_FORMAT =
+            new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.US);
+
 
     /**
      * Constructs a Date from the provided date and time.
@@ -82,6 +86,24 @@ public class DateTimeUtil {
         return date;
     }
 
+    /**
+     * Constructs a Date from the provided date and time.
+     *
+     * @param dateTimeString In the yyyy-MM-ddTHH:mm format
+     * @return A Date or null if failed to process the provided strings.
+     */
+    public static Date fromDateTime(@Nullable final String dateTimeString) {
+        if (TextUtils.isEmpty(dateTimeString)) {
+            return null;
+        }
+        Date date = null;
+        try {
+            date = DATE_TIME_FORMAT.parse(dateTimeString);
+        } catch (ParseException e) {
+            Log.e(TAG, "Failed to parse date " + dateTimeString, e);
+        }
+        return date;
+    }
 
     /**
      * Return given duration in a human-friendly format. For example, "4

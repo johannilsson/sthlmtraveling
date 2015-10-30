@@ -22,6 +22,7 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.MenuItem;
 
@@ -179,7 +180,7 @@ public class ViewOnMapActivity extends AppCompatActivity {
                 mMap.addMarker(new MarkerOptions()
                     .position(intermediateStop)
                     .title(getLocationName(stop.location))
-                    .snippet(stop.arrivalTime)
+                    .snippet(DateFormat.getTimeFormat(this).format(stop.arrivalTime()))
                     .icon(BitmapDescriptorFactory.defaultMarker(hueColor)));
             }
             LatLng destination = new LatLng(
@@ -187,10 +188,10 @@ public class ViewOnMapActivity extends AppCompatActivity {
                     subTrip.destination.getLocation().getLongitude());
             options.add(destination);
             mMap.addMarker(new MarkerOptions()
-                .position(destination)
-                .title(getLocationName(subTrip.destination))
-                .snippet(subTrip.arrivalTime)
-                .icon(BitmapDescriptorFactory.defaultMarker(hueColor)));
+                    .position(destination)
+                    .title(getLocationName(subTrip.destination))
+                    .snippet(DateFormat.getTimeFormat(this).format(subTrip.getArrival()))
+                    .icon(BitmapDescriptorFactory.defaultMarker(hueColor)));
 
             mMap.addPolyline(options
                     .width(5)
@@ -203,11 +204,11 @@ public class ViewOnMapActivity extends AppCompatActivity {
         String description;
         if ("Walk".equals(subTrip.transport.type)) {
             description = getString(R.string.trip_map_description_walk,
-                    subTrip.departureTime,
+                    DateFormat.getTimeFormat(this).format(subTrip.getDeparture()),
                     getLocationName(subTrip.destination));
         } else {
             description = getString(R.string.trip_map_description_normal,
-                    subTrip.departureTime,
+                    DateFormat.getTimeFormat(this).format(subTrip.getDeparture()),
                     subTrip.transport.name,
                     subTrip.transport.towards,
                     getLocationName(subTrip.destination));

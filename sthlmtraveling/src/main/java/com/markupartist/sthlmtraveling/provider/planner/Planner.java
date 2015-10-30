@@ -557,7 +557,7 @@ public class Planner {
             mt6MessageExist = (parcel.readInt() == 1);
             rtuMessageExist = (parcel.readInt() == 1);
             remarksMessageExist = (parcel.readInt() == 1);
-            subTrips = new ArrayList<SubTrip>();
+            subTrips = new ArrayList<>();
             parcel.readTypedList(subTrips, SubTrip.CREATOR);
         }
 
@@ -716,14 +716,17 @@ public class Planner {
      */
     public static class IntermediateStop implements Parcelable {
 
-        public String   arrivalDate;
-        public String   arrivalTime;
         public Site location;
-        private Date arrivalDateTime;
+        private Date scheduledArrivalDateTime;
+        private Date expectedArrivalDateTime;
+        private Date scheduledDepartureDateTime;
+        private Date expectedDepartureDateTime;
 
         public IntermediateStop(Parcel parcel) {
-            arrivalDate = parcel.readString();
-            arrivalTime = parcel.readString();
+            scheduledArrivalDateTime = readDate(parcel);
+            expectedArrivalDateTime = readDate(parcel);
+            scheduledDepartureDateTime = readDate(parcel);
+            expectedDepartureDateTime = readDate(parcel);
             location = parcel.readParcelable(Site.class.getClassLoader());
         }
 
@@ -737,32 +740,74 @@ public class Planner {
 
         @Override
         public void writeToParcel(Parcel dest, int flags) {
-            dest.writeString(arrivalDate);
-            dest.writeString(arrivalTime);
+            dest.writeLong(scheduledArrivalDateTime == null ? -1 : scheduledArrivalDateTime.getTime());
+            dest.writeLong(expectedArrivalDateTime == null ? -1 : expectedArrivalDateTime.getTime());
+            dest.writeLong(scheduledDepartureDateTime == null ? -1 : scheduledDepartureDateTime.getTime());
+            dest.writeLong(expectedDepartureDateTime == null ? -1 : expectedDepartureDateTime.getTime());
             dest.writeParcelable(location, 0);
+        }
+
+        Date readDate(Parcel parcel) {
+            Date date = null;
+            long time = parcel.readLong();
+            if (time > 0) {
+                date = new Date(time);
+            }
+            return date;
         }
 
         public static IntermediateStop fromJson(JSONObject json)
                 throws JSONException {
             IntermediateStop is = new IntermediateStop();
-            is.arrivalDate = json.getString("arrival_date");
-            is.arrivalTime = json.getString("arrival_time");
+            if (!json.isNull("scheduled_departure_time")) {
+                is.scheduledDepartureDateTime = DateTimeUtil.fromDateTime(json.getString("scheduled_departure_time"));
+            }
+            if (!json.isNull("scheduled_arrival_time")) {
+                is.scheduledArrivalDateTime = DateTimeUtil.fromDateTime(json.getString("scheduled_arrival_time"));
+            }
+            if (!json.isNull("expected_departure_time")) {
+                is.expectedDepartureDateTime = DateTimeUtil.fromDateTime(json.getString("expected_departure_time"));
+            }
+            if (!json.isNull("expected_arrival_time")) {
+                is.expectedArrivalDateTime = DateTimeUtil.fromDateTime(json.getString("expected_arrival_time"));
+            }
+
+            if (is.scheduledDepartureDateTime != null && is.scheduledDepartureDateTime.equals(is.expectedDepartureDateTime)) {
+                is.expectedDepartureDateTime = null;
+            }
+            if (is.scheduledArrivalDateTime != null && is.scheduledArrivalDateTime.equals(is.expectedArrivalDateTime)) {
+                is.expectedArrivalDateTime = null;
+            }
+
             is.location = Planner.fromJson(json.getJSONObject("location"));
             return is;
         }
 
-        public Date arrival() {
-            if (arrivalDateTime == null) {
-                arrivalDateTime = DateTimeUtil.fromDateTime(arrivalDate, arrivalTime);
-            }
-            return arrivalDateTime;
-        }
-
         @Override
         public String toString() {
-            return "IntermediateStop [arrivalDate=" + arrivalDate
-                    + ", arrivalTime=" + arrivalTime + ", location=" + location
-                    + "]";
+            return "IntermediateStop{" +
+                    "expectedArrivalDateTime=" + expectedArrivalDateTime +
+                    ", location=" + location +
+                    ", scheduledArrivalDateTime=" + scheduledArrivalDateTime +
+                    ", scheduledDepartureDateTime=" + scheduledDepartureDateTime +
+                    ", expectedDepartureDateTime=" + expectedDepartureDateTime +
+                    '}';
+        }
+
+        public Date getExpectedArrivalDateTime() {
+            return expectedArrivalDateTime;
+        }
+
+        public Date getExpectedDepartureDateTime() {
+            return expectedDepartureDateTime;
+        }
+
+        public Date getScheduledArrivalDateTime() {
+            return scheduledArrivalDateTime;
+        }
+
+        public Date getScheduledDepartureDateTime() {
+            return scheduledDepartureDateTime;
         }
 
         public static final Creator<IntermediateStop> CREATOR = new Creator<IntermediateStop>() {
@@ -775,23 +820,27 @@ public class Planner {
             }
         };
 
+        public Date arrivalTime() {
+            if (expectedArrivalDateTime != null) {
+                return expectedArrivalDateTime;
+            }
+            return scheduledArrivalDateTime;
+        }
     }
 
     public static class SubTrip implements Parcelable {
         public Site origin;
         public Site destination;
-        public String departureDate; // TODO: Combine date and time
-        public String departureTime;
-        public String arrivalDate; // TODO: Combine date and time
-        public String arrivalTime;
+        public Date scheduledDepartureDateTime;
+        public Date expectedDepartureDateTime;
+        public Date scheduledArrivalDateTime;
+        public Date expectedArrivalDateTime;
         public TransportType transport;
-        public ArrayList<String> remarks = new ArrayList<String>();
-        public ArrayList<String> rtuMessages = new ArrayList<String>();
-        public ArrayList<String> mt6Messages = new ArrayList<String>();
+        public ArrayList<String> remarks = new ArrayList<>();
+        public ArrayList<String> rtuMessages = new ArrayList<>();
+        public ArrayList<String> mt6Messages = new ArrayList<>();
         public String reference;
         public ArrayList<IntermediateStop> intermediateStop = new ArrayList<IntermediateStop>();
-        private Date departureDateTime;
-        private Date arrivalDateTime;
 
         public SubTrip() {
         }
@@ -799,19 +848,19 @@ public class Planner {
         public SubTrip(Parcel parcel) {
             origin = parcel.readParcelable(Site.class.getClassLoader());
             destination = parcel.readParcelable(Site.class.getClassLoader());
-            departureDate = parcel.readString();
-            departureTime = parcel.readString();
-            arrivalDate = parcel.readString();
-            arrivalTime = parcel.readString();
+            scheduledDepartureDateTime = readDate(parcel);
+            expectedDepartureDateTime = readDate(parcel);
+            scheduledArrivalDateTime = readDate(parcel);
+            expectedArrivalDateTime = readDate(parcel);
             transport = parcel.readParcelable(TransportType.class.getClassLoader());
-            remarks = new ArrayList<String>();
+            remarks = new ArrayList<>();
             parcel.readStringList(remarks);
-            rtuMessages = new ArrayList<String>();
+            rtuMessages = new ArrayList<>();
             parcel.readStringList(rtuMessages);
-            mt6Messages = new ArrayList<String>();
+            mt6Messages = new ArrayList<>();
             parcel.readStringList(mt6Messages);
             reference = parcel.readString();
-            intermediateStop = new ArrayList<IntermediateStop>();
+            intermediateStop = new ArrayList<>();
             parcel.readList(intermediateStop, Site.class.getClassLoader());
         }
 
@@ -824,10 +873,10 @@ public class Planner {
         public void writeToParcel(Parcel dest, int flags) {
             dest.writeParcelable(origin, 0);
             dest.writeParcelable(destination, 0);
-            dest.writeString(departureDate);
-            dest.writeString(departureTime);
-            dest.writeString(arrivalDate);
-            dest.writeString(arrivalTime);
+            dest.writeLong(scheduledDepartureDateTime != null ? scheduledDepartureDateTime.getTime() : -1);
+            dest.writeLong(expectedDepartureDateTime != null ? expectedDepartureDateTime.getTime() : -1);
+            dest.writeLong(scheduledArrivalDateTime != null ? scheduledArrivalDateTime.getTime() : -1);
+            dest.writeLong(expectedArrivalDateTime != null ? expectedArrivalDateTime.getTime() : -1);
             dest.writeParcelable(transport, 0);
             dest.writeStringList(remarks);
             dest.writeStringList(rtuMessages);
@@ -836,15 +885,40 @@ public class Planner {
             dest.writeList(intermediateStop);
         }
 
+        Date readDate(Parcel parcel) {
+            Date date = null;
+            long time = parcel.readLong();
+            if (time > 0) {
+                date = new Date(time);
+            }
+            return date;
+        }
+
         public static SubTrip fromJson(JSONObject json) throws JSONException {
             SubTrip st = new SubTrip();
 
             st.origin = Planner.fromJson(json.getJSONObject("origin"));
             st.destination = Planner.fromJson(json.getJSONObject("destination"));
-            st.departureDate = json.getString("departure_date");
-            st.departureTime = json.getString("departure_time");
-            st.arrivalDate = json.getString("arrival_date");
-            st.arrivalTime = json.getString("arrival_time");
+
+            if (!json.isNull("scheduled_departure_time")) {
+                st.scheduledDepartureDateTime = DateTimeUtil.fromDateTime(json.getString("scheduled_departure_time"));
+            }
+            if (!json.isNull("expected_departure_time")) {
+                st.expectedDepartureDateTime = DateTimeUtil.fromDateTime(json.getString("expected_departure_time"));
+            }
+            if (!json.isNull("scheduled_arrival_time")) {
+                st.scheduledArrivalDateTime = DateTimeUtil.fromDateTime(json.getString("scheduled_arrival_time"));
+            }
+            if (!json.isNull("expected_arrival_time")) {
+                st.expectedArrivalDateTime = DateTimeUtil.fromDateTime(json.getString("expected_arrival_time"));
+            }
+            if (st.scheduledDepartureDateTime != null && st.scheduledDepartureDateTime.equals(st.expectedDepartureDateTime)) {
+                st.expectedDepartureDateTime = null;
+            }
+            if (st.scheduledArrivalDateTime != null && st.scheduledArrivalDateTime.equals(st.expectedArrivalDateTime)) {
+                st.expectedArrivalDateTime = null;
+            }
+
             st.transport = TransportType.fromJson(json.getJSONObject("transport"));
 
             if (json.has("remark_messages")) {
@@ -882,29 +956,35 @@ public class Planner {
         }
 
         public Date getDeparture() {
-            if (departureDateTime == null) {
-                departureDateTime = DateTimeUtil.fromSlDateTime(departureDate, departureTime);
+            if (expectedDepartureDateTime == null) {
+                return scheduledDepartureDateTime;
             }
-            return departureDateTime;
+            return expectedDepartureDateTime;
         }
 
         public Date getArrival() {
-            if (arrivalDateTime == null) {
-                arrivalDateTime = DateTimeUtil.fromSlDateTime(arrivalDate, arrivalTime);
+            if (expectedArrivalDateTime == null) {
+                return scheduledArrivalDateTime;
             }
-            return arrivalDateTime;
+            return expectedArrivalDateTime;
         }
 
         @Override
         public String toString() {
-            return "SubTrip [arrivalDate=" + arrivalDate + ", arrivalTime="
-                    + arrivalTime + ", departureDate=" + departureDate
-                    + ", departureTime=" + departureTime + ", destination="
-                    + destination + ", intermediateStop=" + intermediateStop
-                    + ", mt6Messages=" + mt6Messages + ", origin=" + origin
-                    + ", reference=" + reference + ", remarks=" + remarks
-                    + ", rtuMessages=" + rtuMessages + ", transport="
-                    + transport + "]";
+            return "SubTrip{" +
+                    "origin=" + origin +
+                    ", destination=" + destination +
+                    ", scheduledDepartureDateTime=" + scheduledDepartureDateTime +
+                    ", expectedDepartureDateTime=" + expectedDepartureDateTime +
+                    ", scheduledArrivalDateTime=" + scheduledArrivalDateTime +
+                    ", expectedArrivalDateTime=" + expectedArrivalDateTime +
+                    ", transport=" + transport +
+                    ", remarks=" + remarks +
+                    ", rtuMessages=" + rtuMessages +
+                    ", mt6Messages=" + mt6Messages +
+                    ", reference='" + reference + '\'' +
+                    ", intermediateStop=" + intermediateStop +
+                    '}';
         }
 
         public static final Creator<SubTrip> CREATOR = new Creator<SubTrip>() {
@@ -918,105 +998,6 @@ public class Planner {
         };
     }
 
-
-//    public static class Location implements Parcelable {
-//        public static String TYPE_MY_LOCATION = "MY_LOCATION";
-//        public int id = 0;
-//        public String name;
-//        public int latitude;
-//        public int longitude;
-//
-//        public Location() {}
-//
-//        public Location(Location location) {
-//            id = location.id;
-//            name = location.name;
-//            latitude = location.latitude;
-//            longitude = location.longitude;
-//        }
-//
-//        public Location(Parcel parcel) {
-//            id = parcel.readInt();
-//            name = parcel.readString();
-//            latitude = parcel.readInt();
-//            longitude = parcel.readInt();
-//        }
-//
-//        public boolean isMyLocation() {
-//            return TYPE_MY_LOCATION.equals(name);
-//        }
-//
-//        public boolean hasLocation() {
-//            return latitude != 0 && longitude != 0;
-//        }
-//
-//        public String getNameOrId() {
-//            if (hasLocation() || id == 0) {
-//                return name;
-//            }
-//            return String.valueOf(id);
-//        }
-//
-//        public static Location fromJson(JSONObject json) throws JSONException {
-//            Location l = new Location();
-//            if (json.has("id")) {
-//                l.id = json.getInt("id");
-//            }
-//            l.name = json.getString("name");
-//            l.longitude = (int) (json.getDouble("longitude") * 1E6);
-//            l.latitude = (int) (json.getDouble("latitude") * 1E6);
-//            return l;
-//        }
-//
-//        @Override
-//        public String toString() {
-//            return "Location{" +
-//                    "id='" + id + '\'' +
-//                    ", name='" + name + '\'' +
-//                    ", latitude=" + latitude +
-//                    ", longitude=" + longitude +
-//                    '}';
-//        }
-//
-//        @Override
-//        public int describeContents() {
-//            return 0;
-//        }
-//
-//        @Override
-//        public void writeToParcel(Parcel dest, int flags) {
-//            dest.writeInt(id);
-//            dest.writeString(name);
-//            dest.writeInt(latitude);
-//            dest.writeInt(longitude);
-//        }
-//
-//        public static final Creator<Location> CREATOR = new Creator<Location>() {
-//            public Location createFromParcel(Parcel parcel) {
-//                return new Location(parcel);
-//            }
-//
-//            public Location[] newArray(int size) {
-//                return new Location[size];
-//            }
-//        };
-//
-//        public boolean hasName() {
-//            return !TextUtils.isEmpty(name);
-//        }
-//
-//        /**
-//         * Get a clean representation of the stop name.
-//         *
-//         * @return The name
-//         */
-//        public CharSequence getCleanName() {
-//            if (TextUtils.isEmpty(name)) {
-//                return "";
-//            }
-//            return name.replaceAll("\\(.*\\)", "");
-//        }
-//    }
 
     public static class TransportType implements Parcelable {
         public String type = "";

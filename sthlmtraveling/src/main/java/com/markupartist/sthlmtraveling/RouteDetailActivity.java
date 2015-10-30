@@ -21,6 +21,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Paint;
 import android.location.Location;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -299,7 +300,6 @@ public class RouteDetailActivity extends BaseListActivity {
 
         int numSubTrips = trip.subTrips.size();
         final SubTrip lastSubTrip = trip.subTrips.get(numSubTrips - 1);
-        // todo: make sure this is safe.
 
         ViewGroup convertView = (ViewGroup) getLayoutInflater().inflate(R.layout.trip_row_stop_layout, null);
         Button nameView = (Button) convertView.findViewById(R.id.trip_stop_title);
@@ -311,7 +311,6 @@ public class RouteDetailActivity extends BaseListActivity {
         nameView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Planner.Location location = lastSubTrip.destination;
                 if (lastSubTrip.destination.hasLocation()) {
                     startActivity(createViewOnMapIntent(mTrip, mJourneyQuery, lastSubTrip.destination));
                 } else {
@@ -324,12 +323,18 @@ public class RouteDetailActivity extends BaseListActivity {
         endSegment.setVisibility(View.VISIBLE);
 
         convertView.findViewById(R.id.trip_layout_intermediate_stop).setVisibility(View.GONE);
-//        TextView arrivalTimeView = (TextView) convertView.findViewById(R.id.trip_arrival_time);
-//        arrivalTimeView.setVisibility(View.GONE);
 
         TextView departureTimeView = (TextView) convertView.findViewById(R.id.trip_departure_time);
-        departureTimeView.setText(DateFormat.getTimeFormat(this).format(lastSubTrip.getArrival()));
-
+        TextView expectedDepartureTimeView = (TextView) convertView.findViewById(R.id.trip_expected_departure_time);
+        departureTimeView.setText(DateFormat.getTimeFormat(this).format(lastSubTrip.scheduledArrivalDateTime));
+        if (lastSubTrip.expectedArrivalDateTime!= null) {
+            departureTimeView.setPaintFlags(departureTimeView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            expectedDepartureTimeView.setVisibility(View.VISIBLE);
+            expectedDepartureTimeView.setText(DateFormat.getTimeFormat(this).format(lastSubTrip.expectedArrivalDateTime));
+        } else {
+            departureTimeView.setPaintFlags(departureTimeView.getPaintFlags() & (~ Paint.STRIKE_THRU_TEXT_FLAG));
+            expectedDepartureTimeView.setVisibility(View.GONE);
+        }
         convertView.findViewById(R.id.trip_intermediate_stops_layout).setVisibility(View.GONE);
 
         return convertView;
@@ -446,7 +451,7 @@ public class RouteDetailActivity extends BaseListActivity {
         public View getView(final int position, View convertView, ViewGroup parent) {
             final SubTrip subTrip = getItem(position);
 
-            convertView = mInflater.inflate(R.layout.trip_row_stop_layout, null);
+            convertView = mInflater.inflate(R.layout.trip_row_stop_layout, parent, false);
             boolean isFirst = false;
 
             if (position > 0) {
@@ -456,7 +461,16 @@ public class RouteDetailActivity extends BaseListActivity {
                 descView.setTextSize(12);
                 descView.setText(getLocationName(previousSubTrip.destination));
                 TextView arrivalView = (TextView) convertView.findViewById(R.id.trip_intermediate_arrival_time);
-                arrivalView.setText(DateFormat.getTimeFormat(getContext()).format(previousSubTrip.getArrival()));
+                arrivalView.setText(DateFormat.getTimeFormat(getContext()).format(previousSubTrip.scheduledArrivalDateTime));
+                TextView expectedArrivalView = (TextView) convertView.findViewById(R.id.trip_intermediate_expected_arrival_time);
+                if (previousSubTrip.expectedArrivalDateTime != null) {
+                    arrivalView.setPaintFlags(arrivalView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                    expectedArrivalView.setVisibility(View.VISIBLE);
+                    expectedArrivalView.setText(DateFormat.getTimeFormat(getContext()).format(previousSubTrip.expectedArrivalDateTime));
+                } else {
+                    arrivalView.setPaintFlags(arrivalView.getPaintFlags() & (~ Paint.STRIKE_THRU_TEXT_FLAG));
+                    expectedArrivalView.setVisibility(View.GONE);
+                }
             } else {
                 convertView.findViewById(R.id.trip_layout_intermediate_stop).setVisibility(View.GONE);
                 convertView.findViewById(R.id.trip_line_segment_start).setVisibility(View.VISIBLE);
@@ -478,20 +492,18 @@ public class RouteDetailActivity extends BaseListActivity {
                 }
             });
 
-
-            /*
-            View startSegment = convertView.findViewById(R.id.trip_line_segment_start);
-            if (position > 0) {
-                final SubTrip prevSubTrip = getItem(position - 1);
-                arrivalTimeView.setText(prevSubTrip.arrivalTime);
-                startSegment.setVisibility(View.GONE);
-            } else {
-                startSegment.setVisibility(View.VISIBLE);
-                arrivalTimeView.setVisibility(View.GONE);
-            }
-            */
             TextView departureTimeView = (TextView) convertView.findViewById(R.id.trip_departure_time);
-            departureTimeView.setText(DateFormat.getTimeFormat(getContext()).format(subTrip.getDeparture()));
+            TextView expectedDepartureTimeView = (TextView) convertView.findViewById(R.id.trip_expected_departure_time);
+
+            departureTimeView.setText(DateFormat.getTimeFormat(getContext()).format(subTrip.scheduledDepartureDateTime));
+            if (subTrip.expectedDepartureDateTime != null) {
+                departureTimeView.setPaintFlags(departureTimeView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                expectedDepartureTimeView.setVisibility(View.VISIBLE);
+                expectedDepartureTimeView.setText(DateFormat.getTimeFormat(getContext()).format(subTrip.expectedDepartureDateTime));
+            } else {
+                departureTimeView.setPaintFlags(departureTimeView.getPaintFlags() & (~ Paint.STRIKE_THRU_TEXT_FLAG));
+                expectedDepartureTimeView.setVisibility(View.GONE);
+            }
 
             // Add description data
             ViewStub descriptionStub = (ViewStub) convertView.findViewById(R.id.trip_description_stub);
@@ -571,7 +583,19 @@ public class RouteDetailActivity extends BaseListActivity {
             descView.setTextSize(12);
             descView.setText(stop.location.getName());
             TextView arrivalView = (TextView) view.findViewById(R.id.trip_intermediate_arrival_time);
-            arrivalView.setText(DateFormat.getTimeFormat(getContext()).format(stop.arrival()));
+            TextView expectedArrivalView = (TextView) view.findViewById(R.id.trip_intermediate_expected_arrival_time);
+
+            arrivalView.setText(DateFormat.getTimeFormat(getContext()).format(stop.getScheduledArrivalDateTime()));
+            if (stop.getExpectedArrivalDateTime() != null) {
+                arrivalView.setPaintFlags(arrivalView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                expectedArrivalView.setVisibility(View.VISIBLE);
+                expectedArrivalView.setText(DateFormat.getTimeFormat(getContext()).format(
+                        stop.getExpectedArrivalDateTime()));
+            } else {
+                arrivalView.setPaintFlags(arrivalView.getPaintFlags() & (~ Paint.STRIKE_THRU_TEXT_FLAG));
+                expectedArrivalView.setVisibility(View.GONE);
+            }
+
             return view;
         }
 
