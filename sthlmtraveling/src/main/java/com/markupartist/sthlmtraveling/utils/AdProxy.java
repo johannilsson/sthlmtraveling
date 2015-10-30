@@ -18,6 +18,7 @@ package com.markupartist.sthlmtraveling.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -152,6 +153,11 @@ public class AdProxy {
     }
 
     protected AdSpace createAdSpace(String id) {
+        // Widespace min sdk is 17.
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            return null;
+        }
+
         if (!shouldShowAfterDismiss()) {
             Analytics.getInstance(mContext).event("Ads", "Ad view grace period");
             return null;
