@@ -23,6 +23,8 @@ fork the app. I will do my best help you out if you have any problems. The docum
 
 Changelog
 ---------
+* 2.14.2 (2015-10-30)
+  * Add initial work on real-time support to the journey planner
 * 2.14.0 (2015-10-25)
   * Add Russian translation by Denis Laure
   * Add new search for transit stops, address and places
