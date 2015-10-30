@@ -1,9 +1,5 @@
 package com.markupartist.sthlmtraveling.provider;
 
-import java.util.HashMap;
-
-import com.markupartist.sthlmtraveling.provider.PlacesProvider.Place.Places;
-
 import android.content.ContentProvider;
 import android.content.ContentUris;
 import android.content.ContentValues;
@@ -18,13 +14,18 @@ import android.net.Uri;
 import android.provider.BaseColumns;
 import android.util.Log;
 
+import com.markupartist.sthlmtraveling.BuildConfig;
+import com.markupartist.sthlmtraveling.provider.PlacesProvider.Place.Places;
+
+import java.util.HashMap;
+
 public class PlacesProvider extends ContentProvider {
 
     private static final String TAG = "PlacesProvider";
     private static final String DATABASE_NAME = "places.db";
     private static final int DATABASE_VERSION = 1;
     private static final String PLACES_TABLE_NAME = "places";
-    public static final String AUTHORITY = "com.markupartist.sthlmtraveling.placesprovider";
+    public static final String AUTHORITY = BuildConfig.BASE_PROVIDER_AUTHORITY + ".placesprovider";
     private static final UriMatcher sUriMatcher;
     private static final int PLACES = 1;
     private static HashMap<String, String> sPlacesProjectionMap;

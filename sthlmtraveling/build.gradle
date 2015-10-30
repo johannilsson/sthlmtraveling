@@ -45,7 +45,6 @@ dependencies {
     compile 'com.google.code.gson:gson:2.2.4'
     compile 'com.yqritc:recyclerview-multiple-viewtypes-adapter:1.1.0'
     compile 'org.slf4j:slf4j-android:1.7.10'
-//    compile files('libs/widespace-sdk-4.6.1.jar')
     compile files('libs/widespace-sdk-4.6.2-f9ac2ef.jar')
     compile files('libs/nmdp_speech_kit.jar')
     compile('com.crashlytics.sdk.android:crashlytics:2.5.0@aar') {
@@ -54,6 +53,9 @@ dependencies {
 }
 
 android {
+    final BASE_PROVIDER_DEBUG = "com.markupartist.sthlmtraveling.debug"
+    final BASE_PROVIDER_RELEASE = "com.markupartist.sthlmtraveling"
+
     compileSdkVersion 23
     buildToolsVersion "22.0.1"
     useLibrary 'org.apache.http.legacy'
@@ -61,8 +63,9 @@ android {
     defaultConfig {
         minSdkVersion 9
         targetSdkVersion 22
+        applicationId "com.markupartist.sthlmtraveling"
         versionName "2.14.2"
-        versionCode 164
+        versionCode 165
 
         buildConfigField "boolean", "APP_IS_ADS_ENABLED", buildProperties['IS_ADS_ENABLED']
         buildConfigField "String", "APP_WIDESPACE_SID", buildProperties['WIDESPACE_SID']
@@ -77,11 +80,18 @@ android {
     }
 
     buildTypes {
+        debug {
+            debuggable true
+            applicationIdSuffix ".debug"
+            buildConfigField "String", "BASE_PROVIDER_AUTHORITY", "\"" + BASE_PROVIDER_DEBUG + "\""
+        }
+
         release {
             minifyEnabled true
             shrinkResources false
             proguardFile getDefaultProguardFile('proguard-android.txt')
             signingConfig signingConfigs.release
+            buildConfigField "String", "BASE_PROVIDER_AUTHORITY", "\"" + BASE_PROVIDER_RELEASE + "\""
         }
     }
     productFlavors {

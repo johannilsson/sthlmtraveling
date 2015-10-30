@@ -30,6 +30,7 @@ import android.net.Uri;
 import android.provider.BaseColumns;
 import android.util.Log;
 
+import com.markupartist.sthlmtraveling.BuildConfig;
 import com.markupartist.sthlmtraveling.provider.JourneysProvider.Journey.Journeys;
 
 import java.text.DateFormat;
@@ -45,8 +46,7 @@ public class JourneysProvider extends ContentProvider {
     private static final int DATABASE_VERSION = 2;
     private static final String JOURNEYS_TABLE_NAME = "journeys";
 
-    public static final String AUTHORITY =
-        "com.markupartist.sthlmtraveling.journeysprovider";
+    public static final String AUTHORITY = BuildConfig.BASE_PROVIDER_AUTHORITY + ".journeysprovider";
 
     /**
      * A UriMatcher instance
