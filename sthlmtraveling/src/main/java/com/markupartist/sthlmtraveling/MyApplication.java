@@ -84,6 +84,9 @@ public class MyApplication extends Application {
             case "ru":
                 locale = new Locale("ru", "RU");
                 break;
+            case "bs":
+                locale = new Locale("bs", "BA");
+                break;
         }
 
         if (locale != null) {
@@ -112,6 +115,7 @@ public class MyApplication extends Application {
         if (BuildConfig.DEBUG) {
             analytics.getLogger().setLogLevel(Logger.LogLevel.VERBOSE);
         }
+        // TODO, fix to reuse tracker if already initialised.
         return analytics.newTracker(AppConfig.ANALYTICS_PROPERTY_KEY);
     }
 }

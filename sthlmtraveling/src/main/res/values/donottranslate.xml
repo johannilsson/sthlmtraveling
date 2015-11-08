@@ -29,6 +29,7 @@
         <item>Italiano</item>
         <item>Nederlands</item>
         <item>Русский</item>
+        <item>Bosanski (Bosna I Hercegovina)</item>
         <item>简体中文</item>
         <item>繁體中文</item>
     </string-array>
@@ -43,6 +44,7 @@
         <item>it</item>
         <item>nl</item>
         <item>ru</item>
+        <item>bs</item>
         <item>zh_CN</item>
         <item>zh_TW</item>
     </string-array>

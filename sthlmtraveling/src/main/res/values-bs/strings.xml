@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <!--
+  ~ Copyright (C) 2009-2015 Johan Nilsson <http://markupartist.com>
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <!-- General strings -->
+    <string name="ok">OK</string>
+    <string name="done">Gotovo</string>
+    <string name="discard">Poništi</string>
+    <string name="from">Od</string>
+    <string name="to">Do</string>
+    <string name="via">Preko</string>
+    <string name="search_label">Traži</string>
+    <string name="no_routes_found_label">Nažalost, ruta nije pronađena</string>
+    <string name="no_routes_found_message">Moguće je da polazna tačka i tačka odredišta nisu pokrivena biranim načinom prevoza na dato vrijeme/datum (npr. ponekad određene stanice/stajališta nisu obuhvaćena uslugama prevoza tokom vikenda)</string>
+    <string name="routes_label">Rute</string>
+    <string name="route_details_label">Detalji rute</string>
+    <string name="no_route_details">Nažalost, ruta nije pronađena. Moguće da je pretraga bila prestara.</string>
+    <string name="session_timeout_message">Moguće da je pretraga bila prestara</string>
+    <string name="attention_label">Pažnja</string>
+    <string name="bad_routes_parameters_message">Polazna tačka ili tačka odredišta ne mogu biti prazne.</string>
+    <string name="new_search">TRAŽI</string>
+    <string name="empty_value">Nevažeća vrijednost</string>
+    <string name="loading">Pretraživanje. Molimo pričekajte…</string>
+    <string name="my_location">Moja lokacija</string>
+    <string name="change_date_and_time">Promijeni datum i vrijeme</string>
+    <string name="reverse_start_end">Obrni od &amp; do</string>
+    <string name="about">O aplikaciji</string>
+    <string name="about_this_app">"STHLM Traveling aplikacija je razvijena od strane Johana Nilssona. Molimo kontaktirajte ga ako imate ideju ili ako ste primjetili neke probleme u radu aplikacije.\n\nPodaci o saobraćaju su sakupljani uz dozvolu od strane Trafiklab-a i SL-a.\n\nS ciljem unapređenja aplikacije anonimni statistički podaci su sakupljani uz pomoć Google Analytics i Crashlytics usluga.\n\n<b>Zahvale</b>\n\nMnogi pojedinci su dali svoj doprinos ovom projektu, za potpuni popis ovih heroja molimo posjetite:\nhttp://www.sthlmtraveling.se\n\n//Johan Nilsson\njohan@markupartist.com\nhttp://markupartist.com\n\nIzvorni kod\nhttp://github.com/johannilsson/sthlmtraveling\n\nPravila o privatnosti\nttp://sthlmtraveling.se/privacy.html "</string>
+    <string name="donate_url">http://pledgie.com/campaigns/6527</string>
+    <string name="feedback">Sugestije</string>
+    <string name="send_email">Pošalji email</string>
+    <string name="favorites_label">Zabilješke</string>
+    <string name="no_favorites"><b>Nema zabilješki...</b>\nDodaj ili obriši zabilješke pritiskom na dugme u obliku zvijede nakon pretrage.</string>
+    <string name="reverse_search">Obrnuta pretraga</string>
+    <string name="delete">Obriši</string>
+    <string name="no_location_title">Problemi sa lokacijom</string>
+    <string name="no_location_message">Nemoguće utvrditi vašu lokaciju</string>
+    <string name="network_problem_label">Problemi sa mrežom</string>
+    <string name="network_problem_message">Došlo je do preopterećenja u mreži ili greške tokom kontaktiranja SL servera.</string>
+    <string name="activity_create_shortcut">Rute</string>
+    <string name="activity_create_departure_shortcut">Polasci</string>
+    <string name="name_of_shortcut">Naziv prečice</string>
+    <string name="create_shortcut_label">Napravi Prečicu</string>
+    <string name="create_shortcut_for_departure_label">Napravi prečicu za polazak</string>
+    <string name="choose_start_point_label">Izaberi polaznu tačku</string>
+    <string name="choose_end_point_label">Izaberi tačku odredišta</string>
+    <string name="send_feedback_email_title">Sugestije za STHLM Traveling aplikaciju</string>
+    <string name="send_feedback_email_emailaddress">sthlmtraveling@markupartist.com</string>
+    <string name="history_label">Historija</string>
+    <string name="yes">Da</string>
+    <string name="no">Ne</string>
+    <string name="retry">Pokušaj ponovo</string>
+    <string name="point_on_map">Označi na karti</string>
+    <string name="tap_to_select_this_point">Dodirnite za odabir ove lokacije</string>
+    <string name="point_selected">Lokacija izabrana</string>
+    <string name="tap_your_end_point_on_map">Označite tačku odredišta na karti</string>
+    <string name="tap_your_start_point_on_map">Označite polaznu tačku na karti</string>
+    <string name="tap_your_location_on_map">Nemoguće utvrditi vašu lokaciju. Označite vašu lokaciju na karti</string>
+    <string name="departing_on">Polazi u <xliff:g id="time">%1$s</xliff:g> na dan <xliff:g id="date">%2$s</xliff:g></string>
+    <string name="arriving_by">Stiže u <xliff:g id="time">%1$s</xliff:g> na dan <xliff:g id="date">%2$s</xliff:g></string>
+    <string name="departures">Polasci</string>
+    <string name="no_departures_for_transport_type">Trenutno ne postoje polasci za odabranu vrstu prijevoza.</string>
+    <string name="no_departures">Trenutno nema polazaka.</string>
+    <string name="site_name">Naziv stanice</string>
+    <string name="stop_label">Stanica</string>
+    <string name="address_label">Adresa</string>
+    <string name="refresh">Osvježi</string>
+    <string name="show_departures_for_start">Prikaži polaske</string>
+    <string name="metros">Podzemna</string>
+    <string name="buses">Autobusi</string>
+    <string name="trains">Prigradski vozovi</string>
+    <string name="trams">Tramvaji</string>
+    <string name="tram_cars">Tramvaji</string>
+    <string name="boats">Brodovi</string>
+    <string name="departure_metro">Podzemna</string>
+    <string name="departure_bus">Autobus</string>
+    <string name="departure_train">Voz</string>
+    <string name="departure_tram">Tramvaj</string>
+    <string name="now">sada</string>
+    <string name="my_location_source_disabled">Molimo omogućite vrstu lociranja u sistemskih postavkama</string>
+    <string name="title_settings">Postavke</string>
+    <string name="now_label">Sada</string>
+    <string name="more_choices_label">Opcije</string>
+    <string name="route_options_active">Sa dodatnim opcijama rute</string>
+    <string name="alternative_stops_label">Alternativne stanice</string>
+    <string name="date_and_time_label">Datum i vrijeme</string>
+    <string name="determining_your_position">Otkrivanje vaše lokacije</string>
+    <string name="back">Nazad</string>
+    <string name="cancel">Otkaži</string>
+    <string name="change">Izmijeni</string>
+    <string name="deviations_label">Odstupanja</string>
+    <string name="new_deviations">Nova odstupanja</string>
+    <string name="no_deviations"><b>Nema poznatih odstupanja</b></string>
+    <string name="reinstall_app_message">Molimo da ponovo instalirate STHLM Traveling aplikaciju da bi bili u mogućnosti da je koristite ispravno.\n\nOvo je uzrokovano greškom u Androidu. Više informacija o ovom problemu možete pročitati na mom blogu: http://bit.ly/fcissue.\n\nStvarno mi je žao zbog ovoga!</string>
+    <string name="did_you_mean">Da li ste mislili?</string>
+    <string name="share_label">Podijeli</string>
+    <string name="sms_ticket_label">Kupi kartu</string>
+    <string name="sms_ticket_price_reduced">Snižena cijena</string>
+    <string name="sms_ticket_price_full">Puna cijena (20-64 god)</string>
+    <string name="sms_ticket_notice_message">Molimo provjerite detalje prije nego što kupite vašu kartu. STHLM Traveling ne može garantovati validnost karte za vaše putovanje.</string>
+    <string name="sms_ticket_notice_disabled">SMS karte nisu dostupne za ovu rutu</string>
+    <string name="trip_description_walk" formatted="false">Pješačite</string>
+    <string name="trip_description_normal" formatted="false">Uzmite <xliff:g id="transport">%1$s</xliff:g> prema <xliff:g id="towards">%2$s</xliff:g>.</string>
+    <string name="trip_map_description_walk" formatted="false"><xliff:g id="time">%1$s</xliff:g> Pješačite do <xliff:g id="stop">%2$s</xliff:g></string>
+    <string name="trip_map_description_normal" formatted="false"><xliff:g id="time">%1$s</xliff:g> <xliff:g id="transport">%2$s</xliff:g> prema <xliff:g id="towards">%3$s</xliff:g>.</string>
+    <string name="show_all">Prikaži sve</string>
+    <string name="direction">Smjer</string>
+    <string name="no_intermediate_stops">Nije pronađena nijedna usputna stanica.</string>
+    <string name="show_intermediate_stops">Prikaži usputne stanice</string>
+    <string name="hide_intermediate_stops">Sakrij usputne stanice</string>
+    <string name="nearby_stops">Obližnje stanice</string>
+    <string name="nearby">U blizini</string>
+    <string name="time_to" formatted="false"><xliff:g id="duration">%1$s</xliff:g> do <xliff:g id="stop">%2$s</xliff:g></string>
+    <!-- Phrase describing a time duration using seconds [CHAR LIMIT=16] -->
+    <plurals name="duration_seconds">
+        <item quantity="one">"<xliff:g id="count">%d</xliff:g> sekunda"</item>
+        <item quantity="other">"<xliff:g id="count">%d</xliff:g> sekundi"</item>
+        <item quantity="few">"sekunde"</item>
+    </plurals>
+    <!-- Phrase describing a time duration using minutes [CHAR LIMIT=16] -->
+    <plurals name="duration_minutes">
+        <item quantity="one"><xliff:g id="count">%d</xliff:g> minuta</item>
+        <item quantity="other"><xliff:g id="count">%d</xliff:g> min.</item>
+        <item quantity="few">minuta</item>
+    </plurals>
+    <!-- Phrase describing a time duration using hours [CHAR LIMIT=16] -->
+    <plurals name="duration_hours">
+        <item quantity="one"><xliff:g id="count">%d</xliff:g> sat</item>
+        <item quantity="other"><xliff:g id="count">%d</xliff:g> sati</item>
+        <item quantity="few">sata</item>
+    </plurals>
+    <plurals name="duration_days">
+        <item quantity="one"><xliff:g id="count">%d</xliff:g> dan</item>
+        <item quantity="other"><xliff:g id="count">%d</xliff:g> dana</item>
+        <item quantity="few">dana</item>
+    </plurals>
+    <plurals name="duration_short_minutes">
+        <item quantity="one"><xliff:g id="count">%d</xliff:g> min.</item>
+        <item quantity="other"><xliff:g id="count">%d</xliff:g> min.</item>
+        <item quantity="few">min.</item>
+    </plurals>
+    <plurals name="duration_short_hours">
+        <item quantity="one"><xliff:g id="count">%d</xliff:g> h.</item>
+        <item quantity="other"><xliff:g id="count">%d</xliff:g> h.</item>
+        <item quantity="few">h.</item>
+    </plurals>
+    <string name="duration_short_hours_minutes" formatted="false"><xliff:g id="hour">%1$s</xliff:g> h. <xliff:g id="minutes">%2$s</xliff:g> min.</string>
+    <string name="trip_time_origin_destination"><xliff:g id="origin">%1$s</xliff:g> – <xliff:g id="destination">%2$s</xliff:g></string>
+    <!-- Planner error message -->
+    <string name="planner_error_title">Pretraga nije uspjela</string>
+    <!-- Planner error message -->
+    <string name="planner_error_unknown">Pretraga nije uspjela, molimo pokušajte ponovo.</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H9300">Nažalost, ruta nije pronađena. Molimo pokušajte ponovo.</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H9360">Neispravan datum.</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H9380">Početak i kraj je preblizu jedno drugome.</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H9320">Stanica ne postoji.</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H9280">Stanica ne postoji.</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H9260">Stanica ne postoji.</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H9250">Pretraživanje je prekinuto, molimo pokušajte ponovo.</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H9240">Putovanje nije pronađeno</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H9230">Molimo pokušajte ponovo.</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H9220">Ne postoje stanice blizu date adrese.</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H900">Ne postoji red vožnje za ovo putovanje.</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H892">Putovanje je predugo, pokušajte isplanirati kraću rutu.</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H891">Putovanje nije pronađeno, pokušajte isplanirati drugu rutu.</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H890">Putovanje nije pronađeno.</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H500">Putovanje nije pronađeno.</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H455">Proširena stanica.</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H410">Došlo je do greške koja može biti povezana sa promjenama u redu vožnje.</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H390">Početna ili krajnja stanica zamijenjena je najbližom mogućom stanicom.</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H895">Početak i kraj je preblizu jedno drugome.</string>
+    <!-- Preferences -->
+    <string name="restart_app_for_full_effect">Da bi se promjene izvršile u potpunosti molimo ponovo pokrenite aplikaciju.</string>
+    <string name="dialog_general_preferences">Osnovne postavke</string>
+    <string name="dialog_notification_preferences">Obavijesti</string>
+    <string name="title_language_preference">Jezik</string>
+    <string name="summary_language_preference">Odaberite vaš jezik.</string>
+    <string name="dialog_title_language_preference">Odaberi jezik</string>
+    <string name="settings_saved">Sačuvano</string>
+    <string name="deviation_notification_preference">Obavijesti u vezi odstupanja</string>
+    <string name="deviation_notification_summary_preference">Testna faza. Omogućavanje ove opcije zahtjeva stalnu internet vezu.</string>
+    <string name="deviation_update_interval_preference">Interval ažuriranja</string>
+    <string name="deviation_update_interval_summary_preference">Dužim intervalima ažuriranja štedite vašu bateriju.</string>
+    <string name="deviation_lines_preference">Linije</string>
+    <string name="deviation_lines_summary_preference">Brojevi linija se odvajaju zarezima. Npr: \'42,28,707\'.</string>
+    <string name="deviation_lines_dialog_message_preference">Razdvojite brojeve linija koristeći zarez. Npr: \'42,28,707\'.</string>
+    <string name="search_include_addresses_preference">Uvrsti adrese u automatsko nadopunjavanje</string>
+    <string name="search_include_addresses_summary_preference">Kada je ova opcija omogućena, primanje sugestija može potrajati duže.</string>
+    <string name="search_clear_history_preference">Brisanje historije pretraživanja</string>
+    <string name="search_clear_history_summary_preference">Omogućava brisanje historije pretraga za stanice i putovanja.</string>
+    <string name="search_clear_history_confirm">Da li ste sigurni da želite obrisati cijelu historiju vaših pretraga?</string>
+    <string name="search_history_cleared">Historija pretraga obrisana</string>
+    <string name="search_clear_favorites_preference">Obriši zabilješke</string>
+    <string name="search_clear_favorites_summary_preference">Obriši sve zabilješke.</string>
+    <string name="search_clear_favorites_confirm">Da li ste sigurni da želite obrisati sve zabilješke?</string>
+    <string name="search_favorites_cleared">Zabilješke obrisane</string>
+    <string name="help">Pomoć</string>
+    <string name="support">Podrška</string>
+    <string name="transport_type">Vrsta prevoza</string>
+    <string name="search_try_with_app_name">Izvrši pretragu koristeći STHLM Traveling</string>
+    <string name="search_try_with_google">Izvrši pretragu koristeći Google</string>
+    <string name="search_attribution_note">Traženje mjesta</string>
+    <string name="language_system_locale">Jezik Uređaja</string>
+    <string name="pref_deviations_interval_1">10 min.</string>
+    <string name="pref_deviations_interval_2">15 min.</string>
+    <string name="pref_deviations_interval_3">30 min.</string>
+    <string name="pref_deviations_interval_4">45 min.</string>
+    <string name="pref_deviations_interval_5">1 sat</string>
+    <!-- Ads -->
+    <string name="ads">Reklame</string>
+    <string name="ads_title">Zbog čega reklame?</string>
+    <string name="ads_turn_off">Isključi reklame</string>
+    <string name="ads_message">Ova aplikacija je nastojala opstati kao besplatna od 2009 godine, iako su se troškovi za servere i održavanje povećali.\n\nDa bi bili u mogućnosti da nastavimo razvoj i podršku ovog projekta, aplikacija ponekad prikazuje reklame.\n\nAko imate problema u vezi reklama, moguće je da ih isključite ispod. U budućnosti, moguće je da će postojati mala provozija ukoliko bi htjeli isključiti reklame.\n\nHvala na vašoj podršci!\nJohan</string>
+    <string name="ads_summary">Zašto aplikacija sadrži reklame?</string>
+</resources>
