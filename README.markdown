@@ -23,6 +23,8 @@ fork the app. I will do my best help you out if you have any problems. The docum
 
 Changelog
 ---------
+* NEXT
+  * Add Bosnian (Bosnia and Herzegovina) translation by Zlatan Klapic
 * 2.14.2 (2015-10-30)
   * Add initial work on real-time support to the journey planner
 * 2.14.0 (2015-10-25)
