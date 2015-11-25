@@ -20,9 +20,37 @@ package com.markupartist.sthlmtraveling.data.models;
  *
  */
 public class Place {
-    public String id;
-    public String name;
-    public String type;
-    public double lat;
-    public double lon;
+    private final String id;
+    private final String name;
+    private final String type;
+    private final double lat;
+    private final double lon;
+
+    public Place(String id, String name, String type, double lat, double lon) {
+        this.id = id;
+        this.name = name;
+        this.type = type;
+        this.lat = lat;
+        this.lon = lon;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public double getLat() {
+        return lat;
+    }
+
+    public double getLon() {
+        return lon;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getType() {
+        return type;
+    }
 }

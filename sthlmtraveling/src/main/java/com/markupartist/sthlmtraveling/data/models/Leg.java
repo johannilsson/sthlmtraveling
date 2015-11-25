@@ -20,9 +20,37 @@ package com.markupartist.sthlmtraveling.data.models;
  *
  */
 public class Leg {
-    public Place from;
-    public Place to;
-    public String geometry;
-    public int distance;
-    public int duration;
+    private final Place from;
+    private final Place to;
+    private final String geometry;
+    private final int distance;
+    private final int duration;
+
+    public Leg(Place from, Place to, String geometry, int distance, int duration) {
+        this.from = from;
+        this.to = to;
+        this.geometry = geometry;
+        this.distance = distance;
+        this.duration = duration;
+    }
+
+    public int getDistance() {
+        return distance;
+    }
+
+    public int getDuration() {
+        return duration;
+    }
+
+    public Place getFrom() {
+        return from;
+    }
+
+    public String getGeometry() {
+        return geometry;
+    }
+
+    public Place getTo() {
+        return to;
+    }
 }

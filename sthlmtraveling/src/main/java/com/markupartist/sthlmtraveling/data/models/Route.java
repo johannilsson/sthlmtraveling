@@ -22,8 +22,31 @@ import java.util.List;
  *
  */
 public class Route {
-    public int duration;
-    public List<Leg> legs;
-    public String mode;
-    public List<Step> steps;
+    private final int duration;
+    private final List<Leg> legs;
+    private final String mode;
+    private final List<Step> steps;
+
+    public Route(int duration, List<Leg> legs, String mode, List<Step> steps) {
+        this.duration = duration;
+        this.legs = legs;
+        this.mode = mode;
+        this.steps = steps;
+    }
+
+    public int getDuration() {
+        return duration;
+    }
+
+    public List<Leg> getLegs() {
+        return legs;
+    }
+
+    public String getMode() {
+        return mode;
+    }
+
+    public List<Step> getSteps() {
+        return steps;
+    }
 }

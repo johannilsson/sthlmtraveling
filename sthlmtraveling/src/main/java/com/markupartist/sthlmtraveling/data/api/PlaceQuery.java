@@ -52,10 +52,10 @@ public class PlaceQuery {
         private double lat;
 
         public Builder place(Place place) {
-            this.id = place.id;
-            this.name = place.name;
-            this.lat = place.lat;
-            this.lon = place.lon;
+            this.id = place.getId();
+            this.name = place.getName();
+            this.lat = place.getLat();
+            this.lon = place.getLon();
             return this;
         }
 

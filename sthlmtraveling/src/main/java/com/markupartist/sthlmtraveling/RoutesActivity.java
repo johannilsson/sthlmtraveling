@@ -229,15 +229,15 @@ public class RoutesActivity extends BaseListActivity implements
         carIcon.setImageDrawable(ViewHelper.getDrawableColorInt(this, R.drawable.ic_transport_car_20dp, iconColor));
 
         for (Route route : plan.getRoutes()) {
-            switch (route.mode) {
+            switch (route.getMode()) {
                 case "foot":
-                    footDurationText.setText(DateTimeUtil.formatDetailedDuration(getResources(), route.legs.get(0).duration * 1000));
+                    footDurationText.setText(DateTimeUtil.formatDetailedDuration(getResources(), route.getLegs().get(0).getDuration() * 1000));
                     break;
                 case "bike":
-                    bikeDurationText.setText(DateTimeUtil.formatDetailedDuration(getResources(), route.legs.get(0).duration * 1000));
+                    bikeDurationText.setText(DateTimeUtil.formatDetailedDuration(getResources(), route.getLegs().get(0).getDuration() * 1000));
                     break;
                 case "car":
-                    carDurationText.setText(DateTimeUtil.formatDetailedDuration(getResources(), route.legs.get(0).duration * 1000));
+                    carDurationText.setText(DateTimeUtil.formatDetailedDuration(getResources(), route.getLegs().get(0).getDuration() * 1000));
                     break;
             }
         }
