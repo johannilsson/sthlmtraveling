@@ -22,7 +22,7 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -31,6 +31,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
+import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -44,8 +45,8 @@ import com.markupartist.sthlmtraveling.utils.Analytics;
 import java.io.IOException;
 import java.util.List;
 
-public class PointOnMapActivity extends ActionBarActivity
-        implements OnMapClickListener, OnInfoWindowClickListener {
+public class PointOnMapActivity extends AppCompatActivity
+        implements OnMapClickListener, OnInfoWindowClickListener, OnMapReadyCallback {
 
     public static String EXTRA_STOP = "com.markupartist.sthlmtraveling.pointonmap.stop";
     public static String EXTRA_HELP_TEXT = "com.markupartist.sthlmtraveling.pointonmap.helptext";
@@ -102,23 +103,7 @@ public class PointOnMapActivity extends ActionBarActivity
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
-        if (savedInstanceState == null) {
-            // First incarnation of this activity.
-            mapFragment.setRetainInstance(true);
-        } else {
-            // Reincarnated activity. The obtained map is the same map instance in the previous
-            // activity life cycle. There is no need to reinitialize it.
-            mMap = mapFragment.getMap();
-        }
-
-        setUpMapIfNeeded();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        setUpMapIfNeeded();
+        mapFragment.getMapAsync(this);
     }
 
     @Override
@@ -134,19 +119,6 @@ public class PointOnMapActivity extends ActionBarActivity
     private void showHelpToast(String helpText) {
         if (helpText != null) {
             Toast.makeText(this, helpText, Toast.LENGTH_LONG).show();
-        }
-    }
-
-    private void setUpMapIfNeeded() {
-        // Do a null check to confirm that we have not already instantiated the map.
-        if (mMap == null) {
-            // Try to obtain the map from the SupportMapFragment.
-            mMap = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map))
-                    .getMap();
-            // Check if we were successful in obtaining the map.
-            if (mMap != null) {
-                setUpMap();
-            }
         }
     }
 
@@ -195,7 +167,7 @@ public class PointOnMapActivity extends ActionBarActivity
 
     private String getStopName(Location location) {
         Geocoder geocoder = new Geocoder(this);
-        String name = "Unkown";
+        String name = "Unknown";
         try {
             List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
             if (addresses.size() > 0) {
@@ -223,4 +195,9 @@ public class PointOnMapActivity extends ActionBarActivity
         }
     }
 
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+        setUpMap();
+    }
 }

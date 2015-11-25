@@ -28,6 +28,7 @@ import android.view.MenuItem;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -47,7 +48,7 @@ import com.markupartist.sthlmtraveling.utils.ViewHelper;
 
 import java.io.IOException;
 
-public class ViewOnMapActivity extends AppCompatActivity {
+public class ViewOnMapActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private static final String TAG = "ViewOnMapActivity";
     public static String EXTRA_LOCATION = "com.markupartist.sthlmtraveling.extra.Location";
@@ -113,25 +114,15 @@ public class ViewOnMapActivity extends AppCompatActivity {
                 focusedLocation.getLocation().getLatitude(),
                 focusedLocation.getLocation().getLongitude());
 
-
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
-        if (savedInstanceState == null) {
-            // First incarnation of this activity.
-            mapFragment.setRetainInstance(true);
-        } else {
-            // Reincarnated activity. The obtained map is the same map instance in the previous
-            // activity life cycle. There is no need to reinitialize it.
-            mMap = mapFragment.getMap();
-        }
+        mapFragment.getMapAsync(this);
 
         updateStartAndEndPointViews(mJourneyQuery);
 
-        setUpMapIfNeeded();
     }
 
     public void fetchRoute(final Trip2 trip, final JourneyQuery journeyQuery) {
-        setSupportProgressBarIndeterminateVisibility(true);
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -144,7 +135,6 @@ public class ViewOnMapActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        setSupportProgressBarIndeterminateVisibility(false);
                         addRoute(trip);
                     }
                 });
@@ -229,12 +219,6 @@ public class ViewOnMapActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        setUpMapIfNeeded();
-    }
-
-    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
@@ -242,19 +226,6 @@ public class ViewOnMapActivity extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    private void setUpMapIfNeeded() {
-        // Do a null check to confirm that we have not already instantiated the map.
-        if (mMap == null) {
-            // Try to obtain the map from the SupportMapFragment.
-            mMap = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map))
-                    .getMap();
-            // Check if we were successful in obtaining the map.
-            if (mMap != null) {
-                setUpMap();
-            }
-        }
     }
 
     /**
@@ -306,5 +277,11 @@ public class ViewOnMapActivity extends AppCompatActivity {
                 ab.setSubtitle(journeyQuery.destination.getName());
             }
         }
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+        setUpMap();
     }
 }
