@@ -16,12 +16,16 @@
 
 package com.markupartist.sthlmtraveling.data.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  *
  */
-public class Route {
+public class Route implements Parcelable {
     private final int duration;
     private final List<Leg> legs;
     private final String mode;
@@ -33,6 +37,27 @@ public class Route {
         this.mode = mode;
         this.steps = steps;
     }
+
+    protected Route(Parcel in) {
+        duration = in.readInt();
+        legs = new ArrayList<>();
+        in.readTypedList(legs, Leg.CREATOR);
+        mode = in.readString();
+        steps = new ArrayList<>();
+        in.readTypedList(steps, Step.CREATOR);
+    }
+
+    public static final Creator<Route> CREATOR = new Creator<Route>() {
+        @Override
+        public Route createFromParcel(Parcel in) {
+            return new Route(in);
+        }
+
+        @Override
+        public Route[] newArray(int size) {
+            return new Route[size];
+        }
+    };
 
     public int getDuration() {
         return duration;
@@ -48,5 +73,18 @@ public class Route {
 
     public List<Step> getSteps() {
         return steps;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(duration);
+        dest.writeTypedList(legs);
+        dest.writeString(mode);
+        dest.writeTypedList(steps);
     }
 }

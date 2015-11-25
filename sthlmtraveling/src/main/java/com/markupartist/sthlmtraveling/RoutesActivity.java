@@ -129,7 +129,10 @@ public class RoutesActivity extends BaseListActivity implements
             "com.markupartist.sthlmtraveling.getlaterroutes.inprogress";
     private static final String STATE_ROUTE_ERROR_CODE =
             "com.markupartist.sthlmtraveling.state.routeerrorcode";
-    private static final String STATE_PLANNER_RESPONSE = "STATE_PLANNER_RESPONSE";
+    private static final String STATE_PLANNER_RESPONSE =
+            "com.markupartist.sthlmtraveling.state.plannerresponse";
+    private static final String STATE_PLAN =
+            "com.markupartist.sthlmtraveling.state.plan";
 
     private RoutesAdapter mRouteAdapter;
 
@@ -141,6 +144,7 @@ public class RoutesActivity extends BaseListActivity implements
     private Response mPlannerResponse;
     private JourneyQuery mJourneyQuery;
     private String mRouteErrorCode;
+    private Plan mPlan;
 
     private Bundle mSavedState;
     private Button mTimeAndDate;
@@ -169,6 +173,7 @@ public class RoutesActivity extends BaseListActivity implements
         if (savedInstanceState != null) {
             mPlannerResponse = savedInstanceState.getParcelable(STATE_PLANNER_RESPONSE);
             mJourneyQuery = savedInstanceState.getParcelable(EXTRA_JOURNEY_QUERY);
+            mPlan = savedInstanceState.getParcelable(STATE_PLAN);
         }
 
         if (mJourneyQuery == null || (mJourneyQuery.origin.getName() == null
@@ -195,8 +200,6 @@ public class RoutesActivity extends BaseListActivity implements
         ViewHelper.tintIcon(mTimeAndDate.getCompoundDrawables()[0],
                 getResources().getColor(R.color.primary_light));
 
-//        View headerView = getLayoutInflater().inflate(R.layout.empty, null);
-//        getListView().addHeaderView(headerView, null, false);
         getListView().setHeaderDividersEnabled(false);
 
         getListView().setVerticalFadingEdgeEnabled(false);
@@ -211,6 +214,8 @@ public class RoutesActivity extends BaseListActivity implements
     }
 
     public void updateRouteAlternatives(Plan plan) {
+        mPlan = plan;
+
         View routeAlternativesView = LayoutInflater.from(RoutesActivity.this).inflate(R.layout.route_alternatives, null, false);
 
         TextView footDurationText = (TextView) routeAlternativesView.findViewById(R.id.route_foot_description);
@@ -218,7 +223,9 @@ public class RoutesActivity extends BaseListActivity implements
         TextView carDurationText = (TextView) routeAlternativesView.findViewById(R.id.route_car_description);
 
         mLoadingRoutesViews = routeAlternativesView.findViewById(R.id.loading_routes);
-        showProgress();
+        if (mPlannerResponse == null) {
+            showProgress();
+        }
 
         ImageView footIcon = (ImageView) routeAlternativesView.findViewById(R.id.route_foot_icon);
         ImageView bikeIcon = (ImageView) routeAlternativesView.findViewById(R.id.route_bike_icon);
@@ -243,7 +250,7 @@ public class RoutesActivity extends BaseListActivity implements
         }
 
         getListView().addHeaderView(routeAlternativesView, null, false);
-        onHasData();
+        showRoutes();
     }
 
     @Override
@@ -408,6 +415,7 @@ public class RoutesActivity extends BaseListActivity implements
         saveGetLaterRoutesTask(outState);
 
         outState.putParcelable(STATE_PLANNER_RESPONSE, mPlannerResponse);
+        outState.putParcelable(STATE_PLAN, mPlan);
 
         if (!TextUtils.isEmpty(mRouteErrorCode)) {
             outState.putString(STATE_ROUTE_ERROR_CODE, mRouteErrorCode);
@@ -630,7 +638,7 @@ public class RoutesActivity extends BaseListActivity implements
         }
     }
 
-    public void onHasData() {
+    public void showRoutes() {
         ViewHelper.crossfade(mEmptyView, getListView());
     }
 
@@ -642,8 +650,9 @@ public class RoutesActivity extends BaseListActivity implements
         mJourneyQuery.promotionNetwork = response.promotionNetwork;
 
         mRouteAdapter.refill(response.trips);
-        onHasData();
+        showRoutes();
         supportInvalidateOptionsMenu();
+        dismissProgress();
     }
 
     @Override
@@ -693,6 +702,11 @@ public class RoutesActivity extends BaseListActivity implements
     }
 
     void fetchRouteAlternatives(JourneyQuery journeyQuery) {
+        if (mPlan != null) {
+            updateRouteAlternatives(mPlan);
+            return;
+        }
+
         MyApplication app = MyApplication.get(this);
         Router router = new Router(app.getApiService());
         router.plan(journeyQuery, new Router.Callback() {

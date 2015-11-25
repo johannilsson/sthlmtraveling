@@ -16,19 +16,50 @@
 
 package com.markupartist.sthlmtraveling.data.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  *
  */
-public class Plan {
+public class Plan implements Parcelable {
     private final List<Route> routes;
 
     public Plan(List<Route> routes) {
         this.routes = routes;
     }
 
+    protected Plan(Parcel in) {
+        routes = new ArrayList<>();
+        in.readTypedList(routes, Route.CREATOR);
+    }
+
+    public static final Creator<Plan> CREATOR = new Creator<Plan>() {
+        @Override
+        public Plan createFromParcel(Parcel in) {
+            return new Plan(in);
+        }
+
+        @Override
+        public Plan[] newArray(int size) {
+            return new Plan[size];
+        }
+    };
+
     public List<Route> getRoutes() {
         return routes;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeTypedList(routes);
     }
 }

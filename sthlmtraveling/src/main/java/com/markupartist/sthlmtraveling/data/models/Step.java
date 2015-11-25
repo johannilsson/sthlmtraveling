@@ -16,14 +16,53 @@
 
 package com.markupartist.sthlmtraveling.data.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  *
  */
-public class Step {
+public class Step implements Parcelable {
     public int distance;
     public String direction;
     public String code;
     public String wayName;
     public int duration;
     public int position;
+
+    protected Step(Parcel in) {
+        distance = in.readInt();
+        direction = in.readString();
+        code = in.readString();
+        wayName = in.readString();
+        duration = in.readInt();
+        position = in.readInt();
+    }
+
+    public static final Creator<Step> CREATOR = new Creator<Step>() {
+        @Override
+        public Step createFromParcel(Parcel in) {
+            return new Step(in);
+        }
+
+        @Override
+        public Step[] newArray(int size) {
+            return new Step[size];
+        }
+    };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(distance);
+        dest.writeString(direction);
+        dest.writeString(code);
+        dest.writeString(wayName);
+        dest.writeInt(duration);
+        dest.writeInt(position);
+    }
 }

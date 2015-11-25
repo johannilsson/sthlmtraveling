@@ -16,10 +16,13 @@
 
 package com.markupartist.sthlmtraveling.data.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  *
  */
-public class Leg {
+public class Leg implements Parcelable {
     private final Place from;
     private final Place to;
     private final String geometry;
@@ -33,6 +36,26 @@ public class Leg {
         this.distance = distance;
         this.duration = duration;
     }
+
+    protected Leg(Parcel in) {
+        from = in.readParcelable(Place.class.getClassLoader());
+        to = in.readParcelable(Place.class.getClassLoader());
+        geometry = in.readString();
+        distance = in.readInt();
+        duration = in.readInt();
+    }
+
+    public static final Creator<Leg> CREATOR = new Creator<Leg>() {
+        @Override
+        public Leg createFromParcel(Parcel in) {
+            return new Leg(in);
+        }
+
+        @Override
+        public Leg[] newArray(int size) {
+            return new Leg[size];
+        }
+    };
 
     public int getDistance() {
         return distance;
@@ -52,5 +75,19 @@ public class Leg {
 
     public Place getTo() {
         return to;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeParcelable(from, 0);
+        dest.writeParcelable(to, 0);
+        dest.writeString(geometry);
+        dest.writeInt(distance);
+        dest.writeInt(duration);
     }
 }

@@ -16,10 +16,13 @@
 
 package com.markupartist.sthlmtraveling.data.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  *
  */
-public class Place {
+public class Place implements Parcelable {
     private final String id;
     private final String name;
     private final String type;
@@ -33,6 +36,26 @@ public class Place {
         this.lat = lat;
         this.lon = lon;
     }
+
+    protected Place(Parcel in) {
+        id = in.readString();
+        name = in.readString();
+        type = in.readString();
+        lat = in.readDouble();
+        lon = in.readDouble();
+    }
+
+    public static final Creator<Place> CREATOR = new Creator<Place>() {
+        @Override
+        public Place createFromParcel(Parcel in) {
+            return new Place(in);
+        }
+
+        @Override
+        public Place[] newArray(int size) {
+            return new Place[size];
+        }
+    };
 
     public String getId() {
         return id;
@@ -52,5 +75,19 @@ public class Place {
 
     public String getType() {
         return type;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(id);
+        dest.writeString(name);
+        dest.writeString(type);
+        dest.writeDouble(lat);
+        dest.writeDouble(lon);
     }
 }
