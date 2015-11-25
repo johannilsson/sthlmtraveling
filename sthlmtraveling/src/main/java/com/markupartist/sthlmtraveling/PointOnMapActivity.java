@@ -81,7 +81,7 @@ public class PointOnMapActivity extends ActionBarActivity
         Analytics.getInstance(this).registerScreen("Point on map");
 
         ActionBar actionBar = getSupportActionBar();
-        //actionBar.setBackgroundDrawable(getResources().getDrawable(R.drawable.ab_bg_black));
+        //actionBar.setBackgroundDrawable(getResources().getDrawableColorInt(R.drawable.ab_bg_black));
         actionBar.setHomeButtonEnabled(true);
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
         actionBar.setDisplayShowHomeEnabled(true);

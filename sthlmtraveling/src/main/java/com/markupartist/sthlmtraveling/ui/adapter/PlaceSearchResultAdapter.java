@@ -182,7 +182,7 @@ public class PlaceSearchResultAdapter extends HeaderFooterRecyclerViewAdapter im
             text1 = (TextView) view.findViewById(R.id.text1);
             text2 = (TextView) view.findViewById(R.id.text2);
             distance = (TextView) view.findViewById(R.id.distance);
-            icon = (ImageView) view.findViewById(R.id.icon);
+            icon = (ImageView) view.findViewById(R.id.row_icon);
         }
     }
 

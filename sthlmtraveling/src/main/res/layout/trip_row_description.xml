@@ -38,7 +38,7 @@
                 android:id="@+id/trip_description_icon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/transport_walk"
+                android:src="@drawable/ic_transport_walk_20dp"
                 android:layout_gravity="start" />
         </LinearLayout>
 

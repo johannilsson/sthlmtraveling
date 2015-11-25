@@ -16,34 +16,34 @@
 
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_checked="false" android:state_window_focused="false" 
-          android:drawable="@drawable/btn_star_off_normal_holo_dark" />
+          android:drawable="@drawable/btn_star_off" />
     <item android:state_checked="true" android:state_window_focused="false" 
-          android:drawable="@drawable/btn_star_on_normal_holo_dark" />
+          android:drawable="@drawable/btn_star_on" />
     <item android:state_checked="true" android:state_window_focused="false"
-          android:state_enabled="false" android:drawable="@drawable/btn_star_on_disabled_holo_dark" />
+          android:state_enabled="false" android:drawable="@drawable/btn_star_on" />
     <item android:state_checked="false" android:state_window_focused="false" 
-          android:state_enabled="false" android:drawable="@drawable/btn_star_off_disabled_holo_dark" />
+          android:state_enabled="false" android:drawable="@drawable/btn_star_off" />
 
     <item android:state_checked="true" android:state_pressed="true"
-          android:drawable="@drawable/btn_star_on_pressed_holo_dark" />
+          android:drawable="@drawable/btn_star_on" />
     <item android:state_checked="false" android:state_pressed="true"
-          android:drawable="@drawable/btn_star_off_pressed_holo_dark" />
+          android:drawable="@drawable/btn_star_off" />
 
     <item android:state_checked="true" android:state_focused="true"
-          android:drawable="@drawable/btn_star_on_focused_holo_dark" />
+          android:drawable="@drawable/btn_star_on" />
     <item android:state_checked="false" android:state_focused="true"
-          android:drawable="@drawable/btn_star_off_focused_holo_dark" />
+          android:drawable="@drawable/btn_star_off" />
 
     <item android:state_checked="true" android:state_focused="true" android:state_enabled="false"
-          android:drawable="@drawable/btn_star_on_disabled_focused_holo_dark" />
+          android:drawable="@drawable/btn_star_on" />
     <item android:state_checked="true" android:state_focused="false" android:state_enabled="false"
-          android:drawable="@drawable/btn_star_on_disabled_holo_dark" />
+          android:drawable="@drawable/btn_star_on" />
 
     <item android:state_checked="false" android:state_focused="true" android:state_enabled="false"
-          android:drawable="@drawable/btn_star_off_disabled_focused_holo_dark" />
+          android:drawable="@drawable/btn_star_off" />
     <item android:state_checked="false" android:state_focused="false" android:state_enabled="false"
-          android:drawable="@drawable/btn_star_off_disabled_holo_dark" />
+          android:drawable="@drawable/btn_star_off" />
           
-    <item android:state_checked="false" android:drawable="@drawable/btn_star_off_normal_holo_dark" />
-    <item android:state_checked="true" android:drawable="@drawable/btn_star_on_normal_holo_dark" />
+    <item android:state_checked="false" android:drawable="@drawable/btn_star_off" />
+    <item android:state_checked="true" android:drawable="@drawable/btn_star_on" />
 </selector>

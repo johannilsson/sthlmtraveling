@@ -62,7 +62,6 @@ public class DataMigrationService extends WakefulIntentService {
         if (cursor.moveToFirst()) {
             ArrayList<String> transportModes = new ArrayList<String>();
             transportModes.add(TransportMode.BUS);
-            transportModes.add(TransportMode.FLY);
             transportModes.add(TransportMode.METRO);
             transportModes.add(TransportMode.TRAIN);
             transportModes.add(TransportMode.TRAM);

@@ -44,6 +44,7 @@ import com.markupartist.sthlmtraveling.provider.JourneysProvider.Journey.Journey
 import com.markupartist.sthlmtraveling.provider.TransportMode;
 import com.markupartist.sthlmtraveling.provider.planner.JourneyQuery;
 import com.markupartist.sthlmtraveling.provider.site.Site;
+import com.markupartist.sthlmtraveling.utils.ViewHelper;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -275,20 +276,24 @@ public class FavoritesFragment extends BaseListFragment {
         private View inflate(View v, JourneyQuery journeyQuery) {
             // Hide the checkbox
             v.findViewById(R.id.journey_star_check).setVisibility(View.GONE);
-
-            TextView originText = (TextView) v.findViewById(R.id.favorite_start_point);
+            String originStr;
+            String destinationStr;
             if (journeyQuery.origin.isMyLocation()) {
-                originText.setText(getString(R.string.my_location));
+                originStr = getString(R.string.my_location);
             } else {
-                originText.setText(journeyQuery.origin.getName());
+                originStr = journeyQuery.origin.getName();
+            }
+            if (journeyQuery.destination.isMyLocation()) {
+                destinationStr = getString(R.string.my_location);
+            } else {
+                destinationStr = journeyQuery.destination.getName();
             }
 
-            TextView destinationText = (TextView) v.findViewById(R.id.favorite_end_point);
-            if (journeyQuery.destination.isMyLocation()) {
-                destinationText.setText(getString(R.string.my_location));
-            } else {
-                destinationText.setText(journeyQuery.destination.getName());
-            }
+            TextView journeyDescriptionText = (TextView) v.findViewById(R.id.favorite_journey_title);
+            journeyDescriptionText.setText(originStr);
+
+            TextView journeyToText = (TextView) v.findViewById(R.id.favorite_to);
+            journeyToText.setText(destinationStr);
 
             TextView viaText = (TextView) v.findViewById(R.id.favorite_via_point);
             if (journeyQuery.hasVia()) {
@@ -305,38 +310,42 @@ public class FavoritesFragment extends BaseListFragment {
 
         private void addTransportModeViews(JourneyQuery journeyQuery, View v) {
             if (journeyQuery.transportModes == null) {
-                journeyQuery.transportModes = new ArrayList<String>();
+                journeyQuery.transportModes = new ArrayList<>();
             }
 
-            for (String transportMode : journeyQuery.transportModes) {
-                if (transportMode.equals(TransportMode.METRO)) {
-                    ImageView transportView =
-                        (ImageView) v.findViewById(R.id.favorite_transport_mode_metro);
-                    transportView.setVisibility(View.VISIBLE);
-                } else if (transportMode.equals(TransportMode.BUS)) {
-                    ImageView transportView =
-                        (ImageView) v.findViewById(R.id.favorite_transport_mode_bus);
-                    transportView.setVisibility(View.VISIBLE);
-                } else if (transportMode.equals(TransportMode.TRAIN)) {
-                    ImageView transportView =
-                        (ImageView) v.findViewById(R.id.favorite_transport_mode_train);
-                    transportView.setVisibility(View.VISIBLE);
-                } else if (transportMode.equals(TransportMode.TRAM)) {
-                    ImageView transportView =
-                        (ImageView) v.findViewById(R.id.favorite_transport_mode_tram);
-                    transportView.setVisibility(View.VISIBLE);
-                } else if (transportMode.equals(TransportMode.WAX)) {
-                    ImageView transportView =
-                        (ImageView) v.findViewById(R.id.favorite_transport_mode_wax);
-                    transportView.setVisibility(View.VISIBLE);
-                } else if (transportMode.equals(TransportMode.FLY)) {
-                    ImageView transportView =
-                        (ImageView) v.findViewById(R.id.favorite_transport_mode_fly);
-                    transportView.setVisibility(View.VISIBLE);
-                } else if (transportMode.equals(TransportMode.NAR)) {
-                    ImageView transportView =
-                        (ImageView) v.findViewById(R.id.favorite_transport_mode_nar);
-                    transportView.setVisibility(View.VISIBLE);
+            ImageView metroView = (ImageView) v.findViewById(R.id.favorite_transport_mode_metro);
+            ImageView busView = (ImageView) v.findViewById(R.id.favorite_transport_mode_bus);
+            ImageView trainView = (ImageView) v.findViewById(R.id.favorite_transport_mode_train);
+            ImageView tramView = (ImageView) v.findViewById(R.id.favorite_transport_mode_tram);
+            ImageView waxView = (ImageView) v.findViewById(R.id.favorite_transport_mode_wax);
+
+            int inactiveColor = getResources().getColor(R.color.transport_icon_inactive);
+            int activeColor = getResources().getColor(R.color.icon_default);
+            ViewHelper.tint(metroView, inactiveColor);
+            ViewHelper.tint(busView, inactiveColor);
+            ViewHelper.tint(trainView, inactiveColor);
+            ViewHelper.tint(tramView, inactiveColor);
+            ViewHelper.tint(waxView, inactiveColor);
+
+            if (journeyQuery.transportModes != null) {
+                for (String transportMode : journeyQuery.transportModes) {
+                    switch (transportMode) {
+                        case TransportMode.METRO:
+                            ViewHelper.tint(metroView, activeColor);
+                            break;
+                        case TransportMode.BUS:
+                            ViewHelper.tint(busView, activeColor);
+                            break;
+                        case TransportMode.TRAIN:
+                            ViewHelper.tint(trainView, activeColor);
+                            break;
+                        case TransportMode.TRAM:
+                            ViewHelper.tint(tramView, activeColor);
+                            break;
+                        case TransportMode.WAX:
+                            ViewHelper.tint(waxView, activeColor);
+                            break;
+                    }
                 }
             }
         }

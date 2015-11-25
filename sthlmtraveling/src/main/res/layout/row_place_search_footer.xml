@@ -27,7 +27,7 @@
               tools:ignore="UseCompoundDrawables">
 
     <ImageView
-        android:id="@+id/icon"
+        android:id="@+id/row_icon"
         android:layout_width="wrap_content"
         android:layout_height="?android:attr/listPreferredItemHeight"
         android:gravity="center_vertical"

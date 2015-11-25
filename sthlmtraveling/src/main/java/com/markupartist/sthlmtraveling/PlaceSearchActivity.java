@@ -80,7 +80,7 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements LoaderM
 
     private static final int LOADER_HISTORY = 1;
 
-    private static final boolean IS_GOOGLE_PLACE_SEARCH_ENABLED = false;
+    private static final boolean IS_GOOGLE_PLACE_SEARCH_ENABLED = BuildConfig.DEBUG;
 
     private HistoryDbAdapter mHistoryDbAdapter;
     private RecyclerView mHistoryRecyclerView;
@@ -586,7 +586,7 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements LoaderM
                 text1 = (TextView) view.findViewById(R.id.text1);
                 text2 = (TextView) view.findViewById(R.id.text2);
                 distance = (TextView) view.findViewById(R.id.distance);
-                icon = (ImageView) view.findViewById(R.id.icon);
+                icon = (ImageView) view.findViewById(R.id.row_icon);
             }
         }
 
@@ -643,13 +643,15 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements LoaderM
             }
             if (place.hasType()) {
                 if (place.isTransitStop()) {
-                    holder.icon.setImageResource(R.drawable.ic_directions_transit_24dp);
+                    holder.icon.setImageResource(R.drawable.ic_transport_metro_20dp);
                 } else {
                     holder.icon.setImageResource(R.drawable.ic_place_24dp);
+//                    holder.icon.setImageResource(R.drawable.ic_transport_bus_24dp);
                 }
             } else {
                 holder.icon.setImageResource(R.drawable.ic_history_24dp);
             }
+            ViewHelper.tint(holder.icon, holder.icon.getResources().getColor(R.color.icon_default));
         }
 
         @Override
@@ -679,7 +681,7 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements LoaderM
                 text1 = (TextView) view.findViewById(R.id.text1);
                 text2 = (TextView) view.findViewById(R.id.text2);
                 distance = (TextView) view.findViewById(R.id.distance);
-                icon = (ImageView) view.findViewById(R.id.icon);
+                icon = (ImageView) view.findViewById(R.id.row_icon);
             }
         }
     }

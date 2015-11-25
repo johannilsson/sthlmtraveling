@@ -1,6 +1,7 @@
 package com.markupartist.sthlmtraveling;
 
 import android.app.Application;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -13,7 +14,11 @@ import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.Logger;
 import com.google.android.gms.analytics.Tracker;
+import com.markupartist.sthlmtraveling.data.api.ApiService;
+import com.markupartist.sthlmtraveling.data.misc.ApiServiceProvider;
+import com.markupartist.sthlmtraveling.data.misc.HttpHelper;
 import com.markupartist.sthlmtraveling.service.DataMigrationService;
+import com.squareup.okhttp.OkHttpClient;
 
 import java.util.Locale;
 
@@ -21,6 +26,12 @@ import io.fabric.sdk.android.Fabric;
 
 public class MyApplication extends Application {
     static String TAG = "StApplication";
+    private ApiService mApiService;
+    private OkHttpClient mHttpClient;
+
+    public static MyApplication get(Context context) {
+        return (MyApplication) context.getApplicationContext();
+    }
 
     @Override
     public void onCreate() {
@@ -32,9 +43,20 @@ public class MyApplication extends Application {
         DataMigrationService.startService(this);
     }
 
-    /* (non-Javadoc)
-     * @see android.app.Application#onConfigurationChanged(android.content.res.Configuration)
-     */
+    public OkHttpClient getHttpClient() {
+        if (mHttpClient == null) {
+            mHttpClient = HttpHelper.getInstance(this).getClient();
+        }
+        return mHttpClient;
+    }
+
+    public ApiService getApiService() {
+        if (mApiService == null) {
+            mApiService = ApiServiceProvider.getApiService(getHttpClient());
+        }
+        return mApiService;
+    }
+
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);

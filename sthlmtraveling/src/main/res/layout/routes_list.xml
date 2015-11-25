@@ -16,7 +16,7 @@
 ** limitations under the License.
 */
 -->
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
              xmlns:tools="http://schemas.android.com/tools"
              android:orientation="vertical"
              android:layout_width="fill_parent"
@@ -53,7 +53,7 @@
             android:gravity="start|center_vertical"
             android:drawableLeft="@drawable/ic_settings"
             android:drawableStart="@drawable/ic_settings"
-            android:drawablePadding="@dimen/list_horizontal_padding"
+            android:drawablePadding="24dp"
             tools:text="Date"
             />
 
@@ -62,7 +62,7 @@
     <include
         layout="@layout/progress_bar"
         android:id="@+id/empty_view"/>
-</FrameLayout>
+</android.support.design.widget.CoordinatorLayout>
 
 
 

@@ -23,7 +23,7 @@
     >
 
     <ImageView
-        android:id="@+id/icon"
+        android:id="@+id/row_icon"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_centerVertical="true"
@@ -51,8 +51,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_toEndOf="@id/icon"
-        android:layout_toRightOf="@id/icon"
+        android:layout_toEndOf="@id/row_icon"
+        android:layout_toRightOf="@id/row_icon"
         android:orientation="vertical"
         >
 

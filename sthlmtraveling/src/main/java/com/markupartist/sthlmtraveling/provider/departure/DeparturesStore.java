@@ -22,7 +22,7 @@ import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
 import com.markupartist.sthlmtraveling.provider.site.Site;
-import com.markupartist.sthlmtraveling.utils.HttpHelper;
+import com.markupartist.sthlmtraveling.data.misc.HttpHelper;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;

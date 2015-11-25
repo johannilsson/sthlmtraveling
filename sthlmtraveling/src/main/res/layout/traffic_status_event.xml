@@ -41,13 +41,13 @@
         android:id="@+id/traffic_status_event_message"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minHeight="52dp"
+        android:minHeight="40dp"
         android:gravity="center_vertical"
         android:layout_marginLeft="72dp"
         android:layout_marginStart="72dp"
         android:textSize="14sp"
         android:textIsSelectable="true"
         android:textColor="@color/body_text_2"
-        tools:text="På grund av banarbeten stannar På grund av banarbeten stannar På grund av banarbeten stannar På grund av banarbeten stannar På grund av banarbeten stannar"
+        tools:text="På grund av banarbeten stannar På grund"
         />
 </RelativeLayout>

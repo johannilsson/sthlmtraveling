@@ -18,7 +18,7 @@ package com.markupartist.sthlmtraveling.provider.planner;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -27,10 +27,12 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.markupartist.sthlmtraveling.R;
+import com.markupartist.sthlmtraveling.provider.TransportMode;
 import com.markupartist.sthlmtraveling.provider.site.Site;
 import com.markupartist.sthlmtraveling.utils.DateTimeUtil;
-import com.markupartist.sthlmtraveling.utils.HttpHelper;
+import com.markupartist.sthlmtraveling.data.misc.HttpHelper;
 import com.markupartist.sthlmtraveling.utils.RtlUtils;
+import com.markupartist.sthlmtraveling.utils.ViewHelper;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -252,6 +254,12 @@ public class Planner {
         return subTrip;
     }
 
+    private boolean shouldUseIdInQuery(Site site) {
+        return site.getSource() == Site.SOURCE_STHLM_TRAVELING
+                && !TextUtils.isEmpty(site.getId())
+                && !site.getId().equals("0");
+    }
+
     private Response doJourneyQuery(final Context context, JourneyQuery query, int scrollDirection) throws IOException, BadResponse {
 
         Uri u = Uri.parse(apiEndpoint2());
@@ -262,26 +270,30 @@ public class Planner {
             b.appendQueryParameter("ident", query.ident);
             b.appendQueryParameter("seq", query.seqnr);
         } else {
-            if (query.origin.hasLocation()) {
+            if (shouldUseIdInQuery(query.origin)) {
+                b.appendQueryParameter("origin", query.origin.getId());
+            } else if (query.origin.hasLocation()) {
                 b.appendQueryParameter("origin", query.origin.getName());
                 b.appendQueryParameter("origin_latitude", String.valueOf(query.origin.getLocation().getLatitude()));
                 b.appendQueryParameter("origin_longitude", String.valueOf(query.origin.getLocation().getLongitude()));
             } else {
-                b.appendQueryParameter("origin", String.valueOf(query.origin.getNameOrId()));
+                b.appendQueryParameter("origin", query.origin.getNameOrId());
             }
-            if (query.destination.hasLocation()) {
+            if (shouldUseIdInQuery(query.destination)) {
+                b.appendQueryParameter("destination", query.destination.getId());
+            } else if (query.destination.hasLocation()) {
                 b.appendQueryParameter("destination", query.destination.getName());
                 b.appendQueryParameter("destination_latitude", String.valueOf(query.destination.getLocation().getLatitude()));
                 b.appendQueryParameter("destination_longitude", String.valueOf(query.destination.getLocation().getLongitude()));
             } else {
-                b.appendQueryParameter("destination", String.valueOf(query.destination.getNameOrId()));
+                b.appendQueryParameter("destination", query.destination.getNameOrId());
             }
             for (String transportMode : query.transportModes) {
                 b.appendQueryParameter("transport", transportMode);
             }
             if (query.time != null) {
-                b.appendQueryParameter("date", DATE_FORMAT.format(query.time));//query.time.format("%d.%m.%Y"));
-                b.appendQueryParameter("time", TIME_FORMAT.format(query.time)); //query.time.format("%H:%M"));
+                b.appendQueryParameter("date", DATE_FORMAT.format(query.time));
+                b.appendQueryParameter("time", TIME_FORMAT.format(query.time));
             }
             if (!query.isTimeDeparture) {
                 b.appendQueryParameter("arrival", "1");
@@ -305,6 +317,8 @@ public class Planner {
 
         u = b.build();
 
+
+        //Log.e(TAG, "Query: " + query.toString());
         //Log.e(TAG, "Query: " + u.toString());
 
         HttpHelper httpHelper = HttpHelper.getInstance(context);
@@ -1003,6 +1017,7 @@ public class Planner {
         public String type = "";
         public String name = "";
         public String towards = "";
+        public String line;
 
         public TransportType() { }
 
@@ -1010,6 +1025,7 @@ public class Planner {
             type = parcel.readString();
             name = parcel.readString();
             towards = parcel.readString();
+            line = parcel.readString();
         }
 
         @Override
@@ -1023,6 +1039,7 @@ public class Planner {
             dest.writeString(type);
             dest.writeString(name);
             dest.writeString(towards);
+            dest.writeString(line);
         }
 
         public static TransportType fromJson(JSONObject json) throws JSONException {
@@ -1033,105 +1050,19 @@ public class Planner {
             if (json.has("towards")) {
                 t.towards = json.getString("towards");
             }
+            if (json.has("line")) {
+                t.line = json.getString("line");
+            }
             t.type = json.getString("type");
             return t;
         }
 
-//        public Drawable getDrawable(Context context) {
-//            Drawable drawable = context.getResources().getDrawable(R.drawable.ic_transport);
-//            if ("BUS".equals(type)) {
-//                if (name.contains("blå")) {
-//                    return ViewHelper.tintIcon(drawable, context.getResources().getColor(R.color.traffic_type_b1));
-//                }
-//                return ViewHelper.tintIcon(drawable, context.getResources().getColor(R.color.bus_red));
-//            } else if ("MET".equals(type)) {
-//                if (name.contains("grön")) {
-//                    return ViewHelper.tintIcon(drawable, context.getResources().getColor(R.color.metro_green));
-//                } else if (name.contains("röd")) {
-//                    return ViewHelper.tintIcon(drawable, context.getResources().getColor(R.color.metro_red));
-//                } else if (name.contains("blå")) {
-//                    return ViewHelper.tintIcon(drawable, context.getResources().getColor(R.color.bus_blue));
-//                }
-//            } else if ("NAR".equals(type)) {
-//                return ViewHelper.tintIcon(drawable, context.getResources().getColor(R.color.train));
-//            } else if ("Walk".equals(type)) {
-//                return ViewHelper.tintIcon(drawable, context.getResources().getColor(R.color.train));
-//            } else if ("TRN".equals(type)) {
-//                return ViewHelper.tintIcon(drawable, context.getResources().getColor(R.color.traffic_type_j363738));
-//            } else if ("TRM".equals(type)) {
-//                return ViewHelper.tintIcon(drawable, context.getResources().getColor(R.color.traffic_type_l2526));
-//            } else if ("SHP".equals(type)) {
-//                return ViewHelper.tintIcon(drawable, context.getResources().getColor(R.color.traffic_type_b4));
-//            }
-//            return ViewHelper.tintIcon(drawable, context.getResources().getColor(R.color.train));
-//        }
-
-        public int getImageResource() {
-            if ("BUS".equals(type)) {
-                if (name.contains("blå")) {
-                    return R.drawable.transport_bus_blue;
-                }
-                return R.drawable.transport_bus_red;
-            } else if ("MET".equals(type)) {
-                if (name.contains("grön")) {
-                    return R.drawable.transport_metro_green;
-                } else if (name.contains("röd")) {
-                    return R.drawable.transport_metro_red;
-                } else if (name.contains("blå")) {
-                    return R.drawable.transport_metro_blue;
-                }
-            } else if ("NAR".equals(type)) {
-                return R.drawable.transport_nar;
-            } else if ("Walk".equals(type)) {
-                return R.drawable.transport_walk;
-            } else if ("TRN".equals(type)) {
-                return R.drawable.transport_train;
-            } else if ("TRM".equals(type)) {
-                return R.drawable.transport_tram_car;
-            } else if ("SHP".equals(type)) {
-                return R.drawable.transport_boat;
-            } else if ("FLY".equals(type)) {
-                return R.drawable.transport_fly;
-            } else if ("AEX".equals(type)) {
-                return R.drawable.transport_aex;
-            }
-
-            Log.d(TAG, "Unknown transport type " + type);
-            return R.drawable.transport_unkown;
+        public Drawable getDrawable(Context context) {
+            return ViewHelper.getDrawableForTransport(context, TransportMode.getIndex(type), name, line);
         }
 
         public int getColor(final Context context) {
-            if ("BUS".equals(type)) {
-                if (name.contains("blå")) {
-                    return context.getResources().getColor(R.color.bus_blue);
-                }
-                return context.getResources().getColor(R.color.metro_red);
-            } else if ("MET".equals(type)) {
-                if (name.contains("grön")) {
-                    return context.getResources().getColor(R.color.metro_green);
-                } else if (name.contains("röd")) {
-                    return context.getResources().getColor(R.color.metro_red);
-                } else if (name.contains("blå")) {
-                    return context.getResources().getColor(R.color.metro_blue);
-                }
-            } else if ("NAR".equals(type)) {
-                return Color.WHITE;
-            } else if ("Walk".equals(type)) {
-                return Color.BLACK;
-            } else if ("TRN".equals(type)) {
-                return context.getResources().getColor(R.color.train);
-            } else if ("TRM".equals(type)) {
-                return context.getResources().getColor(R.color.train);
-            } else if ("SHP".equals(type)) {
-                return 0xff09693E;
-            } else if ("FLY".equals(type)) {
-                return Color.DKGRAY;
-            } else if ("AEX".equals(type)) {
-                return Color.YELLOW;
-            }
-
-            Log.d(TAG, "Unknown transport type " + type);
-            return Color.DKGRAY;
+            return ViewHelper.getLineColor(context.getResources(), TransportMode.getIndex(type), line);
         }
 
         @Override

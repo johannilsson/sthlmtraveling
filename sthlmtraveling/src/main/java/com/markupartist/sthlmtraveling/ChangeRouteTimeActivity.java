@@ -26,7 +26,7 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
-import android.support.v7.internal.view.ContextThemeWrapper;
+import android.support.v7.view.ContextThemeWrapper;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -207,8 +207,6 @@ public class ChangeRouteTimeActivity extends BaseActivity implements OnClickList
                 transportBus.setChecked(true);
             } else if (type.equals(TransportMode.METRO)) {
                 transportMetro.setChecked(true);
-//            } else if (type.equals(TransportMode.NAR)) {
-//                transportNar.setChecked(true);
             } else if (type.equals(TransportMode.TRAIN)) {
                 transportTrain.setChecked(true);
             } else if (type.equals(TransportMode.TRAM)) {

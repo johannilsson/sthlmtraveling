@@ -105,9 +105,16 @@ public class JourneyQuery implements Parcelable {
             return true;
         }
         if (transportModes != null) {
+            return !hasDefaultTransportModes();
+        }
+        return false;
+    }
+
+    public boolean hasDefaultTransportModes() {
+        if (transportModes != null) {
             List<String> defaults = Arrays.asList(TransportMode.METRO, TransportMode.BUS,
                     TransportMode.WAX, TransportMode.TRAIN, TransportMode.TRAM);
-            if (!transportModes.containsAll(defaults)) {
+            if (transportModes.containsAll(defaults)) {
                 return true;
             }
         }

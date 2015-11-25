@@ -16,6 +16,10 @@
 #   public *;
 #}
 
+# App models
+-keep class com.markupartist.sthlmtraveling.data.api.** { *; }
+-keep class com.markupartist.sthlmtraveling.data.models.** { *; }
+
 # Widespace
 #-keep class com.widespace.**
 -keep class com.widespace.internal.interfaces.** {
@@ -53,6 +57,23 @@
 -keep interface com.actionbarsherlock.** { *; }
 
 -keepattributes *Annotation*
+
+
+# gson
+-keepattributes Signature
+-keepattributes *Annotation*
+-keep class sun.misc.Unsafe { *; }
+
+
+# Retrofit and okio
+-keep class retrofit.** { *; }
+-keepclassmembernames interface * {
+    @retrofit.http.* <methods>;
+}
+-keepattributes Signature
+-keepattributes Exceptions
+-dontwarn okio.**
+-dontwarn retrofit.**
 
 # okhttp
 -dontwarn com.squareup.okhttp.**

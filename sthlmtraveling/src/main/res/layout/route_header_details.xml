@@ -17,7 +17,7 @@
 -->
 
 
-<FrameLayout
+<RelativeLayout
     android:id="@+id/header_details"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
@@ -33,13 +33,17 @@
         android:id="@+id/route_buy_ticket"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
+        android:orientation="horizontal"
         android:visibility="gone"
         tools:visibility="visible"
-        android:orientation="horizontal"
-        android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_gravity="end"
+        android:minHeight="54dp"
         >
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="32dp"
@@ -48,10 +52,10 @@
             android:gravity="center_vertical"
             android:paddingLeft="8dp"
             android:paddingRight="8dp"
-            android:text="@string/sms_ticket_label"
-            android:textColor="@color/primary_dark"
-            android:textSize="14sp"
             android:singleLine="true"
+            android:text="@string/sms_ticket_label"
+            android:textColor="@color/fare_text"
+            android:textSize="14sp"
             />
 
         <TextView
@@ -63,22 +67,23 @@
             android:gravity="center_vertical"
             android:paddingLeft="8dip"
             android:paddingRight="8dip"
-            android:textColor="#fff"
+            android:singleLine="true"
+            android:textColor="@color/fare_text"
             android:textSize="14sp"
             android:textStyle="bold"
-            android:singleLine="true"
             tools:text="AB"
             />
 
     </LinearLayout>
 
     <TextView
-        android:layout_gravity="start"
-        android:gravity="start"
         android:id="@+id/route_date_time"
         style="@style/Title"
-        android:layout_width="160dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:text="Time to station 45 min"
+        android:layout_centerVertical="true"
+        android:layout_toLeftOf="@id/route_buy_ticket"
+        android:layout_toStartOf="@id/route_buy_ticket"
+        tools:text="Time to station 45 min sdjk sdjks djks dk sldksld"
         />
-</FrameLayout>
+</RelativeLayout>

@@ -148,22 +148,22 @@ public class DeparturesActivity extends BaseFragmentActivity {
         metroArg.putInt(DepartureFragment.ARG_TRANSPORT_TYPE, TransportMode.METRO_INDEX);
 
         mPageAdapter.addPage(new PageFragmentAdapter.PageInfo(getString(R.string.departure_metro),
-                DepartureFragment.class, metroArg, R.drawable.tab_transport_metro_selected));
+                DepartureFragment.class, metroArg, R.drawable.ic_transport_metro_20dp));
 
         Bundle busArg = new Bundle();
         busArg.putInt(DepartureFragment.ARG_TRANSPORT_TYPE, TransportMode.BUS_INDEX);
         mPageAdapter.addPage(new PageFragmentAdapter.PageInfo(getString(R.string.departure_bus),
-                DepartureFragment.class, busArg, R.drawable.tab_transport_bus_selected));
+                DepartureFragment.class, busArg, R.drawable.ic_transport_bus_20dp));
 
         Bundle trainArg = new Bundle();
         trainArg.putInt(DepartureFragment.ARG_TRANSPORT_TYPE, TransportMode.TRAIN_INDEX);
         mPageAdapter.addPage(new PageFragmentAdapter.PageInfo(getString(R.string.departures),
-                DepartureFragment.class, trainArg, R.drawable.tab_transport_train_selected));
+                DepartureFragment.class, trainArg, R.drawable.ic_transport_train_20dp));
 
         Bundle tramArg = new Bundle();
-        tramArg.putInt(DepartureFragment.ARG_TRANSPORT_TYPE, TransportMode.LOKALBANA_INDEX);
+        tramArg.putInt(DepartureFragment.ARG_TRANSPORT_TYPE, TransportMode.TRAM_INDEX);
         mPageAdapter.addPage(new PageFragmentAdapter.PageInfo(getString(R.string.deviations_label),
-                DepartureFragment.class, tramArg, R.drawable.tab_transport_tram_car_selected));
+                DepartureFragment.class, tramArg, R.drawable.ic_transport_light_train_20dp));
 
         mPager = (ViewPager) findViewById(R.id.pager);
         mPager.setPageMarginDrawable(R.color.light_grey);
@@ -206,7 +206,7 @@ public class DeparturesActivity extends BaseFragmentActivity {
             case TransportMode.TRAIN_INDEX:
                 selectedItem = 2;
                 break;
-            case TransportMode.LOKALBANA_INDEX:
+            case TransportMode.TRAM_INDEX:
                 selectedItem = 3;
                 break;
         }

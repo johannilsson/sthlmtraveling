@@ -18,9 +18,10 @@
 <resources>
     <color name="background">#f9f9f9</color>
 
-    <color name="primary">#1976D2</color>
-    <color name="primary_light">#BBDEFB</color>
-    <color name="primary_dark">#1565C0</color>
+    <!--<color name="primary">#277B8D</color>-->
+    <color name="primary">#1d5771</color>
+    <color name="primary_dark">#1A4D64</color>
+    <color name="primary_light">#E0F7FA</color>
 
     <color name="primary_light_alpha">#CCBBDEFB</color>
 
@@ -29,15 +30,22 @@
     <!--<color name="primary_dark">#383549</color>-->
     <!--<color name="primary_light_alpha">#337c7c7c</color>-->
 
-    <color name="accent">#0b9444</color>
+    <color name="accent">#f8756b</color>
     <color name="accent_light">#69F0AE</color>
-    <color name="accent_dark">#00C853</color>
+    <color name="accent_dark">#ef2138</color>
 
-    <color name="tab_selected_strip">@color/primary_light</color>
+    <color name="tab_selected_strip">@color/accent</color>
 
-    <color name="icon_default">#ffffff</color>
+    <color name="fare">#f8756b</color>
+    <color name="fare_dark">#ef2138</color>
+    <color name="fare_text">#deffffff</color>
 
     <color name="transparent">#00000000</color>
+
+    <color name="icon_default">#8C000000</color>
+    <color name="icon_dark">#FF444444</color>
+    <color name="icon_default_inverse">#ffffff</color>
+    <color name="transport_icon_inactive">#26000000</color>
 
     <color name="body_text_1">#de000000</color>
     <color name="body_text_2">#8a000000</color>
@@ -47,11 +55,18 @@
     <color name="body_text_1_inverse">#deffffff</color>
     <color name="body_text_2_inverse">#8affffff</color>
 
+
+    <color name="traffic_status_good">#0ba862</color>
+    <color name="traffic_status_minor">#f4b400</color>
+    <color name="traffic_status_major">#ef2138</color>
+
+
+
     <color name="search_plate">#D1EEEE</color>
     <color name="plate_background">#2196F3</color>
     <color name="plate_extra_background">#e4e4e4</color>
     <color name="light_grey">#F0F0F0</color>
-    <color name="stroke">#807e77</color>
+    <color name="stroke">#969996</color>
     <color name="stroke_light">#ffffff</color>
     <color name="list_divider">#DBDBDB</color>
     <color name="header_background">#CFCFCF</color>
@@ -81,7 +96,9 @@
     <color name="traffic_type_b3">#00aeef</color>
     <color name="traffic_type_b4">#006991</color>
 
-    <color name="bus_red">#A4112C</color>
+    <color name="traffic_type_boat">#0089cf</color>
+
+    <color name="bus_red">#c8242b</color>
     <color name="bus_blue">#003E9A</color>
     <color name="train">#A4A5A7</color> <!-- Lokalbanor, Pendeltåg -->
     <color name="metro_blue">#0691d2</color>

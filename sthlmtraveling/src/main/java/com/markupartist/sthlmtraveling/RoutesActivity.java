@@ -30,35 +30,45 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.text.format.Time;
 import android.util.Log;
+import android.util.SparseBooleanArray;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager.BadTokenException;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.AbsListView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
-import android.widget.SimpleAdapter.ViewBinder;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.markupartist.sthlmtraveling.data.models.Plan;
+import com.markupartist.sthlmtraveling.data.models.Route;
 import com.markupartist.sthlmtraveling.provider.JourneysProvider.Journey.Journeys;
 import com.markupartist.sthlmtraveling.provider.planner.JourneyQuery;
 import com.markupartist.sthlmtraveling.provider.planner.Planner;
 import com.markupartist.sthlmtraveling.provider.planner.Planner.BadResponse;
 import com.markupartist.sthlmtraveling.provider.planner.Planner.Response;
 import com.markupartist.sthlmtraveling.provider.planner.Planner.Trip2;
+import com.markupartist.sthlmtraveling.provider.routing.Router;
 import com.markupartist.sthlmtraveling.provider.site.Site;
 import com.markupartist.sthlmtraveling.ui.view.SmsTicketDialog;
 import com.markupartist.sthlmtraveling.ui.view.TripView;
 import com.markupartist.sthlmtraveling.utils.Analytics;
+import com.markupartist.sthlmtraveling.utils.DateTimeUtil;
 import com.markupartist.sthlmtraveling.utils.LocationManager;
 import com.markupartist.sthlmtraveling.utils.ViewHelper;
 
@@ -69,9 +79,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
 
 /**
  * Routes activity
@@ -94,49 +102,15 @@ public class RoutesActivity extends BaseListActivity implements
      */
     static final String EXTRA_JOURNEY_QUERY = "sthlmtraveling.intent.action.JOURNEY_QUERY";
 
-    /**
-     * The trip.
-     */
-    @Deprecated
-    static final String EXTRA_TRIP = "com.markupartist.sthlmtraveling.trip";
-
-    /**
-     * The start point for the search.
-     */
-    @Deprecated
-    static final String EXTRA_START_POINT = "com.markupartist.sthlmtraveling.start_point";
-    /**
-     * The end point for the search.
-     */
-    @Deprecated
-    static final String EXTRA_END_POINT = "com.markupartist.sthlmtraveling.end_point";
-    /**
-     * Departure time in RFC 2445 format.
-     */
-    static final String EXTRA_TIME = "com.markupartist.sthlmtraveling.time";
-
-    /**
-     * Indicates if the time is the departure or arrival time.
-     */
-    static final String EXTRA_IS_TIME_DEPARTURE = "com.markupartist.sthlmtraveling.is_time_departure";
-
-
     private final String TAG = "RoutesActivity";
 
     private static final int DIALOG_ILLEGAL_PARAMETERS = 0;
-    private static final int DIALOG_SEARCH_ROUTES_NETWORK_PROBLEM = 1;
     private static final int DIALOG_GET_EARLIER_ROUTES_NETWORK_PROBLEM = 2;
     private static final int DIALOG_GET_LATER_ROUTES_NETWORK_PROBLEM = 3;
     private static final int DIALOG_GET_ROUTES_SESSION_TIMEOUT = 4;
     private static final int DIALOG_SEARCH_ROUTES_NO_RESULT = 5;
-    private static final int DIALOG_START_POINT_ALTERNATIVES = 6;
-    private static final int DIALOG_END_POINT_ALTERNATIVES = 7;
     private static final int DIALOG_SEARCH_ROUTES_ERROR = 8;
     private static final int DIALOG_BUY_SMS_TICKET = 9;
-
-    private static final int ADAPTER_EARLIER = 0;
-    private static final int ADAPTER_ROUTES = 1;
-    private static final int ADAPTER_LATER = 2;
 
     protected static final int REQUEST_CODE_CHANGE_TIME = 0;
     protected static final int REQUEST_CODE_POINT_ON_MAP_START = 1;
@@ -158,14 +132,11 @@ public class RoutesActivity extends BaseListActivity implements
     private static final String STATE_PLANNER_RESPONSE = "STATE_PLANNER_RESPONSE";
 
     private RoutesAdapter mRouteAdapter;
-    private MultipleListAdapter mMultipleListAdapter;
-    private ArrayList<HashMap<String, String>> mDateAdapterData;
 
     private LocationManager mMyLocationManager;
     private SearchRoutesTask mSearchRoutesTask;
     private GetEarlierRoutesTask mGetEarlierRoutesTask;
     private GetLaterRoutesTask mGetLaterRoutesTask;
-    private Toast mToast;
 
     private Response mPlannerResponse;
     private JourneyQuery mJourneyQuery;
@@ -182,6 +153,8 @@ public class RoutesActivity extends BaseListActivity implements
     private int mActionBarAutoHideSignal = 0;
     private boolean mActionBarShown = true;
     private View mHeaderbarView;
+    private Toast mToast;
+    private View mLoadingRoutesViews;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -222,8 +195,8 @@ public class RoutesActivity extends BaseListActivity implements
         ViewHelper.tintIcon(mTimeAndDate.getCompoundDrawables()[0],
                 getResources().getColor(R.color.primary_light));
 
-        View headerView = getLayoutInflater().inflate(R.layout.empty, null);
-        getListView().addHeaderView(headerView, null, false);
+//        View headerView = getLayoutInflater().inflate(R.layout.empty, null);
+//        getListView().addHeaderView(headerView, null, false);
         getListView().setHeaderDividersEnabled(false);
 
         getListView().setVerticalFadingEdgeEnabled(false);
@@ -232,8 +205,45 @@ public class RoutesActivity extends BaseListActivity implements
         initActionBar();
         updateStartAndEndPointViews(mJourneyQuery);
         updateJourneyHistory();
+        initListView();
         initRoutes(mJourneyQuery);
         initAutoHideHeader(getListView());
+    }
+
+    public void updateRouteAlternatives(Plan plan) {
+        View routeAlternativesView = LayoutInflater.from(RoutesActivity.this).inflate(R.layout.route_alternatives, null, false);
+
+        TextView footDurationText = (TextView) routeAlternativesView.findViewById(R.id.route_foot_description);
+        TextView bikeDurationText = (TextView) routeAlternativesView.findViewById(R.id.route_bike_description);
+        TextView carDurationText = (TextView) routeAlternativesView.findViewById(R.id.route_car_description);
+
+        mLoadingRoutesViews = routeAlternativesView.findViewById(R.id.loading_routes);
+        showProgress();
+
+        ImageView footIcon = (ImageView) routeAlternativesView.findViewById(R.id.route_foot_icon);
+        ImageView bikeIcon = (ImageView) routeAlternativesView.findViewById(R.id.route_bike_icon);
+        ImageView carIcon = (ImageView) routeAlternativesView.findViewById(R.id.route_car_icon);
+        int iconColor = ContextCompat.getColor(this, R.color.icon_default);
+        footIcon.setImageDrawable(ViewHelper.getDrawableColorInt(this, R.drawable.ic_transport_walk_20dp, iconColor));
+        bikeIcon.setImageDrawable(ViewHelper.getDrawableColorInt(this, R.drawable.ic_transport_bike_20dp, iconColor));
+        carIcon.setImageDrawable(ViewHelper.getDrawableColorInt(this, R.drawable.ic_transport_car_20dp, iconColor));
+
+        for (Route route : plan.getRoutes()) {
+            switch (route.mode) {
+                case "foot":
+                    footDurationText.setText(DateTimeUtil.formatDetailedDuration(getResources(), route.legs.get(0).duration * 1000));
+                    break;
+                case "bike":
+                    bikeDurationText.setText(DateTimeUtil.formatDetailedDuration(getResources(), route.legs.get(0).duration * 1000));
+                    break;
+                case "car":
+                    carDurationText.setText(DateTimeUtil.formatDetailedDuration(getResources(), route.legs.get(0).duration * 1000));
+                    break;
+            }
+        }
+
+        getListView().addHeaderView(routeAlternativesView, null, false);
+        onHasData();
     }
 
     @Override
@@ -348,8 +358,8 @@ public class RoutesActivity extends BaseListActivity implements
      * @param journeyQuery The journey query
      */
     private void initRoutes(JourneyQuery journeyQuery) {
-//        final Planner.Response savedResponse = (Planner.Response) getLastNonConfigurationInstance();
         if (mPlannerResponse != null) {
+            fetchRouteAlternatives(mJourneyQuery);
             onSearchRoutesResult(mPlannerResponse);
         } else {
             if (journeyQuery.origin.isMyLocation()
@@ -357,14 +367,15 @@ public class RoutesActivity extends BaseListActivity implements
                 mMyLocationManager.requestLocation();
             } else {
                 mSearchRoutesTask = new SearchRoutesTask();
-                //mSearchRoutesTask.setOnSearchRoutesResultListener(this);
                 mSearchRoutesTask.execute(mJourneyQuery);
+
+                fetchRouteAlternatives(mJourneyQuery);
             }
         }
     }
 
     @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         restoreLocalState(savedInstanceState);
         mSavedState = null;
@@ -589,54 +600,10 @@ public class RoutesActivity extends BaseListActivity implements
         }
     }
 
-    private void createSections() {
-        SimpleAdapter earlierAdapter = createEarlierLaterAdapter(R.drawable.arrow_up_float);
-        SimpleAdapter laterAdapter = createEarlierLaterAdapter(R.drawable.arrow_down_float);
-
-        mMultipleListAdapter = new MultipleListAdapter();
-        mMultipleListAdapter.addAdapter(ADAPTER_EARLIER, earlierAdapter);
-        mMultipleListAdapter.addAdapter(ADAPTER_ROUTES, mRouteAdapter);
-        mMultipleListAdapter.addAdapter(ADAPTER_LATER, laterAdapter);
-
-        setListAdapter(mMultipleListAdapter);
-
-        ViewHelper.crossfade(mEmptyView, getListView());
-    }
-
-    /**
-     * Helper to create earlier or later adapter.
-     *
-     * @param resource the image resource to show in the list
-     * @return a prepared adapter
-     */
-    private SimpleAdapter createEarlierLaterAdapter(int resource) {
-        ArrayList<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-        Map<String, Object> map = new HashMap<String, Object>();
-        map.put("image", resource);
-        list.add(map);
-
-        SimpleAdapter adapter = new SimpleAdapter(this, list,
-                R.layout.earlier_later_routes_row,
-                new String[]{"image"},
-                new int[]{
-                        R.id.earlier_later,
-                }
-        );
-
-        adapter.setViewBinder(new ViewBinder() {
-            @Override
-            public boolean setViewValue(View view, Object data,
-                                        String textRepresentation) {
-                switch (view.getId()) {
-                    case R.id.earlier_later:
-                        ImageView imageView = (ImageView) view;
-                        imageView.setImageResource((Integer) data);
-                        return true;
-                }
-                return false;
-            }
-        });
-        return adapter;
+    private void initListView() {
+        mRouteAdapter = new RoutesAdapter(this, new ArrayList<Trip2>());
+        setListAdapter(mRouteAdapter);
+        getListView().setHeaderDividersEnabled(false);
     }
 
     @Override
@@ -646,21 +613,25 @@ public class RoutesActivity extends BaseListActivity implements
         int headerViewsCount = getListView().getHeaderViewsCount();
         position -= headerViewsCount;
 
-        int adapterId = mMultipleListAdapter.getAdapterId(position);
-        switch (adapterId) {
-            case ADAPTER_EARLIER:
+        int viewType = mRouteAdapter.getItemViewType(position);
+        switch (viewType) {
+            case RoutesAdapter.TYPE_GET_EARLIER:
                 mGetEarlierRoutesTask = new GetEarlierRoutesTask();
                 mGetEarlierRoutesTask.execute(mJourneyQuery);
                 break;
-            case ADAPTER_LATER:
+            case RoutesAdapter.TYPE_GET_LATER:
                 mGetLaterRoutesTask = new GetLaterRoutesTask();
                 mGetLaterRoutesTask.execute(mJourneyQuery);
                 break;
-            case ADAPTER_ROUTES:
-                Trip2 trip = (Trip2) mMultipleListAdapter.getItem(position);
+            case RoutesAdapter.TYPE_ROUTES:
+                Trip2 trip = mRouteAdapter.getTripItem(position);
                 findRouteDetails(trip);
                 break;
         }
+    }
+
+    public void onHasData() {
+        ViewHelper.crossfade(mEmptyView, getListView());
     }
 
     public void onSearchRoutesResult(Planner.Response response) {
@@ -670,37 +641,10 @@ public class RoutesActivity extends BaseListActivity implements
         mJourneyQuery.hasPromotions = response.hasPromotions;
         mJourneyQuery.promotionNetwork = response.promotionNetwork;
 
-        if (mRouteAdapter == null) {
-            mRouteAdapter = new RoutesAdapter(this, response.trips);
-            createSections();
-        } else {
-            // TODO: Scroll and animate to the new result.
-            mRouteAdapter.refill(response.trips);
-            mMultipleListAdapter.notifyDataSetChanged();
-        }
-
+        mRouteAdapter.refill(response.trips);
+        onHasData();
         supportInvalidateOptionsMenu();
     }
-
-    /*
-    public void onSiteAlternatives(Trip trip) {
-        // TODO: Handle alternatives...
-
-        if (trip.getStartPoint().getSiteId() == 0
-                && trip.getStartPointAlternatives().size() > 1) {
-            Log.d(TAG, "show start alternatives...");
-            showDialog(DIALOG_START_POINT_ALTERNATIVES);
-        } else if (trip.getEndPoint().getSiteId() == 0
-                && trip.getEndPointAlternatives().size() > 1) {
-            Log.d(TAG, "show end alternatives...");
-            showDialog(DIALOG_END_POINT_ALTERNATIVES);
-        } else {
-            mSearchRoutesTask = new SearchRoutesTask();
-            mSearchRoutesTask.execute(mTrip);
-        }
-
-    }
-    */
 
     @Override
     public void onMyLocationFound(Location location) {
@@ -744,6 +688,21 @@ public class RoutesActivity extends BaseListActivity implements
         // TODO: Maybe need to set start and end points to the trip again here?
         mSearchRoutesTask = new SearchRoutesTask();
         mSearchRoutesTask.execute(mJourneyQuery);
+
+        fetchRouteAlternatives(mJourneyQuery);
+    }
+
+    void fetchRouteAlternatives(JourneyQuery journeyQuery) {
+        MyApplication app = MyApplication.get(this);
+        Router router = new Router(app.getApiService());
+        router.plan(journeyQuery, new Router.Callback() {
+            @Override
+            public void onPlan(Plan plan) {
+                if (plan != null) {
+                    updateRouteAlternatives(plan);
+                }
+            }
+        });
     }
 
     /**
@@ -834,11 +793,6 @@ public class RoutesActivity extends BaseListActivity implements
         mJourneyQuery.origin = tmpStartPoint;
         mJourneyQuery.destination = tmpEndPoint;
 
-        /*
-         * Note: To launch a new intent won't work because sl.se would
-         * need to have a new ident generated to be able to search for
-         * route details in the next step.
-         */
         mSearchRoutesTask = new SearchRoutesTask();
         mSearchRoutesTask.execute(mJourneyQuery);
 
@@ -856,14 +810,6 @@ public class RoutesActivity extends BaseListActivity implements
                         .setCancelable(true)
                         .setNeutralButton(getText(android.R.string.ok), null)
                         .create();
-            case DIALOG_SEARCH_ROUTES_NETWORK_PROBLEM:
-                return DialogHelper.createNetworkProblemDialog(this, new OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        mSearchRoutesTask = new SearchRoutesTask();
-                        mSearchRoutesTask.execute(mJourneyQuery);
-                    }
-                });
             case DIALOG_GET_EARLIER_ROUTES_NETWORK_PROBLEM:
                 return DialogHelper.createNetworkProblemDialog(this, new OnClickListener() {
                     @Override
@@ -899,61 +845,6 @@ public class RoutesActivity extends BaseListActivity implements
                         })
                         .setNegativeButton(getText(R.string.cancel), null)
                         .create();
-            case DIALOG_SEARCH_ROUTES_ERROR:
-
-                return new AlertDialog.Builder(this)
-                        .setTitle(R.string.planner_error_title)
-                        .setMessage(Planner.plannerErrorCodeToStringRes(mRouteErrorCode))
-                        .setPositiveButton(getText(R.string.back), new OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                finish();
-                            }
-                        })
-                        .setNegativeButton(getText(R.string.cancel), null)
-                        .create();
-            case DIALOG_START_POINT_ALTERNATIVES:
-            /*
-            ArrayAdapter<Site> startAlternativesAdapter =
-                new ArrayAdapter<Site>(this, android.R.layout.simple_dropdown_item_1line,
-                        mTrip.getStartPointAlternatives());
-            return new AlertDialog.Builder(this)
-                .setTitle(R.string.did_you_mean)
-                .setAdapter(startAlternativesAdapter, new OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Site site = mTrip.getStartPointAlternatives().get(which);
-                        Stop startPoint = mTrip.getStartPoint();
-                        startPoint.setSiteId(site.getId());
-                        startPoint.setName(site.getName());
-
-                        onSiteAlternatives(mTrip);
-                    }
-                })
-                .create();
-            */
-                break;
-            case DIALOG_END_POINT_ALTERNATIVES:
-            /*
-            ArrayAdapter<Site> endAlternativesAdapter =
-                new ArrayAdapter<Site>(this, android.R.layout.simple_dropdown_item_1line,
-                        mTrip.getEndPointAlternatives());
-            return new AlertDialog.Builder(this)
-                .setTitle(R.string.did_you_mean)
-                .setAdapter(endAlternativesAdapter, new OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Site site = mTrip.getEndPointAlternatives().get(which);
-                        Stop endPoint = mTrip.getEndPoint();
-                        endPoint.setSiteId(site.getId());
-                        endPoint.setName(site.getName());
-
-                        onSiteAlternatives(mTrip);
-                    }
-                })
-                .create();
-            */
-                break;
             case DIALOG_BUY_SMS_TICKET:
                 return SmsTicketDialog.createDialog(this, mPlannerResponse.getTariffZones());
         }
@@ -1029,63 +920,22 @@ public class RoutesActivity extends BaseListActivity implements
         }
     }
 
-
-    private class RoutesAdapter extends BaseAdapter {
-
-        private Context mContext;
-        private ArrayList<Trip2> mTrips;
-
-        public RoutesAdapter(Context context, ArrayList<Trip2> trips) {
-            mContext = context;
-            mTrips = trips;
-        }
-
-        public void refill(ArrayList<Trip2> trips) {
-            mTrips = trips;
-        }
-
-        @Override
-        public int getCount() {
-            return mTrips.size();
-        }
-
-        @Override
-        public Object getItem(int position) {
-            return mTrips.get(position);
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            if (!isEmpty()) {
-                Trip2 trip = mTrips.get(position);
-                TripView v = new TripView(mContext);
-                if (position == getCount() - 1) {
-                    v.showDivider(false);
-                }
-                v.setTrip(trip);
-                return v;
-            }
-            return new View(mContext);
-        }
-    }
-
     /**
      * Show progress dialog.
      */
     private void showProgress() {
-        setSupportProgressBarIndeterminateVisibility(true);
+        if (mLoadingRoutesViews != null && mRouteAdapter.getDataItemCount() == 0) {
+            mLoadingRoutesViews.setVisibility(View.VISIBLE);
+        }
     }
 
     /**
      * Dismiss the progress dialog.
      */
     private void dismissProgress() {
-        setSupportProgressBarIndeterminateVisibility(false);
+        if (mLoadingRoutesViews != null) {
+            mLoadingRoutesViews.setVisibility(View.GONE);
+        }
     }
 
     protected void initAutoHideHeader(ListView listView) {
@@ -1212,11 +1062,7 @@ public class RoutesActivity extends BaseListActivity implements
             } else if (!mWasSuccess) {
                 if (TextUtils.isEmpty(mErrorCode)) {
                     mEmptyView.setVisibility(View.GONE);
-                    try {
-                        showDialog(DIALOG_SEARCH_ROUTES_NETWORK_PROBLEM);
-                    } catch (BadTokenException e) {
-                        Log.w(TAG, "Caught BadTokenException when trying to show network error dialog.");
-                    }
+                    showErrorForPublicTransport(getString(R.string.network_problem_message));
                 } else {
                     mEmptyView.setVisibility(View.GONE);
                     mRouteErrorCode = mErrorCode;
@@ -1226,9 +1072,7 @@ public class RoutesActivity extends BaseListActivity implements
                         Log.w(TAG, "Caught BadTokenException when trying to show routes error dialog.");
                     }
                 }
-            }/* else if (result.hasAlternatives()) {
-                onSiteAlternatives(result);
-            }*/ else {
+            } else {
                 mEmptyView.setVisibility(View.GONE);
                 try {
                     showDialog(DIALOG_SEARCH_ROUTES_NO_RESULT);
@@ -1237,6 +1081,19 @@ public class RoutesActivity extends BaseListActivity implements
                 }
             }
         }
+    }
+
+    public void showErrorForPublicTransport(String message) {
+        Snackbar.make(getListView(), message, Snackbar.LENGTH_INDEFINITE)
+                .setAction(R.string.retry, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // Route this through something that can check what failed.
+                        mSearchRoutesTask = new SearchRoutesTask();
+                        mSearchRoutesTask.execute(mJourneyQuery);
+                    }
+                })
+                .show();
     }
 
     /**
@@ -1280,7 +1137,7 @@ public class RoutesActivity extends BaseListActivity implements
                 } else {
                     mRouteErrorCode = mErrorCode;
                     try {
-                        showDialog(DIALOG_SEARCH_ROUTES_ERROR);
+                        showErrorForPublicTransport(getString(Planner.plannerErrorCodeToStringRes(mRouteErrorCode)));
                     } catch (BadTokenException e) {
                         Log.w(TAG, "Caught BadTokenException when trying to show routes error dialog.");
                     }
@@ -1336,7 +1193,7 @@ public class RoutesActivity extends BaseListActivity implements
                 } else {
                     mRouteErrorCode = mErrorCode;
                     try {
-                        showDialog(DIALOG_SEARCH_ROUTES_ERROR);
+                        showErrorForPublicTransport(getString(Planner.plannerErrorCodeToStringRes(mRouteErrorCode)));
                     } catch (BadTokenException e) {
                         Log.w(TAG, "Caught BadTokenException when trying to show routes error dialog.");
                     }
@@ -1462,4 +1319,155 @@ public class RoutesActivity extends BaseListActivity implements
 
     }
 
+    private static class RoutesAdapter extends BaseAdapter {
+
+        public static final int TYPE_GET_EARLIER = 0;
+        public static final int TYPE_GET_LATER = 1;
+        public static final int TYPE_ROUTES = 2;
+
+        private final LayoutInflater mInflater;
+        private final Context mContext;
+        private ArrayList<Trip2> mTrips;
+        private SparseBooleanArray animatedItems = new SparseBooleanArray();
+
+        public RoutesAdapter(Context context, ArrayList<Trip2> trips) {
+            mContext = context;
+            mInflater = LayoutInflater.from(context);
+            mTrips = trips;
+        }
+
+        public void refill(ArrayList<Trip2> trips) {
+            mTrips = trips;
+            animatedItems.clear();
+            notifyDataSetChanged();
+        }
+
+        public int getDataItemCount() {
+            return mTrips.size();
+        }
+
+        @Override
+        public int getItemViewType(int position) {
+            if (position == 0) {
+                return TYPE_GET_EARLIER;
+            }
+            if (position - 1 < getDataItemCount() && getDataItemCount() > 0) {
+                return TYPE_ROUTES;
+            }
+            return TYPE_GET_LATER;
+        }
+
+        @Override
+        public int getViewTypeCount() {
+            return 3;
+        }
+
+        @Override
+        public int getCount() {
+            if (getDataItemCount() > 0) {
+                // number of items plus others.
+                return getDataItemCount() + 2;
+            }
+            return 0;
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return null;
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public boolean hasStableIds() {
+            return false;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+
+            int viewType = getItemViewType(position);
+            switch (viewType) {
+                case TYPE_GET_EARLIER:
+                    convertView = createViewForEarlierLater(position, convertView, parent);
+                    break;
+                case TYPE_GET_LATER:
+                    convertView = createViewForEarlierLater(position, convertView, parent);
+                    break;
+                case TYPE_ROUTES:
+                    convertView = createViewForRoute(position, convertView, parent);
+
+                    if (!animatedItems.get(position, false)) {
+                        Animation animation = AnimationUtils.loadAnimation(mContext, R.anim.bottom_to_top);
+                        convertView.startAnimation(animation);
+                        animatedItems.put(position, true);
+                    }
+                    break;
+            }
+
+
+            return convertView;
+        }
+
+        View createViewForEarlierLater(int position, View convertView, ViewGroup parent) {
+            NextPreviousViewHolder holder;
+            if (convertView == null) {
+                convertView = mInflater.inflate(R.layout.earlier_later_routes_row, parent, false);
+                holder = new NextPreviousViewHolder(convertView);
+                convertView.setTag(holder);
+            } else {
+                holder = (NextPreviousViewHolder) convertView.getTag();
+            }
+            // The first one, need to be adapted.
+            if (position == 0) {
+                holder.icon.setImageResource(R.drawable.ic_expand_less_grey600_24dp);
+            } else {
+                holder.icon.setImageResource(R.drawable.ic_expand_more_grey600_24dp);
+            }
+            return convertView;
+        }
+
+        View createViewForRoute(int position, View convertView, ViewGroup parent) {
+            RouteViewHolder holder;
+            if (convertView == null) {
+                convertView = new TripView(mContext);
+                holder = new RouteViewHolder(convertView);
+                convertView.setTag(holder);
+            } else {
+                holder = (RouteViewHolder) convertView.getTag();
+            }
+
+            // convert postion to a routes position.
+            position = position - 1;
+
+            Trip2 trip = mTrips.get(position);
+            holder.bindTo(trip);
+            return convertView;
+        }
+
+        public Trip2 getTripItem(int position) {
+            return mTrips.get(position - 1);
+        }
+
+        public static class NextPreviousViewHolder {
+            ImageView icon;
+            public NextPreviousViewHolder(View view) {
+                icon = (ImageView) view.findViewById(R.id.earlier_later);
+            }
+        }
+
+        public static class RouteViewHolder {
+            TripView tripView;
+            public RouteViewHolder(View view) {
+                tripView = (TripView) view;
+            }
+
+            public void bindTo(Trip2 trip) {
+                tripView.setTrip(trip);
+            }
+        }
+    }
 }

@@ -29,6 +29,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.text.BidiFormatter;
 import android.support.v4.util.Pair;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.app.ActionBar;
 import android.text.format.DateFormat;
 import android.util.Log;
@@ -62,6 +63,7 @@ import com.markupartist.sthlmtraveling.ui.view.SmsTicketDialog;
 import com.markupartist.sthlmtraveling.utils.AdProxy;
 import com.markupartist.sthlmtraveling.utils.Analytics;
 import com.markupartist.sthlmtraveling.utils.DateTimeUtil;
+import com.markupartist.sthlmtraveling.utils.RtlUtils;
 
 import org.json.JSONException;
 
@@ -511,7 +513,10 @@ public class RouteDetailActivity extends BaseListActivity {
             TextView descriptionView = (TextView) descriptionLayout.findViewById(R.id.trip_description);
             descriptionView.setText(createDescription(subTrip));
             ImageView descriptionIcon = (ImageView) descriptionLayout.findViewById(R.id.trip_description_icon);
-            descriptionIcon.setImageResource(subTrip.transport.getImageResource());
+            descriptionIcon.setImageDrawable(subTrip.transport.getDrawable(getContext()));
+            if (RtlUtils.isRtl(Locale.getDefault())) {
+                ViewCompat.setScaleX(descriptionIcon, -1f);
+            }
             //descriptionView.setCompoundDrawablesWithIntrinsicBounds(subTrip.transport.getImageResource(), 0, 0, 0);
 
             inflateMessages(subTrip, convertView);

@@ -34,6 +34,7 @@ import com.markupartist.sthlmtraveling.provider.deviation.DeviationStore;
 import com.markupartist.sthlmtraveling.provider.deviation.DeviationStore.TrafficEvent;
 import com.markupartist.sthlmtraveling.provider.deviation.DeviationStore.TrafficStatus;
 import com.markupartist.sthlmtraveling.provider.deviation.DeviationStore.TrafficType;
+import com.markupartist.sthlmtraveling.utils.ViewHelper;
 
 import java.io.IOException;
 
@@ -126,10 +127,21 @@ public class TrafficStatusFragment extends BaseFragment {
         if (previousEvent != null && te.status == previousEvent.status) {
             status.setVisibility(View.GONE);
         } else {
-            status.setImageResource(getImageResourceForStatus(te.status));
+            status.setImageDrawable(ViewHelper.getDrawableColorRes(getActivity(),
+                    getImageResourceForStatus(te.status), getColorForStatus(te.status)));
         }
 
         return v;
+    }
+
+    private int getColorForStatus(int status) {
+        switch (status) {
+            case 1:
+                return R.color.traffic_status_good;
+            case 2:
+                return R.color.traffic_status_minor;
+        }
+        return R.color.traffic_status_major;
     }
 
     private int getStringResourceForTransport(String transport) {
@@ -148,30 +160,14 @@ public class TrafficStatusFragment extends BaseFragment {
         }
     }
 
-    private int getImageResourceForTransport(String transport) {
-        if ("MET".equals(transport)) {
-            return R.drawable.transport_metro;
-        } else if ("TRN".equals(transport)) {
-            return R.drawable.transport_train;
-        } else if ("TRM".equals(transport)) {
-            return R.drawable.transport_tram_car;
-        } else if ("TRC".equals(transport)) {
-            return R.drawable.transport_tram_car;
-        } else if ("SHP".equals(transport)) {
-            return R.drawable.transport_boat;
-        } else {
-            return R.drawable.transport_bus;
-        }
-    }
-
     private int getImageResourceForStatus(int status) {
         switch (status) {
         case 1:
-            return R.drawable.traffic_status_good;
+            return R.drawable.ic_access_time_grey600_24dp;
         case 2:
-            return R.drawable.traffic_status_minor;
+            return R.drawable.ic_access_time_grey600_24dp;
         }
-        return R.drawable.traffic_status_major;
+        return R.drawable.ic_access_time_grey600_24dp;
     }
 
     /**

@@ -17,6 +17,7 @@
 package com.markupartist.sthlmtraveling.ui.view;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.support.annotation.IdRes;
 import android.support.v4.view.PagerAdapter;
@@ -32,6 +33,8 @@ import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.markupartist.sthlmtraveling.utils.ViewHelper;
 
 /**
  * To be used with ViewPager to provide a tab indicator component which give constant feedback as to
@@ -234,6 +237,7 @@ public class SlidingTabLayout extends HorizontalScrollView {
                 tabTitleView.setText(adapter.getPageTitle(i));
             } else if (tabIconView != null) {
                 tabIconView.setImageResource(((TabIconProvider)adapter).getIcon(i));
+                ViewHelper.tint(tabIconView, Color.WHITE); // TODO: Hardcoded color
                 tabIconView.setAlpha(IMAGE_ALPHA_NOT_SELECTED);
             }
 

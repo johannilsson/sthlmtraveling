@@ -677,21 +677,24 @@ public class PlannerFragment extends BaseListFragment implements LoaderManager.L
         }
 
         private View inflateView(View v, JourneyQuery journeyQuery, Cursor c) {
-            TextView originText = (TextView) v
-                    .findViewById(R.id.favorite_start_point);
+            String originStr;
+            String destinationStr;
             if (journeyQuery.origin.isMyLocation()) {
-                originText.setText(getString(R.string.my_location));
+                originStr = getString(R.string.my_location);
             } else {
-                originText.setText(journeyQuery.origin.getName());
+                originStr = journeyQuery.origin.getName();
+            }
+            if (journeyQuery.destination.isMyLocation()) {
+                destinationStr = getString(R.string.my_location);
+            } else {
+                destinationStr = journeyQuery.destination.getName();
             }
 
-            TextView destinationText = (TextView) v
-                    .findViewById(R.id.favorite_end_point);
-            if (journeyQuery.destination.isMyLocation()) {
-                destinationText.setText(getString(R.string.my_location));
-            } else {
-                destinationText.setText(journeyQuery.destination.getName());
-            }
+            TextView journeyDescriptionText = (TextView) v.findViewById(R.id.favorite_journey_title);
+            journeyDescriptionText.setText(originStr);
+
+            TextView journeyToText = (TextView) v.findViewById(R.id.favorite_to);
+            journeyToText.setText(destinationStr);
 
             TextView viaText = (TextView) v.findViewById(R.id.favorite_via_point);
             if (journeyQuery.hasVia()) {
@@ -739,57 +742,41 @@ public class PlannerFragment extends BaseListFragment implements LoaderManager.L
         }
 
         private void addTransportModeViews(JourneyQuery journeyQuery, View v) {
-            // this looks crazy! But we need to reset all transport views so
-            // they don't get recycled and then enable them again if they're
-            // selected for the journey.
-            ImageView metroView = (ImageView) v
-                    .findViewById(R.id.favorite_transport_mode_metro);
-            metroView.setVisibility(View.GONE);
-            ImageView busView = (ImageView) v
-                    .findViewById(R.id.favorite_transport_mode_bus);
-            busView.setVisibility(View.GONE);
-            ImageView trainView = (ImageView) v
-                    .findViewById(R.id.favorite_transport_mode_train);
-            trainView.setVisibility(View.GONE);
-            ImageView tramView = (ImageView) v
-                    .findViewById(R.id.favorite_transport_mode_tram);
-            tramView.setVisibility(View.GONE);
-            ImageView waxView = (ImageView) v
-                    .findViewById(R.id.favorite_transport_mode_wax);
-            waxView.setVisibility(View.GONE);
-            ImageView narView = (ImageView) v
-                    .findViewById(R.id.favorite_transport_mode_nar);
-            narView.setVisibility(View.GONE);
+            ImageView metroView = (ImageView) v.findViewById(R.id.favorite_transport_mode_metro);
+            ImageView busView = (ImageView) v.findViewById(R.id.favorite_transport_mode_bus);
+            ImageView trainView = (ImageView) v.findViewById(R.id.favorite_transport_mode_train);
+            ImageView tramView = (ImageView) v.findViewById(R.id.favorite_transport_mode_tram);
+            ImageView waxView = (ImageView) v.findViewById(R.id.favorite_transport_mode_wax);
+
+            int inactiveColor = getResources().getColor(R.color.transport_icon_inactive);
+            int activeColor = getResources().getColor(R.color.icon_default);
+
+            ViewHelper.tint(metroView, inactiveColor);
+            ViewHelper.tint(busView, inactiveColor);
+            ViewHelper.tint(trainView, inactiveColor);
+            ViewHelper.tint(tramView, inactiveColor);
+            ViewHelper.tint(waxView, inactiveColor);
 
             if (journeyQuery.transportModes != null) {
                 for (String transportMode : journeyQuery.transportModes) {
                     switch (transportMode) {
                         case TransportMode.METRO:
-                            metroView.setVisibility(View.VISIBLE);
+                            ViewHelper.tint(metroView, activeColor);
                             break;
                         case TransportMode.BUS:
-                            busView.setVisibility(View.VISIBLE);
+                            ViewHelper.tint(busView, activeColor);
                             break;
                         case TransportMode.TRAIN:
-                            trainView.setVisibility(View.VISIBLE);
+                            ViewHelper.tint(trainView, activeColor);
                             break;
                         case TransportMode.TRAM:
-                            tramView.setVisibility(View.VISIBLE);
+                            ViewHelper.tint(tramView, activeColor);
                             break;
                         case TransportMode.WAX:
-                            waxView.setVisibility(View.VISIBLE);
-                            break;
-                        case TransportMode.NAR:
-                            narView.setVisibility(View.VISIBLE);
+                            ViewHelper.tint(waxView, activeColor);
                             break;
                     }
                 }
-            } else {
-                metroView.setVisibility(View.VISIBLE);
-                busView.setVisibility(View.VISIBLE);
-                trainView.setVisibility(View.VISIBLE);
-                tramView.setVisibility(View.VISIBLE);
-                waxView.setVisibility(View.VISIBLE);
             }
         }
     }

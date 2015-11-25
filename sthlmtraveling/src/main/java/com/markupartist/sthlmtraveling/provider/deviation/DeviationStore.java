@@ -5,7 +5,7 @@ import android.text.format.Time;
 import android.util.Log;
 import android.util.TimeFormatException;
 
-import com.markupartist.sthlmtraveling.utils.HttpHelper;
+import com.markupartist.sthlmtraveling.data.misc.HttpHelper;
 import com.squareup.okhttp.Response;
 
 import org.json.JSONArray;

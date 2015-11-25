@@ -5,7 +5,7 @@ import android.location.Location;
 import android.support.v4.util.Pair;
 import android.util.Log;
 
-import com.markupartist.sthlmtraveling.utils.HttpHelper;
+import com.markupartist.sthlmtraveling.data.misc.HttpHelper;
 import com.markupartist.sthlmtraveling.utils.LocationUtils;
 import com.squareup.okhttp.Response;
 
@@ -49,7 +49,8 @@ public class SitesStore {
         String onlyStationsParam = onlyStations ? "true" : "false";
         String url = apiEndpoint2() + "v1/site/"
                 + "?q=" + URLEncoder.encode(name, "UTF-8")
-                + "&onlyStations=" + onlyStationsParam;
+                + "&onlyStations=" + onlyStationsParam
+                + "&addLocation=true";
         Response response = httpHelper.getClient().newCall(
                 httpHelper.createRequest(url)).execute();
 

@@ -251,7 +251,7 @@ public class SearchDeparturesFragment extends BaseListFragment implements Loader
             Site site = HistoryDbAdapter.mapToSite(cursor);
             ((TextView) view.findViewById(R.id.text1)).setText(site.getName());
             TextView text2 = (TextView) view.findViewById(R.id.text2);
-            ImageView icon = (ImageView) view.findViewById(R.id.icon);
+            ImageView icon = (ImageView) view.findViewById(R.id.row_icon);
             if (site.getLocality() != null) {
                 text2.setText(site.getLocality());
                 text2.setVisibility(View.VISIBLE);

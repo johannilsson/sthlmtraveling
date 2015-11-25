@@ -43,6 +43,7 @@ import com.markupartist.sthlmtraveling.provider.planner.Planner.Trip2;
 import com.markupartist.sthlmtraveling.provider.site.Site;
 import com.markupartist.sthlmtraveling.utils.Analytics;
 import com.markupartist.sthlmtraveling.utils.StringUtils;
+import com.markupartist.sthlmtraveling.utils.ViewHelper;
 
 import java.io.IOException;
 
@@ -95,7 +96,7 @@ public class ViewOnMapActivity extends AppCompatActivity {
         setContentView(R.layout.map);
 
         ActionBar actionBar = getSupportActionBar();
-        //actionBar.setBackgroundDrawable(getResources().getDrawable(R.drawable.ab_bg_black));
+        //actionBar.setBackgroundDrawable(getResources().getDrawableColorInt(R.drawable.ab_bg_black));
         actionBar.setHomeButtonEnabled(true);
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
         actionBar.setDisplayShowHomeEnabled(true);
@@ -194,7 +195,7 @@ public class ViewOnMapActivity extends AppCompatActivity {
                     .icon(BitmapDescriptorFactory.defaultMarker(hueColor)));
 
             mMap.addPolyline(options
-                    .width(5)
+                    .width(ViewHelper.dipsToPix(getResources(), 5))
                     .color(subTrip.transport.getColor(this)));
         }
     }

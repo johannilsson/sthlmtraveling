@@ -36,7 +36,7 @@
         >
 	<ImageView
 	    android:id="@+id/routes_row_transport"
-	    android:src="@drawable/transport_metro_red"
+	    android:src="@drawable/ic_transport_metro_20dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical|center_horizontal"

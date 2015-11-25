@@ -32,14 +32,11 @@
         >
 
         <TextView
-            android:id="@+id/favorite_start_point"
+            android:id="@+id/favorite_journey_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
-            android:drawableLeft="@drawable/bullet_white"
-            android:drawablePadding="8dp"
-            android:drawableStart="@drawable/bullet_white"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textColor="?android:attr/textColorPrimary"
             android:textStyle="normal"
@@ -47,18 +44,15 @@
             />
 
         <TextView
-            android:id="@+id/favorite_end_point"
+            android:id="@+id/favorite_to"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
-            android:drawableLeft="@drawable/bullet_black"
-            android:drawablePadding="8dp"
-            android:drawableStart="@drawable/bullet_black"
-            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="?android:attr/textColorPrimary"
             android:textStyle="normal"
-            tools:text="Fridhemsplan"
+            tools:text="Mariebergsgatan"
             />
 
         <TextView
@@ -67,10 +61,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
-            android:drawableLeft="@drawable/ic_via"
-            android:drawablePadding="8dp"
-            android:drawableStart="@drawable/ic_via"
-            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="?android:attr/textColorPrimary"
             android:textStyle="normal"
             tools:text="Mariebergsgatan"
@@ -90,82 +81,47 @@
                 android:id="@+id/favorite_transport_mode_metro"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingEnd="5dp"
-                android:paddingRight="5dp"
-                android:src="@drawable/transport_metro"
-                android:visibility="gone"
+                android:paddingEnd="8dp"
+                android:paddingRight="8dp"
+                android:src="@drawable/ic_transport_metro_20dp"
                 />
 
             <ImageView
                 android:id="@+id/favorite_transport_mode_bus"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingEnd="5dip"
-                android:paddingRight="5dip"
-                android:src="@drawable/transport_bus"
-                android:visibility="gone"
+                android:paddingEnd="8dip"
+                android:paddingRight="8dip"
+                android:src="@drawable/ic_transport_bus_20dp"
                 />
 
             <ImageView
                 android:id="@+id/favorite_transport_mode_train"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingEnd="5dip"
-                android:paddingRight="5dip"
-                android:src="@drawable/transport_train"
-                android:visibility="gone"
+                android:paddingEnd="8dip"
+                android:paddingRight="8dip"
+                android:src="@drawable/ic_transport_train_20dp"
                 />
 
             <ImageView
                 android:id="@+id/favorite_transport_mode_tram"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingEnd="5dip"
-                android:paddingRight="5dip"
-                android:src="@drawable/transport_tram_car"
-                android:visibility="gone"
+                android:paddingEnd="8dip"
+                android:paddingRight="8dip"
+                android:src="@drawable/ic_transport_light_train_20dp"
                 />
 
             <ImageView
                 android:id="@+id/favorite_transport_mode_wax"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingEnd="5dp"
-                android:paddingRight="5dp"
-                android:src="@drawable/transport_boat"
-                android:visibility="gone"
-
+                android:paddingEnd="8dp"
+                android:paddingRight="8dp"
+                android:src="@drawable/ic_transport_boat_20dp"
                 />
 
-            <ImageView
-                android:id="@+id/favorite_transport_mode_fly"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingEnd="5dp"
-                android:paddingRight="5dp"
-                android:src="@drawable/transport_fly"
-                android:visibility="gone"
-                />
-
-            <ImageView
-                android:id="@+id/favorite_transport_mode_nar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingEnd="5dp"
-                android:paddingRight="5dp"
-                android:src="@drawable/transport_nar"
-                android:visibility="gone"
-                />
-
-            <ImageView
-                android:id="@+id/favorite_transport_mode_aex"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingEnd="5dp"
-                android:paddingRight="5dp"
-                android:src="@drawable/transport_aex"
-                android:visibility="gone"
-                />
         </LinearLayout>
 
     </LinearLayout>
@@ -176,6 +132,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal|center_vertical"
         android:button="@drawable/btn_check_star"
+        android:buttonTint="@color/accent"
         android:focusable="false"/>
 
 </LinearLayout>
