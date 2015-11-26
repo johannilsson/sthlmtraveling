@@ -1,18 +1,21 @@
 package com.markupartist.sthlmtraveling;
 
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 
 
-public class PlannerFragmentActivity extends ActionBarActivity {
+public class PlannerFragmentActivity extends AppCompatActivity {
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.planner_list);
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.planner_list);
 
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-	}
+        if (null == savedInstanceState) {
+            PlannerFragment plannerFragment = new PlannerFragment();
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.content, plannerFragment)
+                    .commit();
+        }
+    }
 }
