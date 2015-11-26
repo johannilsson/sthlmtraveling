@@ -16,9 +16,18 @@
 
 package com.markupartist.sthlmtraveling;
 
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.os.Bundle;
+import android.support.annotation.ColorInt;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -26,16 +35,23 @@ import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.MenuItem;
 
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.UiSettings;
+import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.markupartist.sthlmtraveling.data.models.Leg;
+import com.markupartist.sthlmtraveling.data.models.Route;
+import com.markupartist.sthlmtraveling.data.models.Step;
 import com.markupartist.sthlmtraveling.provider.planner.JourneyQuery;
 import com.markupartist.sthlmtraveling.provider.planner.Planner;
 import com.markupartist.sthlmtraveling.provider.planner.Planner.IntermediateStop;
@@ -43,10 +59,13 @@ import com.markupartist.sthlmtraveling.provider.planner.Planner.SubTrip;
 import com.markupartist.sthlmtraveling.provider.planner.Planner.Trip2;
 import com.markupartist.sthlmtraveling.provider.site.Site;
 import com.markupartist.sthlmtraveling.utils.Analytics;
+import com.markupartist.sthlmtraveling.utils.PolyUtil;
 import com.markupartist.sthlmtraveling.utils.StringUtils;
 import com.markupartist.sthlmtraveling.utils.ViewHelper;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ViewOnMapActivity extends AppCompatActivity implements OnMapReadyCallback {
 
@@ -54,6 +73,7 @@ public class ViewOnMapActivity extends AppCompatActivity implements OnMapReadyCa
     public static String EXTRA_LOCATION = "com.markupartist.sthlmtraveling.extra.Location";
     public static String EXTRA_JOURNEY_QUERY = "com.markupartist.sthlmtraveling.extra.JourneyQuery";
     public static String EXTRA_TRIP = "com.markupartist.sthlmtraveling.extra.Trip";
+    public static String EXTRA_ROUTE = "com.markupartist.sthlmtraveling.extra.Route";
 
     /**
      * Note that this may be null if the Google Play services APK is not available.
@@ -62,6 +82,22 @@ public class ViewOnMapActivity extends AppCompatActivity implements OnMapReadyCa
     private LatLng mFocusedLatLng;
     private Trip2 mTrip;
     private JourneyQuery mJourneyQuery;
+    private Route mRoute;
+
+    public static Intent createIntent(Context context, JourneyQuery query, Route route) {
+        Intent intent = new Intent(context, ViewOnMapActivity.class);
+        intent.putExtra(ViewOnMapActivity.EXTRA_ROUTE, route);
+        intent.putExtra(ViewOnMapActivity.EXTRA_JOURNEY_QUERY, query);
+        return intent;
+    }
+
+    public static Intent createIntent(Context context, Trip2 trip, JourneyQuery query, Site location) {
+        Intent intent = new Intent(context, ViewOnMapActivity.class);
+        intent.putExtra(ViewOnMapActivity.EXTRA_TRIP, trip);
+        intent.putExtra(ViewOnMapActivity.EXTRA_JOURNEY_QUERY, query);
+        intent.putExtra(ViewOnMapActivity.EXTRA_LOCATION, location);
+        return intent;
+    }
 
     @Override
     protected void onStart() {
@@ -106,20 +142,22 @@ public class ViewOnMapActivity extends AppCompatActivity implements OnMapReadyCa
 
         Bundle extras = getIntent().getExtras();
 
+        mRoute = extras.getParcelable(EXTRA_ROUTE);
         mTrip = extras.getParcelable(EXTRA_TRIP);
         mJourneyQuery = extras.getParcelable(EXTRA_JOURNEY_QUERY);
         final Site focusedLocation = extras.getParcelable(EXTRA_LOCATION);
 
-        mFocusedLatLng = new LatLng(
-                focusedLocation.getLocation().getLatitude(),
-                focusedLocation.getLocation().getLongitude());
+        if (focusedLocation != null) {
+            mFocusedLatLng = new LatLng(
+                    focusedLocation.getLocation().getLatitude(),
+                    focusedLocation.getLocation().getLongitude());
+        }
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
         updateStartAndEndPointViews(mJourneyQuery);
-
     }
 
     public void fetchRoute(final Trip2 trip, final JourneyQuery journeyQuery) {
@@ -163,16 +201,18 @@ public class ViewOnMapActivity extends AppCompatActivity implements OnMapReadyCa
                 .snippet(getRouteDescription(subTrip))
                 .icon(BitmapDescriptorFactory.defaultMarker(hueColor)));
 
+            BitmapDescriptor icon = getColoredMarker(subTrip.transport.getColor(this));
             for (IntermediateStop stop : subTrip.intermediateStop) {
                 LatLng intermediateStop = new LatLng(
                         stop.location.getLocation().getLatitude(),
                         stop.location.getLocation().getLongitude());
                 options.add(intermediateStop);
                 mMap.addMarker(new MarkerOptions()
-                    .position(intermediateStop)
-                    .title(getLocationName(stop.location))
-                    .snippet(DateFormat.getTimeFormat(this).format(stop.arrivalTime()))
-                    .icon(BitmapDescriptorFactory.defaultMarker(hueColor)));
+                        .anchor(0.5f, 0.5f)
+                        .position(intermediateStop)
+                        .title(getLocationName(stop.location))
+                        .snippet(DateFormat.getTimeFormat(this).format(stop.arrivalTime()))
+                        .icon(icon));
             }
             LatLng destination = new LatLng(
                     subTrip.destination.getLocation().getLatitude(),
@@ -185,7 +225,7 @@ public class ViewOnMapActivity extends AppCompatActivity implements OnMapReadyCa
                     .icon(BitmapDescriptorFactory.defaultMarker(hueColor)));
 
             mMap.addPolyline(options
-                    .width(ViewHelper.dipsToPix(getResources(), 5))
+                    .width(ViewHelper.dipsToPix(getResources(), 8))
                     .color(subTrip.transport.getColor(this)));
         }
     }
@@ -235,17 +275,79 @@ public class ViewOnMapActivity extends AppCompatActivity implements OnMapReadyCa
      * This should only be called once and when we are sure that {@link #mMap} is not null.
      */
     private void setUpMap() {
-        fetchRoute(mTrip, mJourneyQuery);
+        if (mTrip != null && mJourneyQuery != null) {
+            fetchRoute(mTrip, mJourneyQuery);
+            mMap.moveCamera(CameraUpdateFactory.newCameraPosition(
+                    CameraPosition.fromLatLngZoom(mFocusedLatLng, 16)
+            ));
+        } else if (mRoute != null) {
+            showRoute();
+        }
 
         UiSettings settings = mMap.getUiSettings();
         settings.setAllGesturesEnabled(true);
         settings.setMapToolbarEnabled(false);
 
         mMap.setMyLocationEnabled(true);
+    }
 
-        mMap.moveCamera(CameraUpdateFactory.newCameraPosition(
-            CameraPosition.fromLatLngZoom(mFocusedLatLng, 16)
-            ));
+    private void showRoute() {
+        // If we have geometry parse and all.
+        List<LatLng> all = new ArrayList<>();
+        for (Leg leg : mRoute.getLegs()) {
+            if (leg.getGeometry() != null) {
+                List<LatLng> latLgns = PolyUtil.decode(leg.getGeometry());
+                drawPolyline(latLgns);
+                all.addAll(latLgns);
+
+                BitmapDescriptor icon = getColoredMarker(ContextCompat.getColor(this, R.color.primary));
+                for (Step step : leg.getSteps()) {
+                    if ("arrive".equals(step.getCode()) || "depart".equals(step.getCode())) {
+                        mMap.addMarker(new MarkerOptions()
+                                .position(latLgns.get(step.getPosition()))
+                                .anchor(0.5f, 0.5f)
+                                .icon(icon));
+                    }
+                }
+
+            }
+        }
+
+        zoomToFit(all);
+    }
+
+    BitmapDescriptor getColoredMarker(@ColorInt int colorInt) {
+        Bitmap bitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.ic_line_marker);
+        Bitmap bitmapCopy = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), bitmap.getConfig());
+        Canvas canvas = new Canvas(bitmapCopy);
+        Paint paint = new Paint();
+        paint.setColorFilter(new PorterDuffColorFilter(colorInt, PorterDuff.Mode.SRC_ATOP));
+        canvas.drawBitmap(bitmap, 0f, 0f, paint);
+        return BitmapDescriptorFactory.fromBitmap(bitmapCopy);
+    }
+
+    private void drawPolyline(List<LatLng> latLngs) {
+        Polyline poly = mMap.addPolyline(new PolylineOptions()
+                .zIndex(1000)
+                .addAll(latLngs)
+                .width(ViewHelper.dipsToPix(getResources(), 8))
+                .color(ContextCompat.getColor(this, R.color.primary))
+                .geodesic(true));
+        poly.setZIndex(Float.MAX_VALUE);
+    }
+
+    private void zoomToFit(List<LatLng> latLngs) {
+        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+
+        for (LatLng latLng : latLngs) {
+            builder.include(latLng);
+        }
+
+        LatLngBounds bounds = builder.build();
+        CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds,
+                ViewHelper.dipsToPix(getResources(), 16));
+        mMap.moveCamera(cu);
+        //mMap.animateCamera(cu);
     }
 
     /**

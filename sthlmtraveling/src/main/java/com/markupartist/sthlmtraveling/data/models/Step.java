@@ -23,12 +23,21 @@ import android.os.Parcelable;
  *
  */
 public class Step implements Parcelable {
-    public int distance;
-    public String direction;
-    public String code;
-    public String wayName;
-    public int duration;
-    public int position;
+    private final int distance;
+    private final String direction;
+    private final String code;
+    private final String wayName;
+    private final int duration;
+    private final int position;
+
+    public Step(String code, int distance, String direction, String wayName, int duration, int position) {
+        this.code = code;
+        this.distance = distance;
+        this.direction = direction;
+        this.wayName = wayName;
+        this.duration = duration;
+        this.position = position;
+    }
 
     protected Step(Parcel in) {
         distance = in.readInt();
@@ -64,5 +73,29 @@ public class Step implements Parcelable {
         dest.writeString(wayName);
         dest.writeInt(duration);
         dest.writeInt(position);
+    }
+
+    public String getDirection() {
+        return direction;
+    }
+
+    public int getDistance() {
+        return distance;
+    }
+
+    public int getDuration() {
+        return duration;
+    }
+
+    public int getPosition() {
+        return position;
+    }
+
+    public String getWayName() {
+        return wayName;
+    }
+
+    public String getCode() {
+        return code;
     }
 }

@@ -29,13 +29,11 @@ public class Route implements Parcelable {
     private final int duration;
     private final List<Leg> legs;
     private final String mode;
-    private final List<Step> steps;
 
-    public Route(int duration, List<Leg> legs, String mode, List<Step> steps) {
+    public Route(int duration, List<Leg> legs, String mode) {
         this.duration = duration;
         this.legs = legs;
         this.mode = mode;
-        this.steps = steps;
     }
 
     protected Route(Parcel in) {
@@ -43,8 +41,6 @@ public class Route implements Parcelable {
         legs = new ArrayList<>();
         in.readTypedList(legs, Leg.CREATOR);
         mode = in.readString();
-        steps = new ArrayList<>();
-        in.readTypedList(steps, Step.CREATOR);
     }
 
     public static final Creator<Route> CREATOR = new Creator<Route>() {
@@ -71,10 +67,6 @@ public class Route implements Parcelable {
         return mode;
     }
 
-    public List<Step> getSteps() {
-        return steps;
-    }
-
     @Override
     public int describeContents() {
         return 0;
@@ -85,6 +77,5 @@ public class Route implements Parcelable {
         dest.writeInt(duration);
         dest.writeTypedList(legs);
         dest.writeString(mode);
-        dest.writeTypedList(steps);
     }
 }

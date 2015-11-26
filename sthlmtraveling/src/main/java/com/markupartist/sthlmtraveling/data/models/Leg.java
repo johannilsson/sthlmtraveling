@@ -19,6 +19,9 @@ package com.markupartist.sthlmtraveling.data.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  *
  */
@@ -28,13 +31,16 @@ public class Leg implements Parcelable {
     private final String geometry;
     private final int distance;
     private final int duration;
+    private final List<Step> steps;
 
-    public Leg(Place from, Place to, String geometry, int distance, int duration) {
+
+    public Leg(Place from, Place to, String geometry, int distance, int duration, List<Step> steps) {
         this.from = from;
         this.to = to;
         this.geometry = geometry;
         this.distance = distance;
         this.duration = duration;
+        this.steps = steps;
     }
 
     protected Leg(Parcel in) {
@@ -43,6 +49,8 @@ public class Leg implements Parcelable {
         geometry = in.readString();
         distance = in.readInt();
         duration = in.readInt();
+        steps = new ArrayList<>();
+        in.readTypedList(steps, Step.CREATOR);
     }
 
     public static final Creator<Leg> CREATOR = new Creator<Leg>() {
@@ -77,6 +85,10 @@ public class Leg implements Parcelable {
         return to;
     }
 
+    public List<Step> getSteps() {
+        return steps;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -89,5 +101,6 @@ public class Leg implements Parcelable {
         dest.writeString(geometry);
         dest.writeInt(distance);
         dest.writeInt(duration);
+        dest.writeTypedList(steps);
     }
 }
