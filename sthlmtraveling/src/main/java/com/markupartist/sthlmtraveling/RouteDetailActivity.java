@@ -68,6 +68,7 @@ import com.markupartist.sthlmtraveling.utils.RtlUtils;
 import org.json.JSONException;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -583,15 +584,18 @@ public class RouteDetailActivity extends BaseListActivity {
             TextView arrivalView = (TextView) view.findViewById(R.id.trip_intermediate_arrival_time);
             TextView expectedArrivalView = (TextView) view.findViewById(R.id.trip_intermediate_expected_arrival_time);
 
-            arrivalView.setText(DateFormat.getTimeFormat(getContext()).format(stop.getScheduledArrivalDateTime()));
-            if (stop.getExpectedArrivalDateTime() != null) {
-                arrivalView.setPaintFlags(arrivalView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-                expectedArrivalView.setVisibility(View.VISIBLE);
-                expectedArrivalView.setText(DateFormat.getTimeFormat(getContext()).format(
-                        stop.getExpectedArrivalDateTime()));
-            } else {
-                arrivalView.setPaintFlags(arrivalView.getPaintFlags() & (~ Paint.STRIKE_THRU_TEXT_FLAG));
-                expectedArrivalView.setVisibility(View.GONE);
+            Date arrivalTime = stop.getScheduledArrivalDateTime();
+            if (arrivalTime != null) {
+                arrivalView.setText(DateFormat.getTimeFormat(getContext()).format(arrivalTime));
+                if (stop.getExpectedArrivalDateTime() != null) {
+                    arrivalView.setPaintFlags(arrivalView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                    expectedArrivalView.setVisibility(View.VISIBLE);
+                    expectedArrivalView.setText(DateFormat.getTimeFormat(getContext()).format(
+                            stop.getExpectedArrivalDateTime()));
+                } else {
+                    arrivalView.setPaintFlags(arrivalView.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
+                    expectedArrivalView.setVisibility(View.GONE);
+                }
             }
 
             return view;
