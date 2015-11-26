@@ -314,7 +314,8 @@ public class RouteDetailActivity extends BaseListActivity {
             @Override
             public void onClick(View v) {
                 if (lastSubTrip.destination.hasLocation()) {
-                    startActivity(createViewOnMapIntent(mTrip, mJourneyQuery, lastSubTrip.destination));
+                    startActivity(ViewOnMapActivity.createIntent(RouteDetailActivity.this,
+                            mTrip, mJourneyQuery, lastSubTrip.destination));
                 } else {
                     Toast.makeText(RouteDetailActivity.this, "Missing geo data", Toast.LENGTH_LONG).show();
                 }
@@ -359,16 +360,6 @@ public class RouteDetailActivity extends BaseListActivity {
         return true;
     }
 
-    private Intent createViewOnMapIntent(Planner.Trip2 trip,
-            JourneyQuery query, Site location) {
-        Intent intent = new Intent(this, ViewOnMapActivity.class);
-        intent.putExtra(ViewOnMapActivity.EXTRA_TRIP, trip);
-        intent.putExtra(ViewOnMapActivity.EXTRA_JOURNEY_QUERY, query);
-        intent.putExtra(ViewOnMapActivity.EXTRA_LOCATION, location);
-
-        return intent;
-    }
-
     private boolean isStarredJourney(JourneyQuery journeyQuery) {
         String json;
         try {
@@ -392,7 +383,8 @@ public class RouteDetailActivity extends BaseListActivity {
         public void onClick(View v) {
             Site l = (Site) v.getTag();
             if (l.hasLocation()) {
-                startActivity(createViewOnMapIntent(mTrip, mJourneyQuery, l));
+                startActivity(ViewOnMapActivity.createIntent(
+                        RouteDetailActivity.this, mTrip, mJourneyQuery, l));
             } else {
                 Toast.makeText(RouteDetailActivity.this,
                         "Missing geo data", Toast.LENGTH_LONG).show();
@@ -487,7 +479,8 @@ public class RouteDetailActivity extends BaseListActivity {
                 @Override
                 public void onClick(View v) {
                     if (subTrip.origin.hasLocation()) {
-                        startActivity(createViewOnMapIntent(mTrip, mJourneyQuery, subTrip.origin));
+                        startActivity(ViewOnMapActivity.createIntent(getContext(),
+                                mTrip, mJourneyQuery, subTrip.origin));
                     } else {
                         Toast.makeText(getContext(), "Missing geo data", Toast.LENGTH_LONG).show();
                     }
