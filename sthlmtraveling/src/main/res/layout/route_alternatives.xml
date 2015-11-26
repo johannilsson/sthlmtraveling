@@ -61,6 +61,7 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         app:layout_widthPercent="33%"
+        android:background="?attr/selectableItemBackgroundBorderless"
         >
 
         <ImageView
@@ -96,6 +97,7 @@
         android:layout_toEndOf="@id/route_foot"
         android:layout_toRightOf="@id/route_foot"
         app:layout_widthPercent="33%"
+        android:background="?attr/selectableItemBackgroundBorderless"
         >
 
         <ImageView
@@ -131,6 +133,7 @@
         android:layout_toEndOf="@id/route_bike"
         android:layout_toRightOf="@id/route_bike"
         app:layout_widthPercent="33%"
+        android:background="?attr/selectableItemBackgroundBorderless"
         >
 
         <ImageView

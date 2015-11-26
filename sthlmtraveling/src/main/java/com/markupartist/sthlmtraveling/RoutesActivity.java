@@ -159,6 +159,7 @@ public class RoutesActivity extends BaseListActivity implements
     private View mHeaderbarView;
     private Toast mToast;
     private View mLoadingRoutesViews;
+    private View mRouteAlternativesView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -200,36 +201,39 @@ public class RoutesActivity extends BaseListActivity implements
         ViewHelper.tintIcon(mTimeAndDate.getCompoundDrawables()[0],
                 getResources().getColor(R.color.primary_light));
 
-        getListView().setHeaderDividersEnabled(false);
-
-        getListView().setVerticalFadingEdgeEnabled(false);
-        getListView().setHorizontalFadingEdgeEnabled(false);
-
         initActionBar();
         updateStartAndEndPointViews(mJourneyQuery);
         updateJourneyHistory();
         initListView();
-        initRoutes(mJourneyQuery);
+        //initRoutes(mJourneyQuery);
         initAutoHideHeader(getListView());
     }
 
     public void updateRouteAlternatives(Plan plan) {
         mPlan = plan;
 
-        View routeAlternativesView = LayoutInflater.from(RoutesActivity.this).inflate(R.layout.route_alternatives, null, false);
+        if (mRouteAlternativesView == null) {
+            mRouteAlternativesView = LayoutInflater.from(RoutesActivity.this)
+                    .inflate(R.layout.route_alternatives, getListView(), false);
+            getListView().addHeaderView(mRouteAlternativesView, null, false);
+        }
 
-        TextView footDurationText = (TextView) routeAlternativesView.findViewById(R.id.route_foot_description);
-        TextView bikeDurationText = (TextView) routeAlternativesView.findViewById(R.id.route_bike_description);
-        TextView carDurationText = (TextView) routeAlternativesView.findViewById(R.id.route_car_description);
+        TextView footDurationText = (TextView) mRouteAlternativesView.findViewById(R.id.route_foot_description);
+        TextView bikeDurationText = (TextView) mRouteAlternativesView.findViewById(R.id.route_bike_description);
+        TextView carDurationText = (TextView) mRouteAlternativesView.findViewById(R.id.route_car_description);
 
-        mLoadingRoutesViews = routeAlternativesView.findViewById(R.id.loading_routes);
+        mRouteAlternativesView.findViewById(R.id.route_foot).setOnClickListener(this);
+        mRouteAlternativesView.findViewById(R.id.route_bike).setOnClickListener(this);
+        mRouteAlternativesView.findViewById(R.id.route_car).setOnClickListener(this);
+
+        mLoadingRoutesViews = mRouteAlternativesView.findViewById(R.id.loading_routes);
         if (mPlannerResponse == null) {
             showProgress();
         }
 
-        ImageView footIcon = (ImageView) routeAlternativesView.findViewById(R.id.route_foot_icon);
-        ImageView bikeIcon = (ImageView) routeAlternativesView.findViewById(R.id.route_bike_icon);
-        ImageView carIcon = (ImageView) routeAlternativesView.findViewById(R.id.route_car_icon);
+        ImageView footIcon = (ImageView) mRouteAlternativesView.findViewById(R.id.route_foot_icon);
+        ImageView bikeIcon = (ImageView) mRouteAlternativesView.findViewById(R.id.route_bike_icon);
+        ImageView carIcon = (ImageView) mRouteAlternativesView.findViewById(R.id.route_car_icon);
         int iconColor = ContextCompat.getColor(this, R.color.icon_default);
         footIcon.setImageDrawable(ViewHelper.getDrawableColorInt(this, R.drawable.ic_transport_walk_20dp, iconColor));
         bikeIcon.setImageDrawable(ViewHelper.getDrawableColorInt(this, R.drawable.ic_transport_bike_20dp, iconColor));
@@ -249,7 +253,6 @@ public class RoutesActivity extends BaseListActivity implements
             }
         }
 
-        getListView().addHeaderView(routeAlternativesView, null, false);
         showRoutes();
     }
 
@@ -429,6 +432,8 @@ public class RoutesActivity extends BaseListActivity implements
         super.onResume();
 
         if (mSavedState != null) restoreLocalState(mSavedState);
+
+        initRoutes(mJourneyQuery);
     }
 
     @Override
@@ -612,6 +617,8 @@ public class RoutesActivity extends BaseListActivity implements
         mRouteAdapter = new RoutesAdapter(this, new ArrayList<Trip2>());
         setListAdapter(mRouteAdapter);
         getListView().setHeaderDividersEnabled(false);
+        getListView().setVerticalFadingEdgeEnabled(false);
+        getListView().setHorizontalFadingEdgeEnabled(false);
     }
 
     @Override
@@ -930,6 +937,30 @@ public class RoutesActivity extends BaseListActivity implements
                 Intent i = new Intent(RoutesActivity.this, ChangeRouteTimeActivity.class);
                 i.putExtra(EXTRA_JOURNEY_QUERY, mJourneyQuery);
                 startActivityForResult(i, REQUEST_CODE_CHANGE_TIME);
+                break;
+            case R.id.route_foot:
+                for (Route route : mPlan.getRoutes()) {
+                    if ("foot".equals(route.getMode())) {
+                        startActivity(ViewOnMapActivity.createIntent(this, mJourneyQuery, route));
+                        break;
+                    }
+                }
+                break;
+            case R.id.route_bike:
+                for (Route route : mPlan.getRoutes()) {
+                    if ("bike".equals(route.getMode())) {
+                        startActivity(ViewOnMapActivity.createIntent(this, mJourneyQuery, route));
+                        break;
+                    }
+                }
+                break;
+            case R.id.route_car:
+                for (Route route : mPlan.getRoutes()) {
+                    if ("car".equals(route.getMode())) {
+                        startActivity(ViewOnMapActivity.createIntent(this, mJourneyQuery, route));
+                        break;
+                    }
+                }
                 break;
         }
     }
@@ -1351,6 +1382,9 @@ public class RoutesActivity extends BaseListActivity implements
         }
 
         public void refill(ArrayList<Trip2> trips) {
+            if (trips == mTrips) {
+                return;
+            }
             mTrips = trips;
             animatedItems.clear();
             notifyDataSetChanged();
