@@ -344,8 +344,12 @@ public class ViewOnMapActivity extends AppCompatActivity implements OnMapReadyCa
         }
 
         LatLngBounds bounds = builder.build();
-        CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds,
-                ViewHelper.dipsToPix(getResources(), 16));
+
+        // A "random" value for the top padding, fix to fetch from toolbar later on.
+        int height = ViewHelper.getDisplayHeight(this) - ViewHelper.dipsToPix(getResources(), 52);
+        int width = ViewHelper.getDisplayWidth(this);
+        CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, width, height,
+                getResources().getDimensionPixelSize(R.dimen.padding_large));
         mMap.moveCamera(cu);
         //mMap.animateCamera(cu);
     }

@@ -14,6 +14,7 @@ import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
+import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.ImageView;
@@ -28,6 +29,28 @@ import java.util.Locale;
  * Created by johan on 4/6/14.
  */
 public class ViewHelper {
+    /**
+     * Get the height of the display in pixels
+     *
+     * @param context The Context
+     * @return Height of the display in pixels
+     */
+    public static int getDisplayHeight(Context context) {
+        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+        return displayMetrics.heightPixels;
+    }
+
+    /**
+     * Get the width of the display in pixels
+     *
+     * @param context The Context
+     * @return Width of the display in pixels
+     */
+    public static int getDisplayWidth(Context context) {
+        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+        return displayMetrics.widthPixels;
+    }
+
     @SuppressLint("NewApi")
     public static void crossfade(final View fromView, final View toView) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB_MR1) {
