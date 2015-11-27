@@ -17,6 +17,7 @@
 package com.markupartist.sthlmtraveling.ui.view;
 
 import android.os.Bundle;
+import android.support.annotation.DrawableRes;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -64,6 +65,7 @@ public class PageFragmentAdapter extends FragmentPagerAdapter implements Sliding
     }
 
     @Override
+    @DrawableRes
     public int getIcon(int position) {
         return mPages.get(position).getIcon();
     }
