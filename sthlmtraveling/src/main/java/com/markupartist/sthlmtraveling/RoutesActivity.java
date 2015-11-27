@@ -50,6 +50,7 @@ import android.view.animation.DecelerateInterpolator;
 import android.widget.AbsListView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -160,6 +161,7 @@ public class RoutesActivity extends BaseListActivity implements
     private Toast mToast;
     private View mLoadingRoutesViews;
     private View mRouteAlternativesView;
+    private FrameLayout mRouteAlternativesStub;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -213,9 +215,9 @@ public class RoutesActivity extends BaseListActivity implements
         mPlan = plan;
 
         if (mRouteAlternativesView == null) {
-            mRouteAlternativesView = LayoutInflater.from(RoutesActivity.this)
-                    .inflate(R.layout.route_alternatives, getListView(), false);
-            getListView().addHeaderView(mRouteAlternativesView, null, false);
+            mRouteAlternativesView = LayoutInflater.from(RoutesActivity.this).inflate(
+                    R.layout.route_alternatives, mRouteAlternativesStub, false);
+            mRouteAlternativesStub.addView(mRouteAlternativesView);
         }
 
         TextView footDurationText = (TextView) mRouteAlternativesView.findViewById(R.id.route_foot_description);
@@ -615,6 +617,10 @@ public class RoutesActivity extends BaseListActivity implements
 
     private void initListView() {
         mRouteAdapter = new RoutesAdapter(this, new ArrayList<Trip2>());
+        // Faked stub, but get the job done.
+        mRouteAlternativesStub = (FrameLayout) LayoutInflater.from(RoutesActivity.this)
+                .inflate(R.layout.routes_list_header, getListView(), false);
+        getListView().addHeaderView(mRouteAlternativesStub, null, false);
         setListAdapter(mRouteAdapter);
         getListView().setHeaderDividersEnabled(false);
         getListView().setVerticalFadingEdgeEnabled(false);
