@@ -117,7 +117,6 @@ public class ViewHelper {
                 ContextCompat.getColor(context, color));
     }
 
-
     public static void setText(@NonNull TextView v, @NonNull CharSequence t) {
         if (!t.equals(v.getText())) {
             v.setText(t);
