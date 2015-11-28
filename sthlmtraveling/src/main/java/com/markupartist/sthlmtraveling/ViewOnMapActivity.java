@@ -65,6 +65,7 @@ import com.markupartist.sthlmtraveling.utils.ViewHelper;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class ViewOnMapActivity extends AppCompatActivity implements OnMapReadyCallback {
@@ -207,11 +208,16 @@ public class ViewOnMapActivity extends AppCompatActivity implements OnMapReadyCa
                         stop.location.getLocation().getLatitude(),
                         stop.location.getLocation().getLongitude());
                 options.add(intermediateStop);
+                Date date = stop.arrivalTime();
+                if (date == null) {
+                    date = stop.departureTime();
+                }
+                String time = date != null ? DateFormat.getTimeFormat(this).format(date) : "";
                 mMap.addMarker(new MarkerOptions()
                         .anchor(0.5f, 0.5f)
                         .position(intermediateStop)
                         .title(getLocationName(stop.location))
-                        .snippet(DateFormat.getTimeFormat(this).format(stop.arrivalTime()))
+                        .snippet(time)
                         .icon(icon));
             }
             LatLng destination = new LatLng(
