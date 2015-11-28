@@ -36,6 +36,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.LoaderManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.view.ViewCompat;
@@ -748,8 +749,12 @@ public class PlannerFragment extends BaseListFragment implements LoaderManager.L
             ImageView tramView = (ImageView) v.findViewById(R.id.favorite_transport_mode_tram);
             ImageView waxView = (ImageView) v.findViewById(R.id.favorite_transport_mode_wax);
 
-            int inactiveColor = getResources().getColor(R.color.transport_icon_inactive);
-            int activeColor = getResources().getColor(R.color.icon_default);
+            int inactiveColor = ContextCompat.getColor(getActivity(), R.color.transport_icon_inactive);
+            int activeColor = ContextCompat.getColor(getActivity(), R.color.icon_default);
+
+            if (journeyQuery.transportModes == null || journeyQuery.transportModes.isEmpty()) {
+                inactiveColor = activeColor;
+            }
 
             ViewHelper.tint(metroView, inactiveColor);
             ViewHelper.tint(busView, inactiveColor);

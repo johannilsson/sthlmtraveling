@@ -27,6 +27,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -319,8 +320,13 @@ public class FavoritesFragment extends BaseListFragment {
             ImageView tramView = (ImageView) v.findViewById(R.id.favorite_transport_mode_tram);
             ImageView waxView = (ImageView) v.findViewById(R.id.favorite_transport_mode_wax);
 
-            int inactiveColor = getResources().getColor(R.color.transport_icon_inactive);
-            int activeColor = getResources().getColor(R.color.icon_default);
+            int inactiveColor = ContextCompat.getColor(getActivity(), R.color.transport_icon_inactive);
+            int activeColor = ContextCompat.getColor(getActivity(), R.color.icon_default);
+
+            if (journeyQuery.transportModes == null || journeyQuery.transportModes.isEmpty()) {
+                inactiveColor = activeColor;
+            }
+
             ViewHelper.tint(metroView, inactiveColor);
             ViewHelper.tint(busView, inactiveColor);
             ViewHelper.tint(trainView, inactiveColor);
