@@ -21,8 +21,8 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
-import com.markupartist.sthlmtraveling.provider.site.Site;
 import com.markupartist.sthlmtraveling.data.misc.HttpHelper;
+import com.markupartist.sthlmtraveling.provider.site.Site;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
@@ -46,11 +46,11 @@ public class DeparturesStore {
     }
 
     public Departures find(Context context, Site site) throws IllegalArgumentException, IOException {
-    	if (site == null) {
+        if (site == null) {
             Log.w(TAG, "Site is null");
-    		throw new IllegalArgumentException(TAG + ", Site is null");
-    	}
-    	
+            throw new IllegalArgumentException(TAG + ", Site is null");
+        }
+
         Log.d(TAG, "About to get departures for " + site.getName());
         String endpoint = apiEndpoint2()
                 + "v1/departures/" + site.getId()
@@ -120,7 +120,7 @@ public class DeparturesStore {
                 JSONArray jsonTrams = json.getJSONArray("trams");
                 for (int i = 0; i < jsonTrams.length(); i++) {
                     d.trams.add(TramDeparture.fromJson(jsonTrams.getJSONObject(i)));
-                }                
+                }
             }
 
             if (!json.isNull("trains")) {
@@ -175,6 +175,7 @@ public class DeparturesStore {
     public static class TramDeparture extends Departure {
         public ArrayList<DisplayRow> direction1 = new ArrayList<DisplayRow>();
         public ArrayList<DisplayRow> direction2 = new ArrayList<DisplayRow>();
+
         public static TramDeparture fromJson(JSONObject jsonObject) throws JSONException {
             TramDeparture td = new TramDeparture();
             td.stopAreaName = jsonObject.getString("stop_area_name");
@@ -197,7 +198,7 @@ public class DeparturesStore {
     public static class TrainDeparture extends Departure {
         public ArrayList<DisplayRow> direction1 = new ArrayList<DisplayRow>();
         public ArrayList<DisplayRow> direction2 = new ArrayList<DisplayRow>();
-        
+
         public static TrainDeparture fromJson(JSONObject jsonObject) throws JSONException {
             TrainDeparture td = new TrainDeparture();
             td.stopAreaName = jsonObject.getString("stop_area_name");
@@ -221,6 +222,7 @@ public class DeparturesStore {
         public String name;
         public ArrayList<DisplayRow> direction1 = new ArrayList<DisplayRow>();
         public ArrayList<DisplayRow> direction2 = new ArrayList<DisplayRow>();
+
         public static GroupOfLine fromJson(JSONObject json)
                 throws JSONException {
             GroupOfLine gol = new GroupOfLine();
