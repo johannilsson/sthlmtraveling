@@ -255,7 +255,8 @@ public class Planner {
     }
 
     private boolean shouldUseIdInQuery(Site site) {
-        return site.getSource() == Site.SOURCE_STHLM_TRAVELING
+        return !site.isMyLocation()
+                && site.getSource() == Site.SOURCE_STHLM_TRAVELING
                 && !TextUtils.isEmpty(site.getId())
                 && !site.getId().equals("0");
     }

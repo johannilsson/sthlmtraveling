@@ -332,6 +332,9 @@ public class RoutesActivity extends BaseListActivity implements
                     (int) (Double.parseDouble(uri.getQueryParameter("start_point_lat")) * 1E6),
                     (int) (Double.parseDouble(uri.getQueryParameter("start_point_lng")) * 1E6));
         }
+        if (!TextUtils.isEmpty(uri.getQueryParameter("start_point_source"))) {
+            jq.origin.setSource(Integer.parseInt(uri.getQueryParameter("start_point_source")));
+        }
 
         jq.destination = new Site();
         jq.destination.setName(uri.getQueryParameter("end_point"));
@@ -343,6 +346,9 @@ public class RoutesActivity extends BaseListActivity implements
             jq.destination.setLocation(
                     (int) (Double.parseDouble(uri.getQueryParameter("end_point_lat")) * 1E6),
                     (int) (Double.parseDouble(uri.getQueryParameter("end_point_lng")) * 1E6));
+        }
+        if (!TextUtils.isEmpty(uri.getQueryParameter("end_point_source"))) {
+            jq.destination.setSource(Integer.parseInt(uri.getQueryParameter("end_point_source")));
         }
 
         jq.isTimeDeparture = true;
@@ -915,14 +921,18 @@ public class RoutesActivity extends BaseListActivity implements
                                 + "&start_point_id=%s"
                                 + "&start_point_lat=%s"
                                 + "&start_point_lng=%s"
+                                + "&start_point_source=%s"
                                 + "&end_point=%s"
                                 + "&end_point_id=%s"
                                 + "&end_point_lat=%s"
                                 + "&end_point_lng=%s"
+                                + "&end_point_source=%s"
                                 + "&time=%s"
                                 + "&isTimeDeparture=%s",
                         Uri.encode(startPoint.getName()), startPoint.getId(), startLat, startLng,
+                        startPoint.getSource(),
                         Uri.encode(endPoint.getName()), endPoint.getId(), endLat, endLng,
+                        endPoint.getSource(),
                         timeString, isTimeDeparture));
 
         return routesUri;
