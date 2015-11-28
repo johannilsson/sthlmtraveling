@@ -841,6 +841,14 @@ public class Planner {
             }
             return scheduledArrivalDateTime;
         }
+
+        public Date departureTime() {
+            if (expectedDepartureDateTime != null) {
+                return expectedDepartureDateTime;
+            }
+            return scheduledDepartureDateTime;
+
+        }
     }
 
     public static class SubTrip implements Parcelable {
