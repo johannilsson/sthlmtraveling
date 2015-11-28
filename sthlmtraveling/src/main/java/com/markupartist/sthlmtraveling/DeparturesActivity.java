@@ -169,7 +169,7 @@ public class DeparturesActivity extends BaseFragmentActivity {
         mPager.setPageMarginDrawable(R.color.light_grey);
         mPager.setPageMargin(25);  // TODO: Compensate with denisity to get it right on all screens
         mPager.setAdapter(mPageAdapter);
-        mPager.setOnPageChangeListener(
+        mPager.addOnPageChangeListener(
                 new ViewPager.SimpleOnPageChangeListener() {
                     @Override
                     public void onPageSelected(int position) {
