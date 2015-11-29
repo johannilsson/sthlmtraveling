@@ -308,7 +308,9 @@ public class ViewOnMapActivity extends AppCompatActivity implements OnMapReadyCa
 
                 BitmapDescriptor icon = getColoredMarker(ContextCompat.getColor(this, R.color.primary));
                 for (Step step : leg.getSteps()) {
-                    if ("arrive".equals(step.getCode()) || "depart".equals(step.getCode())) {
+                    if ("arrive".equals(step.getCode())
+                            || "depart".equals(step.getCode())
+                            || "waypoint".equals(step.getCode())) {
                         mMap.addMarker(new MarkerOptions()
                                 .position(latLgns.get(step.getPosition()))
                                 .anchor(0.5f, 0.5f)
