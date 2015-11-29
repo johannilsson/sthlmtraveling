@@ -84,13 +84,13 @@
     <string name="metros">Metro</string>
     <string name="buses">Autobusi</string>
     <string name="trains">Prigradski vozovi</string>
-    <string name="trams">Tramvaji</string>
+    <string name="trams">Laka željeznica</string>
     <string name="tram_cars">Tramvaji</string>
     <string name="boats">Brodovi</string>
     <string name="departure_metro">Metro</string>
     <string name="departure_bus">Autobus</string>
     <string name="departure_train">Voz</string>
-    <string name="departure_tram">Tramvaj</string>
+    <string name="departure_tram">Laka željeznica</string>
     <string name="now">sada</string>
     <string name="my_location_source_disabled">Molimo omogućite vrstu lociranja u sistemskim postavkama</string>
     <string name="title_settings">Postavke</string>
