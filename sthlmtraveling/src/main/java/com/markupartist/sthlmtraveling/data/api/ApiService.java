@@ -31,5 +31,6 @@ public interface ApiService {
             @Query("to") PlaceQuery to,
             @Query("mode") String mode,
             @Query("alternative") boolean alternative,
+            @Query("via") PlaceQuery via,
             Callback<Plan> callback);
 }

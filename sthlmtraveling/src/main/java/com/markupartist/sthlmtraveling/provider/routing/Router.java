@@ -50,8 +50,16 @@ public class Router {
         PlaceQuery to = new PlaceQuery.Builder()
                 .location(journeyQuery.destination.getName(), journeyQuery.destination.getLocation())
                 .build();
+        PlaceQuery via = null;
+        if (journeyQuery.hasVia() && journeyQuery.via.hasLocation()) {
+            via = new PlaceQuery.Builder()
+                    .location(journeyQuery.via.getName(), journeyQuery.via.getLocation())
+                    .build();
+        } else {
+            Log.i(TAG, "Location data not present on via point");
+        }
 
-        apiService.getPlan(from, to, "foot,bike,car", false, new retrofit.Callback<Plan>() {
+        apiService.getPlan(from, to, "foot,bike,car", false, via, new retrofit.Callback<Plan>() {
             @Override
             public void success(Plan plan, Response response) {
                 callback.onPlan(plan);
