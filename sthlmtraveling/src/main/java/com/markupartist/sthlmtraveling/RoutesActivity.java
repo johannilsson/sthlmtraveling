@@ -203,11 +203,11 @@ public class RoutesActivity extends BaseListActivity implements
         ViewHelper.tintIcon(mTimeAndDate.getCompoundDrawables()[0],
                 getResources().getColor(R.color.primary_light));
 
+        maybeRequestLocationUpdate();
         initActionBar();
         updateStartAndEndPointViews(mJourneyQuery);
         updateJourneyHistory();
         initListView();
-        //initRoutes(mJourneyQuery);
         initAutoHideHeader(getListView());
     }
 
@@ -371,6 +371,17 @@ public class RoutesActivity extends BaseListActivity implements
     }
 
     /**
+     * Ask for a fresh location if needed.
+     */
+    void maybeRequestLocationUpdate() {
+        if ((mJourneyQuery.origin.isMyLocation() && !mJourneyQuery.origin.hasLocation())
+                || (mJourneyQuery.destination.isMyLocation()
+                        && !mJourneyQuery.destination.hasLocation())) {
+            mMyLocationManager.requestLocation();
+        }
+    }
+
+    /**
      * Search for routes. Will first check if we already have data stored.
      *
      * @param journeyQuery The journey query
@@ -380,13 +391,9 @@ public class RoutesActivity extends BaseListActivity implements
             fetchRouteAlternatives(mJourneyQuery);
             onSearchRoutesResult(mPlannerResponse);
         } else {
-            if (journeyQuery.origin.isMyLocation()
-                    || journeyQuery.destination.isMyLocation()) {
-                mMyLocationManager.requestLocation();
-            } else {
+            if (!journeyQuery.origin.isMyLocation() && !journeyQuery.destination.isMyLocation()) {
                 mSearchRoutesTask = new SearchRoutesTask();
                 mSearchRoutesTask.execute(mJourneyQuery);
-
                 fetchRouteAlternatives(mJourneyQuery);
             }
         }
@@ -792,6 +799,7 @@ public class RoutesActivity extends BaseListActivity implements
                     mSearchRoutesTask = new SearchRoutesTask();
                     mSearchRoutesTask.execute(mJourneyQuery);
 
+                    fetchRouteAlternatives(mJourneyQuery);
                     // TODO: Is this call really needed?
                     updateStartAndEndPointViews(mJourneyQuery);
                 }
@@ -811,6 +819,7 @@ public class RoutesActivity extends BaseListActivity implements
                     mSearchRoutesTask = new SearchRoutesTask();
                     mSearchRoutesTask.execute(mJourneyQuery);
 
+                    fetchRouteAlternatives(mJourneyQuery);
                     // TODO: Is this call really needed?
                     updateStartAndEndPointViews(mJourneyQuery);
                 }
