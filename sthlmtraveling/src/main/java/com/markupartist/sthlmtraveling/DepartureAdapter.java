@@ -154,12 +154,6 @@ public class DepartureAdapter extends SectionedAdapter {
             holder.destinationView.setText(destination);
 
             String displayTime = displayRow.displayTime;
-//            if (TextUtils.isEmpty(displayTime)
-//                    && TextUtils.isEmpty(displayRow.message)
-//                    || TextUtils.equals(displayTime, "0 min")
-//                    || TextUtils.equals(displayTime, "Nu")) {
-//                displayTime = getContext().getString(R.string.now);
-//            }
             holder.timeToDisplayView.setText(
                     DateTimeUtil.formatDisplayTime(displayTime, getContext()));
 
