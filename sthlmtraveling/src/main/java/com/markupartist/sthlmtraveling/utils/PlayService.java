@@ -20,7 +20,7 @@ package com.markupartist.sthlmtraveling.utils;
  * Created by johan on 02/03/15.
  */
 public interface PlayService {
-    public void onConnected();
+    void onConnected();
 
-    public void onStop();
+    void onStop();
 }

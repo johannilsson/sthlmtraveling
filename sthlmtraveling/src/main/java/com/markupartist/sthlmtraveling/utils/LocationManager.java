@@ -195,6 +195,6 @@ public class LocationManager implements PlayService, LocationListener {
          *
          * @param location the location, could be null
          */
-        public void onMyLocationFound(Location location);
+        void onMyLocationFound(Location location);
     }
 }
