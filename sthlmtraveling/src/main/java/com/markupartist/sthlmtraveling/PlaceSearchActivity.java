@@ -336,7 +336,7 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements LoaderM
 
     @Override
     protected void onDestroy() {
-        mHistoryDbAdapter.close();
+//        mHistoryDbAdapter.close();
         super.onDestroy();
     }
 
