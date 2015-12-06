@@ -125,6 +125,19 @@ public class DateTimeUtil {
         }
     }
 
+    public static CharSequence formatShortDuration(final Resources res, final long millis) {
+        if (millis >= HOUR_IN_MILLIS) {
+            final int hours = (int) ((millis + 1800000) / HOUR_IN_MILLIS);
+            return res.getQuantityString(R.plurals.duration_short_hours, hours, hours);
+        } else if (millis >= MINUTE_IN_MILLIS) {
+            final int minutes = (int) ((millis + 30000) / MINUTE_IN_MILLIS);
+            return res.getQuantityString(R.plurals.duration_short_minutes, minutes, minutes);
+        } else {
+            final int seconds = (int) ((millis + 500) / SECOND_IN_MILLIS);
+            return res.getQuantityString(R.plurals.duration_seconds, seconds, seconds);
+        }
+    }
+
     /**
      * Format duration without rounding. Seconds are still rounded though.
      *
@@ -145,11 +158,7 @@ public class DateTimeUtil {
             return resources.getQuantityString(R.plurals.duration_days, days, days);
         }
         if (hours > 0) {
-            if (minutes > 0) {
-                return resources.getString(R.string.duration_short_hours_minutes, hours, minutes);
-            } else {
-                return resources.getQuantityString(R.plurals.duration_short_hours, hours, hours);
-            }
+            return resources.getString(R.string.duration_short_hours_minutes, hours, minutes);
         }
         return resources.getQuantityString(R.plurals.duration_short_minutes, minutes, minutes);
     }
@@ -180,7 +189,7 @@ public class DateTimeUtil {
             // Try to convert minutes to millis.
             try {
                 long minutesConverted = Long.valueOf(minutes);
-                return formatDuration(context.getResources(), minutesConverted * 60000);
+                return formatShortDuration(context.getResources(), minutesConverted * 60000);
             } catch (NumberFormatException e) {
                 return displayTime;
             }

@@ -522,7 +522,7 @@ public class RouteDetailActivity extends BaseListActivity {
         private void inflateIntermediate(final SubTrip subTrip, final int position, final View convertView) {
             final ToggleButton btnIntermediateStops = (ToggleButton) convertView.findViewById(R.id.trip_btn_intermediate_stops);
 
-            CharSequence durationText = DateTimeUtil.formatDuration(getResources(), subTrip.getDurationMillis());
+            CharSequence durationText = DateTimeUtil.formatDetailedDuration(getResources(), subTrip.getDurationMillis());
             btnIntermediateStops.setText(durationText);
             btnIntermediateStops.setTextOn(durationText);
             btnIntermediateStops.setTextOff(durationText);
