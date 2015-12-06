@@ -1,12 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/search_progress"
-    style="@style/Container"
-    android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:gravity="center_horizontal|center_vertical"
+<LinearLayout android:id="@+id/search_progress"
+              style="@style/Container"
+              xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:gravity="center_horizontal|center_vertical"
+              android:orientation="vertical"
     >
+
+    <TextView
+        android:id="@+id/search_progress_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        style="@style/TextAppearance.AppCompat.Title"
+        android:visibility="gone"
+        android:textColor="?android:attr/textColorPrimary"
+        />
+
     <ProgressBar
         android:id="@+id/search_progress_bar"
         android:layout_width="match_parent"
@@ -14,12 +25,13 @@
         android:layout_gravity="center"
         android:indeterminate="true"
         android:indeterminateTint="@color/accent"
-        android:indeterminateTintMode="src_in" />
+        android:indeterminateTintMode="src_in"/>
 
-    <TextView android:id="@+id/search_progress_text"
+    <TextView
+        android:id="@+id/search_progress_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="8dp"
         android:textColor="?android:attr/textColorPrimary"
-    />
+        />
 </LinearLayout>

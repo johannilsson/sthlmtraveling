@@ -748,15 +748,35 @@ public class DeparturesActivity extends BaseFragmentActivity {
             View emptyView = getListView().getEmptyView();
             getListView().setEmptyView(emptyView);
 
+            int transportMode = getArguments().getInt(ARG_TRANSPORT_TYPE);
             if (mDepartureResult != null) {
                 TextView text = (TextView) emptyView.findViewById(R.id.search_progress_text);
                 text.setText(R.string.no_departures_for_transport_type);
+                TextView title = (TextView) emptyView.findViewById(R.id.search_progress_title);
+                title.setText(transportTypeToText(transportMode));
+                title.setVisibility(View.VISIBLE);
                 ProgressBar progressBar = (ProgressBar) emptyView.findViewById(R.id.search_progress_bar);
                 progressBar.setVisibility(View.GONE);
 
-                mSectionedAdapter.fillDepartures(mDepartureResult, getArguments().getInt(ARG_TRANSPORT_TYPE));
+                mSectionedAdapter.fillDepartures(mDepartureResult, transportMode);
             }
             setListAdapter(mSectionedAdapter);
+        }
+
+        String transportTypeToText(int transportMode) {
+            switch (transportMode) {
+                case TransportMode.BOAT_INDEX:
+                    return getString(R.string.boats);
+                case TransportMode.METRO_INDEX:
+                    return getString(R.string.metros);
+                case TransportMode.TRAM_INDEX:
+                    return getString(R.string.trams);
+                case TransportMode.BUS_INDEX:
+                    return getString(R.string.buses);
+                case TransportMode.TRAIN_INDEX:
+                    return getString(R.string.trains);
+            }
+            return "";
         }
 
         @Override
