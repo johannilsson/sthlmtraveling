@@ -138,62 +138,67 @@ public class ViewHelper {
     }
 
     @ColorInt
-    public static int getLineColor(Resources res, int transportMode, String lineNumber) {
+    public static int getLineColor(Context context, int transportMode,
+                                   String lineNumber, String lineName) {
         switch (transportMode) {
             case TransportMode.TRAM_INDEX:
                 if ("22".equals(lineNumber)) {
-                    return res.getColor(R.color.traffic_type_l22);
+                    return ContextCompat.getColor(context, R.color.traffic_type_l22);
                 } else if ("12".equals(lineNumber)) {
-                    return res.getColor(R.color.traffic_type_l12);
+                    return ContextCompat.getColor(context, R.color.traffic_type_l12);
                 } else if ("21".equals(lineNumber)) {
-                    return res.getColor(R.color.traffic_type_l21);
+                    return ContextCompat.getColor(context, R.color.traffic_type_l21);
                 } else if ("25".equals(lineNumber)
                         || "26".equals(lineNumber)) {
-                    return res.getColor(R.color.traffic_type_l2526);
+                    return ContextCompat.getColor(context, R.color.traffic_type_l2526);
                 } else if ("27".equals(lineNumber) || "27S".equals(lineNumber)
                         || "28".equals(lineNumber) || "28S".equals(lineNumber)
                         || "29".equals(lineNumber) || "29S".equals(lineNumber)) {
-                    return res.getColor(R.color.traffic_type_l272829);
+                    return ContextCompat.getColor(context, R.color.traffic_type_l272829);
                 }
-                return res.getColor(R.color.train);
+                return ContextCompat.getColor(context, R.color.train);
             case TransportMode.METRO_INDEX:
                 if ("17".equals(lineNumber)
                         || "18".equals(lineNumber)
                         || "19".equals(lineNumber)) {
-                    return res.getColor(R.color.metro_green);
+                    return ContextCompat.getColor(context, R.color.metro_green);
                 } else if ("13".contains(lineNumber)
                         || "14".contains(lineNumber)) {
-                    return res.getColor(R.color.metro_red);
+                    return ContextCompat.getColor(context, R.color.metro_red);
                 } else if ("10".contains(lineNumber)
                         || "11".contains(lineNumber)) {
-                    return res.getColor(R.color.metro_blue);
+                    return ContextCompat.getColor(context, R.color.metro_blue);
                 }
             case TransportMode.TRAIN_INDEX:
                 if ("35".equals(lineNumber)) {
-                    return res.getColor(R.color.traffic_type_j35);
+                    return ContextCompat.getColor(context, R.color.traffic_type_j35);
                 } else if ("36".equals(lineNumber)
                         || "37".equals(lineNumber)
                         || "38".equals(lineNumber)) {
-                    return res.getColor(R.color.traffic_type_j363738);
+                    return ContextCompat.getColor(context, R.color.traffic_type_j363738);
                 }
-                return res.getColor(R.color.train);
+                return ContextCompat.getColor(context, R.color.train);
             case TransportMode.BUS_INDEX:
                 if ("1".equals(lineNumber)) {
-                    return res.getColor(R.color.traffic_type_b1);
+                    return ContextCompat.getColor(context, R.color.traffic_type_b1);
                 } else if ("2".equals(lineNumber)) {
-                    return res.getColor(R.color.traffic_type_b2);
+                    return ContextCompat.getColor(context, R.color.traffic_type_b2);
                 } else if ("3".equals(lineNumber)) {
-                    return res.getColor(R.color.traffic_type_b3);
+                    return ContextCompat.getColor(context, R.color.traffic_type_b3);
                 } else if ("4".equals(lineNumber)) {
-                    return res.getColor(R.color.traffic_type_b4);
+                    return ContextCompat.getColor(context, R.color.traffic_type_b4);
                 }
+                if (lineName != null && lineName.contains("blå")) {
+                    return ContextCompat.getColor(context, R.color.traffic_type_b1);
+                }
+                return ContextCompat.getColor(context, R.color.bus_red);
         }
-        return res.getColor(R.color.train);
+        return ContextCompat.getColor(context, R.color.train);
     }
 
     public static Drawable getDrawableForTransport(Context context, int transportMode,
                                                    String lineName, String lineNumber) {
-        int color = ViewHelper.getLineColor(context.getResources(), transportMode, lineNumber);
+        int color = ViewHelper.getLineColor(context, transportMode, lineNumber, lineName);
         Drawable drawable;
         switch (transportMode) {
             case TransportMode.BUS_INDEX:

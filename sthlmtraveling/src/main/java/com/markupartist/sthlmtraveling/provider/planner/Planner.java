@@ -1071,7 +1071,7 @@ public class Planner {
         }
 
         public int getColor(final Context context) {
-            return ViewHelper.getLineColor(context.getResources(), TransportMode.getIndex(type), line);
+            return ViewHelper.getLineColor(context, TransportMode.getIndex(type), line, name);
         }
 
         @Override

@@ -251,6 +251,7 @@ public class DeparturesStore {
     public static class DisplayRow implements Serializable {
         public String destination;
         public String lineNumber;
+        public String lineName;
         public String displayTime;
         public String timeTabledDateTime;
         public String expectedDateTime;
@@ -261,6 +262,7 @@ public class DeparturesStore {
             return "DisplayRow{" +
                     "destination='" + destination + '\'' +
                     ", lineNumber='" + lineNumber + '\'' +
+                    ", lineNamer='" + lineName + '\'' +
                     ", displayTime='" + displayTime + '\'' +
                     ", timeTabledDateTime='" + timeTabledDateTime + '\'' +
                     ", expectedDateTime='" + expectedDateTime + '\'' +
@@ -277,6 +279,10 @@ public class DeparturesStore {
             if (json.has("line_number")) {
                 dr.lineNumber = json.isNull("line_number") ?
                         null : json.getString("line_number");
+            }
+            if (json.has("line_name")) {
+                dr.lineName = json.isNull("line_name") ?
+                        null : json.getString("line_name");
             }
             if (json.has("display_time")) {
                 dr.displayTime = json.isNull("display_time") ?

@@ -142,8 +142,8 @@ public class DepartureAdapter extends SectionedAdapter {
             TextDrawable d = TextDrawable.builder(getContext())
                     .buildRound(displayRow.lineNumber,
                             ViewHelper.getLineColor(
-                                    getContext().getResources(),
-                                    mTransportType, displayRow.lineNumber));
+                                    getContext(),
+                                    mTransportType, displayRow.lineNumber, displayRow.lineName));
             holder.lineView.setImageDrawable(d);
 
             String destination = displayRow.destination;
