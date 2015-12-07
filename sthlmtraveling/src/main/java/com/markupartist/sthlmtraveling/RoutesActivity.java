@@ -21,8 +21,6 @@ import android.app.Dialog;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.database.Cursor;
 import android.location.Location;
@@ -43,7 +41,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager.BadTokenException;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.DecelerateInterpolator;
@@ -106,11 +103,6 @@ public class RoutesActivity extends BaseListActivity implements
     private final String TAG = "RoutesActivity";
 
     private static final int DIALOG_ILLEGAL_PARAMETERS = 0;
-    private static final int DIALOG_GET_EARLIER_ROUTES_NETWORK_PROBLEM = 2;
-    private static final int DIALOG_GET_LATER_ROUTES_NETWORK_PROBLEM = 3;
-    private static final int DIALOG_GET_ROUTES_SESSION_TIMEOUT = 4;
-    private static final int DIALOG_SEARCH_ROUTES_NO_RESULT = 5;
-    private static final int DIALOG_SEARCH_ROUTES_ERROR = 8;
     private static final int DIALOG_BUY_SMS_TICKET = 9;
 
     protected static final int REQUEST_CODE_CHANGE_TIME = 0;
@@ -229,7 +221,7 @@ public class RoutesActivity extends BaseListActivity implements
         mRouteAlternativesView.findViewById(R.id.route_car).setOnClickListener(this);
 
         mLoadingRoutesViews = mRouteAlternativesView.findViewById(R.id.loading_routes);
-        if (mPlannerResponse == null) {
+        if (mPlannerResponse == null && mRouteErrorCode == null) {
             showProgress();
         }
 
@@ -374,9 +366,10 @@ public class RoutesActivity extends BaseListActivity implements
      * Ask for a fresh location if needed.
      */
     void maybeRequestLocationUpdate() {
-        if ((mJourneyQuery.origin.isMyLocation() && !mJourneyQuery.origin.hasLocation())
+        if ((mJourneyQuery.origin.isMyLocation()
+                && !mJourneyQuery.origin.hasLocation())
                 || (mJourneyQuery.destination.isMyLocation()
-                        && !mJourneyQuery.destination.hasLocation())) {
+                && !mJourneyQuery.destination.hasLocation())) {
             mMyLocationManager.requestLocation();
         }
     }
@@ -390,8 +383,17 @@ public class RoutesActivity extends BaseListActivity implements
         if (mPlannerResponse != null) {
             fetchRouteAlternatives(mJourneyQuery);
             onSearchRoutesResult(mPlannerResponse);
+        } else if (mRouteErrorCode != null) {
+            showErrorForPublicTransport(getString(Planner.plannerErrorCodeToStringRes(mRouteErrorCode)));
+            fetchRouteAlternatives(mJourneyQuery);
         } else {
-            if (!journeyQuery.origin.isMyLocation() && !journeyQuery.destination.isMyLocation()) {
+            // Fetch if origin or destination is not my location
+            // Fetch if origin or destination is my location and has a location
+            // If none of these are true we rely on the location manager to give us an callback
+            // with a proper location that will trigger a new query.
+            if ((!journeyQuery.origin.isMyLocation() && !journeyQuery.destination.isMyLocation())
+                    || ((mJourneyQuery.origin.isMyLocation() && mJourneyQuery.origin.hasLocation())
+                    || (mJourneyQuery.destination.isMyLocation() && mJourneyQuery.destination.hasLocation()))) {
                 mSearchRoutesTask = new SearchRoutesTask();
                 mSearchRoutesTask.execute(mJourneyQuery);
                 fetchRouteAlternatives(mJourneyQuery);
@@ -669,6 +671,7 @@ public class RoutesActivity extends BaseListActivity implements
     }
 
     public void onSearchRoutesResult(Planner.Response response) {
+        mRouteErrorCode = null;
         mPlannerResponse = response;
         mJourneyQuery.ident = response.ident;
         mJourneyQuery.seqnr = response.seqnr;
@@ -851,41 +854,6 @@ public class RoutesActivity extends BaseListActivity implements
                         .setMessage(getText(R.string.bad_routes_parameters_message))
                         .setCancelable(true)
                         .setNeutralButton(getText(android.R.string.ok), null)
-                        .create();
-            case DIALOG_GET_EARLIER_ROUTES_NETWORK_PROBLEM:
-                return DialogHelper.createNetworkProblemDialog(this, new OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        mGetEarlierRoutesTask = new GetEarlierRoutesTask();
-                        mGetEarlierRoutesTask.execute(mJourneyQuery);
-                    }
-                });
-            case DIALOG_GET_LATER_ROUTES_NETWORK_PROBLEM:
-                return DialogHelper.createNetworkProblemDialog(this, new OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        mGetLaterRoutesTask = new GetLaterRoutesTask();
-                        mGetLaterRoutesTask.execute(mJourneyQuery);
-                    }
-                });
-            case DIALOG_GET_ROUTES_SESSION_TIMEOUT:
-                return new AlertDialog.Builder(this)
-                        .setIcon(android.R.drawable.ic_dialog_alert)
-                        .setTitle(getText(R.string.attention_label))
-                        .setMessage(getText(R.string.session_timeout_message))
-                        .setNeutralButton(getText(android.R.string.ok), null)
-                        .create();
-            case DIALOG_SEARCH_ROUTES_NO_RESULT:
-                return new AlertDialog.Builder(this)
-                        .setTitle(getText(R.string.no_routes_found_label))
-                        .setMessage(getText(R.string.no_routes_found_message))
-                        .setPositiveButton(getText(R.string.back), new OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                finish();
-                            }
-                        })
-                        .setNegativeButton(getText(R.string.cancel), null)
                         .create();
             case DIALOG_BUY_SMS_TICKET:
                 return SmsTicketDialog.createDialog(this, mPlannerResponse.getTariffZones());
@@ -1136,24 +1104,17 @@ public class RoutesActivity extends BaseListActivity implements
                 } else {
                     mEmptyView.setVisibility(View.GONE);
                     mRouteErrorCode = mErrorCode;
-                    try {
-                        showDialog(DIALOG_SEARCH_ROUTES_ERROR);
-                    } catch (BadTokenException e) {
-                        Log.w(TAG, "Caught BadTokenException when trying to show routes error dialog.");
-                    }
+                    showErrorForPublicTransport(getString(Planner.plannerErrorCodeToStringRes(mRouteErrorCode)));
                 }
             } else {
                 mEmptyView.setVisibility(View.GONE);
-                try {
-                    showDialog(DIALOG_SEARCH_ROUTES_NO_RESULT);
-                } catch (BadTokenException e) {
-                    Log.w(TAG, "Caught BadTokenException when trying to no results dialog.");
-                }
+                showErrorForPublicTransport(getString(R.string.no_routes_found_message));
             }
         }
     }
 
     public void showErrorForPublicTransport(String message) {
+        dismissProgress();
         Snackbar.make(getListView(), message, Snackbar.LENGTH_INDEFINITE)
                 .setAction(R.string.retry, new View.OnClickListener() {
                     @Override
@@ -1199,25 +1160,13 @@ public class RoutesActivity extends BaseListActivity implements
                 onSearchRoutesResult(result);
             } else if (!mWasSuccess) {
                 if (TextUtils.isEmpty(mErrorCode)) {
-                    try {
-                        showDialog(DIALOG_GET_EARLIER_ROUTES_NETWORK_PROBLEM);
-                    } catch (BadTokenException e) {
-                        Log.w(TAG, "Caught BadTokenException when trying to show network error dialog.");
-                    }
+                    showErrorForPublicTransport(getString(R.string.network_problem_message));
                 } else {
                     mRouteErrorCode = mErrorCode;
-                    try {
-                        showErrorForPublicTransport(getString(Planner.plannerErrorCodeToStringRes(mRouteErrorCode)));
-                    } catch (BadTokenException e) {
-                        Log.w(TAG, "Caught BadTokenException when trying to show routes error dialog.");
-                    }
+                    showErrorForPublicTransport(getString(Planner.plannerErrorCodeToStringRes(mRouteErrorCode)));
                 }
             } else {
-                try {
-                    showDialog(DIALOG_GET_ROUTES_SESSION_TIMEOUT);
-                } catch (BadTokenException e) {
-                    Log.w(TAG, "Caught BadTokenException when trying to show session timeout dialog.");
-                }
+                showErrorForPublicTransport(getString(R.string.session_timeout_message));
             }
         }
     }
@@ -1255,25 +1204,13 @@ public class RoutesActivity extends BaseListActivity implements
                 onSearchRoutesResult(result);
             } else if (!mWasSuccess) {
                 if (TextUtils.isEmpty(mErrorCode)) {
-                    try {
-                        showDialog(DIALOG_GET_EARLIER_ROUTES_NETWORK_PROBLEM);
-                    } catch (BadTokenException e) {
-                        Log.w(TAG, "Caught BadTokenException when trying to show network error dialog.");
-                    }
+                    showErrorForPublicTransport(getString(R.string.network_problem_message));
                 } else {
                     mRouteErrorCode = mErrorCode;
-                    try {
-                        showErrorForPublicTransport(getString(Planner.plannerErrorCodeToStringRes(mRouteErrorCode)));
-                    } catch (BadTokenException e) {
-                        Log.w(TAG, "Caught BadTokenException when trying to show routes error dialog.");
-                    }
+                    showErrorForPublicTransport(getString(Planner.plannerErrorCodeToStringRes(mRouteErrorCode)));
                 }
             } else {
-                try {
-                    showDialog(DIALOG_GET_ROUTES_SESSION_TIMEOUT);
-                } catch (BadTokenException e) {
-                    Log.w(TAG, "Caught BadTokenException when trying to show session timeout dialog.");
-                }
+                showErrorForPublicTransport(getString(R.string.session_timeout_message));
             }
         }
     }
