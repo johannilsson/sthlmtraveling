@@ -639,6 +639,10 @@ public class PlannerFragment extends BaseListFragment implements LoaderManager.L
                         Log.d(TAG, "Got endpoint: " + mEndPoint.toDump());
                         mEndPointAutoComplete.setText(mEndPoint.getName());
                         mEndPointAutoComplete.requestLayout();
+
+                        if (mStartPoint.looksValid() && !mCreateShortcut) {
+                            handleSearchAction();
+                        }
                     }
                 }
                 break;
