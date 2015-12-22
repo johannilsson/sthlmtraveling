@@ -643,7 +643,7 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements LoaderM
             }
             if (place.hasType()) {
                 if (place.isTransitStop()) {
-                    holder.icon.setImageResource(R.drawable.ic_transport_metro_20dp);
+                    holder.icon.setImageResource(R.drawable.ic_transport_transit_20dp);
                 } else {
                     holder.icon.setImageResource(R.drawable.ic_place_24dp);
 //                    holder.icon.setImageResource(R.drawable.ic_transport_bus_24dp);
