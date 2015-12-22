@@ -65,10 +65,10 @@ android {
 
     defaultConfig {
         minSdkVersion 9
-        targetSdkVersion 22
+        targetSdkVersion 23
         applicationId "com.markupartist.sthlmtraveling"
-        versionName "2.14.10-beta"
-        versionCode 173
+        versionName "2.15.0"
+        versionCode 176
 
         buildConfigField "boolean", "APP_IS_ADS_ENABLED", buildProperties['IS_ADS_ENABLED']
         buildConfigField "String", "APP_WIDESPACE_SID", buildProperties['WIDESPACE_SID']
