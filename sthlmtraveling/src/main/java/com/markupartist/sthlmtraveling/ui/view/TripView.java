@@ -17,11 +17,15 @@
 package com.markupartist.sthlmtraveling.ui.view;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.v4.text.BidiFormatter;
 import android.support.v4.view.ViewCompat;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -33,11 +37,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.markupartist.sthlmtraveling.R;
-import com.markupartist.sthlmtraveling.provider.deviation.DeviationStore;
 import com.markupartist.sthlmtraveling.provider.planner.Planner;
 import com.markupartist.sthlmtraveling.utils.RtlUtils;
+import com.markupartist.sthlmtraveling.utils.ViewHelper;
+import com.markupartist.sthlmtraveling.utils.text.RoundedBackgroundSpan;
 
-import java.util.ArrayList;
 import java.util.Locale;
 
 /**
@@ -130,15 +134,21 @@ public class TripView extends LinearLayout {
             routeChanges.addView(changeImageView);
 
             if (currentTransportCount <= 3) {
-                ArrayList<Integer> lineNumbers = new ArrayList<>();
-                lineNumbers = DeviationStore.extractLineNumbers(subTrip.transport.name, lineNumbers);
-                if (!lineNumbers.isEmpty()) {
+                String lineName = subTrip.transport.getLineName();
+                if (!TextUtils.isEmpty(lineName)) {
                     TextView lineNumberView = new TextView(getContext());
-                    lineNumberView.setTextColor(getResources().getColor(R.color.body_text_1));
-                    lineNumberView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 13);
-                    lineNumberView.setTypeface(Typeface.DEFAULT_BOLD);
-                    lineNumberView.setText(Integer.toString(lineNumbers.get(0)));
-                    ViewCompat.setPaddingRelative(lineNumberView, (int) (5 * scale), 0, (int) (2 * scale), 0);
+                    lineNumberView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
+                    RoundedBackgroundSpan roundedBackgroundSpan = new RoundedBackgroundSpan(
+                            subTrip.transport.getColor(getContext()),
+                            Color.WHITE,
+                            ViewHelper.dipsToPix(getContext().getResources(), 4));
+                    SpannableStringBuilder sb = new SpannableStringBuilder();
+                    sb.append(lineName);
+                    sb.append(' ');
+                    sb.setSpan(roundedBackgroundSpan, 0, lineName.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+                    lineNumberView.setText(sb);
+
+                    ViewCompat.setPaddingRelative(lineNumberView, (int) (5 * scale), 4, (int) (2 * scale), 0);
                     lineNumberView.setLayoutParams(changesLayoutParams);
                     routeChanges.addView(lineNumberView);
                 }
@@ -147,7 +157,7 @@ public class TripView extends LinearLayout {
             if (transportCount > currentTransportCount) {
                 ImageView separator = new ImageView(getContext());
                 separator.setImageResource(R.drawable.transport_separator);
-                ViewCompat.setPaddingRelative(separator, (int) (5 * scale), 0, (int) (5 * scale), 0);
+                ViewCompat.setPaddingRelative(separator, (int) (2 * scale), 0, (int) (5 * scale), 0);
                 separator.setLayoutParams(changesLayoutParams);
                 routeChanges.addView(separator);
                 if (RtlUtils.isRtl(Locale.getDefault())) {

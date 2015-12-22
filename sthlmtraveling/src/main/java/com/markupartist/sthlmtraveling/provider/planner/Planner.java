@@ -1056,10 +1056,10 @@ public class Planner {
             if (json.has("name")) {
                 t.name = json.getString("name");
             }
-            if (json.has("towards")) {
+            if (json.has("towards") && !json.isNull("towards")) {
                 t.towards = json.getString("towards");
             }
-            if (json.has("line")) {
+            if (json.has("line") && !json.isNull("line")) {
                 t.line = json.getString("line");
             }
             t.type = json.getString("type");
@@ -1072,6 +1072,10 @@ public class Planner {
 
         public int getColor(final Context context) {
             return ViewHelper.getLineColor(context, TransportMode.getIndex(type), line, name);
+        }
+
+        public String getLineName() {
+            return ViewHelper.getLineName(TransportMode.getIndex(type), line);
         }
 
         @Override

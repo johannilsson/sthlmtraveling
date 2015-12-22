@@ -1,12 +1,14 @@
 package com.markupartist.sthlmtraveling;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.markupartist.sthlmtraveling.provider.TransportMode;
@@ -19,7 +21,7 @@ import com.markupartist.sthlmtraveling.provider.departure.DeparturesStore.TrainD
 import com.markupartist.sthlmtraveling.provider.departure.DeparturesStore.TramDeparture;
 import com.markupartist.sthlmtraveling.utils.DateTimeUtil;
 import com.markupartist.sthlmtraveling.utils.ViewHelper;
-import com.markupartist.sthlmtraveling.utils.text.TextDrawable;
+import com.markupartist.sthlmtraveling.utils.text.RoundedBackgroundSpan;
 
 import java.util.List;
 
@@ -139,12 +141,28 @@ public class DepartureAdapter extends SectionedAdapter {
                 holder = (ViewHolder) convertView.getTag();
             }
 
-            TextDrawable d = TextDrawable.builder(getContext())
-                    .buildRound(displayRow.lineNumber,
-                            ViewHelper.getLineColor(
-                                    getContext(),
-                                    mTransportType, displayRow.lineNumber, displayRow.lineName));
-            holder.lineView.setImageDrawable(d);
+//            TextDrawable d = TextDrawable.builder(getContext())
+//                    .buildRound(ViewHelper.getLineName(mTransportType, displayRow.lineNumber),
+//                            ViewHelper.getLineColor(
+//                                    getContext(),
+//                                    mTransportType,
+//                                    displayRow.lineNumber,
+//                                    displayRow.lineName));
+//            holder.lineView.setImageDrawable(d);
+
+            String lineName = ViewHelper.getLineName(mTransportType, displayRow.lineNumber);
+            if (TextUtils.isEmpty(lineName)) {
+                lineName = "";
+            }
+            RoundedBackgroundSpan roundedBackgroundSpan = new RoundedBackgroundSpan(
+                    ViewHelper.getLineColor(getContext(), mTransportType, displayRow.lineNumber, displayRow.lineName),
+                    Color.WHITE,
+                    ViewHelper.dipsToPix(getContext().getResources(), 4));
+            SpannableStringBuilder sb = new SpannableStringBuilder();
+            sb.append(lineName);
+            sb.append(' ');
+            sb.setSpan(roundedBackgroundSpan, 0, lineName.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+            holder.lineView.setText(sb);
 
             String destination = displayRow.destination;
             if (!TextUtils.isEmpty(displayRow.message) &&
@@ -166,12 +184,12 @@ public class DepartureAdapter extends SectionedAdapter {
     }
 
     public static class ViewHolder {
-        ImageView lineView;
+        TextView lineView;
         TextView destinationView;
         TextView timeToDisplayView;
 
         public ViewHolder(View view) {
-            lineView = (ImageView) view.findViewById(R.id.departure_line);
+            lineView = (TextView) view.findViewById(R.id.departure_line);
             destinationView = (TextView) view.findViewById(R.id.departure_destination);
             timeToDisplayView = (TextView) view.findViewById(R.id.departure_timeToDisplay);
         }

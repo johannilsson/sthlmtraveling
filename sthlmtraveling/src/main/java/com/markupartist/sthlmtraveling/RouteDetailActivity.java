@@ -21,6 +21,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.location.Location;
 import android.net.Uri;
@@ -64,6 +65,9 @@ import com.markupartist.sthlmtraveling.utils.AdProxy;
 import com.markupartist.sthlmtraveling.utils.Analytics;
 import com.markupartist.sthlmtraveling.utils.DateTimeUtil;
 import com.markupartist.sthlmtraveling.utils.RtlUtils;
+import com.markupartist.sthlmtraveling.utils.ViewHelper;
+import com.markupartist.sthlmtraveling.utils.text.RoundedBackgroundSpan;
+import com.markupartist.sthlmtraveling.utils.text.SpanUtils;
 
 import org.json.JSONException;
 
@@ -71,6 +75,7 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.regex.Pattern;
 
 public class RouteDetailActivity extends BaseListActivity {
     public static final String TAG = "RouteDetailActivity";
@@ -634,8 +639,14 @@ public class RouteDetailActivity extends BaseListActivity {
                 description = getString(R.string.trip_description_walk);
             } else {
                 description = getString(R.string.trip_description_normal,
-                        subTrip.transport.name,
+                        subTrip.transport.getLineName(),
                         subTrip.transport.towards);
+                RoundedBackgroundSpan roundedBackgroundSpan = new RoundedBackgroundSpan(
+                        subTrip.transport.getColor(getContext()),
+                        Color.WHITE,
+                        ViewHelper.dipsToPix(getContext().getResources(), 4));
+                Pattern pattern = Pattern.compile(subTrip.transport.getLineName());
+                description = SpanUtils.createSpannable(description, pattern, roundedBackgroundSpan);
             }
             return description;
         }

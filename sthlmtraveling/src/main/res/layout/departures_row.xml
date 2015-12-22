@@ -24,24 +24,38 @@
     >
 
     <!--<TextView-->
-        <!--android:id="@+id/departure_line"-->
-        <!--android:layout_width="40dp"-->
-        <!--android:layout_height="40dp"-->
-        <!--android:layout_centerVertical="true"-->
-        <!--android:layout_marginRight="16dp"-->
-        <!--android:layout_marginLeft="16dp"-->
-        <!--android:gravity="center"-->
-        <!--tools:text="18"-->
-        <!--android:background="@drawable/circular_placeholder"-->
-        <!--/>-->
-    <ImageView
+    <!--android:id="@+id/departure_line"-->
+    <!--android:layout_width="40dp"-->
+    <!--android:layout_height="40dp"-->
+    <!--android:layout_centerVertical="true"-->
+    <!--android:layout_marginRight="16dp"-->
+    <!--android:layout_marginLeft="16dp"-->
+    <!--android:gravity="center"-->
+    <!--tools:text="18"-->
+    <!--android:background="@drawable/circular_placeholder"-->
+    <!--/>-->
+
+    <TextView
         android:id="@+id/departure_line"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="56dp"
+        android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_marginRight="16dp"
         android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
+        tools:text="B422X"
+        android:ellipsize="end"
+        android:textSize="13sp"
+        android:singleLine="true"
         />
+
+    <!--<ImageView-->
+    <!--android:id="@+id/departure_line"-->
+    <!--android:layout_width="40dp"-->
+    <!--android:layout_height="40dp"-->
+    <!--android:layout_centerVertical="true"-->
+    <!--android:layout_marginRight="16dp"-->
+    <!--android:layout_marginLeft="16dp"-->
+    <!--/>-->
 
     <TextView
         android:id="@+id/departure_timeToDisplay"
@@ -52,8 +66,8 @@
         android:layout_centerVertical="true"
         android:paddingLeft="@dimen/list_horizontal_padding"
         android:paddingRight="@dimen/list_horizontal_padding"
-        android:textColor="@color/body_text_1"
         android:textAppearance="?attr/textAppearanceListItemSmall"
+        android:textColor="@color/body_text_1"
         android:visibility="visible"
         tools:text="1 min"/>
 
@@ -61,8 +75,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_toEndOf="@id/departure_line"
-        android:layout_toRightOf="@id/departure_line"
+        android:layout_marginLeft="72dp"
+        android:layout_marginStart="72dp"
         android:orientation="vertical"
         >
 
@@ -86,8 +100,8 @@
             android:textColor="@color/body_text_2"
             android:textSize="14sp"
             android:visibility="gone"
-            tools:visibility="gone"
-            tools:text="Sample sub title"/>
+            tools:text="Sample sub title"
+            tools:visibility="gone"/>
 
     </LinearLayout>
 

@@ -116,7 +116,7 @@
     <string name="sms_ticket_notice_message">Please verify the details before you buy your ticket. STHLM Traveling can\'t guarantee that the ticket is valid for your journey.</string>
     <string name="sms_ticket_notice_disabled">SMS tickets is not available for this route.</string>
     <string name="trip_description_walk" formatted="false">Walk</string>
-    <string name="trip_description_normal" formatted="false">Take <xliff:g id="transport">%1$s</xliff:g> towards <xliff:g id="towards">%2$s</xliff:g>.</string>
+    <string name="trip_description_normal" formatted="false"><xliff:g id="transport">%1$s</xliff:g> towards <xliff:g id="towards">%2$s</xliff:g>.</string>
     <string name="trip_map_description_walk" formatted="false"><xliff:g id="time">%1$s</xliff:g> Walk to <xliff:g id="stop">%2$s</xliff:g></string>
     <string name="trip_map_description_normal" formatted="false"><xliff:g id="time">%1$s</xliff:g> <xliff:g id="transport">%2$s</xliff:g> towards <xliff:g id="towards">%3$s</xliff:g>.</string>
     <string name="show_all">Show all</string>

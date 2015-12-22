@@ -14,6 +14,7 @@ import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.View;
@@ -137,6 +138,27 @@ public class ViewHelper {
                 res.getDisplayMetrics());
     }
 
+    public static String getLineName(int transportMode, String lineNumber) {
+        // Will be moved to the new API.
+        if (TextUtils.isEmpty(lineNumber)) {
+            return null;
+        }
+        switch (transportMode) {
+            case TransportMode.TRAM_INDEX:
+                if ("7".equals(lineNumber)) {
+                    return "S" + lineNumber;
+                }
+                return "L" + lineNumber;
+            case TransportMode.METRO_INDEX:
+                return "T" + lineNumber;
+            case TransportMode.TRAIN_INDEX:
+                return "J" + lineNumber;
+            case TransportMode.BUS_INDEX:
+                return "B" + lineNumber;
+        }
+        return lineNumber;
+    }
+
     @ColorInt
     public static int getLineColor(Context context, int transportMode,
                                    String lineNumber, String lineName) {
@@ -196,7 +218,7 @@ public class ViewHelper {
         return ContextCompat.getColor(context, R.color.train);
     }
 
-    public static Drawable getDrawableForTransport(Context context, int transportMode,
+    public static Drawable getColoredDrawableForTransport(Context context, int transportMode,
                                                    String lineName, String lineNumber) {
         int color = ViewHelper.getLineColor(context, transportMode, lineNumber, lineName);
         Drawable drawable;
@@ -222,11 +244,42 @@ public class ViewHelper {
                 return ViewHelper.tintIcon(drawable, color);
             case TransportMode.BOAT_INDEX:
                 drawable = ContextCompat.getDrawable(context, R.drawable.ic_transport_boat_20dp);
-                return ViewHelper.tintIcon(drawable, context.getResources().getColor(R.color.traffic_type_b4));
+                return ViewHelper.tintIcon(drawable, ContextCompat.getColor(context, R.color.traffic_type_b4));
             default:
                 // What to use when we don't know..
                 drawable = ContextCompat.getDrawable(context, R.drawable.ic_transport_train_20dp);
         }
         return ViewHelper.tintIcon(drawable, ContextCompat.getColor(context, R.color.train));
+    }
+
+    public static Drawable getDrawableForTransport(Context context, int transportMode,
+                                                   String lineName, String lineNumber) {
+        int color = ContextCompat.getColor(context, R.color.icon_default);
+        Drawable drawable;
+        switch (transportMode) {
+            case TransportMode.BUS_INDEX:
+            case TransportMode.NAR_INDEX:
+                drawable = ContextCompat.getDrawable(context, R.drawable.ic_transport_bus_20dp);
+                return ViewHelper.tintIcon(drawable, color);
+            case TransportMode.METRO_INDEX:
+                drawable = ContextCompat.getDrawable(context, R.drawable.ic_transport_metro_20dp);
+                return ViewHelper.tintIcon(drawable, color);
+            case TransportMode.FOOT_INDEX:
+                drawable = ContextCompat.getDrawable(context, R.drawable.ic_transport_walk_20dp);
+                return ViewHelper.tintIcon(drawable, ContextCompat.getColor(context, R.color.icon_default));
+            case TransportMode.TRAIN_INDEX:
+                drawable = ContextCompat.getDrawable(context, R.drawable.ic_transport_train_20dp);
+                return ViewHelper.tintIcon(drawable, color);
+            case TransportMode.TRAM_INDEX:
+                drawable = ContextCompat.getDrawable(context, R.drawable.ic_transport_light_train_20dp);
+                return ViewHelper.tintIcon(drawable, color);
+            case TransportMode.BOAT_INDEX:
+                drawable = ContextCompat.getDrawable(context, R.drawable.ic_transport_boat_20dp);
+                return ViewHelper.tintIcon(drawable, color);
+            default:
+                // What to use when we don't know..
+                drawable = ContextCompat.getDrawable(context, R.drawable.ic_transport_train_20dp);
+        }
+        return ViewHelper.tintIcon(drawable, color);
     }
 }
