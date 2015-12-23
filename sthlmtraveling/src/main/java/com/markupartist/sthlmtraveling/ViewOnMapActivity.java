@@ -27,13 +27,14 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.os.Bundle;
 import android.support.annotation.ColorInt;
+import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -68,7 +69,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class ViewOnMapActivity extends AppCompatActivity implements OnMapReadyCallback {
+public class ViewOnMapActivity extends BaseFragmentActivity implements OnMapReadyCallback {
 
     private static final String TAG = "ViewOnMapActivity";
     public static String EXTRA_LOCATION = "com.markupartist.sthlmtraveling.extra.Location";
@@ -126,11 +127,7 @@ public class ViewOnMapActivity extends AppCompatActivity implements OnMapReadyCa
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // TODO: Use transparent action bar, fix location of my location btn.
-
         Analytics.getInstance(this).registerScreen("View on map");
-        //requestWindowFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
-//        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         setContentView(R.layout.map);
 
         ActionBar actionBar = getSupportActionBar();
@@ -274,6 +271,24 @@ public class ViewOnMapActivity extends AppCompatActivity implements OnMapReadyCa
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onLocationPermissionGranted() {
+        mMap.setMyLocationEnabled(true);
+    }
+
+    @Override
+    public void onLocationPermissionRationale() {
+        Snackbar.make(findViewById(R.id.map), R.string.permission_location_needed_maps,
+                Snackbar.LENGTH_INDEFINITE)
+                .setAction(R.string.allow, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        requestLocationPermission();
+                    }
+                })
+                .show();
+    }
+
     /**
      * This is where we can add markers or lines, add listeners or move the camera. In this case, we
      * just add a marker near Africa.
@@ -294,7 +309,7 @@ public class ViewOnMapActivity extends AppCompatActivity implements OnMapReadyCa
         settings.setAllGesturesEnabled(true);
         settings.setMapToolbarEnabled(false);
 
-        mMap.setMyLocationEnabled(true);
+        verifyLocationPermission();
     }
 
     private void showRoute() {

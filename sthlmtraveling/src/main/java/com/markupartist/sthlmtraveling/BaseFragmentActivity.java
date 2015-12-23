@@ -1,9 +1,14 @@
 package com.markupartist.sthlmtraveling;
 
+import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -24,6 +29,7 @@ import java.util.Map;
 
 public class BaseFragmentActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
+    public static final int PERMISSIONS_REQUEST_LOCATION = 100;
     private Toolbar mActionBarToolbar;
 
     private List<PlayService> mPlayServices;
@@ -175,5 +181,57 @@ public class BaseFragmentActivity extends AppCompatActivity implements GoogleApi
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
         PlayServicesUtils.checkGooglePlaySevices(this);
+    }
+
+    public void verifyLocationPermission() {
+        int permissionCheck = ContextCompat.checkSelfPermission(
+                this, Manifest.permission.ACCESS_FINE_LOCATION);
+        if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.ACCESS_FINE_LOCATION)) {
+                onLocationPermissionRationale();
+            } else {
+                requestLocationPermission();
+            }
+        } else {
+            onLocationPermissionGranted();
+        }
+    }
+
+    public void requestLocationPermission() {
+        ActivityCompat.requestPermissions(this,
+                new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                PERMISSIONS_REQUEST_LOCATION);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSIONS_REQUEST_LOCATION: {
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // Permission granted.
+                    onLocationPermissionGranted();
+                } else {
+                    // Permission was denied.
+                    if (!ActivityCompat.shouldShowRequestPermissionRationale(
+                            this, Manifest.permission.READ_CONTACTS)) {
+                        // If the user has selected don't show again
+                        onLocationPermissionDontShowAgain();
+                    }
+                }
+            }
+            break;
+        }
+
+    }
+
+    public void onLocationPermissionGranted() {
+    }
+
+    public void onLocationPermissionRationale() {
+    }
+
+    public void onLocationPermissionDontShowAgain() {
     }
 }

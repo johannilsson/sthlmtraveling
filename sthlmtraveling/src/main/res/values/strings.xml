@@ -250,5 +250,8 @@
     <string name="ads_turn_off">Turn off ads</string>
     <string name="ads_message">This app has remained ad free since 2009, during the years the cost for servers and maintenance has increased.\n\nTo be able to continue the development and give the support needed ads is sometimes shown.\n\nIf you have problems with the ads it’s possible to turn them off below. In the future there might be a small fee related to turning off ads instead.\n\nThanks for your support!\nJohan</string>
     <string name="ads_summary">Why does this app have ads?</string>
+    <string name="permission_location_needed_search">Enable the Location permission to search with your location</string>
+    <string name="permission_location_needed_maps">Enable the Location permission to see your location on the map</string>
+    <string name="allow">Allow</string>
 
 </resources>

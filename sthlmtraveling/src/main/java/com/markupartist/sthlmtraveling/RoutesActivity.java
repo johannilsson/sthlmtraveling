@@ -67,6 +67,7 @@ import com.markupartist.sthlmtraveling.ui.view.SmsTicketDialog;
 import com.markupartist.sthlmtraveling.ui.view.TripView;
 import com.markupartist.sthlmtraveling.utils.Analytics;
 import com.markupartist.sthlmtraveling.utils.DateTimeUtil;
+import com.markupartist.sthlmtraveling.utils.IntentUtil;
 import com.markupartist.sthlmtraveling.utils.LocationManager;
 import com.markupartist.sthlmtraveling.utils.ViewHelper;
 
@@ -195,12 +196,44 @@ public class RoutesActivity extends BaseListActivity implements
         ViewHelper.tintIcon(mTimeAndDate.getCompoundDrawables()[0],
                 getResources().getColor(R.color.primary_light));
 
-        maybeRequestLocationUpdate();
         initActionBar();
         updateStartAndEndPointViews(mJourneyQuery);
         updateJourneyHistory();
         initListView();
         initAutoHideHeader(getListView());
+        maybeRequestLocationUpdate();
+    }
+
+    @Override
+    public void onLocationPermissionGranted() {
+        showProgress();
+        mMyLocationManager.requestLocation();
+    }
+
+    @Override
+    public void onLocationPermissionRationale() {
+        dismissProgress();
+        Snackbar.make(getListView(), R.string.permission_location_needed_search, Snackbar.LENGTH_INDEFINITE)
+                .setAction(R.string.allow, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        requestLocationPermission();
+                    }
+                })
+                .show();
+    }
+
+    @Override
+    public void onLocationPermissionDontShowAgain() {
+        dismissProgress();
+        Snackbar.make(getListView(), R.string.permission_location_needed_search, Snackbar.LENGTH_INDEFINITE)
+                .setAction(R.string.allow, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        IntentUtil.openSettings(RoutesActivity.this);
+                    }
+                })
+                .show();
     }
 
     public void updateRouteAlternatives(Plan plan) {
@@ -370,7 +403,7 @@ public class RoutesActivity extends BaseListActivity implements
                 && !mJourneyQuery.origin.hasLocation())
                 || (mJourneyQuery.destination.isMyLocation()
                 && !mJourneyQuery.destination.hasLocation())) {
-            mMyLocationManager.requestLocation();
+            verifyLocationPermission();
         }
     }
 
@@ -965,6 +998,9 @@ public class RoutesActivity extends BaseListActivity implements
         if (mLoadingRoutesViews != null && mRouteAdapter.getDataItemCount() == 0) {
             mLoadingRoutesViews.setVisibility(View.VISIBLE);
         }
+        if (mPlannerResponse == null) {
+            mEmptyView.setVisibility(View.VISIBLE);
+        }
     }
 
     /**
@@ -974,6 +1010,7 @@ public class RoutesActivity extends BaseListActivity implements
         if (mLoadingRoutesViews != null) {
             mLoadingRoutesViews.setVisibility(View.GONE);
         }
+        mEmptyView.setVisibility(View.GONE);
     }
 
     protected void initAutoHideHeader(ListView listView) {

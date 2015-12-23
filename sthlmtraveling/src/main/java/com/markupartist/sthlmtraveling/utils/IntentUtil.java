@@ -20,6 +20,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
+import android.provider.Settings;
 import android.provider.Telephony;
 
 /**
@@ -42,5 +43,13 @@ public class IntentUtil {
             intent.putExtra("sms_body", textBody);
             context.startActivity(intent);
         }
+    }
+
+    public static void openSettings(Context context) {
+        Intent intent = new Intent();
+        intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+        Uri uri = Uri.fromParts("package", context.getPackageName(), null);
+        intent.setData(uri);
+        context.startActivity(intent);
     }
 }

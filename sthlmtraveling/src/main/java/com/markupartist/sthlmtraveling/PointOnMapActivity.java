@@ -21,10 +21,11 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -45,7 +46,7 @@ import com.markupartist.sthlmtraveling.utils.Analytics;
 import java.io.IOException;
 import java.util.List;
 
-public class PointOnMapActivity extends AppCompatActivity
+public class PointOnMapActivity extends BaseFragmentActivity
         implements OnMapClickListener, OnInfoWindowClickListener, OnMapReadyCallback {
 
     public static String EXTRA_STOP = "com.markupartist.sthlmtraveling.pointonmap.stop";
@@ -122,8 +123,27 @@ public class PointOnMapActivity extends AppCompatActivity
         }
     }
 
-    private void setUpMap() {
+    @Override
+    public void onLocationPermissionGranted() {
         mMap.setMyLocationEnabled(true);
+    }
+
+    @Override
+    public void onLocationPermissionRationale() {
+        Snackbar.make(findViewById(R.id.map), R.string.permission_location_needed_maps,
+                Snackbar.LENGTH_INDEFINITE)
+                .setAction(R.string.allow, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        requestLocationPermission();
+                    }
+                })
+                .show();
+    }
+
+    private void setUpMap() {
+        verifyLocationPermission();
+
         mMap.setOnMapClickListener(this);
         mMap.setOnInfoWindowClickListener(this);
 
