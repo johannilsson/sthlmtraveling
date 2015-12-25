@@ -1,13 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools" xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <style name="Theme.App" parent="BaseTheme">
-    </style>
-
-    <style name="Theme.AppNoActionBar" parent="BaseThemeNoActionBar">
-    </style>
-
-    <style name="BaseTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="Theme.SthlmTraveling" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryDark">@color/primary_dark</item>
         <item name="colorAccent">@color/accent</item>
@@ -20,7 +14,7 @@
         <item name="android:colorBackground">@color/background</item>
     </style>
 
-    <style name="BaseThemeNoActionBar" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="Theme.SthlmTraveling.NoActionBar" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryDark">@color/primary_dark</item>
         <item name="colorAccent">@color/accent</item>

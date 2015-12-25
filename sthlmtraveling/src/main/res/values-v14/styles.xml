@@ -18,12 +18,6 @@
 -->
 
 <resources>
-    <style name="Theme.App" parent="BaseTheme">
-    </style>
-
-    <style name="Theme.AppNoActionBar" parent="BaseThemeNoActionBar">
-    </style>
-
     <style name="AppBaseListView" parent="Widget.AppCompat.ListView">
     </style>
 
