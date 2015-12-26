@@ -3,7 +3,7 @@
 STHLM Traveling
 ===============
 
-Travel in Stockholm with your Android phone. STHLM Traveling helps you plan your journeys using data from Stockholm Public 
+Travel in Stockholm with your Android phone. STHLM Traveling helps you plan your journeys using data from Stockholm Public
 Transport (SL, Stockholms Lokaltrafik).
 
 Join the [STHLM Traveling community](https://plus.google.com/communities/112536937011202734088) at Google Plus to take part of early releases and discuss features of coming releases.
@@ -23,10 +23,11 @@ fork the app. I will do my best help you out if you have any problems. The docum
 
 Changelog
 ---------
-* NEXT
-  * Add walk, bike and car options
+* 2.15.0 (2015-12)
+  * Add walk, bike and car mode
   * Add new icons and colors
   * Add Bosnian (Bosnia and Herzegovina) translation by Zlatan Klapic
+  * Update German, Russian and Swedish translations, thanks Anja and Denis
 * 2.14.2 (2015-10-30)
   * Add initial work on real-time support to the journey planner
 * 2.14.0 (2015-10-25)
