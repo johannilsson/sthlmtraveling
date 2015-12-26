@@ -18,6 +18,7 @@ package com.markupartist.sthlmtraveling;
 
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
@@ -92,7 +93,7 @@ public class StartActivity extends BaseFragmentActivity {
 
         mSlidingTabLayout = (SlidingTabLayout) findViewById(R.id.sliding_tabs);
         Resources res = getResources();
-        mSlidingTabLayout.setSelectedIndicatorColors(res.getColor(R.color.tab_selected_strip));
+        mSlidingTabLayout.setSelectedIndicatorColors(ContextCompat.getColor(this, R.color.tab_selected_strip));
         mSlidingTabLayout.setDistributeEvenly(true);
         mSlidingTabLayout.setViewPager(mPager);
 
