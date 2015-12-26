@@ -69,6 +69,7 @@ public class UriLauncherActivity extends Activity {
                 return;
             }
         } catch (Exception e) {
+            Crashlytics.log("Uri: " + fullUrl);
             Crashlytics.logException(e);
         }
         Intent i = new Intent(this, StartActivity.class);
