@@ -137,7 +137,7 @@ public class TripView extends LinearLayout {
                 String lineName = subTrip.transport.getLineName();
                 if (!TextUtils.isEmpty(lineName)) {
                     TextView lineNumberView = new TextView(getContext());
-                    lineNumberView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
+                    lineNumberView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 13);
                     RoundedBackgroundSpan roundedBackgroundSpan = new RoundedBackgroundSpan(
                             subTrip.transport.getColor(getContext()),
                             Color.WHITE,
@@ -148,7 +148,8 @@ public class TripView extends LinearLayout {
                     sb.setSpan(roundedBackgroundSpan, 0, lineName.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
                     lineNumberView.setText(sb);
 
-                    ViewCompat.setPaddingRelative(lineNumberView, (int) (5 * scale), 4, (int) (2 * scale), 0);
+                    ViewCompat.setPaddingRelative(lineNumberView,
+                            (int) (5 * scale), (int) (1 * scale), (int) (2 * scale), 0);
                     lineNumberView.setLayoutParams(changesLayoutParams);
                     routeChanges.addView(lineNumberView);
                 }
