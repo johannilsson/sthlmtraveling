@@ -38,7 +38,7 @@
     <string name="change_date_and_time">Zeit und Datum ändern</string>
     <string name="reverse_start_end">Richtung wechseln</string>
     <string name="about">Über diese App</string>
-    <string name="about_this_app">STHLM Traveling wurde entwickelt von Johan Nilsson. Bitte benachrichtigen Sie ihn wenn Sie Vorschläge zu dieser App haben oder wenn Sie auf Probleme mit dieser App stossen.\n\nAlle Verbindungsdaten werden erfasst mit Zustimmung von Trafiklab und SL - Stockholm Public Transport.\n\nUm die Applikation weiter zu verbessern werden anonyme Daten gesammelt und analysiert mit Hilfe von Flurry und Google Analytics.\n\n<b>Impressum</b>\n&lt;li&gt;Robert Johansson\nhttps://twitter.com/likebobby&lt;/li&gt;\n&lt;li&gt;Applikationsicon &amp; Idee Olof Brickarp\nhttp://www.yay.se&lt;/li&gt;\n&lt;li&gt;Schwedische Übersetzung Jean Diarbakerli&lt;/li&gt;\n&lt;li&gt;Spanische Übersetzung Valeria Padilla und Miguel Ángel Domínguez Coloma&lt;/li&gt;\n&lt;li&gt;Italienische Übersetzung Sergio Cucinella&lt;/li&gt;\n&lt;li&gt;Patches von Fredrik Jönsson\nhttp://github.com/lk95jofr&lt;/li&gt;\n&lt;li&gt;Patches von Adam Nybäck\nhttp://anyro.se&lt;/li&gt;\n&lt;li&gt;Patches von Morgan Christiansson\nhttp://screeninteraction.com&lt;/li&gt;\n&lt;li&gt;Icons von Fredrik Broman\nhttp://fredrikbroman.com&lt;/li&gt;\n&lt;li&gt;Icons von Android Icons\nhttp://androidicons.com&lt;/li&gt;\n&lt;li&gt;Feedback von Swedroid\nhttp://swedroid.se&lt;/li&gt;\n\nQuellcode http://github.com/johannilsson/sthlmtraveling\n\n Johan Nilsson johan@markupartist.com\nhttp://markupartist.com\n\n</string>
+    <string name="about_this_app">STHLM Traveling wurde entwickelt von Johan Nilsson. Bitte benachrichtigen Sie ihn wenn Sie Vorschläge zu dieser Anwendungen haben oder wenn Sie auf Probleme mit dieser App stossen.\n\nAlle Verbindungsdaten werden erfasst mit Zustimmung von Trafiklab und SL\n\nUm diese Applikation weiter zu verbessern werden anonyme Daten gesammelt und analysiert mit Hilfe von Google Analytics und Crashlytics.\n\n<b>Impressum</b>\n\nMehrere Personen haben zu diesem Projekt beigetragen. Eine vollständige Liste finden Sie hier:\nhttp://www.sthlmtraveling.se\n\n//Johan Nilsson\njohan@markupartist.com\nhttp://markupartist.com\n\nQuellcode\nhttp://github.com/johannilsson/sthlmtraveling\n\nDatenschutz\nhttp://sthlmtraveling.se/privacy.html\n</string>
     <string name="donate_url">http://pledgie.com/campaigns/6527</string>
     <string name="feedback">Ihre Meinung</string>
     <string name="send_email">E-Mail senden</string>
@@ -74,7 +74,7 @@
     <string name="departures">Abfahrten</string>
     <string name="no_departures_for_transport_type">Für dieses Verkehrmittel stehen zur Zeit keine Abfahrten zur Verfügung.</string>
     <string name="no_departures">Zur Zeit keine Abfahrten.</string>
-    <string name="site_name">Position</string>
+    <string name="site_name">Name der Haltestelle</string>
     <string name="stop_label">Halt</string>
     <string name="address_label">Adresse</string>
     <string name="refresh">Aktualisieren</string>
@@ -90,7 +90,7 @@
     <string name="departure_train">Zug</string>
     <string name="departure_tram">Lokalbahn</string>
     <string name="now">jetzt</string>
-    <string name="my_location_source_disabled">Bitte in den Systemeinstellungen Ihre Position zulassen.</string>
+    <string name="my_location_source_disabled">Bitte in den Systemeinstellungen Standortdienste zulassen.</string>
     <string name="title_settings">Einstellungen</string>
     <string name="now_label">Jetzt</string>
     <string name="more_choices_label">Optionen</string>
@@ -113,7 +113,7 @@
     <string name="sms_ticket_notice_message">Bitte bestätigen Sie Ihre Angaben bevor Sie das Ticket kaufen. STHLM Traveling garantiert nicht für die Gültigkeit des Tickets für Ihre Reise.</string>
     <string name="sms_ticket_notice_disabled">Für diese Verbindung ist kein SMS Ticket verfügbar.</string>
     <string name="trip_description_walk" formatted="false">Fussweg</string>
-    <string name="trip_description_normal" formatted="false">Nehmen Sie <xliff:g id="transport">%1$s</xliff:g> in Richtung <xliff:g id="towards">%2$s</xliff:g></string>
+    <string name="trip_description_normal" formatted="false"><xliff:g id="transport">%1$s</xliff:g> in Richtung <xliff:g id="towards">%2$s</xliff:g>.</string>
     <string name="trip_map_description_walk" formatted="false"><xliff:g id="time">%1$s</xliff:g> Gehen Sie zu <xliff:g id="stop">%2$s</xliff:g></string>
     <string name="trip_map_description_normal" formatted="false"><xliff:g id="time">%1$s</xliff:g> <xliff:g id="transport">%2$s</xliff:g> in Richtung <xliff:g id="towards">%3$s</xliff:g></string>
     <string name="show_all">Alle anzeigen</string>
@@ -132,7 +132,7 @@
     <!-- Phrase describing a time duration using minutes [CHAR LIMIT=16] -->
     <plurals name="duration_minutes">
         <item quantity="one">1 Minute</item>
-        <item quantity="other"><xliff:g id="count">%d</xliff:g> Min</item>
+        <item quantity="other"><xliff:g id="count">%d</xliff:g> Minuten</item>
     </plurals>
     <!-- Phrase describing a time duration using hours [CHAR LIMIT=16] -->
     <plurals name="duration_hours">
@@ -145,11 +145,11 @@
     </plurals>
     <plurals name="duration_short_minutes">
         <item quantity="one">1 Min.</item>
-        <item quantity="other"><xliff:g id="count">%d</xliff:g> Min</item>
+        <item quantity="other"><xliff:g id="count">%d</xliff:g> Minuten</item>
     </plurals>
     <plurals name="duration_short_hours">
         <item quantity="one">1 Std.</item>
-        <item quantity="other"><xliff:g id="count">%d</xliff:g> Std</item>
+        <item quantity="other"><xliff:g id="count">%d</xliff:g> Stunden</item>
     </plurals>
     <string name="duration_short_hours_minutes" formatted="false"><xliff:g id="hour">%1$s</xliff:g> Std. <xliff:g id="minutes">%2$s</xliff:g> Min.</string>
     <string name="trip_time_origin_destination"><xliff:g id="origin">%1$s</xliff:g> - <xliff:g id="destination">%2$s</xliff:g></string>
@@ -223,6 +223,9 @@
     <string name="help">Hilfe</string>
     <string name="support">Unterstützung</string>
     <string name="transport_type">Transportmittel</string>
+    <string name="search_try_with_app_name">Versuchen Sie mit STHLM Traveling zu suchen</string>
+    <string name="search_try_with_google">Versuchen Sie mit Google zu suchen</string>
+    <string name="search_attribution_note">Standortsuche</string>
     <string name="language_system_locale">Systemsprache</string>
     <string name="pref_deviations_interval_1">10 Min.</string>
     <string name="pref_deviations_interval_2">15 Min.</string>
@@ -235,4 +238,7 @@
     <string name="ads_turn_off">Werbung ausschalten.</string>
     <string name="ads_message">Diese App war seit 2009 gratis, doch sind während der Jahre die Server-, Instandhaltungs- und Handhabungskosten gestiegen.\n\nFür die Weiterentwicklung und um weiterhin die benötigte Unterstützung zu leisten, ist es notwendig ab und zu Werbung einzublenden.\n\nSollte Ihnen die Werbung Probleme bereiten, können Sie Sie unten deaktivieren. Zukünftig wird dies nur gegen eine kleine Gebühr möglich sein.\n\nVielen Dank für Ihre Unterstützung\nJohan</string>
     <string name="ads_summary">Warum diese Applikation Werbung anzeigt?</string>
+    <string name="permission_location_needed_search">Aktivieren Sie Standortdienste um Ihre Position zu ermitteln</string>
+    <string name="permission_location_needed_maps">Aktivieren Sie Standortdienste um Ihre Position auf der Karte zu sehen</string>
+    <string name="allow">Zulassen</string>
 </resources>

@@ -238,4 +238,7 @@
     <string name="ads_turn_off">Stäng av annonser</string>
     <string name="ads_message">Sedan 2009 har den här appen varit fri från annonser. Genom åren har serverkostnaden och underhållskostnaderna ökat.\n\nFör att kunna fortsätta utvecklingen och ge den support som krävs, visas annonser ibland.\n\nOm ni har problem med att annonser visas går det att stänga av dem nedan. I framtiden kanske det istället blir möjligt att för en mindre kostnad slippa annonserna.\n\nTack för ert stöd!\nJohan</string>
     <string name="ads_summary">Varför visas annonser?</string>
+    <string name="permission_location_needed_search">Tillåt behörigheten för Plats för att kunna söka med din nuvarande position</string>
+    <string name="permission_location_needed_maps">Tillåt behörigheten för Plats för att kunna se din position på kartan</string>
+    <string name="allow">Tillåt</string>
 </resources>
