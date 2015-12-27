@@ -68,7 +68,7 @@ android {
         targetSdkVersion 23
         applicationId "com.markupartist.sthlmtraveling"
         versionName "2.15.0"
-        versionCode 179
+        versionCode 180
 
         buildConfigField "boolean", "APP_IS_ADS_ENABLED", buildProperties['IS_ADS_ENABLED']
         buildConfigField "String", "APP_WIDESPACE_SID", buildProperties['WIDESPACE_SID']
