@@ -109,7 +109,7 @@ public class ViewOnMapActivity extends BaseFragmentActivity implements OnMapRead
     @Override
     protected void onStop() {
         super.onStop();
-     }
+    }
 
     @Override
     public void startActivity(Intent intent) {
@@ -194,10 +194,10 @@ public class ViewOnMapActivity extends BaseFragmentActivity implements OnMapRead
             options.add(origin);
 
             mMap.addMarker(new MarkerOptions()
-                .position(origin)
-                .title(getLocationName(subTrip.origin))
-                .snippet(getRouteDescription(subTrip))
-                .icon(BitmapDescriptorFactory.defaultMarker(hueColor)));
+                    .position(origin)
+                    .title(getLocationName(subTrip.origin))
+                    .snippet(getRouteDescription(subTrip))
+                    .icon(BitmapDescriptorFactory.defaultMarker(hueColor)));
 
             BitmapDescriptor icon = getColoredMarker(subTrip.transport.getColor(this));
             for (IntermediateStop stop : subTrip.intermediateStop) {
@@ -273,6 +273,7 @@ public class ViewOnMapActivity extends BaseFragmentActivity implements OnMapRead
 
     @Override
     public void onLocationPermissionGranted() {
+        //noinspection ResourceType
         mMap.setMyLocationEnabled(true);
     }
 
