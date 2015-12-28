@@ -61,7 +61,10 @@ public class UriLauncherActivity extends Activity {
         }
 
         try {
-            if (fullUrl.contains("Travel")) {
+            if (fullUrl.contains("sharelink")) {
+                handleShareLink(uri);
+                return;
+            } else if (fullUrl.contains("Travel")) {
                 handlePlanner(fullUrl);
                 return;
             } else if (fullUrl.contains("Realtime")) {
@@ -86,6 +89,69 @@ public class UriLauncherActivity extends Activity {
         Analytics.getInstance(this).event("Launch", "SL", "Departure");
 
         startActivity(i);
+        finish();
+    }
+
+    /**
+     * Construct a query from destination position.
+     *
+     * For this quert we expect origin to contain a site id and the destination to have a location.
+     *
+     * @param parts
+     * @return
+     */
+    protected JourneyQuery createFromSearchTravelByDestinationPosition(String[] parts) {
+        Site origin = parseSite(parts[3], parts[7], null);
+        Site destination = parseSite(parts[4], parts[5], parts[6]);
+
+        return new JourneyQuery.Builder()
+                .origin(origin)
+                .destination(destination)
+                .time(parseTime(parts[8])) // 2015-12-28 14_55
+//                .via(parseSite(parts[12], parts[12], null))
+                .transportModes(parseTransports(parts[13]))
+                .isTimeDeparture("depart".equals(parts[9]))
+                .create();
+    }
+
+    protected JourneyQuery createFromSearchTravelById(String[] parts) {
+        Site origin = parseSite(parts[3], parts[5], null);
+        Site destination = parseSite(parts[4], parts[6], null);
+
+        return new JourneyQuery.Builder()
+                .origin(origin)
+                .destination(destination)
+                .time(parseTime(parts[7])) // 2015-12-28 14_55
+//                .via(parseSite(parts[12], parts[12], null))
+                .transportModes(parseTransports(parts[12]))
+                .isTimeDeparture("depart".equals(parts[8]))
+                .create();
+    }
+
+    protected void handleShareLink(Uri uri) {
+        String q = uri.getQueryParameter("q");
+
+        String[] parts = TextUtils.split(Uri.decode(q), "/");
+
+        JourneyQuery journeyQuery = null;
+        if (q.contains("SearchTravelByDestinationPosition")) {
+            journeyQuery = createFromSearchTravelByDestinationPosition(parts);
+        } else if (q.contains("SearchTravelById")) {
+            journeyQuery = createFromSearchTravelById(parts);
+        }
+
+
+        Intent intent;
+        if (journeyQuery != null) {
+            intent = new Intent(this, RoutesActivity.class);
+            intent.putExtra(RoutesActivity.EXTRA_JOURNEY_QUERY, journeyQuery);
+            Analytics.getInstance(this).event("Launch", "SL", "Planner");
+        } else {
+            intent = new Intent(this, StartActivity.class);
+            Analytics.getInstance(this).event("Launch", "SL", "Home");
+        }
+
+        startActivity(intent);
         finish();
     }
 
