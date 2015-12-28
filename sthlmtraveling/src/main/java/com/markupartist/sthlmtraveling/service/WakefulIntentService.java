@@ -8,8 +8,8 @@ import android.util.Log;
 
 abstract public class WakefulIntentService extends IntentService {
     private static String TAG = "WakefulIntentService";
-    public static final String LOCK_NAME_STATIC =
-        "com.markupartist.sthlmtraveling.service.WakefulIntentService.Static";
+    public static final String LOCK_NAME =
+            "com.markupartist.sthlmtraveling.service.WakefulIntentService.Static";
     private static PowerManager.WakeLock lockStatic = null;
 
     public WakefulIntentService(String name) {
@@ -17,15 +17,14 @@ abstract public class WakefulIntentService extends IntentService {
     }
 
     synchronized private static PowerManager.WakeLock getLock(Context context) {
-        Log.d(TAG, "About to get lock");
         if (lockStatic == null) {
-            PowerManager mgr =
-                (PowerManager)context.getSystemService(Context.POWER_SERVICE);
-            lockStatic = mgr.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
-                    LOCK_NAME_STATIC);
+            PowerManager mgr = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+
+            lockStatic = mgr.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, LOCK_NAME);
             lockStatic.setReferenceCounted(true);
         }
-        return lockStatic;
+
+        return (lockStatic);
     }
 
     abstract void doWakefulWork(Intent intent);
@@ -37,7 +36,17 @@ abstract public class WakefulIntentService extends IntentService {
 
     @Override
     final protected void onHandleIntent(Intent intent) {
-        doWakefulWork(intent);
-        getLock(this).release();
+        try {
+            doWakefulWork(intent);
+        } finally {
+            PowerManager.WakeLock lock = getLock(getApplicationContext());
+            if (lock.isHeld()) {
+                try {
+                    lock.release();
+                } catch (Exception e) {
+                    Log.e(TAG, "Exception when releasing wakelock");
+                }
+            }
+        }
     }
 }
