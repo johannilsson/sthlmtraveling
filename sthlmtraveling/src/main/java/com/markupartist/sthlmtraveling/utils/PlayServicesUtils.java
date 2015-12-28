@@ -17,11 +17,10 @@
 package com.markupartist.sthlmtraveling.utils;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.content.DialogInterface;
 
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.common.GoogleApiAvailability;
 
 /**
  * Helper for Google Play services-related operations.
@@ -29,7 +28,8 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 public class PlayServicesUtils {
 
     public static boolean checkGooglePlaySevices(final Activity activity) {
-        final int googlePlayServicesCheck = GooglePlayServicesUtil.isGooglePlayServicesAvailable(activity);
+        GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
+        final int googlePlayServicesCheck = apiAvailability.isGooglePlayServicesAvailable(activity);
         switch (googlePlayServicesCheck) {
             case ConnectionResult.SUCCESS:
                 return true;
@@ -37,14 +37,13 @@ public class PlayServicesUtils {
             case ConnectionResult.SERVICE_INVALID:
             case ConnectionResult.SERVICE_MISSING:
             case ConnectionResult.SERVICE_VERSION_UPDATE_REQUIRED:
-                Dialog dialog = GooglePlayServicesUtil.getErrorDialog(googlePlayServicesCheck, activity, 0);
-                dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                apiAvailability.showErrorDialogFragment(
+                        activity, googlePlayServicesCheck, 0, new DialogInterface.OnCancelListener() {
                     @Override
-                    public void onCancel(DialogInterface dialogInterface) {
+                    public void onCancel(DialogInterface dialog) {
                         activity.finish();
                     }
                 });
-                dialog.show();
         }
         return false;
     }
