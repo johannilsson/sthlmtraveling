@@ -23,13 +23,12 @@ import android.text.format.Time;
 import android.util.Log;
 import android.widget.TextView;
 
+import com.crashlytics.android.Crashlytics;
 import com.markupartist.sthlmtraveling.provider.deviation.Deviation;
 
 
 public class DeviationDetailActivity extends BaseActivity {
     static String TAG = "DeviationDetailActivity";
-    //public static final String EXTRA_DEVIATION_NOTIFICATION_ID = "com.markupartist.sthlmtraveling.deviation.notificationId";
-    //public static final String EXTRA_DEVIATION = "com.markupartist.sthlmtraveling.deviation";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,33 +36,39 @@ public class DeviationDetailActivity extends BaseActivity {
         setContentView(R.layout.deviations_row);
 
         Log.d(TAG, "details!?");
-        
-        /*Bundle extras = getIntent().getExtras();
-        Deviation deviation = extras.getParcelable(EXTRA_DEVIATION);
-        if (extras.containsKey(EXTRA_DEVIATION_NOTIFICATION_ID)) {
-            int notificationId = extras.getInt(EXTRA_DEVIATION_NOTIFICATION_ID);
-            NotificationManager mNotificationManager = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
-            mNotificationManager.cancel(notificationId);
-        }*/
 
         final Uri uri = getIntent().getData();
-        String header = uri.getQueryParameter("header");
-        String details = uri.getQueryParameter("details");
-        String scope = uri.getQueryParameter("scope");
-        String reference = uri.getQueryParameter("reference");
-        Time created = new Time();
-        created.parse3339(uri.getQueryParameter("created"));
-        int notificationId = Integer.parseInt(uri.getQueryParameter("notificationId"));
+        if (uri == null) {
+            Log.e(TAG, "Not enough data was passed, finish was we started.");
+            NotificationManager mNotificationManager = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
+            mNotificationManager.cancelAll();
+            finish();
+            return;
+        }
 
-        TextView headerView = (TextView) findViewById(R.id.deviation_header);
-        headerView.setText(header);
-        TextView detailsView = (TextView) findViewById(R.id.deviation_details);
-        detailsView.setText(details);
-        TextView createdView = (TextView) findViewById(R.id.deviation_created);
-        createdView.setText(created.format("%F %R"));
+        try {
+            String header = uri.getQueryParameter("header");
+            String details = uri.getQueryParameter("details");
+            String scope = uri.getQueryParameter("scope");
+            String reference = uri.getQueryParameter("reference");
+            Time created = new Time();
+            created.parse3339(uri.getQueryParameter("created"));
+            int notificationId = Integer.parseInt(uri.getQueryParameter("notificationId"));
 
-        NotificationManager mNotificationManager = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
-        mNotificationManager.cancel(notificationId);
+            TextView headerView = (TextView) findViewById(R.id.deviation_header);
+            headerView.setText(header);
+            TextView detailsView = (TextView) findViewById(R.id.deviation_details);
+            detailsView.setText(details);
+            TextView createdView = (TextView) findViewById(R.id.deviation_created);
+            createdView.setText(created.format("%F %R"));
+
+            NotificationManager mNotificationManager = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
+            mNotificationManager.cancel(notificationId);
+        } catch (Exception e) {
+            Crashlytics.log("URI: " + uri.toString());
+            Crashlytics.logException(e);
+        }
+
     }
 
     public static Uri getUri(Deviation deviation, int notificationId) {
