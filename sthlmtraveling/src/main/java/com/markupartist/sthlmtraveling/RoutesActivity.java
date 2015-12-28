@@ -331,13 +331,11 @@ public class RoutesActivity extends BaseListActivity implements
     }
 
     private JourneyQuery getJourneyQueryFromIntent(Intent intent) {
-        JourneyQuery journeyQuery;
+        JourneyQuery journeyQuery = null;
         if (intent.hasExtra(EXTRA_JOURNEY_QUERY)) {
             journeyQuery = intent.getExtras().getParcelable(EXTRA_JOURNEY_QUERY);
-        } else {
-
+        } else if (intent.getData() != null) {
             Log.e(TAG, intent.getData().toString());
-
             journeyQuery = getJourneyQueryFromUri(intent.getData());
         }
         return journeyQuery;
@@ -447,7 +445,7 @@ public class RoutesActivity extends BaseListActivity implements
      * @param savedInstanceState the bundle containing the saved state
      */
     private void restoreLocalState(Bundle savedInstanceState) {
-//        restoreJourneyQuery(savedInstanceState);
+        restoreJourneyQuery(savedInstanceState);
         restoreSearchRoutesTask(savedInstanceState);
         restoreGetEarlierRoutesTask(savedInstanceState);
         restoreGetLaterRoutesTask(savedInstanceState);
