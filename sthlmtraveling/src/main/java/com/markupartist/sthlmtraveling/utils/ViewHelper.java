@@ -138,6 +138,16 @@ public class ViewHelper {
                 res.getDisplayMetrics());
     }
 
+    /**
+     * Uppercase the first letter of the passed str.
+     *
+     * @param str String to uppercase
+     * @return str with the first letter uppercase
+     */
+    public static String uppercaseFirst(final String str, final Locale locale) {
+        return str.substring(0, 1).toUpperCase(locale) + str.substring(1);
+    }
+
     public static String getLineName(int transportMode, String lineNumber) {
         // Will be moved to the new API.
         if (TextUtils.isEmpty(lineNumber)) {
@@ -214,6 +224,8 @@ public class ViewHelper {
                     return ContextCompat.getColor(context, R.color.traffic_type_b1);
                 }
                 return ContextCompat.getColor(context, R.color.bus_red);
+            case TransportMode.BOAT_INDEX:
+                return ContextCompat.getColor(context, R.color.traffic_type_boat);
         }
         return ContextCompat.getColor(context, R.color.train);
     }

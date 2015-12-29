@@ -1078,6 +1078,27 @@ public class Planner {
             return ViewHelper.getLineName(TransportMode.getIndex(type), line);
         }
 
+        public String getName() {
+            return getName(false);
+        }
+
+        public String getName(boolean truncate) {
+            String routeName;
+            if (!TextUtils.isEmpty(name)) {
+                routeName = ViewHelper.uppercaseFirst(name, Locale.US);
+            } else {
+                routeName = getLineName();
+            }
+            if (TextUtils.isEmpty(routeName)) {
+                return "";
+            }
+
+            if (truncate && routeName.length() > 30) {
+                routeName = String.format(Locale.US, "%s…", routeName.trim().substring(0, 29));
+            }
+            return routeName;
+        }
+
         @Override
         public String toString() {
             return "Transport{" +

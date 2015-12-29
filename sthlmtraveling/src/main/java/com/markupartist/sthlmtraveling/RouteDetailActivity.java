@@ -54,6 +54,7 @@ import android.widget.ToggleButton;
 
 import com.crashlytics.android.Crashlytics;
 import com.markupartist.sthlmtraveling.provider.JourneysProvider.Journey.Journeys;
+import com.markupartist.sthlmtraveling.provider.TransportMode;
 import com.markupartist.sthlmtraveling.provider.planner.JourneyQuery;
 import com.markupartist.sthlmtraveling.provider.planner.Planner;
 import com.markupartist.sthlmtraveling.provider.planner.Planner.IntermediateStop;
@@ -635,17 +636,28 @@ public class RouteDetailActivity extends BaseListActivity {
 
         private CharSequence createDescription(final SubTrip subTrip) {
             CharSequence description;
-            if ("Walk".equals(subTrip.transport.type)) {
+            if (TransportMode.FOOT.equals(subTrip.transport.type)) {
                 description = getString(R.string.trip_description_walk);
-            } else {
+            } else if (TransportMode.BOAT.equals(subTrip.transport.type)) {
                 description = getString(R.string.trip_description_normal,
-                        subTrip.transport.getLineName(),
+                        subTrip.transport.getName(),
                         subTrip.transport.towards);
                 RoundedBackgroundSpan roundedBackgroundSpan = new RoundedBackgroundSpan(
                         subTrip.transport.getColor(getContext()),
                         Color.WHITE,
                         ViewHelper.dipsToPix(getContext().getResources(), 4));
-                Pattern pattern = Pattern.compile(subTrip.transport.getLineName());
+                Pattern pattern = Pattern.compile(subTrip.transport.line);
+                description = SpanUtils.createSpannable(description, pattern, roundedBackgroundSpan);
+            } else {
+                String routeName = subTrip.transport.getName(true);
+                description = getString(R.string.trip_description_normal,
+                        routeName,
+                        subTrip.transport.towards);
+                RoundedBackgroundSpan roundedBackgroundSpan = new RoundedBackgroundSpan(
+                        subTrip.transport.getColor(getContext()),
+                        Color.WHITE,
+                        ViewHelper.dipsToPix(getContext().getResources(), 4));
+                Pattern pattern = Pattern.compile(routeName);
                 description = SpanUtils.createSpannable(description, pattern, roundedBackgroundSpan);
             }
             return description;
