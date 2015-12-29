@@ -166,7 +166,7 @@ public class ViewOnMapActivity extends BaseFragmentActivity implements OnMapRead
                     Planner.getInstance().addIntermediateStops(
                             ViewOnMapActivity.this, trip, journeyQuery);
                 } catch (IOException e) {
-                    Log.e(TAG, e.getMessage());
+                    Log.e(TAG, "Could not fetch intermediate stops.");
                 }
                 runOnUiThread(new Runnable() {
                     @Override
