@@ -24,6 +24,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.v4.text.BidiFormatter;
 import android.text.TextUtils;
+import android.text.format.DateUtils;
 import android.util.Log;
 
 import com.markupartist.sthlmtraveling.R;
@@ -690,6 +691,16 @@ public class Planner {
         public String toTimeDisplay(Context context) {
             DateFormat format = android.text.format.DateFormat.getTimeFormat(context);
             BidiFormatter bidiFormatter = BidiFormatter.getInstance(RtlUtils.isRtl(Locale.getDefault()));
+
+            if (!DateUtils.isToday(departure().getTime())) {
+                return String.format("%s %s – %s",
+                        bidiFormatter.unicodeWrap(DateUtils.getRelativeTimeSpanString(
+                                departure().getTime(), System.currentTimeMillis(),
+                                DateUtils.DAY_IN_MILLIS).toString()),
+                        bidiFormatter.unicodeWrap(format.format(departure())),
+                        bidiFormatter.unicodeWrap(format.format(arrival())));
+            }
+
             return String.format("%s – %s",
                     bidiFormatter.unicodeWrap(format.format(departure())),
                     bidiFormatter.unicodeWrap(format.format(arrival())));
