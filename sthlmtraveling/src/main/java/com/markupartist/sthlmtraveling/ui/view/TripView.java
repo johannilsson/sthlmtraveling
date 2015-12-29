@@ -206,6 +206,7 @@ public class TripView extends LinearLayout {
 
         this.addView(startAndEndPointLayout);
         this.addView(timeStartEndLayout);
+
         if (mShowDivider) {
             this.addView(divider);
         }
