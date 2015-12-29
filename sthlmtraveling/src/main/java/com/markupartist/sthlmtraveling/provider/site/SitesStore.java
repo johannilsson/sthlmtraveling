@@ -3,6 +3,7 @@ package com.markupartist.sthlmtraveling.provider.site;
 import android.content.Context;
 import android.location.Location;
 import android.support.v4.util.Pair;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.markupartist.sthlmtraveling.data.misc.HttpHelper;
@@ -45,6 +46,10 @@ public class SitesStore {
     }
 
     public ArrayList<Site> getSiteV2(final Context context, final String name, final boolean onlyStations) throws IOException {
+        if (TextUtils.isEmpty(name)) {
+            return new ArrayList<>();
+        }
+
         HttpHelper httpHelper = HttpHelper.getInstance(context);
         String onlyStationsParam = onlyStations ? "true" : "false";
         String url = apiEndpoint2() + "v1/site/"
