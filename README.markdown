@@ -27,6 +27,7 @@ Changelog
   * Add walk, bike and car mode
   * Add new icons and colors
   * Add Bosnian (Bosnia and Herzegovina) translation by Zlatan Klapic
+  * Add Hebrew translation by David Allon
   * Update German, Russian and Swedish translations, thanks Anja and Denis
 * 2.14.2 (2015-10-30)
   * Add initial work on real-time support to the journey planner
