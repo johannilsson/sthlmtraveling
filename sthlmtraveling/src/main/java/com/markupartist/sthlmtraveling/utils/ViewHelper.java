@@ -155,7 +155,10 @@ public class ViewHelper {
         }
         switch (transportMode) {
             case TransportMode.TRAM_INDEX:
-                if ("7".equals(lineNumber)) {
+                if ("7".equals(lineNumber)
+                        || "12".equals(lineNumber)
+                        || "22".equals(lineNumber)
+                        || "21".equals(lineNumber)) {
                     return "S" + lineNumber;
                 }
                 return "L" + lineNumber;
