@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <!--
+/*
+** Copyright (C) 2009 Johan Nilsson <http://markupartist.com>
+**
+** Licensed under the Apache License, Version 2.0 (the "License"); 
+** you may not use this file except in compliance with the License. 
+** You may obtain a copy of the License at 
+**
+**     http://www.apache.org/licenses/LICENSE-2.0 
+**
+** Unless required by applicable law or agreed to in writing, software 
+** distributed under the License is distributed on an "AS IS" BASIS, 
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+** See the License for the specific language governing permissions and 
+** limitations under the License.
+*/
+-->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <!-- General strings -->
+    <string name="ok">אוקי</string>
+    <string name="done">מוכן</string>
+    <string name="discard">בטל</string>
+    <string name="from">מהיכן</string>
+    <string name="to">לאן</string>
+    <string name="via">דרך</string>
+    <string name="search_label">חפש</string>
+    <string name="no_routes_found_label">לדאבוני לא נמצא מסלול</string>
+    <string name="no_routes_found_message">אולי אין בכלל שרות מההתחלה או היעד שלך או בעקבות התנאים הנבחרים שלך בתאריך / הזמן הנדרש (לדוגמא לפעמים אין שרות לתחנות מסוימות בסופי השבוע).</string>
+    <string name="routes_label">מסלולים</string>
+    <string name="route_details_label">פרטי המסלול</string>
+    <string name="no_route_details">לדאבוני לא נמצא מסלול. קרוב לודאי שהחפוש מלפני הרבה זמן.</string>
+    <string name="session_timeout_message">קרוב לודאי שהחפוש מלפני הרבה זמן.</string>
+    <string name="attention_label">אזהרה</string>
+    <string name="bad_routes_parameters_message">חייבים לציין התחלה וסיום</string>
+    <string name="new_search">חפש</string>
+    <string name="empty_value">חסר או לא תקין</string>
+    <string name="loading">מחפש. אנא המתינו...</string>
+    <string name="my_location">המיקום שלי</string>
+    <string name="change_date_and_time">שנה תאריך ושעה</string>
+    <string name="reverse_start_end">החלף בין התחלה וסוף</string>
+    <string name="about">אודות</string>
+    <string name="about_this_app">"STHLM Traveling פותחה על ידי יוהאן נילסון. אנא צרו קשר איתו אם יש לכם רעיונות או תיתקלו בבעיות כלשהן\n\nנתוני תנועה שנאספו באישור Trafiklab וSL.\n\nכדי לשפר את היישום  מידע אנונימי נאסף עם Google Analytics וCrashlytics.\n\n<b>קרדיטים</b>\n\nאנשים רבים תרמו לפרויקט זה, לרשימה מלאה של הגיבורים האלה עיינו:\nhttp://www.sthlmtraveling.se\n\n// יוהאן נילסון\njohan@markupartist.com\nhttp://markupartist.com\n\nקוד מקור\nhttp://github.com/johannilsson/sthlmtraveling\n\nמדיניות פרטיות\nhttp://sthlmtraveling.se/privacy.html "</string>
+    <string name="donate_url">http://pledgie.com/campaigns/6527</string>
+    <string name="feedback">תגובות</string>
+    <string name="send_email">שלח אימייל</string>
+    <string name="favorites_label">העדפות</string>
+    <string name="no_favorites"><b>עדיין אין העדפות ...</b>\nהוספה והסרה של העדפות על ידי לחיצה על כפתור הכוכב לאחר חיפוש.</string>
+    <string name="reverse_search">חפוש הפוך</string>
+    <string name="delete">ביטול</string>
+    <string name="no_location_title">בעיית מיקום</string>
+    <string name="no_location_message">ברור מיקומך לא הצליח</string>
+    <string name="network_problem_label">בעית רשת</string>
+    <string name="network_problem_message">יתכן עומס, בעית רשת, או אין אפשרות להתקשר ל-SL</string>
+    <string name="activity_create_shortcut">מסלולים</string>
+    <string name="activity_create_departure_shortcut">יציאות</string>
+    <string name="name_of_shortcut">שם הקצור</string>
+    <string name="create_shortcut_label">צור קיצור</string>
+    <string name="create_shortcut_for_departure_label">צור קוצור ליציאה</string>
+    <string name="choose_start_point_label">בחר נקודת התחלה</string>
+    <string name="choose_end_point_label">בחר נקודת סיום</string>
+    <string name="send_feedback_email_title">תגובות לSTHLM Traveling</string>
+    <string name="send_feedback_email_emailaddress">sthlmtraveling@markupartist.com</string>
+    <string name="history_label">קודמים</string>
+    <string name="yes">כן</string>
+    <string name="no">לא</string>
+    <string name="retry">נסה שנית</string>
+    <string name="point_on_map">בחר נקודה על המפה</string>
+    <string name="tap_to_select_this_point">הקש כדי לבחור נקודה זאת</string>
+    <string name="point_selected">הנקודה נבחרה</string>
+    <string name="tap_your_end_point_on_map">הקש על נקודת הסיום במפה</string>
+    <string name="tap_your_start_point_on_map">הקש על נקודת ההתחלה במפה</string>
+    <string name="tap_your_location_on_map">ברור מיקומך לא הצליח. הקש על מיקומך במפה</string>
+    <string name="departing_on">יציאה בשעה <xliff:g id="time">%1$s</xliff:g>  בתאריך <xliff:g id="date">%2$s</xliff:g></string>
+    <string name="arriving_by">הגעה בשעה <xliff:g id="time">%1$s</xliff:g> בתאריך <xliff:g id="date">%2$s</xliff:g></string>
+    <string name="departures">יציאות</string>
+    <string name="no_departures_for_transport_type">כרגע אין יציאות לסוג התחבורה שנבחר.</string>
+    <string name="no_departures">כרגע אין יציאות.</string>
+    <string name="site_name">שם התחנה</string>
+    <string name="stop_label">תחנה</string>
+    <string name="address_label">כתובת</string>
+    <string name="refresh">רענן</string>
+    <string name="show_departures_for_start">הצג יציאות</string>
+    <string name="metros">רכבות תחתיות</string>
+    <string name="buses">אוטובוסים</string>
+    <string name="trains">רכבות</string>
+    <string name="trams">רכבת קלה</string>
+    <string name="tram_cars">חשמלית</string>
+    <string name="boats">ספינות</string>
+    <string name="departure_metro">רכבת תחתית</string>
+    <string name="departure_bus">אוטובוס</string>
+    <string name="departure_train">רכבת</string>
+    <string name="departure_tram">רכבת קלה</string>
+    <string name="now">עכשיו</string>
+    <string name="my_location_source_disabled">אנא אפשר מציאת מקומך בהגדרות המערכת</string>
+    <string name="title_settings">הגדרות</string>
+    <string name="now_label">עכשיו</string>
+    <string name="more_choices_label">אפשרויות</string>
+    <string name="route_options_active">עם אפשרויות ניתוב נוספות</string>
+    <string name="alternative_stops_label">תחנות אלטרנטיביות</string>
+    <string name="date_and_time_label">תאריך ושעה</string>
+    <string name="determining_your_position">מאתר מיקומך</string>
+    <string name="back">חזרה</string>
+    <string name="cancel">ביטול</string>
+    <string name="change">שנה</string>
+    <string name="deviations_label">סטיות</string>
+    <string name="new_deviations">סטיות חדשות</string>
+    <string name="no_deviations"><b>לא ידוע על סטיות</b></string>
+    <string name="reinstall_app_message">אתה צריך להתקין מחדש את STHLM Traveling כדי להיות מסוגל להשתמש בו כראוי.\n\n בעיה זו נגרמת על ידי באג באנדרואיד. אתה יכול לקרוא עוד על נושא זה בבלוג שלי, http://bit.ly/fcissue.\n\nאני באמת מצטער על כך!</string>
+    <string name="did_you_mean">למה התכוונתה?</string>
+    <string name="share_label">שתף</string>
+    <string name="sms_ticket_label">קנה כרטיס</string>
+    <string name="sms_ticket_price_reduced">מחיר מופחת</string>
+    <string name="sms_ticket_price_full">מחיר מלא (בין הגילים 20-64)</string>
+    <string name="sms_ticket_notice_message">אנא בדוק את הפרטים לפני שאתה קונה את הכרטיס שלך. STHLM Traveling  לא יכול להבטיח שכרטיס תקף לנסיעה שלך.</string>
+    <string name="sms_ticket_notice_disabled">כרטיס SMS לא בנמצא לנתיב הזה</string>
+    <string name="trip_description_walk" formatted="false">הליכה</string>
+    <string name="trip_description_normal" formatted="false"><xliff:g id="transport">%1$s</xliff:g> לכוון <xliff:g id="towards">%2$s</xliff:g>.</string>
+    <string name="trip_map_description_walk" formatted="false"><xliff:g id="time">%1$s</xliff:g> לך אל <xliff:g id="stop">%2$s</xliff:g></string>
+    <string name="trip_map_description_normal" formatted="false"><xliff:g id="time">%1$s</xliff:g> <xliff:g id="transport">%2$s</xliff:g> לכוון  <xliff:g id="towards">%3$s</xliff:g>.</string>
+    <string name="show_all">הראה הכל</string>
+    <string name="direction">כוון</string>
+    <string name="no_intermediate_stops">לא נמצאו תחנות ביניים</string>
+    <string name="show_intermediate_stops">הצג תחנות ביניים</string>
+    <string name="hide_intermediate_stops">הסתר תחנות ביניים</string>
+    <string name="nearby_stops">תחנות קרובות</string>
+    <string name="nearby">בסביבה</string>
+    <string name="time_to" formatted="false"><xliff:g id="duration">%1$s</xliff:g> אל <xliff:g id="stop">%2$s</xliff:g></string>
+    <!-- Phrase describing a time duration using seconds [CHAR LIMIT=16] -->
+    <plurals name="duration_seconds">
+        <item quantity="one">"שניה אחת"</item>
+        <item quantity="other">"<xliff:g id="count">%d</xliff:g> שניות"</item>
+        <item quantity="many">""</item>
+        <item quantity="two">""</item>
+    </plurals>
+    <!-- Phrase describing a time duration using minutes [CHAR LIMIT=16] -->
+    <plurals name="duration_minutes">
+        <item quantity="one">דקה</item>
+        <item quantity="other"><xliff:g id="count">%d</xliff:g> דקות</item>
+        <item quantity="many"></item>
+        <item quantity="two"></item>
+    </plurals>
+    <!-- Phrase describing a time duration using hours [CHAR LIMIT=16] -->
+    <plurals name="duration_hours">
+        <item quantity="one">שעה</item>
+        <item quantity="other"><xliff:g id="count">%d</xliff:g> שעות</item>
+        <item quantity="many"></item>
+        <item quantity="two"></item>
+    </plurals>
+    <plurals name="duration_days">
+        <item quantity="one">יום</item>
+        <item quantity="other"><xliff:g id="count">%d</xliff:g> ימים</item>
+        <item quantity="many"></item>
+        <item quantity="two"></item>
+    </plurals>
+    <plurals name="duration_short_minutes">
+        <item quantity="one">דקה</item>
+        <item quantity="other"><xliff:g id="count">%d</xliff:g> דקות</item>
+        <item quantity="many"></item>
+        <item quantity="two"></item>
+    </plurals>
+    <plurals name="duration_short_hours">
+        <item quantity="one">שעה</item>
+        <item quantity="other"><xliff:g id="count">%d</xliff:g> שעות</item>
+        <item quantity="many"></item>
+        <item quantity="two"></item>
+    </plurals>
+    <string name="duration_short_hours_minutes" formatted="false"><xliff:g id="hour">%1$s</xliff:g> שעות <xliff:g id="minutes">%2$s</xliff:g> דקות</string>
+    <string name="trip_time_origin_destination"><xliff:g id="origin">%1$s</xliff:g> – <xliff:g id="destination">%2$s</xliff:g></string>
+    <!-- Planner error message -->
+    <string name="planner_error_title">החפוש לא הצליח</string>
+    <!-- Planner error message -->
+    <string name="planner_error_unknown">החפוש לא הצליח, אנא נסה שנית</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H9300">לדאבוני לא נמצא מסלול, אנא נסה שנית</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H9360">מבנה תאריך לא נתמך, אנא שנה את התאריך.</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H9380">ההתחלה והסיום  קרובים מדי זה לזה</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H9320">תחנה לא קיימת.</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H9280">תחנה לא קיימת.</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H9260">תחנה לא קיימת.</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H9250">החפוש הופסק, אנא נסה שנית</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H9240">לא נמצאה נסיעה.</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H9230">אנא נסה שנית.</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H9220">אין תחנה בקרבת הכתובת.</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H900">אין לוח זמנים לנסיעה הזאת.</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H892">הנסיעה ארוכה מידי, אנא נסה לבטל את תחנת הביניים</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H891">לא נמצאה נסיעה, נסה להוסיף תחנת ביניים.</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H890">לא נמצאה נסיעה.</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H500">לא נמצאה נסיעה.</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H455">תחנה מורחבת.</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H410">קרתה תקלה שיכולה להיות קשורה לשינוי בלוחות הזמנים.</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H390">תחנת היציאה או הסיום הוחלפה בתחנה קרובה.</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H895">ההתחלה והסיום  קרובים מדי זה לזה.</string>
+    <!-- Preferences -->
+    <string name="restart_app_for_full_effect">התחל את היישום מחדש כדי לקבל את מלוא התפוקה.</string>
+    <string name="dialog_general_preferences">יסודות</string>
+    <string name="dialog_notification_preferences">הודעות</string>
+    <string name="title_language_preference">שפה</string>
+    <string name="summary_language_preference">בחר את השפה המועדפת עליך.</string>
+    <string name="dialog_title_language_preference">בחר שפה</string>
+    <string name="settings_saved">נשמר</string>
+    <string name="deviation_notification_preference">הודעות על סטיות</string>
+    <string name="deviation_notification_summary_preference">נסיוני. כאשר מופעל צורך הרבה חשמל מהסוללה ודורש חבור קבוע לרשת</string>
+    <string name="deviation_update_interval_preference">מרווח זמן לעדכון</string>
+    <string name="deviation_update_interval_summary_preference">מרווחי זמן ארוכים לעדכון חוסכים את הסוללה שלך.</string>
+    <string name="deviation_lines_preference">קווים</string>
+    <string name="deviation_lines_summary_preference">רשימה של קווים מופרדים בפסיק, לדוגמא \'42,28,707\'.</string>
+    <string name="deviation_lines_dialog_message_preference">הפרד את מספרי הקווים עם פסיק, לדוגמא \'42,28,707\'.</string>
+    <string name="search_include_addresses_preference">להוסיף את הכתובת בהשלמה אוטומטית</string>
+    <string name="search_include_addresses_summary_preference">יתכן ויקח יותר זמן לקבל הצעות כאשר נבחרת אופציה זאת</string>
+    <string name="search_clear_history_preference">ביטול שמירת חפושים קודמים</string>
+    <string name="search_clear_history_summary_preference">ביטול שמירת חפושים קודמים של תחנות ונסיעות</string>
+    <string name="search_clear_history_confirm">בטוח שברצונך לבטל את כל החפושים הקודמים?</string>
+    <string name="search_history_cleared">קודמים בוטלו</string>
+    <string name="search_clear_favorites_preference">ביטול מועדפים</string>
+    <string name="search_clear_favorites_summary_preference">בטול כל ההעדפות</string>
+    <string name="search_clear_favorites_confirm">בטוח שברצונך לבטל את כל ההעדפות?</string>
+    <string name="search_favorites_cleared">העדפות בוטלו</string>
+    <string name="help">עזרה</string>
+    <string name="support">תמיכה</string>
+    <string name="transport_type">סוג התחבורה</string>
+    <string name="search_try_with_app_name">נסה לחפש בעזרת STHLM Traveling</string>
+    <string name="search_try_with_google">נסה לחפש בעזרת גוגל</string>
+    <string name="search_attribution_note">חפוש מקומות</string>
+    <string name="language_system_locale">הגדרת המיקום (LOCALE) במערכת</string>
+    <string name="pref_deviations_interval_1">10 דקות</string>
+    <string name="pref_deviations_interval_2">15 דקות</string>
+    <string name="pref_deviations_interval_3">30 דקות</string>
+    <string name="pref_deviations_interval_4">45 דקות</string>
+    <string name="pref_deviations_interval_5">שעה</string>
+    <!-- Ads -->
+    <string name="ads">מודעות</string>
+    <string name="ads_title">למה מודעות?</string>
+    <string name="ads_turn_off">בטל מודעות</string>
+    <string name="ads_message">יישום זה נשאר ללא מודעות מאז 2009, במהלך השנים  העלות עבור שרתים ותחזוקה גדלה.\n\nכדי שניתן יהיה להמשיך את הפיתוח ולתת תמיכה דרושה לעתים מוצגות  מודעות.\n\nאם יש לך בעיות עם המודעות אפשר לכבות אותם בהמשך. בעתיד ייתכן שיהיה תשלום קטן עבור כיבוי המודעות.\n\nתודה על תמיכתך!\nיוהאן</string>
+    <string name="ads_summary">למה היישום הזה מציג מודעות?</string>
+    <string name="permission_location_needed_search">אפשר רשות לחפש מיקום כדי לחפש עם המיקום שלך</string>
+    <string name="permission_location_needed_maps">אפשר רשות לחפש מיקום כדי לראות את המיקום שלך על המפה</string>
+    <string name="allow">אשור</string>
+</resources>
