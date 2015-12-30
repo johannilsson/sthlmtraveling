@@ -109,6 +109,9 @@ public class MyApplication extends Application {
             case "bs":
                 locale = new Locale("bs", "BA");
                 break;
+            case "iw":
+                locale = new Locale("iw", "");
+                break;
         }
 
         if (locale != null) {
