@@ -128,42 +128,42 @@
     <string name="time_to" formatted="false"><xliff:g id="duration">%1$s</xliff:g> אל <xliff:g id="stop">%2$s</xliff:g></string>
     <!-- Phrase describing a time duration using seconds [CHAR LIMIT=16] -->
     <plurals name="duration_seconds">
-        <item quantity="one">"שניה אחת"</item>
+        <item quantity="one">"שניה"</item>
         <item quantity="other">"<xliff:g id="count">%d</xliff:g> שניות"</item>
-        <item quantity="many">""</item>
-        <item quantity="two">""</item>
+        <item quantity="many">"שניות"</item>
+        <item quantity="two">"שניות"</item>
     </plurals>
     <!-- Phrase describing a time duration using minutes [CHAR LIMIT=16] -->
     <plurals name="duration_minutes">
         <item quantity="one">דקה</item>
         <item quantity="other"><xliff:g id="count">%d</xliff:g> דקות</item>
-        <item quantity="many"></item>
-        <item quantity="two"></item>
+        <item quantity="many">דקות</item>
+        <item quantity="two">דקות</item>
     </plurals>
     <!-- Phrase describing a time duration using hours [CHAR LIMIT=16] -->
     <plurals name="duration_hours">
         <item quantity="one">שעה</item>
         <item quantity="other"><xliff:g id="count">%d</xliff:g> שעות</item>
-        <item quantity="many"></item>
-        <item quantity="two"></item>
+        <item quantity="many">שעות</item>
+        <item quantity="two">שעות</item>
     </plurals>
     <plurals name="duration_days">
         <item quantity="one">יום</item>
         <item quantity="other"><xliff:g id="count">%d</xliff:g> ימים</item>
-        <item quantity="many"></item>
-        <item quantity="two"></item>
+        <item quantity="many">ימים</item>
+        <item quantity="two">ימים</item>
     </plurals>
     <plurals name="duration_short_minutes">
         <item quantity="one">דקה</item>
         <item quantity="other"><xliff:g id="count">%d</xliff:g> דקות</item>
-        <item quantity="many"></item>
-        <item quantity="two"></item>
+        <item quantity="many">דקות</item>
+        <item quantity="two">דקות</item>
     </plurals>
     <plurals name="duration_short_hours">
         <item quantity="one">שעה</item>
         <item quantity="other"><xliff:g id="count">%d</xliff:g> שעות</item>
-        <item quantity="many"></item>
-        <item quantity="two"></item>
+        <item quantity="many">שעות</item>
+        <item quantity="two">שעות</item>
     </plurals>
     <string name="duration_short_hours_minutes" formatted="false"><xliff:g id="hour">%1$s</xliff:g> שעות <xliff:g id="minutes">%2$s</xliff:g> דקות</string>
     <string name="trip_time_origin_destination"><xliff:g id="origin">%1$s</xliff:g> – <xliff:g id="destination">%2$s</xliff:g></string>
@@ -210,7 +210,7 @@
     <!-- Planner error message -->
     <string name="planner_error_H895">ההתחלה והסיום  קרובים מדי זה לזה.</string>
     <!-- Preferences -->
-    <string name="restart_app_for_full_effect">התחל את היישום מחדש כדי לקבל את מלוא התפוקה.</string>
+    <string name="restart_app_for_full_effect">התחל את היישום מחדש כדי שהשינוי יופעל במלואו.</string>
     <string name="dialog_general_preferences">יסודות</string>
     <string name="dialog_notification_preferences">הודעות</string>
     <string name="title_language_preference">שפה</string>
