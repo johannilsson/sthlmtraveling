@@ -23,8 +23,11 @@ import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.DrawableRes;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.view.ContextThemeWrapper;
 import android.text.Editable;
@@ -188,6 +191,17 @@ public class ChangeRouteTimeActivity extends BaseActivity implements OnClickList
         return true;
     }
 
+    void setIconForCheckBox(CheckBox checkBoxView, @DrawableRes int drawableRes) {
+        Drawable drawable = ViewHelper.tintIcon(
+                ContextCompat.getDrawable(this, drawableRes),
+                ContextCompat.getColor(this, R.color.icon_default));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            checkBoxView.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, drawable, null);
+        } else {
+            checkBoxView.setCompoundDrawablesWithIntrinsicBounds(null, null, drawable, null);
+        }
+    }
+
     /**
      * Update time on the buttons.
      */
@@ -197,10 +211,15 @@ public class ChangeRouteTimeActivity extends BaseActivity implements OnClickList
         // Update transport types
         CheckBox transportBus = (CheckBox) findViewById(R.id.planner_transport_bus);
         CheckBox transportMetro = (CheckBox) findViewById(R.id.planner_transport_metro);
-//        CheckBox transportNar = (CheckBox) findViewById(R.id.planner_transport_nar);
         CheckBox transportTrain = (CheckBox) findViewById(R.id.planner_transport_train);
         CheckBox transportTram = (CheckBox) findViewById(R.id.planner_transport_tram);
         CheckBox transportWax = (CheckBox) findViewById(R.id.planner_transport_wax);
+
+        setIconForCheckBox(transportBus, R.drawable.ic_transport_bus_20dp);
+        setIconForCheckBox(transportMetro, R.drawable.ic_transport_metro_20dp);
+        setIconForCheckBox(transportTrain, R.drawable.ic_transport_train_20dp);
+        setIconForCheckBox(transportTram, R.drawable.ic_transport_light_train_20dp);
+        setIconForCheckBox(transportWax, R.drawable.ic_transport_boat_20dp);
 
         for (String type : mJourneyQuery.transportModes) {
             if (type.equals(TransportMode.BUS)) {

@@ -35,22 +35,22 @@
             style="?android:textAppearanceMedium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/date_and_time_label"
             android:layout_marginBottom="8dp"
+            android:text="@string/date_and_time_label"
             />
 
         <Spinner
             android:id="@+id/departure_arrival_choice"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:drawSelectorOnTop="true"
             android:layout_marginBottom="8dp"
+            android:drawSelectorOnTop="true"
             />
 
         <LinearLayout
-            android:orientation="horizontal"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:orientation="horizontal"
             >
 
             <Button
@@ -67,19 +67,19 @@
 
             <ImageButton
                 android:id="@+id/btn_set_to_now"
+                style="?attr/borderlessButtonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                style="?attr/borderlessButtonStyle"
                 android:src="@drawable/ic_action_refresh"
                 />
         </LinearLayout>
 
         <TextView
             style="?android:textAppearanceMedium"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="8dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="16dp"
             android:text="@string/transport_type"
             />
 
@@ -87,50 +87,58 @@
             android:id="@+id/planner_transport_metro"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="@string/metros"
-            android:checked="false"/>
+            android:checked="false"
+            android:drawableEnd="@drawable/ic_transport_metro_20dp"
+            android:drawableRight="@drawable/ic_transport_metro_20dp"
+            android:text="@string/metros"/>
 
         <CheckBox
             android:id="@+id/planner_transport_bus"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="@string/buses"
-            android:checked="false"/>
+            android:checked="false"
+            android:text="@string/buses"/>
 
         <CheckBox
             android:id="@+id/planner_transport_tram"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="@string/trams"
-            android:checked="false"/>
+            android:checked="false"
+            android:drawableEnd="@drawable/ic_transport_light_train_20dp"
+            android:drawableRight="@drawable/ic_transport_light_train_20dp"
+            android:text="@string/trams"/>
 
         <CheckBox
             android:id="@+id/planner_transport_train"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="@string/trains"
-            android:checked="false"/>
+            android:checked="false"
+            android:drawableEnd="@drawable/ic_transport_train_20dp"
+            android:drawableRight="@drawable/ic_transport_train_20dp"
+            android:text="@string/trains"/>
 
         <CheckBox
             android:id="@+id/planner_transport_wax"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="@string/boats"
-            android:checked="false"/>
+            android:checked="false"
+            android:drawableEnd="@drawable/ic_transport_boat_20dp"
+            android:drawableRight="@drawable/ic_transport_boat_20dp"
+            android:text="@string/boats"/>
 
         <!--<CheckBox-->
-            <!--android:id="@+id/planner_transport_nar"-->
-            <!--android:layout_width="fill_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:text="Närtrafiken"-->
-            <!--android:checked="false"/>-->
+        <!--android:id="@+id/planner_transport_nar"-->
+        <!--android:layout_width="fill_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="Närtrafiken"-->
+        <!--android:checked="false"/>-->
 
         <TextView
             style="?android:textAppearanceMedium"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="8dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="16dp"
             android:text="@string/routes_label"
             />
 
@@ -138,8 +146,8 @@
             android:id="@+id/via"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:completionThreshold="3"
             android:layout_weight="1"
+            android:completionThreshold="3"
             android:dropDownVerticalOffset="5dip"
             android:dropDownWidth="fill_parent"
             android:ems="10"
@@ -152,9 +160,9 @@
 
         <CheckBox
             android:id="@+id/planner_alternative_stops"
-            android:layout_marginTop="8dp"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             android:checked="true"
             android:text="@string/alternative_stops_label"/>
 
