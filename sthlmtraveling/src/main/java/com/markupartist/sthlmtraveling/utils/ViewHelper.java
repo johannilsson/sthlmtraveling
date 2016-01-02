@@ -246,7 +246,7 @@ public class ViewHelper {
                 }
                 return ViewHelper.tintIcon(drawable, ContextCompat.getColor(context, R.color.bus_red));
             case TransportMode.METRO_INDEX:
-                drawable = ContextCompat.getDrawable(context, R.drawable.ic_transport_metro_20dp);
+                drawable = ContextCompat.getDrawable(context, R.drawable.ic_transport_sl_metro);
                 return ViewHelper.tintIcon(drawable, color);
             case TransportMode.FOOT_INDEX:
                 drawable = ContextCompat.getDrawable(context, R.drawable.ic_transport_walk_20dp);
@@ -277,7 +277,7 @@ public class ViewHelper {
                 drawable = ContextCompat.getDrawable(context, R.drawable.ic_transport_bus_20dp);
                 return ViewHelper.tintIcon(drawable, color);
             case TransportMode.METRO_INDEX:
-                drawable = ContextCompat.getDrawable(context, R.drawable.ic_transport_metro_20dp);
+                drawable = ContextCompat.getDrawable(context, R.drawable.ic_transport_sl_metro);
                 return ViewHelper.tintIcon(drawable, color);
             case TransportMode.FOOT_INDEX:
                 drawable = ContextCompat.getDrawable(context, R.drawable.ic_transport_walk_20dp);

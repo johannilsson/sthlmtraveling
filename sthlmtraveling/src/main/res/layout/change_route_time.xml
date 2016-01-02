@@ -88,8 +88,8 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:checked="false"
-            android:drawableEnd="@drawable/ic_transport_metro_20dp"
-            android:drawableRight="@drawable/ic_transport_metro_20dp"
+            android:drawableEnd="@drawable/ic_transport_sl_metro"
+            android:drawableRight="@drawable/ic_transport_sl_metro"
             android:text="@string/metros"/>
 
         <CheckBox

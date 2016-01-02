@@ -148,7 +148,7 @@ public class DeparturesActivity extends BaseFragmentActivity {
         metroArg.putInt(DepartureFragment.ARG_TRANSPORT_TYPE, TransportMode.METRO_INDEX);
 
         mPageAdapter.addPage(new PageFragmentAdapter.PageInfo(getString(R.string.departure_metro),
-                DepartureFragment.class, metroArg, R.drawable.ic_transport_metro_20dp));
+                DepartureFragment.class, metroArg, R.drawable.ic_transport_sl_metro));
 
         Bundle busArg = new Bundle();
         busArg.putInt(DepartureFragment.ARG_TRANSPORT_TYPE, TransportMode.BUS_INDEX);

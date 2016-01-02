@@ -83,7 +83,7 @@
                 android:layout_height="wrap_content"
                 android:paddingEnd="8dp"
                 android:paddingRight="8dp"
-                android:src="@drawable/ic_transport_metro_20dp"
+                android:src="@drawable/ic_transport_sl_metro"
                 />
 
             <ImageView

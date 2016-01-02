@@ -216,7 +216,7 @@ public class ChangeRouteTimeActivity extends BaseActivity implements OnClickList
         CheckBox transportWax = (CheckBox) findViewById(R.id.planner_transport_wax);
 
         setIconForCheckBox(transportBus, R.drawable.ic_transport_bus_20dp);
-        setIconForCheckBox(transportMetro, R.drawable.ic_transport_metro_20dp);
+        setIconForCheckBox(transportMetro, R.drawable.ic_transport_sl_metro);
         setIconForCheckBox(transportTrain, R.drawable.ic_transport_train_20dp);
         setIconForCheckBox(transportTram, R.drawable.ic_transport_light_train_20dp);
         setIconForCheckBox(transportWax, R.drawable.ic_transport_boat_20dp);
