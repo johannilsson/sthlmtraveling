@@ -762,7 +762,7 @@ public class RoutesActivity extends BaseListActivity implements
     }
 
     void fetchRouteAlternatives(JourneyQuery journeyQuery) {
-        if (mPlan != null) {
+        if (mPlan != null && mPlan.hasRoutes()) {
             updateRouteAlternatives(mPlan);
             return;
         }
@@ -772,7 +772,7 @@ public class RoutesActivity extends BaseListActivity implements
         router.plan(journeyQuery, new Router.Callback() {
             @Override
             public void onPlan(Plan plan) {
-                if (plan != null) {
+                if (plan != null && plan.hasRoutes()) {
                     updateRouteAlternatives(plan);
                 }
             }

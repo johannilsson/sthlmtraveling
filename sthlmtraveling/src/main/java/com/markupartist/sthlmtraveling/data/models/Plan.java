@@ -53,6 +53,10 @@ public class Plan implements Parcelable {
         return routes;
     }
 
+    public boolean hasRoutes() {
+        return routes != null && routes.size() > 0;
+    }
+
     @Override
     public int describeContents() {
         return 0;
