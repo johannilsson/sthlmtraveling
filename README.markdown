@@ -23,7 +23,9 @@ fork the app. I will do my best help you out if you have any problems. The docum
 
 Changelog
 ---------
-* 2.15.0 (2015-12)
+* 2.15.1 (2016-01-02)
+  * Bug fixes
+* 2.15.0 (2015-12-24)
   * Add walk, bike and car mode
   * Add new icons and colors
   * Add Bosnian (Bosnia and Herzegovina) translation by Zlatan Klapic
