@@ -16,9 +16,12 @@
 
 package com.markupartist.sthlmtraveling.utils;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.CountDownTimer;
+import android.support.v4.content.ContextCompat;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
@@ -74,6 +77,10 @@ public class LocationManager implements PlayService, LocationListener {
     }
 
     Location getLastLocation() {
+        if (ContextCompat.checkSelfPermission(mContext,
+                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return null;
+        }
         return LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
     }
 
@@ -125,6 +132,11 @@ public class LocationManager implements PlayService, LocationListener {
 
     void requestLocationOrDeliverCurrent() {
         if (mGoogleApiClient == null) {
+            return;
+        }
+
+        if (ContextCompat.checkSelfPermission(mContext,
+                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
 
