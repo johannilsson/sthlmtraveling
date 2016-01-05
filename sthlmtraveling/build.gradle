@@ -50,7 +50,7 @@ dependencies {
     compile 'org.slf4j:slf4j-android:1.7.10'
     compile files('libs/widespace-sdk-4.6.2-f9ac2ef.jar')
     compile files('libs/nmdp_speech_kit.jar')
-    compile('com.crashlytics.sdk.android:crashlytics:2.5.0@aar') {
+    compile('com.crashlytics.sdk.android:crashlytics:2.5.5@aar') {
         transitive = true;
     }
 }
