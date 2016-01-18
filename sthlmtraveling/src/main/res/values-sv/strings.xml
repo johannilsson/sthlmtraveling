@@ -151,7 +151,7 @@
         <item quantity="one">1 t</item>
         <item quantity="other"><xliff:g id="count">%d</xliff:g> t</item>
     </plurals>
-    <string name="duration_short_hours_minutes" formatted="false"><xliff:g id="hour">%1$s</xliff:g> hr <xliff:g id="minutes">%2$s</xliff:g> min</string>
+    <string name="duration_short_hours_minutes" formatted="false"><xliff:g id="hour">%1$s</xliff:g> t <xliff:g id="minutes">%2$s</xliff:g> min</string>
     <string name="trip_time_origin_destination"><xliff:g id="origin">%1$s</xliff:g> – <xliff:g id="destination">%2$s</xliff:g></string>
     <!-- Planner error message -->
     <string name="planner_error_title">Sökningen misslyckades</string>
