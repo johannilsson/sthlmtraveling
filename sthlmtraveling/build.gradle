@@ -67,7 +67,7 @@ android {
         minSdkVersion 9
         targetSdkVersion 23
         applicationId "com.markupartist.sthlmtraveling"
-        versionName "2.15.1"
+        versionName "2.15.2-dev"
         versionCode 183
 
         buildConfigField "boolean", "APP_IS_ADS_ENABLED", buildProperties['IS_ADS_ENABLED']
