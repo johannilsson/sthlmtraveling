@@ -32,7 +32,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -50,24 +49,29 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.markupartist.sthlmtraveling.data.api.ApiService;
+import com.markupartist.sthlmtraveling.data.models.IntermediateStop;
+import com.markupartist.sthlmtraveling.data.models.IntermediateResponse;
 import com.markupartist.sthlmtraveling.data.models.Leg;
+import com.markupartist.sthlmtraveling.data.models.Place;
 import com.markupartist.sthlmtraveling.data.models.Route;
 import com.markupartist.sthlmtraveling.data.models.Step;
+import com.markupartist.sthlmtraveling.data.models.TravelMode;
 import com.markupartist.sthlmtraveling.provider.planner.JourneyQuery;
-import com.markupartist.sthlmtraveling.provider.planner.Planner;
-import com.markupartist.sthlmtraveling.provider.planner.Planner.IntermediateStop;
-import com.markupartist.sthlmtraveling.provider.planner.Planner.SubTrip;
-import com.markupartist.sthlmtraveling.provider.planner.Planner.Trip2;
 import com.markupartist.sthlmtraveling.provider.site.Site;
 import com.markupartist.sthlmtraveling.utils.Analytics;
+import com.markupartist.sthlmtraveling.utils.LegUtil;
 import com.markupartist.sthlmtraveling.utils.PolyUtil;
 import com.markupartist.sthlmtraveling.utils.StringUtils;
 import com.markupartist.sthlmtraveling.utils.ViewHelper;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 public class ViewOnMapActivity extends BaseFragmentActivity implements OnMapReadyCallback {
 
@@ -82,9 +86,10 @@ public class ViewOnMapActivity extends BaseFragmentActivity implements OnMapRead
      */
     private GoogleMap mMap;
     private LatLng mFocusedLatLng;
-    private Trip2 mTrip;
+    private Route mTransitRoute;
     private JourneyQuery mJourneyQuery;
     private Route mRoute;
+    private ApiService mApiService;
 
     public static Intent createIntent(Context context, JourneyQuery query, Route route) {
         Intent intent = new Intent(context, ViewOnMapActivity.class);
@@ -93,9 +98,9 @@ public class ViewOnMapActivity extends BaseFragmentActivity implements OnMapRead
         return intent;
     }
 
-    public static Intent createIntent(Context context, Trip2 trip, JourneyQuery query, Site location) {
+    public static Intent createIntent(Context context, Route route, JourneyQuery query, Site location) {
         Intent intent = new Intent(context, ViewOnMapActivity.class);
-        intent.putExtra(ViewOnMapActivity.EXTRA_TRIP, trip);
+        intent.putExtra(ViewOnMapActivity.EXTRA_TRIP, route);
         intent.putExtra(ViewOnMapActivity.EXTRA_JOURNEY_QUERY, query);
         intent.putExtra(ViewOnMapActivity.EXTRA_LOCATION, location);
         return intent;
@@ -141,9 +146,11 @@ public class ViewOnMapActivity extends BaseFragmentActivity implements OnMapRead
         Bundle extras = getIntent().getExtras();
 
         mRoute = extras.getParcelable(EXTRA_ROUTE);
-        mTrip = extras.getParcelable(EXTRA_TRIP);
+        mTransitRoute = extras.getParcelable(EXTRA_TRIP);
         mJourneyQuery = extras.getParcelable(EXTRA_JOURNEY_QUERY);
         final Site focusedLocation = extras.getParcelable(EXTRA_LOCATION);
+
+        mApiService = MyApplication.get(this).getApiService();
 
         if (focusedLocation != null) {
             mFocusedLatLng = new LatLng(
@@ -158,99 +165,106 @@ public class ViewOnMapActivity extends BaseFragmentActivity implements OnMapRead
         updateStartAndEndPointViews(mJourneyQuery);
     }
 
-    public void fetchRoute(final Trip2 trip, final JourneyQuery journeyQuery) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Planner.getInstance().addIntermediateStops(
-                            ViewOnMapActivity.this, trip, journeyQuery);
-                } catch (IOException e) {
-                    Log.e(TAG, "Could not fetch intermediate stops.");
-                }
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        addRoute(trip);
-                    }
-                });
+    public void loadIntermediateStops(final Route route) {
+        List<String> references = new ArrayList<>();
+
+        for (Leg leg : route.getLegs()) {
+            if (leg.getIntermediateStops().isEmpty()) {
+                references.add(leg.getDetailRef());
             }
-        }).start();
+        }
+
+        mApiService.getIntermediateStops(references, new Callback<IntermediateResponse>() {
+            @Override
+            public void success(IntermediateResponse intermediateResponse, Response response) {
+                for (Leg leg : route.getLegs()) {
+                    leg.setIntermediateStops(intermediateResponse.getStops(leg.getDetailRef()));
+                }
+                showTransitRoute(route);
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                showTransitRoute(route);
+            }
+        });
     }
 
-    public void addRoute(Trip2 trip) {
-        for (SubTrip subTrip : trip.subTrips) {
+    public void showTransitRoute(Route route) {
+        mMap.clear();
+
+        for (Leg leg : route.getLegs()) {
 
             float[] hsv = new float[3];
-            Color.colorToHSV(subTrip.transport.getColor(this), hsv);
+            Color.colorToHSV(LegUtil.getColor(this, leg), hsv);
             float hueColor = hsv[0];
 
             // One polyline per subtrip, different colors.
             PolylineOptions options = new PolylineOptions();
 
             LatLng origin = new LatLng(
-                    subTrip.origin.getLocation().getLatitude(),
-                    subTrip.origin.getLocation().getLongitude());
+                    leg.getFrom().getLat(),
+                    leg.getFrom().getLon());
             options.add(origin);
 
             mMap.addMarker(new MarkerOptions()
                     .position(origin)
-                    .title(getLocationName(subTrip.origin))
-                    .snippet(getRouteDescription(subTrip))
+                    .title(getLocationName(leg.getFrom()))
+                    .snippet(getRouteDescription(leg))
                     .icon(BitmapDescriptorFactory.defaultMarker(hueColor)));
 
-            BitmapDescriptor icon = getColoredMarker(subTrip.transport.getColor(this));
-            for (IntermediateStop stop : subTrip.intermediateStop) {
+            BitmapDescriptor icon = getColoredMarker(LegUtil.getColor(this, leg));
+            for (IntermediateStop stop : leg.getIntermediateStops()) {
                 LatLng intermediateStop = new LatLng(
-                        stop.location.getLocation().getLatitude(),
-                        stop.location.getLocation().getLongitude());
+                        stop.getLocation().getLat(),
+                        stop.getLocation().getLon());
                 options.add(intermediateStop);
-                Date date = stop.arrivalTime();
+                Date date = stop.getTimeRt();
                 if (date == null) {
-                    date = stop.departureTime();
+                    date = stop.getTime();
                 }
                 String time = date != null ? DateFormat.getTimeFormat(this).format(date) : "";
                 mMap.addMarker(new MarkerOptions()
                         .anchor(0.5f, 0.5f)
                         .position(intermediateStop)
-                        .title(getLocationName(stop.location))
+                        .title(getLocationName(stop.getLocation()))
                         .snippet(time)
                         .icon(icon));
             }
             LatLng destination = new LatLng(
-                    subTrip.destination.getLocation().getLatitude(),
-                    subTrip.destination.getLocation().getLongitude());
+                    leg.getTo().getLat(),
+                    leg.getTo().getLon());
             options.add(destination);
             mMap.addMarker(new MarkerOptions()
                     .position(destination)
-                    .title(getLocationName(subTrip.destination))
-                    .snippet(DateFormat.getTimeFormat(this).format(subTrip.getArrival()))
+                    .title(getLocationName(leg.getTo()))
+                    .snippet(DateFormat.getTimeFormat(this).format(leg.getStartTime()))
                     .icon(BitmapDescriptorFactory.defaultMarker(hueColor)));
 
             mMap.addPolyline(options
                     .width(ViewHelper.dipsToPix(getResources(), 8))
-                    .color(subTrip.transport.getColor(this)));
+                    .color(LegUtil.getColor(this, leg)));
         }
     }
 
-    public String getRouteDescription(SubTrip subTrip) {
+    public String getRouteDescription(Leg leg) {
         // TODO: Copied from RouteDetailActivity, centralize please!
         String description;
-        if ("Walk".equals(subTrip.transport.type)) {
+        if (TravelMode.FOOT.equals(leg.getTravelMode())) {
             description = getString(R.string.trip_map_description_walk,
-                    DateFormat.getTimeFormat(this).format(subTrip.getDeparture()),
-                    getLocationName(subTrip.destination));
+                    DateFormat.getTimeFormat(this).format(leg.getStartTime()),
+                    getLocationName(leg.getTo()));
         } else {
             description = getString(R.string.trip_map_description_normal,
-                    DateFormat.getTimeFormat(this).format(subTrip.getDeparture()),
-                    subTrip.transport.name,
-                    subTrip.transport.towards,
-                    getLocationName(subTrip.destination));
+                    DateFormat.getTimeFormat(this).format(leg.getStartTime()),
+                    leg.getRouteName(),
+                    leg.getHeadsing().getName(),
+                    getLocationName(leg.getTo()));
         }
         return description;
     }
 
-    private String getLocationName(Site location) {
+    private String getLocationName(Place location) {
         // TODO: Copied from RouteDetailActivity, centralize please!
         if (location == null) {
             return "Unknown";
@@ -290,15 +304,10 @@ public class ViewOnMapActivity extends BaseFragmentActivity implements OnMapRead
                 .show();
     }
 
-    /**
-     * This is where we can add markers or lines, add listeners or move the camera. In this case, we
-     * just add a marker near Africa.
-     * <p>
-     * This should only be called once and when we are sure that {@link #mMap} is not null.
-     */
     private void setUpMap() {
-        if (mTrip != null && mJourneyQuery != null) {
-            fetchRoute(mTrip, mJourneyQuery);
+        if (mTransitRoute != null && mJourneyQuery != null) {
+            showTransitRoute(mTransitRoute);
+            loadIntermediateStops(mTransitRoute);
             mMap.moveCamera(CameraUpdateFactory.newCameraPosition(
                     CameraPosition.fromLatLngZoom(mFocusedLatLng, 16)
             ));

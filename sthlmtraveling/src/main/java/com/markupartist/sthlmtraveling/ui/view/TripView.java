@@ -21,6 +21,7 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.text.BidiFormatter;
 import android.support.v4.view.ViewCompat;
 import android.text.SpannableStringBuilder;
@@ -37,7 +38,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.markupartist.sthlmtraveling.R;
-import com.markupartist.sthlmtraveling.provider.planner.Planner;
+import com.markupartist.sthlmtraveling.data.models.Leg;
+import com.markupartist.sthlmtraveling.data.models.Route;
+import com.markupartist.sthlmtraveling.utils.DateTimeUtil;
+import com.markupartist.sthlmtraveling.utils.LegUtil;
 import com.markupartist.sthlmtraveling.utils.RtlUtils;
 import com.markupartist.sthlmtraveling.utils.ViewHelper;
 import com.markupartist.sthlmtraveling.utils.text.RoundedBackgroundSpan;
@@ -48,7 +52,7 @@ import java.util.Locale;
  * Represent a Route
  */
 public class TripView extends LinearLayout {
-    private Planner.Trip2 trip;
+    private Route trip;
     private boolean mShowDivider = true;
 
     public TripView(Context context) {
@@ -59,7 +63,7 @@ public class TripView extends LinearLayout {
         super(context, attrs);
     }
 
-    public void setTrip(final Planner.Trip2 trip) {
+    public void setTrip(final Route trip) {
         this.trip = trip;
         removeAllViews();
         updateViews();
@@ -83,8 +87,8 @@ public class TripView extends LinearLayout {
 
         LinearLayout timeStartEndLayout = new LinearLayout(getContext());
         TextView timeStartEndText = new TextView(getContext());
-        timeStartEndText.setText(trip.toTimeDisplay(getContext()));
-        timeStartEndText.setTextColor(getResources().getColor(R.color.body_text_1));
+        timeStartEndText.setText(DateTimeUtil.routeToTimeDisplay(getContext(), trip));
+        timeStartEndText.setTextColor(ContextCompat.getColor(getContext(), R.color.body_text_1));
         timeStartEndText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
         ViewCompat.setPaddingRelative(timeStartEndText, 0, 0, 0, (int) (2 * scale));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
@@ -98,8 +102,8 @@ public class TripView extends LinearLayout {
         TextView startAndEndPoint = new TextView(getContext());
         BidiFormatter bidiFormatter = BidiFormatter.getInstance(RtlUtils.isRtl(Locale.getDefault()));
         startAndEndPoint.setText(String.format("%s – %s",
-                bidiFormatter.unicodeWrap(trip.origin.getName()),
-                bidiFormatter.unicodeWrap(trip.destination.getName())));
+                bidiFormatter.unicodeWrap(trip.fromStop().getName()),
+                bidiFormatter.unicodeWrap(trip.toStop().getName())));
 
         startAndEndPoint.setTextColor(getResources().getColor(R.color.body_text_1)); // Dark gray
         startAndEndPoint.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
@@ -121,10 +125,18 @@ public class TripView extends LinearLayout {
         LinearLayout.LayoutParams changesLayoutParams =
                 new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT);
         changesLayoutParams.gravity = Gravity.CENTER_VERTICAL;
-        int transportCount = trip.subTrips.size();
-        for (Planner.SubTrip subTrip : trip.subTrips) {
+
+        if (trip.hasAlertsOrNotes()) {
+            ImageView warning = new ImageView(getContext());
+            warning.setImageResource(R.drawable.ic_trip_deviation);
+            ViewCompat.setPaddingRelative(warning, 0, (int) (2 * scale), (int) (4 * scale), 0);
+            routeChanges.addView(warning);
+        }
+
+        int transportCount = trip.getLegs().size();
+        for (Leg leg : trip.getLegs()) {
             ImageView changeImageView = new ImageView(getContext());
-            Drawable transportDrawable = subTrip.transport.getDrawable(getContext());
+            Drawable transportDrawable = LegUtil.getTransportDrawable(getContext(), leg);
             changeImageView.setImageDrawable(transportDrawable);
             if (RtlUtils.isRtl(Locale.getDefault())) {
                 ViewCompat.setScaleX(changeImageView, -1f);
@@ -134,12 +146,12 @@ public class TripView extends LinearLayout {
             routeChanges.addView(changeImageView);
 
             if (currentTransportCount <= 3) {
-                String lineName = subTrip.transport.getLineName();
+                String lineName = leg.getRouteShortName();
                 if (!TextUtils.isEmpty(lineName)) {
                     TextView lineNumberView = new TextView(getContext());
                     lineNumberView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 13);
                     RoundedBackgroundSpan roundedBackgroundSpan = new RoundedBackgroundSpan(
-                            subTrip.transport.getColor(getContext()),
+                            LegUtil.getColor(getContext(), leg),
                             Color.WHITE,
                             ViewHelper.dipsToPix(getContext().getResources(), 4));
                     SpannableStringBuilder sb = new SpannableStringBuilder();
@@ -158,7 +170,7 @@ public class TripView extends LinearLayout {
             if (transportCount > currentTransportCount) {
                 ImageView separator = new ImageView(getContext());
                 separator.setImageResource(R.drawable.transport_separator);
-                ViewCompat.setPaddingRelative(separator, (int) (2 * scale), 0, (int) (5 * scale), 0);
+                ViewCompat.setPaddingRelative(separator, 0, 0, (int) (2 * scale), 0);
                 separator.setLayoutParams(changesLayoutParams);
                 routeChanges.addView(separator);
                 if (RtlUtils.isRtl(Locale.getDefault())) {
@@ -170,8 +182,8 @@ public class TripView extends LinearLayout {
         }
 
         TextView durationText = new TextView(getContext());
-        durationText.setText(trip.getDurationText(getResources()));
-        durationText.setTextColor(getResources().getColor(R.color.body_text_1));
+        durationText.setText(DateTimeUtil.formatDetailedDuration(getResources(), trip.getDuration() * 1000));
+        durationText.setTextColor(ContextCompat.getColor(getContext(), R.color.body_text_1));
         durationText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
         durationText.setTypeface(Typeface.DEFAULT_BOLD);
 
@@ -185,13 +197,6 @@ public class TripView extends LinearLayout {
             durationTextParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
         }
         durationText.setLayoutParams(durationTextParams);
-
-        if (trip.mt6MessageExist || trip.remarksMessageExist || trip.rtuMessageExist) {
-            ImageView warning = new ImageView(getContext());
-            warning.setImageResource(R.drawable.ic_trip_deviation);
-            ViewCompat.setPaddingRelative(warning, (int) (8 * scale), (int) (16 * scale), 0, 0);
-            timeLayout.addView(warning);
-        }
 
         View divider = new View(getContext());
         ViewGroup.LayoutParams dividerParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 1);

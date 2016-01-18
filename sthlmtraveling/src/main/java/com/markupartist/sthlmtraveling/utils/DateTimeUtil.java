@@ -20,11 +20,14 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.text.BidiFormatter;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
+import android.text.format.DateUtils;
 import android.util.Log;
 
 import com.markupartist.sthlmtraveling.R;
+import com.markupartist.sthlmtraveling.data.models.Route;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -105,6 +108,10 @@ public class DateTimeUtil {
         return date;
     }
 
+    public static String formatDate(Date date) {
+        return DATE_TIME_FORMAT.format(date);
+    }
+
     /**
      * Return given duration in a human-friendly format. For example, "4
      * minutes" or "1 second". Returns only largest meaningful unit of time,
@@ -158,6 +165,9 @@ public class DateTimeUtil {
             return resources.getQuantityString(R.plurals.duration_days, days, days);
         }
         if (hours > 0) {
+            if (minutes == 0) {
+                return resources.getQuantityString(R.plurals.duration_short_hours, hours, minutes);
+            }
             return resources.getString(R.string.duration_short_hours_minutes, hours, minutes);
         }
         return resources.getQuantityString(R.plurals.duration_short_minutes, minutes, minutes);
@@ -202,4 +212,24 @@ public class DateTimeUtil {
             return displayTime;
         }
     }
+
+
+    public static String routeToTimeDisplay(Context context, Route route) {
+        java.text.DateFormat format = android.text.format.DateFormat.getTimeFormat(context);
+        BidiFormatter bidiFormatter = BidiFormatter.getInstance(RtlUtils.isRtl(Locale.getDefault()));
+
+        if (!DateUtils.isToday(route.departsAt(false).getTime())) {
+            return String.format("%s %s – %s",
+                    bidiFormatter.unicodeWrap(DateUtils.getRelativeTimeSpanString(
+                            route.departsAt(false).getTime(), System.currentTimeMillis(),
+                            DateUtils.DAY_IN_MILLIS).toString()),
+                    bidiFormatter.unicodeWrap(format.format(route.departsAt(false))),
+                    bidiFormatter.unicodeWrap(format.format(route.departsAt(false))));
+        }
+
+        return String.format("%s – %s",
+                bidiFormatter.unicodeWrap(format.format(route.departsAt(false))),
+                bidiFormatter.unicodeWrap(format.format(route.arrivesAt(false))));
+    }
+
 }

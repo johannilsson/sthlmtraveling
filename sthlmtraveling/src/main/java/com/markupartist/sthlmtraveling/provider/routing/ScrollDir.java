@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2009-2015 Johan Nilsson <http://markupartist.com>
+ * Copyright (C) 2009-2016 Johan Nilsson <http://markupartist.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,28 +14,22 @@
  * limitations under the License.
  */
 
-package com.markupartist.sthlmtraveling.data.misc;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+package com.markupartist.sthlmtraveling.provider.routing;
 
 /**
- * Provides a Gson instance.
+ *
  */
-public class GsonProvider {
-    private static Gson gson;
+public enum ScrollDir {
+    NEXT("next"),
+    PREVIOUS("previous");
 
-    private GsonProvider() {
+    private final String direction;
 
+    ScrollDir(String direction) {
+        this.direction = direction;
     }
 
-    public synchronized static Gson provideGson() {
-        if (gson == null) {
-            gson = new GsonBuilder()
-                    .setDateFormat("yyyy-MM-dd'T'HH:mm:ss")
-                    .create();
-        }
-        return gson;
+    public String getDirection() {
+        return direction;
     }
-
 }

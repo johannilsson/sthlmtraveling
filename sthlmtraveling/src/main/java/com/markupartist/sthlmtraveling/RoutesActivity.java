@@ -25,7 +25,6 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.location.Location;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -55,13 +54,12 @@ import android.widget.Toast;
 
 import com.markupartist.sthlmtraveling.data.models.Plan;
 import com.markupartist.sthlmtraveling.data.models.Route;
+import com.markupartist.sthlmtraveling.data.models.RouteError;
 import com.markupartist.sthlmtraveling.provider.JourneysProvider.Journey.Journeys;
 import com.markupartist.sthlmtraveling.provider.planner.JourneyQuery;
 import com.markupartist.sthlmtraveling.provider.planner.Planner;
-import com.markupartist.sthlmtraveling.provider.planner.Planner.BadResponse;
-import com.markupartist.sthlmtraveling.provider.planner.Planner.Response;
-import com.markupartist.sthlmtraveling.provider.planner.Planner.Trip2;
 import com.markupartist.sthlmtraveling.provider.routing.Router;
+import com.markupartist.sthlmtraveling.provider.routing.ScrollDir;
 import com.markupartist.sthlmtraveling.provider.site.Site;
 import com.markupartist.sthlmtraveling.ui.view.SmsTicketDialog;
 import com.markupartist.sthlmtraveling.ui.view.TripView;
@@ -73,11 +71,11 @@ import com.markupartist.sthlmtraveling.utils.ViewHelper;
 
 import org.json.JSONException;
 
-import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -112,15 +110,6 @@ public class RoutesActivity extends BaseListActivity implements
 
     private static final long HEADER_HIDE_ANIM_DURATION = 300;
 
-    /**
-     * Key to identify if the instance of SearchRoutesTask is in progress.
-     */
-    private static final String STATE_SEARCH_ROUTES_IN_PROGRESS =
-            "com.markupartist.sthlmtraveling.searchroutes.inprogress";
-    private static final String STATE_GET_EARLIER_ROUTES_IN_PROGRESS =
-            "com.markupartist.sthlmtraveling.getearlierroutes.inprogress";
-    private static final String STATE_GET_LATER_ROUTES_IN_PROGRESS =
-            "com.markupartist.sthlmtraveling.getlaterroutes.inprogress";
     private static final String STATE_ROUTE_ERROR_CODE =
             "com.markupartist.sthlmtraveling.state.routeerrorcode";
     private static final String STATE_PLANNER_RESPONSE =
@@ -131,14 +120,11 @@ public class RoutesActivity extends BaseListActivity implements
     private RoutesAdapter mRouteAdapter;
 
     private LocationManager mMyLocationManager;
-    private SearchRoutesTask mSearchRoutesTask;
-    private GetEarlierRoutesTask mGetEarlierRoutesTask;
-    private GetLaterRoutesTask mGetLaterRoutesTask;
 
-    private Response mPlannerResponse;
     private JourneyQuery mJourneyQuery;
     private String mRouteErrorCode;
     private Plan mPlan;
+    private Plan mTransitPlan;
 
     private Bundle mSavedState;
     private Button mTimeAndDate;
@@ -155,6 +141,7 @@ public class RoutesActivity extends BaseListActivity implements
     private View mLoadingRoutesViews;
     private View mRouteAlternativesView;
     private FrameLayout mRouteAlternativesStub;
+    private Router mRouter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -167,7 +154,7 @@ public class RoutesActivity extends BaseListActivity implements
         // Get the journey query.
         mJourneyQuery = getJourneyQueryFromIntent(getIntent());
         if (savedInstanceState != null) {
-            mPlannerResponse = savedInstanceState.getParcelable(STATE_PLANNER_RESPONSE);
+            mTransitPlan = savedInstanceState.getParcelable(STATE_PLANNER_RESPONSE);
             mJourneyQuery = savedInstanceState.getParcelable(EXTRA_JOURNEY_QUERY);
             mPlan = savedInstanceState.getParcelable(STATE_PLAN);
         }
@@ -195,6 +182,9 @@ public class RoutesActivity extends BaseListActivity implements
         mTimeAndDate.setOnClickListener(this);
         ViewHelper.tintIcon(mTimeAndDate.getCompoundDrawables()[0],
                 getResources().getColor(R.color.primary_light));
+
+        MyApplication app = MyApplication.get(this);
+        mRouter = new Router(app.getApiService());
 
         initActionBar();
         updateStartAndEndPointViews(mJourneyQuery);
@@ -236,6 +226,18 @@ public class RoutesActivity extends BaseListActivity implements
                 .show();
     }
 
+    public void updateTransitRoutes(Plan plan) {
+        dismissProgress();
+
+        if (plan.hasErrors("transit")) {
+            RouteError routeError = plan.getError("transit");
+            mRouteErrorCode = routeError.getCode();
+            showErrorForPublicTransport(getString(Planner.plannerErrorCodeToStringRes(mRouteErrorCode)));
+        } else {
+            onSearchRoutesResult(plan);
+        }
+    }
+
     public void updateRouteAlternatives(Plan plan) {
         mPlan = plan;
 
@@ -254,7 +256,7 @@ public class RoutesActivity extends BaseListActivity implements
         mRouteAlternativesView.findViewById(R.id.route_car).setOnClickListener(this);
 
         mLoadingRoutesViews = mRouteAlternativesView.findViewById(R.id.loading_routes);
-        if (mPlannerResponse == null && mRouteErrorCode == null) {
+        if (mTransitPlan == null && mRouteErrorCode == null) {
             showProgress();
         }
 
@@ -301,7 +303,7 @@ public class RoutesActivity extends BaseListActivity implements
             ViewHelper.tintIcon(getResources(), starItem.getIcon());
         }
 
-        if (mPlannerResponse != null && mPlannerResponse.canBuySmsTicket()) {
+        if (mTransitPlan != null && mTransitPlan.canBuySmsTicket()) {
             MenuItem smsItem = menu.findItem(R.id.actionbar_item_sms);
             ViewHelper.tintIcon(getResources(), smsItem.getIcon());
             smsItem.setVisible(false);  // disable SMS tickets on this view
@@ -411,9 +413,9 @@ public class RoutesActivity extends BaseListActivity implements
      * @param journeyQuery The journey query
      */
     private void initRoutes(JourneyQuery journeyQuery) {
-        if (mPlannerResponse != null) {
+        if (mTransitPlan != null) {
             fetchRouteAlternatives(mJourneyQuery);
-            onSearchRoutesResult(mPlannerResponse);
+            onSearchRoutesResult(mTransitPlan);
         } else if (mRouteErrorCode != null) {
             showErrorForPublicTransport(getString(Planner.plannerErrorCodeToStringRes(mRouteErrorCode)));
             fetchRouteAlternatives(mJourneyQuery);
@@ -425,8 +427,7 @@ public class RoutesActivity extends BaseListActivity implements
             if ((!journeyQuery.origin.isMyLocation() && !journeyQuery.destination.isMyLocation())
                     || ((mJourneyQuery.origin.isMyLocation() && mJourneyQuery.origin.hasLocation())
                     || (mJourneyQuery.destination.isMyLocation() && mJourneyQuery.destination.hasLocation()))) {
-                mSearchRoutesTask = new SearchRoutesTask();
-                mSearchRoutesTask.execute(mJourneyQuery);
+                fetchTransitRoute(mJourneyQuery);
                 fetchRouteAlternatives(mJourneyQuery);
             }
         }
@@ -446,26 +447,20 @@ public class RoutesActivity extends BaseListActivity implements
      */
     private void restoreLocalState(Bundle savedInstanceState) {
         restoreJourneyQuery(savedInstanceState);
-        restoreSearchRoutesTask(savedInstanceState);
-        restoreGetEarlierRoutesTask(savedInstanceState);
-        restoreGetLaterRoutesTask(savedInstanceState);
 
         if (savedInstanceState.containsKey(STATE_ROUTE_ERROR_CODE)) {
             mRouteErrorCode = savedInstanceState.getString(STATE_ROUTE_ERROR_CODE);
         }
 
-        mPlannerResponse = savedInstanceState.getParcelable(STATE_PLANNER_RESPONSE);
+        mTransitPlan = savedInstanceState.getParcelable(STATE_PLANNER_RESPONSE);
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         saveJourneyQuery(outState);
-        saveSearchRoutesTask(outState);
-        saveGetEarlierRoutesTask(outState);
-        saveGetLaterRoutesTask(outState);
 
-        outState.putParcelable(STATE_PLANNER_RESPONSE, mPlannerResponse);
+        outState.putParcelable(STATE_PLANNER_RESPONSE, mTransitPlan);
         outState.putParcelable(STATE_PLAN, mPlan);
 
         if (!TextUtils.isEmpty(mRouteErrorCode)) {
@@ -488,10 +483,6 @@ public class RoutesActivity extends BaseListActivity implements
     protected void onDestroy() {
         super.onDestroy();
 
-        onCancelSearchRoutesTask();
-        onCancelGetEarlierRoutesTask();
-        onCancelGetLaterRoutesTask();
-
         mMyLocationManager.removeUpdates();
         dismissProgress();
     }
@@ -499,10 +490,6 @@ public class RoutesActivity extends BaseListActivity implements
     @Override
     protected void onPause() {
         super.onPause();
-
-        onCancelSearchRoutesTask();
-        onCancelGetEarlierRoutesTask();
-        onCancelGetLaterRoutesTask();
 
         mMyLocationManager.removeUpdates();
 
@@ -530,126 +517,6 @@ public class RoutesActivity extends BaseListActivity implements
         outState.putParcelable(EXTRA_JOURNEY_QUERY, mJourneyQuery);
     }
 
-    /**
-     * Cancels a search routes task if it is running.
-     */
-    private void onCancelSearchRoutesTask() {
-        if (mSearchRoutesTask != null && mSearchRoutesTask.getStatus() == AsyncTask.Status.RUNNING) {
-            Log.i(TAG, "Cancels the search routes task.");
-            mSearchRoutesTask.cancel(true);
-            mSearchRoutesTask = null;
-        }
-    }
-
-    /**
-     * Restores the search routes task.
-     *
-     * @param savedInstanceState the saved state
-     */
-    private void restoreSearchRoutesTask(Bundle savedInstanceState) {
-        if (savedInstanceState.getBoolean(STATE_SEARCH_ROUTES_IN_PROGRESS)) {
-            Log.d(TAG, "restoring SearchRoutesTask");
-            mSearchRoutesTask = new SearchRoutesTask();
-            mSearchRoutesTask.execute(mJourneyQuery);
-        }
-    }
-
-    /**
-     * If there is any running search for routes, save it and process it later
-     * on.
-     *
-     * @param outState the out state
-     */
-    private void saveSearchRoutesTask(Bundle outState) {
-        final SearchRoutesTask task = mSearchRoutesTask;
-        if (task != null && task.getStatus() != AsyncTask.Status.FINISHED) {
-            Log.d(TAG, "saving SearchRoutesTask");
-            task.cancel(true);
-            mSearchRoutesTask = null;
-            outState.putBoolean(STATE_SEARCH_ROUTES_IN_PROGRESS, true);
-        }
-    }
-
-    /**
-     * Cancel the get earlier routes task if it is running.
-     */
-    private void onCancelGetEarlierRoutesTask() {
-        if (mGetEarlierRoutesTask != null &&
-                mGetEarlierRoutesTask.getStatus() == AsyncTask.Status.RUNNING) {
-            Log.i(TAG, "Cancels the get earlier routes task.");
-            mGetEarlierRoutesTask.cancel(true);
-            mGetEarlierRoutesTask = null;
-        }
-    }
-
-    /**
-     * Restores the task for getting earlier routes task.
-     *
-     * @param savedInstanceState the saved state
-     */
-    private void restoreGetEarlierRoutesTask(Bundle savedInstanceState) {
-        if (savedInstanceState.getBoolean(STATE_GET_EARLIER_ROUTES_IN_PROGRESS)) {
-            Log.d(TAG, "restoring GetEarlierRoutesTask");
-            mGetEarlierRoutesTask = new GetEarlierRoutesTask();
-            mGetEarlierRoutesTask.execute(mJourneyQuery);
-        }
-    }
-
-    /**
-     * Save the state for the task for getting earlier routes.
-     *
-     * @param outState the out state
-     */
-    private void saveGetEarlierRoutesTask(Bundle outState) {
-        final GetEarlierRoutesTask task = mGetEarlierRoutesTask;
-        if (task != null && task.getStatus() != AsyncTask.Status.FINISHED) {
-            Log.d(TAG, "saving GetEarlierRoutesTas");
-            task.cancel(true);
-            mGetEarlierRoutesTask = null;
-            outState.putBoolean(STATE_GET_EARLIER_ROUTES_IN_PROGRESS, true);
-        }
-    }
-
-    /**
-     * Cancel the get later routes task if it is running.
-     */
-    private void onCancelGetLaterRoutesTask() {
-        if (mGetLaterRoutesTask != null &&
-                mGetLaterRoutesTask.getStatus() == AsyncTask.Status.RUNNING) {
-            Log.i(TAG, "Cancels the get later routes task.");
-            mGetLaterRoutesTask.cancel(true);
-            mGetLaterRoutesTask = null;
-        }
-    }
-
-    /**
-     * Restores the task for getting earlier routes task.
-     *
-     * @param savedInstanceState the saved state
-     */
-    private void restoreGetLaterRoutesTask(Bundle savedInstanceState) {
-        if (savedInstanceState.getBoolean(STATE_GET_LATER_ROUTES_IN_PROGRESS)) {
-            Log.d(TAG, "restoring GetLaterRoutesTask");
-            mGetLaterRoutesTask = new GetLaterRoutesTask();
-            mGetLaterRoutesTask.execute(mJourneyQuery);
-        }
-    }
-
-    /**
-     * Save the state for the task for getting earlier routes.
-     *
-     * @param outState the out state
-     */
-    private void saveGetLaterRoutesTask(Bundle outState) {
-        final GetLaterRoutesTask task = mGetLaterRoutesTask;
-        if (task != null && task.getStatus() != AsyncTask.Status.FINISHED) {
-            Log.d(TAG, "saving GetLaterRoutesTas");
-            task.cancel(true);
-            mGetLaterRoutesTask = null;
-            outState.putBoolean(STATE_GET_LATER_ROUTES_IN_PROGRESS, true);
-        }
-    }
-
     private String buildDateTimeString() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
             String pattern = android.text.format.DateFormat.getBestDateTimePattern(Locale.getDefault(), "MMMMd HHmm");
@@ -662,7 +529,7 @@ public class RoutesActivity extends BaseListActivity implements
     }
 
     private void initListView() {
-        mRouteAdapter = new RoutesAdapter(this, new ArrayList<Trip2>());
+        mRouteAdapter = new RoutesAdapter(this, new ArrayList<Route>());
         // Faked stub, but get the job done.
         mRouteAlternativesStub = (FrameLayout) LayoutInflater.from(RoutesActivity.this)
                 .inflate(R.layout.routes_list_header, getListView(), false);
@@ -683,33 +550,45 @@ public class RoutesActivity extends BaseListActivity implements
         int viewType = mRouteAdapter.getItemViewType(position);
         switch (viewType) {
             case RoutesAdapter.TYPE_GET_EARLIER:
-                mGetEarlierRoutesTask = new GetEarlierRoutesTask();
-                mGetEarlierRoutesTask.execute(mJourneyQuery);
+                mRouter.planTransit(mJourneyQuery, mPlanCallback, ScrollDir.PREVIOUS);
                 break;
             case RoutesAdapter.TYPE_GET_LATER:
-                mGetLaterRoutesTask = new GetLaterRoutesTask();
-                mGetLaterRoutesTask.execute(mJourneyQuery);
+                mRouter.planTransit(mJourneyQuery, mPlanCallback, ScrollDir.NEXT);
                 break;
             case RoutesAdapter.TYPE_ROUTES:
-                Trip2 trip = mRouteAdapter.getTripItem(position);
-                findRouteDetails(trip);
+                Route route = mRouteAdapter.getTripItem(position);
+                findRouteDetails(route);
                 break;
         }
     }
+
+    private Router.Callback mPlanCallback = new Router.Callback() {
+        @Override
+        public void onPlan(Plan plan) {
+            updateTransitRoutes(plan);
+        }
+
+        @Override
+        public void onPlanError(JourneyQuery journeyQuery, String errorCode) {
+            dismissProgress();
+            mEmptyView.setVisibility(View.GONE);
+            showErrorForPublicTransport(getString(R.string.network_problem_message));
+        }
+    };
 
     public void showRoutes() {
         ViewHelper.crossfade(mEmptyView, getListView());
     }
 
-    public void onSearchRoutesResult(Planner.Response response) {
+    public void onSearchRoutesResult(Plan plan) {
         mRouteErrorCode = null;
-        mPlannerResponse = response;
-        mJourneyQuery.ident = response.ident;
-        mJourneyQuery.seqnr = response.seqnr;
-        mJourneyQuery.hasPromotions = response.hasPromotions;
-        mJourneyQuery.promotionNetwork = response.promotionNetwork;
+        mTransitPlan = plan;
+        mJourneyQuery.ident = plan.getPaginateRef();
+        // TODO: Add to API
+        mJourneyQuery.hasPromotions = true;
+        mJourneyQuery.promotionNetwork = 1;
 
-        mRouteAdapter.refill(response.trips);
+        mRouteAdapter.refill(plan.getRoutes());
         showRoutes();
         supportInvalidateOptionsMenu();
         dismissProgress();
@@ -753,11 +632,7 @@ public class RoutesActivity extends BaseListActivity implements
         }
 
         updateStartAndEndPointViews(mJourneyQuery);
-
-        // TODO: Maybe need to set start and end points to the trip again here?
-        mSearchRoutesTask = new SearchRoutesTask();
-        mSearchRoutesTask.execute(mJourneyQuery);
-
+        fetchTransitRoute(mJourneyQuery);
         fetchRouteAlternatives(mJourneyQuery);
     }
 
@@ -767,28 +642,36 @@ public class RoutesActivity extends BaseListActivity implements
             return;
         }
 
-        MyApplication app = MyApplication.get(this);
-        Router router = new Router(app.getApiService());
-        router.plan(journeyQuery, new Router.Callback() {
+        mRouter.plan(journeyQuery, new Router.Callback() {
             @Override
             public void onPlan(Plan plan) {
                 if (plan != null && plan.hasRoutes()) {
                     updateRouteAlternatives(plan);
                 }
             }
+
+            @Override
+            public void onPlanError(JourneyQuery journeyQuery, String errorCode) {
+                // Do nothing here for now.
+            }
         });
+    }
+
+    void fetchTransitRoute(JourneyQuery journeyQuery) {
+        showProgress();
+        mRouter.planTransit(journeyQuery, mPlanCallback);
     }
 
     /**
      * Find route details. Will start {@link RouteDetailActivity}.
      *
-     * @param trip the route to find details for
+     * @param route the route to find details for
      */
-    private void findRouteDetails(final Trip2 trip) {
+    private void findRouteDetails(final Route route) {
         // TODO: Change to pass the trip later on instead.
         Intent i = new Intent(RoutesActivity.this, RouteDetailActivity.class);
         i.putExtra(RouteDetailActivity.EXTRA_JOURNEY_QUERY, mJourneyQuery);
-        i.putExtra(RouteDetailActivity.EXTRA_JOURNEY_TRIP, trip);
+        i.putExtra(RouteDetailActivity.EXTRA_ROUTE, route);
         startActivity(i);
     }
 
@@ -814,8 +697,7 @@ public class RoutesActivity extends BaseListActivity implements
 
                     mTimeAndDate.setText(buildDateTimeString());
 
-                    mSearchRoutesTask = new SearchRoutesTask();
-                    mSearchRoutesTask.execute(mJourneyQuery);
+                    fetchTransitRoute(mJourneyQuery);
                 }
                 break;
             case REQUEST_CODE_POINT_ON_MAP_START:
@@ -830,9 +712,7 @@ public class RoutesActivity extends BaseListActivity implements
                     mJourneyQuery.origin.setName(Site.TYPE_MY_LOCATION);
                     mJourneyQuery.origin.setLocation(startPoint.getLocation());
 
-                    mSearchRoutesTask = new SearchRoutesTask();
-                    mSearchRoutesTask.execute(mJourneyQuery);
-
+                    fetchTransitRoute(mJourneyQuery);
                     fetchRouteAlternatives(mJourneyQuery);
                     // TODO: Is this call really needed?
                     updateStartAndEndPointViews(mJourneyQuery);
@@ -850,9 +730,7 @@ public class RoutesActivity extends BaseListActivity implements
                     mJourneyQuery.destination.setName(Site.TYPE_MY_LOCATION);
                     mJourneyQuery.destination.setLocation(endPoint.getLocation());
 
-                    mSearchRoutesTask = new SearchRoutesTask();
-                    mSearchRoutesTask.execute(mJourneyQuery);
-
+                    fetchTransitRoute(mJourneyQuery);
                     fetchRouteAlternatives(mJourneyQuery);
                     // TODO: Is this call really needed?
                     updateStartAndEndPointViews(mJourneyQuery);
@@ -869,9 +747,7 @@ public class RoutesActivity extends BaseListActivity implements
         mJourneyQuery.origin = tmpStartPoint;
         mJourneyQuery.destination = tmpEndPoint;
 
-        mSearchRoutesTask = new SearchRoutesTask();
-        mSearchRoutesTask.execute(mJourneyQuery);
-
+        fetchTransitRoute(mJourneyQuery);
         updateStartAndEndPointViews(mJourneyQuery);
     }
 
@@ -887,7 +763,7 @@ public class RoutesActivity extends BaseListActivity implements
                         .setNeutralButton(getText(android.R.string.ok), null)
                         .create();
             case DIALOG_BUY_SMS_TICKET:
-                return SmsTicketDialog.createDialog(this, mPlannerResponse.getTariffZones());
+                return SmsTicketDialog.createDialog(this, mTransitPlan.tariffZones());
         }
         return null;
     }
@@ -995,8 +871,7 @@ public class RoutesActivity extends BaseListActivity implements
     private void showProgress() {
         if (mLoadingRoutesViews != null && mRouteAdapter.getDataItemCount() == 0) {
             mLoadingRoutesViews.setVisibility(View.VISIBLE);
-        }
-        if (mPlannerResponse == null) {
+        } else if (mTransitPlan == null) {
             mEmptyView.setVisibility(View.VISIBLE);
         }
     }
@@ -1098,56 +973,6 @@ public class RoutesActivity extends BaseListActivity implements
         }
     }
 
-    /**
-     * Background task for searching for routes.
-     */
-    private class SearchRoutesTask extends AsyncTask<JourneyQuery, Void, Planner.Response> {
-        private boolean mWasSuccess = true;
-        private String mErrorCode;
-
-        @Override
-        public void onPreExecute() {
-            showProgress();
-        }
-
-        @Override
-        protected Planner.Response doInBackground(JourneyQuery... params) {
-            try {
-                return Planner.getInstance().findJourney(RoutesActivity.this, params[0]);
-            } catch (IOException e) {
-                mWasSuccess = false;
-                // TODO: We should return the Trip here as well.
-                return null;
-            } catch (BadResponse e) {
-                mWasSuccess = false;
-                mErrorCode = e.errorCode;
-                return null;
-            }
-        }
-
-        @Override
-        protected void onPostExecute(Planner.Response result) {
-            dismissProgress();
-
-            if (result != null && !result.trips.isEmpty()) {
-                mEmptyView.setVisibility(View.GONE);
-                onSearchRoutesResult(result);
-            } else if (!mWasSuccess) {
-                if (TextUtils.isEmpty(mErrorCode)) {
-                    mEmptyView.setVisibility(View.GONE);
-                    showErrorForPublicTransport(getString(R.string.network_problem_message));
-                } else {
-                    mEmptyView.setVisibility(View.GONE);
-                    mRouteErrorCode = mErrorCode;
-                    showErrorForPublicTransport(getString(Planner.plannerErrorCodeToStringRes(mRouteErrorCode)));
-                }
-            } else {
-                mEmptyView.setVisibility(View.GONE);
-                showErrorForPublicTransport(getString(R.string.no_routes_found_message));
-            }
-        }
-    }
-
     public void showErrorForPublicTransport(String message) {
         dismissProgress();
         Snackbar.make(getListView(), message, Snackbar.LENGTH_INDEFINITE)
@@ -1155,99 +980,10 @@ public class RoutesActivity extends BaseListActivity implements
                     @Override
                     public void onClick(View v) {
                         // Route this through something that can check what failed.
-                        mSearchRoutesTask = new SearchRoutesTask();
-                        mSearchRoutesTask.execute(mJourneyQuery);
+                        fetchTransitRoute(mJourneyQuery);
                     }
                 })
                 .show();
-    }
-
-    /**
-     * Background task for getting earlier routes.
-     */
-    private class GetEarlierRoutesTask extends AsyncTask<JourneyQuery, Void, Planner.Response> {
-        private boolean mWasSuccess = true;
-        private String mErrorCode;
-
-        @Override
-        public void onPreExecute() {
-            showProgress();
-        }
-
-        @Override
-        protected Planner.Response doInBackground(JourneyQuery... params) {
-            try {
-                return Planner.getInstance().findPreviousJourney(RoutesActivity.this, params[0]);
-            } catch (IOException e) {
-                mWasSuccess = false;
-            } catch (BadResponse e) {
-                mWasSuccess = false;
-                mErrorCode = e.errorCode;
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Planner.Response result) {
-            dismissProgress();
-            if (result != null && !result.trips.isEmpty()) {
-                //mTrip.setRoutes(result);
-                onSearchRoutesResult(result);
-            } else if (!mWasSuccess) {
-                if (TextUtils.isEmpty(mErrorCode)) {
-                    showErrorForPublicTransport(getString(R.string.network_problem_message));
-                } else {
-                    mRouteErrorCode = mErrorCode;
-                    showErrorForPublicTransport(getString(Planner.plannerErrorCodeToStringRes(mRouteErrorCode)));
-                }
-            } else {
-                showErrorForPublicTransport(getString(R.string.session_timeout_message));
-            }
-        }
-    }
-
-    /**
-     * Background task for getting later routes.
-     */
-    private class GetLaterRoutesTask extends AsyncTask<JourneyQuery, Void, Planner.Response> {
-        private boolean mWasSuccess = true;
-        private String mErrorCode;
-
-        @Override
-        public void onPreExecute() {
-            showProgress();
-        }
-
-        @Override
-        protected Planner.Response doInBackground(JourneyQuery... params) {
-            try {
-                return Planner.getInstance().findNextJourney(RoutesActivity.this, params[0]);
-            } catch (IOException e) {
-                mWasSuccess = false;
-            } catch (BadResponse e) {
-                mWasSuccess = false;
-                mErrorCode = e.errorCode;
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Planner.Response result) {
-            dismissProgress();
-            if (result != null && !result.trips.isEmpty()) {
-                //mTrip.setRoutes(result);
-                onSearchRoutesResult(result);
-            } else if (!mWasSuccess) {
-                if (TextUtils.isEmpty(mErrorCode)) {
-                    showErrorForPublicTransport(getString(R.string.network_problem_message));
-                } else {
-                    mRouteErrorCode = mErrorCode;
-                    showErrorForPublicTransport(getString(Planner.plannerErrorCodeToStringRes(mRouteErrorCode)));
-                }
-            } else {
-                showErrorForPublicTransport(getString(R.string.session_timeout_message));
-            }
-        }
     }
 
     private boolean isStarredJourney(JourneyQuery journeyQuery) {
@@ -1287,7 +1023,6 @@ public class RoutesActivity extends BaseListActivity implements
         Uri uri = Journeys.CONTENT_URI;
         String where = Journeys.JOURNEY_DATA + "= ?";
         String[] selectionArgs = new String[]{json};
-        // TODO: Replace button with a checkbox and check with that instead?
         if (isStarredJourney(mJourneyQuery)) {
             values.put(Journeys.STARRED, "0");
             getContentResolver().update(
@@ -1369,26 +1104,26 @@ public class RoutesActivity extends BaseListActivity implements
 
         private final LayoutInflater mInflater;
         private final Context mContext;
-        private ArrayList<Trip2> mTrips;
+        private List<Route> mRoutes;
         private SparseBooleanArray animatedItems = new SparseBooleanArray();
 
-        public RoutesAdapter(Context context, ArrayList<Trip2> trips) {
+        public RoutesAdapter(Context context, ArrayList<Route> routes) {
             mContext = context;
             mInflater = LayoutInflater.from(context);
-            mTrips = trips;
+            mRoutes = routes;
         }
 
-        public void refill(ArrayList<Trip2> trips) {
-            if (trips == mTrips) {
+        public void refill(List<Route> trips) {
+            if (trips == mRoutes) {
                 return;
             }
-            mTrips = trips;
+            mRoutes = trips;
             animatedItems.clear();
             notifyDataSetChanged();
         }
 
         public int getDataItemCount() {
-            return mTrips.size();
+            return mRoutes.size();
         }
 
         @Override
@@ -1488,13 +1223,13 @@ public class RoutesActivity extends BaseListActivity implements
             // convert postion to a routes position.
             position = position - 1;
 
-            Trip2 trip = mTrips.get(position);
-            holder.bindTo(trip);
+            Route route = mRoutes.get(position);
+            holder.bindTo(route);
             return convertView;
         }
 
-        public Trip2 getTripItem(int position) {
-            return mTrips.get(position - 1);
+        public Route getTripItem(int position) {
+            return mRoutes.get(position - 1);
         }
 
         public static class NextPreviousViewHolder {
@@ -1510,7 +1245,7 @@ public class RoutesActivity extends BaseListActivity implements
                 tripView = (TripView) view;
             }
 
-            public void bindTo(Trip2 trip) {
+            public void bindTo(Route trip) {
                 tripView.setTrip(trip);
             }
         }

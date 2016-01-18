@@ -18,6 +18,7 @@ package com.markupartist.sthlmtraveling.data.models;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,14 +28,22 @@ import java.util.List;
  */
 public class Plan implements Parcelable {
     private final List<Route> routes;
+    private final String paginateRef;
+    private final List<RouteError> errors;
+    private String tariffZones;
 
-    public Plan(List<Route> routes) {
+    public Plan(List<Route> routes, String paginateRef, List<RouteError> errors) {
         this.routes = routes;
+        this.paginateRef = paginateRef;
+        this.errors = errors;
     }
 
     protected Plan(Parcel in) {
         routes = new ArrayList<>();
         in.readTypedList(routes, Route.CREATOR);
+        paginateRef = in.readString();
+        errors = new ArrayList<>();
+        in.readTypedList(errors, RouteError.CREATOR);
     }
 
     public static final Creator<Plan> CREATOR = new Creator<Plan>() {
@@ -49,14 +58,6 @@ public class Plan implements Parcelable {
         }
     };
 
-    public List<Route> getRoutes() {
-        return routes;
-    }
-
-    public boolean hasRoutes() {
-        return routes != null && routes.size() > 0;
-    }
-
     @Override
     public int describeContents() {
         return 0;
@@ -65,5 +66,71 @@ public class Plan implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeTypedList(routes);
+        dest.writeString(paginateRef);
+        dest.writeTypedList(errors);
+    }
+
+    public List<Route> getRoutes() {
+        return routes;
+    }
+
+    public boolean hasRoutes() {
+        return routes != null && routes.size() > 0;
+    }
+
+    public boolean hasErrors(@NonNull String mode) {
+        if (errors == null || errors.size() == 0) {
+            return false;
+        }
+        for (RouteError routeError : errors) {
+            if (mode.equals(routeError.getMode())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public List<RouteError> getErrors() {
+        return errors;
+    }
+
+    public RouteError getError(@NonNull String mode) {
+        if (errors == null) {
+            return null;
+        }
+        for (RouteError routeError : errors) {
+            if (mode.equals(routeError.getMode())) {
+                return routeError;
+            }
+        }
+        return null;
+    }
+
+    public String getPaginateRef() {
+        return paginateRef;
+    }
+
+    public boolean canBuySmsTicket() {
+        if (!hasRoutes()) {
+            return false;
+        }
+        return false;
+        // TODO: Finish this.
+//        String tariffZones = null;
+//        for (Route route : routes) {
+//            if (!route.canBuySmsTicket()) {
+//                return false;
+//            }
+//            if (tariffZones != null && !tariffZones.equals(route.tariffZones)) {
+//                tariffZones = null;
+//                return false;
+//            }
+//            tariffZones = trip.tariffZones;
+//        }
+//        return true;
+    }
+
+    public String tariffZones() {
+        return tariffZones;
     }
 }

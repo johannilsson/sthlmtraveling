@@ -53,7 +53,6 @@ import android.widget.TimePicker;
 
 import com.markupartist.sthlmtraveling.provider.TransportMode;
 import com.markupartist.sthlmtraveling.provider.planner.JourneyQuery;
-import com.markupartist.sthlmtraveling.provider.planner.Planner;
 import com.markupartist.sthlmtraveling.provider.site.Site;
 import com.markupartist.sthlmtraveling.ui.view.DelayAutoCompleteTextView;
 import com.markupartist.sthlmtraveling.utils.ViewHelper;
@@ -388,8 +387,7 @@ public class ChangeRouteTimeActivity extends BaseActivity implements OnClickList
         final DelayAutoCompleteTextView autoCompleteTextView = (DelayAutoCompleteTextView)
                 findViewById(autoCompleteResId);
         final AutoCompleteStopAdapter stopAdapter = new AutoCompleteStopAdapter(
-                this, R.layout.autocomplete_item_2line,
-                Planner.getInstance(), includeAddresses);
+                this, R.layout.autocomplete_item_2line, includeAddresses);
 
         autoCompleteTextView.addTextChangedListener(new UpdateStopTextWatcher(site));
 

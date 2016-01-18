@@ -30,7 +30,6 @@ import android.widget.Filterable;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.markupartist.sthlmtraveling.provider.planner.Planner;
 import com.markupartist.sthlmtraveling.provider.site.Site;
 import com.markupartist.sthlmtraveling.provider.site.SitesStore;
 
@@ -66,8 +65,7 @@ public class AutoCompleteStopAdapter extends ArrayAdapter<String> implements Fil
         }
     };
 
-    public AutoCompleteStopAdapter(Context context, int textViewResourceId,
-            Planner planner, boolean onlyStations) {
+    public AutoCompleteStopAdapter(Context context, int textViewResourceId, boolean onlyStations) {
         super(context, textViewResourceId);
         mInflater = (LayoutInflater) context.getSystemService(
                 Context.LAYOUT_INFLATER_SERVICE);

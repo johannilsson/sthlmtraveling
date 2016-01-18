@@ -7,6 +7,8 @@ import android.support.v4.util.Pair;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.markupartist.sthlmtraveling.data.models.Place;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -303,6 +305,19 @@ public class Site implements Parcelable {
                 + "]";
     }
 
+    public Place asPlace() {
+        return new Place(mSource == SOURCE_STHLM_TRAVELING ? mId : null, mName,
+                isTransitStop() ? "stop" : "place",
+                mLocation.getLatitude(), mLocation.getLongitude(), -1);
+    }
 
-
+    public static Site toSite(Place place) {
+        Site site = new Site();
+        site.setSource(SOURCE_STHLM_TRAVELING);
+        site.setId(place.getId());
+        site.setName(place.getName());
+        site.setType("stop".equals(place.getType()) ? TYPE_TRANSIT_STOP : TYPE_ADDRESS);
+        site.setLocation(place.getLat(), place.getLon());
+        return site;
+    }
 }

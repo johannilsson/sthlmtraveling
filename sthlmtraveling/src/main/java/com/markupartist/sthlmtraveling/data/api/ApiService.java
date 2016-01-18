@@ -16,7 +16,10 @@
 
 package com.markupartist.sthlmtraveling.data.api;
 
+import com.markupartist.sthlmtraveling.data.models.IntermediateResponse;
 import com.markupartist.sthlmtraveling.data.models.Plan;
+
+import java.util.List;
 
 import retrofit.Callback;
 import retrofit.http.GET;
@@ -26,11 +29,23 @@ import retrofit.http.Query;
  *
  */
 public interface ApiService {
-    @GET("/v1/planner/") void getPlan(
+    @GET("/v1/planner/")
+    void getPlan(
             @Query("from") PlaceQuery from,
             @Query("to") PlaceQuery to,
             @Query("mode") String mode,
             @Query("alternative") boolean alternative,
             @Query("via") PlaceQuery via,
+            @Query("arriveBy") boolean arriveBy,
+            @Query("time") String time,
+            @Query("travelMode") TravelModeQuery travelMode,
+            @Query("dir") String dir,
+            @Query("paginateRef") String paginateRef,
             Callback<Plan> callback);
+
+    @GET("/v1/planner/intermediate/")
+    void getIntermediateStops(
+            @Query("reference") List<String> reference,
+            Callback<IntermediateResponse> callback);
+
 }

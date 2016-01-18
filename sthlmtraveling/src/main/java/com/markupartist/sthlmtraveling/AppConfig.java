@@ -11,6 +11,7 @@ public class AppConfig {
     public static final String STHLM_TRAVELING_API_KEY = BuildConfig.APP_STHLMTRAVELING_API_KEY;
     public static final String USER_AGENT = "STHLMTraveling-Android/" + BuildConfig.VERSION_NAME;
     public static final String STHLM_TRAVELING_API_ENDPOINT = "http://api.sthlmtraveling.se/";
+//    public static final String STHLM_TRAVELING_API_ENDPOINT = "http://192.168.1.2:7000/";
 //    public static final String STHLM_TRAVELING_API_ENDPOINT = "http://192.168.0.10:7000/";
 
     public static boolean shouldServeAds() {

@@ -14,28 +14,32 @@
  * limitations under the License.
  */
 
-package com.markupartist.sthlmtraveling.data.misc;
+package com.markupartist.sthlmtraveling.data.api;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import android.support.annotation.NonNull;
+import android.text.TextUtils;
+
+import com.markupartist.sthlmtraveling.data.models.TravelMode;
+
+import java.util.List;
 
 /**
- * Provides a Gson instance.
+ *
  */
-public class GsonProvider {
-    private static Gson gson;
+public class TravelModeQuery {
 
-    private GsonProvider() {
+    private List<TravelMode> modes;
 
+    public TravelModeQuery(@NonNull List<TravelMode> mode) {
+        this.modes = mode;
     }
 
-    public synchronized static Gson provideGson() {
-        if (gson == null) {
-            gson = new GsonBuilder()
-                    .setDateFormat("yyyy-MM-dd'T'HH:mm:ss")
-                    .create();
-        }
-        return gson;
+    public void addMode(TravelMode travelMode) {
+        this.modes.add(travelMode);
     }
 
+    @Override
+    public String toString() {
+        return TextUtils.join(",", modes);
+    }
 }
