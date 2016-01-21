@@ -254,4 +254,5 @@
     <string name="permission_location_needed_maps">Enable the Location permission to see your location on the map</string>
     <string name="allow">Allow</string>
 
+    <string name="distance_in_meter"><xliff:g id="distance">%1$s</xliff:g>m</string>
 </resources>

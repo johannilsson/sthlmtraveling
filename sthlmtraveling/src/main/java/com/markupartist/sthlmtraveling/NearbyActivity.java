@@ -2,30 +2,43 @@ package com.markupartist.sthlmtraveling;
 
 import android.content.Intent;
 import android.location.Location;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.util.Log;
+import android.support.design.widget.Snackbar;
+import android.support.v4.util.Pair;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
-import android.widget.Toast;
+import android.widget.ProgressBar;
 
+import com.markupartist.sthlmtraveling.data.api.ApiService;
+import com.markupartist.sthlmtraveling.data.models.NearbyStop;
+import com.markupartist.sthlmtraveling.data.models.NearbyStopsResponse;
 import com.markupartist.sthlmtraveling.provider.site.Site;
 import com.markupartist.sthlmtraveling.provider.site.SitesStore;
+import com.markupartist.sthlmtraveling.ui.adapter.NearbyAdapter;
 import com.markupartist.sthlmtraveling.utils.LocationManager;
+import com.markupartist.sthlmtraveling.utils.LocationUtils;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
+import java.util.List;
 
-public class NearbyActivity extends BaseListActivity implements LocationManager.LocationFoundListener {
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
+
+public class NearbyActivity extends BaseFragmentActivity implements
+        LocationManager.LocationFoundListener, NearbyAdapter.NearbyStopClickListener {
+    private static final String STATE_NEARBY_STOPS = "STATE_NEARBY_STOPS";
     private static String TAG = "NearbyActivity";
     private LocationManager mMyLocationManager;
+    private ApiService mApiService;
+    private RecyclerView mRecyclerView;
+    private NearbyAdapter mNearbyStopsAdapter;
+    private ProgressBar mProgressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,9 +54,40 @@ public class NearbyActivity extends BaseListActivity implements LocationManager.
         mMyLocationManager.setLocationListener(this);
         registerPlayService(mMyLocationManager);
 
+        mApiService = MyApplication.get(this).getApiService();
+
         setContentView(R.layout.nearby);
+
+        mRecyclerView = (RecyclerView) findViewById(R.id.nearby_recycler_view);
+        mProgressBar = (ProgressBar) findViewById(R.id.search_progress_bar);
+
+        setupRecyclerView();
         initActionBar();
-        requestUpdate();
+
+        if (savedInstanceState != null) {
+            if (savedInstanceState.containsKey(STATE_NEARBY_STOPS)) {
+                List<NearbyStop> nearbyStops = savedInstanceState.getParcelableArrayList(STATE_NEARBY_STOPS);
+                if (nearbyStops != null) {
+                    mNearbyStopsAdapter.fill(nearbyStops);
+                }
+            }
+        }
+
+        if (mNearbyStopsAdapter.getItemCount() == 0) {
+            requestUpdate();
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelableArrayList(STATE_NEARBY_STOPS, new ArrayList<>(mNearbyStopsAdapter.getNearbyStops()));
+    }
+
+    public void setupRecyclerView() {
+        mNearbyStopsAdapter = new NearbyAdapter(this);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mRecyclerView.setAdapter(mNearbyStopsAdapter);
     }
 
     @Override
@@ -64,6 +108,7 @@ public class NearbyActivity extends BaseListActivity implements LocationManager.
     }
 
     private void requestUpdate() {
+        showProgressBar();
         mMyLocationManager.requestLocation();
     }
 
@@ -90,78 +135,69 @@ public class NearbyActivity extends BaseListActivity implements LocationManager.
                 this, R.drawable.shortcut);
         intent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, iconResource);
 
-        // Now, return the result to the launcher
         setResult(RESULT_OK, intent);
         finish();
     }
-    
-    private void fill(ArrayList<Site> stopPoints, final Location location) {
-        //Sort stop in order of distance from users location
-        Collections.sort(stopPoints, new Comparator<Site>() {
-            @Override
-            public int compare(Site site1, Site site2) {
-                float distanceToSite1 = location.distanceTo(site1.getLocation());
-                float distanceToSite2 = location.distanceTo(site2.getLocation());
-                if (distanceToSite1 > distanceToSite2) {
-                    return 1;
-                } else if (distanceToSite1 < distanceToSite2) {
-                    return -1;
-                }
-                return 0;
-            }
-        });
 
-        ArrayAdapter<Site> adapter =
-            new ArrayAdapter<>(this, R.layout.row_place_search,  R.id.text1, stopPoints);
-        setListAdapter(adapter);
+    public void showProgressBar() {
+        if (mNearbyStopsAdapter.getItemCount() == 0) {
+            mProgressBar.setVisibility(View.VISIBLE);
+        }
+    }
+
+    public void hideProgressBar() {
+        mProgressBar.setVisibility(View.GONE);
+    }
+
+    public void showNearbyStops(List<NearbyStop> stopPoints) {
+        mNearbyStopsAdapter.fill(stopPoints);
     }
 
     @Override
-    protected void onListItemClick(ListView l, View v, int position, long id) {
-        Site stopPoint = (Site) getListAdapter().getItem(position);
+    public void onMyLocationFound(Location location) {
+        if (location == null) {
+            hideProgressBar();
+            Snackbar.make(mRecyclerView, R.string.no_location_message, Snackbar.LENGTH_LONG)
+                    .show();
+            return;
+        }
+        setTitle(getString(R.string.nearby) + " ("+ location.getAccuracy() +"m)");
+        showProgressBar();
+
+        mApiService.getNearbyStops(location.getLatitude(), location.getLongitude(),
+                new Callback<NearbyStopsResponse>() {
+            @Override
+            public void success(NearbyStopsResponse nearbyStopsResponse, Response response) {
+                hideProgressBar();
+                showNearbyStops(nearbyStopsResponse.getSites());
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                hideProgressBar();
+                Snackbar.make(mRecyclerView, R.string.network_problem_message, Snackbar.LENGTH_LONG)
+                        .show();
+            }
+        });
+    }
+
+    @Override
+    public void onNearbyStopClick(NearbyStop nearbyStop) {
+        Pair<String, String> nameAndLocality = SitesStore.nameAsNameAndLocality(nearbyStop.getName());
+
+        Site stopPoint = new Site();
+        stopPoint.setSource(Site.SOURCE_STHLM_TRAVELING);
+        stopPoint.setType(Site.TYPE_TRANSIT_STOP);
+        stopPoint.setId(nearbyStop.getSiteId());
+        stopPoint.setLocation(LocationUtils.parseLocation(nearbyStop.getLocation()));
+        stopPoint.setName(nameAndLocality.first);
+        stopPoint.setLocality(nameAndLocality.second);
+
         Intent i = new Intent(this, DeparturesActivity.class);
         i.putExtra(DeparturesActivity.EXTRA_SITE, stopPoint);
         startActivity(i);
     }
 
-    @Override
-    public void onMyLocationFound(Location location) {
-        // TODO: We need to handle this.
-        if (location == null) {
-            Log.e(TAG, "Location was null");
-            return;
-        }
-        setTitle(getString(R.string.nearby) + " ("+ location.getAccuracy() +"m)");
-        new FindNearbyStopAsyncTask(location).execute();
-    }
 
-    private class FindNearbyStopAsyncTask extends AsyncTask<Void, Void, ArrayList<Site>> {
 
-        private Location mLocation;
-
-        public FindNearbyStopAsyncTask(Location location){
-            mLocation = location;
-        }
-
-        @Override
-        protected ArrayList<Site> doInBackground(Void... params) {
-            try {
-                return SitesStore.getInstance().nearby(NearbyActivity.this, mLocation);
-            } catch (IOException e) {
-                Log.d(TAG, e.getMessage());
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(ArrayList<Site> result) {
-            if (result != null) {
-                fill(result, mLocation);
-            } else {
-                Toast.makeText(NearbyActivity.this, "Your're in the void", Toast.LENGTH_LONG).show();
-            }
-        }
-        
-        
-    }
 }

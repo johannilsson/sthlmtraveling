@@ -17,6 +17,7 @@
 package com.markupartist.sthlmtraveling.data.api;
 
 import com.markupartist.sthlmtraveling.data.models.IntermediateResponse;
+import com.markupartist.sthlmtraveling.data.models.NearbyStopsResponse;
 import com.markupartist.sthlmtraveling.data.models.Plan;
 
 import java.util.List;
@@ -48,4 +49,9 @@ public interface ApiService {
             @Query("reference") List<String> reference,
             Callback<IntermediateResponse> callback);
 
+    @GET("/v1/semistatic/site/near/")
+    void getNearbyStops(
+            @Query("latitude") double latitude,
+            @Query("longitude") double longitude,
+            Callback<NearbyStopsResponse> callback);
 }
