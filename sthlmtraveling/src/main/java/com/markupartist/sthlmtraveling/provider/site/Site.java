@@ -87,7 +87,11 @@ public class Site implements Parcelable {
      * @param id the id to set
      */
     public void setId(int id) {
-        mId = String.valueOf(id);
+        if (id == 0) {
+            mId = null;
+        } else {
+            mId = String.valueOf(id);
+        }
     }
 
     /**
@@ -308,11 +312,18 @@ public class Site implements Parcelable {
     public Place asPlace() {
         // If type is sthlm traveling and id is not 0.
         String id = mSource == SOURCE_STHLM_TRAVELING && !"0".equals(mId) ? mId : null;
+
+        double lat = 0;
+        double lon = 0;
+        if (hasLocation()) {
+            lat = mLocation.getLatitude();
+            lon = mLocation.getLongitude();
+        }
         return new Place(
                 id,
                 mName,
                 isTransitStop() ? "stop" : "place",
-                mLocation.getLatitude(), mLocation.getLongitude(), -1);
+                lat, lon, -1);
     }
 
     public static Site toSite(Place place) {
@@ -321,7 +332,9 @@ public class Site implements Parcelable {
         site.setId(place.getId());
         site.setName(place.getName());
         site.setType("stop".equals(place.getType()) ? TYPE_TRANSIT_STOP : TYPE_ADDRESS);
-        site.setLocation(place.getLat(), place.getLon());
+        if (place.hasLocation()) {
+            site.setLocation(place.getLat(), place.getLon());
+        }
         return site;
     }
 }
