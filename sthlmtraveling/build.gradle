@@ -84,12 +84,14 @@ android {
 
     buildTypes {
         debug {
+            ext.enableCrashlytics = buildProperties['IS_CRASHLYTICS_ENABLED'].toBoolean()
             debuggable true
             applicationIdSuffix ".debug"
             buildConfigField "String", "BASE_PROVIDER_AUTHORITY", "\"" + BASE_PROVIDER_DEBUG + "\""
         }
 
         release {
+            ext.enableCrashlytics = buildProperties['IS_CRASHLYTICS_ENABLED'].toBoolean()
             minifyEnabled true
             shrinkResources false
             proguardFile getDefaultProguardFile('proguard-android.txt')
