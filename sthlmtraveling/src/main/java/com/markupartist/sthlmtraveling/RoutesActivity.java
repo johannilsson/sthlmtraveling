@@ -473,9 +473,6 @@ public class RoutesActivity extends BaseListActivity implements
     @Override
     protected void onResume() {
         super.onResume();
-
-        if (mSavedState != null) restoreLocalState(mSavedState);
-
         initRoutes(mJourneyQuery);
     }
 
@@ -692,6 +689,8 @@ public class RoutesActivity extends BaseListActivity implements
                 } else {
                     mJourneyQuery = data.getParcelableExtra(EXTRA_JOURNEY_QUERY);
 
+                    Log.e(TAG, "JQ: " + mJourneyQuery.toString());
+
                     updateStartAndEndPointViews(mJourneyQuery);
                     updateJourneyHistory();
 
@@ -835,6 +834,9 @@ public class RoutesActivity extends BaseListActivity implements
         switch (v.getId()) {
             case R.id.date_time:
                 Intent i = new Intent(RoutesActivity.this, ChangeRouteTimeActivity.class);
+
+                Log.e(TAG, "JQ: " + mJourneyQuery.toString());
+
                 i.putExtra(EXTRA_JOURNEY_QUERY, mJourneyQuery);
                 startActivityForResult(i, REQUEST_CODE_CHANGE_TIME);
                 break;
