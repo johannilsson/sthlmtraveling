@@ -236,8 +236,6 @@ public class ChangeRouteTimeActivity extends BaseActivity implements OnClickList
 
         CheckBox alternativeCheckBox = (CheckBox) findViewById(R.id.planner_alternative_stops);
         alternativeCheckBox.setChecked(mJourneyQuery.alternativeStops);
-
-
     }
 
     private void updateTimeViews() {
