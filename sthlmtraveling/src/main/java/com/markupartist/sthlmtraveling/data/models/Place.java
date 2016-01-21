@@ -102,6 +102,7 @@ public class Place implements Parcelable {
     }
 
     public boolean hasLocation() {
+        // Sorry Null Island.
         return lat != 0 && lon != 0;
     }
 
