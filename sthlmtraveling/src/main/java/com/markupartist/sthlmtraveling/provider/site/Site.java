@@ -306,7 +306,11 @@ public class Site implements Parcelable {
     }
 
     public Place asPlace() {
-        return new Place(mSource == SOURCE_STHLM_TRAVELING ? mId : null, mName,
+        // If type is sthlm traveling and id is not 0.
+        String id = mSource == SOURCE_STHLM_TRAVELING && !"0".equals(mId) ? mId : null;
+        return new Place(
+                id,
+                mName,
                 isTransitStop() ? "stop" : "place",
                 mLocation.getLatitude(), mLocation.getLongitude(), -1);
     }
