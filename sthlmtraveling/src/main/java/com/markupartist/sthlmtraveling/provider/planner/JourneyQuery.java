@@ -40,7 +40,6 @@ public class JourneyQuery implements Parcelable {
     public boolean alternativeStops = true;
     public List<String> transportModes = new ArrayList<String>();
     public String ident;
-    public String seqnr;
     public boolean hasPromotions;
     public int promotionNetwork = -1;
 
@@ -57,7 +56,6 @@ public class JourneyQuery implements Parcelable {
         transportModes = new ArrayList<String>();
         parcel.readStringList(transportModes);
         ident = parcel.readString();
-        seqnr = parcel.readString();
         hasPromotions = (parcel.readInt() == 1);
         promotionNetwork = parcel.readInt();
     }
@@ -77,7 +75,6 @@ public class JourneyQuery implements Parcelable {
         dest.writeInt(alternativeStops ? 1 : 0);
         dest.writeStringList(transportModes);
         dest.writeString(ident);
-        dest.writeString(seqnr);
         dest.writeInt(hasPromotions ? 1 : 0);
         dest.writeInt(promotionNetwork);
     }
@@ -192,7 +189,6 @@ public class JourneyQuery implements Parcelable {
 
 //        if (all) {
 //            jsonQuery.put("ident", ident);
-//            jsonQuery.put("seqnr", seqnr);
 //            jsonQuery.put("time", time.format("%F %R"));
 //            jsonQuery.put("isTimeDeparture", this.isTimeDeparture);
 //        }
@@ -233,7 +229,7 @@ public class JourneyQuery implements Parcelable {
         return "JourneyQuery [alternativeStops=" + alternativeStops
                 + ", destination=" + destination + ", ident=" + ident
                 + ", isTimeDeparture=" + isTimeDeparture + ", origin=" + origin
-                + ", seqnr=" + seqnr + ", time=" + time + ", transportModes="
+                + ", time=" + time + ", transportModes="
                 + transportModes + ", via=" + via + "]";
     }
 
