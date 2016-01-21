@@ -138,7 +138,7 @@ public class Router {
                 from,
                 to,
                 "transit",
-                true,
+                journeyQuery.alternativeStops,
                 via,
                 !journeyQuery.isTimeDeparture,
                 DateTimeUtil.formatDate(journeyQuery.time),
