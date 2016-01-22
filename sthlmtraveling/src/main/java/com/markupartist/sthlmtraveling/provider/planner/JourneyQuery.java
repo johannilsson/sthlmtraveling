@@ -16,8 +16,10 @@
 
 package com.markupartist.sthlmtraveling.provider.planner;
 
+import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.TextUtils;
 
 import com.markupartist.sthlmtraveling.provider.TransportMode;
 import com.markupartist.sthlmtraveling.provider.site.Site;
@@ -247,7 +249,7 @@ public class JourneyQuery implements Parcelable {
         }
 
         public Builder origin(Site origin) {
-            mOrigin = origin; //buildLocationFromStop(origin);
+            mOrigin = origin;
             return this;
         }
 
@@ -260,25 +262,15 @@ public class JourneyQuery implements Parcelable {
 
         public Builder origin(JSONObject jsonObject) throws JSONException {
             mOrigin = jsonToSite(jsonObject);
-//            mOrigin = new Location();
-//            mOrigin.id = jsonObject.getInt("id");
-//            mOrigin.name = jsonObject.getString("name");
-//            mOrigin.latitude = jsonObject.getInt("latitude");
-//            mOrigin.longitude = jsonObject.getInt("longitude");
             return this;
         }
         
         public Builder destination(Site destination) {
-            mDestination = destination; //buildLocationFromStop(destination);
+            mDestination = destination;
             return this;
         }
 
         public Builder destination(JSONObject jsonObject) throws JSONException {
-//            mDestination = new Location();
-//            mDestination.id = jsonObject.getInt("id");
-//            mDestination.name = jsonObject.getString("name");
-//            mDestination.latitude = jsonObject.getInt("latitude");
-//            mDestination.longitude = jsonObject.getInt("longitude");
             mDestination = jsonToSite(jsonObject);
             return this;
         }
@@ -298,9 +290,6 @@ public class JourneyQuery implements Parcelable {
         }
 
         public Builder via(JSONObject jsonObject) throws JSONException {
-//            mVia = new Location();
-//            mVia.id = jsonObject.getInt("id");
-//            mVia.name = jsonObject.getString("name");
             mVia = jsonToSite(jsonObject);
             return this;
         }
@@ -336,6 +325,63 @@ public class JourneyQuery implements Parcelable {
             return this;
         }
 
+        public Builder uri(Uri uri) {
+
+            Site origin = new Site();
+            origin.setName(uri.getQueryParameter("start_point"));
+            String originId = uri.getQueryParameter("start_point_id");
+            if (!TextUtils.isEmpty(originId) && !"null".equals(originId)) {
+                origin.setId(originId);
+            }
+            if (!TextUtils.isEmpty(uri.getQueryParameter("start_point_lat"))
+                    && !TextUtils.isEmpty(uri.getQueryParameter("start_point_lng"))) {
+                origin.setLocation(
+                        (int) (Double.parseDouble(uri.getQueryParameter("start_point_lat")) * 1E6),
+                        (int) (Double.parseDouble(uri.getQueryParameter("start_point_lng")) * 1E6));
+            }
+            if (!TextUtils.isEmpty(uri.getQueryParameter("start_point_source"))) {
+                origin.setSource(Integer.parseInt(uri.getQueryParameter("start_point_source")));
+            }
+            this.origin(origin);
+
+            Site destination = new Site();
+            destination.setName(uri.getQueryParameter("end_point"));
+            String destinationId = uri.getQueryParameter("end_point_id");
+            if (!TextUtils.isEmpty(destinationId) && !"null".equals(destinationId)) {
+                destination.setId(destinationId);
+            }
+            if (!TextUtils.isEmpty(uri.getQueryParameter("end_point_lat"))
+                    && !TextUtils.isEmpty(uri.getQueryParameter("end_point_lng"))) {
+                destination.setLocation(
+                        (int) (Double.parseDouble(uri.getQueryParameter("end_point_lat")) * 1E6),
+                        (int) (Double.parseDouble(uri.getQueryParameter("end_point_lng")) * 1E6));
+            }
+            if (!TextUtils.isEmpty(uri.getQueryParameter("end_point_source"))) {
+                destination.setSource(Integer.parseInt(uri.getQueryParameter("end_point_source")));
+            }
+            this.destination(destination);
+
+            boolean isTimeDeparture = true;
+            if (!TextUtils.isEmpty(uri.getQueryParameter("isTimeDeparture"))) {
+                isTimeDeparture = Boolean.parseBoolean(
+                        uri.getQueryParameter("isTimeDeparture"));
+            }
+            this.isTimeDeparture(isTimeDeparture);
+
+
+            Date time = new Date();
+            String timeString = uri.getQueryParameter("time");
+            if (!TextUtils.isEmpty(timeString)) {
+                // TODO: What is the format here?
+                //jq.time.parse(timeString);
+            } else {
+                time.setTime(System.currentTimeMillis());
+            }
+            this.time(time);
+
+            return this;
+        }
+
         public JourneyQuery create() {
             JourneyQuery journeyQuery = new JourneyQuery();
             journeyQuery.origin = mOrigin;
@@ -357,20 +403,6 @@ public class JourneyQuery implements Parcelable {
             return journeyQuery;
         }
 
-//        public static Planner.Location buildLocationFromStop(Site site) {
-//            Planner.Location location = new Planner.Location();
-//            if (site.getSource() == Site.SOURCE_STHLM_TRAVELING && site.getId() != null) {
-//                location.id = Integer.parseInt(site.getId());
-//            }
-//            location.name = site.getName();
-//            if (site.getLocation() != null) {
-//                location.latitude =
-//                    (int) (site.getLocation().getLatitude() * 1E6);
-//                location.longitude =
-//                    (int) (site.getLocation().getLongitude() * 1E6);
-//            }
-//            return location;
-//        }
     }
 
 }

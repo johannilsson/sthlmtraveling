@@ -74,7 +74,7 @@ import org.json.JSONException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -338,61 +338,11 @@ public class RoutesActivity extends BaseListActivity implements
             journeyQuery = intent.getExtras().getParcelable(EXTRA_JOURNEY_QUERY);
         } else if (intent.getData() != null) {
             Log.e(TAG, intent.getData().toString());
-            journeyQuery = getJourneyQueryFromUri(intent.getData());
+            journeyQuery = new JourneyQuery.Builder()
+                    .uri(intent.getData())
+                    .create();
         }
         return journeyQuery;
-    }
-
-    private JourneyQuery getJourneyQueryFromUri(Uri uri) {
-        JourneyQuery jq = new JourneyQuery();
-
-        jq.origin = new Site();
-        jq.origin.setName(uri.getQueryParameter("start_point"));
-        if (!TextUtils.isEmpty(uri.getQueryParameter("start_point_id"))) {
-            jq.origin.setId(uri.getQueryParameter("start_point_id"));
-        }
-        if (!TextUtils.isEmpty(uri.getQueryParameter("start_point_lat"))
-                && !TextUtils.isEmpty(uri.getQueryParameter("start_point_lng"))) {
-            jq.origin.setLocation(
-                    (int) (Double.parseDouble(uri.getQueryParameter("start_point_lat")) * 1E6),
-                    (int) (Double.parseDouble(uri.getQueryParameter("start_point_lng")) * 1E6));
-        }
-        if (!TextUtils.isEmpty(uri.getQueryParameter("start_point_source"))) {
-            jq.origin.setSource(Integer.parseInt(uri.getQueryParameter("start_point_source")));
-        }
-
-        jq.destination = new Site();
-        jq.destination.setName(uri.getQueryParameter("end_point"));
-        if (!TextUtils.isEmpty(uri.getQueryParameter("end_point_id"))) {
-            jq.destination.setId(uri.getQueryParameter("end_point_id"));
-        }
-        if (!TextUtils.isEmpty(uri.getQueryParameter("end_point_lat"))
-                && !TextUtils.isEmpty(uri.getQueryParameter("end_point_lng"))) {
-            jq.destination.setLocation(
-                    (int) (Double.parseDouble(uri.getQueryParameter("end_point_lat")) * 1E6),
-                    (int) (Double.parseDouble(uri.getQueryParameter("end_point_lng")) * 1E6));
-        }
-        if (!TextUtils.isEmpty(uri.getQueryParameter("end_point_source"))) {
-            jq.destination.setSource(Integer.parseInt(uri.getQueryParameter("end_point_source")));
-        }
-
-        jq.isTimeDeparture = true;
-        if (!TextUtils.isEmpty(uri.getQueryParameter("isTimeDeparture"))) {
-            jq.isTimeDeparture = Boolean.parseBoolean(
-                    uri.getQueryParameter("isTimeDeparture"));
-        }
-
-        jq.time = new Date();
-        String timeString = uri.getQueryParameter("time");
-        if (!TextUtils.isEmpty(timeString)) {
-            Log.e(TAG, "DATE FORMAT: " + timeString);
-            // TODO: What is the format here?
-            //jq.time.parse(timeString);
-        } else {
-            jq.time.setTime(System.currentTimeMillis());
-        }
-
-        return jq;
     }
 
     /**
@@ -1106,7 +1056,7 @@ public class RoutesActivity extends BaseListActivity implements
 
         private final LayoutInflater mInflater;
         private final Context mContext;
-        private List<Route> mRoutes;
+        private List<Route> mRoutes = Collections.emptyList();
         private SparseBooleanArray animatedItems = new SparseBooleanArray();
 
         public RoutesAdapter(Context context, ArrayList<Route> routes) {
@@ -1125,6 +1075,9 @@ public class RoutesActivity extends BaseListActivity implements
         }
 
         public int getDataItemCount() {
+            if (mRoutes == null) {
+                return 0;
+            }
             return mRoutes.size();
         }
 
