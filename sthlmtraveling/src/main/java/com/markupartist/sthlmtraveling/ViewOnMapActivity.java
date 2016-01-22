@@ -90,6 +90,7 @@ public class ViewOnMapActivity extends BaseFragmentActivity implements OnMapRead
     private JourneyQuery mJourneyQuery;
     private Route mRoute;
     private ApiService mApiService;
+    private TripMarkerManager mTripMarkerManager;
 
     public static Intent createIntent(Context context, JourneyQuery query, Route route) {
         Intent intent = new Intent(context, ViewOnMapActivity.class);
@@ -192,6 +193,7 @@ public class ViewOnMapActivity extends BaseFragmentActivity implements OnMapRead
 
     public void showTransitRoute(Route route) {
         mMap.clear();
+        mTripMarkerManager.clearItems();
 
         for (Leg leg : route.getLegs()) {
 
@@ -207,11 +209,12 @@ public class ViewOnMapActivity extends BaseFragmentActivity implements OnMapRead
                     leg.getFrom().getLon());
             options.add(origin);
 
-            mMap.addMarker(new MarkerOptions()
-                    .position(origin)
-                    .title(getLocationName(leg.getFrom()))
-                    .snippet(getRouteDescription(leg))
-                    .icon(BitmapDescriptorFactory.defaultMarker(hueColor)));
+            mTripMarkerManager.addMarker(
+                    origin,
+                    getLocationName(leg.getFrom()),
+                    getRouteDescription(leg),
+                    LegUtil.getColor(this, leg),
+                    true);
 
             BitmapDescriptor icon = getColoredMarker(LegUtil.getColor(this, leg));
             for (IntermediateStop stop : leg.getIntermediateStops()) {
@@ -224,27 +227,29 @@ public class ViewOnMapActivity extends BaseFragmentActivity implements OnMapRead
                     date = stop.getTime();
                 }
                 String time = date != null ? DateFormat.getTimeFormat(this).format(date) : "";
-                mMap.addMarker(new MarkerOptions()
-                        .anchor(0.5f, 0.5f)
-                        .position(intermediateStop)
-                        .title(getLocationName(stop.getLocation()))
-                        .snippet(time)
-                        .icon(icon));
+                mTripMarkerManager.addMarker(
+                        intermediateStop,
+                        getLocationName(stop.getLocation()),
+                        time,
+                        LegUtil.getColor(this, leg),
+                        false);
             }
             LatLng destination = new LatLng(
                     leg.getTo().getLat(),
                     leg.getTo().getLon());
             options.add(destination);
-            mMap.addMarker(new MarkerOptions()
-                    .position(destination)
-                    .title(getLocationName(leg.getTo()))
-                    .snippet(DateFormat.getTimeFormat(this).format(leg.getStartTime()))
-                    .icon(BitmapDescriptorFactory.defaultMarker(hueColor)));
+            mTripMarkerManager.addMarker(
+                    destination,
+                    getLocationName(leg.getTo()),
+                    DateFormat.getTimeFormat(this).format(leg.getEndTime()),
+                    LegUtil.getColor(this, leg),
+                    true);
 
             mMap.addPolyline(options
                     .width(ViewHelper.dipsToPix(getResources(), 8))
                     .color(LegUtil.getColor(this, leg)));
         }
+        mTripMarkerManager.cluster();
     }
 
     public String getRouteDescription(Leg leg) {
@@ -421,6 +426,11 @@ public class ViewOnMapActivity extends BaseFragmentActivity implements OnMapRead
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        mTripMarkerManager = new TripMarkerManager(this, mMap);
+        mMap.setOnCameraChangeListener(mTripMarkerManager);
+        mMap.setOnMarkerClickListener(mTripMarkerManager);
+        mMap.setInfoWindowAdapter(mTripMarkerManager);
+
         setUpMap();
     }
 }

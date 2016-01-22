@@ -1,0 +1,21 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:id="@+id/marker_container"
+    android:padding="2dp">
+
+    <TextView
+        android:id="@+id/marker_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="text"
+        android:textColor="#ffffff"/>
+    <TextView
+        android:id="@+id/marker_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#ffffff"
+        tools:text="text" />
+</LinearLayout>

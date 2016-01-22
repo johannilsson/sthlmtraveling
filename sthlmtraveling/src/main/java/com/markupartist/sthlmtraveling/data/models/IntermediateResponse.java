@@ -34,7 +34,7 @@ public class IntermediateResponse {
     }
 
     public List<IntermediateStop> getStops(String reference) {
-        if (result == null || result.isEmpty()) {
+        if (result == null || result.isEmpty() || reference == null) {
             return Collections.emptyList();
         }
         for (IntermediateStops is : result) {
