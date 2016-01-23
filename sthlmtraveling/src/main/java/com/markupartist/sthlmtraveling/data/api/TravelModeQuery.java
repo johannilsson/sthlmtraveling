@@ -21,6 +21,8 @@ import android.text.TextUtils;
 
 import com.markupartist.sthlmtraveling.data.models.TravelMode;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -36,6 +38,22 @@ public class TravelModeQuery {
 
     public void addMode(TravelMode travelMode) {
         this.modes.add(travelMode);
+    }
+
+    public List<TravelMode> getModes() {
+        return modes;
+    }
+
+    public static TravelModeQuery fromStringList(String travelModes) {
+        if (travelModes == null) {
+            return new TravelModeQuery(Collections.<TravelMode>emptyList());
+        }
+        String[] rawModes = travelModes.split(",");
+        List<TravelMode> modes = new ArrayList<>();
+        for (String mode : rawModes) {
+            modes.add(new TravelMode(mode));
+        }
+        return new TravelModeQuery(modes);
     }
 
     @Override

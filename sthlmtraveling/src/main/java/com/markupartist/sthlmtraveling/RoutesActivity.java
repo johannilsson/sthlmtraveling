@@ -31,7 +31,6 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
-import android.text.format.Time;
 import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
@@ -715,60 +714,6 @@ public class RoutesActivity extends BaseListActivity implements
                 return SmsTicketDialog.createDialog(this, mTransitPlan.tariffZones());
         }
         return null;
-    }
-
-    /**
-     * Constructs a search routes data URI.
-     *
-     * @param startPoint      the start point
-     * @param endPoint        the end point
-     * @param time            the time, pass null for now
-     * @param isTimeDeparture true if the time is departure time, false if arrival
-     * @return the data uri
-     */
-    public static Uri createRoutesUri(Site startPoint, Site endPoint, Time time,
-                                      boolean isTimeDeparture) {
-        Uri routesUri;
-
-        String timeString = "";
-        String startLat = "";
-        String startLng = "";
-        String endLat = "";
-        String endLng = "";
-
-        if (time != null) {
-            timeString = time.format2445();
-        }
-        if (startPoint.getLocation() != null) {
-            startLat = String.valueOf(startPoint.getLocation().getLatitude());
-            startLng = String.valueOf(startPoint.getLocation().getLongitude());
-        }
-        if (endPoint.getLocation() != null) {
-            endLat = String.valueOf(endPoint.getLocation().getLatitude());
-            endLng = String.valueOf(endPoint.getLocation().getLongitude());
-        }
-
-        routesUri = Uri.parse(
-                String.format("journeyplanner://routes?"
-                                + "start_point=%s"
-                                + "&start_point_id=%s"
-                                + "&start_point_lat=%s"
-                                + "&start_point_lng=%s"
-                                + "&start_point_source=%s"
-                                + "&end_point=%s"
-                                + "&end_point_id=%s"
-                                + "&end_point_lat=%s"
-                                + "&end_point_lng=%s"
-                                + "&end_point_source=%s"
-                                + "&time=%s"
-                                + "&isTimeDeparture=%s",
-                        Uri.encode(startPoint.getName()), startPoint.getId(), startLat, startLng,
-                        startPoint.getSource(),
-                        Uri.encode(endPoint.getName()), endPoint.getId(), endLat, endLng,
-                        endPoint.getSource(),
-                        timeString, isTimeDeparture));
-
-        return routesUri;
     }
 
     @Override

@@ -49,7 +49,21 @@ public class DateTimeUtil {
             new SimpleDateFormat("HH:mm", Locale.US);
     private static final SimpleDateFormat DATE_TIME_FORMAT =
             new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.US);
+    private static final SimpleDateFormat DATE_TIME_FORMAT_2445 =
+            new SimpleDateFormat("yyyyMMdd'T'HHmmss", Locale.US);
 
+
+    public static String format2445(Date date) {
+        return DATE_TIME_FORMAT_2445.format(date);
+    }
+
+    public static Date parse2445(String dateStr) {
+        try {
+            return DATE_TIME_FORMAT_2445.parse(dateStr);
+        } catch (ParseException e) {
+            return null;
+        }
+    }
 
     /**
      * Constructs a Date from the provided date and time.
