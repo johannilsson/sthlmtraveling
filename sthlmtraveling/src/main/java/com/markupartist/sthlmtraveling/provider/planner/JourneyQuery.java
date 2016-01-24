@@ -398,12 +398,14 @@ public class JourneyQuery implements Parcelable {
             destination(destination);
 
             via(fromQueryParameter(Uri.decode(uri.getQueryParameter("via"))));
-            isTimeDeparture(Boolean.parseBoolean(uri.getQueryParameter("isTimeDeparture")));
             alternativeStops(Boolean.parseBoolean(uri.getQueryParameter("alternative")));
 
             String timeStr = uri.getQueryParameter("time");
             if (timeStr != null) {
                 time(DateTimeUtil.parse2445(timeStr));
+                isTimeDeparture(Boolean.parseBoolean(uri.getQueryParameter("isTimeDeparture")));
+            } else {
+                isTimeDeparture(true);
             }
 
             TravelModeQuery travelModeQuery = TravelModeQuery.fromStringList(
