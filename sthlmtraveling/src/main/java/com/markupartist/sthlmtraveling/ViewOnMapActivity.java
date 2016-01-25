@@ -34,6 +34,7 @@ import android.text.TextUtils;
 import android.text.format.DateFormat;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.RadioGroup;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -50,8 +51,8 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.markupartist.sthlmtraveling.data.api.ApiService;
-import com.markupartist.sthlmtraveling.data.models.IntermediateStop;
 import com.markupartist.sthlmtraveling.data.models.IntermediateResponse;
+import com.markupartist.sthlmtraveling.data.models.IntermediateStop;
 import com.markupartist.sthlmtraveling.data.models.Leg;
 import com.markupartist.sthlmtraveling.data.models.Place;
 import com.markupartist.sthlmtraveling.data.models.Route;
@@ -396,6 +397,7 @@ public class ViewOnMapActivity extends BaseFragmentActivity implements OnMapRead
 
     /**
      * Update the action bar with start and end points.
+     *
      * @param journeyQuery the journey query
      */
     protected void updateStartAndEndPointViews(final JourneyQuery journeyQuery) {
@@ -432,7 +434,28 @@ public class ViewOnMapActivity extends BaseFragmentActivity implements OnMapRead
         mMap.setOnCameraChangeListener(mTripMarkerManager);
         mMap.setOnMarkerClickListener(mTripMarkerManager);
         mMap.setInfoWindowAdapter(mTripMarkerManager);
+        RadioGroup rgViews = (RadioGroup) findViewById(R.id.rg_views);
 
+        rgViews.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                switch (checkedId) {
+                    case R.id.rb_normal:
+                        mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+                        break;
+                    case R.id.rb_satellite:
+                        mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+                        break;
+                    case R.id.rb_terrain:
+                        mMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
+                        break;
+                    case R.id.rb_hybrid:
+                        mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+                        break;
+                }
+            }
+        });
         setUpMap();
     }
 }

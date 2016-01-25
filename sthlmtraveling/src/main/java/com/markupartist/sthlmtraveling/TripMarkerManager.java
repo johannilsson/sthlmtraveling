@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
@@ -15,15 +16,21 @@ import android.graphics.PorterDuffColorFilter;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.ColorInt;
+import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.LinearLayout;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -58,19 +65,22 @@ public class TripMarkerManager extends ClusterManager<TripMarkerManager.Detailed
         BitmapDescriptor icon;
         float anchorU = 0.5f;
         float anchorV = 0.5f;
+        float infoWindowAnchorV = 0f;
         if (endPoint) {
-            float[] hsv = new float[3];
-            Color.colorToHSV(color, hsv);
-            float hueColor = hsv[0];
-            icon = BitmapDescriptorFactory.defaultMarker(hueColor);
-            anchorV = 1f;
+            Bitmap normalIcon = getColoredMarker(Color.RED);
+            Bitmap glowingIcon = addGlow(getColoredMarker(color));
+            icon = BitmapDescriptorFactory.fromBitmap(glowingIcon);
+
+            // ((x-y)/2)/x
+            infoWindowAnchorV = (((float) glowingIcon.getHeight() - normalIcon.getHeight()) / 2) / glowingIcon.getHeight();
         } else {
-            icon = getColoredMarker(color);
+            icon = BitmapDescriptorFactory.fromBitmap(getColoredMarker(color));
         }
 
 
         Marker marker = mMap.addMarker(new MarkerOptions()
                 .anchor(anchorU, anchorV)
+                .infoWindowAnchor(0.5f, infoWindowAnchorV)
                 .position(position)
                 .title(stopName)
                 .snippet(time)
@@ -114,8 +124,37 @@ public class TripMarkerManager extends ClusterManager<TripMarkerManager.Detailed
 
         //GridBasedAlgorithm supports delete, which we are using to avoid duplicates
         setAlgorithm(new GridBasedAlgorithm<DetailedMarker>());
+        extra();
     }
 
+    private View getDetailedMarkerView(DetailedMarker detailedMarker) {
+        @SuppressLint("InflateParams")  //Ignore null parent here, as view is only used for creating marker bitmap
+                View detailedMarkerView = LayoutInflater.from(context).inflate(R.layout.detailed_marker, null);
+        detailedMarkerView.setBackgroundColor(detailedMarker.color);
+        if (markerStyle == MarkerStyle.WHITE) {
+            detailedMarkerView.setBackgroundColor(Color.WHITE);
+
+            ((TextView) detailedMarkerView.findViewById(R.id.marker_time)).setTextColor(Color.BLACK);
+            ((TextView) detailedMarkerView.findViewById(R.id.marker_name)).setTextColor(Color.BLACK);
+            ((TextView) detailedMarkerView.findViewById(R.id.marker_extra)).setTextColor(Color.BLACK);
+        } else {
+            detailedMarkerView.setBackgroundColor(detailedMarker.color);
+            ((TextView) detailedMarkerView.findViewById(R.id.marker_time)).setTextColor(Color.WHITE);
+            ((TextView) detailedMarkerView.findViewById(R.id.marker_name)).setTextColor(Color.WHITE);
+            ((TextView) detailedMarkerView.findViewById(R.id.marker_extra)).setTextColor(Color.WHITE);
+        }
+
+
+        ((TextView) detailedMarkerView.findViewById(R.id.marker_name)).setText(detailedMarker.name);
+        ((TextView) detailedMarkerView.findViewById(R.id.marker_time)).setText(detailedMarker.time);
+        if (detailedMarker.endPoint) {
+            ((TextView) detailedMarkerView.findViewById(R.id.marker_name)).setText("");
+            ((TextView) detailedMarkerView.findViewById(R.id.marker_extra)).setText(detailedMarker.name);
+            ((TextView) detailedMarkerView.findViewById(R.id.marker_extra)).setVisibility(View.VISIBLE);
+        }
+
+        return detailedMarkerView;
+    }
 
     private class MyMarkerRenderer extends DefaultClusterRenderer<DetailedMarker> {
         final IconGenerator mIconGenerator;
@@ -128,17 +167,20 @@ public class TripMarkerManager extends ClusterManager<TripMarkerManager.Detailed
         @Override
         protected void onBeforeClusterItemRendered(DetailedMarker item, MarkerOptions markerOptions) {
 
-            @SuppressLint("InflateParams")  //Ignore null parent here, as view is only used for creating marker bitmap
-                    View view = LayoutInflater.from(context).inflate(R.layout.detailed_marker, null);
-            view.setBackgroundColor(item.color);
-            ((TextView) view.findViewById(R.id.marker_name)).setText(item.name);
-            ((TextView) view.findViewById(R.id.marker_time)).setText(item.time);
-            mIconGenerator.setContentView(view);
-            Bitmap icon = mIconGenerator.makeIcon();
-            float anchorV = 1.1f;
-            if (item.endPoint) {
-                anchorV = 1.738f; //If we knew the size of the android defaultMarker, we could calculate this more exactly..
+            markerOptions.visible(details);
+
+
+            mIconGenerator.setContentView(getDetailedMarkerView(item));
+            if (markerStyle == MarkerStyle.WHITE) {
+                mIconGenerator.setColor(Color.WHITE);
+            } else if (markerStyle == MarkerStyle.COLOR) {
+                mIconGenerator.setColor(item.color);
             }
+            Bitmap icon = mIconGenerator.makeIcon();
+
+            //V for detailedMarker is
+            float anchorV = (((float) getColoredMarker(Color.RED).getHeight() / 2) / icon.getHeight()) + 1f;
+
             markerOptions
                     .anchor(0.5f, anchorV)
                     .icon(BitmapDescriptorFactory.fromBitmap(icon));
@@ -184,23 +226,25 @@ public class TripMarkerManager extends ClusterManager<TripMarkerManager.Detailed
     @Override
     public boolean onMarkerClick(Marker marker) {
 
-        boolean isDetailedMarker = false;
-        for (DetailedMarker detailedMarker : detailedMarkers) {
-            if (detailedMarker.getPosition().equals(marker.getPosition())) {
-                isDetailedMarker = true;
-                mMap.animateCamera(CameraUpdateFactory.newLatLng(marker.getPosition()));
+        boolean isSimpleMarker = false;
+        for (Marker simpleMarker : simpleMarkers) {
+            if (marker.getId().equals(simpleMarker.getId())) {
+                isSimpleMarker = true;
+
 
             }
         }
-        if (isDetailedMarker) {
+        if (!isSimpleMarker) {
             //ok so this was a cluster marker, display the infoWindow of the corresponding simpleMarker
             for (Marker simpleMarker : simpleMarkers) {
                 if (simpleMarker.getPosition().equals(marker.getPosition())) {
                     simpleMarker.showInfoWindow();
+                    break;
                 }
             }
+            mMap.animateCamera(CameraUpdateFactory.newLatLng(marker.getPosition()));
         }
-        return false;
+        return !isSimpleMarker;
 
     }
 
@@ -213,27 +257,29 @@ public class TripMarkerManager extends ClusterManager<TripMarkerManager.Detailed
 
         LinearLayout bubbleLayout = new LinearLayout(context);
 
-        if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN) {
-            //noinspection deprecation
-            bubbleLayout.setBackgroundDrawable(new BubbleDrawable(context.getResources()));
-        } else {
-            bubbleLayout.setBackground(new BubbleDrawable(context.getResources()));
-        }
-
-        View detailedMarkerView = LayoutInflater.from(context).inflate(R.layout.detailed_marker, bubbleLayout);
-        View markerContainer = detailedMarkerView.findViewById(R.id.marker_container);
-
-        //Sneak peak on the detailed marker with same coordinates to find color
         for (DetailedMarker detailedMarker : detailedMarkers) {
             if (marker.getPosition().equals(detailedMarker.getPosition())) {
-                markerContainer.setBackgroundColor(detailedMarker.color);
+                View detailedMarkerView = getDetailedMarkerView(detailedMarker);
+                bubbleLayout.addView(detailedMarkerView);
+                BubbleDrawable bubbleDrawable = new BubbleDrawable(context.getResources());
+                if (markerStyle == MarkerStyle.WHITE) {
+                    bubbleDrawable.setColor(Color.WHITE);
+                } else if (markerStyle == MarkerStyle.COLOR) {
+                    bubbleDrawable.setColor(detailedMarker.color);
+                }
+                if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN) {
+                    //noinspection deprecation
+                    bubbleLayout.setBackgroundDrawable(bubbleDrawable);
+                } else {
+                    bubbleLayout.setBackground(bubbleDrawable);
+                }
+
+                break;
             }
         }
 
 
-        ((TextView) detailedMarkerView.findViewById(R.id.marker_name)).setText(marker.getTitle());
-        ((TextView) detailedMarkerView.findViewById(R.id.marker_time)).setText(marker.getSnippet());
-        return detailedMarkerView;
+        return bubbleLayout;
     }
 
     @Override
@@ -302,13 +348,95 @@ public class TripMarkerManager extends ClusterManager<TripMarkerManager.Detailed
         }
     }
 
-    private BitmapDescriptor getColoredMarker(@ColorInt int colorInt) {
+    private Bitmap getColoredMarker(@ColorInt int colorInt) {
         Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_line_marker);
         Bitmap bitmapCopy = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), bitmap.getConfig());
         Canvas canvas = new Canvas(bitmapCopy);
         Paint paint = new Paint();
         paint.setColorFilter(new PorterDuffColorFilter(colorInt, PorterDuff.Mode.SRC_ATOP));
         canvas.drawBitmap(bitmap, 0f, 0f, paint);
-        return BitmapDescriptorFactory.fromBitmap(bitmapCopy);
+        return bitmapCopy;
+    }
+
+    private int getPixelsFromDp(float dp) {
+        DisplayMetrics metrics = context.getResources().getDisplayMetrics();
+        float fpixels = metrics.density * dp;
+        return (int) (fpixels + 0.5f);
+    }
+
+    Bitmap addGlow(Bitmap src) {
+        // An added margin to the initial image
+
+        int margin = getPixelsFromDp(6f);
+        int halfMargin = margin / 2;
+
+        // the glow radius
+        int glowRadius = getPixelsFromDp(4f);
+        ;
+
+        // the glow color
+        int glowColor = Color.rgb(0, 0, 255);
+
+        // extract the alpha from the source image
+        Bitmap alpha = src.extractAlpha();
+
+        // The output bitmap (with the icon + glow)
+        Bitmap bmp = Bitmap.createBitmap(src.getWidth() + margin,
+                src.getHeight() + margin, Bitmap.Config.ARGB_8888);
+
+        // The canvas to paint on the image
+        Canvas canvas = new Canvas(bmp);
+
+        Paint paint = new Paint();
+        paint.setColor(glowColor);
+
+        // outer glow
+        paint.setMaskFilter(new BlurMaskFilter(glowRadius, BlurMaskFilter.Blur.OUTER));
+        canvas.drawBitmap(alpha, halfMargin, halfMargin, paint);
+
+        // original icon
+        canvas.drawBitmap(src, halfMargin, halfMargin, null);
+        return bmp;
+    }
+
+
+    enum MarkerStyle {
+        COLOR, WHITE
+    }
+
+    MarkerStyle markerStyle = MarkerStyle.COLOR;
+    boolean details = true;
+
+    private void extra() {
+        CheckBox cb = (CheckBox) ((ViewOnMapActivity) context).findViewById(R.id.cb_toggle_detail_markers);
+        cb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                details = isChecked;
+
+                for (Marker marker : TripMarkerManager.this.getMarkerCollection().getMarkers()) {
+                    marker.setVisible(details);
+                }
+                Log.e("Aksel", "checkbox=" + isChecked);
+            }
+        });
+        RadioGroup rgViews = (RadioGroup) ((ViewOnMapActivity) context).findViewById(R.id.rg_styles);
+
+        rgViews.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                switch (checkedId) {
+                    case R.id.rb_color:
+                        markerStyle = MarkerStyle.COLOR;
+                        break;
+                    case R.id.rb_white:
+                        markerStyle = MarkerStyle.WHITE;
+                        CameraPosition currentCameraPosition = mMap.getCameraPosition();
+                        mMap.moveCamera(CameraUpdateFactory.newCameraPosition(currentCameraPosition));
+                        break;
+                }
+            }
+        });
     }
 }
