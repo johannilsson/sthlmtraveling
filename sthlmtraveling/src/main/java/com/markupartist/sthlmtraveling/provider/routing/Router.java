@@ -24,11 +24,10 @@ import com.markupartist.sthlmtraveling.data.api.PlaceQuery;
 import com.markupartist.sthlmtraveling.data.api.TravelModeQuery;
 import com.markupartist.sthlmtraveling.data.models.Plan;
 import com.markupartist.sthlmtraveling.data.models.TravelMode;
-import com.markupartist.sthlmtraveling.provider.TransportMode;
 import com.markupartist.sthlmtraveling.provider.planner.JourneyQuery;
 import com.markupartist.sthlmtraveling.utils.DateTimeUtil;
+import com.markupartist.sthlmtraveling.utils.LegUtil;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import retrofit.RetrofitError;
@@ -96,33 +95,14 @@ public class Router {
                 .place(journeyQuery.destination.asPlace())
                 .build();
         PlaceQuery via = null;
-        if (journeyQuery.hasVia() && journeyQuery.via.hasLocation()) {
+        if (journeyQuery.hasVia()) {
             via = new PlaceQuery.Builder()
                     .place(journeyQuery.via.asPlace())
                     .build();
         }
 
-        List<TravelMode> travelModes = new ArrayList<>();
-        for (String transportMode : journeyQuery.transportModes) {
-            switch (transportMode) {
-                case TransportMode.BOAT:
-                    travelModes.add(new TravelMode(TravelMode.BOAT));
-                    break;
-                case TransportMode.TRAIN:
-                    travelModes.add(new TravelMode(TravelMode.TRAIN));
-                    break;
-                case TransportMode.BUS:
-                    travelModes.add(new TravelMode(TravelMode.BUS));
-                    break;
-                case TransportMode.TRAM:
-                    travelModes.add(new TravelMode(TravelMode.TRAM));
-                    travelModes.add(new TravelMode(TravelMode.LIGHT_TRAIN));
-                    break;
-                case TransportMode.METRO:
-                    travelModes.add(new TravelMode(TravelMode.METRO));
-                    break;
-            }
-        }
+        List<TravelMode> travelModes = LegUtil.transportModesToTravelModes(
+                journeyQuery.transportModes);
 
         String directionParam = null;
         String paginateRef = null;

@@ -17,6 +17,7 @@
 package com.markupartist.sthlmtraveling.data.api;
 
 import android.location.Location;
+import android.text.TextUtils;
 
 import com.markupartist.sthlmtraveling.data.models.Place;
 
@@ -36,6 +37,22 @@ public class PlaceQuery {
         this.name = builder.name;
         this.lat = builder.lat;
         this.lon = builder.lon;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public double getLat() {
+        return lat;
+    }
+
+    public double getLon() {
+        return lon;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public String toString() {
@@ -70,6 +87,21 @@ public class PlaceQuery {
             this.name = name;
             this.lat = lat;
             this.lon = lon;
+            return this;
+        }
+
+        public Builder param(String param) {
+            String[] parts = TextUtils.split(param, ":");
+            String idOrLocation = parts[0];
+            String[] locationParts = TextUtils.split(idOrLocation, ",");
+            if (locationParts.length == 2) {
+                // Got location
+                lat = Double.parseDouble(locationParts[0]);
+                lon = Double.parseDouble(locationParts[1]);
+            } else {
+                id = idOrLocation;
+            }
+            name = parts[1];
             return this;
         }
 

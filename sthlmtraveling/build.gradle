@@ -68,8 +68,8 @@ android {
         minSdkVersion 9
         targetSdkVersion 23
         applicationId "com.markupartist.sthlmtraveling"
-        versionName "2.15.3-beta-3"
-        versionCode 187
+        versionName "2.15.3-beta-4"
+        versionCode 188
 
         buildConfigField "boolean", "APP_IS_ADS_ENABLED", buildProperties['IS_ADS_ENABLED']
         buildConfigField "String", "APP_WIDESPACE_SID", buildProperties['WIDESPACE_SID']

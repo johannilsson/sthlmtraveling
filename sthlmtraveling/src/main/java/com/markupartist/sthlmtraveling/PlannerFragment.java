@@ -427,26 +427,28 @@ public class PlannerFragment extends BaseListFragment implements LoaderManager.L
             mHistoryDbAdapter.create(HistoryDbAdapter.TYPE_JOURNEY_PLANNER_SITE, endPoint);
         }
 
-        Log.i(TAG, "START POINT: " + startPoint.toDump());
-        Log.i(TAG, "END POINT: " + endPoint.toDump());
+        JourneyQuery journeyQuery = createJourneyQuery(startPoint, endPoint);
 
+        journeyQuery.toUri(true);
+
+        Intent routesIntent = new Intent(getActivity(), RoutesActivity.class);
+        routesIntent.putExtra(RoutesActivity.EXTRA_JOURNEY_QUERY, journeyQuery);
+        startActivity(routesIntent);
+    }
+
+    JourneyQuery createJourneyQuery(Site startPoint, Site endPoint) {
         JourneyQuery journeyQuery = new JourneyQuery.Builder()
                 .origin(startPoint)
                 .destination(endPoint)
                 .create();
-
         if (mJourneyQuery != null) {
-            // todo: replace with a merge method.
             journeyQuery.via = mJourneyQuery.via;
             journeyQuery.alternativeStops = mJourneyQuery.alternativeStops;
             journeyQuery.time = mJourneyQuery.time;
             journeyQuery.isTimeDeparture = mJourneyQuery.isTimeDeparture;
             journeyQuery.transportModes = mJourneyQuery.transportModes;
         }
-
-        Intent routesIntent = new Intent(getActivity(), RoutesActivity.class);
-        routesIntent.putExtra(RoutesActivity.EXTRA_JOURNEY_QUERY, journeyQuery);
-        startActivity(routesIntent);
+        return journeyQuery;
     }
 
     /**
@@ -458,8 +460,9 @@ public class PlannerFragment extends BaseListFragment implements LoaderManager.L
      *            the end point
      */
     protected void onCreateShortCut(Site startPoint, Site endPoint, String name) {
-        Uri routesUri = RoutesActivity.createRoutesUri(startPoint, endPoint,
-                null, true);
+        JourneyQuery journeyQuery = createJourneyQuery(startPoint, endPoint);
+
+        Uri routesUri = journeyQuery.toUri(false);
         Intent shortcutIntent = new Intent(Intent.ACTION_VIEW, routesUri,
                 getActivity(), RoutesActivity.class);
         shortcutIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

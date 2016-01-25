@@ -25,7 +25,11 @@ import android.text.TextUtils;
 
 import com.markupartist.sthlmtraveling.R;
 import com.markupartist.sthlmtraveling.data.models.Leg;
+import com.markupartist.sthlmtraveling.data.models.TravelMode;
+import com.markupartist.sthlmtraveling.provider.TransportMode;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -93,5 +97,57 @@ public class LegUtil {
             routeName = String.format(Locale.US, "%s…", routeName.trim().substring(0, 29));
         }
         return routeName;
+    }
+
+    public static List<TravelMode> transportModesToTravelModes(List<String> transportModes) {
+        List<TravelMode> travelModes = new ArrayList<>();
+        for (String transportMode : transportModes) {
+            switch (transportMode) {
+                case TransportMode.BOAT:
+                case TransportMode.WAX:
+                    travelModes.add(new TravelMode(TravelMode.BOAT));
+                    break;
+                case TransportMode.TRAIN:
+                    travelModes.add(new TravelMode(TravelMode.TRAIN));
+                    break;
+                case TransportMode.BUS:
+                    travelModes.add(new TravelMode(TravelMode.BUS));
+                    break;
+                case TransportMode.TRAM:
+                    travelModes.add(new TravelMode(TravelMode.TRAM));
+                    travelModes.add(new TravelMode(TravelMode.LIGHT_TRAIN));
+                    break;
+                case TransportMode.METRO:
+                    travelModes.add(new TravelMode(TravelMode.METRO));
+                    break;
+            }
+        }
+        return travelModes;
+    }
+
+    public static List<String> travelModesToTransportModes(List<TravelMode> travelModes) {
+        List<String> transportModes = new ArrayList<>();
+        for (TravelMode travelMode : travelModes) {
+            switch (travelMode.getMode()) {
+                case TravelMode.BOAT:
+                    transportModes.add(TransportMode.BOAT);
+                    transportModes.add(TransportMode.WAX);
+                    break;
+                case TravelMode.TRAIN:
+                    transportModes.add(TransportMode.TRAIN);
+                    break;
+                case TravelMode.BUS:
+                    transportModes.add(TransportMode.BUS);
+                    break;
+                case TravelMode.TRAM:
+                case TravelMode.LIGHT_TRAIN:
+                    transportModes.add(TransportMode.TRAM);
+                    break;
+                case TravelMode.METRO:
+                    transportModes.add(TransportMode.METRO);
+                    break;
+            }
+        }
+        return transportModes;
     }
 }

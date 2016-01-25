@@ -179,7 +179,9 @@ public class ViewOnMapActivity extends BaseFragmentActivity implements OnMapRead
             @Override
             public void success(IntermediateResponse intermediateResponse, Response response) {
                 for (Leg leg : route.getLegs()) {
-                    leg.setIntermediateStops(intermediateResponse.getStops(leg.getDetailRef()));
+                    if (leg.isTransit()) {
+                        leg.setIntermediateStops(intermediateResponse.getStops(leg.getDetailRef()));
+                    }
                 }
                 showTransitRoute(route);
             }

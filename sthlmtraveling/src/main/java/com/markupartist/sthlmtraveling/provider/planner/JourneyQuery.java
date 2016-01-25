@@ -21,8 +21,13 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
 
+import com.markupartist.sthlmtraveling.data.api.PlaceQuery;
+import com.markupartist.sthlmtraveling.data.api.TravelModeQuery;
+import com.markupartist.sthlmtraveling.data.models.TravelMode;
 import com.markupartist.sthlmtraveling.provider.TransportMode;
 import com.markupartist.sthlmtraveling.provider.site.Site;
+import com.markupartist.sthlmtraveling.utils.DateTimeUtil;
+import com.markupartist.sthlmtraveling.utils.LegUtil;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -40,7 +45,7 @@ public class JourneyQuery implements Parcelable {
     public Date time;
     public boolean isTimeDeparture = true;
     public boolean alternativeStops = true;
-    public List<String> transportModes = new ArrayList<String>();
+    public List<String> transportModes = new ArrayList<>();
     public String ident;
     public boolean hasPromotions;
     public int promotionNetwork = -1;
@@ -223,6 +228,56 @@ public class JourneyQuery implements Parcelable {
         return journeyQuery;
     }
 
+    public Uri toUri(boolean withTime) {
+        if (origin == null || destination == null) {
+            return null;
+        }
+
+        Uri routesUri;
+
+        PlaceQuery fromQuery = new PlaceQuery.Builder().place(origin.asPlace()).build();
+        PlaceQuery toQuery = new PlaceQuery.Builder().place(destination.asPlace()).build();
+
+        routesUri = Uri.parse("journeyplanner://routes?");
+
+        routesUri = routesUri.buildUpon()
+                .appendQueryParameter("version", "2")
+                .appendQueryParameter("from", Uri.encode(fromQuery.toString()))
+                .appendQueryParameter("fromSource", String.valueOf(origin.getSource()))
+                .appendQueryParameter("to", Uri.encode(toQuery.toString()))
+                .appendQueryParameter("toSource", String.valueOf(destination.getSource()))
+                .appendQueryParameter("alternative", String.valueOf(alternativeStops))
+                .build();
+
+        if (withTime) {
+            if (time != null) {
+                String timeString = DateTimeUtil.format2445(time);
+                routesUri = routesUri.buildUpon()
+                        .appendQueryParameter("time", timeString)
+                        .appendQueryParameter("isTimeDeparture", String.valueOf(isTimeDeparture))
+                        .build();
+            }
+        }
+
+        if (hasVia()) {
+            routesUri = routesUri.buildUpon()
+                    .appendQueryParameter("via", Uri.encode(
+                            new PlaceQuery.Builder().place(via.asPlace()).build().toString()))
+                    .build();
+        }
+
+        if (transportModes != null && !transportModes.isEmpty()) {
+            // Convert transport modes to travel modes.
+            List<TravelMode> travelModes = LegUtil.transportModesToTravelModes(transportModes);
+            TravelModeQuery travelModeQuery = new TravelModeQuery(travelModes);
+            routesUri = routesUri.buildUpon()
+                    .appendQueryParameter("travelMode", travelModeQuery.toString())
+                    .build();
+        }
+
+        return routesUri;
+    }
+
     /* (non-Javadoc)
      * @see java.lang.Object#toString()
      */
@@ -284,7 +339,7 @@ public class JourneyQuery implements Parcelable {
 
         public Builder via(Site via) {
             if (via != null && via.hasName()) {
-                mVia = via; //buildLocationFromStop(via);
+                mVia = via;
             }
             return this;
         }
@@ -309,7 +364,7 @@ public class JourneyQuery implements Parcelable {
             return this;
         }
 
-        public Builder transportModes(ArrayList<String> transportModes) {
+        public Builder transportModes(List<String> transportModes) {
             mTransportModes = transportModes;
             return this;
         }
@@ -326,7 +381,59 @@ public class JourneyQuery implements Parcelable {
         }
 
         public Builder uri(Uri uri) {
+            String version = uri.getQueryParameter("version");
+            if (version == null) {
+                return uriV1(uri);
+            }
+            return uriV2(uri);
+        }
 
+        public Builder uriV2(Uri uri) {
+            Site origin = fromQueryParameter(Uri.decode(uri.getQueryParameter("from")));
+            origin.setSource(Integer.parseInt(uri.getQueryParameter("fromSource")));
+            origin(origin);
+
+            Site destination = fromQueryParameter(Uri.decode(uri.getQueryParameter("to")));
+            destination.setSource(Integer.parseInt(uri.getQueryParameter("fromSource")));
+            destination(destination);
+
+            via(fromQueryParameter(Uri.decode(uri.getQueryParameter("via"))));
+            alternativeStops(Boolean.parseBoolean(uri.getQueryParameter("alternative")));
+
+            String timeStr = uri.getQueryParameter("time");
+            if (timeStr != null) {
+                time(DateTimeUtil.parse2445(timeStr));
+                isTimeDeparture(Boolean.parseBoolean(uri.getQueryParameter("isTimeDeparture")));
+            } else {
+                isTimeDeparture(true);
+            }
+
+            TravelModeQuery travelModeQuery = TravelModeQuery.fromStringList(
+                    Uri.decode(uri.getQueryParameter("travelMode")));
+            transportModes(LegUtil.travelModesToTransportModes(travelModeQuery.getModes()));
+
+            return this;
+        }
+
+        Site fromQueryParameter(String parameter) {
+            if (parameter == null) {
+                return null;
+            }
+            Site site = new Site();
+            PlaceQuery fromQuery = new PlaceQuery.Builder().param(parameter).build();
+            site.setName(fromQuery.getName());
+            if (fromQuery.getId() == null) {
+                if (fromQuery.getLon() != 0 || fromQuery.getLat() != 0) {
+                    site.setLocation(fromQuery.getLat(), fromQuery.getLon());
+                }
+            } else {
+                site.setId(fromQuery.getId());
+            }
+            fromQuery = null;
+            return site;
+        }
+
+        public Builder uriV1(Uri uri) {
             Site origin = new Site();
             origin.setName(uri.getQueryParameter("start_point"));
             String originId = uri.getQueryParameter("start_point_id");
@@ -394,7 +501,7 @@ public class JourneyQuery implements Parcelable {
             journeyQuery.time = mTime;
             journeyQuery.isTimeDeparture = mIsTimeDeparture;
             journeyQuery.alternativeStops = mAlternativeStops;
-            if (mTransportModes == null) {
+            if (mTransportModes == null || mTransportModes.isEmpty()) {
                 mTransportModes = Arrays.asList(TransportMode.METRO, TransportMode.BUS,
                         TransportMode.WAX, TransportMode.TRAIN, TransportMode.TRAM);
             }
