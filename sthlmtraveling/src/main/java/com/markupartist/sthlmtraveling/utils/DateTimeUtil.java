@@ -238,7 +238,7 @@ public class DateTimeUtil {
                             route.departsAt(false).getTime(), System.currentTimeMillis(),
                             DateUtils.DAY_IN_MILLIS).toString()),
                     bidiFormatter.unicodeWrap(format.format(route.departsAt(false))),
-                    bidiFormatter.unicodeWrap(format.format(route.departsAt(false))));
+                    bidiFormatter.unicodeWrap(format.format(route.arrivesAt(false))));
         }
 
         return String.format("%s – %s",
