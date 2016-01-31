@@ -592,7 +592,7 @@ public class DeparturesActivity extends BaseFragmentActivity {
                 // Update history if site id is not set, we do this to patch old versions
                 // that will end up here without site id set.
                 if (mSite.getSource() == Site.SOURCE_STHLM_TRAVELING && mSite.getId() != null) {
-                    mHistoryDbAdapter.create(HistoryDbAdapter.TYPE_DEPARTURE_SITE, mSite);
+                    mHistoryDbAdapter.create(HistoryDbAdapter.TYPE_JOURNEY_PLANNER_SITE, mSite);
                 }
 
                 DeparturesStore departures = new DeparturesStore();
