@@ -255,4 +255,8 @@
     <string name="allow">Allow</string>
 
     <string name="distance_in_meter"><xliff:g id="distance">%1$s</xliff:g>m</string>
+    <string name="entrance_and_name">Entrance <xliff:g id="entrance">%1$s</xliff:g></string>
+    <string name="exit_and_name">Exit <xliff:g id="entrance">%1$s</xliff:g></string>
+    <string name="entrance">Entrance</string>
+    <string name="exit">Exit</string>
 </resources>

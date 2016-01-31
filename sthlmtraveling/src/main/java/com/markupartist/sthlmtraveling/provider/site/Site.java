@@ -323,7 +323,7 @@ public class Site implements Parcelable {
                 id,
                 mName,
                 isTransitStop() ? "stop" : "place",
-                lat, lon, -1);
+                lat, lon, -1, null);
     }
 
     public static Site toSite(Place place) {
