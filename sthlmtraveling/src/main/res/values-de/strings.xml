@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
     <!--
-  ~ Copyright (C) 2009-2015 Johan Nilsson <http://markupartist.com>
+  ~ Copyright (C) 2009-2016 Johan Nilsson <http://markupartist.com>
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
   ~ you may not use this file except in compliance with the License.
@@ -241,4 +241,5 @@
     <string name="permission_location_needed_search">Aktivieren Sie Standortdienste um Ihre Position zu ermitteln</string>
     <string name="permission_location_needed_maps">Aktivieren Sie Standortdienste um Ihre Position auf der Karte zu sehen</string>
     <string name="allow">Zulassen</string>
+    <string name="distance_in_meter"><xliff:g id="distance">%1$s</xliff:g>Min.</string>
 </resources>

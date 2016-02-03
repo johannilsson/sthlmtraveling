@@ -95,7 +95,6 @@ public class HistoryDbAdapter {
             KEY_CREATED,
             KEY_LATITUDE,
             KEY_LONGITUDE,
-//            KEY_SITE_ID,
             KEY_LOCALITY,
             KEY_PLACE_ID,
             KEY_SOURCE,
@@ -117,7 +116,6 @@ public class HistoryDbAdapter {
                 + ", created date"
                 + ", latitude INTEGER NULL"
                 + ", longitude INTEGER NULL"
-//                + ", site_id INTEGER NULL"
                 + ", locality TEXT NULL"
                 + ", place_id TEXT NULL"
                 + ", source INTEGER NULL"
@@ -225,15 +223,20 @@ public class HistoryDbAdapter {
     }
 
     /**
-     * Fetch all entries for a specific type.
-     * @param type the type
+     * Fetch all transit stop entries
+     *
      * @return a Cursor object
      */
-    public Cursor fetchByType(int type) {
-        // TODO: This will be changed to fetch by source = sthlm traveling and category = transit stop.
+    public Cursor fetchStops() {
+        String[] params = new String[]{
+                String.valueOf(Site.CATEGORY_TRANSIT_STOP),
+                String.valueOf(Site.SOURCE_STHLM_TRAVELING)
+        };
+        // Can we filter out duplicates.
         return mDb.query(true, DATABASE_TABLE, ALL,
-                KEY_TYPE + "= ?", new String[]{String.valueOf(type)}, null, null,
-                KEY_CREATED + " DESC", "10");
+                KEY_CATEGORY + "= ? AND " +
+                KEY_SOURCE + "= ?", params, null, null,
+                KEY_CREATED + " DESC", "15");
     }
 
     /**

@@ -27,6 +27,7 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.os.Bundle;
 import android.support.annotation.ColorInt;
+import android.support.annotation.DrawableRes;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
@@ -51,6 +52,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.markupartist.sthlmtraveling.data.api.ApiService;
+import com.markupartist.sthlmtraveling.data.models.Entrance;
 import com.markupartist.sthlmtraveling.data.models.IntermediateResponse;
 import com.markupartist.sthlmtraveling.data.models.IntermediateStop;
 import com.markupartist.sthlmtraveling.data.models.Leg;
@@ -219,7 +221,7 @@ public class ViewOnMapActivity extends BaseFragmentActivity implements OnMapRead
                     LegUtil.getColor(this, leg),
                     true);
 
-            BitmapDescriptor icon = getColoredMarker(LegUtil.getColor(this, leg));
+            BitmapDescriptor icon = getColoredMarker(LegUtil.getColor(this, leg), R.drawable.ic_line_marker);
             for (IntermediateStop stop : leg.getIntermediateStops()) {
                 LatLng intermediateStop = new LatLng(
                         stop.getLocation().getLat(),
@@ -251,6 +253,13 @@ public class ViewOnMapActivity extends BaseFragmentActivity implements OnMapRead
             mMap.addPolyline(options
                     .width(ViewHelper.dipsToPix(getResources(), 8))
                     .color(LegUtil.getColor(this, leg)));
+
+            if (leg.getFrom().hasEntrances()) {
+                showEntrances(leg.getFrom().getEntrances(), false);
+            }
+            if (leg.getTo().hasEntrances()) {
+                showEntrances(leg.getTo().getEntrances(), true);
+            }
         }
         mTripMarkerManager.cluster();
     }
@@ -339,7 +348,8 @@ public class ViewOnMapActivity extends BaseFragmentActivity implements OnMapRead
                 drawPolyline(latLgns);
                 all.addAll(latLgns);
 
-                BitmapDescriptor icon = getColoredMarker(ContextCompat.getColor(this, R.color.primary));
+                BitmapDescriptor icon = getColoredMarker(
+                        ContextCompat.getColor(this, R.color.primary), R.drawable.ic_line_marker);
                 for (Step step : leg.getSteps()) {
                     if ("arrive".equals(step.getCode())
                             || "depart".equals(step.getCode())
@@ -357,8 +367,8 @@ public class ViewOnMapActivity extends BaseFragmentActivity implements OnMapRead
         zoomToFit(all);
     }
 
-    BitmapDescriptor getColoredMarker(@ColorInt int colorInt) {
-        Bitmap bitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.ic_line_marker);
+    BitmapDescriptor getColoredMarker(@ColorInt int colorInt, @DrawableRes int drawableRes) {
+        Bitmap bitmap = BitmapFactory.decodeResource(this.getResources(), drawableRes);
         Bitmap bitmapCopy = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), bitmap.getConfig());
         Canvas canvas = new Canvas(bitmapCopy);
         Paint paint = new Paint();
@@ -424,6 +434,31 @@ public class ViewOnMapActivity extends BaseFragmentActivity implements OnMapRead
             } else {
                 ab.setSubtitle(journeyQuery.destination.getName());
             }
+        }
+    }
+
+    public void showEntrances(List<Entrance> entrances, boolean isExits) {
+        BitmapDescriptor icon = getColoredMarker(
+                ContextCompat.getColor(this, R.color.primary), R.drawable.ic_entrance_exit_12dp);
+        for (Entrance entrance : entrances) {
+            MarkerOptions markerOptions = new MarkerOptions()
+                    .position(new LatLng(entrance.getLat(), entrance.getLon()))
+                    .anchor(0.5f, 0.5f)
+                    .icon(icon);
+            if (!TextUtils.isEmpty(entrance.getName())) {
+                if (isExits) {
+                    markerOptions.title(getString(R.string.exit_and_name, entrance.getName()));
+                } else {
+                    markerOptions.title(getString(R.string.entrance_and_name, entrance.getName()));
+                }
+            } else {
+                if (isExits) {
+                    markerOptions.title(getString(R.string.exit));
+                } else {
+                    markerOptions.title(getString(R.string.entrance));
+                }
+            }
+            mMap.addMarker(markerOptions);
         }
     }
 

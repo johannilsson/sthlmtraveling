@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <!--
+/*
+** Copyright (C) 2009 Johan Nilsson <http://markupartist.com>
+**
+** Licensed under the Apache License, Version 2.0 (the "License"); 
+** you may not use this file except in compliance with the License. 
+** You may obtain a copy of the License at 
+**
+**     http://www.apache.org/licenses/LICENSE-2.0 
+**
+** Unless required by applicable law or agreed to in writing, software 
+** distributed under the License is distributed on an "AS IS" BASIS, 
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+** See the License for the specific language governing permissions and 
+** limitations under the License.
+*/
+-->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <!-- General strings -->
+    <string name="ok">ОК</string>
+    <string name="done">Гүйцэтгэв</string>
+    <string name="discard">Болих</string>
+    <string name="from">Хаанаас</string>
+    <string name="to">Хаа хүрэх</string>
+    <string name="via">Дамжих</string>
+    <string name="search_label">Хайлт</string>
+    <string name="no_routes_found_label">Харамсалтай нь ямар ч замын чиглэл олдохгүй байна</string>
+    <string name="no_routes_found_message">Магадгүй таны зорисон эсвэл сонгосон чиглэл тань шаардлагатай огноо/цаг -т тээврийн сонгосон горимд байхгүй байна (жишээлбэл, зарим амралтын өдөр станц / буудлууд дээр зогсдоггүй болно).</string>
+    <string name="routes_label">Замын чиглэл</string>
+    <string name="route_details_label">Замын чиглэлийн дэлгэрэнгүй</string>
+    <string name="no_route_details">Харамсалтай нь ямар ч замын чиглэл олдохгүй байна. Хайлт хэт удсанаас болсон байх магадлалтай.</string>
+    <string name="session_timeout_message">Хайлт хэт удсанаас болсон байх магадлалтай.</string>
+    <string name="attention_label">Анхаар</string>
+    <string name="bad_routes_parameters_message">Эхлэх эсвэл төгсөх цэг нь хоосон байж болохгүй.</string>
+    <string name="new_search">ХАЙЛТ</string>
+    <string name="empty_value">Дутуу эсвэл буруу байна</string>
+    <string name="loading">Хайж байна. Түр хүлээнэ үү...</string>
+    <string name="my_location">Миний байршил</string>
+    <string name="change_date_and_time">Огноо ба цагаа өөрчил</string>
+    <string name="reverse_start_end">Хаанаас ба хаа хүрэх хоёрын байрыг нь солих</string>
+    <string name="about">Тухай</string>
+    <string name="about_this_app">STHLM Traveling хөгжүүлсэн Johan Nilsson. Таньд ямар нэгэн санаа эсвэл асуудал гарвал түүнтэй холбоо барина уу.\n\nЗамын хөдөлгөөний мэдээлэлийг Trafiklab болон SL зөвшөөрөлтөйгөөр авсан болно.\n\nПрограмын нь цаашдын үйл ажиллагааг сайжруулахын тулд нэргүй дүн шинжилгээг Google Analytics болон Crashlytics авсан болно.\n\n<b>Талархал</b>\n\nЭнэхүү төсөлд олон хүмүүс хувь нэмрээ оруулсан болно. Бүрэн жагсаалтыг эндээс үзнэ үү:\nhttp://www.sthlmtraveling.se\n\n//Johan Nilsson\njohan@markupartist.com\nhttp://markupartist.com\n\nҮндсэн эх код\nhttp://github.com/johannilsson/sthlmtraveling\n\nНууцлалын бодлого\nhttp://sthlmtraveling.se/privacy.html</string>
+    <string name="donate_url">http://pledgie.com/campaigns/6527</string>
+    <string name="feedback">Санал хүсэлт</string>
+    <string name="send_email">Цахилгаан шуудан илгээх</string>
+    <string name="favorites_label">Сонгогдсон</string>
+    <string name="no_favorites"><b>Хадгалсан чиглэл байхгүй байна...</b>\nХайлт хийсний дараа таван хошуу дарж хадгалж бас устгаж болно.</string>
+    <string name="reverse_search">Урвуу хайлт</string>
+    <string name="delete">Устгах</string>
+    <string name="no_location_title">Байршил асуудалтай байна</string>
+    <string name="no_location_message">Таны байршилыг тогтоох боломжгүй байна.</string>
+    <string name="network_problem_label">Сүлжээний асуудалтай байна.</string>
+    <string name="network_problem_message">Хэт ачаалалтай, сүлжээний асуудалтай эсвэл SL - тэй холбогдож чадахгүй байна.</string>
+    <string name="activity_create_shortcut">Замын чиглэл</string>
+    <string name="activity_create_departure_shortcut">Явах</string>
+    <string name="name_of_shortcut">Товчлолын нэр</string>
+    <string name="create_shortcut_label">Товчлол үүсгэх</string>
+    <string name="create_shortcut_for_departure_label">Явах цагын товчлол үүсгэх</string>
+    <string name="choose_start_point_label">Явах газраа сонгох</string>
+    <string name="choose_end_point_label">Очих газраа сонгох</string>
+    <string name="send_feedback_email_title">STHLM Traveling санал хүсэлт</string>
+    <string name="send_feedback_email_emailaddress">sthlmtraveling@markupartist.com</string>
+    <string name="history_label">Түүх</string>
+    <string name="yes">Тийм</string>
+    <string name="no">Үгүй</string>
+    <string name="retry">Дахин оролдох</string>
+    <string name="point_on_map">Газрын зураг дээр заах</string>
+    <string name="tap_to_select_this_point">Энэ цэгийг сонгохын тулд дарна уу</string>
+    <string name="point_selected">Энэ цэг сонгогдлоо</string>
+    <string name="tap_your_end_point_on_map">Төгсөх цэгээ газрын зураг дээр дарна уу</string>
+    <string name="tap_your_start_point_on_map">Эхлэх цэгээ газрын зураг дээр дарна уу</string>
+    <string name="tap_your_location_on_map">Таны байршилыг тогтоох боломжгүй байна. Газрын зураг дээр дарж өөрийнхөө байршилыг тогтооно уу</string>
+    <string name="departing_on">Явах цаг<xliff:g id="time">%1$s</xliff:g> дээр <xliff:g id="date">%2$s</xliff:g></string>
+    <string name="arriving_by">Очих цаг<xliff:g id="time">%1$s</xliff:g> дээр <xliff:g id="date">%2$s</xliff:g></string>
+    <string name="departures">Явах</string>
+    <string name="no_departures_for_transport_type">Яг одоо таны сонгосон тээврийн хэрэгсэлд явах чиглэл алга байна.</string>
+    <string name="no_departures">Яг одоо явах чиглэл алга байна.</string>
+    <string name="site_name">Буудлын нэр</string>
+    <string name="stop_label">Зогс</string>
+    <string name="address_label">Хаяг</string>
+    <string name="refresh">Шинэчлэх</string>
+    <string name="show_departures_for_start">Явах цагуудыг харуулах</string>
+    <string name="metros">Метро</string>
+    <string name="buses">Автобус</string>
+    <string name="trains">Галт тэрэг</string>
+    <string name="trams">Жижиг галт тэрэг</string>
+    <string name="tram_cars">Трамвай</string>
+    <string name="boats">Усан завь</string>
+    <string name="departure_metro">Метро</string>
+    <string name="departure_bus">Автобус</string>
+    <string name="departure_train">Галт тэрэг</string>
+    <string name="departure_tram">Жижиг галт тэрэг</string>
+    <string name="now">яг одоо</string>
+    <string name="my_location_source_disabled">Системын тохиргоонд дахь Миний байршил цэсийг идэвхжүүлнэ үү</string>
+    <string name="title_settings">Тохиргоо</string>
+    <string name="now_label">Яг одоо</string>
+    <string name="more_choices_label">СОНГОЛТУУД</string>
+    <string name="route_options_active">Сонголттой нэмэлт замын чиглэлүүд</string>
+    <string name="alternative_stops_label">Өөр буудлуудын хувилбарууд</string>
+    <string name="date_and_time_label">Огноо ба Цаг</string>
+    <string name="determining_your_position">Таны байршилыг тодорхойлж байна</string>
+    <string name="back">Буцах</string>
+    <string name="cancel">Цуцлах</string>
+    <string name="change">Солих</string>
+    <string name="deviations_label">Сануулга</string>
+    <string name="new_deviations">Шинэ сануулга</string>
+    <string name="no_deviations"><b>Шинэ сануулга алга байна.</b></string>
+    <string name="reinstall_app_message">Та шинээр  STHLM Traveling суулгаснаар дахин ашиглах боломжтой.\n\nЭнэ нь Android-д байгаа алдаанаас үүссэн байна. Та энэ тухай миний блогоос дэлгэрэнгүй уншиж болно, http://bit.ly/fcissue.\n\nНадад үнэхээр харамсалтай байна!</string>
+    <string name="did_you_mean">Та ингэж бодож байна уу?</string>
+    <string name="share_label">Хуваалцах</string>
+    <string name="sms_ticket_label">Тасалбар худалдаж авах</string>
+    <string name="sms_ticket_price_reduced">Хөнгөлөлттэй үнэ</string>
+    <string name="sms_ticket_price_full">Бүтэн үнэ (20–64 нас)</string>
+    <string name="sms_ticket_notice_message">Тасалбар авхаасаа өмнө дэлгэрэнгүй нягталж шалгана уу. STHLM Traveling нь таны тасалбарыг аяллын туршид хүчинтэй байна гэсэн баталгаа өгч чадахгүй.</string>
+    <string name="sms_ticket_notice_disabled">Энэ замын чиглэлд мессежээр тасалбар авах боломжгүй.</string>
+    <string name="trip_description_walk" formatted="false">Алхах</string>
+    <string name="trip_description_normal" formatted="false"><xliff:g id="transport">%1$s</xliff:g> чиглэлд <xliff:g id="towards">%2$s</xliff:g>.</string>
+    <string name="trip_map_description_walk" formatted="false"><xliff:g id="time">%1$s</xliff:g> Алх нь уу <xliff:g id="stop">%2$s</xliff:g></string>
+    <string name="trip_map_description_normal" formatted="false"><xliff:g id="time">%1$s</xliff:g> <xliff:g id="transport">%2$s</xliff:g> чиглэлд <xliff:g id="towards">%3$s</xliff:g>.</string>
+    <string name="show_all">Бүгдийг харуул</string>
+    <string name="direction">Чиглэл</string>
+    <string name="no_intermediate_stops">Ямар ч завсарын буудлууд олдохгүй байна.</string>
+    <string name="show_intermediate_stops">Завсарын буудлуудыг харуулах</string>
+    <string name="hide_intermediate_stops">Завсарын буудлуудыг нуух</string>
+    <string name="nearby_stops">Ойролцоох буудлууд</string>
+    <string name="nearby">Ойролцоох</string>
+    <string name="time_to" formatted="false"><xliff:g id="duration">%1$s</xliff:g> чигт <xliff:g id="stop">%2$s</xliff:g></string>
+    <!-- Phrase describing a time duration using seconds [CHAR LIMIT=16] -->
+    <plurals name="duration_seconds">
+        <item quantity="one">"1 хором"</item>
+        <item quantity="other">"<xliff:g id="count">%d</xliff:g> хором"</item>
+    </plurals>
+    <!-- Phrase describing a time duration using minutes [CHAR LIMIT=16] -->
+    <plurals name="duration_minutes">
+        <item quantity="one">1 минут</item>
+        <item quantity="other"><xliff:g id="count">%d</xliff:g> мин</item>
+    </plurals>
+    <!-- Phrase describing a time duration using hours [CHAR LIMIT=16] -->
+    <plurals name="duration_hours">
+        <item quantity="one">1 цаг</item>
+        <item quantity="other"><xliff:g id="count">%d</xliff:g> цаг</item>
+    </plurals>
+    <plurals name="duration_days">
+        <item quantity="one">1 өдөр</item>
+        <item quantity="other"><xliff:g id="count">%d</xliff:g> өдрүүд</item>
+    </plurals>
+    <plurals name="duration_short_minutes">
+        <item quantity="one">1 мин</item>
+        <item quantity="other"><xliff:g id="count">%d</xliff:g> мин</item>
+    </plurals>
+    <plurals name="duration_short_hours">
+        <item quantity="one">1 цаг</item>
+        <item quantity="other"><xliff:g id="count">%d</xliff:g> ц</item>
+    </plurals>
+    <string name="duration_short_hours_minutes" formatted="false"><xliff:g id="hour">%1$s</xliff:g> цаг <xliff:g id="minutes">%2$s</xliff:g> мин</string>
+    <string name="trip_time_origin_destination"><xliff:g id="origin">%1$s</xliff:g> – <xliff:g id="destination">%2$s</xliff:g></string>
+    <!-- Planner error message -->
+    <string name="planner_error_title">Хайлт амжилтгүй боллоо</string>
+    <!-- Planner error message -->
+    <string name="planner_error_unknown">Хайлт амжилтгүй боллоо, дахин оролдоно уу.</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H9300">Харамсалтай нь ямар ч замын чиглэл олдохгүй байна, дахин оролдоно уу.</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H9360">Огноо буруу байна, өөрчилж засна уу.</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H9380">Эхлэл ба төгсгөл хоорондоо хэт их ойрхон байна.</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H9320">Буудал байхгүй байна.</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H9280">Буудал байхгүй байна.</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H9260">Буудал байхгүй байна.</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H9250">Хайлт таслагдсан байна, дахин оролдож үзнэ үү.</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H9240">Ямар ч аян олдохгүй байна.</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H9230">Дахин оролдож үзнэ үү.</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H9220">Хаягын ойролцоо ямар нэгэн буудал байхгүй байна.</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H900">Энэ аянд боломжтой ямар ч цагийн хуваарь байхгүй байна.</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H892">Энэ аян хэтэрхий урт байна, зарим буудлуудаа хасна уу.</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H891">Ямар ч аян олдохгүй байна, буудлуудаа нэмнэ үү.</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H890">Ямар ч аян олдохгүй байна.</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H500">Ямар ч аян олдохгүй байна.</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H455">Уртасгасан зогсолт.</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H410">Цагийн хуваарь өөрчлөгдсөнөөс үүдэлттэй алдаа гарсан байж болзошгүй.</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H390">Анхны эсвэл эцсийн буудлуудыг ойролцоох буудлуудаар орлуулсан болно.</string>
+    <!-- Planner error message -->
+    <string name="planner_error_H895">Эхлэл ба төгсгөл хоорондоо хэт их ойрхон байна.</string>
+    <!-- Preferences -->
+    <string name="restart_app_for_full_effect">Програмыг дахин ачаалалж бүрэн утгаар нь ашиглана уу.</string>
+    <string name="dialog_general_preferences">Үндсэн ойлголтууд</string>
+    <string name="dialog_notification_preferences">Мэдэгдэл</string>
+    <string name="title_language_preference">Хэл</string>
+    <string name="summary_language_preference">Өөрт тохирох хэлээ сонгоно уу.</string>
+    <string name="dialog_title_language_preference">Хэл сонгох</string>
+    <string name="settings_saved">Хадгалагдлаа</string>
+    <string name="deviation_notification_preference">Сануулга ба мэдэгдлүүд</string>
+    <string name="deviation_notification_summary_preference">Туршилт. Идэвхжүүлснээрээ таны утасны цэнэг амархан дуусна мөн байнгын интернет холболт шаарддаг.</string>
+    <string name="deviation_update_interval_preference">Шинэчлэх интервал</string>
+    <string name="deviation_update_interval_summary_preference">Урт шинэчлэх интервал нь таны утасны цэнэгийг хэмнэнэ.</string>
+    <string name="deviation_lines_preference">Шугамууд</string>
+    <string name="deviation_lines_summary_preference">Шугамуудын жагсаалтын тоон дэс дарааллалыг цэгэн тэмдэгтээр ялгана уу. Ж: \'42,28,707\'.</string>
+    <string name="deviation_lines_dialog_message_preference">Шугамуудын тоон дэс дарааллалыг цэгэн тэмдэгтээр ялгана уу. Ж: \'42,28,707\'.</string>
+    <string name="search_include_addresses_preference">Автоматаар нөхөн бичигч дотор хаягийг оруулах.</string>
+    <string name="search_include_addresses_summary_preference">Идэвхжүүлсэн үед саналыг хүлээн авах хугацаа уртасна.</string>
+    <string name="search_clear_history_preference">Хайлтын түүхийг цэвэрлэх</string>
+    <string name="search_clear_history_summary_preference">Буудлууд болон аяны хайлтын түүхийг арилгах.</string>
+    <string name="search_clear_history_confirm">Та бүх хайлтын түүхийг арилгах гэж байгаадаа итгэлтэй байна уу?</string>
+    <string name="search_history_cleared">Түүхийг арилгалаа</string>
+    <string name="search_clear_favorites_preference">Сонголтуудыг арилгах</string>
+    <string name="search_clear_favorites_summary_preference">Бүх сонголтуудыг арилгах</string>
+    <string name="search_clear_favorites_confirm">Та бүх сонголтуудаа арилгах гэж байгаадаа итгэлтэй байна уу?</string>
+    <string name="search_favorites_cleared">Сонголтуудыг арилгалаа</string>
+    <string name="help">Тусламж</string>
+    <string name="support">Туслах цэс</string>
+    <string name="transport_type">Тээврийн төрөл</string>
+    <string name="search_try_with_app_name">STHLM Traveling ашиглаж хайлт хийх</string>
+    <string name="search_try_with_google">"Монгол "</string>
+    <string name="search_attribution_note">Газрыг хайх</string>
+    <string name="language_system_locale">Локал систем</string>
+    <string name="pref_deviations_interval_1">10 мин</string>
+    <string name="pref_deviations_interval_2">15 мин</string>
+    <string name="pref_deviations_interval_3">30 мин</string>
+    <string name="pref_deviations_interval_4">45 мин</string>
+    <string name="pref_deviations_interval_5">1 ц</string>
+    <!-- Ads -->
+    <string name="ads">Сурталчилгаа</string>
+    <string name="ads_title">Яагаад сурталчилгаа байршуулах болсон вэ?</string>
+    <string name="ads_turn_off">Сурталчилгааг хаах</string>
+    <string name="ads_message">Энэ програм нь 2009 оноос хойш зар сурталчилгаа байршуулаагүй ирсэн билээ. Сүүлийн жилүүдэд сервер болон засвар үйлчилгээ хийх зардал нэмэгдсэн, \n\nТөслийн хөгжлийг үргэлжлүүлэн дэмжих үүднээс зар сурталчилгааг байршуулах хэрэгтэй боллоо.\n\nТа доорх товчлуурыг дарснаар зар сурталчилгааг хааж болох юм. Ирээдүйд зар сурталчилгааг хаахын тулд бага зэргийн хураамж төлөх шаардлагатай байж болох юм.\n\nДэмжлэг үзүүлсэнд баярлалаа!\nJohan</string>
+    <string name="ads_summary">Яагаад сурталчилгаа байршуулах болсон вэ?</string>
+    <string name="permission_location_needed_search">Байршилыг тогтоох зөвшөөрөлийг идэвхжүүлж Таны байрлалаар хайлтыг хийх</string>
+    <string name="permission_location_needed_maps">Байршилыг тогтоох зөвшөөрөлийг идэвхжүүлж Таны байрлалыг газрын зураг дээрээс харах</string>
+    <string name="allow">Зөвшөөрөх</string>
+    <string name="distance_in_meter"><xliff:g id="distance">%1$s</xliff:g>м</string>
+</resources>

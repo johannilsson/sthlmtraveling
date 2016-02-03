@@ -255,4 +255,5 @@
     <string name="permission_location_needed_search">אפשר רשות לחפש מיקום כדי לחפש עם המיקום שלך</string>
     <string name="permission_location_needed_maps">אפשר רשות לחפש מיקום כדי לראות את המיקום שלך על המפה</string>
     <string name="allow">אשור</string>
+    <string name="distance_in_meter"><xliff:g id="distance">%1$s</xliff:g>ד</string>
 </resources>

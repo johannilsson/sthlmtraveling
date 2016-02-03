@@ -112,6 +112,9 @@ public class MyApplication extends Application {
             case "iw":
                 locale = new Locale("iw", "");
                 break;
+            case "mn":
+                locale = new Locale("mn", "MN");
+                break;
         }
 
         if (locale != null) {

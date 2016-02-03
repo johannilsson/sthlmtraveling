@@ -21,6 +21,8 @@ import android.os.Parcelable;
 
 import com.markupartist.sthlmtraveling.provider.site.Site;
 
+import java.util.List;
+
 /**
  *
  */
@@ -31,14 +33,17 @@ public class Place implements Parcelable {
     private final double lat;
     private final double lon;
     private final int stopIndex;
+    private final List<Entrance> entrances;
 
-    public Place(String id, String name, String type, double lat, double lon, int stopIndex) {
+    public Place(String id, String name, String type, double lat, double lon,
+                 int stopIndex, List<Entrance> entrances) {
         this.id = id;
         this.name = name;
         this.type = type;
         this.lat = lat;
         this.lon = lon;
         this.stopIndex = stopIndex;
+        this.entrances = entrances;
     }
 
     protected Place(Parcel in) {
@@ -48,6 +53,7 @@ public class Place implements Parcelable {
         lat = in.readDouble();
         lon = in.readDouble();
         stopIndex = in.readInt();
+        entrances = in.createTypedArrayList(Entrance.CREATOR);
     }
 
     public static final Creator<Place> CREATOR = new Creator<Place>() {
@@ -75,6 +81,7 @@ public class Place implements Parcelable {
         dest.writeDouble(lat);
         dest.writeDouble(lon);
         dest.writeInt(stopIndex);
+        dest.writeTypedList(entrances);
     }
 
     public String getId() {
@@ -108,5 +115,13 @@ public class Place implements Parcelable {
 
     public int getStopIndex() {
         return stopIndex;
+    }
+
+    public boolean hasEntrances() {
+        return entrances != null && !entrances.isEmpty();
+    }
+
+    public List<Entrance> getEntrances() {
+        return entrances;
     }
 }

@@ -143,7 +143,7 @@ public class SearchDeparturesFragment extends BaseListFragment implements Loader
     }
 
     private void onSearchDepartures(Site stop) {
-        mHistoryDbAdapter.create(HistoryDbAdapter.TYPE_DEPARTURE_SITE, stop);
+        mHistoryDbAdapter.create(HistoryDbAdapter.TYPE_JOURNEY_PLANNER_SITE, stop);
 
         Intent i = new Intent(getActivity().getApplicationContext(),
                 DeparturesActivity.class);
@@ -230,7 +230,7 @@ public class SearchDeparturesFragment extends BaseListFragment implements Loader
 
         @Override
         public Cursor loadInBackground() {
-            return mHistoryDbAdapter.fetchByType(HistoryDbAdapter.TYPE_DEPARTURE_SITE);
+            return mHistoryDbAdapter.fetchStops();
         }
 
     }

@@ -647,7 +647,7 @@ public class RouteDetailActivity extends BaseListActivity {
         private CharSequence createDescription(final Leg leg) {
             CharSequence description;
             if (TravelMode.FOOT.equals(leg.getTravelMode())) {
-                description = getString(R.string.trip_description_walk);
+                description = getString(R.string.distance_in_meter, leg.getDistance());
             } else if (TravelMode.BOAT.equals(leg.getTravelMode())) {
                 description = getString(R.string.trip_description_normal,
                         leg.getRouteName(),

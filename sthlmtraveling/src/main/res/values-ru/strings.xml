@@ -255,4 +255,5 @@
     <string name="permission_location_needed_search">Включите определение местоположения в настройках телефона для поиска по вашему местоположению</string>
     <string name="permission_location_needed_maps">Включите определение местоположения в настройках телефона для просмотра вашего местоположения на карте</string>
     <string name="allow">Разрешить</string>
+    <string name="distance_in_meter"><xliff:g id="distance">%1$s</xliff:g> м</string>
 </resources>
