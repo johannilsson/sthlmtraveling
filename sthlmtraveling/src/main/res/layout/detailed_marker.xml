@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:textColor="#ffffff"
         tools:text="text"
-        android:textSize="10sp"
+        android:textSize="11sp"
         android:paddingRight="1dp"/>
     <TextView
         android:id="@+id/marker_name"
@@ -21,7 +21,7 @@
         android:layout_height="wrap_content"
         tools:text="text"
         android:textColor="#ffffff"
-        android:textSize="10sp"/>
+        android:textSize="11sp"/>
     </LinearLayout>
     <TextView
         android:layout_width="wrap_content"
@@ -29,5 +29,5 @@
         tools:text="text"
         android:textColor="#ffffff"
         android:visibility="gone"
-        android:textSize="10sp" android:id="@+id/marker_extra"/>
+        android:textSize="11sp" android:id="@+id/marker_extra"/>
 </LinearLayout>

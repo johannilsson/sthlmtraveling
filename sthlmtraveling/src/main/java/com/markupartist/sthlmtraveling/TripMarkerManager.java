@@ -21,7 +21,6 @@ import android.support.annotation.DrawableRes;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -267,7 +266,6 @@ public class TripMarkerManager extends ClusterManager<TripMarkerManager.Detailed
             //ok so this was a detailed marker, display the infoWindow of the corresponding simpleMarker
             for (Marker simpleMarker : simpleMarkers) {
                 if (simpleMarker.getPosition().equals(marker.getPosition())) {
-                    Log.e("aksel", "found matching simplemarker, title=" + simpleMarker.getTitle() + " vis=" + simpleMarker.isVisible() + " id=" + simpleMarker.getId());
                     simpleMarker.setTitle(simpleMarker.getTitle());
                     simpleMarker.showInfoWindow();
                     break;
@@ -284,7 +282,6 @@ public class TripMarkerManager extends ClusterManager<TripMarkerManager.Detailed
             //this is a detailed marker, we only show InfoWindows for simple markers
             return null;
         }
-        Log.e("Aksel", "marker.getTitle()=" + marker.getTitle() + " ");
         LinearLayout bubbleLayout = new LinearLayout(context);
 
         for (DetailedMarker detailedMarker : detailedMarkers) {
