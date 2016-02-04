@@ -11,62 +11,19 @@
         class="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
-
-    <RadioGroup
-        android:id="@+id/rg_views"
+    <ImageButton
+        android:id="@+id/btn_settings"
+        style="?attr/borderlessButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <RadioButton
-            android:id="@+id/rb_normal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:checked="true"
-            android:text="normal" />
-
-        <RadioButton
-            android:id="@+id/rb_satellite"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="sattelite" />
-
-        <RadioButton
-            android:id="@+id/rb_terrain"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="terrain" />
-        <RadioButton
-            android:id="@+id/rb_hybrid"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="hybrid" />
-    </RadioGroup>
-    <RadioGroup
-        android:layout_below="@id/rg_views"
-        android:id="@+id/rg_styles"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <RadioButton
-            android:id="@+id/rb_color"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:checked="true"
-            android:text="color" />
-
-        <RadioButton
-            android:id="@+id/rb_white"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="white" />
-    </RadioGroup>
-    <CheckBox
-        android:checked="true"
-        android:layout_below="@id/rg_styles"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Detailed Markers"
-        android:id="@+id/cb_toggle_detail_markers"/>
+        android:layout_margin="0dp"
+        android:layout_marginLeft="0dp"
+        android:layout_marginRight="0dp"
+        android:minWidth="20dip"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:paddingLeft="@dimen/list_horizontal_padding"
+        android:paddingRight="@dimen/list_horizontal_padding"
+        android:src="@drawable/ic_settings_applications_white_24dp"/>
 </RelativeLayout>

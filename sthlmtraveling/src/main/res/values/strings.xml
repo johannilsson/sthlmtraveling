@@ -259,4 +259,18 @@
     <string name="exit_and_name">Exit <xliff:g id="entrance">%1$s</xliff:g></string>
     <string name="entrance">Entrance</string>
     <string name="exit">Exit</string>
+    <array name="map_types">
+        <item name="normal">Normal</item>
+        <item name="Satellite">Satellite</item>
+        <item name="terrain">Terrain</item>
+        <item name="hybrid">Hybrid</item>
+    </array>
+
+    <string-array name="map_types_values">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+
+    </string-array>
 </resources>
