@@ -91,7 +91,7 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements LoaderM
     private ImageButton mClearButton;
     private SiteFilter mSthlmTravelingSearchFilter;
     private GooglePlacesFilter mGoogleSearchFilter;
-    private int mCurrentSearchFilterType = FILTER_TYPE_GOOGLE;
+    private int mCurrentSearchFilterType = FILTER_TYPE_STHLM_TRAVELING;
     private Handler mHandler;
     private boolean mShouldSearchGooglePlaces;
     private View mSearchFailed;
