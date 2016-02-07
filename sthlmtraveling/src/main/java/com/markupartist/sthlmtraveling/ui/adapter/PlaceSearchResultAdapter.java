@@ -18,6 +18,7 @@ package com.markupartist.sthlmtraveling.ui.adapter;
 
 import android.content.Context;
 import android.support.annotation.DrawableRes;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -143,7 +144,8 @@ public class PlaceSearchResultAdapter extends HeaderFooterRecyclerViewAdapter im
             holder.text2.setVisibility(View.GONE);
         }
         if (placeResult.isTransitStop()) {
-            holder.icon.setImageResource(R.drawable.ic_directions_transit_24dp);
+            holder.icon.setImageResource(R.drawable.ic_transport_transit_20dp);
+            ViewHelper.tint(holder.icon, ContextCompat.getColor(holder.icon.getContext(), R.color.icon_default));
         } else {
             holder.icon.setImageResource(R.drawable.ic_place_24dp);
         }
