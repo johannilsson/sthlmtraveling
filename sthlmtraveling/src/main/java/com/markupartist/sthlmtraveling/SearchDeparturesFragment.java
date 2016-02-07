@@ -243,7 +243,7 @@ public class SearchDeparturesFragment extends BaseListFragment implements Loader
 
         @Override
         public View newView(Context context, Cursor cursor, ViewGroup parent) {
-            return LayoutInflater.from(context).inflate(R.layout.row_place_search, parent, false);
+            return LayoutInflater.from(context).inflate(R.layout.row_icon_two_rows, parent, false);
         }
 
         @Override

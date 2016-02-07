@@ -45,7 +45,7 @@ public class NearbyAdapter extends RecyclerView.Adapter<NearbyAdapter.NearbyStop
     public NearbyStopViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         return new NearbyStopViewHolder(
                 LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout.row_place_search, parent, false));
+                        .inflate(R.layout.row_icon_two_rows, parent, false));
     }
 
     @Override

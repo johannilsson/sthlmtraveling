@@ -512,7 +512,7 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements LoaderM
 
         public DefaultListAdapter(Context context) {
             addAllBinder(
-                    new SimpleItemBinder(this, R.layout.row_place_search),
+                    new SimpleItemBinder(this, R.layout.row_icon_two_rows),
                     new SimpleItemBinder(this, R.layout.row_section),
                     new HistoryBinder(this, context));
         }
@@ -616,7 +616,7 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements LoaderM
 
         @Override
         public ViewHolder newViewHolder(ViewGroup parent) {
-            final View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_place_search, parent, false);
+            final View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_icon_two_rows, parent, false);
             return new ViewHolder(view);
         }
 

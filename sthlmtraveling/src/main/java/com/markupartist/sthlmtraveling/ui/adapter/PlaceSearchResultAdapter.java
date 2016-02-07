@@ -59,28 +59,6 @@ public class PlaceSearchResultAdapter extends HeaderFooterRecyclerViewAdapter im
         mFooterData.add(item);
         notifyDataSetChanged();
     }
-//    @Override
-//    public SimpleViewHolder onCreateViewHolder(ViewGroup parent, int position) {
-//        final View view = LayoutInflater.from(mContext).inflate(R.layout.row_place_search, parent, false);
-//        return new SimpleViewHolder(view);
-//    }
-
-//    @Override
-//    public void onBindViewHolder(SimpleViewHolder holder, int position) {
-//        PlaceItem placeResult = mData.get(position);
-//        ViewHelper.setText(holder.text1, placeResult.getTitle());
-//        if (!TextUtils.isEmpty(placeResult.getSubtitle())) {
-//            ViewHelper.setText(holder.text2, placeResult.getSubtitle());
-//            holder.text2.setVisibility(View.VISIBLE);
-//        } else {
-//            holder.text2.setVisibility(View.GONE);
-//        }
-//    }
-
-//    @Override
-//    public int getItemCount() {
-//        return mData.size();
-//    }
 
     @Override
     protected int getHeaderItemCount() {
@@ -110,7 +88,7 @@ public class PlaceSearchResultAdapter extends HeaderFooterRecyclerViewAdapter im
 
     @Override
     protected RecyclerView.ViewHolder onCreateContentItemViewHolder(ViewGroup parent, int contentViewType) {
-        final View view = LayoutInflater.from(mContext).inflate(R.layout.row_place_search, parent, false);
+        final View view = LayoutInflater.from(mContext).inflate(R.layout.row_icon_two_rows, parent, false);
         return new ContentViewHolder(view);
     }
 
