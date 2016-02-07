@@ -241,7 +241,19 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements LoaderM
         mSearchResultRecyclerView.addOnScrollListener(new HideKeyboardOnScroll(this, mSearchEdit));
 
         mSearchResultAdapter = new PlaceSearchResultAdapter(this);
-
+        mSearchResultAdapter.setOnEditItemClickListener(new PlaceSearchResultAdapter.OnEditItemClickListener() {
+            @Override
+            public void onEditItemClicked(int position) {
+                if (position >= 0 && position < mSearchResultAdapter.getContentItemCount()) {
+                    PlaceItem item = mSearchResultAdapter.getItem(position);
+                    String title = item.getTitle() + " ";
+                    mSearchEdit.setText(title);
+                    mSearchEdit.setSelection(title.length());
+                    mSearchEdit.requestFocus();
+                    mSearchResultRecyclerView.smoothScrollToPosition(0);
+                }
+            }
+        });
         mSearchResultRecyclerView.setAdapter(mSearchResultAdapter);
 
         // Search result filters.

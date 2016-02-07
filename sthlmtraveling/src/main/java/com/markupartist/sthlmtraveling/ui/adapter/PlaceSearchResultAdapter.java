@@ -26,6 +26,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Filter;
 import android.widget.Filterable;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -39,13 +40,16 @@ import java.util.List;
 
 public class PlaceSearchResultAdapter extends HeaderFooterRecyclerViewAdapter implements Filterable {
 
+    private final Context mContext;
+    private final LayoutInflater mLayoutInflator;
     List<PlaceItem> mData = new ArrayList<>();
     List<SearchFooterItem> mFooterData = new ArrayList<>();
-    private Context mContext;
     private PlaceFilter mFilter;
+    private OnEditItemClickListener mOnEditItemClickListener;
 
     public PlaceSearchResultAdapter(Context context) {
         mContext = context;
+        mLayoutInflator = LayoutInflater.from(mContext);
     }
 
     public void replaceAll(List<PlaceItem> all) {
@@ -82,14 +86,16 @@ public class PlaceSearchResultAdapter extends HeaderFooterRecyclerViewAdapter im
 
     @Override
     protected RecyclerView.ViewHolder onCreateFooterItemViewHolder(ViewGroup parent, int footerViewType) {
-        final View view = LayoutInflater.from(mContext).inflate(R.layout.row_place_search_footer, parent, false);
-        return new ContentViewHolder(view);
+        return new ContentViewHolder(mLayoutInflator.inflate(
+                R.layout.row_place_search_footer, parent, false),
+                mOnEditItemClickListener);
     }
 
     @Override
     protected RecyclerView.ViewHolder onCreateContentItemViewHolder(ViewGroup parent, int contentViewType) {
-        final View view = LayoutInflater.from(mContext).inflate(R.layout.row_icon_two_rows, parent, false);
-        return new ContentViewHolder(view);
+        return new ContentViewHolder(mLayoutInflator.inflate(
+                R.layout.row_place_search_result, parent, false),
+                mOnEditItemClickListener);
     }
 
     @Override
@@ -127,7 +133,6 @@ public class PlaceSearchResultAdapter extends HeaderFooterRecyclerViewAdapter im
         } else {
             holder.icon.setImageResource(R.drawable.ic_place_24dp);
         }
-
     }
 
     public PlaceItem getItem(int position) {
@@ -148,6 +153,14 @@ public class PlaceSearchResultAdapter extends HeaderFooterRecyclerViewAdapter im
     }
 
 
+    public void setOnEditItemClickListener(OnEditItemClickListener onEditItemClickListener) {
+        mOnEditItemClickListener = onEditItemClickListener;
+    }
+
+    public interface OnEditItemClickListener {
+        void onEditItemClicked(int position);
+    }
+
     /**
      * Places view holder
      */
@@ -156,13 +169,26 @@ public class PlaceSearchResultAdapter extends HeaderFooterRecyclerViewAdapter im
         TextView text2;
         TextView distance;
         ImageView icon;
+        ImageButton endIcon;
 
-        public ContentViewHolder(View view) {
+        public ContentViewHolder(View view, final OnEditItemClickListener onEditItemClickListener) {
             super(view);
             text1 = (TextView) view.findViewById(R.id.text1);
             text2 = (TextView) view.findViewById(R.id.text2);
             distance = (TextView) view.findViewById(R.id.distance);
             icon = (ImageView) view.findViewById(R.id.row_icon);
+            endIcon = (ImageButton) view.findViewById(R.id.row_end_icon);
+
+            if (endIcon != null) {
+                endIcon.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (onEditItemClickListener != null) {
+                            onEditItemClickListener.onEditItemClicked(getAdapterPosition());
+                        }
+                    }
+                });
+            }
         }
     }
 
