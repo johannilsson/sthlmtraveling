@@ -1,93 +1,95 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<PreferenceScreen
-        xmlns:android="http://schemas.android.com/apk/res/android">
-    <PreferenceCategory
-            android:title="@string/dialog_general_preferences">
-         <ListPreference
-                android:negativeButtonText="@string/cancel"
-                android:key="prefered_language_preference"
-                android:title="@string/title_language_preference"
-                android:summary="@string/summary_language_preference"
-                android:entries="@array/entries_language_preference"
-                android:entryValues="@array/entryvalues_language_preference"
-                android:dialogTitle="@string/dialog_title_language_preference" />
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="@string/dialog_general_preferences">
+        <ListPreference
+            android:dialogTitle="@string/dialog_title_language_preference"
+            android:entries="@array/entries_language_preference"
+            android:entryValues="@array/entryvalues_language_preference"
+            android:key="prefered_language_preference"
+            android:negativeButtonText="@string/cancel"
+            android:summary="@string/summary_language_preference"
+            android:title="@string/title_language_preference" />
     </PreferenceCategory>
-    <PreferenceCategory
-            android:title="@string/search_label">
+    <PreferenceCategory android:title="@string/search_label">
         <CheckBoxPreference
-            android:key="search_address_enabled"
             android:defaultValue="true"
-            android:title="@string/search_include_addresses_preference"
+            android:key="search_address_enabled"
             android:summary="@string/search_include_addresses_summary_preference"
-            />
+            android:title="@string/search_include_addresses_preference" />
         <Preference
             android:key="clear_search_history"
-            android:title="@string/search_clear_history_preference"
             android:summary="@string/search_clear_history_summary_preference"
-            />
+            android:title="@string/search_clear_history_preference" />
         <Preference
             android:key="clear_favorites"
-            android:title="@string/search_clear_favorites_preference"
             android:summary="@string/search_clear_favorites_summary_preference"
-            />
+            android:title="@string/search_clear_favorites_preference" />
     </PreferenceCategory>
-    <PreferenceCategory
-            android:title="@string/dialog_notification_preferences">
+    <PreferenceCategory android:title="@string/dialog_notification_preferences">
         <CheckBoxPreference
             android:key="notification_deviations_enabled"
-            android:title="@string/deviation_notification_preference"
-            android:summary="@string/deviation_notification_summary_preference" 
-            />
-         <ListPreference
-                android:negativeButtonText="@string/cancel"
-                android:key="notification_deviations_update_interval"
-                android:title="@string/deviation_update_interval_preference"
-                android:summary="@string/deviation_update_interval_summary_preference"
-                android:entries="@array/entries_deviations_preference"
-                android:entryValues="@array/entryvalues_deviations_preference"
-                android:dependency="notification_deviations_enabled"
-                />
-        <EditTextPreference
-            android:key="notification_deviations_lines_csv"
-            android:title="@string/deviation_lines_preference"
-            android:summary="@string/deviation_lines_summary_preference"
-            android:dialogMessage="@string/deviation_lines_dialog_message_preference"
+            android:summary="@string/deviation_notification_summary_preference"
+            android:title="@string/deviation_notification_preference" />
+        <ListPreference
             android:dependency="notification_deviations_enabled"
+            android:entries="@array/entries_deviations_preference"
+            android:entryValues="@array/entryvalues_deviations_preference"
+            android:key="notification_deviations_update_interval"
+            android:negativeButtonText="@string/cancel"
+            android:summary="@string/deviation_update_interval_summary_preference"
+            android:title="@string/deviation_update_interval_preference" />
+        <EditTextPreference
+            android:dependency="notification_deviations_enabled"
+            android:dialogMessage="@string/deviation_lines_dialog_message_preference"
             android:hint="4,42"
-            />
+            android:key="notification_deviations_lines_csv"
+            android:summary="@string/deviation_lines_summary_preference"
+            android:title="@string/deviation_lines_preference" />
     </PreferenceCategory>
-    <PreferenceCategory
-            android:title="@string/help">
+    <PreferenceCategory android:title="Features">
+        <CheckBoxPreference
+            android:key="detailed_map_markers"
+            android:summary="Display detailed information per stop"
+            android:title="Detailed map markers"
+            android:defaultValue="true"/>
+        <CheckBoxPreference
+            android:key="entrance_poly_lines"
+            android:summary="Display line between station and entrances"
+            android:title="Entrance line"
+            android:defaultValue="true"/>
+        <ListPreference
+            android:defaultValue="1"
+            android:entries="@array/map_types"
+            android:entryValues="@array/map_types_values"
+            android:key="mapType"
+            android:summary="Select map appearance"
+            android:title="Map Type" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/help">
         <Preference
             android:key="help_support"
-            android:title="@string/support"
-            />
+            android:title="@string/support" />
     </PreferenceCategory>
-    <PreferenceCategory
-            android:title="@string/about">
+    <PreferenceCategory android:title="@string/about">
         <Preference
             android:key="about_legal"
-            android:title="@string/about"
-            />
+            android:title="@string/about" />
         <Preference
             android:key="about_contact"
-            android:title="Email"
-            />
+            android:title="Email" />
         <!--<Preference-->
-            <!--android:key="about_donate"-->
-            <!--android:title="@string/donate"-->
-            <!--/>-->
+        <!--android:key="about_donate"-->
+        <!--android:title="@string/donate"-->
+        <!--/>-->
         <Preference
+            android:enabled="true"
             android:key="about_ads"
-            android:title="@string/ads"
-            android:enabled="true"
             android:summary="@string/ads_summary"
-            />
+            android:title="@string/ads" />
         <Preference
-            android:key="about_version"
-            android:title="Version"
             android:enabled="true"
-            />
+            android:key="about_version"
+            android:title="Version" />
     </PreferenceCategory>
 </PreferenceScreen>

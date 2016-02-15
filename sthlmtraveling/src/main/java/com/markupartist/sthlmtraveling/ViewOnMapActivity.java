@@ -18,6 +18,7 @@ package com.markupartist.sthlmtraveling;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -26,6 +27,7 @@ import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.ColorInt;
 import android.support.annotation.DrawableRes;
 import android.support.design.widget.Snackbar;
@@ -35,6 +37,7 @@ import android.text.TextUtils;
 import android.text.format.DateFormat;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageButton;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -52,8 +55,8 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.markupartist.sthlmtraveling.data.api.ApiService;
 import com.markupartist.sthlmtraveling.data.models.Entrance;
-import com.markupartist.sthlmtraveling.data.models.IntermediateStop;
 import com.markupartist.sthlmtraveling.data.models.IntermediateResponse;
+import com.markupartist.sthlmtraveling.data.models.IntermediateStop;
 import com.markupartist.sthlmtraveling.data.models.Leg;
 import com.markupartist.sthlmtraveling.data.models.Place;
 import com.markupartist.sthlmtraveling.data.models.Route;
@@ -92,6 +95,7 @@ public class ViewOnMapActivity extends BaseFragmentActivity implements OnMapRead
     private JourneyQuery mJourneyQuery;
     private Route mRoute;
     private ApiService mApiService;
+    private TripMarkerManager mTripMarkerManager;
 
     public static Intent createIntent(Context context, JourneyQuery query, Route route) {
         Intent intent = new Intent(context, ViewOnMapActivity.class);
@@ -130,12 +134,36 @@ public class ViewOnMapActivity extends BaseFragmentActivity implements OnMapRead
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }
 
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (mMap != null) {
+            //re-setup map incase settings has changed.
+            setUpMap();
+        }
+    }
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         Analytics.getInstance(this).registerScreen("View on map");
         setContentView(R.layout.map);
+
+
+        ImageButton preferenceButton = (ImageButton) findViewById(R.id.btn_settings);
+        ViewHelper.tintIcon(preferenceButton.getDrawable(), Color.GRAY);
+
+        preferenceButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent settingsIntent = new Intent().setClass(getBaseContext(), SettingsActivity.class);
+                startActivity(settingsIntent);
+            }
+        });
+
 
         ActionBar actionBar = getSupportActionBar();
         //actionBar.setBackgroundDrawable(getResources().getDrawableColorInt(R.drawable.ab_bg_black));
@@ -196,6 +224,7 @@ public class ViewOnMapActivity extends BaseFragmentActivity implements OnMapRead
 
     public void showTransitRoute(Route route) {
         mMap.clear();
+        mTripMarkerManager.clearItems();
 
         for (Leg leg : route.getLegs()) {
 
@@ -211,11 +240,12 @@ public class ViewOnMapActivity extends BaseFragmentActivity implements OnMapRead
                     leg.getFrom().getLon());
             options.add(origin);
 
-            mMap.addMarker(new MarkerOptions()
-                    .position(origin)
-                    .title(getLocationName(leg.getFrom()))
-                    .snippet(getRouteDescription(leg))
-                    .icon(BitmapDescriptorFactory.defaultMarker(hueColor)));
+            mTripMarkerManager.addMarker(
+                    origin,
+                    getLocationName(leg.getFrom()),
+                    getRouteDescription(leg),
+                    LegUtil.getColor(this, leg),
+                    true, true);
 
             BitmapDescriptor icon = getColoredMarker(LegUtil.getColor(this, leg), R.drawable.ic_line_marker);
             for (IntermediateStop stop : leg.getIntermediateStops()) {
@@ -228,34 +258,36 @@ public class ViewOnMapActivity extends BaseFragmentActivity implements OnMapRead
                     date = stop.getTime();
                 }
                 String time = date != null ? DateFormat.getTimeFormat(this).format(date) : "";
-                mMap.addMarker(new MarkerOptions()
-                        .anchor(0.5f, 0.5f)
-                        .position(intermediateStop)
-                        .title(getLocationName(stop.getLocation()))
-                        .snippet(time)
-                        .icon(icon));
+                mTripMarkerManager.addMarker(
+                        intermediateStop,
+                        getLocationName(stop.getLocation()),
+                        time,
+                        LegUtil.getColor(this, leg),
+                        false, false);
             }
             LatLng destination = new LatLng(
                     leg.getTo().getLat(),
                     leg.getTo().getLon());
             options.add(destination);
-            mMap.addMarker(new MarkerOptions()
-                    .position(destination)
-                    .title(getLocationName(leg.getTo()))
-                    .snippet(DateFormat.getTimeFormat(this).format(leg.getStartTime()))
-                    .icon(BitmapDescriptorFactory.defaultMarker(hueColor)));
+            mTripMarkerManager.addMarker(
+                    destination,
+                    getLocationName(leg.getTo()),
+                    DateFormat.getTimeFormat(this).format(leg.getEndTime()),
+                    LegUtil.getColor(this, leg),
+                    true, false);
 
             mMap.addPolyline(options
                     .width(ViewHelper.dipsToPix(getResources(), 8))
                     .color(LegUtil.getColor(this, leg)));
 
             if (leg.getFrom().hasEntrances()) {
-                showEntrances(leg.getFrom().getEntrances(), false);
+                showEntrances(leg.getFrom(),leg.getFrom().getEntrances(), false);
             }
             if (leg.getTo().hasEntrances()) {
-                showEntrances(leg.getTo().getEntrances(), true);
+                showEntrances(leg.getTo(),leg.getTo().getEntrances(), true);
             }
         }
+        mTripMarkerManager.cluster();
     }
 
     public String getRouteDescription(Leg leg) {
@@ -316,6 +348,11 @@ public class ViewOnMapActivity extends BaseFragmentActivity implements OnMapRead
     }
 
     private void setUpMap() {
+        SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+        String mapType = SP.getString("mapType", "1");
+
+        mMap.setMapType(Integer.parseInt(mapType));
+
         if (mTransitRoute != null && mJourneyQuery != null) {
             showTransitRoute(mTransitRoute);
             loadIntermediateStops(mTransitRoute);
@@ -401,6 +438,7 @@ public class ViewOnMapActivity extends BaseFragmentActivity implements OnMapRead
 
     /**
      * Update the action bar with start and end points.
+     *
      * @param journeyQuery the journey query
      */
     protected void updateStartAndEndPointViews(final JourneyQuery journeyQuery) {
@@ -430,34 +468,29 @@ public class ViewOnMapActivity extends BaseFragmentActivity implements OnMapRead
         }
     }
 
-    public void showEntrances(List<Entrance> entrances, boolean isExits) {
-        BitmapDescriptor icon = getColoredMarker(
-                ContextCompat.getColor(this, R.color.primary), R.drawable.ic_entrance_exit_12dp);
+    public void showEntrances(Place stop, List<Entrance> entrances, boolean isExits) {
+
         for (Entrance entrance : entrances) {
-            MarkerOptions markerOptions = new MarkerOptions()
-                    .position(new LatLng(entrance.getLat(), entrance.getLon()))
-                    .anchor(0.5f, 0.5f)
-                    .icon(icon);
-            if (!TextUtils.isEmpty(entrance.getName())) {
-                if (isExits) {
-                    markerOptions.title(getString(R.string.exit_and_name, entrance.getName()));
-                } else {
-                    markerOptions.title(getString(R.string.entrance_and_name, entrance.getName()));
-                }
-            } else {
-                if (isExits) {
-                    markerOptions.title(getString(R.string.exit));
-                } else {
-                    markerOptions.title(getString(R.string.entrance));
-                }
+            SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+            boolean drawEntrancePolylines= SP.getBoolean("entrance_poly_lines", true);
+            if (drawEntrancePolylines) {
+                PolylineOptions polylineOptions = new PolylineOptions().add(new LatLng(stop.getLat(), stop.getLon()), new LatLng(entrance.getLat(), entrance.getLon()));
+                mMap.addPolyline(polylineOptions);
             }
-            mMap.addMarker(markerOptions);
+            mTripMarkerManager.addEntrance(entrance, isExits);
         }
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        mTripMarkerManager = new TripMarkerManager(this, mMap);
+        mMap.setOnCameraChangeListener(mTripMarkerManager);
+        mMap.setOnMarkerClickListener(mTripMarkerManager);
+        mMap.setInfoWindowAdapter(mTripMarkerManager);
+
         setUpMap();
     }
+
+
 }
