@@ -53,8 +53,8 @@ import android.widget.ToggleButton;
 
 import com.markupartist.sthlmtraveling.data.api.ApiService;
 import com.markupartist.sthlmtraveling.data.models.Alert;
-import com.markupartist.sthlmtraveling.data.models.IntermediateStop;
 import com.markupartist.sthlmtraveling.data.models.IntermediateResponse;
+import com.markupartist.sthlmtraveling.data.models.IntermediateStop;
 import com.markupartist.sthlmtraveling.data.models.Leg;
 import com.markupartist.sthlmtraveling.data.models.Place;
 import com.markupartist.sthlmtraveling.data.models.Route;
@@ -528,13 +528,24 @@ public class RouteDetailActivity extends BaseListActivity {
 
         private void inflateIntermediate(final Leg leg, final int position, final View convertView) {
             final ToggleButton btnIntermediateStops = (ToggleButton) convertView.findViewById(R.id.trip_btn_intermediate_stops);
+            if (TravelMode.FOOT.equals(leg.getTravelMode())) {
+                btnIntermediateStops.setVisibility(View.GONE);
+                return;
+            }
 
             CharSequence durationText = DateTimeUtil.formatDetailedDuration(getResources(), leg.getDuration() * 1000);
             btnIntermediateStops.setText(durationText);
             btnIntermediateStops.setTextOn(durationText);
             btnIntermediateStops.setTextOff(durationText);
-            if (TravelMode.FOOT.equals(leg.getTravelMode())) {
-                btnIntermediateStops.setVisibility(View.GONE);
+
+            if (leg.getDetailRef() == null) {
+                btnIntermediateStops.setCompoundDrawables(null, null, null, null);
+            } else {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+                    btnIntermediateStops.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.expander_intermediate_stops, 0, 0, 0);
+                } else {
+                    btnIntermediateStops.setCompoundDrawablesWithIntrinsicBounds(R.drawable.expander_intermediate_stops, 0, 0, 0);
+                }
             }
 
             final LinearLayout stopsLayout = (LinearLayout) convertView.findViewById(R.id.trip_intermediate_stops);
@@ -542,13 +553,17 @@ public class RouteDetailActivity extends BaseListActivity {
             btnIntermediateStops.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if (leg.getDetailRef() == null) {
+                        return;
+                    }
+
                     if (isChecked) {
                         List<IntermediateStop> intermediateStops = leg.getIntermediateStops();
                         if (stopsLayout.getChildCount() == 0
                                 && intermediateStops.isEmpty() && !mIsFetchingSubTrips) {
                             mIsFetchingSubTrips = true;
 
-                            List<String> references = new ArrayList<String>();
+                            List<String> references = new ArrayList<>();
                             references.add(leg.getDetailRef());
                             mApiService.getIntermediateStops(references, new Callback<IntermediateResponse>() {
                                 @Override

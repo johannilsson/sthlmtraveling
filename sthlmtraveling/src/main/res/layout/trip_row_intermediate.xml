@@ -74,8 +74,8 @@
             android:textOff="@string/show_intermediate_stops"
             android:background="@null"
             android:layout_margin="0dp"
-            android:paddingLeft="-6dp"
-            android:paddingRight="-6dp"
+            android:paddingLeft="0dp"
+            android:paddingRight="0dp"
             />
 
     </LinearLayout>
