@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
     <!--
-  ~ Copyright (C) 2009-2015 Johan Nilsson <http://markupartist.com>
+  ~ Copyright (C) 2009-2016 Johan Nilsson <http://markupartist.com>
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
   ~ you may not use this file except in compliance with the License.
@@ -241,4 +241,9 @@
     <string name="permission_location_needed_search">Tillåt behörigheten för Plats för att kunna söka med din nuvarande position</string>
     <string name="permission_location_needed_maps">Tillåt behörigheten för Plats för att kunna se din position på kartan</string>
     <string name="allow">Tillåt</string>
+    <string name="distance_in_meter"><xliff:g id="distance">%1$s</xliff:g>m</string>
+    <string name="entrance_and_name">Entré <xliff:g id="entrance">%1$s</xliff:g></string>
+    <string name="exit_and_name">Utgång <xliff:g id="entrance">%1$s</xliff:g></string>
+    <string name="entrance">Entré</string>
+    <string name="exit">Utgång</string>
 </resources>

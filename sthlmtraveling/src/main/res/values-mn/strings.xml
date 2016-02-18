@@ -19,7 +19,7 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- General strings -->
     <string name="ok">ОК</string>
-    <string name="done">Гүйцэтгэв</string>
+    <string name="done">Гүйцэтгэх</string>
     <string name="discard">Болих</string>
     <string name="from">Хаанаас</string>
     <string name="to">Хаа хүрэх</string>
@@ -244,4 +244,8 @@
     <string name="permission_location_needed_maps">Байршилыг тогтоох зөвшөөрөлийг идэвхжүүлж Таны байрлалыг газрын зураг дээрээс харах</string>
     <string name="allow">Зөвшөөрөх</string>
     <string name="distance_in_meter"><xliff:g id="distance">%1$s</xliff:g>м</string>
+    <string name="entrance_and_name">Орц <xliff:g id="entrance">%1$s</xliff:g></string>
+    <string name="exit_and_name">Гарц <xliff:g id="entrance">%1$s</xliff:g></string>
+    <string name="entrance">Орц</string>
+    <string name="exit">Гарц</string>
 </resources>

@@ -256,4 +256,8 @@
     <string name="permission_location_needed_maps">Включите определение местоположения в настройках телефона для просмотра вашего местоположения на карте</string>
     <string name="allow">Разрешить</string>
     <string name="distance_in_meter"><xliff:g id="distance">%1$s</xliff:g> м</string>
+    <string name="entrance_and_name">Вход <xliff:g id="entrance">%1$s</xliff:g></string>
+    <string name="exit_and_name">Выход <xliff:g id="entrance">%1$s</xliff:g></string>
+    <string name="entrance">Вход</string>
+    <string name="exit">Выход</string>
 </resources>
