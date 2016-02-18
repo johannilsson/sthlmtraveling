@@ -171,9 +171,14 @@ public class ViewOnMapActivity extends BaseFragmentActivity implements OnMapRead
         List<String> references = new ArrayList<>();
 
         for (Leg leg : route.getLegs()) {
-            if (leg.getIntermediateStops().isEmpty()) {
+            if (leg.getIntermediateStops().isEmpty() && leg.getDetailRef() != null) {
                 references.add(leg.getDetailRef());
             }
+        }
+
+        if (references.isEmpty()) {
+            // If the legs did not have any references there's no need to ask for data.
+            return;
         }
 
         mApiService.getIntermediateStops(references, new Callback<IntermediateResponse>() {
@@ -198,18 +203,15 @@ public class ViewOnMapActivity extends BaseFragmentActivity implements OnMapRead
         mMap.clear();
 
         for (Leg leg : route.getLegs()) {
+            int legColor = LegUtil.getColor(this, leg);
 
             float[] hsv = new float[3];
-            Color.colorToHSV(LegUtil.getColor(this, leg), hsv);
+            Color.colorToHSV(legColor, hsv);
             float hueColor = hsv[0];
-
-            // One polyline per subtrip, different colors.
-            PolylineOptions options = new PolylineOptions();
 
             LatLng origin = new LatLng(
                     leg.getFrom().getLat(),
                     leg.getFrom().getLon());
-            options.add(origin);
 
             mMap.addMarker(new MarkerOptions()
                     .position(origin)
@@ -217,37 +219,49 @@ public class ViewOnMapActivity extends BaseFragmentActivity implements OnMapRead
                     .snippet(getRouteDescription(leg))
                     .icon(BitmapDescriptorFactory.defaultMarker(hueColor)));
 
-            BitmapDescriptor icon = getColoredMarker(LegUtil.getColor(this, leg), R.drawable.ic_line_marker);
-            for (IntermediateStop stop : leg.getIntermediateStops()) {
-                LatLng intermediateStop = new LatLng(
-                        stop.getLocation().getLat(),
-                        stop.getLocation().getLon());
-                options.add(intermediateStop);
-                Date date = stop.getTimeRt();
-                if (date == null) {
-                    date = stop.getTime();
-                }
-                String time = date != null ? DateFormat.getTimeFormat(this).format(date) : "";
-                mMap.addMarker(new MarkerOptions()
-                        .anchor(0.5f, 0.5f)
-                        .position(intermediateStop)
-                        .title(getLocationName(stop.getLocation()))
-                        .snippet(time)
-                        .icon(icon));
-            }
             LatLng destination = new LatLng(
                     leg.getTo().getLat(),
                     leg.getTo().getLon());
-            options.add(destination);
             mMap.addMarker(new MarkerOptions()
                     .position(destination)
                     .title(getLocationName(leg.getTo()))
                     .snippet(DateFormat.getTimeFormat(this).format(leg.getStartTime()))
                     .icon(BitmapDescriptorFactory.defaultMarker(hueColor)));
 
-            mMap.addPolyline(options
-                    .width(ViewHelper.dipsToPix(getResources(), 8))
-                    .color(LegUtil.getColor(this, leg)));
+            if (leg.getGeometry() != null) {
+                // If we have a geometry draw that.
+                List<LatLng> latLgns = PolyUtil.decode(leg.getGeometry());
+                drawPolyline(latLgns, legColor);
+            } else {
+                // One polyline per leg, different colors.
+                PolylineOptions options = new PolylineOptions();
+                options.add(origin);
+
+                BitmapDescriptor icon = getColoredMarker(legColor, R.drawable.ic_line_marker);
+                for (IntermediateStop stop : leg.getIntermediateStops()) {
+                    LatLng intermediateStop = new LatLng(
+                            stop.getLocation().getLat(),
+                            stop.getLocation().getLon());
+                    options.add(intermediateStop);
+                    Date date = stop.getTimeRt();
+                    if (date == null) {
+                        date = stop.getTime();
+                    }
+                    String time = date != null ? DateFormat.getTimeFormat(this).format(date) : "";
+                    mMap.addMarker(new MarkerOptions()
+                            .anchor(0.5f, 0.5f)
+                            .position(intermediateStop)
+                            .title(getLocationName(stop.getLocation()))
+                            .snippet(time)
+                            .icon(icon));
+                }
+
+                options.add(destination);
+
+                mMap.addPolyline(options
+                        .width(ViewHelper.dipsToPix(getResources(), 8))
+                        .color(legColor));
+            }
 
             if (leg.getFrom().hasEntrances()) {
                 showEntrances(leg.getFrom().getEntrances(), false);
@@ -323,7 +337,8 @@ public class ViewOnMapActivity extends BaseFragmentActivity implements OnMapRead
                     CameraPosition.fromLatLngZoom(mFocusedLatLng, 16)
             ));
         } else if (mRoute != null) {
-            showRoute();
+            List<LatLng> latLngs = showRoute(mRoute);
+            zoomToFit(latLngs);
         }
 
         UiSettings settings = mMap.getUiSettings();
@@ -333,32 +348,33 @@ public class ViewOnMapActivity extends BaseFragmentActivity implements OnMapRead
         verifyLocationPermission();
     }
 
-    private void showRoute() {
+    private List<LatLng> showRoute(Route route) {
         // If we have geometry parse and all.
         List<LatLng> all = new ArrayList<>();
-        for (Leg leg : mRoute.getLegs()) {
+        for (Leg leg : route.getLegs()) {
             if (leg.getGeometry() != null) {
                 List<LatLng> latLgns = PolyUtil.decode(leg.getGeometry());
-                drawPolyline(latLgns);
+                drawPolyline(latLgns, ContextCompat.getColor(this, R.color.primary));
                 all.addAll(latLgns);
 
-                BitmapDescriptor icon = getColoredMarker(
-                        ContextCompat.getColor(this, R.color.primary), R.drawable.ic_line_marker);
-                for (Step step : leg.getSteps()) {
-                    if ("arrive".equals(step.getCode())
-                            || "depart".equals(step.getCode())
-                            || "waypoint".equals(step.getCode())) {
-                        mMap.addMarker(new MarkerOptions()
-                                .position(latLgns.get(step.getPosition()))
-                                .anchor(0.5f, 0.5f)
-                                .icon(icon));
+                if (leg.getSteps() != null) {
+                    BitmapDescriptor icon = getColoredMarker(ContextCompat.getColor(
+                            this, R.color.primary), R.drawable.ic_line_marker);
+                    for (Step step : leg.getSteps()) {
+                        if ("arrive".equals(step.getCode())
+                                || "depart".equals(step.getCode())
+                                || "waypoint".equals(step.getCode())) {
+                            mMap.addMarker(new MarkerOptions()
+                                    .position(latLgns.get(step.getPosition()))
+                                    .anchor(0.5f, 0.5f)
+                                    .icon(icon));
+                        }
                     }
                 }
 
             }
         }
-
-        zoomToFit(all);
+        return all;
     }
 
     BitmapDescriptor getColoredMarker(@ColorInt int colorInt, @DrawableRes int drawableRes) {
@@ -371,12 +387,12 @@ public class ViewOnMapActivity extends BaseFragmentActivity implements OnMapRead
         return BitmapDescriptorFactory.fromBitmap(bitmapCopy);
     }
 
-    private void drawPolyline(List<LatLng> latLngs) {
+    private void drawPolyline(List<LatLng> latLngs, @ColorInt int color) {
         Polyline poly = mMap.addPolyline(new PolylineOptions()
                 .zIndex(1000)
                 .addAll(latLngs)
                 .width(ViewHelper.dipsToPix(getResources(), 8))
-                .color(ContextCompat.getColor(this, R.color.primary))
+                .color(color)
                 .geodesic(true));
         poly.setZIndex(Float.MAX_VALUE);
     }
