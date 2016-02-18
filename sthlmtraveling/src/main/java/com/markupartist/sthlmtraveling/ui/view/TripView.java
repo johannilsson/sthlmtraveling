@@ -120,7 +120,6 @@ public class TripView extends LinearLayout {
         LinearLayout routeChanges = new LinearLayout(getContext());
         routeChanges.setGravity(Gravity.CENTER_VERTICAL);
 
-        int currentTransportCount = 1;
 
         LinearLayout.LayoutParams changesLayoutParams =
                 new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT);
@@ -133,8 +132,25 @@ public class TripView extends LinearLayout {
             routeChanges.addView(warning);
         }
 
+        int currentTransportCount = 1;
         int transportCount = trip.getLegs().size();
         for (Leg leg : trip.getLegs()) {
+            if (!leg.isTransit() && transportCount > 3) {
+                if (leg.getDistance() < 150) {
+                    continue;
+                }
+            }
+            if (currentTransportCount > 1 && transportCount >= currentTransportCount) {
+                ImageView separator = new ImageView(getContext());
+                separator.setImageResource(R.drawable.transport_separator);
+                ViewCompat.setPaddingRelative(separator, 0, 0, (int) (2 * scale), 0);
+                separator.setLayoutParams(changesLayoutParams);
+                routeChanges.addView(separator);
+                if (RtlUtils.isRtl(Locale.getDefault())) {
+                    ViewCompat.setScaleX(separator, -1f);
+                }
+            }
+
             ImageView changeImageView = new ImageView(getContext());
             Drawable transportDrawable = LegUtil.getTransportDrawable(getContext(), leg);
             changeImageView.setImageDrawable(transportDrawable);
@@ -164,17 +180,6 @@ public class TripView extends LinearLayout {
                             (int) (5 * scale), (int) (1 * scale), (int) (2 * scale), 0);
                     lineNumberView.setLayoutParams(changesLayoutParams);
                     routeChanges.addView(lineNumberView);
-                }
-            }
-
-            if (transportCount > currentTransportCount) {
-                ImageView separator = new ImageView(getContext());
-                separator.setImageResource(R.drawable.transport_separator);
-                ViewCompat.setPaddingRelative(separator, 0, 0, (int) (2 * scale), 0);
-                separator.setLayoutParams(changesLayoutParams);
-                routeChanges.addView(separator);
-                if (RtlUtils.isRtl(Locale.getDefault())) {
-                    ViewCompat.setScaleX(separator, -1f);
                 }
             }
 
