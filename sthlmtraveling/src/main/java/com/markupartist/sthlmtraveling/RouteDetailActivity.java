@@ -31,6 +31,7 @@ import android.support.v4.text.BidiFormatter;
 import android.support.v4.util.Pair;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.app.ActionBar;
+import android.text.TextUtils;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -627,7 +628,8 @@ public class RouteDetailActivity extends BaseListActivity {
 
             if (leg.hasAlerts()) {
                 for (Alert alert : leg.getAlerts()) {
-                    messagesLayout.addView(inflateMessage("alert", alert.getHeader(), messagesLayout));
+                    String message = alert.getDescription() != null ? alert.getDescription() : alert.getHeader();
+                    messagesLayout.addView(inflateMessage("alert", message, messagesLayout));
                 }
             }
             if (leg.hasNotes()) {
@@ -652,12 +654,14 @@ public class RouteDetailActivity extends BaseListActivity {
                 description = getString(R.string.trip_description_normal,
                         leg.getRouteName(),
                         leg.getHeadsing().getName());
-                RoundedBackgroundSpan roundedBackgroundSpan = new RoundedBackgroundSpan(
-                        LegUtil.getColor(getContext(), leg),
-                        Color.WHITE,
-                        ViewHelper.dipsToPix(getContext().getResources(), 4));
-                Pattern pattern = Pattern.compile(leg.getRouteShortName());
-                description = SpanUtils.createSpannable(description, pattern, roundedBackgroundSpan);
+                if (!TextUtils.isEmpty(leg.getRouteShortName())) {
+                    RoundedBackgroundSpan roundedBackgroundSpan = new RoundedBackgroundSpan(
+                            LegUtil.getColor(getContext(), leg),
+                            Color.WHITE,
+                            ViewHelper.dipsToPix(getContext().getResources(), 4));
+                    Pattern pattern = Pattern.compile(leg.getRouteShortName());
+                    description = SpanUtils.createSpannable(description, pattern, roundedBackgroundSpan);
+                }
             } else {
                 String routeName = LegUtil.getRouteName(leg, true);
                 description = getString(R.string.trip_description_normal,
