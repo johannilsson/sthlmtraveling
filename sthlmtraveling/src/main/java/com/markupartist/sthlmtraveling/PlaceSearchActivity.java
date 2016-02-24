@@ -187,7 +187,9 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements LoaderM
             public boolean handleMessage(Message msg) {
                 switch (msg.what) {
                     case MESSAGE_TEXT_CHANGED:
-                        mSearchResultAdapter.getFilter().filter((String) msg.obj);
+                        if (mSearchResultAdapter.getFilter() != null) {
+                            mSearchResultAdapter.getFilter().filter((String) msg.obj);
+                        }
                         return true;
                 }
                 return false;
