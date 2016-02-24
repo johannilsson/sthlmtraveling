@@ -229,8 +229,7 @@ public class AdProxy {
         adSpace.setAdErrorEventListener(new AdErrorEventListener() {
             @Override
             public void onFailedWithError(Object o, ExceptionTypes exceptionTypes, String s, Exception e) {
-                Crashlytics.log("Widespace: " + s);
-                Crashlytics.logException(e);
+                Log.e(TAG, "Widespace: " + s);
             }
         });
 
