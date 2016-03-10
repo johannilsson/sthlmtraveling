@@ -115,6 +115,9 @@ public class MyApplication extends Application {
             case "mn":
                 locale = new Locale("mn", "MN");
                 break;
+            case "pt_BR":
+                locale = new Locale("pt", "BR");
+                break;
         }
 
         if (locale != null) {
