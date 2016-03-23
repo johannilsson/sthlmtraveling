@@ -8,7 +8,7 @@ buildscript {
         //classpath 'com.android.tools.build:gradle:0+'
         // https://github.com/JakeWharton/hugo
         //classpath 'com.jakewharton.hugo:hugo-plugin:1.0.+'
-        classpath 'io.fabric.tools:gradle:1.14.4'
+        classpath 'io.fabric.tools:gradle:1.21.4'
     }
 }
 
@@ -60,7 +60,7 @@ android {
     final BASE_PROVIDER_RELEASE = "com.markupartist.sthlmtraveling"
 
     compileSdkVersion 23
-    buildToolsVersion "22.0.1"
+    buildToolsVersion "23.0.3"
     useLibrary 'org.apache.http.legacy'
 
     defaultConfig {
