@@ -273,7 +273,6 @@ public class ViewOnMapActivity extends BaseFragmentActivity implements OnMapRead
     }
 
     public String getRouteDescription(Leg leg) {
-        // TODO: Copied from RouteDetailActivity, centralize please!
         String description;
         if (TravelMode.FOOT.equals(leg.getTravelMode())) {
             description = getString(R.string.trip_map_description_walk,
@@ -283,8 +282,7 @@ public class ViewOnMapActivity extends BaseFragmentActivity implements OnMapRead
             description = getString(R.string.trip_map_description_normal,
                     DateFormat.getTimeFormat(this).format(leg.getStartTime()),
                     leg.getRouteName(),
-                    leg.getHeadsing().getName(),
-                    getLocationName(leg.getTo()));
+                    leg.getHeadsing().getName());
         }
         return description;
     }
@@ -377,6 +375,11 @@ public class ViewOnMapActivity extends BaseFragmentActivity implements OnMapRead
         return all;
     }
 
+    BitmapDescriptor getMarker(@DrawableRes int drawableRes) {
+        Bitmap bitmap = BitmapFactory.decodeResource(this.getResources(), drawableRes);
+        return BitmapDescriptorFactory.fromBitmap(bitmap);
+    }
+
     BitmapDescriptor getColoredMarker(@ColorInt int colorInt, @DrawableRes int drawableRes) {
         Bitmap bitmap = BitmapFactory.decodeResource(this.getResources(), drawableRes);
         Bitmap bitmapCopy = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), bitmap.getConfig());
@@ -447,8 +450,7 @@ public class ViewOnMapActivity extends BaseFragmentActivity implements OnMapRead
     }
 
     public void showEntrances(List<Entrance> entrances, boolean isExits) {
-        BitmapDescriptor icon = getColoredMarker(
-                ContextCompat.getColor(this, R.color.primary), R.drawable.ic_entrance_exit_12dp);
+        BitmapDescriptor icon = getMarker(R.drawable.ic_entrance_exit_12dp);
         for (Entrance entrance : entrances) {
             MarkerOptions markerOptions = new MarkerOptions()
                     .position(new LatLng(entrance.getLat(), entrance.getLon()))
