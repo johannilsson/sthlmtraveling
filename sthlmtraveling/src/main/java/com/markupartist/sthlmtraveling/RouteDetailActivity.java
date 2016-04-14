@@ -16,7 +16,6 @@
 
 package com.markupartist.sthlmtraveling;
 
-import android.app.Dialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -62,7 +61,7 @@ import com.markupartist.sthlmtraveling.data.models.TravelMode;
 import com.markupartist.sthlmtraveling.provider.JourneysProvider.Journey.Journeys;
 import com.markupartist.sthlmtraveling.provider.planner.JourneyQuery;
 import com.markupartist.sthlmtraveling.provider.site.Site;
-import com.markupartist.sthlmtraveling.ui.view.SmsTicketDialog;
+import com.markupartist.sthlmtraveling.ui.view.TicketDialogFragment;
 import com.markupartist.sthlmtraveling.utils.AdProxy;
 import com.markupartist.sthlmtraveling.utils.Analytics;
 import com.markupartist.sthlmtraveling.utils.DateTimeUtil;
@@ -89,8 +88,6 @@ public class RouteDetailActivity extends BaseListActivity {
 
     public static final String EXTRA_ROUTE = "sthlmtraveling.intent.extra.ROUTE";
     public static final String EXTRA_JOURNEY_QUERY = "sthlmtraveling.intent.action.JOURNEY_QUERY";
-
-    private static final int DIALOG_BUY_SMS_TICKET = 1;
 
     private Route mRoute;
     private JourneyQuery mJourneyQuery;
@@ -155,7 +152,10 @@ public class RouteDetailActivity extends BaseListActivity {
                 @Override
                 public void onClick(View v) {
                     Analytics.getInstance(RouteDetailActivity.this).event("Ticket", "Click on zone");
-                    showDialog(DIALOG_BUY_SMS_TICKET);
+                    //showDialog(DIALOG_BUY_SMS_TICKET);
+                    TicketDialogFragment fragment = TicketDialogFragment.create(
+                            mRoute.getFare().getZones());
+                    fragment.show(getSupportFragmentManager(), null);
                 }
             });
 
@@ -220,14 +220,6 @@ public class RouteDetailActivity extends BaseListActivity {
             Site s = Site.toSite(mRoute.fromStop());
             departuresIntent.putExtra(DeparturesActivity.EXTRA_SITE, s);
             startActivity(departuresIntent);
-            return true;
-        case R.id.actionbar_item_sms:
-            if (mRoute.canBuyTicket()) {
-                Analytics.getInstance(this).event("Ticket", "Click on ab");
-                showDialog(DIALOG_BUY_SMS_TICKET);
-            } else {
-                Toast.makeText(this, R.string.sms_ticket_notice_disabled, Toast.LENGTH_LONG).show();
-            }
             return true;
         case R.id.actionbar_item_star:
             handleStarAction();
@@ -349,15 +341,6 @@ public class RouteDetailActivity extends BaseListActivity {
         convertView.findViewById(R.id.trip_intermediate_stops_layout).setVisibility(View.GONE);
 
         return convertView;
-    }
-
-    @Override
-    protected Dialog onCreateDialog(int id) {
-        switch(id) {
-        case DIALOG_BUY_SMS_TICKET:
-            return SmsTicketDialog.createDialog(this, mRoute.getFare().getZones());
-        }
-        return null;
     }
 
     @Override

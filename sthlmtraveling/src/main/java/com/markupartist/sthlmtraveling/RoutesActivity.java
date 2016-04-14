@@ -60,9 +60,7 @@ import com.markupartist.sthlmtraveling.provider.planner.Planner;
 import com.markupartist.sthlmtraveling.provider.routing.Router;
 import com.markupartist.sthlmtraveling.provider.routing.ScrollDir;
 import com.markupartist.sthlmtraveling.provider.site.Site;
-import com.markupartist.sthlmtraveling.ui.view.SmsTicketDialog;
 import com.markupartist.sthlmtraveling.ui.view.TripView;
-import com.markupartist.sthlmtraveling.utils.Analytics;
 import com.markupartist.sthlmtraveling.utils.DateTimeUtil;
 import com.markupartist.sthlmtraveling.utils.IntentUtil;
 import com.markupartist.sthlmtraveling.utils.LocationManager;
@@ -101,7 +99,6 @@ public class RoutesActivity extends BaseListActivity implements
     private final String TAG = "RoutesActivity";
 
     private static final int DIALOG_ILLEGAL_PARAMETERS = 0;
-    private static final int DIALOG_BUY_SMS_TICKET = 9;
 
     protected static final int REQUEST_CODE_CHANGE_TIME = 0;
     protected static final int REQUEST_CODE_POINT_ON_MAP_START = 1;
@@ -322,10 +319,6 @@ public class RoutesActivity extends BaseListActivity implements
             case R.id.actionbar_item_star:
                 handleStarAction();
                 supportInvalidateOptionsMenu();
-                return true;
-            case R.id.actionbar_item_sms:
-                Analytics.getInstance(this).event("Ticket", "Click on ab");
-                showDialog(DIALOG_BUY_SMS_TICKET);
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -710,8 +703,6 @@ public class RoutesActivity extends BaseListActivity implements
                         .setCancelable(true)
                         .setNeutralButton(getText(android.R.string.ok), null)
                         .create();
-            case DIALOG_BUY_SMS_TICKET:
-                return SmsTicketDialog.createDialog(this, mTransitPlan.tariffZones());
         }
         return null;
     }
