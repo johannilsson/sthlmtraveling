@@ -237,13 +237,13 @@ public class DateTimeUtil {
                     bidiFormatter.unicodeWrap(DateUtils.getRelativeTimeSpanString(
                             route.departsAt(false).getTime(), System.currentTimeMillis(),
                             DateUtils.DAY_IN_MILLIS).toString()),
-                    bidiFormatter.unicodeWrap(format.format(route.departsAt(false))),
-                    bidiFormatter.unicodeWrap(format.format(route.arrivesAt(false))));
+                    bidiFormatter.unicodeWrap(format.format(route.departsAt(true))),
+                    bidiFormatter.unicodeWrap(format.format(route.arrivesAt(true))));
         }
 
         return String.format("%s – %s",
-                bidiFormatter.unicodeWrap(format.format(route.departsAt(false))),
-                bidiFormatter.unicodeWrap(format.format(route.arrivesAt(false))));
+                bidiFormatter.unicodeWrap(format.format(route.departsAt(true))),
+                bidiFormatter.unicodeWrap(format.format(route.arrivesAt(true))));
     }
 
 }
