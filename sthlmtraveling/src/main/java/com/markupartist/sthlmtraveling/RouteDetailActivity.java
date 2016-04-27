@@ -660,6 +660,8 @@ public class RouteDetailActivity extends BaseListActivity {
                     Pattern pattern = Pattern.compile(leg.getRouteShortName());
                     description = SpanUtils.createSpannable(description, pattern, roundedBackgroundSpan);
                 }
+            } else if (TravelMode.BIKE.equals(leg.getTravelMode())) {
+                description = getString(R.string.distance_in_meter, leg.getDistance());
             } else {
                 String routeName = LegUtil.getRouteName(leg, true);
                 description = getString(R.string.trip_description_normal,
