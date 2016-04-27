@@ -521,7 +521,7 @@ public class RouteDetailActivity extends BaseListActivity {
             btnIntermediateStops.setTextOn(durationText);
             btnIntermediateStops.setTextOff(durationText);
 
-            if (leg.getDetailRef() == null) {
+            if (leg.getDetailRef() == null && leg.getIntermediateStops().isEmpty()) {
                 btnIntermediateStops.setCompoundDrawables(null, null, null, null);
             } else {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
@@ -536,7 +536,7 @@ public class RouteDetailActivity extends BaseListActivity {
             btnIntermediateStops.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    if (leg.getDetailRef() == null) {
+                    if (leg.getDetailRef() == null && leg.getIntermediateStops().isEmpty()) {
                         return;
                     }
 
