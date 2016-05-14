@@ -16,11 +16,14 @@
 
 package com.markupartist.sthlmtraveling.utils;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -164,11 +167,14 @@ public class AdProxy {
         }
 
         AdSpace adSpace = new AdSpace(mContext, id, true, true);
-        adSpace.setGPSEnabled(false);
 
-//        if (adSpace.getQueueSize() < 1) {
-//            adSpace.prefetchAd();
-//        }
+        if (ContextCompat.checkSelfPermission(mContext,
+                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // For now we don't allow GPS to be used by the library.
+            adSpace.setGPSEnabled(false);
+        } else {
+            adSpace.setGPSEnabled(false);
+        }
 
         adSpace.setAdEventListener(new AdEventListener() {
             @Override
