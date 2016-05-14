@@ -141,16 +141,7 @@ public class DepartureAdapter extends SectionedAdapter {
                 holder = (ViewHolder) convertView.getTag();
             }
 
-//            TextDrawable d = TextDrawable.builder(getContext())
-//                    .buildRound(ViewHelper.getLineName(mTransportType, displayRow.lineNumber),
-//                            ViewHelper.getLineColor(
-//                                    getContext(),
-//                                    mTransportType,
-//                                    displayRow.lineNumber,
-//                                    displayRow.lineName));
-//            holder.lineView.setImageDrawable(d);
-
-            String lineName = ViewHelper.getLineName(mTransportType, displayRow.lineNumber);
+            String lineName = displayRow.lineNumber;
             if (TextUtils.isEmpty(lineName)) {
                 lineName = "";
             }
