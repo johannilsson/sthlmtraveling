@@ -21,6 +21,7 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
+import android.support.annotation.RequiresPermission;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.util.Log;
@@ -42,12 +43,13 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.markupartist.sthlmtraveling.provider.site.Site;
 import com.markupartist.sthlmtraveling.utils.Analytics;
+import com.markupartist.sthlmtraveling.utils.LocationManager;
 
 import java.io.IOException;
 import java.util.List;
 
 public class PointOnMapActivity extends BaseFragmentActivity
-        implements OnMapClickListener, OnInfoWindowClickListener, OnMapReadyCallback {
+        implements OnMapClickListener, OnInfoWindowClickListener, OnMapReadyCallback, LocationManager.LocationFoundListener {
 
     public static String EXTRA_STOP = "com.markupartist.sthlmtraveling.pointonmap.stop";
     public static String EXTRA_HELP_TEXT = "com.markupartist.sthlmtraveling.pointonmap.helptext";
@@ -60,6 +62,7 @@ public class PointOnMapActivity extends BaseFragmentActivity
 
     private Site mStop;
     private Marker mMarker;
+    private LocationManager mMyLocationManager;
 
     @Override
     protected void onStart() {
@@ -105,6 +108,12 @@ public class PointOnMapActivity extends BaseFragmentActivity
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        initGoogleApiClient(true);
+        mMyLocationManager = new LocationManager(this, getGoogleApiClient());
+        mMyLocationManager.setLocationListener(this);
+        mMyLocationManager.setAccuracy(false);
+        registerPlayService(mMyLocationManager);
     }
 
     @Override
@@ -126,6 +135,7 @@ public class PointOnMapActivity extends BaseFragmentActivity
     @Override
     public void onLocationPermissionGranted() {
         mMap.setMyLocationEnabled(true);
+        mMyLocationManager.requestLocation();
     }
 
     @Override
@@ -219,5 +229,20 @@ public class PointOnMapActivity extends BaseFragmentActivity
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         setUpMap();
+    }
+
+    @Override
+    public void onMyLocationFound(Location location) {
+        if (location == null) {
+            return;
+        }
+
+        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+        mMarker.setPosition(latLng);
+
+        mMap.moveCamera(CameraUpdateFactory.newCameraPosition(
+                CameraPosition.fromLatLngZoom(latLng, 12)
+        ));
+
     }
 }
