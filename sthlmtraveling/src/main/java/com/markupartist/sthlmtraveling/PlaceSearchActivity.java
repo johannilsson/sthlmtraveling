@@ -21,13 +21,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.LayoutRes;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.LoaderManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.ContentLoadingProgressBar;
@@ -49,6 +52,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.maps.model.LatLng;
 import com.markupartist.sthlmtraveling.provider.HistoryDbAdapter;
 import com.markupartist.sthlmtraveling.provider.site.Site;
 import com.markupartist.sthlmtraveling.ui.adapter.GooglePlacesFilter;
@@ -56,6 +60,8 @@ import com.markupartist.sthlmtraveling.ui.adapter.PlaceItem;
 import com.markupartist.sthlmtraveling.ui.adapter.PlaceSearchResultAdapter;
 import com.markupartist.sthlmtraveling.ui.adapter.SiteFilter;
 import com.markupartist.sthlmtraveling.ui.view.ItemClickSupport;
+import com.markupartist.sthlmtraveling.utils.IntentUtil;
+import com.markupartist.sthlmtraveling.utils.LocationManager;
 import com.markupartist.sthlmtraveling.utils.ViewHelper;
 import com.yqritc.recyclerviewmultipleviewtypesadapter.DataBindAdapter;
 import com.yqritc.recyclerviewmultipleviewtypesadapter.DataBinder;
@@ -67,7 +73,9 @@ import java.util.List;
 /**
  * Entry point for searching for address, transit stop and or places.
  */
-public class PlaceSearchActivity extends BaseFragmentActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+public class PlaceSearchActivity extends BaseFragmentActivity implements
+        LoaderManager.LoaderCallbacks<Cursor>,
+        LocationManager.LocationFoundListener {
     public static final String ARG_ONLY_STOPS = "com.markupartist.sthlmtraveling.placesearch.only_stops";
     public static final String EXTRA_PLACE = "com.markupartist.sthlmtraveling.placesearch.stop";
 
@@ -80,7 +88,7 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements LoaderM
 
     private static final int LOADER_HISTORY = 1;
 
-    private static final boolean IS_GOOGLE_PLACE_SEARCH_ENABLED = BuildConfig.DEBUG;
+    private static final boolean IS_GOOGLE_PLACE_SEARCH_ENABLED = false; //BuildConfig.DEBUG;
 
     private HistoryDbAdapter mHistoryDbAdapter;
     private RecyclerView mHistoryRecyclerView;
@@ -93,10 +101,10 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements LoaderM
     private GooglePlacesFilter mGoogleSearchFilter;
     private int mCurrentSearchFilterType = FILTER_TYPE_STHLM_TRAVELING;
     private Handler mHandler;
-    private boolean mShouldSearchGooglePlaces;
     private View mSearchFailed;
     private ContentLoadingProgressBar mProgressBar;
     private boolean mSearchOnlyStops;
+    private LocationManager mMyLocationManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,9 +121,8 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements LoaderM
             }
         }
 
-        if (shouldSearchGooglePlaces()) {
-            initGoogleApiClient(false);
-        }
+        initGoogleApiClient(false);
+
         createSearchHandler();
 
         if (savedInstanceState != null) {
@@ -127,7 +134,7 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements LoaderM
         mHistoryDbAdapter = new HistoryDbAdapter(this).open();
 
         ImageButton backButton = (ImageButton) findViewById(R.id.search_back);
-        ViewHelper.tint(backButton, getResources().getColor(R.color.primary_dark));
+        ViewHelper.tint(backButton, ContextCompat.getColor(this, R.color.primary_dark));
         ViewHelper.flipIfRtl(backButton);
 
         backButton.setOnClickListener(new View.OnClickListener() {
@@ -169,8 +176,16 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements LoaderM
         setupSearchResultViews();
 
         if (!shouldSearchGooglePlaces()) {
-            mShouldSearchGooglePlaces = false;
             setSearchFilter(FILTER_TYPE_STHLM_TRAVELING);
+        }
+
+        mMyLocationManager = new LocationManager(this, getGoogleApiClient());
+        mMyLocationManager.setLocationListener(this);
+        mMyLocationManager.setAccuracy(false);
+        registerPlayService(mMyLocationManager);
+        if (!mSearchOnlyStops) {
+            verifyLocationPermission();
+            mMyLocationManager.requestLocation();
         }
     }
 
@@ -179,6 +194,35 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements LoaderM
             return false;
         }
         return IS_GOOGLE_PLACE_SEARCH_ENABLED;
+    }
+
+    @Override
+    public void onLocationPermissionGranted() {
+        mMyLocationManager.requestLocation();
+    }
+
+    @Override
+    public void onLocationPermissionRationale() {
+        Snackbar.make(mHistoryRecyclerView, R.string.permission_location_needed_search, Snackbar.LENGTH_INDEFINITE)
+                .setAction(R.string.allow, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        requestLocationPermission();
+                    }
+                })
+                .show();
+    }
+
+    @Override
+    public void onLocationPermissionDontShowAgain() {
+        Snackbar.make(mHistoryRecyclerView, R.string.permission_location_needed_search, Snackbar.LENGTH_INDEFINITE)
+                .setAction(R.string.allow, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        IntentUtil.openSettings(PlaceSearchActivity.this);
+                    }
+                })
+                .show();
     }
 
     public void createSearchHandler() {
@@ -216,19 +260,18 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements LoaderM
         switch (filterType) {
             case FILTER_TYPE_GOOGLE:
                 mSearchResultAdapter.setFilter(mGoogleSearchFilter);
-                footerItem.text1 = getString(R.string.search_try_with_app_name);
+//                footerItem.text1 = getString(R.string.search_try_with_app_name);
+                footerItem.text1 = "";
                 footerItem.iconResource = R.drawable.powered_by_google_light;
+                mSearchResultAdapter.setFooterData(footerItem);
                 break;
             case FILTER_TYPE_STHLM_TRAVELING:
                 mSearchResultAdapter.setFilter(mSthlmTravelingSearchFilter);
-                footerItem.text1 = getString(R.string.search_try_with_google);
-                footerItem.iconResource = -1;
+//                footerItem.text1 = getString(R.string.search_try_with_google);
+//                footerItem.iconResource = -1;
                 break;
         }
 
-        if (mShouldSearchGooglePlaces) {
-            mSearchResultAdapter.setFooterData(footerItem);
-        }
         mCurrentSearchFilterType = filterType;
         if (!TextUtils.isEmpty(mSearchEdit.getText())) {
             mSearchResultAdapter.getFilter().filter(mSearchEdit.getText());
@@ -270,11 +313,11 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements LoaderM
             public void onItemClicked(RecyclerView recyclerView, int position, View v) {
                 if (position >= mSearchResultAdapter.getContentItemCount()) {
                     // We end up here if picking one of the footer views. Only supporting one for now.
-                    if (mCurrentSearchFilterType == FILTER_TYPE_GOOGLE) {
-                        setSearchFilter(FILTER_TYPE_STHLM_TRAVELING);
-                    } else {
-                        setSearchFilter(FILTER_TYPE_GOOGLE);
-                    }
+//                    if (mCurrentSearchFilterType == FILTER_TYPE_GOOGLE) {
+//                        setSearchFilter(FILTER_TYPE_STHLM_TRAVELING);
+//                    } else {
+//                        setSearchFilter(FILTER_TYPE_GOOGLE);
+//                    }
                 } else {
                     // We seen some crashes where the provided position did not match the items
                     // hold by the adapter, this is a guard for these cases.
@@ -349,8 +392,14 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements LoaderM
     }
 
     @Override
+    protected void onPause() {
+        mMyLocationManager.removeUpdates();
+        super.onPause();
+    }
+
+    @Override
     protected void onDestroy() {
-//        mHistoryDbAdapter.close();
+        mMyLocationManager.removeUpdates();
         super.onDestroy();
     }
 
@@ -384,13 +433,11 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements LoaderM
     public void onConnected(Bundle bundle) {
         super.onConnected(bundle);
 
-        mShouldSearchGooglePlaces = true;
         setSearchFilter(mCurrentSearchFilterType);
     }
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
-        mShouldSearchGooglePlaces = false;
         setSearchFilter(FILTER_TYPE_STHLM_TRAVELING);
     }
 
@@ -416,6 +463,18 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements LoaderM
                     deliverResult(place);
                 }
                 break;
+        }
+    }
+
+    @Override
+    public void onMyLocationFound(Location location) {
+        if (location != null) {
+            LatLng currentLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+            if (!AppConfig.GREATER_STHLM_BOUNDS.contains(currentLatLng)) {
+                mGoogleSearchFilter.setSearchLocation(location);
+                mCurrentSearchFilterType = FILTER_TYPE_GOOGLE;
+                setSearchFilter(mCurrentSearchFilterType);
+            }
         }
     }
 
