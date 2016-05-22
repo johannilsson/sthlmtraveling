@@ -213,12 +213,14 @@ public class ChangeRouteTimeActivity extends BaseActivity implements OnClickList
         CheckBox transportTrain = (CheckBox) findViewById(R.id.planner_transport_train);
         CheckBox transportTram = (CheckBox) findViewById(R.id.planner_transport_tram);
         CheckBox transportWax = (CheckBox) findViewById(R.id.planner_transport_wax);
+        CheckBox transportBikeRental = (CheckBox) findViewById(R.id.planner_transport_bike_rent);
 
         setIconForCheckBox(transportBus, R.drawable.ic_transport_bus_20dp);
         setIconForCheckBox(transportMetro, R.drawable.ic_transport_sl_metro);
         setIconForCheckBox(transportTrain, R.drawable.ic_transport_train_20dp);
         setIconForCheckBox(transportTram, R.drawable.ic_transport_light_train_20dp);
         setIconForCheckBox(transportWax, R.drawable.ic_transport_boat_20dp);
+        setIconForCheckBox(transportBikeRental, R.drawable.ic_transport_bike_20dp);
 
         for (String type : mJourneyQuery.transportModes) {
             if (type.equals(TransportMode.BUS)) {
@@ -231,6 +233,8 @@ public class ChangeRouteTimeActivity extends BaseActivity implements OnClickList
                 transportTram.setChecked(true);
             } else if (type.equals(TransportMode.WAX)) {
                 transportWax.setChecked(true);
+            } else if (type.equals(TransportMode.BIKE_RENTAL)) {
+                transportBikeRental.setChecked(true);
             }
         }
 
@@ -339,10 +343,10 @@ public class ChangeRouteTimeActivity extends BaseActivity implements OnClickList
     private ArrayList<String> getSelectedTransportModes() {
         CheckBox transportBus = (CheckBox) findViewById(R.id.planner_transport_bus);
         CheckBox transportMetro = (CheckBox) findViewById(R.id.planner_transport_metro);
-//        CheckBox transportNar = (CheckBox) findViewById(R.id.planner_transport_nar);
         CheckBox transportTrain = (CheckBox) findViewById(R.id.planner_transport_train);
         CheckBox transportTram = (CheckBox) findViewById(R.id.planner_transport_tram);
         CheckBox transportWax = (CheckBox) findViewById(R.id.planner_transport_wax);
+        CheckBox transportBikeRental = (CheckBox) findViewById(R.id.planner_transport_bike_rent);
 
         ArrayList<String> transportModes = new ArrayList<String>();
         if (transportBus.isChecked()) {
@@ -351,9 +355,6 @@ public class ChangeRouteTimeActivity extends BaseActivity implements OnClickList
         if (transportMetro.isChecked()) {
             transportModes.add(TransportMode.METRO);
         }
-//        if (transportNar.isChecked()) {
-//            transportModes.add(TransportMode.NAR);
-//        }
         if (transportTrain.isChecked()) {
             transportModes.add(TransportMode.TRAIN);
         }
@@ -362,6 +363,9 @@ public class ChangeRouteTimeActivity extends BaseActivity implements OnClickList
         }
         if (transportWax.isChecked()) {
             transportModes.add(TransportMode.WAX);
+        }
+        if (transportBikeRental.isChecked()) {
+            transportModes.add(TransportMode.BIKE_RENTAL);
         }
 
         return transportModes;

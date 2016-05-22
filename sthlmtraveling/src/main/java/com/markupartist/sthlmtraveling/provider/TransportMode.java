@@ -25,6 +25,7 @@ public class TransportMode {
 
     public static final String FLY = "FLY";
     public static final String AEX = "AEX";
+    public static final String BIKE_RENTAL = "bikeRental";
 
     public static int getIndex(String transportMode) {
         if (TextUtils.isEmpty(transportMode)) {

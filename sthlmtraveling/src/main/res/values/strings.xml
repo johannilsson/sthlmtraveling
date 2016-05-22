@@ -259,4 +259,5 @@
     <string name="exit_and_name">Exit <xliff:g id="entrance">%1$s</xliff:g></string>
     <string name="entrance">Entrance</string>
     <string name="exit">Exit</string>
+    <string name="bike_rental">Rental bike</string>
 </resources>

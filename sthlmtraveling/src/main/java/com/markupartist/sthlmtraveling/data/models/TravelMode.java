@@ -22,6 +22,7 @@ package com.markupartist.sthlmtraveling.data.models;
 public class TravelMode {
     public final static String FOOT = "foot";
     public final static String BIKE = "bike";
+    public final static String BIKE_RENTAL = "bikeRent";
     public final static String CAR = "car";
     public final static String METRO = "metro";
     public final static String BUS = "bus";

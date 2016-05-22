@@ -126,12 +126,16 @@
             android:drawableRight="@drawable/ic_transport_boat_20dp"
             android:text="@string/boats"/>
 
-        <!--<CheckBox-->
-        <!--android:id="@+id/planner_transport_nar"-->
-        <!--android:layout_width="fill_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:text="Närtrafiken"-->
-        <!--android:checked="false"/>-->
+        <CheckBox
+            android:id="@+id/planner_transport_bike_rent"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:checked="false"
+            android:drawableEnd="@drawable/ic_transport_bike_20dp"
+            android:drawableRight="@drawable/ic_transport_bike_20dp"
+            android:text="@string/bike_rental"
+            android:visibility="gone"
+            />
 
         <TextView
             style="?android:textAppearanceMedium"
