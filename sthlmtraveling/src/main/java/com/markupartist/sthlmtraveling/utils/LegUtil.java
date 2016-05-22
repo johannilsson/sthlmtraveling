@@ -120,6 +120,9 @@ public class LegUtil {
                 case TransportMode.METRO:
                     travelModes.add(new TravelMode(TravelMode.METRO));
                     break;
+                case TransportMode.BIKE_RENTAL:
+                    travelModes.add(new TravelMode(TravelMode.BIKE_RENTAL));
+                    break;
             }
         }
         return travelModes;
