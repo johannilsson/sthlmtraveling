@@ -16,6 +16,7 @@
 
 package com.markupartist.sthlmtraveling.ui.adapter;
 
+import android.location.Location;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Filter;
@@ -32,6 +33,7 @@ import com.google.android.gms.location.places.PlaceBuffer;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.markupartist.sthlmtraveling.AppConfig;
 import com.markupartist.sthlmtraveling.provider.site.Site;
 
 import java.util.ArrayList;
@@ -44,10 +46,8 @@ import java.util.concurrent.TimeUnit;
  */
 public class GooglePlacesFilter extends PlaceSearchResultAdapter.PlaceFilter {
 
-    // TODO: Hardcoded bounds here...
-    private static final LatLngBounds STHLM_BOUNDS = new LatLngBounds(
-            new LatLng(59.171780, 17.606715), new LatLng(59.902638, 19.160592));
     private final GoogleApiClient mGoogleApiClient;
+    private LatLngBounds mSearchBounds = AppConfig.GREATER_STHLM_BOUNDS;
 
     public GooglePlacesFilter(PlaceSearchResultAdapter adapter, GoogleApiClient googleApiClient) {
         super(adapter);
@@ -76,7 +76,7 @@ public class GooglePlacesFilter extends PlaceSearchResultAdapter.PlaceFilter {
             PendingResult<AutocompletePredictionBuffer> results =
                     Places.GeoDataApi
                             .getAutocompletePredictions(mGoogleApiClient, constraint.toString(),
-                                    STHLM_BOUNDS, placeFilter);
+                                    getSearchBounds(), placeFilter);
 
             AutocompletePredictionBuffer autocompletePredictions = results.await(60, TimeUnit.SECONDS);
 
@@ -156,6 +156,16 @@ public class GooglePlacesFilter extends PlaceSearchResultAdapter.PlaceFilter {
                 }
             }
         });
+    }
+
+    public void setSearchLocation(Location location) {
+        mSearchBounds = LatLngBounds.builder()
+                .include(new LatLng(location.getLatitude(), location.getLongitude()))
+                .build();
+    }
+
+    LatLngBounds getSearchBounds() {
+        return mSearchBounds;
     }
 
     /**

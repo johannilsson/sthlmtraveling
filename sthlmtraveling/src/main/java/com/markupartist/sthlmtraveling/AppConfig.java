@@ -2,6 +2,8 @@ package com.markupartist.sthlmtraveling;
 
 import android.support.v4.util.Pair;
 
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.markupartist.sthlmtraveling.utils.AdProxy;
 
 public class AppConfig {
@@ -24,6 +26,9 @@ public class AppConfig {
     public static final int[] TICKET_FULL_PRICE = new int[]{36, 54, 72};
     public static final int[] TICKET_REDUCED_PRICE = new int[]{20, 30, 40};
     public static final String TICKET_SMS_NUMBER = "0767201010";
+
+    public static final LatLngBounds GREATER_STHLM_BOUNDS = new LatLngBounds(
+            new LatLng(59.171780, 17.606715), new LatLng(59.725990, 19.161708));
 
     public static Pair<AdProxy.Provider, String> getAdConfForRouteDetails(int preferredNetwork) {
         AdProxy.Provider network = AD_DEFAULT_PROVIDER;
