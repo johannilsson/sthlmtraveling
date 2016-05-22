@@ -267,13 +267,19 @@ public class RoutesActivity extends BaseListActivity implements
         for (Route route : plan.getRoutes()) {
             switch (route.getMode()) {
                 case "foot":
-                    footDurationText.setText(DateTimeUtil.formatDetailedDuration(getResources(), route.getLegs().get(0).getDuration() * 1000));
+                    footDurationText.setText(DateTimeUtil.formatDetailedDuration(getResources(),
+                            route.getDuration() * 1000));
+                    mRouteAlternativesView.findViewById(R.id.route_foot).setVisibility(View.VISIBLE);
                     break;
                 case "bike":
-                    bikeDurationText.setText(DateTimeUtil.formatDetailedDuration(getResources(), route.getLegs().get(0).getDuration() * 1000));
+                    bikeDurationText.setText(DateTimeUtil.formatDetailedDuration(getResources(),
+                            route.getDuration() * 1000));
+                    mRouteAlternativesView.findViewById(R.id.route_bike).setVisibility(View.VISIBLE);
                     break;
                 case "car":
-                    carDurationText.setText(DateTimeUtil.formatDetailedDuration(getResources(), route.getLegs().get(0).getDuration() * 1000));
+                    carDurationText.setText(DateTimeUtil.formatDetailedDuration(getResources(),
+                            route.getDuration() * 1000));
+                    mRouteAlternativesView.findViewById(R.id.route_car).setVisibility(View.VISIBLE);
                     break;
             }
         }
