@@ -54,6 +54,7 @@ public class LocationManager implements PlayService, LocationListener {
     private final LocationRequestTimeOut mLocationRequestTimeOut;
     private LocationFoundListener mLocationFoundListener;
     private boolean mLocationRequested;
+    private boolean mHighAccuracy = true;
 
     public LocationManager(final Context context, GoogleApiClient googleApiClient) {
         mContext = context;
@@ -63,7 +64,9 @@ public class LocationManager implements PlayService, LocationListener {
 
     public LocationRequest createLocationRequest() {
         LocationRequest locationRequest = LocationRequest.create();
-        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        locationRequest.setPriority(mHighAccuracy ?
+                LocationRequest.PRIORITY_HIGH_ACCURACY :
+                LocationRequest.PRIORITY_LOW_POWER);
         locationRequest.setInterval(UPDATE_INTERVAL);
         locationRequest.setFastestInterval(FASTEST_INTERVAL);
         locationRequest.setExpirationDuration(ACCEPTED_LOCATION_AGE_MILLIS);
@@ -94,6 +97,9 @@ public class LocationManager implements PlayService, LocationListener {
         if (location == null) {
             return false;
         }
+        if (!mHighAccuracy) {
+            return true;
+        }
         long timeSinceUpdate = System.currentTimeMillis() - location.getTime();
         return timeSinceUpdate <= ACCEPTED_LOCATION_AGE_MILLIS
                 && location.getAccuracy() <= ACCEPTED_LOCATION_ACCURACY_METERS;
@@ -117,6 +123,10 @@ public class LocationManager implements PlayService, LocationListener {
         if (mLocationFoundListener != null) {
             mLocationFoundListener.onMyLocationFound(location);
         }
+    }
+
+    public void setAccuracy(boolean high) {
+        mHighAccuracy = high;
     }
 
     public void requestLocation() {
