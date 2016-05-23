@@ -71,7 +71,7 @@ android {
         targetSdkVersion 23
         applicationId "com.markupartist.sthlmtraveling"
         versionName "2.17.0"
-        versionCode 195
+        versionCode 196
 
         generatedDensities = []
 
