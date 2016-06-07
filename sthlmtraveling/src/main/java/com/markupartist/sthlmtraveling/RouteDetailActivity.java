@@ -61,6 +61,7 @@ import com.markupartist.sthlmtraveling.data.models.TravelMode;
 import com.markupartist.sthlmtraveling.provider.JourneysProvider.Journey.Journeys;
 import com.markupartist.sthlmtraveling.provider.planner.JourneyQuery;
 import com.markupartist.sthlmtraveling.provider.site.Site;
+import com.markupartist.sthlmtraveling.ui.models.LegViewModel;
 import com.markupartist.sthlmtraveling.ui.view.TicketDialogFragment;
 import com.markupartist.sthlmtraveling.utils.AdProxy;
 import com.markupartist.sthlmtraveling.utils.Analytics;
@@ -88,6 +89,7 @@ public class RouteDetailActivity extends BaseListActivity {
 
     public static final String EXTRA_ROUTE = "sthlmtraveling.intent.extra.ROUTE";
     public static final String EXTRA_JOURNEY_QUERY = "sthlmtraveling.intent.action.JOURNEY_QUERY";
+    private static final String STATE_LEGS = "sthlmtraveling.intent.state.LEGS";
 
     private Route mRoute;
     private JourneyQuery mJourneyQuery;
@@ -108,10 +110,7 @@ public class RouteDetailActivity extends BaseListActivity {
 
         Bundle extras = getIntent().getExtras();
 
-        mRoute = (Route) getLastNonConfigurationInstance();
-        if (mRoute == null) {
-            mRoute = extras.getParcelable(EXTRA_ROUTE);
-        }
+        mRoute = extras.getParcelable(EXTRA_ROUTE);
 
         mApiService = MyApplication.get(RouteDetailActivity.this).getApiService();
 
@@ -168,7 +167,10 @@ public class RouteDetailActivity extends BaseListActivity {
         }
         getListView().addHeaderView(headerView, null, false);
 
-        onRouteDetailsResult(mRoute);
+        mSubTripAdapter = new SubTripAdapter(this);
+        if (savedInstanceState == null) {
+            onRouteDetailsResult(mRoute);
+        }
     }
 
     @Override
@@ -245,34 +247,24 @@ public class RouteDetailActivity extends BaseListActivity {
         return location.getName();
     }
 
-    /**
-     * Called before this activity is destroyed, returns the previous details.
-     * This data is used if the screen is rotated. Then we don't need to ask for
-     * the data again.
-     * 
-     * @return route details
-     */
-//    @Override
-//    public Object onRetainNonConfigurationInstance() {
-//        return mRoute;
-//    }
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        mRoute = savedInstanceState.getParcelable(EXTRA_ROUTE);
+        ArrayList<LegViewModel> legs = savedInstanceState.getParcelableArrayList(STATE_LEGS);
+        showLegs(legs);
+        super.onRestoreInstanceState(savedInstanceState);
+    }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
+        outState.putParcelable(EXTRA_ROUTE, mRoute);
+        ArrayList<LegViewModel> legViewModels = new ArrayList<>();
+        for (int pos = 0; pos < mSubTripAdapter.getCount(); pos++) {
+            legViewModels.add(mSubTripAdapter.getItem(pos));
+        }
+        outState.putParcelableArrayList(STATE_LEGS, legViewModels);
+
         super.onSaveInstanceState(outState);
-    }
-
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        restoreLocalState(savedInstanceState);
-    }
-
-    /**
-     * Restores any local state, if any.
-     * @param savedInstanceState the bundle containing the saved state
-     */
-    private void restoreLocalState(Bundle savedInstanceState) {
     }
 
     @Override
@@ -288,7 +280,17 @@ public class RouteDetailActivity extends BaseListActivity {
      * @param route the route details
      */
     public void onRouteDetailsResult(Route route) {
-        getListView().addFooterView(createFooterView(route));
+        List<LegViewModel> legs = new ArrayList<>();
+        for (Leg leg : route.getLegs()) {
+            legs.add(new LegViewModel(leg));
+        }
+        showLegs(legs);
+        mRoute = route;
+    }
+
+    public void showLegs(List<LegViewModel> legs) {
+        mSubTripAdapter.setLegs(legs);
+        getListView().addFooterView(createFooterView(legs));
         // Add attributions if dealing with a Google result.
         if (mJourneyQuery.destination.getSource() == Site.SOURCE_GOOGLE_PLACES) {
             View attributionView = getLayoutInflater().inflate(
@@ -298,27 +300,24 @@ public class RouteDetailActivity extends BaseListActivity {
 
         setListAdapter(mSubTripAdapter);
 
-        mRoute = route;
     }
 
-    private View createFooterView(final Route route) {
-        mSubTripAdapter = new SubTripAdapter(this, route.getLegs());
-
-        int numSubTrips = route.getLegs().size();
-        final Leg leg = route.getLegs().get(numSubTrips - 1);
+    private View createFooterView(final List<LegViewModel> legs) {
+        int numSubTrips = legs.size();
+        final LegViewModel legViewModel = legs.get(numSubTrips - 1);
 
         ViewGroup convertView = (ViewGroup) getLayoutInflater().inflate(R.layout.trip_row_stop_layout, null);
         Button nameView = (Button) convertView.findViewById(R.id.trip_stop_title);
-        if (TravelMode.FOOT.equals(leg.getTravelMode())) {
+        if (TravelMode.FOOT.equals(legViewModel.leg.getTravelMode())) {
             nameView.setText(getLocationName(mJourneyQuery.destination.asPlace()));
         } else {
-            nameView.setText(leg.getTo().getName());
+            nameView.setText(legViewModel.leg.getTo().getName());
         }
         nameView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(ViewOnMapActivity.createIntent(RouteDetailActivity.this,
-                        mRoute, mJourneyQuery, Site.toSite(leg.getTo())));
+                        mRoute, mJourneyQuery, Site.toSite(legViewModel.leg.getTo())));
             }
         });
 
@@ -329,11 +328,11 @@ public class RouteDetailActivity extends BaseListActivity {
 
         TextView departureTimeView = (TextView) convertView.findViewById(R.id.trip_departure_time);
         TextView expectedDepartureTimeView = (TextView) convertView.findViewById(R.id.trip_expected_departure_time);
-        departureTimeView.setText(DateFormat.getTimeFormat(this).format(leg.getEndTime()));
-        if (leg.getEndTimeRt() != null && leg.hasDepartureDelay()) {
+        departureTimeView.setText(DateFormat.getTimeFormat(this).format(legViewModel.leg.getEndTime()));
+        if (legViewModel.leg.getEndTimeRt() != null && legViewModel.leg.hasDepartureDelay()) {
             departureTimeView.setPaintFlags(departureTimeView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
             expectedDepartureTimeView.setVisibility(View.VISIBLE);
-            expectedDepartureTimeView.setText(DateFormat.getTimeFormat(this).format(leg.getEndTimeRt()));
+            expectedDepartureTimeView.setText(DateFormat.getTimeFormat(this).format(legViewModel.leg.getEndTimeRt()));
         } else {
             departureTimeView.setPaintFlags(departureTimeView.getPaintFlags() & (~ Paint.STRIKE_THRU_TEXT_FLAG));
             expectedDepartureTimeView.setVisibility(View.GONE);
@@ -416,15 +415,19 @@ public class RouteDetailActivity extends BaseListActivity {
     /**
      * A not at all optimized adapter for showing a route based on a list of sub trips.
      */
-    private class SubTripAdapter extends ArrayAdapter<Leg> {
+    private class SubTripAdapter extends ArrayAdapter<LegViewModel> {
         private LayoutInflater mInflater;
         private boolean mIsFetchingSubTrips;
 
-        public SubTripAdapter(Context context, List<Leg> objects) {
-            super(context, R.layout.route_details_row, objects);
+        public SubTripAdapter(Context context) {
+            super(context, R.layout.route_details_row);
+            mInflater = LayoutInflater.from(context);
+        }
 
-            mInflater = (LayoutInflater) context.getSystemService(
-                    Context.LAYOUT_INFLATER_SERVICE);
+        public void setLegs(List<LegViewModel> legs) {
+            for (LegViewModel leg : legs) {
+                add(leg);
+            }
         }
 
         @Override
@@ -434,24 +437,24 @@ public class RouteDetailActivity extends BaseListActivity {
 
         @Override
         public View getView(final int position, View convertView, ViewGroup parent) {
-            final Leg leg = getItem(position);
+            final LegViewModel legViewModel = getItem(position);
 
             convertView = mInflater.inflate(R.layout.trip_row_stop_layout, parent, false);
             boolean isFirst = false;
 
             if (position > 0) {
-                final Leg previousLeg = getItem(position - 1);
+                final LegViewModel previousLeg = getItem(position - 1);
                 convertView.findViewById(R.id.trip_intermediate_departure_time).setVisibility(View.GONE);
                 TextView descView = (TextView) convertView.findViewById(R.id.trip_intermediate_stop_title);
                 descView.setTextSize(12);
-                descView.setText(getLocationName(previousLeg.getTo()));
+                descView.setText(getLocationName(previousLeg.leg.getTo()));
                 TextView arrivalView = (TextView) convertView.findViewById(R.id.trip_intermediate_arrival_time);
-                arrivalView.setText(DateFormat.getTimeFormat(getContext()).format(previousLeg.getEndTime()));
+                arrivalView.setText(DateFormat.getTimeFormat(getContext()).format(previousLeg.leg.getEndTime()));
                 TextView expectedArrivalView = (TextView) convertView.findViewById(R.id.trip_intermediate_expected_arrival_time);
-                if (previousLeg.getEndTimeRt() != null && previousLeg.hasArrivalDelay()) {
+                if (previousLeg.leg.getEndTimeRt() != null && previousLeg.leg.hasArrivalDelay()) {
                     arrivalView.setPaintFlags(arrivalView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
                     expectedArrivalView.setVisibility(View.VISIBLE);
-                    expectedArrivalView.setText(DateFormat.getTimeFormat(getContext()).format(previousLeg.getEndTimeRt()));
+                    expectedArrivalView.setText(DateFormat.getTimeFormat(getContext()).format(previousLeg.leg.getEndTimeRt()));
                 } else {
                     arrivalView.setPaintFlags(arrivalView.getPaintFlags() & (~ Paint.STRIKE_THRU_TEXT_FLAG));
                     expectedArrivalView.setVisibility(View.GONE);
@@ -463,15 +466,15 @@ public class RouteDetailActivity extends BaseListActivity {
             }
 
             Button nameView = (Button) convertView.findViewById(R.id.trip_stop_title);
-            boolean shouldUseOriginName = isFirst && TravelMode.FOOT.equals(leg.getTravelMode());
+            boolean shouldUseOriginName = isFirst && TravelMode.FOOT.equals(legViewModel.leg.getTravelMode());
             nameView.setText(shouldUseOriginName ?
-                    getLocationName(mJourneyQuery.origin.asPlace()) : getLocationName(leg.getFrom()));
+                    getLocationName(mJourneyQuery.origin.asPlace()) : getLocationName(legViewModel.leg.getFrom()));
             nameView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (leg.getFrom().hasLocation()) {
+                    if (legViewModel.leg.getFrom().hasLocation()) {
                         startActivity(ViewOnMapActivity.createIntent(getContext(),
-                                mRoute, mJourneyQuery, Site.toSite(leg.getFrom())));
+                                mRoute, mJourneyQuery, Site.toSite(legViewModel.leg.getFrom())));
                     } else {
                         Toast.makeText(getContext(), "Missing geo data", Toast.LENGTH_LONG).show();
                     }
@@ -481,11 +484,11 @@ public class RouteDetailActivity extends BaseListActivity {
             TextView departureTimeView = (TextView) convertView.findViewById(R.id.trip_departure_time);
             TextView expectedDepartureTimeView = (TextView) convertView.findViewById(R.id.trip_expected_departure_time);
 
-            departureTimeView.setText(DateFormat.getTimeFormat(getContext()).format(leg.getStartTime()));
-            if (leg.getStartTimeRt() != null && leg.hasDepartureDelay()) {
+            departureTimeView.setText(DateFormat.getTimeFormat(getContext()).format(legViewModel.leg.getStartTime()));
+            if (legViewModel.leg.getStartTimeRt() != null && legViewModel.leg.hasDepartureDelay()) {
                 departureTimeView.setPaintFlags(departureTimeView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
                 expectedDepartureTimeView.setVisibility(View.VISIBLE);
-                expectedDepartureTimeView.setText(DateFormat.getTimeFormat(getContext()).format(leg.getStartTimeRt()));
+                expectedDepartureTimeView.setText(DateFormat.getTimeFormat(getContext()).format(legViewModel.leg.getStartTimeRt()));
             } else {
                 departureTimeView.setPaintFlags(departureTimeView.getPaintFlags() & (~ Paint.STRIKE_THRU_TEXT_FLAG));
                 expectedDepartureTimeView.setVisibility(View.GONE);
@@ -495,33 +498,33 @@ public class RouteDetailActivity extends BaseListActivity {
             ViewStub descriptionStub = (ViewStub) convertView.findViewById(R.id.trip_description_stub);
             View descriptionLayout = descriptionStub.inflate();
             TextView descriptionView = (TextView) descriptionLayout.findViewById(R.id.trip_description);
-            descriptionView.setText(createDescription(leg));
+            descriptionView.setText(createDescription(legViewModel));
             ImageView descriptionIcon = (ImageView) descriptionLayout.findViewById(R.id.trip_description_icon);
-            descriptionIcon.setImageDrawable(LegUtil.getTransportDrawable(getContext(), leg));
+            descriptionIcon.setImageDrawable(LegUtil.getTransportDrawable(getContext(), legViewModel.leg));
             if (RtlUtils.isRtl(Locale.getDefault())) {
                 ViewCompat.setScaleX(descriptionIcon, -1f);
             }
             //descriptionView.setCompoundDrawablesWithIntrinsicBounds(subTrip.transport.getImageResource(), 0, 0, 0);
 
-            inflateMessages(leg, convertView);
-            inflateIntermediate(leg, position, convertView);
+            inflateMessages(legViewModel, convertView);
+            inflateIntermediate(legViewModel, position, convertView);
 
             return convertView;
         }
 
-        private void inflateIntermediate(final Leg leg, final int position, final View convertView) {
+        private void inflateIntermediate(final LegViewModel legViewModel, final int position, final View convertView) {
             final ToggleButton btnIntermediateStops = (ToggleButton) convertView.findViewById(R.id.trip_btn_intermediate_stops);
-            if (TravelMode.FOOT.equals(leg.getTravelMode())) {
+            if (TravelMode.FOOT.equals(legViewModel.leg.getTravelMode())) {
                 btnIntermediateStops.setVisibility(View.GONE);
                 return;
             }
 
-            CharSequence durationText = DateTimeUtil.formatDetailedDuration(getResources(), leg.getDuration() * 1000);
+            CharSequence durationText = DateTimeUtil.formatDetailedDuration(getResources(), legViewModel.leg.getDuration() * 1000);
             btnIntermediateStops.setText(durationText);
             btnIntermediateStops.setTextOn(durationText);
             btnIntermediateStops.setTextOff(durationText);
 
-            if (leg.getDetailRef() == null && leg.getIntermediateStops().isEmpty()) {
+            if (legViewModel.leg.getDetailRef() == null && legViewModel.leg.getIntermediateStops().isEmpty()) {
                 btnIntermediateStops.setCompoundDrawables(null, null, null, null);
             } else {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
@@ -536,28 +539,29 @@ public class RouteDetailActivity extends BaseListActivity {
             btnIntermediateStops.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    if (leg.getDetailRef() == null && leg.getIntermediateStops().isEmpty()) {
+                    legViewModel.isExpanded = isChecked;
+                    if (legViewModel.leg.getDetailRef() == null && legViewModel.leg.getIntermediateStops().isEmpty()) {
                         return;
                     }
 
                     if (isChecked) {
-                        List<IntermediateStop> intermediateStops = leg.getIntermediateStops();
+                        List<IntermediateStop> intermediateStops = legViewModel.leg.getIntermediateStops();
                         if (stopsLayout.getChildCount() == 0
                                 && intermediateStops.isEmpty() && !mIsFetchingSubTrips) {
                             mIsFetchingSubTrips = true;
 
                             List<String> references = new ArrayList<>();
-                            references.add(leg.getDetailRef());
+                            references.add(legViewModel.leg.getDetailRef());
                             mApiService.getIntermediateStops(references, new Callback<IntermediateResponse>() {
                                 @Override
                                 public void success(IntermediateResponse intermediateResponse, Response response) {
-                                    List<IntermediateStop> intermediateStops = intermediateResponse.getStops(leg.getDetailRef());
+                                    List<IntermediateStop> intermediateStops = intermediateResponse.getStops(legViewModel.leg.getDetailRef());
                                     if (intermediateStops.isEmpty()) {
                                         stopsLayout.addView(inflateText(getText(R.string.no_intermediate_stops), stopsLayout));
                                     } else {
-                                        leg.setIntermediateStops(intermediateStops);
+                                        legViewModel.leg.setIntermediateStops(intermediateStops);
                                         for (IntermediateStop is : intermediateStops) {
-                                            if (leg.hasStopIndex(is.getLocation().getStopIndex())) {
+                                            if (legViewModel.leg.hasStopIndex(is.getLocation().getStopIndex())) {
                                                 stopsLayout.addView(inflateIntermediateStop(is, stopsLayout));
                                             }
                                         }
@@ -573,7 +577,7 @@ public class RouteDetailActivity extends BaseListActivity {
                         } else if (stopsLayout.getChildCount() == 0
                                 && !intermediateStops.isEmpty()) {
                             for (IntermediateStop is : intermediateStops) {
-                                if (leg.hasStopIndex(is.getLocation().getStopIndex())) {
+                                if (legViewModel.leg.hasStopIndex(is.getLocation().getStopIndex())) {
                                     stopsLayout.addView(inflateIntermediateStop(is, stopsLayout));
                                 }
                             }
@@ -584,6 +588,7 @@ public class RouteDetailActivity extends BaseListActivity {
                     }
                 }
             });
+            btnIntermediateStops.setChecked(legViewModel.isExpanded);
         }
 
         private View inflateText(CharSequence text, LinearLayout stopsLayout) {
@@ -621,17 +626,17 @@ public class RouteDetailActivity extends BaseListActivity {
             return view;
         }
 
-        private void inflateMessages(final Leg leg, final View convertView) {
+        private void inflateMessages(final LegViewModel legViewModel, final View convertView) {
             LinearLayout messagesLayout = (LinearLayout) convertView.findViewById(R.id.trip_messages);
 
-            if (leg.hasAlerts()) {
-                for (Alert alert : leg.getAlerts()) {
+            if (legViewModel.leg.hasAlerts()) {
+                for (Alert alert : legViewModel.leg.getAlerts()) {
                     String message = alert.getDescription() != null ? alert.getDescription() : alert.getHeader();
                     messagesLayout.addView(inflateMessage("alert", message, messagesLayout));
                 }
             }
-            if (leg.hasNotes()) {
-                for (Alert note : leg.getNotes()) {
+            if (legViewModel.leg.hasNotes()) {
+                for (Alert note : legViewModel.leg.getNotes()) {
                     messagesLayout.addView(inflateMessage("rtu", note.getHeader(), messagesLayout));
                 }
             }
@@ -644,31 +649,31 @@ public class RouteDetailActivity extends BaseListActivity {
             return view;
         }
 
-        private CharSequence createDescription(final Leg leg) {
+        private CharSequence createDescription(final LegViewModel legViewModel) {
             CharSequence description;
-            if (TravelMode.FOOT.equals(leg.getTravelMode())) {
-                description = getString(R.string.distance_in_meter, leg.getDistance());
-            } else if (TravelMode.BOAT.equals(leg.getTravelMode())) {
+            if (TravelMode.FOOT.equals(legViewModel.leg.getTravelMode())) {
+                description = getString(R.string.distance_in_meter, legViewModel.leg.getDistance());
+            } else if (TravelMode.BOAT.equals(legViewModel.leg.getTravelMode())) {
                 description = getString(R.string.trip_description_normal,
-                        leg.getRouteName(),
-                        leg.getHeadsing().getName());
-                if (!TextUtils.isEmpty(leg.getRouteShortName())) {
+                        legViewModel.leg.getRouteName(),
+                        legViewModel.leg.getHeadsing().getName());
+                if (!TextUtils.isEmpty(legViewModel.leg.getRouteShortName())) {
                     RoundedBackgroundSpan roundedBackgroundSpan = new RoundedBackgroundSpan(
-                            LegUtil.getColor(getContext(), leg),
+                            LegUtil.getColor(getContext(), legViewModel.leg),
                             Color.WHITE,
                             ViewHelper.dipsToPix(getContext().getResources(), 4));
-                    Pattern pattern = Pattern.compile(leg.getRouteShortName());
+                    Pattern pattern = Pattern.compile(legViewModel.leg.getRouteShortName());
                     description = SpanUtils.createSpannable(description, pattern, roundedBackgroundSpan);
                 }
-            } else if (TravelMode.BIKE.equals(leg.getTravelMode())) {
-                description = getString(R.string.distance_in_meter, leg.getDistance());
+            } else if (TravelMode.BIKE.equals(legViewModel.leg.getTravelMode())) {
+                description = getString(R.string.distance_in_meter, legViewModel.leg.getDistance());
             } else {
-                String routeName = LegUtil.getRouteName(leg, true);
+                String routeName = LegUtil.getRouteName(legViewModel.leg, true);
                 description = getString(R.string.trip_description_normal,
                         routeName,
-                        leg.getHeadsing().getName());
+                        legViewModel.leg.getHeadsing().getName());
                 RoundedBackgroundSpan roundedBackgroundSpan = new RoundedBackgroundSpan(
-                        LegUtil.getColor(getContext(), leg),
+                        LegUtil.getColor(getContext(), legViewModel.leg),
                         Color.WHITE,
                         ViewHelper.dipsToPix(getContext().getResources(), 4));
                 Pattern pattern = Pattern.compile(routeName);
