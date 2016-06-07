@@ -26,7 +26,8 @@
    *;
 }
 -dontwarn com.widespace.adspace.helpers.AttributesParseHelper
-
+#-dontwarn com.widespace.internal.voice.NuanceVoiceAdController
+-dontwarn com.nuance.**
 
 # Libraries included
 #-libraryjars libs
@@ -86,6 +87,7 @@
 
 # Crashlytics
 -keep class com.crashlytics.** { *; }
+-keep class io.fabric.** { *; }
 -keepattributes SourceFile,LineNumberTable
 
 # Remove logging
