@@ -180,7 +180,7 @@ public class DateTimeUtil {
         }
         if (hours > 0) {
             if (minutes == 0) {
-                return resources.getQuantityString(R.plurals.duration_short_hours, hours, minutes);
+                return resources.getQuantityString(R.plurals.duration_short_hours, hours, hours);
             }
             return resources.getString(R.string.duration_short_hours_minutes, hours, minutes);
         }
