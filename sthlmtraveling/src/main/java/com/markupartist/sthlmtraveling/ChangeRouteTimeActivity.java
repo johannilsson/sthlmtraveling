@@ -349,20 +349,20 @@ public class ChangeRouteTimeActivity extends BaseActivity implements OnClickList
         CheckBox transportBikeRental = (CheckBox) findViewById(R.id.planner_transport_bike_rent);
 
         ArrayList<String> transportModes = new ArrayList<String>();
+        if (transportMetro.isChecked()) {
+            transportModes.add(TransportMode.METRO);
+        }
         if (transportBus.isChecked()) {
             transportModes.add(TransportMode.BUS);
         }
-        if (transportMetro.isChecked()) {
-            transportModes.add(TransportMode.METRO);
+        if (transportWax.isChecked()) {
+            transportModes.add(TransportMode.WAX);
         }
         if (transportTrain.isChecked()) {
             transportModes.add(TransportMode.TRAIN);
         }
         if (transportTram.isChecked()) {
             transportModes.add(TransportMode.TRAM);
-        }
-        if (transportWax.isChecked()) {
-            transportModes.add(TransportMode.WAX);
         }
         if (transportBikeRental.isChecked()) {
             transportModes.add(TransportMode.BIKE_RENTAL);
