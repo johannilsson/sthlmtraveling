@@ -18,6 +18,8 @@ package com.markupartist.sthlmtraveling.data.models;
 
 import android.os.Parcel;
 
+import com.markupartist.sthlmtraveling.utils.DateTimeUtil;
+
 import java.util.Date;
 
 /**
@@ -115,6 +117,32 @@ public class IntermediateStop extends ParcelableBase {
     public boolean hasArrivalDelay() {
         if (endTimeRt != null && endTime != null) {
             return endTimeRt.getTime() != endTime.getTime();
+        }
+        return false;
+    }
+
+    public boolean isOnTimeOrAhead() {
+        if (startTime != null && startTimeRt != null) {
+            if (DateTimeUtil.getDelay(startTime, startTimeRt) <= 0) {
+                return true;
+            }
+        } else if (endTime != null && endTimeRt != null) {
+            if (DateTimeUtil.getDelay(endTime, endTimeRt) <= 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean isLate() {
+        if (startTime != null && startTimeRt != null) {
+            if (DateTimeUtil.getDelay(startTime, startTimeRt) > 0) {
+                return true;
+            }
+        } else if (endTime != null && endTimeRt != null) {
+            if (DateTimeUtil.getDelay(endTime, endTimeRt) > 0) {
+                return true;
+            }
         }
         return false;
     }

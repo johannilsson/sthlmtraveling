@@ -104,4 +104,7 @@
     <color name="metro_blue">#0691d2</color>
     <color name="metro_red">#ee1d23</color>
     <color name="metro_green">#21b259</color>
+
+    <color name="schedule_late">#ff0000</color>
+    <color name="schedule_ahead">#008000</color>
 </resources>

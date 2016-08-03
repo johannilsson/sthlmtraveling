@@ -246,4 +246,24 @@ public class DateTimeUtil {
                 bidiFormatter.unicodeWrap(format.format(route.arrivesAt(true))));
     }
 
+    /**
+     * Get the delay between a scheduled and expected time.
+     * <p/>
+     * If running ahead of schedule a negative delay is returned.
+     *
+     * @param scheduledDateTime The scheduled time
+     * @param expectedDateTime The expected time
+     * @return Delay in seconds
+     */
+    public static int getDelay(Date scheduledDateTime, Date expectedDateTime) {
+        if (scheduledDateTime == null || expectedDateTime == null) {
+            throw new IllegalArgumentException("Scheduled and or excepted date must not be null");
+        }
+        int delay = (int) (Math.abs(TimeUnit.MILLISECONDS.toSeconds(
+                expectedDateTime.getTime() - scheduledDateTime.getTime())));
+        if (expectedDateTime.getTime() < scheduledDateTime.getTime()) {
+            return -delay;
+        }
+        return delay;
+    }
 }

@@ -26,6 +26,7 @@ import android.location.Location;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.text.BidiFormatter;
 import android.support.v4.util.Pair;
 import android.support.v4.view.ViewCompat;
@@ -333,8 +334,10 @@ public class RouteDetailActivity extends BaseListActivity {
             departureTimeView.setPaintFlags(departureTimeView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
             expectedDepartureTimeView.setVisibility(View.VISIBLE);
             expectedDepartureTimeView.setText(DateFormat.getTimeFormat(this).format(legViewModel.leg.getEndTimeRt()));
+            ViewHelper.setTextColorForTimeView(expectedDepartureTimeView, legViewModel.leg, true);
         } else {
             departureTimeView.setPaintFlags(departureTimeView.getPaintFlags() & (~ Paint.STRIKE_THRU_TEXT_FLAG));
+            ViewHelper.setTextColorForTimeView(departureTimeView, legViewModel.leg, true);
             expectedDepartureTimeView.setVisibility(View.GONE);
         }
         convertView.findViewById(R.id.trip_intermediate_stops_layout).setVisibility(View.GONE);
@@ -451,12 +454,15 @@ public class RouteDetailActivity extends BaseListActivity {
                 TextView arrivalView = (TextView) convertView.findViewById(R.id.trip_intermediate_arrival_time);
                 arrivalView.setText(DateFormat.getTimeFormat(getContext()).format(previousLeg.leg.getEndTime()));
                 TextView expectedArrivalView = (TextView) convertView.findViewById(R.id.trip_intermediate_expected_arrival_time);
+
                 if (previousLeg.leg.getEndTimeRt() != null && previousLeg.leg.hasArrivalDelay()) {
                     arrivalView.setPaintFlags(arrivalView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
                     expectedArrivalView.setVisibility(View.VISIBLE);
                     expectedArrivalView.setText(DateFormat.getTimeFormat(getContext()).format(previousLeg.leg.getEndTimeRt()));
+                    ViewHelper.setTextColorForTimeView(expectedArrivalView, previousLeg.leg, false);
                 } else {
                     arrivalView.setPaintFlags(arrivalView.getPaintFlags() & (~ Paint.STRIKE_THRU_TEXT_FLAG));
+                    ViewHelper.setTextColorForTimeView(arrivalView, previousLeg.leg, false);
                     expectedArrivalView.setVisibility(View.GONE);
                 }
             } else {
@@ -489,8 +495,10 @@ public class RouteDetailActivity extends BaseListActivity {
                 departureTimeView.setPaintFlags(departureTimeView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
                 expectedDepartureTimeView.setVisibility(View.VISIBLE);
                 expectedDepartureTimeView.setText(DateFormat.getTimeFormat(getContext()).format(legViewModel.leg.getStartTimeRt()));
+                ViewHelper.setTextColorForTimeView(expectedDepartureTimeView, legViewModel.leg, true);
             } else {
                 departureTimeView.setPaintFlags(departureTimeView.getPaintFlags() & (~ Paint.STRIKE_THRU_TEXT_FLAG));
+                ViewHelper.setTextColorForTimeView(departureTimeView, legViewModel.leg, true);
                 expectedDepartureTimeView.setVisibility(View.GONE);
             }
 
@@ -617,8 +625,16 @@ public class RouteDetailActivity extends BaseListActivity {
                     expectedArrivalView.setVisibility(View.VISIBLE);
                     expectedArrivalView.setText(DateFormat.getTimeFormat(getContext()).format(
                             stop.getTimeRt()));
+                    if (stop.isLate()) {
+                        expectedArrivalView.setTextColor(ContextCompat.getColor(expectedArrivalView.getContext(), R.color.schedule_late));
+                    } else if (stop.isOnTimeOrAhead()) {
+                        expectedArrivalView.setTextColor(ContextCompat.getColor(expectedArrivalView.getContext(), R.color.schedule_ahead));
+                    }
                 } else {
                     arrivalView.setPaintFlags(arrivalView.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
+                    if (stop.isOnTimeOrAhead()) {
+                        arrivalView.setTextColor(ContextCompat.getColor(expectedArrivalView.getContext(), R.color.schedule_ahead));
+                    }
                     expectedArrivalView.setVisibility(View.GONE);
                 }
             }

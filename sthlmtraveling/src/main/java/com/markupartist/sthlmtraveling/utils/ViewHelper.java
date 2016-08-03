@@ -22,6 +22,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.markupartist.sthlmtraveling.R;
+import com.markupartist.sthlmtraveling.data.models.Leg;
 import com.markupartist.sthlmtraveling.provider.TransportMode;
 
 import java.util.Locale;
@@ -296,5 +297,13 @@ public class ViewHelper {
                 drawable = ContextCompat.getDrawable(context, R.drawable.ic_transport_train_20dp);
         }
         return ViewHelper.tintIcon(drawable, color);
+    }
+
+    public static void setTextColorForTimeView(TextView textView, Leg leg, boolean isDeparture) {
+        if (leg.isOnTime(isDeparture) || leg.isAhead(isDeparture)) {
+            textView.setTextColor(ContextCompat.getColor(textView.getContext(), R.color.schedule_ahead));
+        } else if (leg.isLate(isDeparture)) {
+            textView.setTextColor(ContextCompat.getColor(textView.getContext(), R.color.schedule_late));
+        }
     }
 }

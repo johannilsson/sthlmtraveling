@@ -269,6 +269,21 @@ public class Leg extends ParcelableBase {
         return arrivalDelay != 0;
     }
 
+    public boolean isOnTime(boolean isDeparture) {
+        int delay = isDeparture ? departureDelay : arrivalDelay;
+        return isRealTime() && delay == 0;
+    }
+
+    public boolean isLate(boolean isDeparture) {
+        int delay = isDeparture ? departureDelay : arrivalDelay;
+        return isRealTime() && delay > 0;
+    }
+
+    public boolean isAhead(boolean isDeparture) {
+        int delay = isDeparture ? departureDelay : arrivalDelay;
+        return isRealTime() && delay < 0;
+    }
+
     public boolean hasStopIndex(int stopIndex) {
         return getFrom().getStopIndex() != stopIndex
                 && getTo().getStopIndex() != stopIndex;
