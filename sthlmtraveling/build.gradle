@@ -53,7 +53,7 @@ dependencies {
     compile files('libs/nmdp_speech_kit.jar')
 //    compile files('libs/widespace-sdk-4.8.0-8b67b2d.jar')
 //    compile files('libs/wisper-java-1.0-rc8.jar')
-    compile('com.crashlytics.sdk.android:crashlytics:2.5.5@aar') {
+    compile('com.crashlytics.sdk.android:crashlytics:2.6.1@aar') {
         transitive = true;
     }
 }
