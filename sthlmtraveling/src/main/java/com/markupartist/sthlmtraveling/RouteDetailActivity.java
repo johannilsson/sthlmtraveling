@@ -334,10 +334,10 @@ public class RouteDetailActivity extends BaseListActivity {
             departureTimeView.setPaintFlags(departureTimeView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
             expectedDepartureTimeView.setVisibility(View.VISIBLE);
             expectedDepartureTimeView.setText(DateFormat.getTimeFormat(this).format(legViewModel.leg.getEndTimeRt()));
-            ViewHelper.setTextColorForTimeView(expectedDepartureTimeView, legViewModel.leg, true);
+            ViewHelper.setTextColorForTimeView(expectedDepartureTimeView, legViewModel.leg, false);
         } else {
             departureTimeView.setPaintFlags(departureTimeView.getPaintFlags() & (~ Paint.STRIKE_THRU_TEXT_FLAG));
-            ViewHelper.setTextColorForTimeView(departureTimeView, legViewModel.leg, true);
+            ViewHelper.setTextColorForTimeView(departureTimeView, legViewModel.leg, false);
             expectedDepartureTimeView.setVisibility(View.GONE);
         }
         convertView.findViewById(R.id.trip_intermediate_stops_layout).setVisibility(View.GONE);
