@@ -101,7 +101,7 @@ public class AdProxy {
 
             if (shouldShowAfterDismiss()) {
                 ((AdSpace) mAdView).setAutoStart(true);
-                ((AdSpace) mAdView).setAutoUpdate(true);
+                ((AdSpace) mAdView).setAutoUpdate(false);
             }
 
             Log.d(TAG, "AdSpace.resume");
@@ -166,7 +166,7 @@ public class AdProxy {
             return null;
         }
 
-        AdSpace adSpace = new AdSpace(mContext, id, true, true);
+        AdSpace adSpace = new AdSpace(mContext, id, true, false);
 
         if (ContextCompat.checkSelfPermission(mContext,
                 Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
