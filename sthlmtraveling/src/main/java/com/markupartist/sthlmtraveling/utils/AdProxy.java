@@ -170,8 +170,7 @@ public class AdProxy {
 
         if (ContextCompat.checkSelfPermission(mContext,
                 Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // For now we don't allow GPS to be used by the library.
-            adSpace.setGPSEnabled(false);
+            adSpace.setGPSEnabled(true);
         } else {
             adSpace.setGPSEnabled(false);
         }
