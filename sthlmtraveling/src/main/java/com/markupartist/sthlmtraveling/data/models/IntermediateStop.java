@@ -17,6 +17,7 @@
 package com.markupartist.sthlmtraveling.data.models;
 
 import android.os.Parcel;
+import android.support.v4.util.Pair;
 
 import com.markupartist.sthlmtraveling.utils.DateTimeUtil;
 
@@ -121,29 +122,23 @@ public class IntermediateStop extends ParcelableBase {
         return false;
     }
 
-    public boolean isOnTimeOrAhead() {
-        if (startTime != null && startTimeRt != null) {
-            if (DateTimeUtil.getDelay(startTime, startTimeRt) <= 0) {
-                return true;
-            }
-        } else if (endTime != null && endTimeRt != null) {
-            if (DateTimeUtil.getDelay(endTime, endTimeRt) <= 0) {
-                return true;
-            }
+    RealTimeState realTimeStateFromDelay(int delay) {
+        if (delay > 0) {
+            return RealTimeState.BEHIND_SCHEDULE;
+        } else if (delay < 0) {
+            return RealTimeState.AHEAD_OF_SCHEDULE;
         }
-        return false;
+        return RealTimeState.ON_TIME;
     }
 
-    public boolean isLate() {
+    public Pair<Integer, RealTimeState> delay() {
         if (startTime != null && startTimeRt != null) {
-            if (DateTimeUtil.getDelay(startTime, startTimeRt) > 0) {
-                return true;
-            }
+            int delay = DateTimeUtil.getDelay(startTime, startTimeRt);
+            return Pair.create(delay, realTimeStateFromDelay(delay));
         } else if (endTime != null && endTimeRt != null) {
-            if (DateTimeUtil.getDelay(endTime, endTimeRt) > 0) {
-                return true;
-            }
+            int delay = DateTimeUtil.getDelay(endTime, endTimeRt);
+            return Pair.create(delay, realTimeStateFromDelay(delay));
         }
-        return false;
+        return Pair.create(0, RealTimeState.NOT_SET);
     }
 }

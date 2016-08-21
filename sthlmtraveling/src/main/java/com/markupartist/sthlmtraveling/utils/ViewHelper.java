@@ -23,6 +23,7 @@ import android.widget.TextView;
 
 import com.markupartist.sthlmtraveling.R;
 import com.markupartist.sthlmtraveling.data.models.Leg;
+import com.markupartist.sthlmtraveling.data.models.RealTimeState;
 import com.markupartist.sthlmtraveling.provider.TransportMode;
 
 import java.util.Locale;
@@ -299,11 +300,19 @@ public class ViewHelper {
         return ViewHelper.tintIcon(drawable, color);
     }
 
-    public static void setTextColorForTimeView(TextView textView, Leg leg, boolean isDeparture) {
-        if (leg.isOnTime(isDeparture) || leg.isAhead(isDeparture)) {
-            textView.setTextColor(ContextCompat.getColor(textView.getContext(), R.color.schedule_ahead));
-        } else if (leg.isLate(isDeparture)) {
-            textView.setTextColor(ContextCompat.getColor(textView.getContext(), R.color.schedule_late));
+    public static @ColorRes int getTextColorByRealtimeState(RealTimeState realTimeState) {
+        switch (realTimeState) {
+            case AHEAD_OF_SCHEDULE:
+            case ON_TIME:
+                return R.color.schedule_ahead;
+            case BEHIND_SCHEDULE:
+                return R.color.schedule_late;
         }
+        return R.color.body_text_1;
+    }
+
+    public static void setTextColorForTimeView(TextView textView, Leg leg, boolean isDeparture) {
+        textView.setTextColor(ContextCompat.getColor(textView.getContext(),
+                getTextColorByRealtimeState(leg.realtimeState(isDeparture))));
     }
 }

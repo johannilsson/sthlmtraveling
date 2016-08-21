@@ -20,20 +20,26 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.text.BidiFormatter;
+import android.support.v4.util.Pair;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
 import android.text.format.DateUtils;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 
 import com.markupartist.sthlmtraveling.R;
+import com.markupartist.sthlmtraveling.data.models.RealTimeState;
 import com.markupartist.sthlmtraveling.data.models.Route;
+import com.markupartist.sthlmtraveling.utils.text.SpanUtils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
 
 /**
  * Date & Time utils
@@ -228,22 +234,40 @@ public class DateTimeUtil {
     }
 
 
-    public static String routeToTimeDisplay(Context context, Route route) {
+    public static CharSequence routeToTimeDisplay(Context context, Route route) {
         java.text.DateFormat format = android.text.format.DateFormat.getTimeFormat(context);
         BidiFormatter bidiFormatter = BidiFormatter.getInstance(RtlUtils.isRtl(Locale.getDefault()));
 
-        if (!DateUtils.isToday(route.departsAt(false).getTime())) {
-            return String.format("%s %s – %s",
+        Pair<Date, RealTimeState> departsAt = route.departsAt(true);
+        Pair<Date, RealTimeState> arrivesAt = route.arrivesAt(true);
+
+        String departsAtStr = format.format(departsAt.first);
+        String arrivesAtStr = format.format(arrivesAt.first);
+        CharSequence displayTime;
+        if (!DateUtils.isToday(departsAt.first.getTime())) {
+            displayTime = String.format("%s %s – %s",
                     bidiFormatter.unicodeWrap(DateUtils.getRelativeTimeSpanString(
-                            route.departsAt(false).getTime(), System.currentTimeMillis(),
+                            departsAt.first.getTime(), System.currentTimeMillis(),
                             DateUtils.DAY_IN_MILLIS).toString()),
-                    bidiFormatter.unicodeWrap(format.format(route.departsAt(true))),
-                    bidiFormatter.unicodeWrap(format.format(route.arrivesAt(true))));
+                    bidiFormatter.unicodeWrap(departsAtStr),
+                    bidiFormatter.unicodeWrap(arrivesAtStr));
+        } else {
+            displayTime = String.format("%s – %s",
+                    bidiFormatter.unicodeWrap(departsAtStr),
+                    bidiFormatter.unicodeWrap(arrivesAtStr));
         }
 
-        return String.format("%s – %s",
-                bidiFormatter.unicodeWrap(format.format(route.departsAt(true))),
-                bidiFormatter.unicodeWrap(format.format(route.arrivesAt(true))));
+        ForegroundColorSpan spanDepartsAt = new ForegroundColorSpan(ContextCompat.getColor(
+                context, ViewHelper.getTextColorByRealtimeState(departsAt.second)));
+        Pattern patternDepartsAt = Pattern.compile(departsAtStr);
+        displayTime = SpanUtils.createSpannable(displayTime, patternDepartsAt, spanDepartsAt);
+
+        ForegroundColorSpan spanArrivessAt = new ForegroundColorSpan(ContextCompat.getColor(
+                context, ViewHelper.getTextColorByRealtimeState(arrivesAt.second)));
+        Pattern patternArrivesAt = Pattern.compile(arrivesAtStr);
+        displayTime = SpanUtils.createSpannable(displayTime, patternArrivesAt, spanArrivessAt);
+
+        return displayTime;
     }
 
     /**

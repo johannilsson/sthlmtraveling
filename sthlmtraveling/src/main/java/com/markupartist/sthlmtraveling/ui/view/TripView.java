@@ -90,6 +90,7 @@ public class TripView extends LinearLayout {
         timeStartEndText.setText(DateTimeUtil.routeToTimeDisplay(getContext(), trip));
         timeStartEndText.setTextColor(ContextCompat.getColor(getContext(), R.color.body_text_1));
         timeStartEndText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+
         ViewCompat.setPaddingRelative(timeStartEndText, 0, 0, 0, (int) (2 * scale));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
             if (RtlUtils.isRtl(Locale.getDefault())) {

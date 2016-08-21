@@ -57,6 +57,7 @@ import com.markupartist.sthlmtraveling.data.models.IntermediateResponse;
 import com.markupartist.sthlmtraveling.data.models.IntermediateStop;
 import com.markupartist.sthlmtraveling.data.models.Leg;
 import com.markupartist.sthlmtraveling.data.models.Place;
+import com.markupartist.sthlmtraveling.data.models.RealTimeState;
 import com.markupartist.sthlmtraveling.data.models.Route;
 import com.markupartist.sthlmtraveling.data.models.TravelMode;
 import com.markupartist.sthlmtraveling.provider.JourneysProvider.Journey.Journeys;
@@ -620,21 +621,19 @@ public class RouteDetailActivity extends BaseListActivity {
             Date arrivalTime = stop.getTime();
             if (arrivalTime != null) {
                 arrivalView.setText(DateFormat.getTimeFormat(getContext()).format(arrivalTime));
+                Pair<Integer, RealTimeState> delay = stop.delay();
                 if (stop.getTimeRt() != null && stop.hasDelay()) {
                     arrivalView.setPaintFlags(arrivalView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
                     expectedArrivalView.setVisibility(View.VISIBLE);
                     expectedArrivalView.setText(DateFormat.getTimeFormat(getContext()).format(
                             stop.getTimeRt()));
-                    if (stop.isLate()) {
-                        expectedArrivalView.setTextColor(ContextCompat.getColor(expectedArrivalView.getContext(), R.color.schedule_late));
-                    } else if (stop.isOnTimeOrAhead()) {
-                        expectedArrivalView.setTextColor(ContextCompat.getColor(expectedArrivalView.getContext(), R.color.schedule_ahead));
-                    }
+                    expectedArrivalView.setTextColor(ContextCompat.getColor(
+                            expectedArrivalView.getContext(),
+                            ViewHelper.getTextColorByRealtimeState(delay.second)));
                 } else {
                     arrivalView.setPaintFlags(arrivalView.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
-                    if (stop.isOnTimeOrAhead()) {
-                        arrivalView.setTextColor(ContextCompat.getColor(expectedArrivalView.getContext(), R.color.schedule_ahead));
-                    }
+                    arrivalView.setTextColor(ContextCompat.getColor(expectedArrivalView.getContext(),
+                            ViewHelper.getTextColorByRealtimeState(delay.second)));
                     expectedArrivalView.setVisibility(View.GONE);
                 }
             }

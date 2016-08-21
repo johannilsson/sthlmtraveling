@@ -304,4 +304,15 @@ public class Leg extends ParcelableBase {
     public String getDetailRef() {
         return detailRef;
     }
+
+    public RealTimeState realtimeState(boolean isDeparture) {
+        if (isOnTime(isDeparture)) {
+            return RealTimeState.ON_TIME;
+        } else if (isAhead(isDeparture)) {
+            return RealTimeState.AHEAD_OF_SCHEDULE;
+        } else if (isLate(isDeparture)) {
+            return RealTimeState.BEHIND_SCHEDULE;
+        }
+        return RealTimeState.NOT_SET;
+    }
 }

@@ -18,6 +18,7 @@ package com.markupartist.sthlmtraveling.data.models;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.v4.util.Pair;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -84,30 +85,30 @@ public class Route implements Parcelable {
         return mode;
     }
 
-    public Date departsAt(boolean useTransitTime) {
+    public Pair<Date, RealTimeState> departsAt(boolean useTransitTime) {
         if (useTransitTime) {
             for (Leg leg : legs) {
                 if (leg.isTransit()) {
-                    return leg.departsAt();
+                    return Pair.create(leg.departsAt(), leg.realtimeState(true));
                 }
             }
         }
         // If no transit leg, get the first.
         Leg leg = legs.get(0);
-        return leg.departsAt();
+        return Pair.create(leg.departsAt(), leg.realtimeState(true));
     }
 
-    public Date arrivesAt(boolean useTransitTime) {
+    public Pair<Date, RealTimeState> arrivesAt(boolean useTransitTime) {
         if (useTransitTime) {
             for (int i = legs.size() - 1; i >= 0; i--) {
                 Leg leg = legs.get(i);
                 if (leg.isTransit()) {
-                    return leg.arrivesAt();
+                    return Pair.create(leg.arrivesAt(), leg.realtimeState(false));
                 }
             }
         }
         Leg leg = legs.get(legs.size() - 1);
-        return leg.arrivesAt();
+        return Pair.create(leg.arrivesAt(), leg.realtimeState(false));
     }
 
     public Place fromStop() {
