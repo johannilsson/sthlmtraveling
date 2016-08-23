@@ -64,6 +64,7 @@ import com.markupartist.sthlmtraveling.ui.view.TripView;
 import com.markupartist.sthlmtraveling.utils.DateTimeUtil;
 import com.markupartist.sthlmtraveling.utils.IntentUtil;
 import com.markupartist.sthlmtraveling.utils.LocationManager;
+import com.markupartist.sthlmtraveling.utils.Monitor;
 import com.markupartist.sthlmtraveling.utils.ViewHelper;
 
 import org.json.JSONException;
@@ -138,6 +139,7 @@ public class RoutesActivity extends BaseListActivity implements
     private View mRouteAlternativesView;
     private FrameLayout mRouteAlternativesStub;
     private Router mRouter;
+    private Monitor mMonitor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -188,6 +190,16 @@ public class RoutesActivity extends BaseListActivity implements
         initListView();
         initAutoHideHeader(getListView());
         maybeRequestLocationUpdate();
+
+        mMonitor = new Monitor() {
+            @Override
+            public void handleUpdate() {
+                super.handleUpdate();
+                if (mTransitPlan != null) {
+                    mRouter.refreshTransit(mJourneyQuery, mPlanCallback);
+                }
+            }
+        };
     }
 
     @Override
@@ -422,6 +434,7 @@ public class RoutesActivity extends BaseListActivity implements
     protected void onResume() {
         super.onResume();
         initRoutes(mJourneyQuery);
+        mMonitor.onStart();
     }
 
     @Override
@@ -437,6 +450,7 @@ public class RoutesActivity extends BaseListActivity implements
         super.onPause();
 
         mMyLocationManager.removeUpdates();
+        mMonitor.onStop();
 
         dismissProgress();
     }
@@ -1012,7 +1026,7 @@ public class RoutesActivity extends BaseListActivity implements
                 return;
             }
             mRoutes = trips;
-            animatedItems.clear();
+            //animatedItems.clear();
             notifyDataSetChanged();
         }
 

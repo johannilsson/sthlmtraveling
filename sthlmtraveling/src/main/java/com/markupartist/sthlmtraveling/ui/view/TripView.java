@@ -23,6 +23,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.text.BidiFormatter;
+import android.support.v4.util.Pair;
 import android.support.v4.view.ViewCompat;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
@@ -32,6 +33,8 @@ import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -39,6 +42,7 @@ import android.widget.TextView;
 
 import com.markupartist.sthlmtraveling.R;
 import com.markupartist.sthlmtraveling.data.models.Leg;
+import com.markupartist.sthlmtraveling.data.models.RealTimeState;
 import com.markupartist.sthlmtraveling.data.models.Route;
 import com.markupartist.sthlmtraveling.utils.DateTimeUtil;
 import com.markupartist.sthlmtraveling.utils.LegUtil;
@@ -46,6 +50,7 @@ import com.markupartist.sthlmtraveling.utils.RtlUtils;
 import com.markupartist.sthlmtraveling.utils.ViewHelper;
 import com.markupartist.sthlmtraveling.utils.text.RoundedBackgroundSpan;
 
+import java.util.Date;
 import java.util.Locale;
 
 /**
@@ -84,7 +89,6 @@ public class TripView extends LinearLayout {
                 getResources().getDimensionPixelSize(R.dimen.list_horizontal_padding),
                 getResources().getDimensionPixelSize(R.dimen.list_vertical_padding));
 
-
         LinearLayout timeStartEndLayout = new LinearLayout(getContext());
         TextView timeStartEndText = new TextView(getContext());
         timeStartEndText.setText(DateTimeUtil.routeToTimeDisplay(getContext(), trip));
@@ -97,6 +101,32 @@ public class TripView extends LinearLayout {
                 timeStartEndText.setTextDirection(View.TEXT_DIRECTION_RTL);
             }
         }
+
+        // Check if we have Realtime for start and or end.
+        boolean hasRealtime = false;
+        Pair<Date, RealTimeState> transitTime = trip.departsAt(true);
+        if (transitTime.second != RealTimeState.NOT_SET) {
+            hasRealtime = true;
+        } else {
+            transitTime = trip.arrivesAt(true);
+            if (transitTime.second != RealTimeState.NOT_SET) {
+                hasRealtime = true;
+            }
+        }
+        if (hasRealtime) {
+            ImageView liveDrawable = new ImageView(getContext());
+            liveDrawable.setImageResource(R.drawable.ic_live);
+            ViewCompat.setPaddingRelative(liveDrawable, 0, (int) (2 * scale), (int) (4 * scale), 0);
+            timeStartEndLayout.addView(liveDrawable);
+
+            AlphaAnimation animation1 = new AlphaAnimation(0.5f, 1.0f);
+            animation1.setDuration(800);
+            animation1.setRepeatMode(Animation.REVERSE);
+            animation1.setRepeatCount(Animation.INFINITE);
+
+            liveDrawable.startAnimation(animation1);
+        }
+
         timeStartEndLayout.addView(timeStartEndText);
 
         LinearLayout startAndEndPointLayout = new LinearLayout(getContext());

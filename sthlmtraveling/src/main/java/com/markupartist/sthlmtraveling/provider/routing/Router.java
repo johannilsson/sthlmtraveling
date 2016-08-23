@@ -81,6 +81,10 @@ public class Router {
         });
     }
 
+    public void refreshTransit(final JourneyQuery journeyQuery, final Callback callback) {
+        planTransit(journeyQuery, callback, journeyQuery.previousIdent, journeyQuery.previousDir);
+    }
+
     public void planTransit(final JourneyQuery journeyQuery, final Callback callback) {
         planTransit(journeyQuery, callback, null);
     }
@@ -88,6 +92,16 @@ public class Router {
     public void planTransit(final JourneyQuery journeyQuery,
                             final Callback callback,
                             final @Nullable ScrollDir dir) {
+        String direction = dir != null ? dir.getDirection() : null;
+        journeyQuery.previousDir = direction;
+        journeyQuery.previousIdent = journeyQuery.ident;
+        planTransit(journeyQuery, callback, journeyQuery.ident, direction);
+    }
+
+    public void planTransit(final JourneyQuery journeyQuery,
+                            final Callback callback,
+                            final String ident,
+                            final @Nullable String dir) {
         PlaceQuery from = new PlaceQuery.Builder()
                 .place(journeyQuery.origin.asPlace())
                 .build();
@@ -108,8 +122,8 @@ public class Router {
         String paginateRef = null;
 
         if (dir != null) {
-            paginateRef = journeyQuery.ident;
-            directionParam = dir.getDirection();
+            paginateRef = ident;
+            directionParam = dir;
         }
 
         TravelModeQuery travelModeQuery = new TravelModeQuery(travelModes);

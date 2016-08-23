@@ -19,6 +19,7 @@ package com.markupartist.sthlmtraveling.provider.planner;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.markupartist.sthlmtraveling.data.api.PlaceQuery;
@@ -49,6 +50,10 @@ public class JourneyQuery implements Parcelable {
     public String ident;
     public boolean hasPromotions;
     public int promotionNetwork = -1;
+    // Storing the state of the current ident and scroll dir to allow refresh of paginated
+    // results
+    @Nullable  public String previousIdent;
+    @Nullable  public String previousDir;
 
     public JourneyQuery() {
     }
@@ -65,6 +70,8 @@ public class JourneyQuery implements Parcelable {
         ident = parcel.readString();
         hasPromotions = (parcel.readInt() == 1);
         promotionNetwork = parcel.readInt();
+        previousIdent = parcel.readString();
+        previousDir = parcel.readString();
     }
 
     @Override
@@ -84,6 +91,8 @@ public class JourneyQuery implements Parcelable {
         dest.writeString(ident);
         dest.writeInt(hasPromotions ? 1 : 0);
         dest.writeInt(promotionNetwork);
+        dest.writeString(previousIdent);
+        dest.writeString(previousDir);
     }
 
     /**
