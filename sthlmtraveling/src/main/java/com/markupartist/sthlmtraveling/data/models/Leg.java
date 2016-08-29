@@ -18,6 +18,7 @@ package com.markupartist.sthlmtraveling.data.models;
 
 import android.os.Parcel;
 import android.support.annotation.NonNull;
+import android.support.v4.util.Pair;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -40,11 +41,11 @@ public class Leg extends ParcelableBase {
     private final String routeColor;
     private final Date startTime;
     private final Date endTime;
-    private final Date startTimeRt;
-    private final Date endTimeRt;
-    private final int departureDelay;
-    private final int arrivalDelay;
-    private final boolean realTime;
+    private Date startTimeRt;
+    private Date endTimeRt;
+    private int departureDelay;
+    private int arrivalDelay;
+    private boolean realTime;
     private final boolean cancelled;
     private final boolean unreachable;
     private final boolean invalid;
@@ -314,5 +315,39 @@ public class Leg extends ParcelableBase {
             return RealTimeState.BEHIND_SCHEDULE;
         }
         return RealTimeState.NOT_SET;
+    }
+
+    public boolean updateTimes(List<IntermediateStop> stopTimes) {
+        boolean updated = false;
+        for (IntermediateStop stopTime : stopTimes) {
+            Pair<Integer, RealTimeState> delay = stopTime.delay();
+            if (delay.second == RealTimeState.NOT_SET) {
+                continue;
+            }
+
+            // Check from if we match update start time
+            if (stopTime.getLocation().looksEquals(getFrom())) {
+                realTime = true;
+                startTimeRt = stopTime.getStartTimeRt();
+                departureDelay = stopTime.startTimeDelay();
+                updated = true;
+            } else if (stopTime.getLocation().looksEquals(getTo())) {
+                realTime = true;
+                endTimeRt = stopTime.getEndTimeRt();
+                arrivalDelay = stopTime.endTimeDelay();
+                updated = true;
+            }
+
+            if (intermediateStops != null && !intermediateStops.isEmpty()) {
+                for (IntermediateStop intermediateStop : intermediateStops) {
+                    if (stopTime.getLocation().looksEquals(intermediateStop.getLocation())) {
+                        intermediateStop.setStartTimeRt(stopTime.getStartTimeRt());
+                        intermediateStop.setEndTimeRt(stopTime.getEndTimeRt());
+                        updated = true;
+                    }
+                }
+            }
+        }
+        return updated;
     }
 }

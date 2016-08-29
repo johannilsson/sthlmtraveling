@@ -124,4 +124,15 @@ public class Place implements Parcelable {
     public List<Entrance> getEntrances() {
         return entrances;
     }
+
+    public boolean looksEquals(Place other) {
+        if (id != null && other.getId() != null) {
+            return id.equals(other.getId());
+        } else if (stopIndex == other.getStopIndex()) {
+            return true;
+        } else if (name != null && other.getName() != null) {
+            return name.equals(other.getName());
+        }
+        return false;
+    }
 }

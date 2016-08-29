@@ -29,9 +29,9 @@ import java.util.Date;
 public class IntermediateStop extends ParcelableBase {
     private final Place location;
     private final Date startTime;
-    private final Date startTimeRt;
+    private Date startTimeRt;
     private final Date endTime;
-    private final Date endTimeRt;
+    private Date endTimeRt;
 
     public IntermediateStop(Date endTimeRt, Place location, Date startTime, Date startTimeRt, Date endTime) {
         this.endTimeRt = endTimeRt;
@@ -87,6 +87,10 @@ public class IntermediateStop extends ParcelableBase {
         return endTimeRt;
     }
 
+    public Date getStartTimeRt() {
+        return startTimeRt;
+    }
+
     public Date getTime() {
         if (startTime != null) {
             return startTime;
@@ -122,6 +126,14 @@ public class IntermediateStop extends ParcelableBase {
         return false;
     }
 
+    public int startTimeDelay() {
+        return DateTimeUtil.getDelay(startTime, startTimeRt);
+    }
+
+    public int endTimeDelay() {
+        return DateTimeUtil.getDelay(endTime, endTimeRt);
+    }
+
     RealTimeState realTimeStateFromDelay(int delay) {
         if (delay > 0) {
             return RealTimeState.BEHIND_SCHEDULE;
@@ -133,12 +145,20 @@ public class IntermediateStop extends ParcelableBase {
 
     public Pair<Integer, RealTimeState> delay() {
         if (startTime != null && startTimeRt != null) {
-            int delay = DateTimeUtil.getDelay(startTime, startTimeRt);
+            int delay = startTimeDelay();
             return Pair.create(delay, realTimeStateFromDelay(delay));
         } else if (endTime != null && endTimeRt != null) {
-            int delay = DateTimeUtil.getDelay(endTime, endTimeRt);
+            int delay = endTimeDelay();
             return Pair.create(delay, realTimeStateFromDelay(delay));
         }
         return Pair.create(0, RealTimeState.NOT_SET);
+    }
+
+    public void setStartTimeRt(Date startTimeRt) {
+        this.startTimeRt = startTimeRt;
+    }
+
+    public void setEndTimeRt(Date endTimeRt) {
+        this.endTimeRt = endTimeRt;
     }
 }

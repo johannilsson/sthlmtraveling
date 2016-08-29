@@ -69,6 +69,7 @@ import com.markupartist.sthlmtraveling.utils.AdProxy;
 import com.markupartist.sthlmtraveling.utils.Analytics;
 import com.markupartist.sthlmtraveling.utils.DateTimeUtil;
 import com.markupartist.sthlmtraveling.utils.LegUtil;
+import com.markupartist.sthlmtraveling.utils.Monitor;
 import com.markupartist.sthlmtraveling.utils.RtlUtils;
 import com.markupartist.sthlmtraveling.utils.ViewHelper;
 import com.markupartist.sthlmtraveling.utils.text.RoundedBackgroundSpan;
@@ -102,6 +103,7 @@ public class RouteDetailActivity extends BaseListActivity {
     private ActionBar mActionBar;
     private AdProxy mAdProxy;
     private ApiService mApiService;
+    private Monitor mMonitor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -173,6 +175,55 @@ public class RouteDetailActivity extends BaseListActivity {
         if (savedInstanceState == null) {
             onRouteDetailsResult(mRoute);
         }
+
+        mMonitor = new Monitor() {
+            @Override
+            public void handleUpdate() {
+                super.handleUpdate();
+                List<String> references = new ArrayList<>();
+
+                for (Leg leg : mRoute.getLegs()) {
+                    references.add(leg.getDetailRef());
+                }
+
+                mApiService.getIntermediateStops(references, new Callback<IntermediateResponse>() {
+                    @Override
+                    public void success(IntermediateResponse intermediateResponse, Response response) {
+                        updateStopTimes(intermediateResponse);
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+                        Log.e(TAG, "No response for stop times");
+                    }
+                });
+            }
+        };
+    }
+
+    void updateStopTimes(IntermediateResponse intermediateResponse) {
+        boolean updated = false;
+
+        ArrayList<LegViewModel> legViewModels = new ArrayList<>();
+        for (int pos = 0; pos < mSubTripAdapter.getCount(); pos++) {
+            legViewModels.add(mSubTripAdapter.getItem(pos));
+        }
+
+        for (LegViewModel leg : legViewModels) {
+            String reference = leg.leg.getDetailRef();
+            if (reference != null) {
+                List<IntermediateStop> stopTimes = intermediateResponse.getStops(leg.leg.getDetailRef());
+                boolean applied = leg.leg.updateTimes(stopTimes);
+                if (applied) {
+                    updated = true;
+                }
+            }
+        }
+
+        if (updated) {
+            Log.e(TAG, "Refreshing stop times");
+            mSubTripAdapter.setLegs(legViewModels);
+        }
     }
 
     @Override
@@ -182,6 +233,8 @@ public class RouteDetailActivity extends BaseListActivity {
         if (mAdProxy != null) {
             mAdProxy.onResume();
         }
+
+        mMonitor.onStart();
     }
 
     @Override
@@ -191,6 +244,8 @@ public class RouteDetailActivity extends BaseListActivity {
         if (mAdProxy != null) {
             mAdProxy.onPause();
         }
+
+        mMonitor.onStop();
     }
 
     @Override
@@ -429,6 +484,7 @@ public class RouteDetailActivity extends BaseListActivity {
         }
 
         public void setLegs(List<LegViewModel> legs) {
+            clear();
             for (LegViewModel leg : legs) {
                 add(leg);
             }
