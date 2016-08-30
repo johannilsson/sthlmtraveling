@@ -119,8 +119,8 @@ public class TripView extends LinearLayout {
             ViewCompat.setPaddingRelative(liveDrawable, 0, (int) (2 * scale), (int) (4 * scale), 0);
             timeStartEndLayout.addView(liveDrawable);
 
-            AlphaAnimation animation1 = new AlphaAnimation(0.5f, 1.0f);
-            animation1.setDuration(800);
+            AlphaAnimation animation1 = new AlphaAnimation(0.4f, 1.0f);
+            animation1.setDuration(600);
             animation1.setRepeatMode(Animation.REVERSE);
             animation1.setRepeatCount(Animation.INFINITE);
 
