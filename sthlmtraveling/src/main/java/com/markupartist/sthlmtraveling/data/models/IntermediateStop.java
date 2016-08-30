@@ -114,14 +114,14 @@ public class IntermediateStop extends ParcelableBase {
 
     public boolean hasDepartureDelay() {
         if (startTimeRt != null && startTime != null) {
-            return startTimeRt.getTime() != startTime.getTime();
+            return true;
         }
         return false;
     }
 
     public boolean hasArrivalDelay() {
         if (endTimeRt != null && endTime != null) {
-            return endTimeRt.getTime() != endTime.getTime();
+            return true;
         }
         return false;
     }

@@ -104,6 +104,7 @@ public class RouteDetailActivity extends BaseListActivity {
     private AdProxy mAdProxy;
     private ApiService mApiService;
     private Monitor mMonitor;
+    private View mFooterView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -182,8 +183,15 @@ public class RouteDetailActivity extends BaseListActivity {
                 super.handleUpdate();
                 List<String> references = new ArrayList<>();
 
+                long nowMillis = System.currentTimeMillis();
                 for (Leg leg : mRoute.getLegs()) {
-                    references.add(leg.getDetailRef());
+                    if (leg.shouldRefresh(nowMillis)) {
+                        references.add(leg.getDetailRef());
+                    }
+                }
+                if (references.isEmpty()) {
+                    onStop();
+                    return;
                 }
 
                 mApiService.getIntermediateStops(references, new Callback<IntermediateResponse>() {
@@ -221,8 +229,8 @@ public class RouteDetailActivity extends BaseListActivity {
         }
 
         if (updated) {
-            Log.e(TAG, "Refreshing stop times");
             mSubTripAdapter.setLegs(legViewModels);
+            updateFooterView(legViewModels);
         }
     }
 
@@ -347,7 +355,8 @@ public class RouteDetailActivity extends BaseListActivity {
 
     public void showLegs(List<LegViewModel> legs) {
         mSubTripAdapter.setLegs(legs);
-        getListView().addFooterView(createFooterView(legs));
+        mFooterView = createFooterView(legs);
+        getListView().addFooterView(mFooterView);
         // Add attributions if dealing with a Google result.
         if (mJourneyQuery.destination.getSource() == Site.SOURCE_GOOGLE_PLACES) {
             View attributionView = getLayoutInflater().inflate(
@@ -357,6 +366,25 @@ public class RouteDetailActivity extends BaseListActivity {
 
         setListAdapter(mSubTripAdapter);
 
+    }
+
+    void updateFooterView(final List<LegViewModel> legs) {
+        int numSubTrips = legs.size();
+        final LegViewModel legViewModel = legs.get(numSubTrips - 1);
+
+        TextView departureTimeView = (TextView) mFooterView.findViewById(R.id.trip_departure_time);
+        TextView expectedDepartureTimeView = (TextView) mFooterView.findViewById(R.id.trip_expected_departure_time);
+        departureTimeView.setText(DateFormat.getTimeFormat(this).format(legViewModel.leg.getEndTime()));
+        if (legViewModel.leg.getEndTimeRt() != null && legViewModel.leg.hasDepartureDelay()) {
+            departureTimeView.setPaintFlags(departureTimeView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            expectedDepartureTimeView.setVisibility(View.VISIBLE);
+            expectedDepartureTimeView.setText(DateFormat.getTimeFormat(this).format(legViewModel.leg.getEndTimeRt()));
+            ViewHelper.setTextColorForTimeView(expectedDepartureTimeView, legViewModel.leg, false);
+        } else {
+            departureTimeView.setPaintFlags(departureTimeView.getPaintFlags() & (~ Paint.STRIKE_THRU_TEXT_FLAG));
+            ViewHelper.setTextColorForTimeView(departureTimeView, legViewModel.leg, false);
+            expectedDepartureTimeView.setVisibility(View.GONE);
+        }
     }
 
     private View createFooterView(final List<LegViewModel> legs) {

@@ -194,9 +194,9 @@ public class RoutesActivity extends BaseListActivity implements
         mMonitor = new Monitor() {
             @Override
             public void handleUpdate() {
-                super.handleUpdate();
-                if (mTransitPlan != null) {
-                    mRouter.refreshTransit(mJourneyQuery, mPlanCallback);
+                if (mTransitPlan != null
+                        && mTransitPlan.shouldRefresh(System.currentTimeMillis())) {
+                    mRouter.refreshTransit(mJourneyQuery, mPlanRefreshCallback);
                 }
             }
         };
@@ -520,6 +520,18 @@ public class RoutesActivity extends BaseListActivity implements
                 break;
         }
     }
+
+    private Router.Callback mPlanRefreshCallback = new Router.Callback() {
+        @Override
+        public void onPlan(Plan plan) {
+            updateTransitRoutes(plan);
+        }
+
+        @Override
+        public void onPlanError(JourneyQuery journeyQuery, String errorCode) {
+            Log.w(TAG, "Failed to reload routes.");
+        }
+    };
 
     private Router.Callback mPlanCallback = new Router.Callback() {
         @Override

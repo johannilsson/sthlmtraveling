@@ -140,6 +140,7 @@ public class Router {
                 directionParam, paginateRef, new retrofit.Callback<Plan>() {
                     @Override
                     public void success(Plan plan, Response response) {
+                        plan.setUpdatedAtMillis(System.currentTimeMillis());
                         callback.onPlan(plan);
                     }
 

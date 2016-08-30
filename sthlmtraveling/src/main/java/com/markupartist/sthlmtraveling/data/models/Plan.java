@@ -31,6 +31,7 @@ public class Plan implements Parcelable {
     private final String paginateRef;
     private final List<RouteError> errors;
     private String tariffZones;
+    private long updatedAtMillis;
 
     public Plan(List<Route> routes, String paginateRef, List<RouteError> errors) {
         this.routes = routes;
@@ -44,6 +45,7 @@ public class Plan implements Parcelable {
         paginateRef = in.readString();
         errors = new ArrayList<>();
         in.readTypedList(errors, RouteError.CREATOR);
+        in.readLong();
     }
 
     public static final Creator<Plan> CREATOR = new Creator<Plan>() {
@@ -68,6 +70,7 @@ public class Plan implements Parcelable {
         dest.writeTypedList(routes);
         dest.writeString(paginateRef);
         dest.writeTypedList(errors);
+        dest.writeLong(updatedAtMillis);
     }
 
     public List<Route> getRoutes() {
@@ -132,5 +135,27 @@ public class Plan implements Parcelable {
 
     public String tariffZones() {
         return tariffZones;
+    }
+
+    public boolean shouldRefresh(long timeMillis) {
+        for (Route route : routes) {
+            for (Leg leg : route.getLegs()) {
+                if (leg.shouldRefresh(timeMillis)) {
+                    return true;
+                }
+            }
+        }
+        if (updatedAtMillis != 0 && updatedAtMillis < timeMillis - 3600000) {
+            return true;
+        }
+        return false;
+    }
+
+    public long getUpdatedAtMillis() {
+        return updatedAtMillis;
+    }
+
+    public void setUpdatedAtMillis(long updatedAtMillis) {
+        this.updatedAtMillis = updatedAtMillis;
     }
 }

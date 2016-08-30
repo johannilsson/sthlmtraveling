@@ -41,7 +41,6 @@ public class Monitor {
     }
 
     public void handleUpdate() {
-        Log.i(TAG, "update.");
     }
 
     protected void onUpdate() {

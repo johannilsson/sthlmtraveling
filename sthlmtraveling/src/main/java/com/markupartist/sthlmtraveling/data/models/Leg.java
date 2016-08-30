@@ -18,7 +18,6 @@ package com.markupartist.sthlmtraveling.data.models;
 
 import android.os.Parcel;
 import android.support.annotation.NonNull;
-import android.support.v4.util.Pair;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -55,6 +54,7 @@ public class Leg extends ParcelableBase {
     private final String geometryRef;
     private final String detailRef;
     private List<IntermediateStop> intermediateStops;
+    private long updatedAtMillis;
 
     public Leg(List<Alert> alerts, Place from, Place to, String geometry, int distance,
                int duration, List<Step> steps, String travelMode, Place headsign,
@@ -119,6 +119,7 @@ public class Leg extends ParcelableBase {
         geometryRef = in.readString();
         detailRef = in.readString();
         intermediateStops = in.createTypedArrayList(IntermediateStop.CREATOR);
+        updatedAtMillis = in.readLong();
     }
 
     public static final Creator<Leg> CREATOR = new Creator<Leg>() {
@@ -186,6 +187,7 @@ public class Leg extends ParcelableBase {
         dest.writeString(geometryRef);
         dest.writeString(detailRef);
         dest.writeTypedList(intermediateStops);
+        dest.writeLong(updatedAtMillis);
     }
 
     public Date departsAt() {
@@ -319,22 +321,45 @@ public class Leg extends ParcelableBase {
 
     public boolean updateTimes(List<IntermediateStop> stopTimes) {
         boolean updated = false;
-        for (IntermediateStop stopTime : stopTimes) {
-            Pair<Integer, RealTimeState> delay = stopTime.delay();
-            if (delay.second == RealTimeState.NOT_SET) {
-                continue;
-            }
 
+        // If intermediate stops is missing, attempt to add them.
+        if (getIntermediateStops().isEmpty()) {
+            boolean addStopTime = false;
+            for (IntermediateStop stopTime : stopTimes) {
+                // Add all stop times that is between start and end.
+                if (stopTime.getLocation().looksEquals(getTo())) {
+                    addStopTime = false;
+                }
+                if (addStopTime) {
+                    intermediateStops.add(stopTime);
+                }
+                if (stopTime.getLocation().looksEquals(getFrom())) {
+                    addStopTime = true;
+                }
+            }
+        }
+
+        for (IntermediateStop stopTime : stopTimes) {
             // Check from if we match update start time
             if (stopTime.getLocation().looksEquals(getFrom())) {
-                realTime = true;
                 startTimeRt = stopTime.getStartTimeRt();
-                departureDelay = stopTime.startTimeDelay();
+                if (stopTime.hasDepartureDelay()) {
+                    realTime = true;
+                    departureDelay = stopTime.startTimeDelay();
+                } else {
+                    realTime = false;
+                    departureDelay = 0;
+                }
                 updated = true;
             } else if (stopTime.getLocation().looksEquals(getTo())) {
-                realTime = true;
                 endTimeRt = stopTime.getEndTimeRt();
-                arrivalDelay = stopTime.endTimeDelay();
+                if (stopTime.hasArrivalDelay()) {
+                    realTime = true;
+                    arrivalDelay = stopTime.endTimeDelay();
+                } else {
+                    realTime = false;
+                    arrivalDelay = 0;
+                }
                 updated = true;
             }
 
@@ -348,6 +373,32 @@ public class Leg extends ParcelableBase {
                 }
             }
         }
+        if (updated) {
+            updatedAtMillis = System.currentTimeMillis();
+        }
         return updated;
+    }
+
+    /**
+     * Checks if this leg is considered to be active.
+     *
+     * @param timeMillis
+     * @return
+     */
+    public boolean shouldRefresh(long timeMillis) {
+        // Do we have real-time?
+        if (isRealTime()) {
+            return true;
+        }
+        // 1 hour before departure, 30 minutes after arrival.
+        if (departsAt().getTime() - 3600000 > timeMillis
+                && arrivesAt().getTime() + 1800000 < timeMillis) {
+            return true;
+        }
+        // If we haven't been refreshed in an hour.
+        if (updatedAtMillis != 0 && updatedAtMillis < timeMillis - 3600000) {
+            return true;
+        }
+        return false;
     }
 }

@@ -154,4 +154,5 @@ public class Route implements Parcelable {
     public Fare getFare() {
         return fare;
     }
+
 }
