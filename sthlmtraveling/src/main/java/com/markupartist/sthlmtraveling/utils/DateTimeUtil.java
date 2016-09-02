@@ -233,7 +233,6 @@ public class DateTimeUtil {
         }
     }
 
-
     public static CharSequence routeToTimeDisplay(Context context, Route route) {
         java.text.DateFormat format = android.text.format.DateFormat.getTimeFormat(context);
         BidiFormatter bidiFormatter = BidiFormatter.getInstance(RtlUtils.isRtl(Locale.getDefault()));
@@ -289,5 +288,19 @@ public class DateTimeUtil {
             return -delay;
         }
         return delay;
+    }
+
+    /**
+     * Get the real-time state based on the passed delay.
+     * @param delay The current delay
+     * @return The real-time state
+     */
+    public static RealTimeState getRealTimeStateFromDelay(int delay) {
+        if (delay > 0) {
+            return RealTimeState.BEHIND_SCHEDULE;
+        } else if (delay < 0) {
+            return RealTimeState.AHEAD_OF_SCHEDULE;
+        }
+        return RealTimeState.ON_TIME;
     }
 }

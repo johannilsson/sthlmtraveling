@@ -134,22 +134,13 @@ public class IntermediateStop extends ParcelableBase {
         return DateTimeUtil.getDelay(endTime, endTimeRt);
     }
 
-    RealTimeState realTimeStateFromDelay(int delay) {
-        if (delay > 0) {
-            return RealTimeState.BEHIND_SCHEDULE;
-        } else if (delay < 0) {
-            return RealTimeState.AHEAD_OF_SCHEDULE;
-        }
-        return RealTimeState.ON_TIME;
-    }
-
     public Pair<Integer, RealTimeState> delay() {
         if (startTime != null && startTimeRt != null) {
             int delay = startTimeDelay();
-            return Pair.create(delay, realTimeStateFromDelay(delay));
+            return Pair.create(delay, DateTimeUtil.getRealTimeStateFromDelay(delay));
         } else if (endTime != null && endTimeRt != null) {
             int delay = endTimeDelay();
-            return Pair.create(delay, realTimeStateFromDelay(delay));
+            return Pair.create(delay, DateTimeUtil.getRealTimeStateFromDelay(delay));
         }
         return Pair.create(0, RealTimeState.NOT_SET);
     }
