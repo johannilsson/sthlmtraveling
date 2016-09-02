@@ -22,7 +22,9 @@ import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
 import com.markupartist.sthlmtraveling.data.misc.HttpHelper;
+import com.markupartist.sthlmtraveling.data.models.RealTimeState;
 import com.markupartist.sthlmtraveling.provider.site.Site;
+import com.markupartist.sthlmtraveling.utils.DateTimeUtil;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
@@ -34,6 +36,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 
 import static com.markupartist.sthlmtraveling.provider.ApiConf.KEY;
 import static com.markupartist.sthlmtraveling.provider.ApiConf.apiEndpoint2;
@@ -302,6 +305,26 @@ public class DeparturesStore {
             }
 
             return dr;
+        }
+
+        public RealTimeState getRealTimeState() {
+            if (TextUtils.isEmpty(timeTabledDateTime) && TextUtils.isEmpty(expectedDateTime)) {
+                // We only have display time present, assume it is real-time and on time.
+                return RealTimeState.ON_TIME;
+            }
+
+            if (!TextUtils.isEmpty(displayTime) && displayTime.contains(":")) {
+                return RealTimeState.NOT_SET;
+            }
+
+            if (!TextUtils.isEmpty(timeTabledDateTime) && !TextUtils.isEmpty(expectedDateTime)) {
+                Date scheduled = DateTimeUtil.fromDateTime(timeTabledDateTime);
+                Date expected = DateTimeUtil.fromDateTime(expectedDateTime);
+                int delay = DateTimeUtil.getDelay(scheduled, expected);
+                return DateTimeUtil.getRealTimeStateFromDelay(delay);
+            }
+
+            return RealTimeState.NOT_SET;
         }
 
         public boolean looksValid() {

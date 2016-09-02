@@ -2,6 +2,7 @@ package com.markupartist.sthlmtraveling;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.support.v4.content.ContextCompat;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextUtils;
@@ -165,6 +166,9 @@ public class DepartureAdapter extends SectionedAdapter {
             String displayTime = displayRow.displayTime;
             holder.timeToDisplayView.setText(
                     DateTimeUtil.formatDisplayTime(displayTime, getContext()));
+            holder.timeToDisplayView.setTextColor(ContextCompat.getColor(
+                    holder.timeToDisplayView.getContext(),
+                    ViewHelper.getTextColorByRealtimeState(displayRow.getRealTimeState())));
 
             return convertView;
         }
