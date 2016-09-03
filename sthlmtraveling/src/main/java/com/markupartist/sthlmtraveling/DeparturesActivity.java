@@ -253,6 +253,10 @@ public class DeparturesActivity extends BaseFragmentActivity {
     }
 
     private void loadDepartures() {
+        if (mGetDeparturesTask != null && mGetDeparturesTask.getStatus() == AsyncTask.Status.RUNNING) {
+            return;
+        }
+
         if (mSite != null && mSite.getSource() == Site.SOURCE_STHLM_TRAVELING && mSite.getId() != null) {
             mGetDeparturesTask = new GetDeparturesTask();
             mGetDeparturesTask.execute(mSite);
@@ -507,7 +511,11 @@ public class DeparturesActivity extends BaseFragmentActivity {
     }
 
     public void onRefresh() {
-        new GetDeparturesTask().execute(mSite);
+        if (mGetDeparturesTask == null
+                || mGetDeparturesTask.getStatus() == AsyncTask.Status.FINISHED) {
+            mGetDeparturesTask = new GetDeparturesTask();
+            mGetDeparturesTask.execute(mSite);
+        }
     }
 
     /**
@@ -649,6 +657,9 @@ public class DeparturesActivity extends BaseFragmentActivity {
     }
 
     private void onData(Departures result) {
+        if (result == null) {
+            return;
+        }
         selectPreferredTransport();
 
         // TODO: Fix this mess.
