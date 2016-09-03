@@ -33,8 +33,6 @@ import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AlphaAnimation;
-import android.view.animation.Animation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -113,19 +111,19 @@ public class TripView extends LinearLayout {
                 hasRealtime = true;
             }
         }
-        if (hasRealtime) {
-            ImageView liveDrawable = new ImageView(getContext());
-            liveDrawable.setImageResource(R.drawable.ic_live);
-            ViewCompat.setPaddingRelative(liveDrawable, 0, (int) (2 * scale), (int) (4 * scale), 0);
-            timeStartEndLayout.addView(liveDrawable);
-
-            AlphaAnimation animation1 = new AlphaAnimation(0.4f, 1.0f);
-            animation1.setDuration(600);
-            animation1.setRepeatMode(Animation.REVERSE);
-            animation1.setRepeatCount(Animation.INFINITE);
-
-            liveDrawable.startAnimation(animation1);
-        }
+//        if (hasRealtime) {
+//            ImageView liveDrawable = new ImageView(getContext());
+//            liveDrawable.setImageResource(R.drawable.ic_live);
+//            ViewCompat.setPaddingRelative(liveDrawable, 0, (int) (2 * scale), (int) (4 * scale), 0);
+//            timeStartEndLayout.addView(liveDrawable);
+//
+//            AlphaAnimation animation1 = new AlphaAnimation(0.4f, 1.0f);
+//            animation1.setDuration(600);
+//            animation1.setRepeatMode(Animation.REVERSE);
+//            animation1.setRepeatCount(Animation.INFINITE);
+//
+//            liveDrawable.startAnimation(animation1);
+//        }
 
         timeStartEndLayout.addView(timeStartEndText);
 
