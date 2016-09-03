@@ -28,7 +28,7 @@ public class AppConfig {
     public static final String TICKET_SMS_NUMBER = "0767201010";
 
     public static final LatLngBounds GREATER_STHLM_BOUNDS = new LatLngBounds(
-            new LatLng(59.039795, 17.297760), new LatLng(60.053231, 19.086177));
+            new LatLng(58.804442, 17.327972), new LatLng(60.053231, 19.086177));
 
     public static Pair<AdProxy.Provider, String> getAdConfForRouteDetails(int preferredNetwork) {
         AdProxy.Provider network = AD_DEFAULT_PROVIDER;
