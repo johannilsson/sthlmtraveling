@@ -70,8 +70,8 @@ android {
         minSdkVersion 9
         targetSdkVersion 23
         applicationId "com.markupartist.sthlmtraveling"
-        versionName "2.18.0-beta"
-        versionCode 201
+        versionName "2.18.0"
+        versionCode 202
 
         generatedDensities = []
 
