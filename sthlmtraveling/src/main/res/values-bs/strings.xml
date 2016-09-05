@@ -1,21 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
     <!--
-/*
-** Copyright (C) 2009 Johan Nilsson <http://markupartist.com>
-**
-** Licensed under the Apache License, Version 2.0 (the "License"); 
-** you may not use this file except in compliance with the License. 
-** You may obtain a copy of the License at 
-**
-**     http://www.apache.org/licenses/LICENSE-2.0 
-**
-** Unless required by applicable law or agreed to in writing, software 
-** distributed under the License is distributed on an "AS IS" BASIS, 
-** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
-** See the License for the specific language governing permissions and 
-** limitations under the License.
-*/
--->
+  ~ Copyright (C) 2009-2016 Johan Nilsson <http://markupartist.com>
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- General strings -->
     <string name="ok">OK</string>
@@ -111,11 +109,11 @@
     <string name="share_label">Podijeli</string>
     <string name="sms_ticket_label">Kupi kartu</string>
     <string name="sms_ticket_price_reduced">Snižena cijena</string>
-    <string name="sms_ticket_price_full">Puna cijena (20-64 god)</string>
+    <string name="sms_ticket_price_full">Puna cijena (20–64 god)</string>
     <string name="sms_ticket_notice_message">Molimo provjerite detalje prije nego što kupite vašu kartu. STHLM Traveling ne može garantovati validnost karte za vaše putovanje.</string>
     <string name="sms_ticket_notice_disabled">SMS karte nisu dostupne za ovu rutu</string>
     <string name="trip_description_walk" formatted="false">Pješačite</string>
-    <string name="trip_description_normal" formatted="false">Uzmite <xliff:g id="transport">%1$s</xliff:g> prema <xliff:g id="towards">%2$s</xliff:g>.</string>
+    <string name="trip_description_normal" formatted="false"><xliff:g id="transport">%1$s</xliff:g> prema <xliff:g id="towards">%2$s</xliff:g>.</string>
     <string name="trip_map_description_walk" formatted="false"><xliff:g id="time">%1$s</xliff:g> Pješačite do <xliff:g id="stop">%2$s</xliff:g></string>
     <string name="trip_map_description_normal" formatted="false"><xliff:g id="time">%1$s</xliff:g> <xliff:g id="transport">%2$s</xliff:g> prema <xliff:g id="towards">%3$s</xliff:g>.</string>
     <string name="show_all">Prikaži sve</string>
@@ -246,4 +244,12 @@
     <string name="ads_turn_off">Isključi reklame</string>
     <string name="ads_message">Ova aplikacija je nastojala opstati kao besplatna od 2009 godine, iako su se troškovi za servere i održavanje povećali.\n\nDa bi bili u mogućnosti da nastavimo razvoj i podršku ovog projekta, aplikacija ponekad prikazuje reklame.\n\nAko imate problema u vezi reklama, moguće je da ih isključite ispod. U budućnosti, moguće je da će postojati mala provozija ukoliko bi htjeli isključiti reklame.\n\nHvala na vašoj podršci!\nJohan</string>
     <string name="ads_summary">Zašto aplikacija sadrži reklame?</string>
+    <string name="permission_location_needed_search">Omogućite dozvolu lokacije kako bi izvršili ovu pretragu</string>
+    <string name="permission_location_needed_maps">Omogućite dozvolu lokacije kako bi vidjeli vašu lokaciju na karti</string>
+    <string name="allow">Dozvoli</string>
+    <string name="distance_in_meter"><xliff:g id="distance">%1$s</xliff:g>m</string>
+    <string name="entrance_and_name">Ulaz u <xliff:g id="entrance">%1$s</xliff:g></string>
+    <string name="exit_and_name">Izlaz iz <xliff:g id="entrance">%1$s</xliff:g></string>
+    <string name="entrance">Ulaz</string>
+    <string name="exit">Izlaz</string>
 </resources>

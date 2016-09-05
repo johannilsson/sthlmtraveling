@@ -24,7 +24,7 @@
     <string name="via">über/via</string>
     <string name="search_label">Suchen</string>
     <string name="no_routes_found_label">Leider keine Verbindung gefunden</string>
-    <string name="no_routes_found_message">Möglicherweise werden Start- oder Zielhaltestelle nicht bedient oder nicht mit dem gewählten Transportmittel zur angegebenen Zeit (z.B. werden manchmal bestimmte Haltestellen nicht am Wochenende bedient)</string>
+    <string name="no_routes_found_message">Möglicherweise werden Start- oder Zielhaltestelle nicht bedient oder nicht mit dem gewähltem Transportmittel zur angegebenen Zeit (z.B. werden manchmal bestimmte Haltestellen nicht am Wochenende bedient)</string>
     <string name="routes_label">Verbindungen</string>
     <string name="route_details_label">Details zu dieser Verbindung</string>
     <string name="no_route_details">Leider wurde keine Verbindung gefunden. Möglicherweise war Ihre Suchanfrage nicht mehr aktuell.</string>
