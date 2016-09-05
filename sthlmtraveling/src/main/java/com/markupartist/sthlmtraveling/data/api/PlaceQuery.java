@@ -57,6 +57,9 @@ public class PlaceQuery {
 
     public String toString() {
         if (id != null) {
+            if (this.lat != 0D && this.lon != 0D) {
+                return String.format(Locale.US, "%s,%s:%s:%s", lat, lon, id, name);
+            }
             return String.format(Locale.US, "%s:%s", id, name);
         }
         return String.format(Locale.US, "%s,%s:%s", lat, lon, name);
@@ -91,17 +94,22 @@ public class PlaceQuery {
         }
 
         public Builder param(String param) {
-            String[] parts = TextUtils.split(param, ":");
-            String idOrLocation = parts[0];
-            String[] locationParts = TextUtils.split(idOrLocation, ",");
-            if (locationParts.length == 2) {
-                // Got location
+            name = param.substring(param.lastIndexOf(":") + 1);
+            String idAndLocation = param.substring(0, param.lastIndexOf(":"));
+            if (idAndLocation.contains(",")) {
+                String locationStr;
+                if (idAndLocation.contains(":")) {
+                    locationStr = idAndLocation.substring(0, idAndLocation.indexOf(":"));
+                    id = idAndLocation.substring(idAndLocation.indexOf(":") + 1);
+                } else {
+                    locationStr = idAndLocation;
+                }
+                String[] locationParts = TextUtils.split(locationStr, ",");
                 lat = Double.parseDouble(locationParts[0]);
                 lon = Double.parseDouble(locationParts[1]);
             } else {
-                id = idOrLocation;
+                id = idAndLocation;
             }
-            name = parts[1];
             return this;
         }
 

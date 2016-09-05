@@ -431,13 +431,14 @@ public class JourneyQuery implements Parcelable {
             Site site = new Site();
             PlaceQuery fromQuery = new PlaceQuery.Builder().param(parameter).build();
             site.setName(fromQuery.getName());
-            if (fromQuery.getId() == null) {
-                if (fromQuery.getLon() != 0 || fromQuery.getLat() != 0) {
-                    site.setLocation(fromQuery.getLat(), fromQuery.getLon());
-                }
-            } else {
+
+            if (fromQuery.getId() != null) {
                 site.setId(fromQuery.getId());
             }
+            if (fromQuery.getLat() != 0 && fromQuery.getLon() != 0) {
+                site.setLocation(fromQuery.getLat(), fromQuery.getLon());
+            }
+
             fromQuery = null;
             return site;
         }
