@@ -138,6 +138,9 @@ public class Plan implements Parcelable {
     }
 
     public boolean shouldRefresh(long timeMillis) {
+        if (!hasRoutes()) {
+            return false;
+        }
         for (Route route : routes) {
             for (Leg leg : route.getLegs()) {
                 if (leg.shouldRefresh(timeMillis)) {
