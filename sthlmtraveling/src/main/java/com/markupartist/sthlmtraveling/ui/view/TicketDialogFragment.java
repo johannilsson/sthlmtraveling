@@ -17,6 +17,7 @@
 package com.markupartist.sthlmtraveling.ui.view;
 
 import android.content.Context;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.IntDef;
 import android.support.annotation.Nullable;
@@ -28,8 +29,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.markupartist.sthlmtraveling.AppConfig;
 import com.markupartist.sthlmtraveling.R;
+import com.markupartist.sthlmtraveling.data.models.Fare;
+import com.markupartist.sthlmtraveling.data.models.FareAttribute;
 import com.markupartist.sthlmtraveling.utils.Analytics;
 import com.markupartist.sthlmtraveling.utils.IntentUtil;
 
@@ -41,11 +43,11 @@ import java.util.List;
 
 public class TicketDialogFragment extends BottomSheetDialogFragment {
 
-    static final String ARG_ZONES = "zones";
+    static final String ARG_FARE = "zones";
 
-    public static TicketDialogFragment create(String zones) {
+    public static TicketDialogFragment create(Fare fare) {
         Bundle b = new Bundle();
-        b.putString(ARG_ZONES, zones);
+        b.putParcelable(ARG_FARE, fare);
         TicketDialogFragment fragment = new TicketDialogFragment();
         fragment.setArguments(b);
         return fragment;
@@ -61,14 +63,23 @@ public class TicketDialogFragment extends BottomSheetDialogFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         Bundle args = getArguments();
-        String zones = args.getString(ARG_ZONES);
+        Fare fare = args.getParcelable(ARG_FARE);
 
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         final TicketAdapter adapter = new TicketAdapter(getContext());
-        adapter.addTicket(new TicketPrice(getText(R.string.sms_ticket_price_full), zones, false));
-        adapter.addTicket(new TicketPrice(getText(R.string.sms_ticket_price_reduced), zones, true));
+        for (FareAttribute fareAttribute : fare.getAttributes()) {
+            CharSequence description = getText(fareAttribute.isReduced() ?
+                    R.string.sms_ticket_price_reduced :
+                    R.string.sms_ticket_price_full);
+            adapter.addTicket(new TicketPrice(description,
+                    fare.getZones(),
+                    fareAttribute.getText(),
+                    fareAttribute.isReduced(),
+                    fareAttribute.getAction()));
+        }
+
         recyclerView.setAdapter(adapter);
         ItemClickSupport.addTo(recyclerView).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
             @Override
@@ -77,7 +88,13 @@ public class TicketDialogFragment extends BottomSheetDialogFragment {
                 switch (item.viewType) {
                     case TicketItem.PRICE_ITEM:
                         TicketPrice ticketPrice = (TicketPrice) item.object;
-                        sendSms(getContext(), ticketPrice.isReduced, ticketPrice.zones);
+                        Uri uri = Uri.parse(ticketPrice.getAction());
+                        String action = uri.getQueryParameter("action");
+                        if ("sms".equals(action)) {
+                            sendSms(getContext(), ticketPrice.isReduced,
+                                    uri.getQueryParameter("number"),
+                                    uri.getQueryParameter("message"));
+                        }
                         break;
                     case TicketItem.HEADER_ITEM:
                         // No-op
@@ -91,37 +108,41 @@ public class TicketDialogFragment extends BottomSheetDialogFragment {
      * Invokes the Messaging application.
      *
      * @param reducedPrice True if the price is reduced, false otherwise.
+     * @param number       The number
+     * @param message      The message
      */
-    private static void sendSms(final Context context, final boolean reducedPrice, final String tariffZones) {
-        String price = reducedPrice ? "R" : "H";
+    private static void sendSms(final Context context, final boolean reducedPrice,
+                                final String number, final String message) {
+        String price = reducedPrice ? "R" : "H"; // Only kept for analytic purposes
         Analytics.getInstance(context).event("Ticket", "Buy SMS Ticket", price);
-        IntentUtil.smsIntent(context, AppConfig.TICKET_SMS_NUMBER, price + tariffZones);
+        IntentUtil.smsIntent(context, number, message);
     }
 
     static class TicketPrice {
         public String zones;
         public CharSequence description;
         public boolean isReduced;
+        public String priceText;
+        public String action;
 
-        public TicketPrice(CharSequence description, String zones, boolean isReduced) {
+        public TicketPrice(CharSequence description,
+                           String zones,
+                           String priceText,
+                           boolean isReduced,
+                           String action) {
             this.description = description;
             this.zones = zones;
+            this.priceText = priceText;
             this.isReduced = isReduced;
-        }
-
-        public CharSequence getFullPrice() {
-            return AppConfig.TICKET_FULL_PRICE[zones.length() - 1] + " kr";
-        }
-
-        public CharSequence getReducedPrice() {
-            return AppConfig.TICKET_REDUCED_PRICE[zones.length() - 1] + " kr";
+            this.action = action;
         }
 
         public CharSequence getPrice() {
-            if (isReduced) {
-                return getReducedPrice();
-            }
-            return getFullPrice();
+            return priceText;
+        }
+
+        public String getAction() {
+            return action;
         }
     }
 

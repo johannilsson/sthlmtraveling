@@ -23,10 +23,6 @@ public class AppConfig {
     public static AdProxy.Provider AD_DEFAULT_PROVIDER = AdProxy.Provider.WIDESPACE;
     public static String AD_DEFAULT_ID = WIDESPACE_SID;
 
-    public static final int[] TICKET_FULL_PRICE = new int[]{36, 54, 72};
-    public static final int[] TICKET_REDUCED_PRICE = new int[]{20, 30, 40};
-    public static final String TICKET_SMS_NUMBER = "0767201010";
-
     public static final LatLngBounds GREATER_STHLM_BOUNDS = new LatLngBounds(
             new LatLng(58.804442, 17.327972), new LatLng(60.053231, 19.086177));
 

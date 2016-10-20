@@ -156,9 +156,8 @@ public class RouteDetailActivity extends BaseListActivity {
                 @Override
                 public void onClick(View v) {
                     Analytics.getInstance(RouteDetailActivity.this).event("Ticket", "Click on zone");
-                    //showDialog(DIALOG_BUY_SMS_TICKET);
                     TicketDialogFragment fragment = TicketDialogFragment.create(
-                            mRoute.getFare().getZones());
+                            mRoute.getFare());
                     fragment.show(getSupportFragmentManager(), null);
                 }
             });

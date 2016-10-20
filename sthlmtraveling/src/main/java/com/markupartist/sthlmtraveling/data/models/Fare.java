@@ -19,18 +19,23 @@ package com.markupartist.sthlmtraveling.data.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.List;
+
 /**
  *
  */
 public class Fare implements Parcelable {
     private final String zones;
+    private final List<FareAttribute> attributes;
 
-    public Fare(String zones) {
+    public Fare(String zones, List<FareAttribute> attributes) {
         this.zones = zones;
+        this.attributes = attributes;
     }
 
     protected Fare(Parcel in) {
         zones = in.readString();
+        attributes = in.createTypedArrayList(FareAttribute.CREATOR);
     }
 
     public static final Creator<Fare> CREATOR = new Creator<Fare>() {
@@ -49,14 +54,8 @@ public class Fare implements Parcelable {
         return zones;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(zones);
+    public List<FareAttribute> getAttributes() {
+        return attributes;
     }
 
     public boolean canBuyTicket() {
@@ -67,5 +66,16 @@ public class Fare implements Parcelable {
                 zones.equals("AB") ||
                 zones.equals("BC") ||
                 zones.equals("ABC"));
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(zones);
+        dest.writeTypedList(attributes);
     }
 }
