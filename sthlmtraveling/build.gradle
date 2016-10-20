@@ -43,16 +43,14 @@ dependencies {
     compile 'com.android.support:support-v4:23.2.1'
     compile 'com.android.support:percent:23.2.1'
     compile 'com.android.support:design:23.2.1'
-//    compile 'com.android.support:customtabs:23.2.1'
+    compile 'com.android.support:customtabs:23.2.1'
     compile 'com.squareup.okhttp:okhttp:2.4.0'
     compile 'com.google.code.gson:gson:2.3.1'
     compile 'com.squareup.retrofit:retrofit:1.9.0'
     compile 'com.yqritc:recyclerview-multiple-viewtypes-adapter:1.1.0'
     compile 'org.slf4j:slf4j-android:1.7.10'
-    compile files('libs/widespace-sdk-4.6.2-f9ac2ef.jar')
-    compile files('libs/nmdp_speech_kit.jar')
-//    compile files('libs/widespace-sdk-4.8.0-8b67b2d.jar')
-//    compile files('libs/wisper-java-1.0-rc8.jar')
+    compile files('libs/widespace-sdk-4.8.1-fc67051.jar')
+    compile files('libs/wisper-java-1.0-rc8.jar')
     compile('com.crashlytics.sdk.android:crashlytics:2.6.1@aar') {
         transitive = true;
     }
@@ -70,8 +68,8 @@ android {
         minSdkVersion 9
         targetSdkVersion 23
         applicationId "com.markupartist.sthlmtraveling"
-        versionName "2.18.0"
-        versionCode 203
+        versionName "2.19.0-dev"
+        versionCode 205
 
         generatedDensities = []
 

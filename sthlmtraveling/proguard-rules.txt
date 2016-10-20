@@ -22,12 +22,11 @@
 
 # Widespace
 #-keep class com.widespace.**
--keep class com.widespace.internal.interfaces.** {
+-keep class com.widespace.** {
    *;
 }
 -dontwarn com.widespace.adspace.helpers.AttributesParseHelper
-#-dontwarn com.widespace.internal.voice.NuanceVoiceAdController
--dontwarn com.nuance.**
+-dontwarn com.widespace.wisper.**
 
 # Libraries included
 #-libraryjars libs
