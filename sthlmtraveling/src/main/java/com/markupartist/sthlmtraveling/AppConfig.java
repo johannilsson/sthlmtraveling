@@ -24,7 +24,7 @@ public class AppConfig {
     public static String AD_DEFAULT_ID = WIDESPACE_SID;
 
     public static final LatLngBounds GREATER_STHLM_BOUNDS = new LatLngBounds(
-            new LatLng(58.804442, 17.327972), new LatLng(60.053231, 19.086177));
+            new LatLng(58.742506, 17.248321), new LatLng(60.053231, 19.086177));
 
     public static Pair<AdProxy.Provider, String> getAdConfForRouteDetails(int preferredNetwork) {
         AdProxy.Provider network = AD_DEFAULT_PROVIDER;
