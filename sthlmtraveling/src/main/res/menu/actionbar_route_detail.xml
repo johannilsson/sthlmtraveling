@@ -28,13 +28,13 @@
         />
     <item
         android:id="@+id/actionbar_item_time"
-        android:icon="@drawable/ic_action_time"
+        android:icon="@drawable/ic_access_time_24dp"
         android:title="@string/departures"
         app:showAsAction="always"
         />
     <item
         android:id="@+id/actionbar_item_star"
-        android:icon="@drawable/ic_action_star_off"
+        android:icon="@drawable/ic_star_border_24dp"
         android:title="@string/departures"
         app:showAsAction="always"
         />
