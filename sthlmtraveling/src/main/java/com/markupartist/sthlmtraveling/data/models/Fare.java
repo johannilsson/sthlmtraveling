@@ -59,13 +59,7 @@ public class Fare implements Parcelable {
     }
 
     public boolean canBuyTicket() {
-        return zones != null && (
-                zones.equals("A") ||
-                zones.equals("B") ||
-                zones.equals("C") ||
-                zones.equals("AB") ||
-                zones.equals("BC") ||
-                zones.equals("ABC"));
+        return zones != null && zones.equals("SL");
     }
 
     @Override
