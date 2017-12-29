@@ -236,31 +236,32 @@ public class ViewOnMapActivity extends BaseFragmentActivity implements OnMapRead
                 // One polyline per leg, different colors.
                 PolylineOptions options = new PolylineOptions();
                 options.add(origin);
-
-                BitmapDescriptor icon = getColoredMarker(legColor, R.drawable.ic_line_marker);
+                options.add(destination);
                 for (IntermediateStop stop : leg.getIntermediateStops()) {
                     LatLng intermediateStop = new LatLng(
-                            stop.getLocation().getLat(),
-                            stop.getLocation().getLon());
+                        stop.getLocation().getLat(),
+                        stop.getLocation().getLon());
                     options.add(intermediateStop);
-                    Date date = stop.getTimeRt();
-                    if (date == null) {
-                        date = stop.getTime();
-                    }
-                    String time = date != null ? DateFormat.getTimeFormat(this).format(date) : "";
-                    mMap.addMarker(new MarkerOptions()
-                            .anchor(0.5f, 0.5f)
-                            .position(intermediateStop)
-                            .title(getLocationName(stop.getLocation()))
-                            .snippet(time)
-                            .icon(icon));
                 }
-
-                options.add(destination);
-
                 mMap.addPolyline(options
                         .width(ViewHelper.dipsToPix(getResources(), 8))
                         .color(legColor));
+            }
+
+            // Show intermediate stops if they exists.
+            BitmapDescriptor icon = getColoredMarker(legColor, R.drawable.ic_line_marker);
+            for (IntermediateStop stop : leg.getIntermediateStops()) {
+                Date date = stop.getTimeRt();
+                if (date == null) {
+                    date = stop.getTime();
+                }
+                String time = date != null ? DateFormat.getTimeFormat(this).format(date) : "";
+                mMap.addMarker(new MarkerOptions()
+                    .anchor(0.5f, 0.5f)
+                    .position( new LatLng(stop.getLocation().getLat(), stop.getLocation().getLon()))
+                    .title(getLocationName(stop.getLocation()))
+                    .snippet(time)
+                    .icon(icon));
             }
 
             if (leg.getFrom().hasEntrances()) {
