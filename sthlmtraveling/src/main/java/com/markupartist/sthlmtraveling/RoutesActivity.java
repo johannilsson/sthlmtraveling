@@ -603,8 +603,10 @@ public class RoutesActivity extends BaseListActivity implements
         }
 
         updateStartAndEndPointViews(mJourneyQuery);
-        fetchTransitRoute(mJourneyQuery);
-        fetchRouteAlternatives(mJourneyQuery);
+        if (mMyLocationManager.isLocationAcceptable(location)) {
+            fetchTransitRoute(mJourneyQuery);
+            fetchRouteAlternatives(mJourneyQuery);
+        }
     }
 
     void fetchRouteAlternatives(JourneyQuery journeyQuery) {
