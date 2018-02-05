@@ -1,6 +1,7 @@
 /local.properties
 build_prod.properties
 /signing.properties
+/signing.env
 build
 /.idea
 *.iml
