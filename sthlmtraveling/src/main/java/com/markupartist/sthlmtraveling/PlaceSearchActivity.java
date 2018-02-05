@@ -55,7 +55,6 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.maps.model.LatLng;
 import com.markupartist.sthlmtraveling.provider.HistoryDbAdapter;
 import com.markupartist.sthlmtraveling.provider.site.Site;
-import com.markupartist.sthlmtraveling.ui.adapter.GooglePlacesFilter;
 import com.markupartist.sthlmtraveling.ui.adapter.PlaceItem;
 import com.markupartist.sthlmtraveling.ui.adapter.PlaceSearchResultAdapter;
 import com.markupartist.sthlmtraveling.ui.adapter.SiteFilter;
@@ -82,7 +81,6 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements
     protected static final int REQUEST_CODE_POINT_ON_MAP = 0;
     private static final String STATE_SEARCH_FILTER = "STATE_SEARCH_FILTER";
 
-    private static final int FILTER_TYPE_GOOGLE = 1;
     private static final int FILTER_TYPE_STHLM_TRAVELING = 2;
     private static final int MESSAGE_TEXT_CHANGED = 100;
 
@@ -98,7 +96,6 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements
     private PlaceSearchResultAdapter mSearchResultAdapter;
     private ImageButton mClearButton;
     private SiteFilter mSthlmTravelingSearchFilter;
-    private GooglePlacesFilter mGoogleSearchFilter;
     private int mCurrentSearchFilterType = FILTER_TYPE_STHLM_TRAVELING;
     private Handler mHandler;
     private View mSearchFailed;
@@ -258,13 +255,6 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements
     public void setSearchFilter(int filterType) {
         PlaceSearchResultAdapter.SearchFooterItem footerItem = new PlaceSearchResultAdapter.SearchFooterItem();
         switch (filterType) {
-            case FILTER_TYPE_GOOGLE:
-                mSearchResultAdapter.setFilter(mGoogleSearchFilter);
-//                footerItem.text1 = getString(R.string.search_try_with_app_name);
-                footerItem.text1 = "";
-                footerItem.iconResource = R.drawable.powered_by_google_light;
-                mSearchResultAdapter.setFooterData(footerItem);
-                break;
             case FILTER_TYPE_STHLM_TRAVELING:
                 mSearchResultAdapter.setFilter(mSthlmTravelingSearchFilter);
 //                footerItem.text1 = getString(R.string.search_try_with_google);
@@ -305,8 +295,6 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements
         AutocompleteResultCallback autocompleteResultCallback = new AutocompleteResultCallback();
         mSthlmTravelingSearchFilter = new SiteFilter(mSearchResultAdapter, this, mSearchOnlyStops);
         mSthlmTravelingSearchFilter.setFilterResultCallback(autocompleteResultCallback);
-        mGoogleSearchFilter = new GooglePlacesFilter(mSearchResultAdapter, getGoogleApiClient());
-        mGoogleSearchFilter.setFilterResultCallback(autocompleteResultCallback);
 
         ItemClickSupport.addTo(mSearchResultRecyclerView).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
             @Override
@@ -468,12 +456,12 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements
 
     @Override
     public void onMyLocationFound(Location location) {
+        mCurrentSearchFilterType = FILTER_TYPE_STHLM_TRAVELING;
+        setSearchFilter(mCurrentSearchFilterType);
         if (location != null) {
             LatLng currentLatLng = new LatLng(location.getLatitude(), location.getLongitude());
             if (!AppConfig.GREATER_STHLM_BOUNDS.contains(currentLatLng)) {
-                mGoogleSearchFilter.setSearchLocation(location);
-                mCurrentSearchFilterType = FILTER_TYPE_GOOGLE;
-                setSearchFilter(mCurrentSearchFilterType);
+                // Show something about the area?
             }
         }
     }
