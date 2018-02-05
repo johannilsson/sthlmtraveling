@@ -3,7 +3,7 @@ package com.markupartist.sthlmtraveling;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -14,7 +14,7 @@ import com.markupartist.sthlmtraveling.utils.Analytics;
 
 import java.util.Map;
 
-public class BaseListFragmentActivity extends ActionBarActivity implements OnItemClickListener {
+public class BaseListFragmentActivity extends AppCompatActivity implements OnItemClickListener {
 
     private ListView mListView;
 

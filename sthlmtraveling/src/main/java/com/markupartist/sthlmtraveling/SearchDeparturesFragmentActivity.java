@@ -17,10 +17,10 @@
 package com.markupartist.sthlmtraveling;
 
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 
 
-public class SearchDeparturesFragmentActivity extends ActionBarActivity {
+public class SearchDeparturesFragmentActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

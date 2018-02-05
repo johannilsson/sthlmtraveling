@@ -3,8 +3,6 @@ package com.markupartist.sthlmtraveling;
 import android.os.Bundle;
 import android.widget.TextView;
 
-import com.google.android.gms.common.GooglePlayServicesUtil;
-
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -30,9 +28,9 @@ public class AboutActivity extends BaseActivity {
             ;
         }
 
-        String licenseInfo = GooglePlayServicesUtil.getOpenSourceSoftwareLicenseInfo(this);
+        //String licenseInfo = GooglePlayServicesUtil.getOpenSourceSoftwareLicenseInfo(this);
 
-        about += legal += licenseInfo;
+        about += legal;
 
         webView.setText(about);
     }

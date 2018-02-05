@@ -1,29 +1,8 @@
-buildscript {
-    repositories {
-        mavenCentral()
-        maven { url 'https://maven.fabric.io/public' }
-
-    }
-    dependencies {
-        //classpath 'com.android.tools.build:gradle:0+'
-        // https://github.com/JakeWharton/hugo
-        //classpath 'com.jakewharton.hugo:hugo-plugin:1.0.+'
-        classpath 'io.fabric.tools:gradle:1.21.4'
-    }
-}
-
-
-repositories {
-    mavenCentral()
-    maven { url 'https://maven.fabric.io/public' }
-}
-
 apply plugin: 'com.android.application'
 apply plugin: 'io.fabric'
-//apply plugin: 'hugo'
 
 // Load application build configuration.
-def Properties buildProperties = new Properties()
+def buildProperties = new Properties()
 def buildProdFile = new File('build_prod.properties')
 if (buildProdFile.canRead()) {
     buildProperties.load(new FileInputStream(buildProdFile))
@@ -32,46 +11,20 @@ if (buildProdFile.canRead()) {
     buildProperties.load(new FileInputStream(buildProdFile))
 }
 
-dependencies {
-    compile 'com.google.android.gms:play-services-base:8.4.0'
-    compile 'com.google.android.gms:play-services-maps:8.4.0'
-    compile 'com.google.android.gms:play-services-location:8.4.0'
-    compile 'com.google.android.gms:play-services-analytics:8.4.0'
-    compile 'com.google.android.gms:play-services-ads:8.4.0'
-    compile 'com.android.support:recyclerview-v7:23.2.1'
-    compile 'com.android.support:appcompat-v7:23.2.1'
-    compile 'com.android.support:support-v4:23.2.1'
-    compile 'com.android.support:percent:23.2.1'
-    compile 'com.android.support:design:23.2.1'
-    compile 'com.android.support:customtabs:23.2.1'
-    compile 'com.squareup.okhttp:okhttp:2.4.0'
-    compile 'com.google.code.gson:gson:2.3.1'
-    compile 'com.squareup.retrofit:retrofit:1.9.0'
-    compile 'com.yqritc:recyclerview-multiple-viewtypes-adapter:1.1.0'
-    compile 'org.slf4j:slf4j-android:1.7.10'
-    compile files('libs/widespace-sdk-4.8.2-4bee757.jar')
-    compile files('libs/wisper-java-1.0-rc8.jar')
-    compile('com.crashlytics.sdk.android:crashlytics:2.6.1@aar') {
-        transitive = true;
-    }
-}
-
 android {
     final BASE_PROVIDER_DEBUG = "com.markupartist.sthlmtraveling.debug"
     final BASE_PROVIDER_RELEASE = "com.markupartist.sthlmtraveling"
 
-    compileSdkVersion 23
-    buildToolsVersion "23.0.3"
+    compileSdkVersion 26
+    buildToolsVersion '26.0.2'
     useLibrary 'org.apache.http.legacy'
 
     defaultConfig {
-        minSdkVersion 9
-        targetSdkVersion 23
+        minSdkVersion 14
+        targetSdkVersion 26
         applicationId "com.markupartist.sthlmtraveling"
         versionName "2.19.0"
         versionCode 207
-
-        generatedDensities = []
 
         buildConfigField "boolean", "APP_IS_ADS_ENABLED", buildProperties['IS_ADS_ENABLED']
         buildConfigField "String", "APP_WIDESPACE_SID", buildProperties['WIDESPACE_SID']
@@ -82,12 +35,18 @@ android {
         resValue "string", "google_maps_api_key", buildProperties['GOOGLE_MAPS_API_KEY']
     }
 
-    aaptOptions {
-        additionalParameters "--no-version-vectors"
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_7
+        targetCompatibility JavaVersion.VERSION_1_7
     }
 
     signingConfigs {
-        release
+        release {
+            storeFile file(System.getenv().containsKey("STORE_FILE") ? System.getenv("STORE_FILE") : "dummy.keystore")
+            storePassword System.getenv("STORE_PASSWORD")
+            keyAlias System.getenv("KEY_ALIAS")
+            keyPassword System.getenv("KEY_PASSWORD")
+        }
     }
 
     buildTypes {
@@ -102,14 +61,9 @@ android {
             ext.enableCrashlytics = buildProperties['IS_CRASHLYTICS_ENABLED'].toBoolean()
             minifyEnabled true
             shrinkResources false
-            proguardFile getDefaultProguardFile('proguard-android.txt')
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
             signingConfig signingConfigs.release
             buildConfigField "String", "BASE_PROVIDER_AUTHORITY", "\"" + BASE_PROVIDER_RELEASE + "\""
-        }
-    }
-    productFlavors {
-        defaultFlavor {
-            proguardFile 'proguard-rules.txt'
         }
     }
 
@@ -118,22 +72,6 @@ android {
         abortOnError false
     }
 
-    applicationVariants.all { variant ->
-        def packageName = "com.markupartist.sthlmtraveling"
-        def versionCode = defaultConfig.versionCode
-        def versionName = defaultConfig.versionName
-        def versionType = variant.name
-
-        variant.outputs.each { output ->
-            def outputFile = output.outputFile
-            if (outputFile != null && outputFile.name.endsWith('.apk')) {
-                def version = versionName + "." + versionCode
-                def newFilename = packageName + "-" + version + "-" + versionType + ".apk"
-                output.outputFile = new File(outputFile.parent, newFilename)
-            }
-        }
-
-    }
 
     packagingOptions {
         exclude 'META-INF/pom.properties'
@@ -141,23 +79,27 @@ android {
     }
 }
 
-// Fetch properties for signing
-def Properties props = new Properties()
-def propFile = new File('signing.properties')
-if (propFile.canRead()){
-    props.load(new FileInputStream(propFile))
 
-    if (props!=null && props.containsKey('STORE_FILE') && props.containsKey('STORE_PASSWORD') &&
-            props.containsKey('KEY_ALIAS') && props.containsKey('KEY_PASSWORD')) {
-        android.signingConfigs.release.storeFile = file(props['STORE_FILE'])
-        android.signingConfigs.release.storePassword = props['STORE_PASSWORD']
-        android.signingConfigs.release.keyAlias = props['KEY_ALIAS']
-        android.signingConfigs.release.keyPassword = props['KEY_PASSWORD']
-    } else {
-        println 'signing.properties found but some entries are missing'
-        android.buildTypes.release.signingConfig = null
+dependencies {
+    compile 'com.google.android.gms:play-services-base:11.2.2'
+    compile 'com.google.android.gms:play-services-maps:11.2.2'
+    compile 'com.google.android.gms:play-services-location:11.2.2'
+    compile 'com.google.android.gms:play-services-analytics:11.2.2'
+    compile 'com.google.android.gms:play-services-ads:11.2.2'
+    compile 'com.android.support:recyclerview-v7:26.1.0'
+    compile 'com.android.support:appcompat-v7:26.1.0'
+    compile 'com.android.support:support-v4:26.1.0'
+    compile 'com.android.support:percent:26.1.0'
+    compile 'com.android.support:design:26.1.0'
+    compile 'com.android.support:customtabs:26.1.0'
+    compile 'com.squareup.okhttp:okhttp:2.4.0'
+    compile 'com.google.code.gson:gson:2.8.0'
+    compile 'com.squareup.retrofit:retrofit:1.9.0'
+    compile 'com.yqritc:recyclerview-multiple-viewtypes-adapter:1.1.0'
+    compile 'org.slf4j:slf4j-android:1.7.10'
+    compile files('libs/widespace-sdk-4.9.1-98c1ae7.jar')
+    compile files('libs/wisper-java-1.0-rc8.jar')
+    compile('com.crashlytics.sdk.android:crashlytics:2.6.1@aar') {
+        transitive = true;
     }
-} else {
-    println 'signing.properties not found'
-    android.buildTypes.release.signingConfig = null
 }

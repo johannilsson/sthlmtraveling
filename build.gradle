@@ -3,9 +3,12 @@ buildscript {
     repositories {
         jcenter()
         mavenCentral()
+        google()
+        maven { url 'https://maven.fabric.io/public' }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.2.2'
+        classpath 'com.android.tools.build:gradle:3.0.1'
+        classpath 'io.fabric.tools:gradle:1.24.2'
     }
 }
 
@@ -13,10 +16,12 @@ allprojects {
     repositories {
         jcenter()
         mavenCentral()
+        google()
+        maven { url 'https://maven.fabric.io/public' }
     }
 }
 
-task wrapper(type: Wrapper) {
-    description = 'Install wrapper for gradle. Simplifies compilation on new PCs'
-    gradleVersion = '2.10'
+task clean(type: Delete) {
+    delete rootProject.buildDir
 }
+
