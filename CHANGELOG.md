@@ -1,5 +1,9 @@
 Changelog
 ---------
+* 2.19.1 (2018-02-27)
+    * Fix crash in detailed view, ad related
+    * Remove Google Places search
+    * Update dependencies
 * 2.15.1 (2016-01-02)
   * Bug fixes
 * 2.15.0 (2015-12-24)
