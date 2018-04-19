@@ -27,6 +27,8 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.text.BidiFormatter;
 import android.support.v4.util.Pair;
@@ -88,6 +90,7 @@ import java.util.regex.Pattern;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+
 
 public class RouteDetailActivity extends BaseListActivity {
     public static final String TAG = "RouteDetailActivity";
@@ -351,16 +354,23 @@ public class RouteDetailActivity extends BaseListActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-        case R.id.actionbar_item_time:
-            Intent departuresIntent = new Intent(this, DeparturesActivity.class);
-            Site s = Site.toSite(mRoute.fromStop());
-            departuresIntent.putExtra(DeparturesActivity.EXTRA_SITE, s);
-            startActivity(departuresIntent);
-            return true;
-        case R.id.actionbar_item_star:
-            handleStarAction();
-            supportInvalidateOptionsMenu();
-            return true;
+            case R.id.actionbar_item_time:
+                Intent departuresIntent = new Intent(this, DeparturesActivity.class);
+                Site s = Site.toSite(mRoute.fromStop());
+                departuresIntent.putExtra(DeparturesActivity.EXTRA_SITE, s);
+                startActivity(departuresIntent);
+                return true;
+            case R.id.actionbar_item_star:
+                handleStarAction();
+                supportInvalidateOptionsMenu();
+                return true;
+            /** Blenda: **/
+            case R.id.actionbar_item_alarm:
+                Intent intent = new Intent(this, AlarmPreferencesActivity.class);
+                intent.putExtra("ParceableTest", mRoute);
+                startActivity(intent);
+                return true;
+            /***/
         }
         return super.onOptionsItemSelected(item);
     }
@@ -512,11 +522,11 @@ public class RouteDetailActivity extends BaseListActivity {
         mNameView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*startActivity(ViewOnMapActivity.createIntent(RouteDetailActivity.this,
+                /**startActivity(ViewOnMapActivity.createIntent(RouteDetailActivity.this,
                         mRoute, mJourneyQuery, Site.toSite(legViewModel.leg.getTo())));
                 //changed this function to be able to handle tabs
                 //Oskar Hahr
-                */
+                **/
                 startActivity(ViewOnMapActivity.createIntent(RouteDetailActivity.this,
                         mRouteA[mTabLayout.getSelectedTabPosition()], mJourneyQueryA[mTabLayout.getSelectedTabPosition()], mJourneyQueryA[mTabLayout.getSelectedTabPosition()].destination));
             }
@@ -614,6 +624,7 @@ public class RouteDetailActivity extends BaseListActivity {
             }
         }
     }
+
 
     /**
      * A not at all optimized adapter for showing a route based on a list of sub trips.
