@@ -22,4 +22,24 @@
         <item>Departure time</item>
         <item>Arrival time</item>
     </string-array>
+
+    // Blenda:
+    <string-array name="time_interval_departure">
+        <item>Number of minutes</item>
+        <item>2 min</item>
+        <item>5 min</item>
+        <item>10 min</item>
+        <item>15 min</item>
+        <item>30 min</item>
+    </string-array>
+
+
+    <string-array name="time_interval_destination">
+        <item>Number of minutes</item>
+        <item>2 min</item>
+        <item>3 min</item>
+        <item>5 min</item>
+    </string-array>
+    //
+
 </resources>

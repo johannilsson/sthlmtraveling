@@ -26,6 +26,8 @@ import android.location.Location;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.text.BidiFormatter;
 import android.support.v4.util.Pair;
@@ -87,6 +89,7 @@ import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
+
 public class RouteDetailActivity extends BaseListActivity {
     public static final String TAG = "RouteDetailActivity";
 
@@ -105,6 +108,8 @@ public class RouteDetailActivity extends BaseListActivity {
     private ApiService mApiService;
     private Monitor mMonitor;
     private View mFooterView;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -148,6 +153,9 @@ public class RouteDetailActivity extends BaseListActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
             timeView.setTextDirection(View.TEXT_DIRECTION_ANY_RTL);
         }
+
+
+
         if (mRoute.canBuyTicket()) {
 
             View buySmsTicketView = headerView.findViewById(R.id.route_buy_ticket);
@@ -281,16 +289,23 @@ public class RouteDetailActivity extends BaseListActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-        case R.id.actionbar_item_time:
-            Intent departuresIntent = new Intent(this, DeparturesActivity.class);
-            Site s = Site.toSite(mRoute.fromStop());
-            departuresIntent.putExtra(DeparturesActivity.EXTRA_SITE, s);
-            startActivity(departuresIntent);
-            return true;
-        case R.id.actionbar_item_star:
-            handleStarAction();
-            supportInvalidateOptionsMenu();
-            return true;
+            case R.id.actionbar_item_time:
+                Intent departuresIntent = new Intent(this, DeparturesActivity.class);
+                Site s = Site.toSite(mRoute.fromStop());
+                departuresIntent.putExtra(DeparturesActivity.EXTRA_SITE, s);
+                startActivity(departuresIntent);
+                return true;
+            case R.id.actionbar_item_star:
+                handleStarAction();
+                supportInvalidateOptionsMenu();
+                return true;
+            /** Blenda: **/
+            case R.id.actionbar_item_alarm:
+                Intent intent = new Intent(this, AlarmPreferencesActivity.class);
+                intent.putExtra("ParceableTest", mRoute);
+                startActivity(intent);
+                return true;
+            /***/
         }
         return super.onOptionsItemSelected(item);
     }
@@ -497,6 +512,7 @@ public class RouteDetailActivity extends BaseListActivity {
             }
         }
     }
+
 
     /**
      * A not at all optimized adapter for showing a route based on a list of sub trips.
