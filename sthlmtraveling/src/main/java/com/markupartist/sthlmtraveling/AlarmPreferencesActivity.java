@@ -18,6 +18,9 @@ import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.Spinner;
 
+import java.util.Date;
+import java.util.Calendar;
+
 import com.markupartist.sthlmtraveling.data.models.Route;
 
 public class AlarmPreferencesActivity extends AppCompatActivity implements View.OnClickListener {
