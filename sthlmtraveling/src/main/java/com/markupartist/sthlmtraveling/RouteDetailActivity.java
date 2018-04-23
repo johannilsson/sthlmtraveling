@@ -470,23 +470,6 @@ public class RouteDetailActivity extends BaseListActivity {
         }
     }
 
-    /** updateStar - Made by Jakob & Didrik
-     * Makes sure the graphics of the star/favorite icon is updated to display
-     * the right graphics corresponding to the current tab shown
-     *
-     */
-    private void updateStar(){
-        if(mMenuAbove != null) {
-            MenuItem starItem = mMenuAbove.findItem(R.id.actionbar_item_star);
-            if (isStarredJourney(mJourneyQuery)) {
-                starItem.setIcon(R.drawable.ic_action_star_on);
-                ViewHelper.tintIcon(getResources(), starItem.getIcon());
-            } else {
-                starItem.setIcon(R.drawable.ic_action_star_off);
-                ViewHelper.tintIcon(getResources(), starItem.getIcon());
-            }
-        }
-    }
 
     private View createFooterView(final List<LegViewModel> legs) {
         int numSubTrips = legs.size();
@@ -919,6 +902,7 @@ public class RouteDetailActivity extends BaseListActivity {
         setListAdapter(mSubTripAdapter);
         tripTimeDestinationUpdater();
         updateStartAndEndPointViews(mJourneyQuery);
+        updateStar();
     }
 
 
@@ -946,5 +930,22 @@ public class RouteDetailActivity extends BaseListActivity {
     }
     private int selectTab(){
         return mTabLayout.getSelectedTabPosition();
+    }
+    /** updateStar - Made by Jakob & Didrik
+     * Makes sure the graphics of the star/favorite icon is updated to display
+     * the right graphics corresponding to the current tab shown
+     *
+     */
+    private void updateStar(){
+        if(mMenuAbove != null) {
+            MenuItem starItem = mMenuAbove.findItem(R.id.actionbar_item_star);
+            if (isStarredJourney(mJourneyQuery)) {
+                starItem.setIcon(R.drawable.ic_action_star_on);
+                ViewHelper.tintIcon(getResources(), starItem.getIcon());
+            } else {
+                starItem.setIcon(R.drawable.ic_action_star_off);
+                ViewHelper.tintIcon(getResources(), starItem.getIcon());
+            }
+        }
     }
 }
