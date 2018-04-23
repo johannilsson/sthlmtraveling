@@ -30,7 +30,7 @@
     // Kom:
     <item
         android:id="@+id/actionbar_item_alarm"
-        android:icon="@drawable/ic_menu_clock"
+        android:icon="@drawable/ic_add_alert_white_36dp"
         android:title="@string/departure_alarm"
         app:showAsAction="always"
         />
