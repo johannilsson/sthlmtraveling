@@ -1,7 +1,7 @@
 package com.markupartist.sthlmtraveling;
 
 /**
- * Blenda och Filiip
+ * Blenda och Filip
  */
 
 import android.app.AlarmManager;
@@ -27,18 +27,20 @@ import com.markupartist.sthlmtraveling.data.models.Route;
 
 public class AlarmPreferencesActivity extends AppCompatActivity implements View.OnClickListener {
 
-
     private Spinner mTimeSpinnerDeparture;
     private Spinner mTimeSpinnerDestination;
     long mTimeDeparture;
-    int mTimeDestination;
+    long mTimeDestination;
     boolean mTimeSelectedDeparture = true;
     boolean mTimeSelectedDestination = true;
-    boolean mEveryStop = false;
+//    boolean mEveryStop = false;
     CheckBox mAlarmEveryStopCheckBox;
     Date mStartDate;
     long mStartTime;
+    Date mEndDate;
+    long mEndTime;
     List<Long> endTime;
+    int mRequestCode = 0;
 
 
     @Override
@@ -51,18 +53,24 @@ public class AlarmPreferencesActivity extends AppCompatActivity implements View.
         Route route = intent.getParcelableExtra("ParceableTest");
         List<Leg> legList = new ArrayList<>();
         legList = route.getLegs();
-        endTime = new ArrayList<>();
 
-        for(Leg leg : legList ){
-            endTime.add(leg.getEndTime().getTime());
-            Log.v("aznee", leg.getStartTime().toString());
-            Log.v("aznee2", leg.getEndTime().toString());
+//        endTime = new ArrayList<>();
+//        for(Leg leg : legList ){
+//            endTime.add(leg.getEndTime().getTime());
+//            Kom:
+//            Log.v("aznee", leg.getStartTime().toString());
+//            Log.v("aznee2", leg.getEndTime().toString());
+//
+//        }
 
-        }
+        mEndDate = legList.get(legList.size()-1).getEndTime();
+        mEndTime = mEndDate.getTime();
+        Log.v("aznee4", String.valueOf(mEndTime));
 
         mStartDate = legList.get(0).getStartTime();
         mStartTime = mStartDate.getTime();
         Log.v("aznee3", String.valueOf(mStartTime));
+
 
         /** From ChangeRouteTimeActivity **/
         //Set up spinner departure & destination
@@ -177,38 +185,42 @@ public class AlarmPreferencesActivity extends AppCompatActivity implements View.
                         mTimeSelectedDestination = false;
                         break;
                     case 1:
-                        mTimeDestination = 120000;
+                        mTimeDestination = mEndTime - 120000;
                         break;
                     case 2:
-                        mTimeDestination = 180000;
+                        mTimeDestination = mEndTime- 180000;
                         break;
                     case 3:
-                        mTimeDestination = 300000;
+                        mTimeDestination = mEndTime - 300000;
                         break;
                 }
 
-                if(mAlarmEveryStopCheckBox.isChecked()){
-                    mEveryStop = true;
-                }
+//                if(mAlarmEveryStopCheckBox.isChecked()){
+//                    mEveryStop = true;
+//                }
 
             if(mTimeSelectedDeparture) {
-            setAlarm(mTimeDeparture);
-                }
+                setAlarm(mTimeDeparture);
+            }
             if(mTimeSelectedDestination){
-                    if(mEveryStop){
+                setAlarm(mTimeDestination);
 
-                        List <Long> mDestinationAlarmTimes = new ArrayList<>();
-                        for(long time : endTime){
-                            mDestinationAlarmTimes.add(time - mTimeDestination);
-                        }
-                        for(long time2 : mDestinationAlarmTimes){
-                            setAlarm(time2);
-                        }
 
-                    }
-                    else {
-                        setAlarm(mTimeDestination);
-                    }
+
+//                    if(mEveryStop){
+//
+//                        List <Long> mDestinationAlarmTimes = new ArrayList<>();
+//                        for(long time : endTime){
+//                            mDestinationAlarmTimes.add(time - mTimeDestination);
+//                        }
+//                        for(long time2 : mDestinationAlarmTimes){
+//                            setAlarm(time2);
+//                        }
+//
+//                    }
+//                    else {
+//                        setAlarm(mTimeDestination);
+//                    }
             }
 
             finish();
@@ -222,7 +234,8 @@ public class AlarmPreferencesActivity extends AppCompatActivity implements View.
 
     public void setAlarm(long mTime){
         Intent intent = new Intent(AlarmPreferencesActivity.this, Alarm.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, intent, 0);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), mRequestCode, intent, 0);
+        mRequestCode++;
         AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
         alarmManager.set(AlarmManager.RTC_WAKEUP, mTime, pendingIntent);
     }
