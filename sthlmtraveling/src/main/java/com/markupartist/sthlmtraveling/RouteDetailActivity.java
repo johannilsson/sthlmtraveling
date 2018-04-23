@@ -98,17 +98,12 @@ public class RouteDetailActivity extends BaseListActivity {
     public static final String EXTRA_ROUTE = "sthlmtraveling.intent.extra.ROUTE";
     public static final String EXTRA_JOURNEY_QUERY = "sthlmtraveling.intent.action.JOURNEY_QUERY";
     private static final String STATE_LEGS = "sthlmtraveling.intent.state.LEGS";
-    private static SubTripAdapter [] mSubTripAdapterA = new SubTripAdapter[3];
-    private static JourneyQuery mJourneyQueryA [] = new JourneyQuery[3];
-    private static Route[] mRouteA = new Route[3];
-    private static String[] mTimeStringA = new String[3];
+    private static TabDetails mTabDetails[] = new TabDetails[3];
 
     private Route mRoute;
     private JourneyQuery mJourneyQuery;
     private SubTripAdapter mSubTripAdapter;
-
     private ImageButton mFavoriteButton;
-
     private ActionBar mActionBar;
     private AdProxy mAdProxy;
     private ApiService mApiService;
@@ -117,6 +112,8 @@ public class RouteDetailActivity extends BaseListActivity {
     private TabLayout mTabLayout;
     private TextView mTimeView;
     private Button mNameView;
+    private Menu mMenuAbove;
+    private String mTimeDestination;
 
 
 //Tab functionality by Oskar Hahr
@@ -128,13 +125,9 @@ public class RouteDetailActivity extends BaseListActivity {
 
         mTabLayout = (this.findViewById(R.id.rDetails_Tab));
         mTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            private TabLayout.Tab mPrevTab;
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                mNameView.setText(mJourneyQueryA[mTabLayout.getSelectedTabPosition()].destination.toString());
-                updateFooterView(mSubTripAdapterA[mTabLayout.getSelectedTabPosition()].getItem(mSubTripAdapterA[mTabLayout.getSelectedTabPosition()].getCount() - 1));
-                setListAdapter(mSubTripAdapterA[tab.getPosition()]);
-                tripTimeDestinationUpdater();
+                swapTabDetails();
             }
 
             @Override
@@ -175,10 +168,10 @@ public class RouteDetailActivity extends BaseListActivity {
 
         TextView timeView = (TextView) headerView.findViewById(R.id.route_date_time);
         mTimeView = timeView;
-        //changed into a separate function to be able to call it when changing tabs
+        /*changed into a separate function to be able to call it when changing tabs
         //this is now located in the function tripTimeDestinationUpdater
         //Oskar Hahr
-        /*
+
         BidiFormatter bidiFormatter = BidiFormatter.getInstance(Locale.getDefault());
 
         String timeStr = getString(R.string.time_to,
@@ -222,6 +215,8 @@ public class RouteDetailActivity extends BaseListActivity {
             onRouteDetailsResult(mRoute);
         }
 
+        createTabs();
+
         mMonitor = new Monitor() {
             @Override
             public void handleUpdate() {
@@ -253,33 +248,6 @@ public class RouteDetailActivity extends BaseListActivity {
             }
         };
     }
-    /**Rotates the information the tabs need to function **/
-    private void updateTabDetails(){
-        mSubTripAdapterA[2] = mSubTripAdapterA[1];
-        mSubTripAdapterA[1] = mSubTripAdapterA[0];
-        mSubTripAdapterA[0] = mSubTripAdapter;
-        mJourneyQueryA[2] = mJourneyQueryA[1];
-        mJourneyQueryA[1] = mJourneyQueryA[0];
-        mJourneyQueryA[0] = mJourneyQuery;
-        mRouteA[2] = mRouteA[1];
-        mRouteA[1] = mRouteA[0];
-        mRouteA[0] = mRoute;
-        mTimeStringA[2] = mTimeStringA[1];
-        mTimeStringA[1] = mTimeStringA[0];
-        mTimeStringA[0] = timeDestinationString();
-    }
-    /**Creates the correct amount of tabs depending on the information in mSubTripAdapterA
-    and sets the text of the tabs to the destination and the trip time **/
-    public void createTabs(){
-        for(int i = 0; i < 3; i++) {
-            if (mSubTripAdapterA[i] == null) {
-                break;
-            }
-            mTabLayout.addTab(mTabLayout.newTab());
-            mTabLayout.getTabAt(i).setText(mTimeStringA[i]);
-        }
-    }
-
 
     void updateStopTimes(IntermediateResponse intermediateResponse) {
         boolean updated = false;
@@ -330,6 +298,7 @@ public class RouteDetailActivity extends BaseListActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        mMenuAbove = menu;
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.actionbar_route_detail, menu);
         return true;
@@ -356,8 +325,8 @@ public class RouteDetailActivity extends BaseListActivity {
         switch (item.getItemId()) {
             case R.id.actionbar_item_time:
                 Intent departuresIntent = new Intent(this, DeparturesActivity.class);
-                Site s = Site.toSite(mRoute.fromStop());
-                departuresIntent.putExtra(DeparturesActivity.EXTRA_SITE, s);
+                Site s = Site.toSite(mRoute.fromStop()); //Changed to handle tabs
+                departuresIntent.putExtra(DeparturesActivity.EXTRA_SITE, s);                    //Oskar Hahr
                 startActivity(departuresIntent);
                 return true;
             case R.id.actionbar_item_star:
@@ -395,8 +364,8 @@ public class RouteDetailActivity extends BaseListActivity {
         BidiFormatter bidiFormatter = BidiFormatter.getInstance(Locale.getDefault());
 
         String timeStr = getString(R.string.time_to,
-                bidiFormatter.unicodeWrap(String.valueOf(DateTimeUtil.formatDetailedDuration(getResources(), mRouteA[mTabLayout.getSelectedTabPosition()].getDuration() * 1000))),
-                bidiFormatter.unicodeWrap(String.valueOf(getLocationName(mJourneyQueryA[mTabLayout.getSelectedTabPosition()].destination.asPlace()))));
+                bidiFormatter.unicodeWrap(String.valueOf(DateTimeUtil.formatDetailedDuration(getResources(), mRoute.getDuration() * 1000))),
+                bidiFormatter.unicodeWrap(String.valueOf(getLocationName(mJourneyQuery.destination.asPlace()))));
         mTimeView.setText(timeStr);
         }
 
@@ -461,11 +430,6 @@ public class RouteDetailActivity extends BaseListActivity {
                     R.layout.trip_row_attribution, null, false);
             getListView().addFooterView(attributionView);
         }
-        //Rotates the tabs and displays the new route as the first tab
-        //Oskar Hahr
-
-        updateTabDetails();
-        createTabs();
         setListAdapter(mSubTripAdapter);
 
     }
@@ -506,7 +470,23 @@ public class RouteDetailActivity extends BaseListActivity {
         }
     }
 
-
+    /** updateStar - Made by Jakob & Didrik
+     * Makes sure the graphics of the star/favorite icon is updated to display
+     * the right graphics corresponding to the current tab shown
+     *
+     */
+    private void updateStar(){
+        if(mMenuAbove != null) {
+            MenuItem starItem = mMenuAbove.findItem(R.id.actionbar_item_star);
+            if (isStarredJourney(mJourneyQuery)) {
+                starItem.setIcon(R.drawable.ic_action_star_on);
+                ViewHelper.tintIcon(getResources(), starItem.getIcon());
+            } else {
+                starItem.setIcon(R.drawable.ic_action_star_off);
+                ViewHelper.tintIcon(getResources(), starItem.getIcon());
+            }
+        }
+    }
 
     private View createFooterView(final List<LegViewModel> legs) {
         int numSubTrips = legs.size();
@@ -522,13 +502,13 @@ public class RouteDetailActivity extends BaseListActivity {
         mNameView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /**startActivity(ViewOnMapActivity.createIntent(RouteDetailActivity.this,
+                /*startActivity(ViewOnMapActivity.createIntent(RouteDetailActivity.this,
                         mRoute, mJourneyQuery, Site.toSite(legViewModel.leg.getTo())));
-                //changed this function to be able to handle tabs
-                //Oskar Hahr
-                **/
+                changed this function to be able to handle tabs
+                Oskar Hahr
+                */
                 startActivity(ViewOnMapActivity.createIntent(RouteDetailActivity.this,
-                        mRouteA[mTabLayout.getSelectedTabPosition()], mJourneyQueryA[mTabLayout.getSelectedTabPosition()], mJourneyQueryA[mTabLayout.getSelectedTabPosition()].destination));
+                        mRoute, mJourneyQuery, mJourneyQuery.destination));
             }
         });
 
@@ -907,5 +887,64 @@ public class RouteDetailActivity extends BaseListActivity {
             }
             return description;
         }
+    }
+
+    private class TabDetails{
+        public JourneyQuery journeyQ;
+        public SubTripAdapter subTA;
+        public String timeString;
+        public Route routeDetail;
+
+        public TabDetails(){
+            this.journeyQ = null;
+            this.routeDetail = null;
+            this.timeString = null;
+            this.subTA = null;
+        }
+        public TabDetails(JourneyQuery j, SubTripAdapter STA, String TS, Route r){
+            this.journeyQ = j;
+            this.subTA = STA;
+            this.timeString = TS;
+            this. routeDetail = r;
+        }
+
+    }
+    private void swapTabDetails(){
+        //Rotates the tabs and displays the new route as the first tab
+        //Oskar Hahr
+
+        switchTabs();
+        mNameView.setText(mJourneyQuery.destination.toString());
+        updateFooterView(mSubTripAdapter.getItem(mSubTripAdapter.getCount() - 1));
+        setListAdapter(mSubTripAdapter);
+        tripTimeDestinationUpdater();
+        updateStartAndEndPointViews(mJourneyQuery);
+    }
+
+
+    /**Rotates the information the tabs need to function and
+     * creates the correct amount of tabs depending on the information in mSubTripAdapterA
+     and sets the text of the tabs to the destination and the trip time **/
+    private void createTabs(){
+        mTabDetails[2] = mTabDetails[1];
+        mTabDetails[1] = mTabDetails[0];
+        mTabDetails[0] = new TabDetails(mJourneyQuery, mSubTripAdapter, timeDestinationString(), mRoute);
+
+        for(int i = 0; i < 3; i++) {
+            if (mTabDetails[i] == null) {
+                break;
+            }
+            mTabLayout.addTab(mTabLayout.newTab());
+            mTabLayout.getTabAt(i).setText(mTabDetails[i].timeString);
+        }
+    }
+    private void switchTabs(){
+        mJourneyQuery = mTabDetails[selectTab()].journeyQ;
+        mRoute = mTabDetails[selectTab()].routeDetail;
+        mTimeDestination = mTabDetails[selectTab()].timeString;
+        mSubTripAdapter = mTabDetails[selectTab()].subTA;
+    }
+    private int selectTab(){
+        return mTabLayout.getSelectedTabPosition();
     }
 }
