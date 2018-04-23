@@ -18,8 +18,9 @@ import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.Spinner;
 
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.Calendar;
+import java.util.List;
 
 import com.markupartist.sthlmtraveling.data.models.Leg;
 import com.markupartist.sthlmtraveling.data.models.Route;
@@ -29,10 +30,12 @@ public class AlarmPreferencesActivity extends AppCompatActivity implements View.
 
     private Spinner mTimeSpinnerDeparture;
     private Spinner mTimeSpinnerDestination;
-    int mTimeDeparture;
+    long mTimeDeparture;
     int mTimeDestination;
     boolean mTimeSelectedDeparture = true;
     boolean ismTimeSelectedDestination = true;
+    Date mStartDate;
+    long mStartTime;
 
 
     @Override
@@ -40,9 +43,23 @@ public class AlarmPreferencesActivity extends AppCompatActivity implements View.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_alarm_preferences);
 
-        /**Test parceable**/
+        /**Get leg time**/
         Intent intent = getIntent();
         Route route = intent.getParcelableExtra("ParceableTest");
+        List<Leg> legList = new ArrayList<>();
+        legList = route.getLegs();
+        List<Date> endTime = new ArrayList<>();
+
+        for(Leg leg : legList ){
+            endTime.add(leg.getEndTime());
+            Log.v("aznee", leg.getStartTime().toString());
+            Log.v("aznee2", leg.getEndTime().toString());
+
+        }
+
+        mStartDate = legList.get(0).getStartTime();
+        mStartTime = mStartDate.getTime();
+        Log.v("aznee3", String.valueOf(mStartTime));
 
         /** From ChangeRouteTimeActivity **/
         //Set up spinner departure & destination
@@ -132,19 +149,19 @@ public class AlarmPreferencesActivity extends AppCompatActivity implements View.
                     case 0:
                         mTimeSelectedDeparture = false;
                     case 1:
-                        mTimeDeparture = 120;
+                        mTimeDeparture = mStartTime - 120000;
                         break;
                     case 2:
-                        mTimeDeparture = 300;
+                        mTimeDeparture = mStartTime - 300000;
                         break;
                     case 3:
-                        mTimeDeparture = 600;
+                        mTimeDeparture = mStartTime - 600000;
                         break;
                     case 4:
-                        mTimeDeparture = 900;
+                        mTimeDeparture = mStartTime - 900000;
                         break;
                     case 5:
-                        mTimeDeparture = 1800;
+                        mTimeDeparture = mStartTime - 1800000;
                         break;
                 }
 
@@ -165,11 +182,11 @@ public class AlarmPreferencesActivity extends AppCompatActivity implements View.
                 }
 
             if(mTimeSelectedDeparture) {
-                Log.d("timecehckd", "value:" + mTimeDeparture);
+                Log.d("timececked", "value:" + mTimeDeparture);
                 Intent intent = new Intent(AlarmPreferencesActivity.this, Alarm.class);
                 PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, intent, 0);
                 AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-                alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + mTimeDeparture * 1000, pendingIntent);
+                alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + mTimeDeparture, pendingIntent);
             }
             if(ismTimeSelectedDestination){
                 Log.d("timecehckd", "value:" + mTimeDestination);
