@@ -132,7 +132,8 @@ public class RoutesActivity extends BaseListActivity implements
      * Used for the tab layout
      */
     private TabLayout mTabLayout;
-    private static TabWrap  mTabWraps[] = new TabWrap[3];
+    private static final int TAB_CAP = 6;
+    private static TabWrap  mTabWraps[] = new TabWrap[TAB_CAP];
     private Menu mMenuAbove;
 
     private View mEmptyView;
@@ -200,6 +201,7 @@ public class RoutesActivity extends BaseListActivity implements
          * Init tabs // onclick for tabs
          */
         mTabLayout = findViewById(R.id.Tab);
+        //mTabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
         mTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -849,12 +851,11 @@ public class RoutesActivity extends BaseListActivity implements
      * adds the new "tab" at index 0 and "removes/replaces" the rightmost tab
      */
     private void addTab(){
-        mTabWraps[2] = null;
-        mTabWraps[2] =  mTabWraps[1];
-        mTabWraps[1] =  mTabWraps[0];
+        for(int i = TAB_CAP - 1; i > 0; i--)
+            mTabWraps[i] = mTabWraps[i-1];
         mTabWraps[0] = new TabWrap(mJourneyQuery, mRouteAdapter, mTransitPlan, mPlan);
 
-        for(int i = 0; i <3 ; i ++)
+        for(int i = 0; i <TAB_CAP ; i ++)
             if(mTabWraps[i] != null)
                 mTabLayout.addTab(mTabLayout.newTab());
     }
