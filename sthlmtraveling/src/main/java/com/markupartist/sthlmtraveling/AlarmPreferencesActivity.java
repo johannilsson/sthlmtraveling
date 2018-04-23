@@ -20,6 +20,8 @@ import android.widget.Spinner;
 
 import com.markupartist.sthlmtraveling.data.models.Route;
 
+import java.util.Date;
+
 public class AlarmPreferencesActivity extends AppCompatActivity implements View.OnClickListener {
 
 
@@ -40,7 +42,7 @@ public class AlarmPreferencesActivity extends AppCompatActivity implements View.
         Intent intent = getIntent();
         Route route = intent.getParcelableExtra("ParceableTest");
 
-
+        
         String test = String.valueOf(route.getDuration());
         Log.v("testPar", test);
 
