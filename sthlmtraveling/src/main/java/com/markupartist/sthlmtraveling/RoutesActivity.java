@@ -201,7 +201,7 @@ public class RoutesActivity extends BaseListActivity implements
          * Init tabs // onclick for tabs
          */
         mTabLayout = findViewById(R.id.Tab);
-        //mTabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
+        mTabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
         mTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {

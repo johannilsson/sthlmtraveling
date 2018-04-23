@@ -59,7 +59,7 @@
             android:drawablePadding="24dp"
             tools:text="Date"
             />
-        <android.support.design.widget.SlidingTabLayout
+        <android.support.design.widget.TabLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/primary_dark"
@@ -67,7 +67,7 @@
             app:tabSelectedTextColor="@color/accent"
             android:id="@+id/Tab"
             >
-        </android.support.design.widget.SlidingTabLayout>
+        </android.support.design.widget.TabLayout>
 
     </LinearLayout>
 
