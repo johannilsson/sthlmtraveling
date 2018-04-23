@@ -33,9 +33,12 @@ public class AlarmPreferencesActivity extends AppCompatActivity implements View.
     long mTimeDeparture;
     int mTimeDestination;
     boolean mTimeSelectedDeparture = true;
-    boolean ismTimeSelectedDestination = true;
+    boolean mTimeSelectedDestination = true;
+    boolean mEveryStop = false;
+    CheckBox mAlarmEveryStopCheckBox;
     Date mStartDate;
     long mStartTime;
+    List<Long> endTime;
 
 
     @Override
@@ -48,10 +51,10 @@ public class AlarmPreferencesActivity extends AppCompatActivity implements View.
         Route route = intent.getParcelableExtra("ParceableTest");
         List<Leg> legList = new ArrayList<>();
         legList = route.getLegs();
-        List<Date> endTime = new ArrayList<>();
+        endTime = new ArrayList<>();
 
         for(Leg leg : legList ){
-            endTime.add(leg.getEndTime());
+            endTime.add(leg.getEndTime().getTime());
             Log.v("aznee", leg.getStartTime().toString());
             Log.v("aznee2", leg.getEndTime().toString());
 
@@ -109,7 +112,7 @@ public class AlarmPreferencesActivity extends AppCompatActivity implements View.
         //Set up checkbox
         final CheckBox mAlarmDepartureCheckBox = (CheckBox) findViewById(R.id.select_alarm_departure);
         final CheckBox mAlarmDestinationCheckBox = (CheckBox) findViewById(R.id.select_alarm_destination);
-        final CheckBox mAlarmEveryStopCheckBox = (CheckBox) findViewById(R.id.select_alarm_everyStop);
+        mAlarmEveryStopCheckBox = (CheckBox) findViewById(R.id.select_alarm_everyStop);
         mAlarmEveryStopCheckBox.setEnabled(false);
 
         mAlarmDepartureCheckBox.setOnClickListener(new View.OnClickListener() {
@@ -136,7 +139,10 @@ public class AlarmPreferencesActivity extends AppCompatActivity implements View.
                 }
             }
         });
+
     }
+
+
 
 
 
@@ -168,28 +174,41 @@ public class AlarmPreferencesActivity extends AppCompatActivity implements View.
                 int mSelectedTimeDestination = (int) mTimeSpinnerDestination.getSelectedItemId();
                 switch (mSelectedTimeDestination){
                     case 0:
-                        ismTimeSelectedDestination = false;
+                        mTimeSelectedDestination = false;
                         break;
                     case 1:
-                        mTimeDestination = 120;
+                        mTimeDestination = 120000;
                         break;
                     case 2:
-                        mTimeDestination = 180;
+                        mTimeDestination = 180000;
                         break;
                     case 3:
-                        mTimeDestination = 300;
+                        mTimeDestination = 300000;
                         break;
                 }
 
+                if(mAlarmEveryStopCheckBox.isChecked()){
+                    mEveryStop = true;
+                }
+
             if(mTimeSelectedDeparture) {
-                Log.d("timececked", "value:" + mTimeDeparture);
-                Intent intent = new Intent(AlarmPreferencesActivity.this, Alarm.class);
-                PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, intent, 0);
-                AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-                alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + mTimeDeparture, pendingIntent);
-            }
-            if(ismTimeSelectedDestination){
-                Log.d("timecehckd", "value:" + mTimeDestination);
+            setAlarm(mTimeDeparture);
+                }
+            if(mTimeSelectedDestination){
+                    if(mEveryStop){
+
+                        List <Long> mDestinationAlarmTimes = new ArrayList<>();
+                        for(long time : endTime){
+                            mDestinationAlarmTimes.add(time - mTimeDestination);
+                        }
+                        for(long time2 : mDestinationAlarmTimes){
+                            setAlarm(time2);
+                        }
+
+                    }
+                    else {
+                        setAlarm(mTimeDestination);
+                    }
             }
 
             finish();
@@ -199,5 +218,12 @@ public class AlarmPreferencesActivity extends AppCompatActivity implements View.
                 finish();
                 break;
         }
+    }
+
+    public void setAlarm(long mTime){
+        Intent intent = new Intent(AlarmPreferencesActivity.this, Alarm.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, intent, 0);
+        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+        alarmManager.set(AlarmManager.RTC_WAKEUP, mTime, pendingIntent);
     }
 }
