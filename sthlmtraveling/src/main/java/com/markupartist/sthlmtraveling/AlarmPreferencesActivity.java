@@ -21,6 +21,7 @@ import android.widget.Spinner;
 import java.util.Date;
 import java.util.Calendar;
 
+import com.markupartist.sthlmtraveling.data.models.Leg;
 import com.markupartist.sthlmtraveling.data.models.Route;
 
 public class AlarmPreferencesActivity extends AppCompatActivity implements View.OnClickListener {
@@ -42,12 +43,6 @@ public class AlarmPreferencesActivity extends AppCompatActivity implements View.
         /**Test parceable**/
         Intent intent = getIntent();
         Route route = intent.getParcelableExtra("ParceableTest");
-
-
-        String test = String.valueOf(route.getDuration());
-        Log.v("testPar", test);
-
-
 
         /** From ChangeRouteTimeActivity **/
         //Set up spinner departure & destination
