@@ -25,6 +25,7 @@ import java.util.List;
 
 import com.markupartist.sthlmtraveling.data.models.Leg;
 import com.markupartist.sthlmtraveling.data.models.Route;
+import com.markupartist.sthlmtraveling.data.models.TravelMode;
 
 public class AlarmPreferencesActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -48,7 +49,7 @@ public class AlarmPreferencesActivity extends AppCompatActivity implements View.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_alarm_preferences);
 
-        /**Get legs**/
+        /** Get legs **/
         Intent intent = getIntent();
         Route route = intent.getParcelableExtra("ParceableTest");
         List<Leg> legList = route.getLegs();
@@ -56,9 +57,9 @@ public class AlarmPreferencesActivity extends AppCompatActivity implements View.
         /** Get every destination time **/
         endTime = new ArrayList<>();
         for(Leg leg : legList ){
-            if(!leg.getTravelMode().equals("foot")){
-                Log.v("asznee", leg.getTravelMode());
+            if(!leg.getTravelMode().equals(TravelMode.FOOT)){
                 endTime.add(leg.getEndTime().getTime());
+                Log.v("asznee", leg.getTravelMode());
             }
         }
 
