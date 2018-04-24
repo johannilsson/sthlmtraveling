@@ -11,10 +11,9 @@ public class Alarm extends BroadcastReceiver{
     @Override
     public void onReceive(Context context, Intent intent) {
 
-        Toast.makeText(context, "lets go!", Toast.LENGTH_LONG).show();
+        Toast.makeText(context, "Hold tight Asznee", Toast.LENGTH_LONG).show();
         Vibrator vibrator = (Vibrator) context.getSystemService(context.VIBRATOR_SERVICE);
         vibrator.vibrate(5000);
-
 
     }
 }

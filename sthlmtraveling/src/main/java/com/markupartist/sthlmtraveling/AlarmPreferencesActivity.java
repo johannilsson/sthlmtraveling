@@ -7,6 +7,7 @@ package com.markupartist.sthlmtraveling;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Intent;
+import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -48,29 +49,25 @@ public class AlarmPreferencesActivity extends AppCompatActivity implements View.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_alarm_preferences);
 
-        /**Get leg time**/
+        /**Get legs**/
         Intent intent = getIntent();
         Route route = intent.getParcelableExtra("ParceableTest");
         List<Leg> legList = new ArrayList<>();
         legList = route.getLegs();
 
+/** Get every destination time**/
 //        endTime = new ArrayList<>();
 //        for(Leg leg : legList ){
 //            endTime.add(leg.getEndTime().getTime());
-//            Kom:
-//            Log.v("aznee", leg.getStartTime().toString());
-//            Log.v("aznee2", leg.getEndTime().toString());
-//
 //        }
 
+        /** Get final destination time**/
         mEndDate = legList.get(legList.size()-1).getEndTime();
         mEndTime = mEndDate.getTime();
-        Log.v("aznee4", String.valueOf(mEndTime));
 
+        /** Get departure time**/
         mStartDate = legList.get(0).getStartTime();
         mStartTime = mStartDate.getTime();
-        Log.v("aznee3", String.valueOf(mStartTime));
-
 
         /** From ChangeRouteTimeActivity **/
         //Set up spinner departure & destination
@@ -85,8 +82,6 @@ public class AlarmPreferencesActivity extends AppCompatActivity implements View.
         whenChoiceAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mTimeSpinnerDeparture.setAdapter(whenChoiceAdapter);
         mTimeSpinnerDeparture.setSelection(selectedPosDeparture);
-
-
 
         int selectedPosDestination = 0;
         ArrayAdapter<CharSequence> whenChoiceAdapterDestination = ArrayAdapter.createFromResource(
@@ -117,12 +112,15 @@ public class AlarmPreferencesActivity extends AppCompatActivity implements View.
                 ViewGroup.LayoutParams.MATCH_PARENT));
         /***/
 
-        //Set up checkbox
+        /** Set up checkbox **/
         final CheckBox mAlarmDepartureCheckBox = (CheckBox) findViewById(R.id.select_alarm_departure);
+        final boolean checkedAlarmDeparture = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("departureBox", false);
+        mAlarmDepartureCheckBox.setChecked(checkedAlarmDeparture);
         final CheckBox mAlarmDestinationCheckBox = (CheckBox) findViewById(R.id.select_alarm_destination);
         mAlarmEveryStopCheckBox = (CheckBox) findViewById(R.id.select_alarm_everyStop);
         mAlarmEveryStopCheckBox.setEnabled(false);
 
+        /** OnClick checkbox departure**/
         mAlarmDepartureCheckBox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -134,7 +132,7 @@ public class AlarmPreferencesActivity extends AppCompatActivity implements View.
             }
         });
 
-
+        /** OnClick checkbox destination **/
         mAlarmDestinationCheckBox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -147,11 +145,7 @@ public class AlarmPreferencesActivity extends AppCompatActivity implements View.
                 }
             }
         });
-
     }
-
-
-
 
 
     @Override
@@ -195,34 +189,31 @@ public class AlarmPreferencesActivity extends AppCompatActivity implements View.
                         break;
                 }
 
-//                if(mAlarmEveryStopCheckBox.isChecked()){
-//                    mEveryStop = true;
-//                }
-
+//          if(mAlarmEveryStopCheckBox.isChecked()){
+//              mEveryStop = true;
+//          }
             if(mTimeSelectedDeparture) {
                 setAlarm(mTimeDeparture);
             }
             if(mTimeSelectedDestination){
                 setAlarm(mTimeDestination);
 
-
-
-//                    if(mEveryStop){
+//              if(mEveryStop){
 //
-//                        List <Long> mDestinationAlarmTimes = new ArrayList<>();
-//                        for(long time : endTime){
-//                            mDestinationAlarmTimes.add(time - mTimeDestination);
-//                        }
-//                        for(long time2 : mDestinationAlarmTimes){
-//                            setAlarm(time2);
-//                        }
+//                  List <Long> mDestinationAlarmTimes = new ArrayList<>();
+
+//                  for(long time : endTime){
+//                      mDestinationAlarmTimes.add(time - mTimeDestination);
+//                  }
+//                  for(long time2 : mDestinationAlarmTimes){
+//                      setAlarm(time2);
+//                  }
 //
-//                    }
-//                    else {
-//                        setAlarm(mTimeDestination);
-//                    }
+//              }
+//              else {
+//                  setAlarm(mTimeDestination);
+//              }
             }
-
             finish();
             break;
 
