@@ -6,8 +6,8 @@ package com.markupartist.sthlmtraveling;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
-import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -58,21 +58,25 @@ public class AlarmPreferencesActivity extends AppCompatActivity implements View.
         mTimeSpinnerDeparture = (Spinner) findViewById(R.id.time_spinner_departure);
         mTimeSpinnerDestination = (Spinner) findViewById(R.id.time_spinner_destination);
         alarmClear.setVisibility(View.INVISIBLE);
-        findViewById(R.id.textClear).setVisibility(View.INVISIBLE);
+        //findViewById(R.id.textClear).setVisibility(View.INVISIBLE);
 
         if (mRequestCode != 0){
-            mTimeSpinnerDeparture.setEnabled(false);
-            mTimeSpinnerDestination.setEnabled(false);
-            mAlarmEveryStopCheckBox.setEnabled(false);
             alarmClear.setVisibility(View.VISIBLE);
-            findViewById(R.id.textClear).setVisibility(View.VISIBLE);
+            //findViewById(R.id.textClear).setVisibility(View.VISIBLE);
         }
 
         alarmClear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                alarmClear.setVisibility(View.INVISIBLE);
+             //   findViewById(R.id.textClear).setVisibility(View.INVISIBLE);
                 mTimeSpinnerDeparture.setEnabled(true);
                 mTimeSpinnerDestination.setEnabled(true);
+                mAlarmEveryStopCheckBox.setEnabled(true);
+               for(int i = 0; i < mRequestCode; i++){
+                   cancelAlarm(i);
+
+                }
                 mRequestCode = 0;
             }
         });
@@ -178,6 +182,15 @@ public class AlarmPreferencesActivity extends AppCompatActivity implements View.
         mRequestCode++;
         AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
         alarmManager.set(AlarmManager.RTC_WAKEUP, mTime, pendingIntent);
+    }
+
+    private void cancelAlarm(int i){
+        Context ctx = getApplicationContext();
+        AlarmManager alarmManager = (AlarmManager) ctx.getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(ctx, Alarm.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(ctx, i, intent, 0);
+        alarmManager.cancel(pendingIntent);
+
     }
 
     /** Get alarm time departure **/

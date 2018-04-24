@@ -30,17 +30,6 @@ Blenda & Filip
             android:text="@string/alarm_preferences"
             />
 
-        <TextView
-            style="?android:textAppearanceMedium"
-            android:layout_marginTop="12dp"
-            android:layout_marginLeft="8dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:text="@string/enable_alarm_departure"
-            />
-
-
 
 
         <Spinner
@@ -49,7 +38,8 @@ Blenda & Filip
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            android:drawSelectorOnTop="true" />
+            android:drawSelectorOnTop="true"
+            />
 
 
 
@@ -65,15 +55,6 @@ Blenda & Filip
                 android:focusable="true"
                 android:focusableInTouchMode="true"/>
 '
-            <TextView
-                style="?android:textAppearanceMedium"
-                android:layout_marginTop="12dp"
-                android:layout_marginLeft="8dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:text="@string/enable_alarm_destination"
-                />
 
             <Spinner
                 android:id="@+id/time_spinner_destination"
@@ -81,7 +62,9 @@ Blenda & Filip
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
-                android:drawSelectorOnTop="true" />
+                android:drawSelectorOnTop="true"
+
+                />
 
 
 
@@ -95,16 +78,6 @@ Blenda & Filip
                 android:text="@string/enable_alarm_everyStop"/>
 
         </LinearLayout>
-
-        <TextView
-            android:id="@+id/textClear"
-            style="?android:textAppearanceMedium"
-            android:layout_marginTop="48dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:text="@string/alarm_already_set"
-            />
 
 
         <Button

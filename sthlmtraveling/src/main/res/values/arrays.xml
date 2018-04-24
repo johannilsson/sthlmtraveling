@@ -25,7 +25,7 @@
 
     // Blenda:
     <string-array name="time_interval_departure">
-        <item>Number of minutes</item>
+        <item>Enable alarm for departure</item>
         <item>2 min</item>
         <item>5 min</item>
         <item>10 min</item>
@@ -35,7 +35,7 @@
 
 
     <string-array name="time_interval_destination">
-        <item>Number of minutes</item>
+        <item>Enable alarm for arrival</item>
         <item>2 min</item>
         <item>3 min</item>
         <item>5 min</item>
