@@ -19,5 +19,9 @@ public class Alarm extends BroadcastReceiver{
         Vibrator vibrator = (Vibrator) context.getSystemService(context.VIBRATOR_SERVICE);
         vibrator.vibrate(5000);
 
+
+
     }
+
+
 }

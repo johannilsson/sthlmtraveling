@@ -19,6 +19,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -156,9 +157,12 @@ public class AlarmPreferencesActivity extends AppCompatActivity implements View.
 
                 if (mTimeSelectedDeparture) {
                     setAlarm(mTimeDeparture);
+                    sendToast();
+
                 }
                 if (mTimeSelectedDestination) {
                     setAlarm(mTimeDestination);
+                    sendToast();
                 }
 
                 /** Set alarm for every stop **/
@@ -167,6 +171,7 @@ public class AlarmPreferencesActivity extends AppCompatActivity implements View.
                       setAlarm(getAlarmTimeDest(mSelectedTimeDestination, time));
                     }
                 }
+
                 finish();
                 break;
 
@@ -237,4 +242,14 @@ public class AlarmPreferencesActivity extends AppCompatActivity implements View.
         }
         return alarmDest;
     }
+
+    public void sendToast(){
+        Context context = getApplicationContext();
+        CharSequence text = "Alarm set!";
+        int duration = Toast.LENGTH_LONG;
+
+        Toast toast = Toast.makeText(context, text, duration);
+        toast.show();
+    }
 }
+
