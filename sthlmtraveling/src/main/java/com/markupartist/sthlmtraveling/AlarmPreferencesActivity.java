@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.Spinner;
 
@@ -41,13 +42,40 @@ public class AlarmPreferencesActivity extends AppCompatActivity implements View.
     Date mEndDate;
     long mEndTime;
     List<Long> endTime;
-    int mRequestCode = 0;
+    static int mRequestCode = 0;
+    Button alarmClear;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_alarm_preferences);
+
+
+        mAlarmEveryStopCheckBox = (CheckBox) findViewById(R.id.select_alarm_everyStop);
+        alarmClear = findViewById(R.id.button2);
+        //Set up spinner departure & destination
+        mTimeSpinnerDeparture = (Spinner) findViewById(R.id.time_spinner_departure);
+        mTimeSpinnerDestination = (Spinner) findViewById(R.id.time_spinner_destination);
+        alarmClear.setVisibility(View.INVISIBLE);
+        findViewById(R.id.textClear).setVisibility(View.INVISIBLE);
+
+        if (mRequestCode != 0){
+            mTimeSpinnerDeparture.setEnabled(false);
+            mTimeSpinnerDestination.setEnabled(false);
+            mAlarmEveryStopCheckBox.setEnabled(false);
+            alarmClear.setVisibility(View.VISIBLE);
+            findViewById(R.id.textClear).setVisibility(View.VISIBLE);
+        }
+
+        alarmClear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mTimeSpinnerDeparture.setEnabled(true);
+                mTimeSpinnerDestination.setEnabled(true);
+                mRequestCode = 0;
+            }
+        });
 
         /** Get legs **/
         Intent intent = getIntent();
@@ -72,11 +100,6 @@ public class AlarmPreferencesActivity extends AppCompatActivity implements View.
         mStartTime = mStartDate.getTime();
 
         /** From ChangeRouteTimeActivity **/
-        //Set up spinner departure & destination
-        mTimeSpinnerDeparture = (Spinner) findViewById(R.id.time_spinner_departure);
-        mTimeSpinnerDestination = (Spinner) findViewById(R.id.time_spinner_destination);
-        mTimeSpinnerDeparture.setEnabled(false);
-        mTimeSpinnerDestination.setEnabled(false);
 
         int selectedPosDeparture = 0;
         ArrayAdapter<CharSequence> whenChoiceAdapter = ArrayAdapter.createFromResource(
@@ -88,7 +111,7 @@ public class AlarmPreferencesActivity extends AppCompatActivity implements View.
         int selectedPosDestination = 0;
         ArrayAdapter<CharSequence> whenChoiceAdapterDestination = ArrayAdapter.createFromResource(
                 this, R.array.time_interval_destination, android.R.layout.simple_spinner_item);
-        whenChoiceAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        whenChoiceAdapterDestination.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mTimeSpinnerDestination.setAdapter(whenChoiceAdapterDestination);
         mTimeSpinnerDestination.setSelection(selectedPosDestination);
         /***/
@@ -112,41 +135,8 @@ public class AlarmPreferencesActivity extends AppCompatActivity implements View.
         actionBar.setCustomView(customActionBarView, new ActionBar.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT));
-        /***/
 
-        /** Set up checkbox **/
-        final CheckBox mAlarmDepartureCheckBox = (CheckBox) findViewById(R.id.select_alarm_departure);
-        final boolean checkedAlarmDeparture = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("departureBox", false);
-        mAlarmDepartureCheckBox.setChecked(checkedAlarmDeparture);
-        final CheckBox mAlarmDestinationCheckBox = (CheckBox) findViewById(R.id.select_alarm_destination);
-        mAlarmEveryStopCheckBox = (CheckBox) findViewById(R.id.select_alarm_everyStop);
-        mAlarmEveryStopCheckBox.setEnabled(false);
 
-        /** OnClick checkbox departure**/
-        mAlarmDepartureCheckBox.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(mAlarmDepartureCheckBox.isChecked()){
-                    mTimeSpinnerDeparture.setEnabled(true);
-                } else {
-                    mTimeSpinnerDeparture.setEnabled(false);
-                }
-            }
-        });
-
-        /** OnClick checkbox destination **/
-        mAlarmDestinationCheckBox.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(mAlarmDestinationCheckBox.isChecked()){
-                    mTimeSpinnerDestination.setEnabled(true);
-                    mAlarmEveryStopCheckBox.setEnabled(true);
-                } else {
-                    mTimeSpinnerDestination.setEnabled(false);
-                    mAlarmEveryStopCheckBox.setEnabled(false);
-                }
-            }
-        });
     }
 
 
@@ -173,7 +163,6 @@ public class AlarmPreferencesActivity extends AppCompatActivity implements View.
                       setAlarm(getAlarmTimeDest(mSelectedTimeDestination, time));
                     }
                 }
-
                 finish();
                 break;
 

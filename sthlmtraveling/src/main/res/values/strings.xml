@@ -134,6 +134,7 @@
     <string name="enable_alarm_departure">Enable alarm for departure</string>
     <string name="enable_alarm_destination">Enable alarm for destination</string>
     <string name="enable_alarm_everyStop">Enable alarm for every stop</string>
+    <string name="alarm_already_set">Clear current alarms to set new ones</string>
     //
 
 
