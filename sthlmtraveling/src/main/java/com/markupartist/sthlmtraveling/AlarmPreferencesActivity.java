@@ -34,7 +34,6 @@ public class AlarmPreferencesActivity extends AppCompatActivity implements View.
     long mTimeDestination;
     boolean mTimeSelectedDeparture = true;
     boolean mTimeSelectedDestination = true;
-//    boolean mEveryStop = false;
     CheckBox mAlarmEveryStopCheckBox;
     Date mStartDate;
     long mStartTime;
@@ -52,14 +51,16 @@ public class AlarmPreferencesActivity extends AppCompatActivity implements View.
         /**Get legs**/
         Intent intent = getIntent();
         Route route = intent.getParcelableExtra("ParceableTest");
-        List<Leg> legList = new ArrayList<>();
-        legList = route.getLegs();
+        List<Leg> legList = route.getLegs();
 
-/** Get every destination time**/
-//        endTime = new ArrayList<>();
-//        for(Leg leg : legList ){
-//            endTime.add(leg.getEndTime().getTime());
-//        }
+        /** Get every destination time **/
+        endTime = new ArrayList<>();
+        for(Leg leg : legList ){
+            if(!leg.getTravelMode().equals("foot")){
+                Log.v("asznee", leg.getTravelMode());
+                endTime.add(leg.getEndTime().getTime());
+            }
+        }
 
         /** Get final destination time**/
         mEndDate = legList.get(legList.size()-1).getEndTime();
@@ -153,69 +154,27 @@ public class AlarmPreferencesActivity extends AppCompatActivity implements View.
         switch (view.getId()) {
             case R.id.actionbar_done:
                 int mSelectedTimeDeparture = (int) mTimeSpinnerDeparture.getSelectedItemId();
-                switch (mSelectedTimeDeparture) {
-                    case 0:
-                        mTimeSelectedDeparture = false;
-                    case 1:
-                        mTimeDeparture = mStartTime - 120000;
-                        break;
-                    case 2:
-                        mTimeDeparture = mStartTime - 300000;
-                        break;
-                    case 3:
-                        mTimeDeparture = mStartTime - 600000;
-                        break;
-                    case 4:
-                        mTimeDeparture = mStartTime - 900000;
-                        break;
-                    case 5:
-                        mTimeDeparture = mStartTime - 1800000;
-                        break;
-                }
+                mTimeDeparture = getAlarmTimeDep(mSelectedTimeDeparture, mStartTime);
 
                 int mSelectedTimeDestination = (int) mTimeSpinnerDestination.getSelectedItemId();
-                switch (mSelectedTimeDestination){
-                    case 0:
-                        mTimeSelectedDestination = false;
-                        break;
-                    case 1:
-                        mTimeDestination = mEndTime - 120000;
-                        break;
-                    case 2:
-                        mTimeDestination = mEndTime- 180000;
-                        break;
-                    case 3:
-                        mTimeDestination = mEndTime - 300000;
-                        break;
+                mTimeDestination = getAlarmTimeDest(mSelectedTimeDestination, mEndTime);
+
+                if (mTimeSelectedDeparture) {
+                    setAlarm(mTimeDeparture);
+                }
+                if (mTimeSelectedDestination) {
+                    setAlarm(mTimeDestination);
                 }
 
-//          if(mAlarmEveryStopCheckBox.isChecked()){
-//              mEveryStop = true;
-//          }
-            if(mTimeSelectedDeparture) {
-                setAlarm(mTimeDeparture);
-            }
-            if(mTimeSelectedDestination){
-                setAlarm(mTimeDestination);
+                /** Set alarm for every stop **/
+                if(mAlarmEveryStopCheckBox.isChecked()){
+                    for(long time : endTime) {
+                      setAlarm(getAlarmTimeDest(mSelectedTimeDestination, time));
+                    }
+                }
 
-//              if(mEveryStop){
-//
-//                  List <Long> mDestinationAlarmTimes = new ArrayList<>();
-
-//                  for(long time : endTime){
-//                      mDestinationAlarmTimes.add(time - mTimeDestination);
-//                  }
-//                  for(long time2 : mDestinationAlarmTimes){
-//                      setAlarm(time2);
-//                  }
-//
-//              }
-//              else {
-//                  setAlarm(mTimeDestination);
-//              }
-            }
-            finish();
-            break;
+                finish();
+                break;
 
             case R.id.actionbar_discard:
                 finish();
@@ -229,5 +188,50 @@ public class AlarmPreferencesActivity extends AppCompatActivity implements View.
         mRequestCode++;
         AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
         alarmManager.set(AlarmManager.RTC_WAKEUP, mTime, pendingIntent);
+    }
+
+    /** Get alarm time departure **/
+    public long getAlarmTimeDep(int selectedTimeDeparture, long startTime) {
+       long alarmDep = 0;
+        switch (selectedTimeDeparture) {
+            case 0:
+                mTimeSelectedDeparture = false;
+            case 1:
+                alarmDep = startTime - 120000;
+                break;
+            case 2:
+                alarmDep = startTime - 300000;
+                break;
+            case 3:
+                alarmDep = startTime - 600000;
+                break;
+            case 4:
+                alarmDep = startTime - 900000;
+                break;
+            case 5:
+                alarmDep = startTime - 1800000;
+                break;
+        }
+        return alarmDep;
+    }
+
+    /** Get alarm time destination **/
+    public long getAlarmTimeDest(int selectedTimeDestination, long endTime){
+        long alarmDest = 0;
+        switch (selectedTimeDestination){
+            case 0:
+                mTimeSelectedDestination = false;
+                break;
+            case 1:
+                alarmDest = endTime - 120000;
+                break;
+            case 2:
+                alarmDest = endTime- 180000;
+                break;
+            case 3:
+                alarmDest = endTime - 300000;
+                break;
+        }
+        return alarmDest;
     }
 }
