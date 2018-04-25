@@ -156,20 +156,12 @@ public class AlarmPreferencesActivity extends AppCompatActivity implements View.
                 mTimeDestination = getAlarmTimeDest(mSelectedTimeDestination, mEndTime);
 
                 if (mTimeSelectedDeparture) {
-<<<<<<< HEAD
                     setAlarm(mTimeDeparture, "Time to go!");
                 }
                 if (mTimeSelectedDestination) {
                     setAlarm(mTimeDestination, "Time to get off!");
-=======
-                    setAlarm(mTimeDeparture);
                     sendToast();
 
-                }
-                if (mTimeSelectedDestination) {
-                    setAlarm(mTimeDestination);
-                    sendToast();
->>>>>>> 569fdf37d835f57290fe3e3efcbe31f5eb441ce5
                 }
 
                 /** Set alarm for every stop **/
