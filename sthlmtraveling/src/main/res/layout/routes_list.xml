@@ -37,8 +37,8 @@
     <LinearLayout
         android:id="@+id/headerbar"
         android:layout_width="match_parent"
-        android:layout_height="112dp"
-        android:background="@color/primary_dark"
+        android:layout_height="120dp"
+        android:background="@color/primary"
         android:orientation="vertical"
         android:gravity="center"
         >
@@ -47,8 +47,8 @@
             android:id="@+id/date_time"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight=".50"
+            android:layout_height="56dp"
+            android:layout_weight=".25"
             android:textColor="@color/primary_light"
             android:paddingLeft="@dimen/list_horizontal_padding"
             android:paddingRight="@dimen/list_horizontal_padding"
@@ -59,14 +59,22 @@
             android:drawablePadding="24dp"
             tools:text="Date"
             />
+
         <android.support.design.widget.TabLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="64dp"
             android:background="@color/primary_dark"
             app:tabTextColor="@color/primary_light"
             app:tabSelectedTextColor="@color/accent"
+            android:layout_gravity="center"
+            android:layout_weight=".75"
             android:id="@+id/Tab"
-            >
+            app:tabGravity="fill"
+            app:tabMode="scrollable"
+            app:tabPaddingEnd="0dp"
+            app:tabPaddingStart="0dp"
+            app:tabPaddingTop="0dp"
+            app:tabPaddingBottom="0dp">
         </android.support.design.widget.TabLayout>
 
     </LinearLayout>

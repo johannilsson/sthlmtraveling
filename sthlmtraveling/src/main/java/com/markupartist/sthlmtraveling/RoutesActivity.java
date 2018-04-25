@@ -29,9 +29,9 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
-import android.support.design.widget.TabItem;
 import android.support.design.widget.TabLayout;
 import android.support.v4.content.ContextCompat;
+import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.SparseBooleanArray;
@@ -69,6 +69,7 @@ import com.markupartist.sthlmtraveling.utils.LocationManager;
 import com.markupartist.sthlmtraveling.utils.Monitor;
 import com.markupartist.sthlmtraveling.utils.ViewHelper;
 
+
 import org.json.JSONException;
 
 import java.text.DateFormat;
@@ -100,7 +101,7 @@ public class RoutesActivity extends BaseListActivity implements
     static final String EXTRA_JOURNEY_QUERY = "sthlmtraveling.intent.action.JOURNEY_QUERY";
 
     private final String TAG = "RoutesActivity";
-
+    private static final int TAB_CAP = 10;
     private static final int DIALOG_ILLEGAL_PARAMETERS = 0;
 
     protected static final int REQUEST_CODE_CHANGE_TIME = 0;
@@ -132,7 +133,7 @@ public class RoutesActivity extends BaseListActivity implements
      * Used for the tab layout
      */
     private TabLayout mTabLayout;
-    private static TabWrap  mTabWraps[] = new TabWrap[3];
+    private static TabWrap  mTabWraps[] = new TabWrap[TAB_CAP];
     private Menu mMenuAbove;
 
     private View mEmptyView;
@@ -204,10 +205,12 @@ public class RoutesActivity extends BaseListActivity implements
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 swapTab();
+                changeTabColor(tab, true);
             }
 
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
+                changeTabColor(tab, false);
 
             }
 
@@ -848,15 +851,48 @@ public class RoutesActivity extends BaseListActivity implements
      * Rotates the pointers to match the data with corresponding tab and
      * adds the new "tab" at index 0 and "removes/replaces" the rightmost tab
      */
-    private void addTab(){
-        mTabWraps[2] = null;
-        mTabWraps[2] =  mTabWraps[1];
-        mTabWraps[1] =  mTabWraps[0];
+    private void addTab() {
+        for (int i = TAB_CAP - 1; i > 0; i--)
+            mTabWraps[i] = mTabWraps[i - 1];
         mTabWraps[0] = new TabWrap(mJourneyQuery, mRouteAdapter, mTransitPlan, mPlan);
 
-        for(int i = 0; i <3 ; i ++)
-            if(mTabWraps[i] != null)
-                mTabLayout.addTab(mTabLayout.newTab());
+
+        for (int i = 0; i < TAB_CAP; i++) {
+            if (mTabWraps[i] == null)
+                break;
+            TabLayout.Tab tab = mTabLayout.newTab();
+            View layout = LayoutInflater.from(this).inflate(R.layout.tab_layout, null);
+            Button button = (Button) layout.findViewById(R.id.tabClose);
+            button.setTag("btnClose"+i);
+
+            if(mTabWraps[1] == null)
+                button.setVisibility(mEmptyView.GONE);
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    for(int i = 0; i < mTabLayout.getTabCount(); i++)
+                        if(mTabLayout.getTabAt(i).getCustomView().findViewById(R.id.tabClose) == v) {
+                            removeTab(i);
+                            break;
+                        }
+                }
+                });
+                tab.setCustomView(layout);
+                mTabLayout.addTab(tab);
+            }
+    }
+
+    private void removeTab(int index){
+        if(mTabLayout.getTabCount() > 1) {
+            for (int i = index; i < mTabLayout.getTabCount() - 1; i++) {
+                mTabWraps[i] = mTabWraps[i + 1];
+
+            }
+            mTabWraps[mTabLayout.getTabCount() - 1] = null;
+            mTabLayout.removeTabAt(index);
+            updateTabs();
+        }
+
     }
 
     /** swapTab - Made by Jakob & Didrik
@@ -896,12 +932,11 @@ public class RoutesActivity extends BaseListActivity implements
      *
      */
     private void updateTabs(){
+        if(mTabWraps[1] == null)
+            mTabLayout.getTabAt(0).getCustomView().findViewById(R.id.tabClose).setVisibility(View.GONE);
         updateStar();
         updateStartAndEndPointViews(mJourneyQuery);
-        for(int i = 0; i < mTabLayout.getTabCount(); i ++)
-            mTabLayout.getTabAt(i).setText(mTabWraps[i].jq.origin.getName().replace("_"," ")
-                    + " -> "
-                    + mTabWraps[i].jq.destination.getName().replace("_"," "));
+        updateTabText();
 
         //update search time when switching tab
         mTimeAndDate.setText(buildDateTimeString());
@@ -1087,6 +1122,7 @@ public class RoutesActivity extends BaseListActivity implements
         return isStarred;
     }
 
+
     private void handleStarAction() {
         String json;
         try {
@@ -1206,6 +1242,8 @@ public class RoutesActivity extends BaseListActivity implements
                 Log.w(TAG, "Failed to reload routes.");
             }
         };
+
+
         private void updateWrapData(Plan plan) {
             t_plan = plan;
             jq.ident = plan.getPaginateRef();
@@ -1218,6 +1256,31 @@ public class RoutesActivity extends BaseListActivity implements
             showRoutes();
             supportInvalidateOptionsMenu();
             dismissProgress();
+        }
+    }
+    private void changeTabColor(TabLayout.Tab tab, boolean sel){
+        if (sel)
+        ((TextView)tab.getCustomView().findViewById(R.id.tabText)).setTextColor(getResources().getColor(R.color.accent));
+        else
+            if (tab.getCustomView() != null)
+            ((TextView)tab.getCustomView().findViewById(R.id.tabText)).setTextColor(getResources().getColor(R.color.primary_light));
+
+    }
+    private void updateTabText(){
+        for(int i = 0; i < mTabLayout.getTabCount(); i ++) {
+
+            String origin = mTabWraps[i].jq.origin.getName().replace("MY_LOCATION", "My location");
+            if (origin.length() > 17)
+                origin = origin.substring(0,16) + "...";
+
+            String destination = mTabWraps[i].jq.destination.getName().replace("MY_LOCATION", "My location");;
+            if(destination.length() > 17)
+                destination = destination.substring(0,16) + "...";
+
+            ((TextView) mTabLayout.getTabAt(i).getCustomView().findViewById(R.id.tabText)).setText(Html.fromHtml("<b> " +
+                    origin
+                    + "</b><br> "
+                    + destination));
         }
     }
     private static class RoutesAdapter extends BaseAdapter {
