@@ -24,6 +24,8 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.text.format.Time;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -58,9 +60,11 @@ public class DeviationsActivity extends BaseListActivity {
     private GetDeviationsTask mGetDeviationsTask;
     private ArrayList<Deviation> mDeviationsResult;
     private LinearLayout mProgress;
+    private TextView mSearchTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.d(TAG, "onCreate");
         super.onCreate(savedInstanceState);
 
 //        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
@@ -76,6 +80,25 @@ public class DeviationsActivity extends BaseListActivity {
 
         loadDeviations();
         registerForContextMenu(getListView());
+
+        mSearchTextView = (TextView) this.findViewById(R.id.deviations_search_field);
+        mSearchTextView.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                //unused
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                Log.d(TAG, "onTextChanged");
+                //unused
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                filterResult(editable.toString());
+            }
+        });
     }
 
     @Override
@@ -102,6 +125,7 @@ public class DeviationsActivity extends BaseListActivity {
             (ArrayList<Deviation>) getLastNonConfigurationInstance();
         if (result != null) {
             fillData(result);
+            mDeviationsResult = result;
         } else {
             mGetDeviationsTask = new GetDeviationsTask();
             mGetDeviationsTask.execute();
@@ -129,7 +153,6 @@ public class DeviationsActivity extends BaseListActivity {
 
         SimpleAdapter deviationAdapter = createAdapter(result);
 
-        mDeviationsResult = result;
 
         setListAdapter(deviationAdapter);
     }
@@ -294,6 +317,7 @@ public class DeviationsActivity extends BaseListActivity {
 
     @Override
     protected void onDestroy() {
+        mSearchTextView.setText("");
         super.onDestroy();
 
         onCancelGetDeviationsTask();
@@ -337,6 +361,7 @@ public class DeviationsActivity extends BaseListActivity {
 
             if (mWasSuccess) {
                 fillData(result);
+                mDeviationsResult = result;
             } else {
                 try {
                     showDialog(DIALOG_GET_DEVIATIONS_NETWORK_PROBLEM);
@@ -361,4 +386,29 @@ public class DeviationsActivity extends BaseListActivity {
 
         startActivity(Intent.createChooser(intent, getText(R.string.share_label)));
     }
+
+    // Pretty ugly solution fix it NOW
+    private void filterResult(String search){
+        if (mDeviationsResult == null) return;
+        String[] words = search.toLowerCase().split(" ");
+        ArrayList<Deviation> filteredResult = new ArrayList<Deviation>();
+        boolean match = false;
+        for(Deviation deviation:mDeviationsResult){
+            for(String word:words){
+                boolean checkA = deviation.getHeader().toLowerCase().contains(word);
+                boolean checkB = deviation.getDetails().toLowerCase().contains(word);
+                boolean checkC = deviation.getScope().toLowerCase().contains(word);
+                if(!(checkA||checkB||checkC)){
+                    match = false;
+                    break;
+                }
+                else match = true;
+            }
+            if (match) filteredResult.add(deviation);
+        }
+        fillData(filteredResult);
+    }
+
+
+
 }
