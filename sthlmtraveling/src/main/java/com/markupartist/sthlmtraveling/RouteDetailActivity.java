@@ -120,7 +120,7 @@ public class RouteDetailActivity extends BaseListActivity {
 
 //Tab functionality by Oskar Hahr
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.route_details_list);
 
@@ -199,12 +199,16 @@ public class RouteDetailActivity extends BaseListActivity {
         if (savedInstanceState == null) {
             onRouteDetailsResult(mRoute);
         }
+
+
+
         mTabLayout = (this.findViewById(R.id.rDetails_Tab));
         mTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                swapTabDetails();
                 changeTabColor(tab,true);
+                swapTabDetails();
+
             }
 
             @Override
@@ -251,6 +255,7 @@ public class RouteDetailActivity extends BaseListActivity {
                 });
             }
         };
+
     }
 
     void updateStopTimes(IntermediateResponse intermediateResponse) {
@@ -458,19 +463,20 @@ public class RouteDetailActivity extends BaseListActivity {
     }
 
     void updateFooterView(final LegViewModel legViewModel) {
-
-        TextView departureTimeView = (TextView) mFooterView.findViewById(R.id.trip_departure_time);
-        TextView expectedDepartureTimeView = (TextView) mFooterView.findViewById(R.id.trip_expected_departure_time);
-        departureTimeView.setText(DateFormat.getTimeFormat(this).format(legViewModel.leg.getEndTime()));
-        if (legViewModel.leg.getEndTimeRt() != null && legViewModel.leg.hasDepartureDelay()) {
-            departureTimeView.setPaintFlags(departureTimeView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-            expectedDepartureTimeView.setVisibility(View.VISIBLE);
-            expectedDepartureTimeView.setText(DateFormat.getTimeFormat(this).format(legViewModel.leg.getEndTimeRt()));
-            ViewHelper.setTextColorForTimeView(expectedDepartureTimeView, legViewModel.leg, false);
-        } else {
-            departureTimeView.setPaintFlags(departureTimeView.getPaintFlags() & (~ Paint.STRIKE_THRU_TEXT_FLAG));
-            ViewHelper.setTextColorForTimeView(departureTimeView, legViewModel.leg, false);
-            expectedDepartureTimeView.setVisibility(View.GONE);
+        if(mFooterView != null){
+            TextView departureTimeView = (TextView) mFooterView.findViewById(R.id.trip_departure_time);
+            TextView expectedDepartureTimeView = (TextView) mFooterView.findViewById(R.id.trip_expected_departure_time);
+            departureTimeView.setText(DateFormat.getTimeFormat(this).format(legViewModel.leg.getEndTime()));
+            if (legViewModel.leg.getEndTimeRt() != null && legViewModel.leg.hasDepartureDelay()) {
+                departureTimeView.setPaintFlags(departureTimeView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                expectedDepartureTimeView.setVisibility(View.VISIBLE);
+                expectedDepartureTimeView.setText(DateFormat.getTimeFormat(this).format(legViewModel.leg.getEndTimeRt()));
+                ViewHelper.setTextColorForTimeView(expectedDepartureTimeView, legViewModel.leg, false);
+            } else {
+                departureTimeView.setPaintFlags(departureTimeView.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
+                ViewHelper.setTextColorForTimeView(departureTimeView, legViewModel.leg, false);
+                expectedDepartureTimeView.setVisibility(View.GONE);
+            }
         }
     }
 
@@ -905,8 +911,8 @@ public class RouteDetailActivity extends BaseListActivity {
         switchTabs();
         if(mNameView!=null)
             mNameView.setText(mJourneyQuery.destination.toString());
-        //if(mSubTripAdapter.getCount() > 0)
-          //  updateFooterView(mSubTripAdapter.getItem(mSubTripAdapter.getCount() - 1));
+        if(mSubTripAdapter != null && mSubTripAdapter.getCount() > 0)
+            updateFooterView(mSubTripAdapter.getItem(mSubTripAdapter.getCount() - 1));
         setListAdapter(mSubTripAdapter);
         tripTimeDestinationUpdater();
         updateStartAndEndPointViews(mJourneyQuery);
@@ -950,6 +956,7 @@ public class RouteDetailActivity extends BaseListActivity {
             tab.setCustomView(layout);
             mTabLayout.addTab(tab);
         }
+        updateTabText();
     }
     private void removeTab(int index){
         if(mTabLayout.getTabCount() > 1) {
@@ -989,8 +996,8 @@ public class RouteDetailActivity extends BaseListActivity {
     }
 
     private void updateTabText(){
-        for(int i = 0; i < mTabLayout.getTabCount(); i ++) {
 
+        for(int i = 0; i < mTabLayout.getTabCount(); i ++) {
             String origin = mTabDetails[i].journeyQ.origin.getName().replace("MY_LOCATION", "My location");
             if (origin.length() > 17)
                 origin = origin.substring(0,16) + "...";
