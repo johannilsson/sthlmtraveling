@@ -155,16 +155,16 @@ public class AlarmPreferencesActivity extends AppCompatActivity implements View.
                 mTimeDestination = getAlarmTimeDest(mSelectedTimeDestination, mEndTime);
 
                 if (mTimeSelectedDeparture) {
-                    setAlarm(mTimeDeparture);
+                    setAlarm(mTimeDeparture, "Time to go!");
                 }
                 if (mTimeSelectedDestination) {
-                    setAlarm(mTimeDestination);
+                    setAlarm(mTimeDestination, "Time to get off!");
                 }
 
                 /** Set alarm for every stop **/
                 if(mAlarmEveryStopCheckBox.isChecked()){
                     for(long time : endTime) {
-                      setAlarm(getAlarmTimeDest(mSelectedTimeDestination, time));
+                      setAlarm(getAlarmTimeDest(mSelectedTimeDestination, time), "ossnaa");
                     }
                 }
                 finish();
@@ -176,8 +176,9 @@ public class AlarmPreferencesActivity extends AppCompatActivity implements View.
         }
     }
 
-    public void setAlarm(long mTime){
+    private void setAlarm(long mTime, String ossnaa){
         Intent intent = new Intent(AlarmPreferencesActivity.this, Alarm.class);
+        intent.putExtra("notificationMessage", ossnaa);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), mRequestCode, intent, 0);
         mRequestCode++;
         AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
