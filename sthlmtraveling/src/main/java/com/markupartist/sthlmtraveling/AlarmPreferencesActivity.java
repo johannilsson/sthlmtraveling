@@ -167,7 +167,7 @@ public class AlarmPreferencesActivity extends AppCompatActivity implements View.
                 /** Set alarm for every stop **/
                 if(mAlarmEveryStopCheckBox.isChecked()){
                     for(long time : endTime) {
-                      setAlarm(getAlarmTimeDest(mSelectedTimeDestination, time), "ossnaa");
+                      setAlarm(getAlarmTimeDest(mSelectedTimeDestination, time), "Time to get off!");
                     }
                 }
 
