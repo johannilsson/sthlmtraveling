@@ -1264,8 +1264,8 @@ public class RoutesActivity extends BaseListActivity implements
         else
             if (tab.getCustomView() != null)
             ((TextView)tab.getCustomView().findViewById(R.id.tabText)).setTextColor(getResources().getColor(R.color.primary_light));
-
     }
+
     private void updateTabText(){
         for(int i = 0; i < mTabLayout.getTabCount(); i ++) {
 

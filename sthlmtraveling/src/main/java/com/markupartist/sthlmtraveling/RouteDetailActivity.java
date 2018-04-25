@@ -34,6 +34,7 @@ import android.support.v4.text.BidiFormatter;
 import android.support.v4.util.Pair;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.app.ActionBar;
+import android.text.Html;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
 import android.util.Log;
@@ -97,8 +98,9 @@ public class RouteDetailActivity extends BaseListActivity {
 
     public static final String EXTRA_ROUTE = "sthlmtraveling.intent.extra.ROUTE";
     public static final String EXTRA_JOURNEY_QUERY = "sthlmtraveling.intent.action.JOURNEY_QUERY";
+    private static final int TAB_CAP = 10;
     private static final String STATE_LEGS = "sthlmtraveling.intent.state.LEGS";
-    private static TabDetails mTabDetails[] = new TabDetails[3];
+    private static TabDetails mTabDetails[] = new TabDetails[TAB_CAP];
 
     private Route mRoute;
     private JourneyQuery mJourneyQuery;
@@ -121,23 +123,6 @@ public class RouteDetailActivity extends BaseListActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.route_details_list);
-
-
-        mTabLayout = (this.findViewById(R.id.rDetails_Tab));
-        mTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                swapTabDetails();
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-            }
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-
-            }
-        });
 
         registerScreen("Route details");
 
@@ -214,8 +199,27 @@ public class RouteDetailActivity extends BaseListActivity {
         if (savedInstanceState == null) {
             onRouteDetailsResult(mRoute);
         }
+        mTabLayout = (this.findViewById(R.id.rDetails_Tab));
+        mTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                swapTabDetails();
+                changeTabColor(tab,true);
+            }
 
-        createTabs();
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+                changeTabColor(tab,false);
+            }
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
+        if(savedInstanceState == null)
+            createTabs(true);
+        else
+            createTabs(false);
 
         mMonitor = new Monitor() {
             @Override
@@ -896,20 +900,71 @@ public class RouteDetailActivity extends BaseListActivity {
         //Rotates the tabs and displays the new route as the first tab
         //Oskar Hahr
 
+        if(mTabDetails[1] == null)
+            mTabLayout.getTabAt(0).getCustomView().findViewById(R.id.tabClose).setVisibility(View.GONE);
         switchTabs();
-        mNameView.setText(mJourneyQuery.destination.toString());
-        updateFooterView(mSubTripAdapter.getItem(mSubTripAdapter.getCount() - 1));
+        if(mNameView!=null)
+            mNameView.setText(mJourneyQuery.destination.toString());
+        //if(mSubTripAdapter.getCount() > 0)
+          //  updateFooterView(mSubTripAdapter.getItem(mSubTripAdapter.getCount() - 1));
         setListAdapter(mSubTripAdapter);
         tripTimeDestinationUpdater();
         updateStartAndEndPointViews(mJourneyQuery);
+        updateTabText();
         updateStar();
+
     }
 
 
     /**Rotates the information the tabs need to function and
      * creates the correct amount of tabs depending on the information in mSubTripAdapterA
      and sets the text of the tabs to the destination and the trip time **/
-    private void createTabs(){
+    private void createTabs(boolean add){
+        if (add) {
+            for (int i = TAB_CAP - 1; i > 0; i--)
+                mTabDetails[i] = mTabDetails[i - 1];
+            mTabDetails[0] = new TabDetails(mJourneyQuery, mSubTripAdapter, timeDestinationString(), mRoute);
+        }
+
+
+        for (int i = 0; i < TAB_CAP; i++) {
+            if (mTabDetails[i] == null)
+                break;
+            TabLayout.Tab tab = mTabLayout.newTab();
+            View layout = LayoutInflater.from(this).inflate(R.layout.tab_layout, null);
+            Button button = (Button) layout.findViewById(R.id.tabClose);
+            button.setTag("btnClose"+i);
+
+            if(mTabDetails[1] == null)
+                button.setVisibility(View.GONE);
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    for(int i = 0; i < mTabLayout.getTabCount(); i++)
+                        if(mTabLayout.getTabAt(i).getCustomView().findViewById(R.id.tabClose) == v) {
+                            removeTab(i);
+                            break;
+                        }
+                }
+            });
+            tab.setCustomView(layout);
+            mTabLayout.addTab(tab);
+        }
+    }
+    private void removeTab(int index){
+        if(mTabLayout.getTabCount() > 1) {
+            for (int i = index; i < mTabLayout.getTabCount() - 1; i++) {
+                mTabDetails[i] = mTabDetails[i + 1];
+
+            }
+            mTabDetails[mTabLayout.getTabCount() - 1] = null;
+            mTabLayout.removeTabAt(index);
+            swapTabDetails();
+        }
+
+    }
+    /*{
+        /*
         mTabDetails[2] = mTabDetails[1];
         mTabDetails[1] = mTabDetails[0];
         mTabDetails[0] = new TabDetails(mJourneyQuery, mSubTripAdapter, timeDestinationString(), mRoute);
@@ -921,7 +976,8 @@ public class RouteDetailActivity extends BaseListActivity {
             mTabLayout.addTab(mTabLayout.newTab());
             mTabLayout.getTabAt(i).setText(mTabDetails[i].timeString);
         }
-    }
+
+    }*/
     private void switchTabs(){
         mJourneyQuery = mTabDetails[selectTab()].journeyQ;
         mRoute = mTabDetails[selectTab()].routeDetail;
@@ -931,6 +987,32 @@ public class RouteDetailActivity extends BaseListActivity {
     private int selectTab(){
         return mTabLayout.getSelectedTabPosition();
     }
+
+    private void updateTabText(){
+        for(int i = 0; i < mTabLayout.getTabCount(); i ++) {
+
+            String origin = mTabDetails[i].journeyQ.origin.getName().replace("MY_LOCATION", "My location");
+            if (origin.length() > 17)
+                origin = origin.substring(0,16) + "...";
+
+            String destination = mTabDetails[i].journeyQ.destination.getName().replace("MY_LOCATION", "My location");;
+            if(destination.length() > 17)
+                destination = destination.substring(0,16) + "...";
+
+            ((TextView) mTabLayout.getTabAt(i).getCustomView().findViewById(R.id.tabText)).setText(Html.fromHtml("<b> " +
+                    origin
+                    + "</b><br> "
+                    + destination));
+        }
+    }
+    private void changeTabColor(TabLayout.Tab tab, boolean sel){
+        if (sel)
+            ((TextView)tab.getCustomView().findViewById(R.id.tabText)).setTextColor(getResources().getColor(R.color.accent));
+        else
+        if (tab.getCustomView() != null)
+            ((TextView)tab.getCustomView().findViewById(R.id.tabText)).setTextColor(getResources().getColor(R.color.primary_light));
+    }
+
     /** updateStar - Made by Jakob & Didrik
      * Makes sure the graphics of the star/favorite icon is updated to display
      * the right graphics corresponding to the current tab shown
