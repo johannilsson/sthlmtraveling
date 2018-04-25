@@ -35,6 +35,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager.BadTokenException;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.SimpleAdapter;
 import android.widget.SimpleAdapter.ViewBinder;
@@ -59,8 +60,9 @@ public class DeviationsActivity extends BaseListActivity {
 
     private GetDeviationsTask mGetDeviationsTask;
     private ArrayList<Deviation> mDeviationsResult;
+    private ArrayList<Deviation> mAllDeviations;
     private LinearLayout mProgress;
-    private TextView mSearchTextView;
+    private TextView mSearchEditText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,12 +79,17 @@ public class DeviationsActivity extends BaseListActivity {
         mProgress.setVisibility(View.GONE);
 
         initActionBar();
+        if(savedInstanceState != null){
+            fillData(savedInstanceState.<Deviation>getParcelableArrayList("deviationsResult"));
+        }
+        else{
+            loadDeviations();
+        }
 
-        loadDeviations();
         registerForContextMenu(getListView());
 
-        mSearchTextView = (TextView) this.findViewById(R.id.deviations_search_field);
-        mSearchTextView.addTextChangedListener(new TextWatcher() {
+        mSearchEditText = (EditText) this.findViewById(R.id.deviations_search_field);
+        mSearchEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 //unused
@@ -99,6 +106,7 @@ public class DeviationsActivity extends BaseListActivity {
                 filterResult(editable.toString());
             }
         });
+        mSearchEditText.clearFocus();
     }
 
     @Override
@@ -125,7 +133,7 @@ public class DeviationsActivity extends BaseListActivity {
             (ArrayList<Deviation>) getLastNonConfigurationInstance();
         if (result != null) {
             fillData(result);
-            mDeviationsResult = result;
+            mAllDeviations = result;
         } else {
             mGetDeviationsTask = new GetDeviationsTask();
             mGetDeviationsTask.execute();
@@ -153,6 +161,7 @@ public class DeviationsActivity extends BaseListActivity {
 
         SimpleAdapter deviationAdapter = createAdapter(result);
 
+        mDeviationsResult = result;
 
         setListAdapter(deviationAdapter);
     }
@@ -230,6 +239,7 @@ public class DeviationsActivity extends BaseListActivity {
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
+        outState.putParcelableArrayList("deviationsResult", mDeviationsResult);
         super.onSaveInstanceState(outState);
         saveGetDeviationsTask(outState);
     }
@@ -317,7 +327,7 @@ public class DeviationsActivity extends BaseListActivity {
 
     @Override
     protected void onDestroy() {
-        mSearchTextView.setText("");
+        mSearchEditText.setText("");
         super.onDestroy();
 
         onCancelGetDeviationsTask();
@@ -361,7 +371,7 @@ public class DeviationsActivity extends BaseListActivity {
 
             if (mWasSuccess) {
                 fillData(result);
-                mDeviationsResult = result;
+                mAllDeviations = result;
             } else {
                 try {
                     showDialog(DIALOG_GET_DEVIATIONS_NETWORK_PROBLEM);
@@ -389,11 +399,11 @@ public class DeviationsActivity extends BaseListActivity {
 
     // Pretty ugly solution fix it NOW
     private void filterResult(String search){
-        if (mDeviationsResult == null) return;
+        if (mAllDeviations == null) return;
         String[] words = search.toLowerCase().split(" ");
         ArrayList<Deviation> filteredResult = new ArrayList<Deviation>();
         boolean match = false;
-        for(Deviation deviation:mDeviationsResult){
+        for(Deviation deviation:mAllDeviations){
             for(String word:words){
                 boolean checkA = deviation.getHeader().toLowerCase().contains(word);
                 boolean checkB = deviation.getDetails().toLowerCase().contains(word);
