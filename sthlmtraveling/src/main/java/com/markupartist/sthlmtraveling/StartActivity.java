@@ -35,11 +35,13 @@ public class StartActivity extends BaseFragmentActivity {
     private static final int PAGE_FAVORITES_POS = 1;
     private static final int PAGE_DEPARTURES_POS = 2;
     private static final int PAGE_DEVIATIONS_POS = 3;
+    private static final int PAGE_MAPS_POS = 4;
 
-    private static final int PAGE_RTL_SEARCH_POS = 3;
-    private static final int PAGE_RTL_FAVORITES_POS = 2;
-    private static final int PAGE_RTL_DEPARTURES_POS = 1;
-    private static final int PAGE_RTL_DEVIATIONS_POS = 0;
+    private static final int PAGE_RTL_SEARCH_POS = 4;
+    private static final int PAGE_RTL_FAVORITES_POS = 3;
+    private static final int PAGE_RTL_DEPARTURES_POS = 2;
+    private static final int PAGE_RTL_DEVIATIONS_POS = 1;
+    private static final int PAGE_RTL_MAPS_POS = 0;
 
     private ViewPager mPager;
     private SlidingTabLayout mSlidingTabLayout;
@@ -63,6 +65,9 @@ public class StartActivity extends BaseFragmentActivity {
                 SearchDeparturesFragment.class, null, R.drawable.ic_action_time_active));
         pageAdapter.addPage(new PageFragmentAdapter.PageInfo(getString(R.string.deviations_label),
                 TrafficStatusFragment.class, null, R.drawable.ic_action_deviations_active));
+
+        pageAdapter.addPage(new PageFragmentAdapter.PageInfo("Maps",
+                MapFragment.class, null, R.drawable.ic_map_24dp));
 
         pageAdapter.setLayoutDirection(RtlUtils.isRtl(Locale.getDefault()));
 
