@@ -21,12 +21,20 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.Editable;
+import android.text.Spannable;
+import android.text.SpannableString;
 import android.text.TextWatcher;
 import android.text.format.Time;
+import android.text.style.BackgroundColorSpan;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.TextAppearanceSpan;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
@@ -63,6 +71,7 @@ public class DeviationsActivity extends BaseListActivity {
     private ArrayList<Deviation> mAllDeviations;
     private LinearLayout mProgress;
     private TextView mSearchEditText;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -197,12 +206,14 @@ public class DeviationsActivity extends BaseListActivity {
             @Override
             public boolean setViewValue(View view, Object data,
                     String textRepresentation) {
+
                 switch (view.getId()) {
-                case R.id.deviation_header:
                 case R.id.deviation_details:
+                case R.id.deviation_header:
                 case R.id.deviation_created:
                 case R.id.deviation_scope:
-                    ((TextView)view).setText(textRepresentation);
+                    String[] word = mSearchEditText.getText().toString().split(" ");
+                    ((TextView)view).setText(highlight(textRepresentation, word));
                     return true;
                 }
                 return false;
@@ -228,7 +239,7 @@ public class DeviationsActivity extends BaseListActivity {
         AdapterView.AdapterContextMenuInfo menuInfo =
             (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         Deviation deviation = mDeviationsResult.get(menuInfo.position);
-        share(deviation.getHeader(), deviation.getDetails());
+        share(deviation.getHeader(), deviation.getDetails().toString());
         return true;
     }
 
@@ -406,19 +417,43 @@ public class DeviationsActivity extends BaseListActivity {
         for(Deviation deviation:mAllDeviations){
             for(String word:words){
                 boolean checkA = deviation.getHeader().toLowerCase().contains(word);
-                boolean checkB = deviation.getDetails().toLowerCase().contains(word);
+                boolean checkB = deviation.getDetails().toString().toLowerCase().contains(word);
                 boolean checkC = deviation.getScope().toLowerCase().contains(word);
                 if(!(checkA||checkB||checkC)){
                     match = false;
                     break;
                 }
-                else match = true;
+                else {
+                    match = true;
+                }
             }
-            if (match) filteredResult.add(deviation);
+            if (match) {
+                filteredResult.add(deviation);
+            }
         }
         fillData(filteredResult);
     }
 
+    /***
+     * Writed by Team 8, highlight all words contained within a string
+     */
+    private Spannable highlight(String str, String[] words){
+        Spannable spn = new SpannableString(str);
+        for(String word:words)
+        if(word.length() > 1) {
+            str = str.toLowerCase();
+            word = word.toLowerCase();
+            int index_start = str.indexOf(word);
+            while (index_start > -1) {
+
+                BackgroundColorSpan hl = new BackgroundColorSpan(Color.YELLOW);//new TextAppearanceSpan(null, Typeface.BOLD, -1, highlightColor, null);
+
+                spn.setSpan(hl, index_start, index_start + word.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                index_start = str.indexOf(word, index_start + word.length());
+            }
+        }
+        return spn;
+    }
 
 
 }
