@@ -152,11 +152,11 @@ public class AlarmPreferencesActivity extends AppCompatActivity implements View.
 
                 if (mTimeSelectedDeparture) {
                     setAlarm(mTimeDeparture, getString(R.string.time_to_go), mTimeBeforeDeparture);
-                    sendToast();
+                    sendToast(getString(R.string.alarm_set));
                 }
                 if (mTimeSelectedDestination) {
                     setAlarm(mTimeDestination, getString(R.string.time_to_get_off), mTimeBeforeDestination);
-                    sendToast();
+                    sendToast(getString(R.string.alarm_set));
                 }
 
                 /** Set alarm for every stop **/
@@ -165,7 +165,6 @@ public class AlarmPreferencesActivity extends AppCompatActivity implements View.
                       setAlarm(getAlarmTimeDest(mSelectedTimeDestination, time), getString(R.string.time_to_get_off), mTimeBeforeDestination);
                     }
                 }
-
                 finish();
                 break;
 
@@ -175,10 +174,11 @@ public class AlarmPreferencesActivity extends AppCompatActivity implements View.
         }
     }
 
-    private void setAlarm(long time, String notifTitle, String notifMsg){
+    private void setAlarm(long time, String notifTitle, String notifMsg) {
+
         Intent intent = new Intent(AlarmPreferencesActivity.this, Alarm.class);
         intent.putExtra("NOTIFICATION_TITLE", notifTitle);
-        intent.putExtra("NOTIFICATION_MESSAGE", notifMsg );
+        intent.putExtra("NOTIFICATION_MESSAGE", notifMsg);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), mRequestCode, intent, 0);
         mRequestCode++;
         AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
@@ -246,9 +246,8 @@ public class AlarmPreferencesActivity extends AppCompatActivity implements View.
         return mAlarmDest;
     }
 
-    public void sendToast(){
+    public void sendToast(String text){
         Context context = getApplicationContext();
-        String text = getString(R.string.alarm_set);
         int duration = Toast.LENGTH_LONG;
 
         Toast toast = Toast.makeText(context, text, duration);
