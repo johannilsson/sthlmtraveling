@@ -38,6 +38,7 @@ public class Alarm extends BroadcastReceiver{
         Log.v("ossnaa", mMessage);
 
         mBuilder.setContentTitle(mMessage);
+        mBuilder.setAutoCancel(true);
         mBuilder.setSmallIcon(R.drawable.icon);
         mBuilder.setAutoCancel(true);
 
