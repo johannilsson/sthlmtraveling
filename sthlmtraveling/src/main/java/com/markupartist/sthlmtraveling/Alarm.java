@@ -1,20 +1,16 @@
 package com.markupartist.sthlmtraveling;
 
 /**
- * Blenda och Filip
+ * Blenda Fröjdh & Filip Appelgren
  */
 
-import android.app.Notification;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.PowerManager;
 import android.os.Vibrator;
 import android.support.v4.app.NotificationCompat;
-import android.util.Log;
-import android.widget.Toast;
 
 import static android.content.Context.POWER_SERVICE;
 
@@ -30,14 +26,13 @@ public class Alarm extends BroadcastReceiver{
            mWakeLock.acquire();
 
         NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(context.NOTIFICATION_SERVICE);
-
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context);
         String mTitle = intent.getStringExtra("NOTIFICATION_TITLE");
         String mMessage = intent.getStringExtra("NOTIFICATION_MESSAGE");
 
         mBuilder.setContentTitle(mTitle);
         mBuilder.setContentText(mMessage);
-        mBuilder.setSmallIcon(R.drawable.icon);
+        mBuilder.setSmallIcon(R.drawable.logo);
         mBuilder.setAutoCancel(true);
 
         mNotificationManager.notify(0, mBuilder.build());
@@ -46,8 +41,8 @@ public class Alarm extends BroadcastReceiver{
         mWakeLock.release();
 
         final long[] DEFAULT_VIBRATE_PATTERN = {0, 250, 250, 250};
-
         mVibrator.vibrate(DEFAULT_VIBRATE_PATTERN, 0);
+
         try {
             Thread.sleep(8000);
         } catch (InterruptedException e) {
@@ -55,5 +50,4 @@ public class Alarm extends BroadcastReceiver{
         }
         mVibrator.cancel();
     }
-
 }

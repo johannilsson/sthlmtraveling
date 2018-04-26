@@ -6,12 +6,11 @@
 
     <uses-sdk tools:overrideLibrary="android.support.customtabs,com.widespace" />
 
-    // Kom:
+    <!--Blenda Fröjdh & Filip Appelgren-->
     <uses-permission android:name="android.permission.VIBRATE"/>
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
 
 
-    //
 
     <supports-screens
         android:anyDensity="true"
@@ -293,25 +292,19 @@
             android:name="io.fabric.ApiKey"
             android:value="8e01e50d8310d281bb91a5129c8cf514d866cac8" />
 
-        // Kom:
+
+        <!-- Blenda Fröjdh & Filip Appelgren -->
         <activity
             android:name=".AlarmPreferencesActivity"
             android:configChanges="locale|orientation|screenSize"
             android:label="@string/alarm_preferences"
             android:theme="@style/Theme.SthlmTraveling"
-
             >
-
-            <!--Remove arrow to parent-->
-            <!--android:parentActivityName=".RouteDetailActivity">-->
-
-            <!--<meta-data-->
-                <!--android:name="android.support.PARENT_ACTIVITY"-->
-                <!--android:value=".RouteDetailActivity" />-->
-
         </activity>
         <receiver android:name=".Alarm" />
-        //
+
+
+
     </application>
 
 </manifest>

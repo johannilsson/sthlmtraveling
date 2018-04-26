@@ -1,7 +1,7 @@
 package com.markupartist.sthlmtraveling;
 
 /**
- * Blenda och Filip
+ * Blenda Fröjdh & Filip Appelgren
  */
 
 import android.app.AlarmManager;

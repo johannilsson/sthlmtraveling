@@ -127,7 +127,7 @@
     <string name="nearby">Nearby</string>
     <string name="time_to" formatted="false"><xliff:g id="duration">%1$s</xliff:g> to <xliff:g id="stop">%2$s</xliff:g></string>
 
-    // Blenda och Filip - Alarmfunktion
+    <!--Blenda Fröjdh & Filip Appelgren  -->
     <string name="departure_alarm">Alarm</string>
     <string name="alarm_preferences">Alarm preferences</string>
     <string name="enable_alarm_departure">Enable alarm for departure</string>
@@ -143,9 +143,9 @@
     <string name="alarm_departure_10min">You have to leave in 10 minutes!</string>
     <string name="alarm_departure_15min">You have to leave in 15 minutes!</string>
     <string name="alarm_departure_30min">You have to leave in 30 minutes!</string>
-    <string name="alarm_destination_1min">You have to leave in 1 minutes!</string>
-    <string name="alarm_destination_3min">You have to leave in 3 minutes!</string>
-    <string name="alarm_destination_5min">You have to leave in 5 minutes!</string>
+    <string name="alarm_destination_1min">You have to get off in 1 minutes!</string>
+    <string name="alarm_destination_3min">You have to get off in 3 minutes!</string>
+    <string name="alarm_destination_5min">You have to get off in 5 minutes!</string>
     //
 
 
