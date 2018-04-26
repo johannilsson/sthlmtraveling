@@ -4,4 +4,38 @@
     android:id="@+id/map"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    />
+    >
+
+    <!--<ImageButton
+        android:id="@+id/btn_map_type"
+        android:scaleType="fitXY"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:cropToPadding="false"
+        android:paddingLeft="10dp"
+        android:background="@drawable/ic_settings_applications_white_24dp"
+        />-->
+
+    <!--<Button
+        android:id="@+id/btn_map_type"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:paddingLeft="@dimen/list_horizontal_padding"
+        android:paddingRight="@dimen/list_horizontal_padding"
+        android:text="@string/more_choices_label"
+        android:textColor="@color/primary_light"
+        />-->
+
+    <Button
+        android:id="@+id/btn_map_type"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right|bottom"
+        android:text="Test"
+        android:padding="10dp"
+        android:layout_marginTop="20dp"
+        android:paddingRight="10dp"/>
+</fragment>
