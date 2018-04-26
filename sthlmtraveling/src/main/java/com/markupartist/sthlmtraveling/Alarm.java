@@ -34,10 +34,13 @@ public class Alarm extends BroadcastReceiver{
         NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(context.NOTIFICATION_SERVICE);
 
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context);
-        String mMessage = intent.getStringExtra("notificationMessage");
+        String mTitle = intent.getStringExtra("NOTIFICATION_TITLE");
+        String mMessage = intent.getStringExtra("NOTIFICATION_MESSAGE");
         Log.v("ossnaa", mMessage);
+        Log.v("ossnaa2", mTitle);
 
-        mBuilder.setContentTitle(mMessage);
+        mBuilder.setContentTitle(mTitle);
+        mBuilder.setContentText(mMessage);
         mBuilder.setSmallIcon(R.drawable.icon);
         mBuilder.setAutoCancel(true);
 
@@ -56,6 +59,5 @@ public class Alarm extends BroadcastReceiver{
         }
         vibrator.cancel();
     }
-
 
 }

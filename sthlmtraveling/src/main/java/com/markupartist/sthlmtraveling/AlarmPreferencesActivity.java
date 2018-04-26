@@ -45,6 +45,8 @@ public class AlarmPreferencesActivity extends AppCompatActivity implements View.
     List<Long> endTime;
     static int mRequestCode = 0;
     Button alarmClear;
+    private String mTimeBeforeDestination;
+    private String mTimeBeforeDeparture;
 
 
     @Override
@@ -156,10 +158,10 @@ public class AlarmPreferencesActivity extends AppCompatActivity implements View.
                 mTimeDestination = getAlarmTimeDest(mSelectedTimeDestination, mEndTime);
 
                 if (mTimeSelectedDeparture) {
-                    setAlarm(mTimeDeparture, "Time to go!");
+                    setAlarm(mTimeDeparture, "Time to go!", mTimeBeforeDeparture);
                 }
                 if (mTimeSelectedDestination) {
-                    setAlarm(mTimeDestination, "Time to get off!");
+                    setAlarm(mTimeDestination, "Time to get off!", mTimeBeforeDestination);
                     sendToast();
 
                 }
@@ -167,7 +169,7 @@ public class AlarmPreferencesActivity extends AppCompatActivity implements View.
                 /** Set alarm for every stop **/
                 if(mAlarmEveryStopCheckBox.isChecked()){
                     for(long time : endTime) {
-                      setAlarm(getAlarmTimeDest(mSelectedTimeDestination, time), "Time to get off!");
+                      setAlarm(getAlarmTimeDest(mSelectedTimeDestination, time), "Time to get off!", mTimeBeforeDestination);
                     }
                 }
 
@@ -180,9 +182,10 @@ public class AlarmPreferencesActivity extends AppCompatActivity implements View.
         }
     }
 
-    private void setAlarm(long mTime, String ossnaa){
+    private void setAlarm(long mTime, String notifTitle, String notifMsg){
         Intent intent = new Intent(AlarmPreferencesActivity.this, Alarm.class);
-        intent.putExtra("notificationMessage", ossnaa);
+        intent.putExtra("NOTIFICATION_TITLE", notifTitle);
+        intent.putExtra("NOTIFICATION_MESSAGE", notifMsg );
         PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), mRequestCode, intent, 0);
         mRequestCode++;
         AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
@@ -206,18 +209,23 @@ public class AlarmPreferencesActivity extends AppCompatActivity implements View.
                 mTimeSelectedDeparture = false;
             case 1:
                 alarmDep = startTime - 120000;
+                mTimeBeforeDeparture = "@string/time_before_departure_2min";
                 break;
             case 2:
                 alarmDep = startTime - 300000;
+                mTimeBeforeDeparture = "@string/time_before_departure_5min";
                 break;
             case 3:
                 alarmDep = startTime - 600000;
+                mTimeBeforeDeparture = "@string/time_before_departure_10min";
                 break;
             case 4:
                 alarmDep = startTime - 900000;
+                mTimeBeforeDeparture = "@string/time_before_departure_15min";
                 break;
             case 5:
                 alarmDep = startTime - 1800000;
+                mTimeBeforeDeparture = "@string/time_before_departure_30min";
                 break;
         }
         return alarmDep;
@@ -231,13 +239,16 @@ public class AlarmPreferencesActivity extends AppCompatActivity implements View.
                 mTimeSelectedDestination = false;
                 break;
             case 1:
-                alarmDest = endTime - 120000;
+                alarmDest = endTime - 60000;
+                mTimeBeforeDestination = "@string/alarm_destination_1min";
                 break;
             case 2:
                 alarmDest = endTime- 180000;
+                mTimeBeforeDestination = "@string/alarm_destination_3min";
                 break;
             case 3:
                 alarmDest = endTime - 300000;
+                mTimeBeforeDestination = "@string/alarm_destination_5min";
                 break;
         }
         return alarmDest;

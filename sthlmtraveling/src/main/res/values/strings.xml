@@ -135,6 +135,16 @@
     <string name="enable_alarm_destination">Enable alarm for destination</string>
     <string name="enable_alarm_everyStop">Enable alarm for every stop</string>
     <string name="alarm_already_set">Clear current alarms to set new ones</string>
+    <string name="alarm_departure_2min">You have to leave in 2 minutes!</string>
+    <string name="alarm_departure_5min">You have to leave in 5 minutes!</string>
+    <string name="alarm_departure_10min">You have to leave in 10 minutes!</string>
+    <string name="alarm_departure_15min">You have to leave in 15 minutes!</string>
+    <string name="alarm_departure_30min">You have to leave in 30 minutes!</string>
+    <string name="alarm_destination_1min">You have to leave in 1 minutes!</string>
+    <string name="alarm_destination_3min">You have to leave in 3 minutes!</string>
+    <string name="alarm_destination_5min">You have to leave in 5 minutes!</string>
+
+
     //
 
 
