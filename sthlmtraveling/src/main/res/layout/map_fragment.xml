@@ -21,11 +21,10 @@
     android:layout_height="fill_parent"
     android:background="#3e4043"
     >
-    <com.markupartist.sthlmtraveling.ui.view.TouchImageView
+
+    <com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
         android:id="@+id/map_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:src="@drawable/sl_linetraffic"
-        />
+        android:layout_height="match_parent"/>
 
 </FrameLayout>

@@ -7,15 +7,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.markupartist.sthlmtraveling.ui.view.TouchImageView;
+import com.davemorrissey.labs.subscaleview.ImageSource;
+import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
 
 public class MapFragment extends BaseFragment{
-     private TouchImageView touch;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
     }
 
     @Nullable
@@ -23,7 +22,8 @@ public class MapFragment extends BaseFragment{
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.map_fragment, container, false);
-        touch = rootView.findViewById(R.id.map_view);
+        SubsamplingScaleImageView imageView = (SubsamplingScaleImageView)rootView.findViewById(R.id.map_view);
+        imageView.setImage(ImageSource.resource(R.drawable.sl_linetraffic));
 
         return rootView;
     }
