@@ -159,10 +159,12 @@ public class AlarmPreferencesActivity extends AppCompatActivity implements View.
                     sendToast(getString(R.string.alarm_set));
                 }
 
-                /** Set alarm for every stop **/
-                if(mAlarmEveryStopCheckBox.isChecked()){
-                    for(long time : mEndTimeList) {
-                      setAlarm(getAlarmTimeDest(mSelectedTimeDestination, time), getString(R.string.time_to_get_off), mTimeBeforeDestination);
+                if(mTimeSelectedDestination) {
+                    /** Set alarm for every stop **/
+                    if (mAlarmEveryStopCheckBox.isChecked()) {
+                        for (long time : mEndTimeList) {
+                            setAlarm(getAlarmTimeDest(mSelectedTimeDestination, time), getString(R.string.time_to_get_off), mTimeBeforeDestination);
+                        }
                     }
                 }
                 finish();
