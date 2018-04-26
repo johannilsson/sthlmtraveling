@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+/*
+Blenda & Filip
+*/
+-->
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        style="@style/Container"
+        android:orientation="vertical"
+        android:paddingTop="8dp"
+        >
+
+        <View
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:focusable="true"
+            android:focusableInTouchMode="true"/>
+
+
+        <TextView
+            style="?android:textAppearanceLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:text="@string/alarm_preferences"
+            />
+
+
+        <CheckBox
+            android:id="@+id/select_alarm_departure"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:checked="false"
+            android:text="@string/enable_alarm_departure"/>
+
+
+        <Spinner
+            android:id="@+id/time_spinner_departure"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:drawSelectorOnTop="true" />
+
+
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingTop="20dp"
+            >
+            <View
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:focusable="true"
+                android:focusableInTouchMode="true"/>
+
+            <CheckBox
+                android:id="@+id/select_alarm_destination"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:checked="false"
+                android:text="@string/enable_alarm_destination"/>
+
+
+            <Spinner
+                android:id="@+id/time_spinner_destination"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:drawSelectorOnTop="true" />
+
+
+            <CheckBox
+                android:id="@+id/select_alarm_everyStop"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginLeft="16dp"
+                android:checked="false"
+                android:text="@string/enable_alarm_destination"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+</ScrollView>
+
+
