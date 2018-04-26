@@ -127,14 +127,17 @@
     <string name="nearby">Nearby</string>
     <string name="time_to" formatted="false"><xliff:g id="duration">%1$s</xliff:g> to <xliff:g id="stop">%2$s</xliff:g></string>
 
-    // Blenda:
+    // Blenda och Filip - Alarmfunktion
     <string name="departure_alarm">Alarm</string>
     <string name="alarm_preferences">Alarm preferences</string>
-    <string name="time_scroll">Time</string>
     <string name="enable_alarm_departure">Enable alarm for departure</string>
     <string name="enable_alarm_destination">Enable alarm for destination</string>
     <string name="enable_alarm_everyStop">Enable alarm for every stop</string>
+    <string name="alarm_set">Alarm set!</string>
+    <string name="clear_alarms">Clear all alarms</string>
     <string name="alarm_already_set">Clear current alarms to set new ones</string>
+    <string name="time_to_go">Time to go!</string>
+    <string name="time_to_get_off">Time to get off!</string>
     <string name="alarm_departure_2min">You have to leave in 2 minutes!</string>
     <string name="alarm_departure_5min">You have to leave in 5 minutes!</string>
     <string name="alarm_departure_10min">You have to leave in 10 minutes!</string>
@@ -143,8 +146,6 @@
     <string name="alarm_destination_1min">You have to leave in 1 minutes!</string>
     <string name="alarm_destination_3min">You have to leave in 3 minutes!</string>
     <string name="alarm_destination_5min">You have to leave in 5 minutes!</string>
-
-
     //
 
 

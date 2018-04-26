@@ -21,7 +21,6 @@ Blenda & Filip
             android:focusable="true"
             android:focusableInTouchMode="true"/>
 
-
         <TextView
             style="?android:textAppearanceLarge"
             android:layout_width="wrap_content"
@@ -29,8 +28,6 @@ Blenda & Filip
             android:layout_marginBottom="8dp"
             android:text="@string/alarm_preferences"
             />
-
-
 
         <Spinner
             android:id="@+id/time_spinner_departure"
@@ -40,8 +37,6 @@ Blenda & Filip
             android:layout_marginBottom="8dp"
             android:drawSelectorOnTop="true"
             />
-
-
 
         <LinearLayout
             android:layout_width="fill_parent"
@@ -54,7 +49,6 @@ Blenda & Filip
                 android:layout_height="wrap_content"
                 android:focusable="true"
                 android:focusableInTouchMode="true"/>
-'
 
             <Spinner
                 android:id="@+id/time_spinner_destination"
@@ -63,10 +57,7 @@ Blenda & Filip
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
                 android:drawSelectorOnTop="true"
-
                 />
-
-
 
             <CheckBox
                 android:id="@+id/select_alarm_everyStop"
@@ -79,17 +70,14 @@ Blenda & Filip
 
         </LinearLayout>
 
-
         <Button
             android:id="@+id/button2"
             android:layout_width="160dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:text="Clear alarms?" />
+            android:text="@string/clear_alarms" />
 
     </LinearLayout>
-
-
 </ScrollView>
 
 

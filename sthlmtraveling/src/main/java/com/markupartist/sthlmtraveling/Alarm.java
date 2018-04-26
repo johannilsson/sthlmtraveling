@@ -22,22 +22,18 @@ public class Alarm extends BroadcastReceiver{
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        PowerManager pm;
-        PowerManager.WakeLock wl;
+        PowerManager mPowerManager;
+        PowerManager.WakeLock mWakeLock;
 
-        pm = (PowerManager) context.getSystemService(POWER_SERVICE);
-        wl = pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP, "TAG");
-           wl.acquire();
-
-
+        mPowerManager = (PowerManager) context.getSystemService(POWER_SERVICE);
+        mWakeLock = mPowerManager.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP, "TAG");
+           mWakeLock.acquire();
 
         NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(context.NOTIFICATION_SERVICE);
 
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context);
         String mTitle = intent.getStringExtra("NOTIFICATION_TITLE");
         String mMessage = intent.getStringExtra("NOTIFICATION_MESSAGE");
-        Log.v("ossnaa", mMessage);
-        Log.v("ossnaa2", mTitle);
 
         mBuilder.setContentTitle(mTitle);
         mBuilder.setContentText(mMessage);
@@ -46,18 +42,18 @@ public class Alarm extends BroadcastReceiver{
 
         mNotificationManager.notify(0, mBuilder.build());
 
-        Vibrator vibrator = (Vibrator) context.getSystemService(context.VIBRATOR_SERVICE);
-        wl.release();
+        Vibrator mVibrator = (Vibrator) context.getSystemService(context.VIBRATOR_SERVICE);
+        mWakeLock.release();
 
         final long[] DEFAULT_VIBRATE_PATTERN = {0, 250, 250, 250};
 
-        vibrator.vibrate(DEFAULT_VIBRATE_PATTERN, 0);
+        mVibrator.vibrate(DEFAULT_VIBRATE_PATTERN, 0);
         try {
             Thread.sleep(8000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        vibrator.cancel();
+        mVibrator.cancel();
     }
 
 }
