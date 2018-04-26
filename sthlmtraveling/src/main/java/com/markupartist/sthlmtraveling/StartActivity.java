@@ -67,7 +67,7 @@ public class StartActivity extends BaseFragmentActivity {
                 TrafficStatusFragment.class, null, R.drawable.ic_action_deviations_active));
 
         pageAdapter.addPage(new PageFragmentAdapter.PageInfo("Maps",
-                MapFragment.class, null, R.drawable.ic_map_24dp));
+                MapFragment.class, null, R.drawable.ic_menu_cloud));
 
         pageAdapter.setLayoutDirection(RtlUtils.isRtl(Locale.getDefault()));
 
@@ -91,6 +91,9 @@ public class StartActivity extends BaseFragmentActivity {
                         break;
                     case PAGE_DEVIATIONS_POS:
                         registerScreen("Traffic status");
+                        break;
+                    case PAGE_MAPS_POS:
+                        registerScreen("Map");
                         break;
                 }
             }
@@ -127,6 +130,8 @@ public class StartActivity extends BaseFragmentActivity {
                     return PAGE_RTL_DEPARTURES_POS;
                 case PAGE_DEVIATIONS_POS:
                     return PAGE_RTL_DEVIATIONS_POS;
+                case PAGE_MAPS_POS:
+                    return PAGE_RTL_MAPS_POS;
             }
         }
         return pos;

@@ -19,12 +19,13 @@
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
+    android:background="#3e4043"
     >
-    <ImageView
-        android:id="@+id/map_layout"
+    <com.markupartist.sthlmtraveling.ui.view.TouchImageView
+        android:id="@+id/map_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:src="@drawable/ic_sl_linjekarta"
+        android:src="@drawable/sl_linetraffic"
         />
 
 </FrameLayout>
