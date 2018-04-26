@@ -28,13 +28,17 @@
     <android.support.design.widget.TabLayout
         android:id="@+id/rDetails_Tab"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="64dp"
         android:background="@color/primary_dark"
         app:tabTextColor="@color/primary_light"
         app:tabSelectedTextColor="@color/accent"
-        >
-
-    </android.support.design.widget.TabLayout>
+        app:tabPaddingEnd="0dp"
+        app:tabPaddingStart="0dp"
+        app:tabPaddingTop="0dp"
+        app:tabPaddingBottom="0dp"
+        app:tabGravity="fill"
+        app:tabMode="scrollable"
+        />
 
     <ListView
         android:id="@id/android:list"
@@ -42,13 +46,13 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:divider="@null"
-        android:layout_marginTop="56dp"/>
+        android:layout_marginTop="66dp"/>
 
     <TextView
         android:id="@+id/route_details_no_result"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dip"
+        android:layout_marginTop="30dip"
         android:padding="5dip"
         android:text="@string/no_route_details"
         android:textColor="?android:attr/textColorPrimary"

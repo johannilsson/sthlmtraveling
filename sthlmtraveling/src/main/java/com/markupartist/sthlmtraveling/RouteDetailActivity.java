@@ -19,6 +19,7 @@ package com.markupartist.sthlmtraveling;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -34,6 +35,7 @@ import android.support.v4.text.BidiFormatter;
 import android.support.v4.util.Pair;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.app.ActionBar;
+import android.text.Html;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
 import android.util.Log;
@@ -75,6 +77,7 @@ import com.markupartist.sthlmtraveling.utils.DateTimeUtil;
 import com.markupartist.sthlmtraveling.utils.LegUtil;
 import com.markupartist.sthlmtraveling.utils.Monitor;
 import com.markupartist.sthlmtraveling.utils.RtlUtils;
+import com.markupartist.sthlmtraveling.utils.StringUtils;
 import com.markupartist.sthlmtraveling.utils.ViewHelper;
 import com.markupartist.sthlmtraveling.utils.text.RoundedBackgroundSpan;
 import com.markupartist.sthlmtraveling.utils.text.SpanUtils;
@@ -97,8 +100,9 @@ public class RouteDetailActivity extends BaseListActivity {
 
     public static final String EXTRA_ROUTE = "sthlmtraveling.intent.extra.ROUTE";
     public static final String EXTRA_JOURNEY_QUERY = "sthlmtraveling.intent.action.JOURNEY_QUERY";
+    private static final int TAB_CAP = 10;
     private static final String STATE_LEGS = "sthlmtraveling.intent.state.LEGS";
-    private static TabDetails mTabDetails[] = new TabDetails[3];
+    private static TabDetails mTabDetails[] = new TabDetails[TAB_CAP];
 
     private Route mRoute;
     private JourneyQuery mJourneyQuery;
@@ -114,30 +118,14 @@ public class RouteDetailActivity extends BaseListActivity {
     private Button mNameView;
     private Menu mMenuAbove;
     private String mTimeDestination;
+    private ImageButton mShareButton;
 
 
-//Tab functionality by Oskar Hahr
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.route_details_list);
-
-
-        mTabLayout = (this.findViewById(R.id.rDetails_Tab));
-        mTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                swapTabDetails();
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-            }
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-
-            }
-        });
 
         registerScreen("Route details");
 
@@ -215,7 +203,26 @@ public class RouteDetailActivity extends BaseListActivity {
             onRouteDetailsResult(mRoute);
         }
 
-        createTabs();
+
+        //Support for tabs written by Oskar Hahr and Didrik
+        mTabLayout = (this.findViewById(R.id.rDetails_Tab));
+        mTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                changeTabColor(tab,true);
+                swapTabDetails();
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+                changeTabColor(tab,false);
+            }
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
+            createTabs(true);
 
         mMonitor = new Monitor() {
             @Override
@@ -247,6 +254,24 @@ public class RouteDetailActivity extends BaseListActivity {
                 });
             }
         };
+
+        /**
+         * By Jakob Berggren & Johan Edman
+         * Button for Share Trip functionality
+         */
+        mShareButton = findViewById(R.id.share_trip_button);
+        mShareButton.findViewById(R.id.share_trip_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent myIntent = new Intent(Intent.ACTION_SEND);
+                myIntent.setType("text/plain");
+                String shareBody = routeDetailsToString()[1];
+                String shareSub = routeDetailsToString()[0];
+                myIntent.putExtra(Intent.EXTRA_SUBJECT, shareSub);
+                myIntent.putExtra(Intent.EXTRA_TEXT, shareBody);
+                startActivity(Intent.createChooser(myIntent, "Share using"));
+            }
+        });
     }
 
     void updateStopTimes(IntermediateResponse intermediateResponse) {
@@ -292,7 +317,6 @@ public class RouteDetailActivity extends BaseListActivity {
         if (mAdProxy != null) {
             mAdProxy.onPause();
         }
-
         mMonitor.onStop();
     }
 
@@ -316,7 +340,6 @@ public class RouteDetailActivity extends BaseListActivity {
         if (!mRoute.canBuyTicket()) {
             menu.removeItem(R.id.actionbar_item_sms);
         }
-
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -333,13 +356,16 @@ public class RouteDetailActivity extends BaseListActivity {
                 handleStarAction();
                 supportInvalidateOptionsMenu();
                 return true;
-            /** Blenda: **/
+
+            /**
+             * Added by Blenda Fröjdh
+             * - To Support alarms
+             */
             case R.id.actionbar_item_alarm:
                 Intent intent = new Intent(this, AlarmPreferencesActivity.class);
                 intent.putExtra("ParceableTest", mRoute);
                 startActivity(intent);
                 return true;
-            /***/
         }
         return super.onOptionsItemSelected(item);
     }
@@ -358,6 +384,103 @@ public class RouteDetailActivity extends BaseListActivity {
             return getText(R.string.my_location);
         }
         return location.getName();
+    }
+
+    /**
+     * @author Jakob Berggren & Johan Edman
+     * Share Trip - String builder
+     * TODO: Reduce to one function with parameter.
+     * TODO: Refactor
+     */
+    private String getRouteDetails(String item) {
+        List<Leg> legs = mRoute.getLegs();
+
+        switch (item) {
+            case "from":
+                String from = "";
+                for (int i = 0; i < legs.size(); i++) {
+                    if (!legs.get(i).getTravelMode().equals("foot")) {
+                        if (from.equals("")) {
+                            if (!legs.get(i).getFrom().getName().equals("MY_LOCATION")) {
+                                from = legs.get(i).getFrom().getName();
+                            }
+                        }
+                    }
+                }
+                return from;
+            case "to": {
+                String to = "";
+                for (int i = legs.size() - 1; i >= 0; i--) {
+                    if (!legs.get(i).getTravelMode().equals("foot")) {
+                        if (to.equals("")) {
+                            if (!legs.get(i).getTo().getName().equals("MY_LOCATION")) {
+                                to = legs.get(i).getTo().getName();
+                            }
+                        }
+                    }
+                }
+                return to;
+            }
+            default:
+                return "";
+        }
+
+    }
+
+    private String[] routeDetailsToString() {
+        String[] routeDetails = new String[2];
+        List<Leg> legs = mRoute.getLegs();
+        // Index 0 contains Subject
+        // Index 1 Contains Body
+
+        String sub = getRouteDetails("from") +
+                " -> " +
+                getRouteDetails("to") +
+                " | " +
+                legs.get(0).getStartTime().toString().substring(0, 11);
+
+        routeDetails[0] = sub;
+
+        StringBuilder body = new StringBuilder();
+        body.append(getString(R.string.from)).append(" ");
+        body.append(getRouteDetails("from")).append("\n");
+        body.append(getString(R.string.to)).append(" ");
+        body.append(getRouteDetails("to")).append("\n");
+        body.append(legs.get(0).getStartTime().toString().substring(0, 11)).append("\n\n");
+
+        for (Leg leg : legs) {
+            if (!leg.getTravelMode().equals("foot")) {
+                boolean useRT = false;
+
+                if (leg.getStartTimeRt() != null || leg.getEndTimeRt() != null) {
+                    useRT = (leg.getStartTimeRt().after(leg.getStartTime()) || leg.getEndTimeRt().after(leg.getEndTime()));
+                }
+
+                if (useRT) {
+                    body.append("(").append(leg.getStartTime().toString().substring(11, 16)).append(") ");
+                    body.append(leg.getStartTimeRt().toString().substring(11, 16));
+                } else {
+                    body.append(leg.getStartTime().toString().substring(11, 16));
+                }
+
+                body.append(" ").append(leg.getFrom().getName()).append("\n");
+                body.append(leg.getRouteName().substring(0, 1).toUpperCase()).append(leg.getRouteName().substring(1)).append("\n");
+                body.append(getString(R.string.to)).append(" ").append(leg.getHeadsing().getName()).append("\n");
+
+                if (useRT) {
+                    body.append("(").append(leg.getEndTime().toString().substring(11, 16)).append(") ");
+                    body.append(leg.getEndTimeRt().toString().substring(11, 16));
+                } else {
+                    body.append(leg.getEndTime().toString().substring(11, 16));
+                }
+
+                body.append(" ").append(leg.getTo().getName());
+                body.append("\n\n");
+            }
+        }
+
+        routeDetails[1] = body.toString();
+        return routeDetails;
     }
 
     private void tripTimeDestinationUpdater(){
@@ -453,22 +576,24 @@ public class RouteDetailActivity extends BaseListActivity {
         }
     }
 
-    void updateFooterView(final LegViewModel legViewModel) {
+    /** Practically the same function as updatefooterview but this one is called when a new tab is selected**/
 
-        TextView departureTimeView = (TextView) mFooterView.findViewById(R.id.trip_departure_time);
-        TextView expectedDepartureTimeView = (TextView) mFooterView.findViewById(R.id.trip_expected_departure_time);
-        departureTimeView.setText(DateFormat.getTimeFormat(this).format(legViewModel.leg.getEndTime()));
-        if (legViewModel.leg.getEndTimeRt() != null && legViewModel.leg.hasDepartureDelay()) {
-            departureTimeView.setPaintFlags(departureTimeView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-            expectedDepartureTimeView.setVisibility(View.VISIBLE);
-            expectedDepartureTimeView.setText(DateFormat.getTimeFormat(this).format(legViewModel.leg.getEndTimeRt()));
-            ViewHelper.setTextColorForTimeView(expectedDepartureTimeView, legViewModel.leg, false);
-        } else {
-            departureTimeView.setPaintFlags(departureTimeView.getPaintFlags() & (~ Paint.STRIKE_THRU_TEXT_FLAG));
-            ViewHelper.setTextColorForTimeView(departureTimeView, legViewModel.leg, false);
-            expectedDepartureTimeView.setVisibility(View.GONE);
+    void updateFooterView(final LegViewModel legViewModel) {
+            TextView departureTimeView = (TextView) mFooterView.findViewById(R.id.trip_departure_time);
+            TextView expectedDepartureTimeView = (TextView) mFooterView.findViewById(R.id.trip_expected_departure_time);
+            departureTimeView.setText(DateFormat.getTimeFormat(this).format(legViewModel.leg.getEndTime()));
+
+            if (legViewModel.leg.getEndTimeRt() != null && legViewModel.leg.hasDepartureDelay()) {
+                departureTimeView.setPaintFlags(departureTimeView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                expectedDepartureTimeView.setVisibility(View.VISIBLE);
+                expectedDepartureTimeView.setText(DateFormat.getTimeFormat(this).format(legViewModel.leg.getEndTimeRt()));
+                ViewHelper.setTextColorForTimeView(expectedDepartureTimeView, legViewModel.leg, false);
+            } else {
+                departureTimeView.setPaintFlags(departureTimeView.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
+                ViewHelper.setTextColorForTimeView(departureTimeView, legViewModel.leg, false);
+                expectedDepartureTimeView.setVisibility(View.GONE);
+            }
         }
-    }
 
 
     private View createFooterView(final List<LegViewModel> legs) {
@@ -871,6 +996,11 @@ public class RouteDetailActivity extends BaseListActivity {
             return description;
         }
     }
+    /** TabDetails - Made by Didrik
+     * Acts as object wrapper and gathers the different data objects and makes
+     * them more manageable.
+     *
+     */
 
     private class TabDetails{
         public JourneyQuery journeyQ;
@@ -892,36 +1022,79 @@ public class RouteDetailActivity extends BaseListActivity {
         }
 
     }
-    private void swapTabDetails(){
-        //Rotates the tabs and displays the new route as the first tab
-        //Oskar Hahr
+    /** Written by Oskar Hahr
+     * Rotates the tabs and displays the new route as the first tab
+     * **/
 
+    private void swapTabDetails(){
+
+        if(mTabDetails[1] == null)
+            mTabLayout.getTabAt(0).getCustomView().findViewById(R.id.tabClose).setVisibility(View.GONE);
         switchTabs();
-        mNameView.setText(mJourneyQuery.destination.toString());
+        if(mNameView!=null)
+           mNameView.setText(getLocationName(mJourneyQuery.destination.asPlace()));
         updateFooterView(mSubTripAdapter.getItem(mSubTripAdapter.getCount() - 1));
         setListAdapter(mSubTripAdapter);
         tripTimeDestinationUpdater();
         updateStartAndEndPointViews(mJourneyQuery);
+        updateTabText();
         updateStar();
+
     }
 
 
     /**Rotates the information the tabs need to function and
      * creates the correct amount of tabs depending on the information in mSubTripAdapterA
      and sets the text of the tabs to the destination and the trip time **/
-    private void createTabs(){
-        mTabDetails[2] = mTabDetails[1];
-        mTabDetails[1] = mTabDetails[0];
-        mTabDetails[0] = new TabDetails(mJourneyQuery, mSubTripAdapter, timeDestinationString(), mRoute);
+    private void createTabs(boolean add){
+        if (add) {
+            for (int i = TAB_CAP - 1; i > 0; i--)
+                mTabDetails[i] = mTabDetails[i - 1];
+            mTabDetails[0] = new TabDetails(mJourneyQuery, mSubTripAdapter, timeDestinationString(), mRoute);
+        }
 
-        for(int i = 0; i < 3; i++) {
-            if (mTabDetails[i] == null) {
+
+        for (int i = 0; i < TAB_CAP; i++) {
+            if (mTabDetails[i] == null)
                 break;
+            TabLayout.Tab tab = mTabLayout.newTab();
+            View layout = LayoutInflater.from(this).inflate(R.layout.tab_layout, null);
+            Button button = (Button) layout.findViewById(R.id.tabClose);
+            button.setTag("btnClose"+i);
+
+            if(mTabDetails[1] == null)
+                button.setVisibility(View.GONE);
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    for(int i = 0; i < mTabLayout.getTabCount(); i++)
+                        if(mTabLayout.getTabAt(i).getCustomView().findViewById(R.id.tabClose) == v) {
+                            removeTab(i);
+                            break;
+                        }
+                }
+            });
+            tab.setCustomView(layout);
+            mTabLayout.addTab(tab);
+        }
+        updateTabText();
+    }
+
+    /** Written by Oskar Hahr and Didrik
+     * This function removes the tab currently at the specified index and updates the view of the other tabs **/
+
+    private void removeTab(int index){
+        if(mTabLayout.getTabCount() > 1) {
+            for (int i = index; i < mTabLayout.getTabCount() - 1; i++) {
+                mTabDetails[i] = mTabDetails[i + 1];
+
             }
-            mTabLayout.addTab(mTabLayout.newTab());
-            mTabLayout.getTabAt(i).setText(mTabDetails[i].timeString);
+            mTabDetails[mTabLayout.getTabCount() - 1] = null;
+            mTabLayout.removeTabAt(index);
+            swapTabDetails();
         }
     }
+
     private void switchTabs(){
         mJourneyQuery = mTabDetails[selectTab()].journeyQ;
         mRoute = mTabDetails[selectTab()].routeDetail;
@@ -931,6 +1104,35 @@ public class RouteDetailActivity extends BaseListActivity {
     private int selectTab(){
         return mTabLayout.getSelectedTabPosition();
     }
+
+    /** Written by Oskar Hahr and Didrik
+     * Updates the text of the tabs when they are added and removed **/
+    private void updateTabText(){
+
+        for(int i = 0; i < mTabLayout.getTabCount(); i ++) {
+
+            CharSequence time = DateTimeUtil.formatDetailedDuration(getResources(), mTabDetails[i].routeDetail.getDuration() * 1000);
+            CharSequence dest = getLocationName(mTabDetails[i].journeyQ.destination.asPlace()).toString();
+
+            if(dest.length() > 17)
+                dest = dest.subSequence(0,16) + "...";
+
+            ((TextView) mTabLayout.getTabAt(i).getCustomView().findViewById(R.id.tabText)).setText(Html.fromHtml("<b> " +
+                    time
+                    + "</b><br> "
+                    + dest));
+        }
+    }
+    /** Written by Oskar Hahr
+     * Changes the colour of the tabs when they are selected/unselected **/
+    private void changeTabColor(TabLayout.Tab tab, boolean sel){
+        if (sel)
+            ((TextView)tab.getCustomView().findViewById(R.id.tabText)).setTextColor(getResources().getColor(R.color.accent));
+        else
+        if (tab.getCustomView() != null)
+            ((TextView)tab.getCustomView().findViewById(R.id.tabText)).setTextColor(getResources().getColor(R.color.primary_light));
+    }
+
     /** updateStar - Made by Jakob & Didrik
      * Makes sure the graphics of the star/favorite icon is updated to display
      * the right graphics corresponding to the current tab shown
