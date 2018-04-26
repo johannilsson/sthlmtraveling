@@ -42,9 +42,9 @@ public class AlarmPreferencesActivity extends AppCompatActivity implements View.
     long mStartTime;
     Date mEndDate;
     long mEndTime;
-    List<Long> mEndTimeEveryStop;
+    List<Long> endTime;
     static int mRequestCode = 0;
-    Button mClearAlarm;
+    Button alarmClear;
 
 
     @Override
@@ -52,23 +52,24 @@ public class AlarmPreferencesActivity extends AppCompatActivity implements View.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_alarm_preferences);
 
+
         mAlarmEveryStopCheckBox = (CheckBox) findViewById(R.id.select_alarm_everyStop);
-        mClearAlarm = findViewById(R.id.button2);
+        alarmClear = findViewById(R.id.button2);
         //Set up spinner departure & destination
         mTimeSpinnerDeparture = (Spinner) findViewById(R.id.time_spinner_departure);
         mTimeSpinnerDestination = (Spinner) findViewById(R.id.time_spinner_destination);
-        mClearAlarm.setVisibility(View.INVISIBLE);
+        alarmClear.setVisibility(View.INVISIBLE);
         //findViewById(R.id.textClear).setVisibility(View.INVISIBLE);
 
         if (mRequestCode != 0){
-            mClearAlarm.setVisibility(View.VISIBLE);
+            alarmClear.setVisibility(View.VISIBLE);
             //findViewById(R.id.textClear).setVisibility(View.VISIBLE);
         }
 
-        mClearAlarm.setOnClickListener(new View.OnClickListener() {
+        alarmClear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mClearAlarm.setVisibility(View.INVISIBLE);
+                alarmClear.setVisibility(View.INVISIBLE);
              //   findViewById(R.id.textClear).setVisibility(View.INVISIBLE);
                 mTimeSpinnerDeparture.setEnabled(true);
                 mTimeSpinnerDestination.setEnabled(true);
@@ -87,10 +88,11 @@ public class AlarmPreferencesActivity extends AppCompatActivity implements View.
         List<Leg> legList = route.getLegs();
 
         /** Get every destination time **/
-        mEndTimeEveryStop = new ArrayList<>();
+        endTime = new ArrayList<>();
         for(Leg leg : legList ){
             if(!leg.getTravelMode().equals(TravelMode.FOOT)){
-                mEndTimeEveryStop.add(leg.getEndTime().getTime());
+                endTime.add(leg.getEndTime().getTime());
+                Log.v("asznee", leg.getTravelMode());
             }
         }
 
@@ -178,9 +180,9 @@ public class AlarmPreferencesActivity extends AppCompatActivity implements View.
         }
     }
 
-    private void setAlarm(long mTime, String notifMsg){
+    private void setAlarm(long mTime, String ossnaa){
         Intent intent = new Intent(AlarmPreferencesActivity.this, Alarm.class);
-        intent.putExtra("NOTIFICATION_MESSAGE", notifMsg);
+        intent.putExtra("notificationMessage", ossnaa);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), mRequestCode, intent, 0);
         mRequestCode++;
         AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
