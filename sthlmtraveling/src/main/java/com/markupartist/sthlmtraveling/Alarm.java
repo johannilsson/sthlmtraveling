@@ -40,14 +40,8 @@ public class Alarm extends BroadcastReceiver{
         Vibrator mVibrator = (Vibrator) context.getSystemService(context.VIBRATOR_SERVICE);
         mWakeLock.release();
 
-        final long[] DEFAULT_VIBRATE_PATTERN = {0, 250, 250, 250};
-        mVibrator.vibrate(DEFAULT_VIBRATE_PATTERN, 0);
+        final long[] DEFAULT_VIBRATE_PATTERN = {0, 250, 250, 250, 250, 250, 250, 250};
+        mVibrator.vibrate(DEFAULT_VIBRATE_PATTERN, 2);
 
-        try {
-            Thread.sleep(8000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        mVibrator.cancel();
     }
 }
