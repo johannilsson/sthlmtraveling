@@ -146,6 +146,7 @@
     <string name="alarm_destination_1min">You have to get off in 1 minutes!</string>
     <string name="alarm_destination_3min">You have to get off in 3 minutes!</string>
     <string name="alarm_destination_5min">You have to get off in 5 minutes!</string>
+    <string name="invalid_time">Invalid alarm time!</string>
     <string name="select_departure_alarm">Select a time for departure alarm</string>
     <string name="select_destination_alarm">Select a time for destination alarm</string>
 

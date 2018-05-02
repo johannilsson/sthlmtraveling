@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,20 +33,23 @@ public class AlarmPreferencesActivity extends AppCompatActivity implements View.
 
     private Spinner mTimeSpinnerDeparture;
     private Spinner mTimeSpinnerDestination;
-    private long mTimeDeparture;
-    private long mTimeDestination;
+
+    private long mTimeDeparture = Long.MAX_VALUE;
+    private long mTimeDestination = Long.MAX_VALUE;
+
     private boolean mTimeSelectedDeparture = true;
     private boolean mTimeSelectedDestination = true;
     private CheckBox mAlarmEveryStopCheckBox;
-    private Date mStartDate;
     private long mStartTime;
     private Date mEndDate;
     private long mEndTime;
     private List<Long> mEndTimeList;
     private static int mRequestCode = 0;
     private Button alarmClear;
-    private String mTimeBeforeDestination;
-    private String mTimeBeforeDeparture;
+    private String mMessageDestination;
+    private String mMessageDeparture;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,7 +96,7 @@ public class AlarmPreferencesActivity extends AppCompatActivity implements View.
         mEndTime = mEndDate.getTime();
 
         /** Get departure time**/
-        mStartDate = legList.get(0).getStartTime();
+        Date mStartDate = legList.get(0).getStartTime();
         mStartTime = mStartDate.getTime();
 
         /** From ChangeRouteTimeActivity **/
@@ -143,24 +147,33 @@ public class AlarmPreferencesActivity extends AppCompatActivity implements View.
                 int mSelectedTimeDestination = (int) mTimeSpinnerDestination.getSelectedItemId();
                 mTimeDestination = getAlarmTimeDest(mSelectedTimeDestination, mEndTime);
 
-                if (mTimeSelectedDeparture) {
-                    setAlarm(mTimeDeparture, getString(R.string.time_to_go), mTimeBeforeDeparture);
-                    sendToast(getString(R.string.alarm_set));
-                }
-                if (mTimeSelectedDestination) {
-                    setAlarm(mTimeDestination, getString(R.string.time_to_get_off), mTimeBeforeDestination);
-                    sendToast(getString(R.string.alarm_set));
-                }
+                long mCurrentTime = System.currentTimeMillis();
+                if(mCurrentTime > mTimeDeparture && mCurrentTime > mTimeDestination){
+                    if (mTimeSelectedDeparture) {
+                        setAlarm(mTimeDeparture, getString(R.string.time_to_go), mMessageDeparture);
+                        sendToast(getString(R.string.alarm_set));
+                    }
+                    if (mTimeSelectedDestination) {
+                        setAlarm(mTimeDestination, getString(R.string.time_to_get_off), mMessageDestination);
+                        sendToast(getString(R.string.alarm_set));
+                    }
 
-                if(mTimeSelectedDestination) {
-                    /** Set alarm for every stop **/
-                    if (mAlarmEveryStopCheckBox.isChecked()) {
-                        for (long time : mEndTimeList) {
-                            setAlarm(getAlarmTimeDest(mSelectedTimeDestination, time), getString(R.string.time_to_get_off), mTimeBeforeDestination);
+                    if(mTimeSelectedDestination) {
+                        /** Set alarm for every stop **/
+                        if (mAlarmEveryStopCheckBox.isChecked()) {
+                            for (long time : mEndTimeList) {
+                                setAlarm(getAlarmTimeDest(mSelectedTimeDestination, time), getString(R.string.time_to_get_off), mMessageDestination);
+                            }
                         }
                     }
+                    finish();
+
+                } else{
+                    sendToast(getString(R.string.invalid_time));
                 }
-                finish();
+                Log.v("aznee", String.valueOf(mTimeDeparture));
+                Log.v("aznee", String.valueOf(mTimeDestination));
+
                 break;
 
             case R.id.actionbar_discard:
@@ -198,23 +211,23 @@ public class AlarmPreferencesActivity extends AppCompatActivity implements View.
                 mTimeSelectedDeparture = false;
             case 1:
                 alarmDep = startTime - 120000;
-                mTimeBeforeDeparture = getString(R.string.alarm_departure_2min);
+                mMessageDeparture = getString(R.string.alarm_departure_2min);
                 break;
             case 2:
                 alarmDep = startTime - 300000;
-                mTimeBeforeDeparture = getString(R.string.alarm_departure_5min);
+                mMessageDeparture = getString(R.string.alarm_departure_5min);
                 break;
             case 3:
                 alarmDep = startTime - 600000;
-                mTimeBeforeDeparture = getString(R.string.alarm_departure_10min);
+                mMessageDeparture = getString(R.string.alarm_departure_10min);
                 break;
             case 4:
                 alarmDep = startTime - 900000;
-                mTimeBeforeDeparture = getString(R.string.alarm_departure_15min);
+                mMessageDeparture = getString(R.string.alarm_departure_15min);
                 break;
             case 5:
                 alarmDep = startTime - 1800000;
-                mTimeBeforeDeparture = getString(R.string.alarm_departure_30min);
+                mMessageDeparture = getString(R.string.alarm_departure_30min);
                 break;
         }
         return alarmDep;
@@ -229,15 +242,15 @@ public class AlarmPreferencesActivity extends AppCompatActivity implements View.
                 break;
             case 1:
                 mAlarmDest = destTime - 60000;
-                mTimeBeforeDestination = getString(R.string.alarm_destination_1min);
+                mMessageDestination = getString(R.string.alarm_destination_1min);
                 break;
             case 2:
                 mAlarmDest = destTime- 180000;
-                mTimeBeforeDestination = getString(R.string.alarm_destination_3min);
+                mMessageDestination = getString(R.string.alarm_destination_3min);
                 break;
             case 3:
                 mAlarmDest = destTime - 300000;
-                mTimeBeforeDestination = getString(R.string.alarm_destination_5min);
+                mMessageDestination = getString(R.string.alarm_destination_5min);
                 break;
         }
         return mAlarmDest;
