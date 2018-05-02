@@ -35,7 +35,7 @@ Blenda & Filip
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             android:text="@string/select_departure_alarm"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="20dp"
             android:layout_marginLeft="4dp"
             />
 
@@ -96,8 +96,11 @@ Blenda & Filip
             android:id="@+id/button2"
             android:layout_width="160dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="@string/clear_alarms" />
+            android:layout_marginTop="32dp"
+            android:layout_marginLeft="12dp"
+            android:text="@string/clear_alarms"
+            android:background="@color/primary"
+            android:textColor="@color/light_grey"/>
 
     </LinearLayout>
 </ScrollView>

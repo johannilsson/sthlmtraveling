@@ -26,6 +26,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.markupartist.sthlmtraveling.data.models.Leg;
+import com.markupartist.sthlmtraveling.data.models.Place;
 import com.markupartist.sthlmtraveling.data.models.Route;
 import com.markupartist.sthlmtraveling.data.models.TravelMode;
 
@@ -33,20 +34,14 @@ public class AlarmPreferencesActivity extends AppCompatActivity implements View.
 
     private Spinner mTimeSpinnerDeparture;
     private Spinner mTimeSpinnerDestination;
-
-    private long mTimeDeparture = Long.MAX_VALUE;
-    private long mTimeDestination = Long.MAX_VALUE;
-
     private boolean mTimeSelectedDeparture = true;
     private boolean mTimeSelectedDestination = true;
     private CheckBox mAlarmEveryStopCheckBox;
     private long mStartTime;
-    private Date mEndDate;
     private long mEndTime;
     private List<Long> mEndTimeList;
+    private List<Place> mStopList;
     private static int mRequestCode = 0;
-    private Button alarmClear;
-    private String mMessageDestination;
     private String mMessageDeparture;
 
 
@@ -57,14 +52,14 @@ public class AlarmPreferencesActivity extends AppCompatActivity implements View.
         setContentView(R.layout.activity_alarm_preferences);
 
         mAlarmEveryStopCheckBox = (CheckBox) findViewById(R.id.select_alarm_everyStop);
-        alarmClear = findViewById(R.id.button2);
+        Button mAlarmClear = findViewById(R.id.button2);
         //Set up spinner departure & destination
         mTimeSpinnerDeparture = (Spinner) findViewById(R.id.time_spinner_departure);
         mTimeSpinnerDestination = (Spinner) findViewById(R.id.time_spinner_destination);
         //findViewById(R.id.textClear).setVisibility(View.INVISIBLE);
 
 
-        alarmClear.setOnClickListener(new View.OnClickListener() {
+        mAlarmClear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //findViewById(R.id.textClear).setVisibility(View.INVISIBLE);
@@ -85,14 +80,18 @@ public class AlarmPreferencesActivity extends AppCompatActivity implements View.
 
         /** Get every destination time **/
         mEndTimeList = new ArrayList<>();
+        mStopList = new ArrayList<>();
         for(Leg leg : legList ){
             if(!leg.getTravelMode().equals(TravelMode.FOOT)){
+                mStopList.add(leg.getTo());
                 mEndTimeList.add(leg.getEndTime().getTime());
+
             }
         }
 
+
         /** Get final destination time**/
-        mEndDate = legList.get(legList.size()-1).getEndTime();
+        Date mEndDate = legList.get(legList.size()-1).getEndTime();
         mEndTime = mEndDate.getTime();
 
         /** Get departure time**/
@@ -139,6 +138,8 @@ public class AlarmPreferencesActivity extends AppCompatActivity implements View.
 
     @Override
     public void onClick(View view) {
+        long mTimeDeparture;
+        long mTimeDestination;
         switch (view.getId()) {
             case R.id.actionbar_done:
                 int mSelectedTimeDeparture = (int) mTimeSpinnerDeparture.getSelectedItemId();
@@ -154,15 +155,15 @@ public class AlarmPreferencesActivity extends AppCompatActivity implements View.
                         sendToast(getString(R.string.alarm_set));
                     }
                     if (mTimeSelectedDestination) {
-                        setAlarm(mTimeDestination, getString(R.string.time_to_get_off), mMessageDestination);
+                        setAlarm(mTimeDestination, getString(R.string.you_are_arriving), mStopList.get(mStopList.size() - 1).toString());
                         sendToast(getString(R.string.alarm_set));
                     }
 
                     if(mTimeSelectedDestination) {
                         /** Set alarm for every stop **/
                         if (mAlarmEveryStopCheckBox.isChecked()) {
-                            for (long time : mEndTimeList) {
-                                setAlarm(getAlarmTimeDest(mSelectedTimeDestination, time), getString(R.string.time_to_get_off), mMessageDestination);
+                            for(int i = 0; i < mEndTimeList.size(); i++) {
+                                setAlarm(getAlarmTimeDest(mSelectedTimeDestination, mEndTimeList.get(i)), getString(R.string.you_are_arriving), mStopList.get(i).toString());
                             }
                         }
                     }
@@ -171,8 +172,6 @@ public class AlarmPreferencesActivity extends AppCompatActivity implements View.
                 } else{
                     sendToast(getString(R.string.invalid_time));
                 }
-                Log.v("aznee", String.valueOf(mTimeDeparture));
-                Log.v("aznee", String.valueOf(mTimeDestination));
 
                 break;
 
@@ -205,7 +204,7 @@ public class AlarmPreferencesActivity extends AppCompatActivity implements View.
 
     /** Get alarm time departure **/
     public long getAlarmTimeDep(int selectedTimeDeparture, long startTime) {
-       long alarmDep = 0;
+       long alarmDep = Long.MAX_VALUE;
         switch (selectedTimeDeparture) {
             case 0:
                 mTimeSelectedDeparture = false;
@@ -235,22 +234,20 @@ public class AlarmPreferencesActivity extends AppCompatActivity implements View.
 
     /** Get alarm time destination **/
     public long getAlarmTimeDest(int selectedTimeDestination, long destTime){
-        long mAlarmDest = 0;
+        long mAlarmDest = Long.MAX_VALUE;
         switch (selectedTimeDestination){
             case 0:
                 mTimeSelectedDestination = false;
                 break;
             case 1:
                 mAlarmDest = destTime - 60000;
-                mMessageDestination = getString(R.string.alarm_destination_1min);
                 break;
             case 2:
                 mAlarmDest = destTime- 180000;
-                mMessageDestination = getString(R.string.alarm_destination_3min);
                 break;
             case 3:
                 mAlarmDest = destTime - 300000;
-                mMessageDestination = getString(R.string.alarm_destination_5min);
+
                 break;
         }
         return mAlarmDest;

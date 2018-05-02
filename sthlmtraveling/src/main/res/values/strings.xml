@@ -132,7 +132,7 @@
     <string name="alarm_preferences">Alarm preferences</string>
     <string name="enable_alarm_departure">Enable alarm for departure</string>
     <string name="enable_alarm_destination">Enable alarm for destination</string>
-    <string name="enable_alarm_everyStop">Enable alarm for every stop</string>
+    <string name="enable_alarm_everyStop">Enable alarm for change of transport</string>
     <string name="alarm_set">Alarm set!</string>
     <string name="clear_alarms">Clear all alarms</string>
     <string name="alarm_already_set">Clear current alarms to set new ones</string>
@@ -149,6 +149,8 @@
     <string name="invalid_time">Invalid alarm time!</string>
     <string name="select_departure_alarm">Select a time for departure alarm</string>
     <string name="select_destination_alarm">Select a time for destination alarm</string>
+    <string name="you_are_arriving">You are arriving at</string>
+
 
 
 
