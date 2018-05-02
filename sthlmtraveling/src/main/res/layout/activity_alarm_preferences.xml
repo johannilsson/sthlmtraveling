@@ -29,6 +29,16 @@ Blenda & Filip
             android:text="@string/alarm_preferences"
             />
 
+        <TextView
+            style="?android:textAppearanceMedium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:text="@string/select_departure_alarm"
+            android:layout_marginTop="12dp"
+            android:layout_marginLeft="4dp"
+            />
+
         <Spinner
             android:id="@+id/time_spinner_departure"
             android:layout_marginTop="8dp"
@@ -36,6 +46,7 @@ Blenda & Filip
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             android:drawSelectorOnTop="true"
+            style="@android:style/Widget.Holo.Light.Spinner"
             />
 
         <LinearLayout
@@ -50,6 +61,16 @@ Blenda & Filip
                 android:focusable="true"
                 android:focusableInTouchMode="true"/>
 
+            <TextView
+                style="?android:textAppearanceMedium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="@string/select_destination_alarm"
+                android:layout_marginTop="8dp"
+                android:layout_marginLeft="4dp"
+                />
+
             <Spinner
                 android:id="@+id/time_spinner_destination"
                 android:layout_marginTop="8dp"
@@ -57,6 +78,7 @@ Blenda & Filip
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
                 android:drawSelectorOnTop="true"
+                style="@android:style/Widget.Holo.Light.Spinner"
                 />
 
             <CheckBox
@@ -74,7 +96,7 @@ Blenda & Filip
             android:id="@+id/button2"
             android:layout_width="160dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="20dp"
             android:text="@string/clear_alarms" />
 
     </LinearLayout>

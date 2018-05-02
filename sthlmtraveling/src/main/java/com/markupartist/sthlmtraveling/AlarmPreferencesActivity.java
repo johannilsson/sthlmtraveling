@@ -47,7 +47,6 @@ public class AlarmPreferencesActivity extends AppCompatActivity implements View.
     private String mTimeBeforeDestination;
     private String mTimeBeforeDeparture;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,18 +57,12 @@ public class AlarmPreferencesActivity extends AppCompatActivity implements View.
         //Set up spinner departure & destination
         mTimeSpinnerDeparture = (Spinner) findViewById(R.id.time_spinner_departure);
         mTimeSpinnerDestination = (Spinner) findViewById(R.id.time_spinner_destination);
-        alarmClear.setVisibility(View.INVISIBLE);
         //findViewById(R.id.textClear).setVisibility(View.INVISIBLE);
 
-        if (mRequestCode != 0){
-            alarmClear.setVisibility(View.VISIBLE);
-            //findViewById(R.id.textClear).setVisibility(View.VISIBLE);
-        }
 
         alarmClear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                alarmClear.setVisibility(View.INVISIBLE);
                 //findViewById(R.id.textClear).setVisibility(View.INVISIBLE);
                 mTimeSpinnerDeparture.setEnabled(true);
                 mTimeSpinnerDestination.setEnabled(true);
@@ -185,6 +178,7 @@ public class AlarmPreferencesActivity extends AppCompatActivity implements View.
         mRequestCode++;
         AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
         alarmManager.set(AlarmManager.RTC_WAKEUP, time, pendingIntent);
+
     }
 
     private void cancelAlarm(int i){
@@ -193,6 +187,7 @@ public class AlarmPreferencesActivity extends AppCompatActivity implements View.
         Intent intent = new Intent(ctx, Alarm.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(ctx, i, intent, 0);
         alarmManager.cancel(pendingIntent);
+
     }
 
     /** Get alarm time departure **/
