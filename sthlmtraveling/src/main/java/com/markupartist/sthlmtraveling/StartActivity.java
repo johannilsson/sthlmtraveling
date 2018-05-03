@@ -66,8 +66,8 @@ public class StartActivity extends BaseFragmentActivity {
         pageAdapter.addPage(new PageFragmentAdapter.PageInfo(getString(R.string.deviations_label),
                 TrafficStatusFragment.class, null, R.drawable.ic_action_deviations_active));
 
-        pageAdapter.addPage(new PageFragmentAdapter.PageInfo("Maps",
-                MapFragment.class, null, R.drawable.ic_menu_cloud));
+        pageAdapter.addPage(new PageFragmentAdapter.PageInfo(getString(R.string.map_label),
+                MapFragment.class, null, R.drawable.ic_action_map_active));
 
         pageAdapter.setLayoutDirection(RtlUtils.isRtl(Locale.getDefault()));
 
