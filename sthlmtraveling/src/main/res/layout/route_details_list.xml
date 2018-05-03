@@ -46,13 +46,13 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:divider="@null"
-        android:layout_marginTop="56dp"/>
+        android:layout_marginTop="66dp"/>
 
     <TextView
         android:id="@+id/route_details_no_result"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dip"
+        android:layout_marginTop="30dip"
         android:padding="5dip"
         android:text="@string/no_route_details"
         android:textColor="?android:attr/textColorPrimary"

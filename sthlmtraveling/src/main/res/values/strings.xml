@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?><!--
+<?xml version="1.0" encoding="utf-8"?>
+<!--
 /*
 ** Copyright (C) 2009 Johan Nilsson <http://markupartist.com>
 **
@@ -65,7 +66,7 @@
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="retry">Retry</string>
-    <string name="point_on_map">Point on map</string>
+     <string name="point_on_map">Point on map</string>
     <string name="tap_to_select_this_point">Tap to select this point</string>
     <string name="point_selected">Point selected</string>
     <string name="tap_your_end_point_on_map">Tap your end point on the map</string>
@@ -126,16 +127,6 @@
     <string name="nearby_stops">Nearby stops</string>
     <string name="nearby">Nearby</string>
     <string name="time_to" formatted="false"><xliff:g id="duration">%1$s</xliff:g> to <xliff:g id="stop">%2$s</xliff:g></string>
-
-    // Blenda:
-    <string name="departure_alarm">Alarm</string>
-    <string name="alarm_preferences">Alarm preferences</string>
-    <string name="time_scroll">Time</string>
-    <string name="enable_alarm_departure">Enable alarm for departure</string>
-    <string name="enable_alarm_destination">Enable alarm for destination</string>
-    <string name="enable_alarm_everyStop">Enable alarm for every stop</string>
-    //
-
 
     <!-- Phrase describing a time duration using seconds [CHAR LIMIT=16] -->
     <plurals name="duration_seconds">

@@ -30,7 +30,7 @@
         android:divider="@null"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:paddingTop="112dp"
+        android:paddingTop="120dp"
         android:clipToPadding="false"
         />
 

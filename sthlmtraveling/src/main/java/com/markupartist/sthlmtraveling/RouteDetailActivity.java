@@ -19,6 +19,7 @@ package com.markupartist.sthlmtraveling;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -76,6 +77,7 @@ import com.markupartist.sthlmtraveling.utils.DateTimeUtil;
 import com.markupartist.sthlmtraveling.utils.LegUtil;
 import com.markupartist.sthlmtraveling.utils.Monitor;
 import com.markupartist.sthlmtraveling.utils.RtlUtils;
+import com.markupartist.sthlmtraveling.utils.StringUtils;
 import com.markupartist.sthlmtraveling.utils.ViewHelper;
 import com.markupartist.sthlmtraveling.utils.text.RoundedBackgroundSpan;
 import com.markupartist.sthlmtraveling.utils.text.SpanUtils;
@@ -105,7 +107,6 @@ public class RouteDetailActivity extends BaseListActivity {
     private Route mRoute;
     private JourneyQuery mJourneyQuery;
     private SubTripAdapter mSubTripAdapter;
-    private ImageButton mFavoriteButton;
     private ActionBar mActionBar;
     private AdProxy mAdProxy;
     private ApiService mApiService;
@@ -115,13 +116,12 @@ public class RouteDetailActivity extends BaseListActivity {
     private TextView mTimeView;
     private Button mNameView;
     private Menu mMenuAbove;
-    private String mTimeDestination;
 
 
-//Tab functionality by Oskar Hahr
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.route_details_list);
 
         registerScreen("Route details");
@@ -151,44 +151,11 @@ public class RouteDetailActivity extends BaseListActivity {
             adContainer = mAdProxy.getAdWithContainer(getListView(), false);
         }
 
-        TextView timeView = (TextView) headerView.findViewById(R.id.route_date_time);
-        mTimeView = timeView;
-        /*changed into a separate function to be able to call it when changing tabs
-        //this is now located in the function tripTimeDestinationUpdater
-        //Oskar Hahr
+        mTimeView = (TextView) headerView.findViewById(R.id.route_date_time);
 
-        BidiFormatter bidiFormatter = BidiFormatter.getInstance(Locale.getDefault());
-
-        String timeStr = getString(R.string.time_to,
-                bidiFormatter.unicodeWrap(String.valueOf(DateTimeUtil.formatDetailedDuration(getResources(), mRoute.getDuration() * 1000))),
-                bidiFormatter.unicodeWrap(String.valueOf(getLocationName(mJourneyQuery.destination.asPlace()))));
-
-        timeView.setText(timeStr);
-        */
-        //tripTimeDestinationUpdater(true);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-            timeView.setTextDirection(View.TEXT_DIRECTION_ANY_RTL);
+            mTimeView.setTextDirection(View.TEXT_DIRECTION_ANY_RTL);
         }
-        //Unnecessary check, since SMS TICKETS don't exist
-        /*
-        if (mRoute.canBuyTicket()) {
-
-            View buySmsTicketView = headerView.findViewById(R.id.route_buy_ticket);
-            buySmsTicketView.setVisibility(View.VISIBLE);
-            buySmsTicketView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Analytics.getInstance(RouteDetailActivity.this).event("Ticket", "Click on zone");
-                    TicketDialogFragment fragment = TicketDialogFragment.create(
-                            mRoute.getFare());
-                    fragment.show(getSupportFragmentManager(), null);
-                }
-            });
-
-            TextView zoneView = (TextView) headerView.findViewById(R.id.route_zones);
-            zoneView.setText(mRoute.getFare().getZones());
-        }
-        */
 
         if (adContainer != null) {
             getListView().addHeaderView(adContainer, null, false);
@@ -201,14 +168,13 @@ public class RouteDetailActivity extends BaseListActivity {
         }
 
 
-
+        /** Support for tabs written by Oskar Hahr and Didrik Axelsson**/
         mTabLayout = (this.findViewById(R.id.rDetails_Tab));
         mTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 changeTabColor(tab,true);
-                swapTabDetails();
-
+                changeTabDetails();
             }
 
             @Override
@@ -220,10 +186,7 @@ public class RouteDetailActivity extends BaseListActivity {
 
             }
         });
-        if(savedInstanceState == null)
-            createTabs(true);
-        else
-            createTabs(false);
+        createTabs(true);
 
         mMonitor = new Monitor() {
             @Override
@@ -301,7 +264,6 @@ public class RouteDetailActivity extends BaseListActivity {
         if (mAdProxy != null) {
             mAdProxy.onPause();
         }
-
         mMonitor.onStop();
     }
 
@@ -325,7 +287,6 @@ public class RouteDetailActivity extends BaseListActivity {
         if (!mRoute.canBuyTicket()) {
             menu.removeItem(R.id.actionbar_item_sms);
         }
-
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -342,13 +303,6 @@ public class RouteDetailActivity extends BaseListActivity {
                 handleStarAction();
                 supportInvalidateOptionsMenu();
                 return true;
-            /** Blenda: **/
-            case R.id.actionbar_item_alarm:
-                Intent intent = new Intent(this, AlarmPreferencesActivity.class);
-                intent.putExtra("ParceableTest", mRoute);
-                startActivity(intent);
-                return true;
-            /***/
         }
         return super.onOptionsItemSelected(item);
     }
@@ -369,6 +323,8 @@ public class RouteDetailActivity extends BaseListActivity {
         return location.getName();
     }
 
+    /**Updates the title of the routedetails when a new tab is selected **/
+
     private void tripTimeDestinationUpdater(){
         BidiFormatter bidiFormatter = BidiFormatter.getInstance(Locale.getDefault());
 
@@ -376,15 +332,6 @@ public class RouteDetailActivity extends BaseListActivity {
                 bidiFormatter.unicodeWrap(String.valueOf(DateTimeUtil.formatDetailedDuration(getResources(), mRoute.getDuration() * 1000))),
                 bidiFormatter.unicodeWrap(String.valueOf(getLocationName(mJourneyQuery.destination.asPlace()))));
         mTimeView.setText(timeStr);
-        }
-
-    private String timeDestinationString(){
-        BidiFormatter bidiFormatter = BidiFormatter.getInstance(Locale.getDefault());
-
-        String timeStr = getString(R.string.time_to,
-                bidiFormatter.unicodeWrap(String.valueOf(DateTimeUtil.formatDetailedDuration(getResources(), mRoute.getDuration() * 1000))),
-                bidiFormatter.unicodeWrap(String.valueOf(getLocationName(mJourneyQuery.destination.asPlace()))));
-        return timeStr;
     }
 
     @Override
@@ -431,7 +378,6 @@ public class RouteDetailActivity extends BaseListActivity {
     public void showLegs(List<LegViewModel> legs) {
         mSubTripAdapter.setLegs(legs);
         mFooterView = createFooterView(legs);
-        //changing things
         getListView().addFooterView(mFooterView);
         // Add attributions if dealing with a Google result.
         if (mJourneyQuery.destination.getSource() == Site.SOURCE_GOOGLE_PLACES) {
@@ -462,21 +408,22 @@ public class RouteDetailActivity extends BaseListActivity {
         }
     }
 
+    /** Practically the same function as updatefooterview but this one is called when a new tab is selected**/
+
     void updateFooterView(final LegViewModel legViewModel) {
-        if(mFooterView != null){
-            TextView departureTimeView = (TextView) mFooterView.findViewById(R.id.trip_departure_time);
-            TextView expectedDepartureTimeView = (TextView) mFooterView.findViewById(R.id.trip_expected_departure_time);
-            departureTimeView.setText(DateFormat.getTimeFormat(this).format(legViewModel.leg.getEndTime()));
-            if (legViewModel.leg.getEndTimeRt() != null && legViewModel.leg.hasDepartureDelay()) {
-                departureTimeView.setPaintFlags(departureTimeView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-                expectedDepartureTimeView.setVisibility(View.VISIBLE);
-                expectedDepartureTimeView.setText(DateFormat.getTimeFormat(this).format(legViewModel.leg.getEndTimeRt()));
-                ViewHelper.setTextColorForTimeView(expectedDepartureTimeView, legViewModel.leg, false);
-            } else {
-                departureTimeView.setPaintFlags(departureTimeView.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
-                ViewHelper.setTextColorForTimeView(departureTimeView, legViewModel.leg, false);
-                expectedDepartureTimeView.setVisibility(View.GONE);
-            }
+        TextView departureTimeView = (TextView) mFooterView.findViewById(R.id.trip_departure_time);
+        TextView expectedDepartureTimeView = (TextView) mFooterView.findViewById(R.id.trip_expected_departure_time);
+        departureTimeView.setText(DateFormat.getTimeFormat(this).format(legViewModel.leg.getEndTime()));
+
+        if (legViewModel.leg.getEndTimeRt() != null && legViewModel.leg.hasDepartureDelay()) {
+            departureTimeView.setPaintFlags(departureTimeView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            expectedDepartureTimeView.setVisibility(View.VISIBLE);
+            expectedDepartureTimeView.setText(DateFormat.getTimeFormat(this).format(legViewModel.leg.getEndTimeRt()));
+            ViewHelper.setTextColorForTimeView(expectedDepartureTimeView, legViewModel.leg, false);
+        } else {
+            departureTimeView.setPaintFlags(departureTimeView.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
+            ViewHelper.setTextColorForTimeView(departureTimeView, legViewModel.leg, false);
+            expectedDepartureTimeView.setVisibility(View.GONE);
         }
     }
 
@@ -881,38 +828,41 @@ public class RouteDetailActivity extends BaseListActivity {
             return description;
         }
     }
+    /** TabDetails - Made by Didrik Axelsson
+     * Acts as object wrapper and gathers the different data objects and makes
+     * them more manageable.
+     *
+     */
 
     private class TabDetails{
-        public JourneyQuery journeyQ;
-        public SubTripAdapter subTA;
-        public String timeString;
-        public Route routeDetail;
+        private JourneyQuery journeyQ;
+        private SubTripAdapter subTA;
+        private Route routeDetail;
 
         public TabDetails(){
             this.journeyQ = null;
             this.routeDetail = null;
-            this.timeString = null;
             this.subTA = null;
         }
-        public TabDetails(JourneyQuery j, SubTripAdapter STA, String TS, Route r){
+        private TabDetails(JourneyQuery j, SubTripAdapter STA, Route r){
             this.journeyQ = j;
             this.subTA = STA;
-            this.timeString = TS;
             this. routeDetail = r;
         }
 
     }
-    private void swapTabDetails(){
-        //Rotates the tabs and displays the new route as the first tab
-        //Oskar Hahr
+    /** Written by Oskar Hahr
+     * Rotates the tabs and displays the new route as the first tab
+     * **/
+
+    private void changeTabDetails(){
 
         if(mTabDetails[1] == null)
             mTabLayout.getTabAt(0).getCustomView().findViewById(R.id.tabClose).setVisibility(View.GONE);
         switchTabs();
         if(mNameView!=null)
-            mNameView.setText(mJourneyQuery.destination.toString());
-        if(mSubTripAdapter != null && mSubTripAdapter.getCount() > 0)
-            updateFooterView(mSubTripAdapter.getItem(mSubTripAdapter.getCount() - 1));
+            mNameView.setText(getLocationName(mJourneyQuery.destination.asPlace()));
+        updateFooterView(mSubTripAdapter.getItem(mSubTripAdapter.getCount() - 1));
         setListAdapter(mSubTripAdapter);
         tripTimeDestinationUpdater();
         updateStartAndEndPointViews(mJourneyQuery);
@@ -922,16 +872,16 @@ public class RouteDetailActivity extends BaseListActivity {
     }
 
 
-    /**Rotates the information the tabs need to function and
+    /** Written by Didrik Axelsson & Oskar Hahr
+     * Rotates the information the tabs need to function and
      * creates the correct amount of tabs depending on the information in mSubTripAdapterA
      and sets the text of the tabs to the destination and the trip time **/
     private void createTabs(boolean add){
         if (add) {
             for (int i = TAB_CAP - 1; i > 0; i--)
                 mTabDetails[i] = mTabDetails[i - 1];
-            mTabDetails[0] = new TabDetails(mJourneyQuery, mSubTripAdapter, timeDestinationString(), mRoute);
+            mTabDetails[0] = new TabDetails(mJourneyQuery, mSubTripAdapter, mRoute);
         }
-
 
         for (int i = 0; i < TAB_CAP; i++) {
             if (mTabDetails[i] == null)
@@ -958,6 +908,10 @@ public class RouteDetailActivity extends BaseListActivity {
         }
         updateTabText();
     }
+
+    /** Written by Oskar Hahr and Didrik Axelsson
+     * This function removes the tab currently at the specified index and updates the view of the other tabs **/
+
     private void removeTab(int index){
         if(mTabLayout.getTabCount() > 1) {
             for (int i = index; i < mTabLayout.getTabCount() - 1; i++) {
@@ -966,52 +920,40 @@ public class RouteDetailActivity extends BaseListActivity {
             }
             mTabDetails[mTabLayout.getTabCount() - 1] = null;
             mTabLayout.removeTabAt(index);
-            swapTabDetails();
+            changeTabDetails();
         }
-
     }
-    /*{
-        /*
-        mTabDetails[2] = mTabDetails[1];
-        mTabDetails[1] = mTabDetails[0];
-        mTabDetails[0] = new TabDetails(mJourneyQuery, mSubTripAdapter, timeDestinationString(), mRoute);
 
-        for(int i = 0; i < 3; i++) {
-            if (mTabDetails[i] == null) {
-                break;
-            }
-            mTabLayout.addTab(mTabLayout.newTab());
-            mTabLayout.getTabAt(i).setText(mTabDetails[i].timeString);
-        }
-
-    }*/
     private void switchTabs(){
         mJourneyQuery = mTabDetails[selectTab()].journeyQ;
         mRoute = mTabDetails[selectTab()].routeDetail;
-        mTimeDestination = mTabDetails[selectTab()].timeString;
         mSubTripAdapter = mTabDetails[selectTab()].subTA;
     }
     private int selectTab(){
         return mTabLayout.getSelectedTabPosition();
     }
 
+    /** Written by Oskar Hahr and Didrik Axelsson
+     * Updates the text of the tabs when they are added and removed **/
     private void updateTabText(){
+        BidiFormatter bidi = BidiFormatter.getInstance(Locale.getDefault());
 
         for(int i = 0; i < mTabLayout.getTabCount(); i ++) {
-            String origin = mTabDetails[i].journeyQ.origin.getName().replace("MY_LOCATION", "My location");
-            if (origin.length() > 17)
-                origin = origin.substring(0,16) + "...";
 
-            String destination = mTabDetails[i].journeyQ.destination.getName().replace("MY_LOCATION", "My location");;
-            if(destination.length() > 17)
-                destination = destination.substring(0,16) + "...";
+            CharSequence time = bidi.unicodeWrap(String.valueOf(DateTimeUtil.formatDetailedDuration(getResources(), mTabDetails[i].routeDetail.getDuration() * 1000)));
+            CharSequence dest = bidi.unicodeWrap(String.valueOf(getLocationName(mTabDetails[i].journeyQ.destination.asPlace())));
+
+            if(dest.length() > 17)
+                dest = dest.subSequence(0,16) + "...";
 
             ((TextView) mTabLayout.getTabAt(i).getCustomView().findViewById(R.id.tabText)).setText(Html.fromHtml("<b> " +
-                    origin
+                    time
                     + "</b><br> "
-                    + destination));
+                    + dest));
         }
     }
+    /** Written by Oskar Hahr
+     * Changes the colour of the tabs when they are selected or unselected **/
     private void changeTabColor(TabLayout.Tab tab, boolean sel){
         if (sel)
             ((TextView)tab.getCustomView().findViewById(R.id.tabText)).setTextColor(getResources().getColor(R.color.accent));
@@ -1020,7 +962,7 @@ public class RouteDetailActivity extends BaseListActivity {
             ((TextView)tab.getCustomView().findViewById(R.id.tabText)).setTextColor(getResources().getColor(R.color.primary_light));
     }
 
-    /** updateStar - Made by Jakob & Didrik
+    /** updateStar - Made by Jakob Berggren & Didrik Axelsson
      * Makes sure the graphics of the star/favorite icon is updated to display
      * the right graphics corresponding to the current tab shown
      *
