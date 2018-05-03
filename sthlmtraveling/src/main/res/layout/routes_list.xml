@@ -17,12 +17,10 @@
 */
 -->
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-     xmlns:tools="http://schemas.android.com/tools"
-     android:orientation="vertical"
-     android:layout_width="fill_parent"
-     android:layout_height="fill_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    >
+             xmlns:tools="http://schemas.android.com/tools"
+             android:orientation="vertical"
+             android:layout_width="fill_parent"
+             android:layout_height="fill_parent">
 
     <ListView
         style="@style/AppListView"
@@ -30,17 +28,17 @@
         android:divider="@null"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:paddingTop="112dp"
+        android:paddingTop="56dp"
         android:clipToPadding="false"
         />
 
     <LinearLayout
         android:id="@+id/headerbar"
         android:layout_width="match_parent"
-        android:layout_height="112dp"
+        android:layout_height="56dp"
         android:background="@color/primary_dark"
-        android:orientation="vertical"
-        android:gravity="center"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
         >
 
         <Button
@@ -48,7 +46,6 @@
             android:background="?attr/selectableItemBackgroundBorderless"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight=".50"
             android:textColor="@color/primary_light"
             android:paddingLeft="@dimen/list_horizontal_padding"
             android:paddingRight="@dimen/list_horizontal_padding"
@@ -59,22 +56,12 @@
             android:drawablePadding="24dp"
             tools:text="Date"
             />
-        <android.support.design.widget.TabLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/primary_dark"
-            app:tabTextColor="@color/primary_light"
-            app:tabSelectedTextColor="@color/accent"
-            android:id="@+id/Tab"
-            >
-        </android.support.design.widget.TabLayout>
 
     </LinearLayout>
 
     <include
         layout="@layout/progress_bar"
         android:id="@+id/empty_view"/>
-
 </android.support.design.widget.CoordinatorLayout>
 
 
