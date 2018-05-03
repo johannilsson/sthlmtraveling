@@ -238,14 +238,14 @@ public class RoutesActivity extends BaseListActivity implements
             public void handleUpdate() {
                 if (mTransitPlan != null
                         && mTransitPlan.shouldRefresh(System.currentTimeMillis())) {
-                    mRouter.refreshTransit(mJourneyQuery, mTabWraps[0].callback); //Need to bugtest this
+                    mRouter.refreshTransit(mJourneyQuery, mTabWraps[mTabLayout.getSelectedTabPosition()].callback); //Need to bugtest this
                 }
             }
         };
 
         //moved these 2 rows from onResume (wont update routes onresume because it interferes with tabs
-        initRoutes(mJourneyQuery);
-        mMonitor.onStart();
+  //      initRoutes(mJourneyQuery);
+        // mMonitor.onStart();
     }
 
 
@@ -489,6 +489,8 @@ public class RoutesActivity extends BaseListActivity implements
     @Override
     protected void onResume() {
         super.onResume();
+        initRoutes(mJourneyQuery);
+        mMonitor.onStart();
     }
 
     @Override
@@ -863,7 +865,7 @@ public class RoutesActivity extends BaseListActivity implements
         //The tabwraps are shifted one position in the array
         for (int i = TAB_CAP - 1; i > 0; i--)
             mTabWraps[i] = mTabWraps[i - 1];
-        mTabWraps[0] = new TabWrap(mJourneyQuery, mRouteAdapter, mTransitPlan, mPlan);
+        mTabWraps[0] = new TabWrap(mJourneyQuery, mRouteAdapter, mTransitPlan, mPlan, mRouter);
 
         //tabs are created to correspond to each tabwrap object
         for (int i = 0; i < TAB_CAP; i++) {
@@ -920,6 +922,7 @@ public class RoutesActivity extends BaseListActivity implements
         mRouteAdapter = selectedTab().ra;
         mTransitPlan  = selectedTab().t_plan;
         mPlan         = selectedTab().plan;
+        mRouter       = selectedTab().router;
         mPlanCallback = selectedTab().callback;
         initListView(false);
     }
@@ -1223,18 +1226,20 @@ public class RoutesActivity extends BaseListActivity implements
     private class TabWrap{
         private JourneyQuery jq;
         private RoutesAdapter ra;
+        private Router router;
         private Plan t_plan;
         private Plan plan;
 
         private TabWrap(){
-            jq = null; ra = null; t_plan = null; plan = null;
+            jq = null; ra = null; t_plan = null; plan = null; router = null;
         }
         /** Creates tabwrap object from data**/
-        private TabWrap(JourneyQuery jq, RoutesAdapter ra, Plan t_plan, Plan plan){
+        private TabWrap(JourneyQuery jq, RoutesAdapter ra, Plan t_plan, Plan plan, Router router){
             this.jq = jq;
             this.ra = ra;
             this.t_plan = t_plan;
             this.plan = plan;
+            this.router = router;
         }
         private Router.Callback callback = new Router.Callback() {
             @Override
