@@ -460,7 +460,7 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements
                     deliverResult(place);
                 }
                 break;
-            case REQUEST_CODE_CHOOSE_CONTACT:
+            case REQUEST_CODE_CHOOSE_CONTACT: // Added Case to handle Intent for Search w. Contacts - Johan Edman
                 if (resultCode != Activity.RESULT_CANCELED) {
                     if (resultCode == RESULT_OK) {
                         Uri contactURI = data.getData();
@@ -468,6 +468,7 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements
                         String contactField = ContactsContract.CommonDataKinds.StructuredPostal.FORMATTED_ADDRESS;
                         String[] contactProjection = {contactField};
 
+                        // Not Null-Safe - Perhaps implement some type of assertion?
                         Cursor c = getContentResolver()
                                 .query(contactURI, contactProjection, null, null, null);
                         c.moveToFirst();
