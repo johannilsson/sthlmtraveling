@@ -565,10 +565,13 @@ public class RouteDetailActivity extends BaseListActivity {
      * TODO: Refactor
      */
     private String[] routeDetailsToString() {
-        String[] routeDetails = new String[2];
-        List<Leg> legs = mRoute.getLegs();
+        
         // Index 0 contains Subject
         // Index 1 Contains Body
+        String[] routeDetails = new String[2];
+        
+        // makes code more readable
+        List<Leg> legs = mRoute.getLegs();
 
         String sub = getRouteDetails("from") +
                 " -> " +
@@ -579,38 +582,56 @@ public class RouteDetailActivity extends BaseListActivity {
         routeDetails[0] = sub;
 
         StringBuilder body = new StringBuilder();
+        
+        //header to body
+        //"Från "
         body.append(getString(R.string.from)).append(" ");
+        //"Grönlandsgången"
         body.append(getRouteDetails("from")).append("\n");
+        //"Till "
         body.append(getString(R.string.to)).append(" ");
+        //"Skulpturvägen "
         body.append(getRouteDetails("to")).append("\n");
+        //"Thu May 03\n\n"
         body.append(legs.get(0).getStartTime().toString().substring(0, 11)).append("\n\n");
 
         for (Leg leg : legs) {
             if (!leg.getTravelMode().equals("foot")) {
                 boolean useRT = false;
-
+                
+                //if realtime exists
                 if (leg.getStartTimeRt() != null || leg.getEndTimeRt() != null) {
+                    //if actual delay
                     useRT = (leg.getStartTimeRt().after(leg.getStartTime()) || leg.getEndTimeRt().after(leg.getEndTime()));
                 }
 
                 if (useRT) {
+                    //"(11:32) " (time according to table)
                     body.append("(").append(leg.getStartTime().toString().substring(11, 16)).append(") ");
+                    //"11:35" (real time)
                     body.append(leg.getStartTimeRt().toString().substring(11, 16));
                 } else {
+                    //"11:32"
                     body.append(leg.getStartTime().toString().substring(11, 16));
                 }
-
+                
+                //" Grönlandsgången\n"
                 body.append(" ").append(leg.getFrom().getName()).append("\n");
-                body.append(leg.getRouteName().substring(0, 1).toUpperCase()).append(leg.getRouteName().substring(1)).append("\n");
+                //" Blåbuss 178 " (first letter uppercase)
+                body.append(leg.getRouteName().substring(0, 1).toUpperCase()).append(leg.getRouteName().substring(1)).append(" ");
+                //"Till " "Jakobsbergs Station\n" 
                 body.append(getString(R.string.to)).append(" ").append(leg.getHeadsing().getName()).append("\n");
 
                 if (useRT) {
+                    //"(12:00) "
                     body.append("(").append(leg.getEndTime().toString().substring(11, 16)).append(") ");
+                    //"12:02"
                     body.append(leg.getEndTimeRt().toString().substring(11, 16));
                 } else {
+                    //"12:02"
                     body.append(leg.getEndTime().toString().substring(11, 16));
                 }
-
+                //" Skulpturvägen\n\n"
                 body.append(" ").append(leg.getTo().getName());
                 body.append("\n\n");
             }
