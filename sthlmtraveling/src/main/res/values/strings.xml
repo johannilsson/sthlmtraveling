@@ -128,16 +128,6 @@
     <string name="nearby">Nearby</string>
     <string name="time_to" formatted="false"><xliff:g id="duration">%1$s</xliff:g> to <xliff:g id="stop">%2$s</xliff:g></string>
 
-    // Blenda:
-    <string name="departure_alarm">Alarm</string>
-    <string name="alarm_preferences">Alarm preferences</string>
-    <string name="time_scroll">Time</string>
-    <string name="enable_alarm_departure">Enable alarm for departure</string>
-    <string name="enable_alarm_destination">Enable alarm for destination</string>
-    <string name="enable_alarm_everyStop">Enable alarm for every stop</string>
-    //
-
-
     <!-- Phrase describing a time duration using seconds [CHAR LIMIT=16] -->
     <plurals name="duration_seconds">
         <item quantity="one">1 second</item>

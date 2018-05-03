@@ -6,10 +6,6 @@
 
     <uses-sdk tools:overrideLibrary="android.support.customtabs,com.widespace" />
 
-    // Kom:
-    <uses-permission android:name="android.permission.VIBRATE"/>
-    //
-
     <supports-screens
         android:anyDensity="true"
         android:largeScreens="true"
@@ -260,11 +256,6 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
-        <receiver
-            android:name=".receivers.OnAlarmReceiver"
-            android:enabled="true"
-            android:exported="false"></receiver>
-
         <service
             android:name=".service.DeviationService"
             android:enabled="true"
@@ -289,26 +280,6 @@
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="8e01e50d8310d281bb91a5129c8cf514d866cac8" />
-
-        // Kom:
-        <activity
-            android:name=".AlarmPreferencesActivity"
-            android:configChanges="locale|orientation|screenSize"
-            android:label="@string/alarm_preferences"
-            android:theme="@style/Theme.SthlmTraveling"
-
-            >
-
-            <!--Remove arrow to parent-->
-            <!--android:parentActivityName=".RouteDetailActivity">-->
-
-            <!--<meta-data-->
-                <!--android:name="android.support.PARENT_ACTIVITY"-->
-                <!--android:value=".RouteDetailActivity" />-->
-
-        </activity>
-        <receiver android:name=".Alarm" />
-        //
     </application>
 
 </manifest>
