@@ -35,7 +35,7 @@ import android.text.TextUtils;
 import android.text.format.DateFormat;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
+import android.widget.ImageButton;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -170,7 +170,7 @@ public class ViewOnMapActivity extends BaseFragmentActivity implements OnMapRead
 
         updateStartAndEndPointViews(mJourneyQuery);
 
-        Button typeButton = findViewById(R.id.btn_map_type);
+        ImageButton typeButton = findViewById(R.id.btn_map_type);
         typeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -27,7 +27,7 @@ import android.support.v7.app.ActionBar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -120,7 +120,7 @@ public class PointOnMapActivity extends BaseFragmentActivity
         registerPlayService(mMyLocationManager);
 
         //Copied from ViewOnMapActivity
-        Button typeButton = findViewById(R.id.btn_map_type);
+        ImageButton typeButton = findViewById(R.id.btn_map_type);
         typeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
