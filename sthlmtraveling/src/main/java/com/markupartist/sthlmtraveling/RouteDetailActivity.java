@@ -105,6 +105,7 @@ public class RouteDetailActivity extends BaseListActivity {
     private ApiService mApiService;
     private Monitor mMonitor;
     private View mFooterView;
+    private ImageButton mShareButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -206,6 +207,25 @@ public class RouteDetailActivity extends BaseListActivity {
                 });
             }
         };
+
+        /*
+           By Jakob Berggren & Johan Edman
+           Button for 'Share Trip' - functionality
+         */
+        mShareButton = findViewById(R.id.share_trip_button);
+        mShareButton.findViewById(R.id.share_trip_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent myIntent = new Intent(Intent.ACTION_SEND);
+                myIntent.setType("text/plain");
+                String shareBody = routeDetailsToString()[1];
+                String shareSub = routeDetailsToString()[0];
+                myIntent.putExtra(Intent.EXTRA_SUBJECT, shareSub);
+                myIntent.putExtra(Intent.EXTRA_TEXT, shareBody);
+                startActivity(Intent.createChooser(myIntent, "Share using"));
+            }
+        });
+
     }
 
     void updateStopTimes(IntermediateResponse intermediateResponse) {
@@ -496,6 +516,108 @@ public class RouteDetailActivity extends BaseListActivity {
                         Journeys.CONTENT_URI, values);
             }
         }
+    }
+
+    /**
+     * @author Jakob Berggren & Johan Edman
+     * Share Trip - Helper that returns details for Share-Trip StringBuilder
+     * TODO: Refactor
+     * TODO: Possible to reduce functions Two -> One?
+     */
+    private String getRouteDetails(String item) {
+        List<Leg> legs = mRoute.getLegs();
+
+        switch (item) {
+            case "from":
+                String from = "";
+                for (int i = 0; i < legs.size(); i++) {
+                    if (!legs.get(i).getTravelMode().equals("foot")) {
+                        if (from.equals("")) {
+                            if (!legs.get(i).getFrom().getName().equals("MY_LOCATION")) {
+                                from = legs.get(i).getFrom().getName();
+                            }
+                        }
+                    }
+                }
+                return from;
+            case "to": {
+                String to = "";
+                for (int i = legs.size() - 1; i >= 0; i--) {
+                    if (!legs.get(i).getTravelMode().equals("foot")) {
+                        if (to.equals("")) {
+                            if (!legs.get(i).getTo().getName().equals("MY_LOCATION")) {
+                                to = legs.get(i).getTo().getName();
+                            }
+                        }
+                    }
+                }
+                return to;
+            }
+            default:
+                return "";
+        }
+
+    }
+
+    /**
+     * @author Jakob Berggren & Johan Edman
+     * Share Trip - String builder
+     * TODO: Refactor
+     */
+    private String[] routeDetailsToString() {
+        String[] routeDetails = new String[2];
+        List<Leg> legs = mRoute.getLegs();
+        // Index 0 contains Subject
+        // Index 1 Contains Body
+
+        String sub = getRouteDetails("from") +
+                " -> " +
+                getRouteDetails("to") +
+                " | " +
+                legs.get(0).getStartTime().toString().substring(0, 11);
+
+        routeDetails[0] = sub;
+
+        StringBuilder body = new StringBuilder();
+        body.append(getString(R.string.from)).append(" ");
+        body.append(getRouteDetails("from")).append("\n");
+        body.append(getString(R.string.to)).append(" ");
+        body.append(getRouteDetails("to")).append("\n");
+        body.append(legs.get(0).getStartTime().toString().substring(0, 11)).append("\n\n");
+
+        for (Leg leg : legs) {
+            if (!leg.getTravelMode().equals("foot")) {
+                boolean useRT = false;
+
+                if (leg.getStartTimeRt() != null || leg.getEndTimeRt() != null) {
+                    useRT = (leg.getStartTimeRt().after(leg.getStartTime()) || leg.getEndTimeRt().after(leg.getEndTime()));
+                }
+
+                if (useRT) {
+                    body.append("(").append(leg.getStartTime().toString().substring(11, 16)).append(") ");
+                    body.append(leg.getStartTimeRt().toString().substring(11, 16));
+                } else {
+                    body.append(leg.getStartTime().toString().substring(11, 16));
+                }
+
+                body.append(" ").append(leg.getFrom().getName()).append("\n");
+                body.append(leg.getRouteName().substring(0, 1).toUpperCase()).append(leg.getRouteName().substring(1)).append("\n");
+                body.append(getString(R.string.to)).append(" ").append(leg.getHeadsing().getName()).append("\n");
+
+                if (useRT) {
+                    body.append("(").append(leg.getEndTime().toString().substring(11, 16)).append(") ");
+                    body.append(leg.getEndTimeRt().toString().substring(11, 16));
+                } else {
+                    body.append(leg.getEndTime().toString().substring(11, 16));
+                }
+
+                body.append(" ").append(leg.getTo().getName());
+                body.append("\n\n");
+            }
+        }
+
+        routeDetails[1] = body.toString();
+        return routeDetails;
     }
 
     /**
