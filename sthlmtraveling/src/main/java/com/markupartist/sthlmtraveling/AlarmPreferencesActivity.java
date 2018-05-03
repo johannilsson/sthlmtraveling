@@ -149,29 +149,37 @@ public class AlarmPreferencesActivity extends AppCompatActivity implements View.
                 mTimeDestination = getAlarmTimeDest(mSelectedTimeDestination, mEndTime);
 
                 long mCurrentTime = System.currentTimeMillis();
-                if(mCurrentTime > mTimeDeparture && mCurrentTime > mTimeDestination){
+
+                if(mCurrentTime < mTimeDeparture) {
                     if (mTimeSelectedDeparture) {
                         setAlarm(mTimeDeparture, getString(R.string.time_to_go), mMessageDeparture);
                         sendToast(getString(R.string.alarm_set));
                     }
-                    if (mTimeSelectedDestination) {
-                        setAlarm(mTimeDestination, getString(R.string.you_are_arriving), mStopList.get(mStopList.size() - 1).toString());
-                        sendToast(getString(R.string.alarm_set));
-                    }
-
-                    if(mTimeSelectedDestination) {
-                        /** Set alarm for every stop **/
-                        if (mAlarmEveryStopCheckBox.isChecked()) {
-                            for(int i = 0; i < mEndTimeList.size(); i++) {
-                                setAlarm(getAlarmTimeDest(mSelectedTimeDestination, mEndTimeList.get(i)), getString(R.string.you_are_arriving), mStopList.get(i).toString());
-                            }
-                        }
-                    }
-                    finish();
-
-                } else{
-                    sendToast(getString(R.string.invalid_time));
                 }
+                else {
+                        sendToast(getString(R.string.invalid_departure_alarm));
+                }
+
+                 if(mCurrentTime < mTimeDestination) {
+
+                         if (mTimeSelectedDestination) {
+                             setAlarm(mTimeDestination, getString(R.string.you_are_arriving), mStopList.get(mStopList.size() - 1).toString());
+                             sendToast(getString(R.string.alarm_set));
+                         }
+
+                         /** Set alarm for every stop **/
+                         if (mAlarmEveryStopCheckBox.isChecked()) {
+                             for (int i = 0; i < mEndTimeList.size(); i++) {
+                                 setAlarm(getAlarmTimeDest(mSelectedTimeDestination, mEndTimeList.get(i)), getString(R.string.you_are_arriving), mStopList.get(i).getName());
+                             }
+                         }
+                     }
+                 else
+                     {
+                        sendToast(getString(R.string.invalid_arrival_time));
+                 }
+
+                 finish();
 
                 break;
 
@@ -247,7 +255,6 @@ public class AlarmPreferencesActivity extends AppCompatActivity implements View.
                 break;
             case 3:
                 mAlarmDest = destTime - 300000;
-
                 break;
         }
         return mAlarmDest;
