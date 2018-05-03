@@ -26,9 +26,6 @@ import android.location.Location;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.TabLayout;
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.text.BidiFormatter;
 import android.support.v4.util.Pair;
@@ -50,7 +47,6 @@ import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -91,17 +87,12 @@ import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-
 public class RouteDetailActivity extends BaseListActivity {
     public static final String TAG = "RouteDetailActivity";
 
     public static final String EXTRA_ROUTE = "sthlmtraveling.intent.extra.ROUTE";
     public static final String EXTRA_JOURNEY_QUERY = "sthlmtraveling.intent.action.JOURNEY_QUERY";
     private static final String STATE_LEGS = "sthlmtraveling.intent.state.LEGS";
-    private static SubTripAdapter [] mSubTripAdapterA = new SubTripAdapter[3];
-    private static JourneyQuery mJourneyQueryA [] = new JourneyQuery[3];
-    private static Route[] mRouteA = new Route[3];
-    private static String[] mTimeStringA = new String[3];
 
     private Route mRoute;
     private JourneyQuery mJourneyQuery;
@@ -114,37 +105,11 @@ public class RouteDetailActivity extends BaseListActivity {
     private ApiService mApiService;
     private Monitor mMonitor;
     private View mFooterView;
-    private TabLayout mTabLayout;
-    private TextView mTimeView;
-    private Button mNameView;
 
-
-//Tab functionality by Oskar Hahr
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.route_details_list);
-
-
-        mTabLayout = (this.findViewById(R.id.rDetails_Tab));
-        mTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            private TabLayout.Tab mPrevTab;
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                mNameView.setText(mJourneyQueryA[mTabLayout.getSelectedTabPosition()].destination.toString());
-                updateFooterView(mSubTripAdapterA[mTabLayout.getSelectedTabPosition()].getItem(mSubTripAdapterA[mTabLayout.getSelectedTabPosition()].getCount() - 1));
-                setListAdapter(mSubTripAdapterA[tab.getPosition()]);
-                tripTimeDestinationUpdater();
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-            }
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-
-            }
-        });
 
         registerScreen("Route details");
 
@@ -174,25 +139,16 @@ public class RouteDetailActivity extends BaseListActivity {
         }
 
         TextView timeView = (TextView) headerView.findViewById(R.id.route_date_time);
-        mTimeView = timeView;
-        //changed into a separate function to be able to call it when changing tabs
-        //this is now located in the function tripTimeDestinationUpdater
-        //Oskar Hahr
-        /*
+
         BidiFormatter bidiFormatter = BidiFormatter.getInstance(Locale.getDefault());
-
         String timeStr = getString(R.string.time_to,
-                bidiFormatter.unicodeWrap(String.valueOf(DateTimeUtil.formatDetailedDuration(getResources(), mRoute.getDuration() * 1000))),
+                bidiFormatter.unicodeWrap(String
+                        .valueOf(DateTimeUtil.formatDetailedDuration(getResources(), mRoute.getDuration() * 1000))),
                 bidiFormatter.unicodeWrap(String.valueOf(getLocationName(mJourneyQuery.destination.asPlace()))));
-
         timeView.setText(timeStr);
-        */
-        //tripTimeDestinationUpdater(true);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
             timeView.setTextDirection(View.TEXT_DIRECTION_ANY_RTL);
         }
-        //Unnecessary check, since SMS TICKETS don't exist
-        /*
         if (mRoute.canBuyTicket()) {
 
             View buySmsTicketView = headerView.findViewById(R.id.route_buy_ticket);
@@ -201,8 +157,7 @@ public class RouteDetailActivity extends BaseListActivity {
                 @Override
                 public void onClick(View v) {
                     Analytics.getInstance(RouteDetailActivity.this).event("Ticket", "Click on zone");
-                    TicketDialogFragment fragment = TicketDialogFragment.create(
-                            mRoute.getFare());
+                    TicketDialogFragment fragment = TicketDialogFragment.create(mRoute.getFare());
                     fragment.show(getSupportFragmentManager(), null);
                 }
             });
@@ -210,7 +165,6 @@ public class RouteDetailActivity extends BaseListActivity {
             TextView zoneView = (TextView) headerView.findViewById(R.id.route_zones);
             zoneView.setText(mRoute.getFare().getZones());
         }
-        */
 
         if (adContainer != null) {
             getListView().addHeaderView(adContainer, null, false);
@@ -253,33 +207,6 @@ public class RouteDetailActivity extends BaseListActivity {
             }
         };
     }
-    /**Rotates the information the tabs need to function **/
-    private void updateTabDetails(){
-        mSubTripAdapterA[2] = mSubTripAdapterA[1];
-        mSubTripAdapterA[1] = mSubTripAdapterA[0];
-        mSubTripAdapterA[0] = mSubTripAdapter;
-        mJourneyQueryA[2] = mJourneyQueryA[1];
-        mJourneyQueryA[1] = mJourneyQueryA[0];
-        mJourneyQueryA[0] = mJourneyQuery;
-        mRouteA[2] = mRouteA[1];
-        mRouteA[1] = mRouteA[0];
-        mRouteA[0] = mRoute;
-        mTimeStringA[2] = mTimeStringA[1];
-        mTimeStringA[1] = mTimeStringA[0];
-        mTimeStringA[0] = timeDestinationString();
-    }
-    /**Creates the correct amount of tabs depending on the information in mSubTripAdapterA
-    and sets the text of the tabs to the destination and the trip time **/
-    public void createTabs(){
-        for(int i = 0; i < 3; i++) {
-            if (mSubTripAdapterA[i] == null) {
-                break;
-            }
-            mTabLayout.addTab(mTabLayout.newTab());
-            mTabLayout.getTabAt(i).setText(mTimeStringA[i]);
-        }
-    }
-
 
     void updateStopTimes(IntermediateResponse intermediateResponse) {
         boolean updated = false;
@@ -354,30 +281,31 @@ public class RouteDetailActivity extends BaseListActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.actionbar_item_time:
-                Intent departuresIntent = new Intent(this, DeparturesActivity.class);
-                Site s = Site.toSite(mRoute.fromStop());
-                departuresIntent.putExtra(DeparturesActivity.EXTRA_SITE, s);
-                startActivity(departuresIntent);
-                return true;
-            case R.id.actionbar_item_star:
-                handleStarAction();
-                supportInvalidateOptionsMenu();
-                return true;
-            /** Blenda: **/
-            case R.id.actionbar_item_alarm:
-                Intent intent = new Intent(this, AlarmPreferencesActivity.class);
-                intent.putExtra("ParceableTest", mRoute);
-                startActivity(intent);
-                return true;
-            /***/
+        case R.id.actionbar_item_time:
+            Intent departuresIntent = new Intent(this, DeparturesActivity.class);
+            Site s = Site.toSite(mRoute.fromStop());
+            departuresIntent.putExtra(DeparturesActivity.EXTRA_SITE, s);
+            startActivity(departuresIntent);
+            return true;
+        case R.id.actionbar_item_star:
+            handleStarAction();
+            supportInvalidateOptionsMenu();
+            return true;
+        /** Blenda Fröjdh **/
+        case R.id.actionbar_item_alarm:
+            Intent intent = new Intent(this, AlarmPreferencesActivity.class);
+            intent.putExtra("ParceableTest", mRoute);
+            startActivity(intent);
+            return true;
+        /***/
         }
         return super.onOptionsItemSelected(item);
     }
 
     /**
-     * Helper that returns the my location text representation. If the {@link Location}
-     * is set the accuracy will also be appended.
+     * Helper that returns the my location text representation. If the
+     * {@link Location} is set the accuracy will also be appended.
+     * 
      * @param location the stop
      * @return a text representation of my location
      */
@@ -389,24 +317,6 @@ public class RouteDetailActivity extends BaseListActivity {
             return getText(R.string.my_location);
         }
         return location.getName();
-    }
-
-    private void tripTimeDestinationUpdater(){
-        BidiFormatter bidiFormatter = BidiFormatter.getInstance(Locale.getDefault());
-
-        String timeStr = getString(R.string.time_to,
-                bidiFormatter.unicodeWrap(String.valueOf(DateTimeUtil.formatDetailedDuration(getResources(), mRouteA[mTabLayout.getSelectedTabPosition()].getDuration() * 1000))),
-                bidiFormatter.unicodeWrap(String.valueOf(getLocationName(mJourneyQueryA[mTabLayout.getSelectedTabPosition()].destination.asPlace()))));
-        mTimeView.setText(timeStr);
-        }
-
-    private String timeDestinationString(){
-        BidiFormatter bidiFormatter = BidiFormatter.getInstance(Locale.getDefault());
-
-        String timeStr = getString(R.string.time_to,
-                bidiFormatter.unicodeWrap(String.valueOf(DateTimeUtil.formatDetailedDuration(getResources(), mRoute.getDuration() * 1000))),
-                bidiFormatter.unicodeWrap(String.valueOf(getLocationName(mJourneyQuery.destination.asPlace()))));
-        return timeStr;
     }
 
     @Override
@@ -439,6 +349,7 @@ public class RouteDetailActivity extends BaseListActivity {
 
     /**
      * Called when there is results to display.
+     * 
      * @param route the route details
      */
     public void onRouteDetailsResult(Route route) {
@@ -453,19 +364,13 @@ public class RouteDetailActivity extends BaseListActivity {
     public void showLegs(List<LegViewModel> legs) {
         mSubTripAdapter.setLegs(legs);
         mFooterView = createFooterView(legs);
-        //changing things
         getListView().addFooterView(mFooterView);
         // Add attributions if dealing with a Google result.
         if (mJourneyQuery.destination.getSource() == Site.SOURCE_GOOGLE_PLACES) {
-            View attributionView = getLayoutInflater().inflate(
-                    R.layout.trip_row_attribution, null, false);
+            View attributionView = getLayoutInflater().inflate(R.layout.trip_row_attribution, null, false);
             getListView().addFooterView(attributionView);
         }
-        //Rotates the tabs and displays the new route as the first tab
-        //Oskar Hahr
 
-        updateTabDetails();
-        createTabs();
         setListAdapter(mSubTripAdapter);
 
     }
@@ -483,52 +388,28 @@ public class RouteDetailActivity extends BaseListActivity {
             expectedDepartureTimeView.setText(DateFormat.getTimeFormat(this).format(legViewModel.leg.getEndTimeRt()));
             ViewHelper.setTextColorForTimeView(expectedDepartureTimeView, legViewModel.leg, false);
         } else {
-            departureTimeView.setPaintFlags(departureTimeView.getPaintFlags() & (~ Paint.STRIKE_THRU_TEXT_FLAG));
+            departureTimeView.setPaintFlags(departureTimeView.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
             ViewHelper.setTextColorForTimeView(departureTimeView, legViewModel.leg, false);
             expectedDepartureTimeView.setVisibility(View.GONE);
         }
     }
-
-    void updateFooterView(final LegViewModel legViewModel) {
-
-        TextView departureTimeView = (TextView) mFooterView.findViewById(R.id.trip_departure_time);
-        TextView expectedDepartureTimeView = (TextView) mFooterView.findViewById(R.id.trip_expected_departure_time);
-        departureTimeView.setText(DateFormat.getTimeFormat(this).format(legViewModel.leg.getEndTime()));
-        if (legViewModel.leg.getEndTimeRt() != null && legViewModel.leg.hasDepartureDelay()) {
-            departureTimeView.setPaintFlags(departureTimeView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-            expectedDepartureTimeView.setVisibility(View.VISIBLE);
-            expectedDepartureTimeView.setText(DateFormat.getTimeFormat(this).format(legViewModel.leg.getEndTimeRt()));
-            ViewHelper.setTextColorForTimeView(expectedDepartureTimeView, legViewModel.leg, false);
-        } else {
-            departureTimeView.setPaintFlags(departureTimeView.getPaintFlags() & (~ Paint.STRIKE_THRU_TEXT_FLAG));
-            ViewHelper.setTextColorForTimeView(departureTimeView, legViewModel.leg, false);
-            expectedDepartureTimeView.setVisibility(View.GONE);
-        }
-    }
-
-
 
     private View createFooterView(final List<LegViewModel> legs) {
         int numSubTrips = legs.size();
         final LegViewModel legViewModel = legs.get(numSubTrips - 1);
 
         ViewGroup convertView = (ViewGroup) getLayoutInflater().inflate(R.layout.trip_row_stop_layout, null);
-        mNameView = (Button) convertView.findViewById(R.id.trip_stop_title);
+        Button nameView = (Button) convertView.findViewById(R.id.trip_stop_title);
         if (TravelMode.FOOT.equals(legViewModel.leg.getTravelMode())) {
-            mNameView.setText(getLocationName(mJourneyQuery.destination.asPlace()));
+            nameView.setText(getLocationName(mJourneyQuery.destination.asPlace()));
         } else {
-            mNameView.setText(legViewModel.leg.getTo().getName());
+            nameView.setText(legViewModel.leg.getTo().getName());
         }
-        mNameView.setOnClickListener(new View.OnClickListener() {
+        nameView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /**startActivity(ViewOnMapActivity.createIntent(RouteDetailActivity.this,
-                        mRoute, mJourneyQuery, Site.toSite(legViewModel.leg.getTo())));
-                //changed this function to be able to handle tabs
-                //Oskar Hahr
-                **/
-                startActivity(ViewOnMapActivity.createIntent(RouteDetailActivity.this,
-                        mRouteA[mTabLayout.getSelectedTabPosition()], mJourneyQueryA[mTabLayout.getSelectedTabPosition()], mJourneyQueryA[mTabLayout.getSelectedTabPosition()].destination));
+                startActivity(ViewOnMapActivity.createIntent(RouteDetailActivity.this, mRoute, mJourneyQuery,
+                        Site.toSite(legViewModel.leg.getTo())));
             }
         });
 
@@ -546,7 +427,7 @@ public class RouteDetailActivity extends BaseListActivity {
             expectedDepartureTimeView.setText(DateFormat.getTimeFormat(this).format(legViewModel.leg.getEndTimeRt()));
             ViewHelper.setTextColorForTimeView(expectedDepartureTimeView, legViewModel.leg, false);
         } else {
-            departureTimeView.setPaintFlags(departureTimeView.getPaintFlags() & (~ Paint.STRIKE_THRU_TEXT_FLAG));
+            departureTimeView.setPaintFlags(departureTimeView.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
             ViewHelper.setTextColorForTimeView(departureTimeView, legViewModel.leg, false);
             expectedDepartureTimeView.setVisibility(View.GONE);
         }
@@ -586,11 +467,9 @@ public class RouteDetailActivity extends BaseListActivity {
         public void onClick(View v) {
             Site l = (Site) v.getTag();
             if (l.hasLocation()) {
-                startActivity(ViewOnMapActivity.createIntent(
-                        RouteDetailActivity.this, mRoute, mJourneyQuery, l));
+                startActivity(ViewOnMapActivity.createIntent(RouteDetailActivity.this, mRoute, mJourneyQuery, l));
             } else {
-                Toast.makeText(RouteDetailActivity.this,
-                        "Missing geo data", Toast.LENGTH_LONG).show();
+                Toast.makeText(RouteDetailActivity.this, "Missing geo data", Toast.LENGTH_LONG).show();
             }
         }
     };
@@ -611,23 +490,20 @@ public class RouteDetailActivity extends BaseListActivity {
         String[] selectionArgs = new String[] { json };
         if (isStarredJourney(mJourneyQuery)) {
             values.put(Journeys.STARRED, "0");
-            getContentResolver().update(
-                    uri, values, where, selectionArgs);
+            getContentResolver().update(uri, values, where, selectionArgs);
         } else {
             values.put(Journeys.STARRED, "1");
-            int affectedRows = getContentResolver().update(
-                    uri, values, where, selectionArgs);
+            int affectedRows = getContentResolver().update(uri, values, where, selectionArgs);
             if (affectedRows <= 0) {
                 values.put(Journeys.STARRED, "1");
-                getContentResolver().insert(
-                        Journeys.CONTENT_URI, values);
+                getContentResolver().insert(Journeys.CONTENT_URI, values);
             }
         }
     }
 
-
     /**
-     * A not at all optimized adapter for showing a route based on a list of sub trips.
+     * A not at all optimized adapter for showing a route based on a list of sub
+     * trips.
      */
     private class SubTripAdapter extends ArrayAdapter<LegViewModel> {
         private LayoutInflater mInflater;
@@ -665,15 +541,17 @@ public class RouteDetailActivity extends BaseListActivity {
                 descView.setText(getLocationName(previousLeg.leg.getTo()));
                 TextView arrivalView = (TextView) convertView.findViewById(R.id.trip_intermediate_arrival_time);
                 arrivalView.setText(DateFormat.getTimeFormat(getContext()).format(previousLeg.leg.getEndTime()));
-                TextView expectedArrivalView = (TextView) convertView.findViewById(R.id.trip_intermediate_expected_arrival_time);
+                TextView expectedArrivalView = (TextView) convertView
+                        .findViewById(R.id.trip_intermediate_expected_arrival_time);
 
                 if (previousLeg.leg.getEndTimeRt() != null && previousLeg.leg.hasArrivalDelay()) {
                     arrivalView.setPaintFlags(arrivalView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
                     expectedArrivalView.setVisibility(View.VISIBLE);
-                    expectedArrivalView.setText(DateFormat.getTimeFormat(getContext()).format(previousLeg.leg.getEndTimeRt()));
+                    expectedArrivalView
+                            .setText(DateFormat.getTimeFormat(getContext()).format(previousLeg.leg.getEndTimeRt()));
                     ViewHelper.setTextColorForTimeView(expectedArrivalView, previousLeg.leg, false);
                 } else {
-                    arrivalView.setPaintFlags(arrivalView.getPaintFlags() & (~ Paint.STRIKE_THRU_TEXT_FLAG));
+                    arrivalView.setPaintFlags(arrivalView.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
                     ViewHelper.setTextColorForTimeView(arrivalView, previousLeg.leg, false);
                     expectedArrivalView.setVisibility(View.GONE);
                 }
@@ -685,14 +563,14 @@ public class RouteDetailActivity extends BaseListActivity {
 
             Button nameView = (Button) convertView.findViewById(R.id.trip_stop_title);
             boolean shouldUseOriginName = isFirst && TravelMode.FOOT.equals(legViewModel.leg.getTravelMode());
-            nameView.setText(shouldUseOriginName ?
-                    getLocationName(mJourneyQuery.origin.asPlace()) : getLocationName(legViewModel.leg.getFrom()));
+            nameView.setText(shouldUseOriginName ? getLocationName(mJourneyQuery.origin.asPlace())
+                    : getLocationName(legViewModel.leg.getFrom()));
             nameView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (legViewModel.leg.getFrom().hasLocation()) {
-                        startActivity(ViewOnMapActivity.createIntent(getContext(),
-                                mRoute, mJourneyQuery, Site.toSite(legViewModel.leg.getFrom())));
+                        startActivity(ViewOnMapActivity.createIntent(getContext(), mRoute, mJourneyQuery,
+                                Site.toSite(legViewModel.leg.getFrom())));
                     } else {
                         Toast.makeText(getContext(), "Missing geo data", Toast.LENGTH_LONG).show();
                     }
@@ -706,10 +584,11 @@ public class RouteDetailActivity extends BaseListActivity {
             if (legViewModel.leg.getStartTimeRt() != null && legViewModel.leg.hasDepartureDelay()) {
                 departureTimeView.setPaintFlags(departureTimeView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
                 expectedDepartureTimeView.setVisibility(View.VISIBLE);
-                expectedDepartureTimeView.setText(DateFormat.getTimeFormat(getContext()).format(legViewModel.leg.getStartTimeRt()));
+                expectedDepartureTimeView
+                        .setText(DateFormat.getTimeFormat(getContext()).format(legViewModel.leg.getStartTimeRt()));
                 ViewHelper.setTextColorForTimeView(expectedDepartureTimeView, legViewModel.leg, true);
             } else {
-                departureTimeView.setPaintFlags(departureTimeView.getPaintFlags() & (~ Paint.STRIKE_THRU_TEXT_FLAG));
+                departureTimeView.setPaintFlags(departureTimeView.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
                 ViewHelper.setTextColorForTimeView(departureTimeView, legViewModel.leg, true);
                 expectedDepartureTimeView.setVisibility(View.GONE);
             }
@@ -724,7 +603,8 @@ public class RouteDetailActivity extends BaseListActivity {
             if (RtlUtils.isRtl(Locale.getDefault())) {
                 ViewCompat.setScaleX(descriptionIcon, -1f);
             }
-            //descriptionView.setCompoundDrawablesWithIntrinsicBounds(subTrip.transport.getImageResource(), 0, 0, 0);
+            // descriptionView.setCompoundDrawablesWithIntrinsicBounds(subTrip.transport.getImageResource(),
+            // 0, 0, 0);
 
             inflateMessages(legViewModel, convertView);
             inflateIntermediate(legViewModel, position, convertView);
@@ -733,13 +613,15 @@ public class RouteDetailActivity extends BaseListActivity {
         }
 
         private void inflateIntermediate(final LegViewModel legViewModel, final int position, final View convertView) {
-            final ToggleButton btnIntermediateStops = (ToggleButton) convertView.findViewById(R.id.trip_btn_intermediate_stops);
+            final ToggleButton btnIntermediateStops = (ToggleButton) convertView
+                    .findViewById(R.id.trip_btn_intermediate_stops);
             if (TravelMode.FOOT.equals(legViewModel.leg.getTravelMode())) {
                 btnIntermediateStops.setVisibility(View.GONE);
                 return;
             }
 
-            CharSequence durationText = DateTimeUtil.formatDetailedDuration(getResources(), legViewModel.leg.getDuration() * 1000);
+            CharSequence durationText = DateTimeUtil.formatDetailedDuration(getResources(),
+                    legViewModel.leg.getDuration() * 1000);
             btnIntermediateStops.setText(durationText);
             btnIntermediateStops.setTextOn(durationText);
             btnIntermediateStops.setTextOff(durationText);
@@ -748,9 +630,11 @@ public class RouteDetailActivity extends BaseListActivity {
                 btnIntermediateStops.setCompoundDrawables(null, null, null, null);
             } else {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-                    btnIntermediateStops.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.expander_intermediate_stops, 0, 0, 0);
+                    btnIntermediateStops.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                            R.drawable.expander_intermediate_stops, 0, 0, 0);
                 } else {
-                    btnIntermediateStops.setCompoundDrawablesWithIntrinsicBounds(R.drawable.expander_intermediate_stops, 0, 0, 0);
+                    btnIntermediateStops.setCompoundDrawablesWithIntrinsicBounds(R.drawable.expander_intermediate_stops,
+                            0, 0, 0);
                 }
             }
 
@@ -766,8 +650,7 @@ public class RouteDetailActivity extends BaseListActivity {
 
                     if (isChecked) {
                         List<IntermediateStop> intermediateStops = legViewModel.leg.getIntermediateStops();
-                        if (stopsLayout.getChildCount() == 0
-                                && intermediateStops.isEmpty() && !mIsFetchingSubTrips) {
+                        if (stopsLayout.getChildCount() == 0 && intermediateStops.isEmpty() && !mIsFetchingSubTrips) {
                             mIsFetchingSubTrips = true;
 
                             List<String> references = new ArrayList<>();
@@ -775,9 +658,11 @@ public class RouteDetailActivity extends BaseListActivity {
                             mApiService.getIntermediateStops(references, new Callback<IntermediateResponse>() {
                                 @Override
                                 public void success(IntermediateResponse intermediateResponse, Response response) {
-                                    List<IntermediateStop> intermediateStops = intermediateResponse.getStops(legViewModel.leg.getDetailRef());
+                                    List<IntermediateStop> intermediateStops = intermediateResponse
+                                            .getStops(legViewModel.leg.getDetailRef());
                                     if (intermediateStops.isEmpty()) {
-                                        stopsLayout.addView(inflateText(getText(R.string.no_intermediate_stops), stopsLayout));
+                                        stopsLayout.addView(
+                                                inflateText(getText(R.string.no_intermediate_stops), stopsLayout));
                                     } else {
                                         legViewModel.leg.setIntermediateStops(intermediateStops);
                                         for (IntermediateStop is : intermediateStops) {
@@ -794,8 +679,7 @@ public class RouteDetailActivity extends BaseListActivity {
                                     mIsFetchingSubTrips = false;
                                 }
                             });
-                        } else if (stopsLayout.getChildCount() == 0
-                                && !intermediateStops.isEmpty()) {
+                        } else if (stopsLayout.getChildCount() == 0 && !intermediateStops.isEmpty()) {
                             for (IntermediateStop is : intermediateStops) {
                                 if (legViewModel.leg.hasStopIndex(is.getLocation().getStopIndex())) {
                                     stopsLayout.addView(inflateIntermediateStop(is, stopsLayout));
@@ -836,10 +720,8 @@ public class RouteDetailActivity extends BaseListActivity {
                 if (stop.getTimeRt() != null && stop.hasDelay()) {
                     arrivalView.setPaintFlags(arrivalView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
                     expectedArrivalView.setVisibility(View.VISIBLE);
-                    expectedArrivalView.setText(DateFormat.getTimeFormat(getContext()).format(
-                            stop.getTimeRt()));
-                    expectedArrivalView.setTextColor(ContextCompat.getColor(
-                            expectedArrivalView.getContext(),
+                    expectedArrivalView.setText(DateFormat.getTimeFormat(getContext()).format(stop.getTimeRt()));
+                    expectedArrivalView.setTextColor(ContextCompat.getColor(expectedArrivalView.getContext(),
                             ViewHelper.getTextColorByRealtimeState(delay.second)));
                 } else {
                     arrivalView.setPaintFlags(arrivalView.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
@@ -880,13 +762,11 @@ public class RouteDetailActivity extends BaseListActivity {
             if (TravelMode.FOOT.equals(legViewModel.leg.getTravelMode())) {
                 description = getString(R.string.distance_in_meter, legViewModel.leg.getDistance());
             } else if (TravelMode.BOAT.equals(legViewModel.leg.getTravelMode())) {
-                description = getString(R.string.trip_description_normal,
-                        legViewModel.leg.getRouteName(),
+                description = getString(R.string.trip_description_normal, legViewModel.leg.getRouteName(),
                         legViewModel.leg.getHeadsing().getName());
                 if (!TextUtils.isEmpty(legViewModel.leg.getRouteShortName())) {
                     RoundedBackgroundSpan roundedBackgroundSpan = new RoundedBackgroundSpan(
-                            LegUtil.getColor(getContext(), legViewModel.leg),
-                            Color.WHITE,
+                            LegUtil.getColor(getContext(), legViewModel.leg), Color.WHITE,
                             ViewHelper.dipsToPix(getContext().getResources(), 4));
                     Pattern pattern = Pattern.compile(legViewModel.leg.getRouteShortName());
                     description = SpanUtils.createSpannable(description, pattern, roundedBackgroundSpan);
@@ -895,12 +775,10 @@ public class RouteDetailActivity extends BaseListActivity {
                 description = getString(R.string.distance_in_meter, legViewModel.leg.getDistance());
             } else {
                 String routeName = LegUtil.getRouteName(legViewModel.leg, true);
-                description = getString(R.string.trip_description_normal,
-                        routeName,
+                description = getString(R.string.trip_description_normal, routeName,
                         legViewModel.leg.getHeadsing().getName());
                 RoundedBackgroundSpan roundedBackgroundSpan = new RoundedBackgroundSpan(
-                        LegUtil.getColor(getContext(), legViewModel.leg),
-                        Color.WHITE,
+                        LegUtil.getColor(getContext(), legViewModel.leg), Color.WHITE,
                         ViewHelper.dipsToPix(getContext().getResources(), 4));
                 Pattern pattern = Pattern.compile(routeName);
                 description = SpanUtils.createSpannable(description, pattern, roundedBackgroundSpan);

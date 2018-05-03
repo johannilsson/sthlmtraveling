@@ -157,7 +157,7 @@ public class AlarmPreferencesActivity extends AppCompatActivity implements View.
                     }
                 }
                 else {
-                        sendToast(getString(R.string.invalid_departure_alarm));
+//                        sendToast(getString(R.string.invalid_departure_alarm));
                 }
 
                  if(mCurrentTime < mTimeDestination) {
@@ -176,7 +176,7 @@ public class AlarmPreferencesActivity extends AppCompatActivity implements View.
                      }
                  else
                      {
-                        sendToast(getString(R.string.invalid_arrival_time));
+//                        sendToast(getString(R.string.invalid_arrival_time));
                  }
 
                  finish();
