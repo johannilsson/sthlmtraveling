@@ -22,7 +22,6 @@ import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.database.Cursor;
 import android.location.Location;
 import android.net.Uri;
@@ -30,9 +29,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
-import android.support.design.widget.TabLayout;
 import android.support.v4.content.ContextCompat;
-import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.SparseBooleanArray;
@@ -70,7 +67,6 @@ import com.markupartist.sthlmtraveling.utils.LocationManager;
 import com.markupartist.sthlmtraveling.utils.Monitor;
 import com.markupartist.sthlmtraveling.utils.ViewHelper;
 
-
 import org.json.JSONException;
 
 import java.text.DateFormat;
@@ -102,7 +98,7 @@ public class RoutesActivity extends BaseListActivity implements
     static final String EXTRA_JOURNEY_QUERY = "sthlmtraveling.intent.action.JOURNEY_QUERY";
 
     private final String TAG = "RoutesActivity";
-    private static final int TAB_CAP = 10;
+
     private static final int DIALOG_ILLEGAL_PARAMETERS = 0;
 
     protected static final int REQUEST_CODE_CHANGE_TIME = 0;
@@ -129,15 +125,6 @@ public class RoutesActivity extends BaseListActivity implements
 
     private Bundle mSavedState;
     private Button mTimeAndDate;
-
-    /**Made by Jakob & Didrik
-     * Used for the tab layout
-     */
-    private TabLayout mTabLayout;
-
-    private static TabWrap  mTabWraps[] = new TabWrap[TAB_CAP];
-    private Menu mMenuAbove;
-
     private View mEmptyView;
 
     // variables that control the Action Bar auto hide behavior (aka "quick recall")
@@ -153,16 +140,12 @@ public class RoutesActivity extends BaseListActivity implements
     private FrameLayout mRouteAlternativesStub;
     private Router mRouter;
     private Monitor mMonitor;
-    private Router.Callback mPlanCallback;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //Locked orientation due to landscape not displaying correctly
-        //Oskar Hahr
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        setContentView(R.layout.routes_list);
 
+        setContentView(R.layout.routes_list);
 
         registerScreen("Routes");
 
@@ -201,36 +184,10 @@ public class RoutesActivity extends BaseListActivity implements
         MyApplication app = MyApplication.get(this);
         mRouter = new Router(app.getApiService());
 
-
-        /** Made by Jakob & Didrik
-         * Init tabs // onclick for tabs
-         */
-        mTabLayout = findViewById(R.id.Tab);
-        mTabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
-        mTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                swapTab();
-                changeTabColor(tab, true);
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-                changeTabColor(tab, false);
-
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-                // while reselect the Tab
-
-            }
-        });
-
         initActionBar();
         updateStartAndEndPointViews(mJourneyQuery);
         updateJourneyHistory();
-        initListView(true);
+        initListView();
         initAutoHideHeader(getListView());
         maybeRequestLocationUpdate();
 
@@ -239,16 +196,11 @@ public class RoutesActivity extends BaseListActivity implements
             public void handleUpdate() {
                 if (mTransitPlan != null
                         && mTransitPlan.shouldRefresh(System.currentTimeMillis())) {
-                    mRouter.refreshTransit(mJourneyQuery, mTabWraps[0].callback);
+                    mRouter.refreshTransit(mJourneyQuery, mPlanRefreshCallback);
                 }
             }
         };
-
-        //moved these 2 rows from onResume (wont update routes onresume cuz it interferes with tabs)
-        initRoutes(mJourneyQuery);
-        mMonitor.onStart();
     }
-
 
     @Override
     public void onLocationPermissionGranted() {
@@ -296,7 +248,6 @@ public class RoutesActivity extends BaseListActivity implements
 
     public void updateRouteAlternatives(Plan plan) {
         mPlan = plan;
-        selectedTab().plan = mPlan;
 
         if (mRouteAlternativesView == null) {
             mRouteAlternativesView = LayoutInflater.from(RoutesActivity.this).inflate(
@@ -350,10 +301,6 @@ public class RoutesActivity extends BaseListActivity implements
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Made by Jakob & Didrik
-        // adds a pointer to the menu object to make it accessable
-        mMenuAbove = menu;
-
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.actionbar_routes, menu);
         return true;
@@ -361,7 +308,6 @@ public class RoutesActivity extends BaseListActivity implements
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-
         MenuItem starItem = menu.findItem(R.id.actionbar_item_star);
         if (isStarredJourney(mJourneyQuery)) {
             starItem.setIcon(R.drawable.ic_action_star_on);
@@ -387,7 +333,6 @@ public class RoutesActivity extends BaseListActivity implements
         switch (item.getItemId()) {
             case R.id.actionbar_item_reverse:
                 reverseJourneyQuery();
-                updateTabs();
                 return true;
             case R.id.actionbar_item_star:
                 handleStarAction();
@@ -488,6 +433,8 @@ public class RoutesActivity extends BaseListActivity implements
     @Override
     protected void onResume() {
         super.onResume();
+        initRoutes(mJourneyQuery);
+        mMonitor.onStart();
     }
 
     @Override
@@ -540,18 +487,8 @@ public class RoutesActivity extends BaseListActivity implements
         }
     }
 
-
-    private void initListView( boolean shouldAdd) {
-        //Made by Jakob & Didrik
-        //
-        //Makes sure the RouteAdapters are only created if needed
-        //Updates the data displayed in tabs when listView is init.
-        if(shouldAdd) {
-            mRouteAdapter = new RoutesAdapter(this, new ArrayList<Route>());
-            addTab();
-        }
-        updateTabs();
-
+    private void initListView() {
+        mRouteAdapter = new RoutesAdapter(this, new ArrayList<Route>());
         // Faked stub, but get the job done.
         mRouteAlternativesStub = (FrameLayout) LayoutInflater.from(RoutesActivity.this)
                 .inflate(R.layout.routes_list_header, getListView(), false);
@@ -583,7 +520,7 @@ public class RoutesActivity extends BaseListActivity implements
                 break;
         }
     }
-/*
+
     private Router.Callback mPlanRefreshCallback = new Router.Callback() {
         @Override
         public void onPlan(Plan plan) {
@@ -608,7 +545,7 @@ public class RoutesActivity extends BaseListActivity implements
             mEmptyView.setVisibility(View.GONE);
             showErrorForPublicTransport(getString(R.string.network_problem_message));
         }
-    };*/
+    };
 
     public void showRoutes() {
         ViewHelper.crossfade(mEmptyView, getListView());
@@ -622,9 +559,7 @@ public class RoutesActivity extends BaseListActivity implements
         mJourneyQuery.hasPromotions = true;
         mJourneyQuery.promotionNetwork = 1;
 
-        if(mRouteAdapter != null)
-
-            mRouteAdapter.refill(plan.getRoutes());
+        mRouteAdapter.refill(plan.getRoutes());
         showRoutes();
         supportInvalidateOptionsMenu();
         dismissProgress();
@@ -729,7 +664,6 @@ public class RoutesActivity extends BaseListActivity implements
                     Log.d(TAG, "Change time activity cancelled.");
                 } else {
                     mJourneyQuery = data.getParcelableExtra(EXTRA_JOURNEY_QUERY);
-                    selectedTab().jq = mJourneyQuery;
 
                     Log.e(TAG, "JQ: " + mJourneyQuery.toString());
 
@@ -851,138 +785,6 @@ public class RoutesActivity extends BaseListActivity implements
                 }
                 break;
         }
-    }
-
-    /** addTab - Made by Jakob & Didrik
-     * Rotates the pointers to match the data with corresponding tab and
-     * adds the new "tab" at index 0 and "removes/replaces" the rightmost tab
-     */
-    private void addTab() {
-        for (int i = TAB_CAP - 1; i > 0; i--)
-            mTabWraps[i] = mTabWraps[i - 1];
-        mTabWraps[0] = new TabWrap(mJourneyQuery, mRouteAdapter, mTransitPlan, mPlan);
-
-
-        for (int i = 0; i < TAB_CAP; i++) {
-            if (mTabWraps[i] == null)
-                break;
-            TabLayout.Tab tab = mTabLayout.newTab();
-            View layout = LayoutInflater.from(this).inflate(R.layout.tab_layout, null);
-            Button button = (Button) layout.findViewById(R.id.tabClose);
-            button.setTag("btnClose"+i);
-
-            if(mTabWraps[1] == null)
-                button.setVisibility(mEmptyView.GONE);
-            button.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    for(int i = 0; i < mTabLayout.getTabCount(); i++)
-                        if(mTabLayout.getTabAt(i).getCustomView().findViewById(R.id.tabClose) == v) {
-                            removeTab(i);
-                            break;
-                        }
-                }
-                });
-                tab.setCustomView(layout);
-                mTabLayout.addTab(tab);
-            }
-    }
-
-    private void removeTab(int index){
-        if(mTabLayout.getTabCount() > 1) {
-            for (int i = index; i < mTabLayout.getTabCount() - 1; i++) {
-                mTabWraps[i] = mTabWraps[i + 1];
-
-            }
-            mTabWraps[mTabLayout.getTabCount() - 1] = null;
-            mTabLayout.removeTabAt(index);
-            updateTabs();
-        }
-
-
-    }
-
-    /** swapTab - Made by Jakob & Didrik
-     * updates the global pointers to the current data which is shown in the current tab
-     *
-     */
-    private void swapTab(){
-        mJourneyQuery = selectedTab().jq;
-        mRouteAdapter = selectedTab().ra;
-        mTransitPlan  = selectedTab().t_plan;
-        mPlan         = selectedTab().plan;
-        mPlanCallback = selectedTab().callback;
-        initListView(false);
-    }
-
-    /** updateStar - Made by Jakob & Didrik
-     * Makes sure the graphics of the star/favorite icon is updated to display
-     * the right graphics corresponding to the current tab shown
-     *
-     */
-    private void updateStar(){
-        if(mMenuAbove != null) {
-            MenuItem starItem = mMenuAbove.findItem(R.id.actionbar_item_star);
-            if (isStarredJourney(mJourneyQuery)) {
-                starItem.setIcon(R.drawable.ic_action_star_on);
-                ViewHelper.tintIcon(getResources(), starItem.getIcon());
-            } else {
-                starItem.setIcon(R.drawable.ic_action_star_off);
-                ViewHelper.tintIcon(getResources(), starItem.getIcon());
-            }
-        }
-    }
-
-    /** updateTabs - Made by Jakob, Didrik & Oskar Hahr
-     * updates the graphically shown data to correspond to the underlying data in
-     * the current tab
-     *
-     */
-    private void updateTabs(){
-        if(mTabWraps[1] == null)
-            mTabLayout.getTabAt(0).getCustomView().findViewById(R.id.tabClose).setVisibility(View.GONE);
-        updateStar();
-        updateStartAndEndPointViews(mJourneyQuery);
-        updateTabText();
-
-        //update search time when switching tab
-        mTimeAndDate.setText(buildDateTimeString());
-
-        //update alternative route journey-time when switching  tab
-        if(mRouteAlternativesView != null) {
-            TextView footDurationText = (TextView) mRouteAlternativesView.findViewById(R.id.route_foot_description);
-            TextView bikeDurationText = (TextView) mRouteAlternativesView.findViewById(R.id.route_bike_description);
-            TextView carDurationText = (TextView) mRouteAlternativesView.findViewById(R.id.route_car_description);
-            for (Route route : selectedTab().plan.getRoutes()) {
-                switch (route.getMode()) {
-                    case "foot":
-                        footDurationText.setText(DateTimeUtil.formatDetailedDuration(getResources(),
-                                route.getDuration() * 1000));
-                        break;
-                    case "bike":
-                        bikeDurationText.setText(DateTimeUtil.formatDetailedDuration(getResources(),
-                                route.getDuration() * 1000));
-                        break;
-                    case "car":
-                        carDurationText.setText(DateTimeUtil.formatDetailedDuration(getResources(),
-                                route.getDuration() * 1000));
-                        break;
-                }
-            }
-        }
-    }
-
-    /** selectedTab - Made by Jakob & Didrik
-     * Returns the current tab
-     * @return The currently selected tab as a TabWrap object
-     *
-     */
-
-    private TabWrap selectedTab(){
-        TabWrap ret = mTabWraps[mTabLayout.getSelectedTabPosition()];
-        if(ret == null)
-            ret = new TabWrap();
-        return ret;
     }
 
     /**
@@ -1129,7 +931,6 @@ public class RoutesActivity extends BaseListActivity implements
         return isStarred;
     }
 
-
     private void handleStarAction() {
         String json;
         try {
@@ -1217,82 +1018,6 @@ public class RoutesActivity extends BaseListActivity implements
 
     }
 
-    /** TabWrap - Made by Didrik
-     * Acts as object wrapper and gathers the different data objects and makes
-     * them more manageable.
-     *
-     */
-    private class TabWrap{
-        JourneyQuery jq;
-        RoutesAdapter ra;
-        Plan t_plan;
-        Plan plan;
-        public TabWrap(){
-            jq = null; ra = null; t_plan = null; plan = null;
-        }
-        public TabWrap(JourneyQuery jq, RoutesAdapter ra, Plan t_plan, Plan plan){
-            this.jq = jq;
-            this.ra = ra;
-            this.t_plan = t_plan;
-            this.plan = plan;
-        }
-        Router.Callback callback = new Router.Callback() {
-            @Override
-            public void onPlan(Plan plan) {
-                dismissProgress();
-                if(!plan.hasErrors("transit"))
-                    updateWrapData(plan);
-            }
-
-            @Override
-            public void onPlanError(JourneyQuery journeyQuery, String errorCode) {
-                Log.w(TAG, "Failed to reload routes.");
-            }
-        };
-
-
-        private void updateWrapData(Plan plan) {
-            t_plan = plan;
-            jq.ident = plan.getPaginateRef();
-            jq.hasPromotions = true;
-            jq.promotionNetwork = 1;
-
-            if(ra != null)
-
-                ra.refill(plan.getRoutes());
-            showRoutes();
-            supportInvalidateOptionsMenu();
-            dismissProgress();
-        }
-    }
-    /** Written by Oskar Hahr
-     * The function is used to update the displayed colour of the tabs when selected/unselected **/
-    private void changeTabColor(TabLayout.Tab tab, boolean sel){
-        if (sel)
-        ((TextView)tab.getCustomView().findViewById(R.id.tabText)).setTextColor(getResources().getColor(R.color.accent));
-        else
-            if (tab.getCustomView() != null)
-            ((TextView)tab.getCustomView().findViewById(R.id.tabText)).setTextColor(getResources().getColor(R.color.primary_light));
-    }
-    /**Written by Oskar Hahr and Didrik
-     * Updates the text of the tabs **/
-    private void updateTabText(){
-        for(int i = 0; i < mTabLayout.getTabCount(); i ++) {
-
-            String origin = mTabWraps[i].jq.origin.getName().replace("MY_LOCATION", "My location");
-            if (origin.length() > 17)
-                origin = origin.substring(0,16) + "...";
-
-            String destination = mTabWraps[i].jq.destination.getName().replace("MY_LOCATION", "My location");;
-            if(destination.length() > 17)
-                destination = destination.substring(0,16) + "...";
-
-            ((TextView) mTabLayout.getTabAt(i).getCustomView().findViewById(R.id.tabText)).setText(Html.fromHtml("<b> " +
-                    origin
-                    + "</b><br> "
-                    + destination));
-        }
-    }
     private static class RoutesAdapter extends BaseAdapter {
 
         public static final int TYPE_GET_EARLIER = 0;

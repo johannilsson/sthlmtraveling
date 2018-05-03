@@ -26,16 +26,6 @@
         android:title="@string/sms_ticket_label"
         android:visible="false"
         />
-
-    // Kom:
-    <item
-        android:id="@+id/actionbar_item_alarm"
-        android:icon="@drawable/ic_menu_clock"
-        android:title="@string/departure_alarm"
-        app:showAsAction="always"
-        />
-    //
-
     <item
         android:id="@+id/actionbar_item_time"
         android:icon="@drawable/ic_action_time"

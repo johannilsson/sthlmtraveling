@@ -177,8 +177,6 @@ public class ViewOnMapActivity extends BaseFragmentActivity implements OnMapRead
                 toggleMapType();
             }
         });
-
-
     }
 
     public void toggleMapType(){

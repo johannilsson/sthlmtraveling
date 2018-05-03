@@ -1,254 +1,246 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="com.markupartist.sthlmtraveling"
-    android:installLocation="auto">
-
-    <uses-sdk tools:overrideLibrary="android.support.customtabs,com.widespace" />
-
-    // Kom:
-    <uses-permission android:name="android.permission.VIBRATE"/>
-    //
+          xmlns:tools="http://schemas.android.com/tools"
+          package="com.markupartist.sthlmtraveling"
+          android:installLocation="auto"
+    >
 
     <supports-screens
-        android:anyDensity="true"
         android:largeScreens="true"
         android:normalScreens="true"
-        android:smallScreens="true" />
-
+        android:smallScreens="true"
+        android:anyDensity="true"/>
     <uses-feature
         android:glEsVersion="0x00020000"
-        android:required="true" />
+        android:required="true"/>
 
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission
-        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
-        android:maxSdkVersion="22" />
+    <uses-sdk tools:overrideLibrary="android.support.customtabs,com.widespace"/>
+
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="22"/>
 
     <application
-        android:name=".MyApplication"
-        android:allowBackup="true"
-        android:hardwareAccelerated="true"
         android:icon="@drawable/icon"
+        android:allowBackup="true"
         android:label="@string/app_name"
-        android:supportsRtl="true">
+        android:name=".MyApplication"
+        android:supportsRtl="true"
+        android:hardwareAccelerated="true"
+        >
         <meta-data
             android:name="com.google.android.gms.version"
-            android:value="@integer/google_play_services_version" />
-
+            android:value="@integer/google_play_services_version"/>
         <activity
             android:name=".StartActivity"
-            android:configChanges="locale|orientation"
             android:label="@string/app_name"
+            android:configChanges="locale|orientation"
+            android:windowSoftInputMode="adjustResize"
             android:theme="@style/Theme.SthlmTraveling"
-            android:windowSoftInputMode="adjustResize">
+            >
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-
         <activity-alias
             android:name=".SearchActivity"
-            android:configChanges="locale"
             android:targetActivity=".StartActivity"
-            android:theme="@style/Theme.SthlmTraveling.NoActionBar">
+            android:configChanges="locale"
+            android:theme="@style/Theme.SthlmTraveling.NoActionBar"
+            >
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.MAIN"/>
             </intent-filter>
         </activity-alias>
-
         <activity
             android:name=".PlannerFragmentActivity"
-            android:configChanges="locale|orientation"
             android:label="@string/search_label"
-            android:theme="@style/Theme.SthlmTraveling"
-            android:windowSoftInputMode="adjustPan" />
-        <!--
- Alias activity used to create shortcuts on Home. The alias is used
-             simply to have a different label.
-        -->
-        <activity-alias
-            android:name=".SearchShortcutActivity"
             android:configChanges="locale|orientation"
-            android:label="@string/activity_create_shortcut"
-            android:targetActivity=".PlannerFragmentActivity"
+            android:windowSoftInputMode="adjustPan"
             android:theme="@style/Theme.SthlmTraveling"
-            android:windowSoftInputMode="adjustResize">
+            />
+        <!-- Alias activity used to create shortcuts on Home. The alias is used
+             simply to have a different label. -->
+        <activity-alias
+            android:name="SearchShortcutActivity"
+            android:targetActivity="PlannerFragmentActivity"
+            android:label="@string/activity_create_shortcut"
+            android:windowSoftInputMode="adjustResize"
+            android:configChanges="locale|orientation"
+            android:theme="@style/Theme.SthlmTraveling"
+            >
             <intent-filter>
-                <action android:name="android.intent.action.CREATE_SHORTCUT" />
-
-                <category android:name="android.intent.category.DEFAULT" />
+                <action android:name="android.intent.action.CREATE_SHORTCUT"/>
+                <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity-alias>
-
         <activity
             android:name=".RoutesActivity"
-            android:configChanges="locale|orientation"
             android:label="@string/routes_label"
-            android:theme="@style/Theme.SthlmTraveling">
+            android:configChanges="locale|orientation"
+            android:theme="@style/Theme.SthlmTraveling"
+            >
             <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
                 <data
-                    android:host="routes"
-                    android:scheme="journeyplanner" />
+                    android:scheme="journeyplanner"
+                    android:host="routes"/>
             </intent-filter>
         </activity>
         <activity
             android:name=".DeviationsActivity"
-            android:configChanges="locale|orientation"
             android:label="@string/deviations_label"
+            android:configChanges="locale|orientation"
             android:theme="@style/Theme.SthlmTraveling">
             <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <action android:name="com.markupartist.sthlmtraveling.action.DEVIATION_FILTER" />
+                <action android:name="android.intent.action.VIEW"/>
+                <action android:name="com.markupartist.sthlmtraveling.action.DEVIATION_FILTER"/>
 
-                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
         <activity
             android:name=".DeviationDetailActivity"
-            android:configChanges="locale"
             android:label="@string/deviations_label"
+            android:configChanges="locale"
             android:theme="@style/Theme.SthlmTraveling">
             <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
                 <data
-                    android:host="deviations"
-                    android:scheme="journeyplanner" />
+                    android:scheme="journeyplanner"
+                    android:host="deviations"/>
             </intent-filter>
         </activity>
         <activity
             android:name=".RouteDetailActivity"
-            android:configChanges="locale"
             android:label="@string/route_details_label"
-            android:theme="@style/Theme.SthlmTraveling" />
+            android:configChanges="locale"
+            android:theme="@style/Theme.SthlmTraveling"
+            />
         <activity
             android:name=".ChangeRouteTimeActivity"
-            android:configChanges="locale"
             android:label="@string/change_date_and_time"
-            android:theme="@style/Theme.SthlmTraveling" />
+            android:configChanges="locale"
+            android:theme="@style/Theme.SthlmTraveling"/>
         <activity
             android:name=".PointOnMapActivity"
-            android:configChanges="locale|orientation"
             android:label="@string/point_on_map"
-            android:theme="@style/Theme.SthlmTraveling" />
+            android:theme="@style/Theme.SthlmTraveling"
+            android:configChanges="locale|orientation"/>
         <activity
             android:name=".ViewOnMapActivity"
-            android:configChanges="locale|orientation"
             android:label="@string/stop_label"
-            android:theme="@style/Theme.SthlmTraveling" />
+            android:configChanges="locale|orientation"
+            android:theme="@style/Theme.SthlmTraveling"
+            />
         <activity
             android:name=".SearchDeparturesFragmentActivity"
-            android:configChanges="locale|orientation"
             android:label="@string/departures"
-            android:theme="@style/Theme.SthlmTraveling" />
-
+            android:configChanges="locale|orientation"
+            android:theme="@style/Theme.SthlmTraveling"
+            />
+        <activity
+            android:name=".PlaceSearchActivity"
+            android:label="@string/app_name"
+            android:configChanges="locale|orientation"
+            android:theme="@style/Theme.SthlmTraveling.NoActionBar"
+            android:windowSoftInputMode="adjustResize"
+            />
         <activity-alias
-            android:name=".CreateDepartureShortcutActivity"
-            android:configChanges="locale"
+            android:name="CreateDepartureShortcutActivity"
+            android:targetActivity="SearchDeparturesFragmentActivity"
             android:label="@string/activity_create_departure_shortcut"
-            android:targetActivity=".SearchDeparturesFragmentActivity"
-            android:theme="@style/Theme.SthlmTraveling">
+            android:configChanges="locale"
+            android:theme="@style/Theme.SthlmTraveling"
+            >
             <intent-filter>
-                <action android:name="android.intent.action.CREATE_SHORTCUT" />
-
-                <category android:name="android.intent.category.DEFAULT" />
+                <action android:name="android.intent.action.CREATE_SHORTCUT"/>
+                <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity-alias>
 
         <activity
-            android:name=".PlaceSearchActivity"
-            android:configChanges="locale|orientation"
-            android:label="@string/app_name"
-            android:theme="@style/Theme.SthlmTraveling.NoActionBar"
-            android:windowSoftInputMode="adjustResize" />
-        <activity
             android:name=".DeparturesActivity"
-            android:configChanges="locale|orientation|screenSize"
             android:label="@string/departures"
+            android:configChanges="locale|orientation|screenSize"
             android:theme="@style/Theme.SthlmTraveling.NoActionBar">
             <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
+
         <activity
             android:name=".NearbyActivity"
-            android:configChanges="locale|orientation"
             android:label="@string/nearby_stops"
+            android:configChanges="locale|orientation"
             android:theme="@style/Theme.SthlmTraveling">
             <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
 
         <activity-alias
-            android:name=".NearbyShortcutActivity"
-            android:configChanges="locale"
+            android:name="NearbyShortcutActivity"
+            android:targetActivity="NearbyActivity"
             android:label="@string/nearby"
-            android:targetActivity=".NearbyActivity"
-            android:theme="@style/Theme.SthlmTraveling">
+            android:configChanges="locale"
+            android:theme="@style/Theme.SthlmTraveling"
+            >
             <intent-filter>
-                <action android:name="android.intent.action.CREATE_SHORTCUT" />
-
-                <category android:name="android.intent.category.DEFAULT" />
+                <action android:name="android.intent.action.CREATE_SHORTCUT"/>
+                <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity-alias>
 
         <activity
             android:name=".SettingsActivity"
-            android:parentActivityName=".StartActivity"
-            android:configChanges="locale"
             android:label="@string/title_settings"
+            android:configChanges="locale"
             android:theme="@style/Theme.SthlmTraveling">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".StartActivity" />
         </activity>
+
         <activity
             android:name=".AboutActivity"
-            android:configChanges="locale"
             android:label="@string/about"
-            android:theme="@style/Theme.SthlmTraveling" />
+            android:configChanges="locale"
+            android:theme="@style/Theme.SthlmTraveling"
+            />
+
         <activity
             android:name=".UriLauncherActivity"
             android:label="@string/app_name">
             <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
+                <action android:name="android.intent.action.VIEW"/>
 
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
 
                 <data
-                    android:host="sl.se"
-                    android:scheme="http" />
+                    android:scheme="http"
+                    android:host="sl.se"/>
                 <data
-                    android:host="www.sl.se"
-                    android:scheme="http" />
+                    android:scheme="http"
+                    android:host="www.sl.se"/>
             </intent-filter>
         </activity>
+
         <activity
             android:name=".DeparturesShortcutProxyActivity"
             android:theme="@android:style/Theme.Translucent">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
@@ -258,58 +250,44 @@
             android:enabled="true"
             android:exported="false">
             <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
             </intent-filter>
         </receiver>
         <receiver
             android:name=".receivers.OnAlarmReceiver"
             android:enabled="true"
-            android:exported="false"></receiver>
+            android:exported="false">
+        </receiver>
 
         <service
             android:name=".service.DeviationService"
             android:enabled="true"
-            android:exported="false" />
+            android:exported="false"
+            />
         <service
             android:name=".service.DataMigrationService"
             android:enabled="true"
-            android:exported="false" />
+            android:exported="false"
+            />
 
         <provider
             android:name=".provider.PlacesProvider"
             android:authorities="${applicationId}.placesprovider"
-            android:exported="false" />
+            android:exported="false"
+            />
         <provider
             android:name=".provider.JourneysProvider"
             android:authorities="${applicationId}.journeysprovider"
-            android:exported="false" />
+            android:exported="false"
+            />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="@string/google_maps_api_key" />
+            android:value="@string/google_maps_api_key"/>
+
         <meta-data
             android:name="io.fabric.ApiKey"
-            android:value="8e01e50d8310d281bb91a5129c8cf514d866cac8" />
+            android:value="8e01e50d8310d281bb91a5129c8cf514d866cac8"/>
 
-        // Kom:
-        <activity
-            android:name=".AlarmPreferencesActivity"
-            android:configChanges="locale|orientation|screenSize"
-            android:label="@string/alarm_preferences"
-            android:theme="@style/Theme.SthlmTraveling"
-
-            >
-
-            <!--Remove arrow to parent-->
-            <!--android:parentActivityName=".RouteDetailActivity">-->
-
-            <!--<meta-data-->
-                <!--android:name="android.support.PARENT_ACTIVITY"-->
-                <!--android:value=".RouteDetailActivity" />-->
-
-        </activity>
-        <receiver android:name=".Alarm" />
-        //
     </application>
-
 </manifest>

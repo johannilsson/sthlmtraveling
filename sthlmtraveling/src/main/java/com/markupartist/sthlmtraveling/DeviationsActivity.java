@@ -21,20 +21,10 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.ColorStateList;
-import android.graphics.Color;
-import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.text.Editable;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.TextWatcher;
 import android.text.format.Time;
-import android.text.style.BackgroundColorSpan;
-import android.text.style.ForegroundColorSpan;
-import android.text.style.TextAppearanceSpan;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
@@ -43,7 +33,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager.BadTokenException;
 import android.widget.AdapterView;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.SimpleAdapter;
 import android.widget.SimpleAdapter.ViewBinder;
@@ -68,14 +57,10 @@ public class DeviationsActivity extends BaseListActivity {
 
     private GetDeviationsTask mGetDeviationsTask;
     private ArrayList<Deviation> mDeviationsResult;
-    private ArrayList<Deviation> mAllDeviations;
     private LinearLayout mProgress;
-    private TextView mSearchEditText;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.d(TAG, "onCreate");
         super.onCreate(savedInstanceState);
 
 //        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
@@ -88,34 +73,9 @@ public class DeviationsActivity extends BaseListActivity {
         mProgress.setVisibility(View.GONE);
 
         initActionBar();
-        if(savedInstanceState != null){
-            fillData(savedInstanceState.<Deviation>getParcelableArrayList("deviationsResult"));
-        }
-        else{
-            loadDeviations();
-        }
 
+        loadDeviations();
         registerForContextMenu(getListView());
-
-        mSearchEditText = (EditText) this.findViewById(R.id.deviations_search_field);
-        mSearchEditText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                //unused
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                Log.d(TAG, "onTextChanged");
-                //unused
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                filterResult(editable.toString());
-            }
-        });
-        mSearchEditText.clearFocus();
     }
 
     @Override
@@ -142,7 +102,6 @@ public class DeviationsActivity extends BaseListActivity {
             (ArrayList<Deviation>) getLastNonConfigurationInstance();
         if (result != null) {
             fillData(result);
-            mAllDeviations = result;
         } else {
             mGetDeviationsTask = new GetDeviationsTask();
             mGetDeviationsTask.execute();
@@ -206,14 +165,12 @@ public class DeviationsActivity extends BaseListActivity {
             @Override
             public boolean setViewValue(View view, Object data,
                     String textRepresentation) {
-
                 switch (view.getId()) {
-                case R.id.deviation_details:
                 case R.id.deviation_header:
+                case R.id.deviation_details:
                 case R.id.deviation_created:
                 case R.id.deviation_scope:
-                    String[] word = mSearchEditText.getText().toString().split(" ");
-                    ((TextView)view).setText(highlight(textRepresentation, word));
+                    ((TextView)view).setText(textRepresentation);
                     return true;
                 }
                 return false;
@@ -239,7 +196,7 @@ public class DeviationsActivity extends BaseListActivity {
         AdapterView.AdapterContextMenuInfo menuInfo =
             (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         Deviation deviation = mDeviationsResult.get(menuInfo.position);
-        share(deviation.getHeader(), deviation.getDetails().toString());
+        share(deviation.getHeader(), deviation.getDetails());
         return true;
     }
 
@@ -250,7 +207,6 @@ public class DeviationsActivity extends BaseListActivity {
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        outState.putParcelableArrayList("deviationsResult", mDeviationsResult);
         super.onSaveInstanceState(outState);
         saveGetDeviationsTask(outState);
     }
@@ -338,7 +294,6 @@ public class DeviationsActivity extends BaseListActivity {
 
     @Override
     protected void onDestroy() {
-        mSearchEditText.setText("");
         super.onDestroy();
 
         onCancelGetDeviationsTask();
@@ -382,7 +337,6 @@ public class DeviationsActivity extends BaseListActivity {
 
             if (mWasSuccess) {
                 fillData(result);
-                mAllDeviations = result;
             } else {
                 try {
                     showDialog(DIALOG_GET_DEVIATIONS_NETWORK_PROBLEM);
@@ -407,53 +361,4 @@ public class DeviationsActivity extends BaseListActivity {
 
         startActivity(Intent.createChooser(intent, getText(R.string.share_label)));
     }
-
-    // Pretty ugly solution fix it NOW
-    private void filterResult(String search){
-        if (mAllDeviations == null) return;
-        String[] words = search.toLowerCase().split(" ");
-        ArrayList<Deviation> filteredResult = new ArrayList<Deviation>();
-        boolean match = false;
-        for(Deviation deviation:mAllDeviations){
-            for(String word:words){
-                boolean checkA = deviation.getHeader().toLowerCase().contains(word);
-                boolean checkB = deviation.getDetails().toLowerCase().contains(word);
-                boolean checkC = deviation.getScope().toLowerCase().contains(word);
-                if(!(checkA||checkB||checkC)){
-                    match = false;
-                    break;
-                }
-                else {
-                    match = true;
-                }
-            }
-            if (match) {
-                filteredResult.add(deviation);
-            }
-        }
-        fillData(filteredResult);
-    }
-
-    /***
-     * Writed by Team 8, highlight all words contained within a string
-     */
-    private Spannable highlight(String str, String[] words){
-        Spannable spn = new SpannableString(str);
-        for(String word:words)
-        if(word.length() > 1) {
-            str = str.toLowerCase();
-            word = word.toLowerCase();
-            int index_start = str.indexOf(word);
-            while (index_start > -1) {
-
-                BackgroundColorSpan hl = new BackgroundColorSpan(Color.YELLOW);//new TextAppearanceSpan(null, Typeface.BOLD, -1, highlightColor, null);
-
-                spn.setSpan(hl, index_start, index_start + word.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                index_start = str.indexOf(word, index_start + word.length());
-            }
-        }
-        return spn;
-    }
-
-
 }
