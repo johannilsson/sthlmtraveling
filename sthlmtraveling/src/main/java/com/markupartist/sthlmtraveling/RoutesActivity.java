@@ -16,6 +16,8 @@
 
 package com.markupartist.sthlmtraveling;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.ContentUris;
@@ -32,6 +34,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
@@ -884,6 +887,7 @@ public class RoutesActivity extends BaseListActivity implements
                 public void onClick(View v) {
                     for(int i = 0; i < mTabLayout.getTabCount(); i++)
                         if(mTabLayout.getTabAt(i).getCustomView().findViewById(R.id.tabClose) == v) {
+                            v.setClickable(false);
                             removeTab(i);
                             break;
                         }
@@ -894,23 +898,53 @@ public class RoutesActivity extends BaseListActivity implements
         }
     }
 
-    /**Written by Oskar Hahr and Didrik Axelsson
+    /** @author Jakob Berggren & Oskar Hahr
+     * header function for tab removal.
+     * @param index
+     */
+    private void removeTab(final int index){
+        if(mTabLayout.getTabCount() > 1) {
+            animateTab(index);
+        }
+    }
+
+    /**@author by Oskar Hahr and Didrik Axelsson
      * Removes the tab at the index which the user has selcted
      * and shifts the tabs with a higher index to the position one step to the left**/
-    private void removeTab(int index){
+    private void updateTabView(final int index){
         //Check to prevent user from removing the tab if only one tab exists
+        for (int i = index; i < mTabLayout.getTabCount() - 1; i++) {
+            mTabWraps[i] = mTabWraps[i + 1];
 
-        if(mTabLayout.getTabCount() > 1) {
-            for (int i = index; i < mTabLayout.getTabCount() - 1; i++) {
-                mTabWraps[i] = mTabWraps[i + 1];
-
-            }
-            mTabWraps[mTabLayout.getTabCount() - 1] = null;
-            mTabLayout.removeTabAt(index);
-            updateTabs();
         }
+        mTabWraps[mTabLayout.getTabCount() - 1] = null;
+        mTabLayout.removeTabAt(index);
+        updateTabs();
+    }
 
 
+    /** @author Jakob Berggren & Oskar Hahr
+     * adds a shrinking animation when tab is closed
+     * @param index
+     */
+    private void animateTab(final int index){
+        TabLayout.Tab tab = mTabLayout.getTabAt(index);
+
+            View v = tab.getCustomView();
+            v.setScaleX(1f);
+            v.setScaleY(1f);
+            v.animate()
+                    .scaleX(0f)
+                    .scaleY(0f)
+                    .setInterpolator(new FastOutSlowInInterpolator())
+                    .setDuration(200)
+                    .setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            super.onAnimationEnd(animation);
+                            updateTabView(index);
+                        }
+                    });
     }
 
     /** changeTab - Made by Jakob Berggren & Didrik Axelsson

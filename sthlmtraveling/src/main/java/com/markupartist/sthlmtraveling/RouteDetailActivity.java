@@ -16,6 +16,8 @@
 
 package com.markupartist.sthlmtraveling;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -34,6 +36,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.text.BidiFormatter;
 import android.support.v4.util.Pair;
 import android.support.v4.view.ViewCompat;
+import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.support.v7.app.ActionBar;
 import android.text.Html;
 import android.text.TextUtils;
@@ -442,11 +445,6 @@ public class RouteDetailActivity extends BaseListActivity {
         mNameView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*startActivity(ViewOnMapActivity.createIntent(RouteDetailActivity.this,
-                        mRoute, mJourneyQuery, Site.toSite(legViewModel.leg.getTo())));
-                changed this function to be able to handle tabs
-                Oskar Hahr
-                */
                 startActivity(ViewOnMapActivity.createIntent(RouteDetailActivity.this,
                         mRoute, mJourneyQuery, mJourneyQuery.destination));
             }
@@ -875,7 +873,8 @@ public class RouteDetailActivity extends BaseListActivity {
     /** Written by Didrik Axelsson & Oskar Hahr
      * Rotates the information the tabs need to function and
      * creates the correct amount of tabs depending on the information in mSubTripAdapterA
-     and sets the text of the tabs to the destination and the trip time **/
+     and sets the text of the tabs to the destination and the trip time
+     **/
     private void createTabs(boolean add){
         if (add) {
             for (int i = TAB_CAP - 1; i > 0; i--)
@@ -898,6 +897,7 @@ public class RouteDetailActivity extends BaseListActivity {
                 public void onClick(View v) {
                     for(int i = 0; i < mTabLayout.getTabCount(); i++)
                         if(mTabLayout.getTabAt(i).getCustomView().findViewById(R.id.tabClose) == v) {
+                            v.setClickable(false);
                             removeTab(i);
                             break;
                         }
@@ -909,21 +909,58 @@ public class RouteDetailActivity extends BaseListActivity {
         updateTabText();
     }
 
-    /** Written by Oskar Hahr and Didrik Axelsson
-     * This function removes the tab currently at the specified index and updates the view of the other tabs **/
 
-    private void removeTab(int index){
+
+
+    /** @author Jakob Berggren & Oskar Hahr
+     * header function for tab removal.
+     * @param index
+     */
+    private void removeTab(final int index){
         if(mTabLayout.getTabCount() > 1) {
-            for (int i = index; i < mTabLayout.getTabCount() - 1; i++) {
-                mTabDetails[i] = mTabDetails[i + 1];
-
-            }
-            mTabDetails[mTabLayout.getTabCount() - 1] = null;
-            mTabLayout.removeTabAt(index);
-            changeTabDetails();
+            animateTab(index);
         }
     }
 
+    /**@author by Oskar Hahr and Didrik Axelsson
+     * Removes the tab at the index which the user has selected
+     * and shifts the tabs with a higher index to the position one step to the left
+     **/
+    private void updateTabView(final int index){
+        //Check to prevent user from removing the tab if only one tab exists
+        for (int i = index; i < mTabLayout.getTabCount() - 1; i++) {
+            mTabDetails[i] = mTabDetails[i + 1];
+
+        }
+        mTabDetails[mTabLayout.getTabCount() - 1] = null;
+        mTabLayout.removeTabAt(index);
+        changeTabDetails();
+    }
+
+
+    /** @author Jakob Berggren & Oskar Hahr
+     * adds a shrinking animation when tab is closed
+     * @param index
+     */
+    private void animateTab(final int index){
+        TabLayout.Tab tab = mTabLayout.getTabAt(index);
+
+        View v = tab.getCustomView();
+        v.setScaleX(1f);
+        v.setScaleY(1f);
+        v.animate()
+                .scaleX(0f)
+                .scaleY(0f)
+                .setInterpolator(new FastOutSlowInInterpolator())
+                .setDuration(200)
+                .setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        super.onAnimationEnd(animation);
+                        updateTabView(index);
+                    }
+                });
+    }
     private void switchTabs(){
         mJourneyQuery = mTabDetails[selectTab()].journeyQ;
         mRoute = mTabDetails[selectTab()].routeDetail;
@@ -934,7 +971,8 @@ public class RouteDetailActivity extends BaseListActivity {
     }
 
     /** Written by Oskar Hahr and Didrik Axelsson
-     * Updates the text of the tabs when they are added and removed **/
+     * Updates the text of the tabs when they are added and removed
+     **/
     private void updateTabText(){
         BidiFormatter bidi = BidiFormatter.getInstance(Locale.getDefault());
 
@@ -953,7 +991,8 @@ public class RouteDetailActivity extends BaseListActivity {
         }
     }
     /** Written by Oskar Hahr
-     * Changes the colour of the tabs when they are selected or unselected **/
+     * Changes the colour of the tabs when they are selected or unselected
+     **/
     private void changeTabColor(TabLayout.Tab tab, boolean sel){
         if (sel)
             ((TextView)tab.getCustomView().findViewById(R.id.tabText)).setTextColor(getResources().getColor(R.color.accent));
