@@ -281,16 +281,16 @@ public class RouteDetailActivity extends BaseListActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.actionbar_item_time:
-                Intent departuresIntent = new Intent(this, DeparturesActivity.class);
-                Site s = Site.toSite(mRoute.fromStop());
-                departuresIntent.putExtra(DeparturesActivity.EXTRA_SITE, s);
-                startActivity(departuresIntent);
-                return true;
-            case R.id.actionbar_item_star:
-                handleStarAction();
-                supportInvalidateOptionsMenu();
-                return true;
+        case R.id.actionbar_item_time:
+            Intent departuresIntent = new Intent(this, DeparturesActivity.class);
+            Site s = Site.toSite(mRoute.fromStop());
+            departuresIntent.putExtra(DeparturesActivity.EXTRA_SITE, s);
+            startActivity(departuresIntent);
+            return true;
+        case R.id.actionbar_item_star:
+            handleStarAction();
+            supportInvalidateOptionsMenu();
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
