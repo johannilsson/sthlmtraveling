@@ -40,7 +40,6 @@ public class Alarm extends BroadcastReceiver{
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        final int mNotificationInt = new Random().nextInt();
         final long[] DEFAULT_VIBRATE_PATTERN = {0, 250, 250, 250};
         PowerManager mPowerManager;
         PowerManager.WakeLock mWakeLock;
@@ -54,8 +53,7 @@ public class Alarm extends BroadcastReceiver{
         String mMessage = bundle.getString("NOTIFICATION_TEXT");
 
         Intent mDismissIntent = new Intent(context, AlarmFragment.class);
-        Log.v("mNotificationInt", "value" + mNotificationInt);
-        mDismissIntent.putExtra("intId", mNotificationInt);
+        mDismissIntent.putExtra("intId", 1337);
         PendingIntent pendingDismissIntent = PendingIntent.getBroadcast(context, 1, mDismissIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
 
@@ -67,12 +65,11 @@ public class Alarm extends BroadcastReceiver{
         mBuilder.setContentTitle(mTitle);
         mBuilder.setContentText(mMessage);
         mBuilder.setSmallIcon(R.drawable.logo);
-        mBuilder.setAutoCancel(true);
         mBuilder.setDeleteIntent(pendingDismissIntent);
 
 
 
-        mNotificationManager.notify(mNotificationInt, mBuilder.build());
+        mNotificationManager.notify(1337, mBuilder.build());
         Vibrator mVibrator = (Vibrator) context.getSystemService(context.VIBRATOR_SERVICE);
         mVibrator.vibrate(DEFAULT_VIBRATE_PATTERN, 0);
         mWakeLock.release();
