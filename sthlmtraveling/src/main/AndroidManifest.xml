@@ -9,7 +9,7 @@
     <!--Blenda Fröjdh & Filip Appelgren-->
     <uses-permission android:name="android.permission.VIBRATE"/>
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
-
+    <!-- -->
 
 
     <supports-screens
@@ -303,7 +303,7 @@
         </activity>
         <receiver android:name=".Alarm" />
         <receiver android:name=".AlarmFragment" />
-
+        <!-- -->
 
 
     </application>

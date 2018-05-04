@@ -140,7 +140,6 @@
     <string name="clear_alarms">Clear all alarms</string>
     <string name="alarm_already_set">Clear current alarms to set new ones</string>
     <string name="time_to_go">Time to go!</string>
-    <string name="time_to_get_off">Time to get off!</string>
     <string name="alarm_departure_2min">You have to leave in 2 minutes!</string>
     <string name="alarm_departure_5min">You have to leave in 5 minutes!</string>
     <string name="alarm_departure_10min">You have to leave in 10 minutes!</string>
@@ -151,7 +150,7 @@
     <string name="select_destination_alarm">Select a time for destination alarm</string>
     <string name="you_are_arriving">You are soon arriving at</string>
     <string name="alarms_cleared">Alarms have been cleared!</string>
-
+    <!-- -->
 
 
 
