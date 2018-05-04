@@ -29,6 +29,7 @@
     <string name="no_routes_found_label">Unfortunately there was no route found</string>
     <string name="no_routes_found_message">Perhaps your start or destination is not served at all or with the selected modes of transport on the required date/time (e. g. sometimes stations/stops are not served on weekends).</string>
     <string name="routes_label">Routes</string>
+    <string name="map_label">Map</string>
     <string name="route_details_label">Route details</string>
     <string name="no_route_details">Unfortunately there was no route found. Most likely this search was too old.</string>
     <string name="session_timeout_message">Most likely this search was too old.</string>
@@ -66,7 +67,7 @@
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="retry">Retry</string>
-     <string name="point_on_map">Point on map</string>
+    <string name="point_on_map">Point on map</string>
     <string name="tap_to_select_this_point">Tap to select this point</string>
     <string name="point_selected">Point selected</string>
     <string name="tap_your_end_point_on_map">Tap your end point on the map</string>

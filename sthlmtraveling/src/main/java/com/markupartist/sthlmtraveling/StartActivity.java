@@ -35,11 +35,13 @@ public class StartActivity extends BaseFragmentActivity {
     private static final int PAGE_FAVORITES_POS = 1;
     private static final int PAGE_DEPARTURES_POS = 2;
     private static final int PAGE_DEVIATIONS_POS = 3;
+    private static final int PAGE_MAPS_POS = 4;
 
-    private static final int PAGE_RTL_SEARCH_POS = 3;
-    private static final int PAGE_RTL_FAVORITES_POS = 2;
-    private static final int PAGE_RTL_DEPARTURES_POS = 1;
-    private static final int PAGE_RTL_DEVIATIONS_POS = 0;
+    private static final int PAGE_RTL_SEARCH_POS = 4;
+    private static final int PAGE_RTL_FAVORITES_POS = 3;
+    private static final int PAGE_RTL_DEPARTURES_POS = 2;
+    private static final int PAGE_RTL_DEVIATIONS_POS = 1;
+    private static final int PAGE_RTL_MAPS_POS = 0;
 
     private ViewPager mPager;
     private SlidingTabLayout mSlidingTabLayout;
@@ -64,6 +66,9 @@ public class StartActivity extends BaseFragmentActivity {
         pageAdapter.addPage(new PageFragmentAdapter.PageInfo(getString(R.string.deviations_label),
                 TrafficStatusFragment.class, null, R.drawable.ic_action_deviations_active));
 
+        pageAdapter.addPage(new PageFragmentAdapter.PageInfo(getString(R.string.map_label),
+                MapFragment.class, null, R.drawable.ic_action_map_active));
+
         pageAdapter.setLayoutDirection(RtlUtils.isRtl(Locale.getDefault()));
 
         mPager = (ViewPager) findViewById(R.id.pager);
@@ -86,6 +91,9 @@ public class StartActivity extends BaseFragmentActivity {
                         break;
                     case PAGE_DEVIATIONS_POS:
                         registerScreen("Traffic status");
+                        break;
+                    case PAGE_MAPS_POS:
+                        registerScreen("Map");
                         break;
                 }
             }
@@ -122,6 +130,8 @@ public class StartActivity extends BaseFragmentActivity {
                     return PAGE_RTL_DEPARTURES_POS;
                 case PAGE_DEVIATIONS_POS:
                     return PAGE_RTL_DEVIATIONS_POS;
+                case PAGE_MAPS_POS:
+                    return PAGE_RTL_MAPS_POS;
             }
         }
         return pos;
