@@ -16,6 +16,8 @@ import android.os.PowerManager;
 import android.os.Vibrator;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
+import android.view.MotionEvent;
+import android.view.View;
 
 import java.util.Random;
 
@@ -25,7 +27,6 @@ public class Alarm extends BroadcastReceiver{
 
     @Override
     public void onReceive(Context context, Intent intent) {
-      //  int mRequestPending = 0;
         final int mNotificationInt = new Random().nextInt();
         final long[] DEFAULT_VIBRATE_PATTERN = {0, 250, 250, 250};
         PowerManager mPowerManager;
@@ -44,6 +45,8 @@ public class Alarm extends BroadcastReceiver{
         mDismissIntent.putExtra("intId", mNotificationInt);
         PendingIntent pendingDismissIntent = PendingIntent.getBroadcast(context, 1, mDismissIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
+
+
         NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(context.NOTIFICATION_SERVICE);
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context);
 
@@ -52,6 +55,9 @@ public class Alarm extends BroadcastReceiver{
         mBuilder.setContentText(mMessage);
         mBuilder.setSmallIcon(R.drawable.logo);
         mBuilder.setAutoCancel(true);
+        mBuilder.setDeleteIntent(pendingDismissIntent);
+
+
 
         mNotificationManager.notify(mNotificationInt, mBuilder.build());
         Vibrator mVibrator = (Vibrator) context.getSystemService(context.VIBRATOR_SERVICE);

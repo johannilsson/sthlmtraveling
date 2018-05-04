@@ -37,9 +37,9 @@
 
     <string-array name="time_interval_destination">
         <item>No alarm</item>
-        <item>1 min</item>
-        <item>3 min</item>
+        <item>2 min</item>
         <item>5 min</item>
+        <item>10 min</item>
     </string-array>
 
 

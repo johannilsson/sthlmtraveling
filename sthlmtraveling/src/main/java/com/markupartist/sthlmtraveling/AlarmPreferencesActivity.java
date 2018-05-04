@@ -62,6 +62,7 @@ public class AlarmPreferencesActivity extends AppCompatActivity implements View.
         mAlarmClear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                sendToast(getString(R.string.alarms_cleared));
                 //findViewById(R.id.textClear).setVisibility(View.INVISIBLE);
                 mTimeSpinnerDeparture.setEnabled(true);
                 mTimeSpinnerDestination.setEnabled(true);
@@ -158,7 +159,7 @@ public class AlarmPreferencesActivity extends AppCompatActivity implements View.
                     }
                 }
                 else {
-                       sendToast(getString(R.string.invalid_departure));
+                       sendToast(getString(R.string.invalid_time));
                        break;
                 }
 
@@ -178,7 +179,7 @@ public class AlarmPreferencesActivity extends AppCompatActivity implements View.
                      }
                  else
                      {
-                        sendToast(getString(R.string.invalid_destination));
+                        sendToast(getString(R.string.invalid_time));
                         break;
                  }
 
@@ -258,13 +259,13 @@ public class AlarmPreferencesActivity extends AppCompatActivity implements View.
                 mTimeSelectedDestination = false;
                 break;
             case 1:
-                mAlarmDest = destTime - 60000;
+                mAlarmDest = destTime - 120000;
                 break;
             case 2:
-                mAlarmDest = destTime- 180000;
+                mAlarmDest = destTime- 300000;
                 break;
             case 3:
-                mAlarmDest = destTime - 300000;
+                mAlarmDest = destTime - 600000;
                 break;
         }
         return mAlarmDest;

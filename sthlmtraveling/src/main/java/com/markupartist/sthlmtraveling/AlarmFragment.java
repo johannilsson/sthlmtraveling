@@ -13,10 +13,16 @@ public class AlarmFragment extends BroadcastReceiver{
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        final long[] DEFAULT_VIBRATE_PATTERN = {0, 250, 250, 250};
+
         int mNotificationId = intent.getIntExtra("intId", 0);
         NotificationManager dismisser = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         Log.v("intId", "value" + mNotificationId);
         dismisser.cancel(mNotificationId);
-        
+        Vibrator mVibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+        mVibrator.cancel();
+
+
+
     }
 }
