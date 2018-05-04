@@ -76,7 +76,6 @@ public class DeviationsActivity extends BaseListActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.d(TAG, "onCreate");
         super.onCreate(savedInstanceState);
 
 //        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
@@ -115,15 +114,13 @@ public class DeviationsActivity extends BaseListActivity {
 
             @Override
             public void afterTextChanged(Editable editable) {
-                if(mPrevSearch.length() == editable.length() -1)
-                    if(mPrevSearch.equals(editable.toString().substring(0,mPrevSearch.length())))
-                        mPrevSearch = editable.toString();
 
+                //A tiny delay to let the user finish typing before searching
                 mFilterTimer = new Timer();
                 mFilterTimer.schedule(new TimerTask() {
                     @Override
                     public void run() {
-                        //No other thread except the one that created a view may modify it.
+                        //No other thread except the one that created a view may modify i                                                                                                                                                                                                                                                                                                                                                                                       t.
                         //Thus, we pass the work to the main thread with runOnUiThread
                         //to make the filter-updates on the listview be made there.
                         runOnUiThread(new Runnable() {
@@ -437,6 +434,7 @@ public class DeviationsActivity extends BaseListActivity {
         return true;
     }
 
+    //private void sortByStringLength(String)
     /** @author Anton Ehlert
      * @param search
      * Filter the deviation so that the listview only displays deviations containing
@@ -448,27 +446,22 @@ public class DeviationsActivity extends BaseListActivity {
         String[] words = search.toLowerCase().split(" ");
         if(words.length == 0)
             return;
-
-        boolean old_search_word_still_there = false;
-        for(int i = 0; i < words.length; i++) {
-            if (words[0].length() < words[i].length()) {
-                if(!old_search_word_still_there && words[i].equals(mPrevSearch))
-                    old_search_word_still_there = true;
-                String temp = words[0];
-                words[0] = words[i];
-                words[i] = temp;
-            }
-        }
-        mPrevSearch = words[0];
-        if(!old_search_word_still_there)
+        boolean check = false;
+        if(words[0].length() > mPrevSearch.length())
+            check = words[0].substring(0, mPrevSearch.length()).equals(mPrevSearch);
+        if(!check || mFilteredResult == null)
             mFilteredResult = mAllDeviations;
+
+        mPrevSearch = words[0];
+
 
         ArrayList<Deviation> filteredResult = mFilteredResult;
 
         ArrayList<Deviation> asd;
-        boolean first = false;
+        boolean first = true;
         for(String word:words) {
             if(word.length() > 0) {
+                //Check scope only if its a number (For line numbers)
                 boolean isNum = isNumeric(word);
                 asd = filteredResult;
                 filteredResult = new ArrayList<>();
