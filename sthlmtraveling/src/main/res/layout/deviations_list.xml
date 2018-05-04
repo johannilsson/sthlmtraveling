@@ -24,12 +24,12 @@
 	android:focusableInTouchMode="true">
 
     <EditText
-		android:imeOptions="flagNoExtractUi"
+        android:imeOptions="flagNoExtractUi"
         android:id="@+id/deviations_search_field"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="text"
-		android:hint="@string/search_label"
+        android:hint="@string/search_label"
 		/>
 
     <include layout="@layout/progress_bar" />

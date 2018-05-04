@@ -20,9 +20,11 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -64,12 +66,11 @@ public class DeviationsActivity extends BaseListActivity {
 
     private GetDeviationsTask mGetDeviationsTask;
     private ArrayList<Deviation> mDeviationsResult;
+    private ArrayList<Deviation> mFilteredResult;
     private ArrayList<Deviation> mAllDeviations;
     private LinearLayout mProgress;
     private TextView mSearchEditText;
     private Timer mFilterTimer;
-
-    private ArrayList<Deviation> mFilteredResult;
     private String mPrevSearch = "";
 
 
@@ -170,6 +171,16 @@ public class DeviationsActivity extends BaseListActivity {
     private void fillData(ArrayList<Deviation> result) {
         TextView emptyResultView = (TextView) findViewById(R.id.deviations_empty_result);
 
+
+        // TODO: Needs to be moved later on...
+        if (DEVIATION_FILTER_ACTION.equals(getIntent().getAction())) {
+             SharedPreferences sharedPreferences =
+                        PreferenceManager.getDefaultSharedPreferences(this);
+             String filterString = sharedPreferences.getString("notification_deviations_lines_csv", "");
+             ArrayList<Integer> triggerFor = DeviationStore.extractLineNumbers(filterString, null);
+             result = DeviationStore.filterByLineNumbers(result, triggerFor);
+         }
+
         if (result.isEmpty()) {
             Log.d(TAG, "is empty");
             emptyResultView.setVisibility(View.VISIBLE);
@@ -248,7 +259,7 @@ public class DeviationsActivity extends BaseListActivity {
         AdapterView.AdapterContextMenuInfo menuInfo =
             (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         Deviation deviation = mDeviationsResult.get(menuInfo.position);
-        share(deviation.getHeader(), deviation.getDetails().toString());
+        share(deviation.getHeader(), deviation.getDetails());
         return true;
     }
 
@@ -434,7 +445,7 @@ public class DeviationsActivity extends BaseListActivity {
         return true;
     }
 
-    /** @author Anton Ehlert & Didirk Axelsson
+    /** @author Anton Ehlert & Diidrk Axelsson
      * Filter the deviation so that the listview only displays deviations containing
      * the search words written by the user in the editbox.
      */
@@ -449,6 +460,7 @@ public class DeviationsActivity extends BaseListActivity {
         boolean isCached = false;
         if(search.length() > mPrevSearch.length())
             isCached = search.substring(0, mPrevSearch.length()).equals(mPrevSearch);
+
         if(!isCached || mFilteredResult == null)
             mFilteredResult = mAllDeviations;
 
@@ -483,6 +495,7 @@ public class DeviationsActivity extends BaseListActivity {
                 }
             }
         }
+        //cache result & send to the list view
         mFilteredResult = filteredResult;
         fillData(filteredResult);
     }
