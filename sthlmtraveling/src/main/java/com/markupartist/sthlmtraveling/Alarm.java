@@ -27,6 +27,7 @@ import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowManager;
 
 import java.util.Random;
 
@@ -46,7 +47,7 @@ public class Alarm extends BroadcastReceiver{
 
         mPowerManager = (PowerManager) context.getSystemService(POWER_SERVICE);
         mWakeLock = mPowerManager.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP, "TAG");
-           mWakeLock.acquire();
+           mWakeLock.acquire(120000);
 
         Bundle bundle = intent.getExtras();
         String mTitle = bundle.getString("NOTIFICATION_TITLE");
@@ -68,11 +69,9 @@ public class Alarm extends BroadcastReceiver{
         mBuilder.setDeleteIntent(pendingDismissIntent);
 
 
-
         mNotificationManager.notify(1337, mBuilder.build());
         Vibrator mVibrator = (Vibrator) context.getSystemService(context.VIBRATOR_SERVICE);
         mVibrator.vibrate(DEFAULT_VIBRATE_PATTERN, 0);
-        mWakeLock.release();
 
 
     }
