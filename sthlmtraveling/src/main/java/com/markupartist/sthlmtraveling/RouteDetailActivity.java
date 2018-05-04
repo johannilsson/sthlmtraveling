@@ -208,8 +208,8 @@ public class RouteDetailActivity extends BaseListActivity {
             }
         };
 
-        /*
-           By Jakob Berggren & Johan Edman
+        /**
+           @author Jakob Berggren & Johan Edman
            Button for 'Share Trip' - functionality
          */
         mShareButton = findViewById(R.id.share_trip_button);
@@ -570,7 +570,7 @@ public class RouteDetailActivity extends BaseListActivity {
         // Index 1 Contains Body
         String[] routeDetails = new String[2];
         
-        // makes code more readable
+
         List<Leg> legs = mRoute.getLegs();
 
         String sub = getRouteDetails("from") +
@@ -599,9 +599,9 @@ public class RouteDetailActivity extends BaseListActivity {
             if (!leg.getTravelMode().equals("foot")) {
                 boolean useRT = false;
                 
-                //if realtime exists
+                // Tests whether Realtime Date-object exists
                 if (leg.getStartTimeRt() != null || leg.getEndTimeRt() != null) {
-                    //if actual delay
+                    // Only use Realtime if it's after Timetable (i.e. differs more than a minute)
                     useRT = (leg.getStartTimeRt().after(leg.getStartTime()) || leg.getEndTimeRt().after(leg.getEndTime()));
                 }
 
