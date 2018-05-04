@@ -221,8 +221,8 @@ public class DeviationsActivity extends BaseListActivity {
                 case R.id.deviation_header:
                 case R.id.deviation_created:
                 case R.id.deviation_scope:
-                    String[] word = mSearchEditText.getText().toString().split(" ");
-                    ((TextView)view).setText(highlight(textRepresentation, word));
+                    String[] words = mPrevSearch.split(" ");
+                    ((TextView)view).setText(highlight(textRepresentation, words));
                     return true;
             }
             return false;
@@ -434,38 +434,39 @@ public class DeviationsActivity extends BaseListActivity {
         return true;
     }
 
-    //private void sortByStringLength(String)
-    /** @author Anton Ehlert
-     * @param search
+    /** @author Anton Ehlert & Didirk Axelsson
      * Filter the deviation so that the listview only displays deviations containing
      * the search words written by the user in the editbox.
      */
     private void filterResult(String search){
         if (mAllDeviations == null)
             return;
+
         String[] words = search.toLowerCase().split(" ");
         if(words.length == 0)
             return;
-        boolean check = false;
+
+        boolean isCached = false;
         if(search.length() > mPrevSearch.length())
-            check = search.substring(0, mPrevSearch.length()).equals(mPrevSearch);
-        if(!check || mFilteredResult == null)
+            isCached = search.substring(0, mPrevSearch.length()).equals(mPrevSearch);
+        if(!isCached || mFilteredResult == null)
             mFilteredResult = mAllDeviations;
 
         mPrevSearch = search;
-
-
         ArrayList<Deviation> filteredResult = mFilteredResult;
+        ArrayList<Deviation> partialResult;
 
-        ArrayList<Deviation> asd;
-        boolean first = true;
+        //if filtered result is cached only filter with the final word
+        if(isCached)
+            words = new String[]{words[words.length-1]};
+
         for(String word:words) {
             if(word.length() > 0) {
-                //Check scope only if its a number (For line numbers)
+                //Check scope only if query is a number (For line numbers)
                 boolean isNum = isNumeric(word);
-                asd = filteredResult;
+                partialResult = filteredResult;
                 filteredResult = new ArrayList<>();
-                for (Deviation deviation : asd) {
+                for (Deviation deviation : partialResult) {
                     boolean match = false;
 
                     if (deviation.getScope().toLowerCase().contains(word)) {
@@ -480,12 +481,9 @@ public class DeviationsActivity extends BaseListActivity {
                         filteredResult.add(deviation);
                     }
                 }
-                if (first) {
-                    first = false;
-                    mFilteredResult = filteredResult;
-                }
             }
         }
+        mFilteredResult = filteredResult;
         fillData(filteredResult);
     }
 
