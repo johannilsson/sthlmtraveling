@@ -302,6 +302,7 @@
             >
         </activity>
         <receiver android:name=".Alarm" />
+        <receiver android:name=".AlarmFragment" />
 
 
 

@@ -153,6 +153,10 @@
     <string name="select_departure_alarm">Select a time for departure alarm</string>
     <string name="select_destination_alarm">Select a time for destination alarm</string>
     <string name="you_are_arriving">You are arriving at</string>
+    <string name="invalid_departure">Invalid departure alarm!</string>
+    <string name="invalid_destination">Invalid destination time!</string>
+
+
 
 
 

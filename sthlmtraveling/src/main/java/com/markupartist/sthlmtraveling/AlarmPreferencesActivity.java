@@ -138,17 +138,18 @@ public class AlarmPreferencesActivity extends AppCompatActivity implements View.
 
     @Override
     public void onClick(View view) {
+
         long mTimeDeparture;
         long mTimeDestination;
+
+        long mCurrentTime = System.currentTimeMillis();
+        int mSelectedTimeDeparture = (int) mTimeSpinnerDeparture.getSelectedItemId();
+        int mSelectedTimeDestination = (int) mTimeSpinnerDestination.getSelectedItemId();
+        mTimeDestination = getAlarmTimeDest(mSelectedTimeDestination, mEndTime);
+        mTimeDeparture = getAlarmTimeDep(mSelectedTimeDeparture, mStartTime);
+
         switch (view.getId()) {
             case R.id.actionbar_done:
-                int mSelectedTimeDeparture = (int) mTimeSpinnerDeparture.getSelectedItemId();
-                mTimeDeparture = getAlarmTimeDep(mSelectedTimeDeparture, mStartTime);
-
-                int mSelectedTimeDestination = (int) mTimeSpinnerDestination.getSelectedItemId();
-                mTimeDestination = getAlarmTimeDest(mSelectedTimeDestination, mEndTime);
-
-                long mCurrentTime = System.currentTimeMillis();
 
                 if(mCurrentTime < mTimeDeparture) {
                     if (mTimeSelectedDeparture) {
@@ -157,15 +158,16 @@ public class AlarmPreferencesActivity extends AppCompatActivity implements View.
                     }
                 }
                 else {
-//                        sendToast(getString(R.string.invalid_departure_alarm));
+                       sendToast(getString(R.string.invalid_departure));
+                       break;
                 }
 
                  if(mCurrentTime < mTimeDestination) {
 
-                         if (mTimeSelectedDestination) {
-                             setAlarm(mTimeDestination, getString(R.string.you_are_arriving), mStopList.get(mStopList.size() - 1).toString());
-                             sendToast(getString(R.string.alarm_set));
-                         }
+                    if (mTimeSelectedDestination) {
+                        setAlarm(mTimeDestination, getString(R.string.you_are_arriving), mStopList.get(mStopList.size() - 1).getName());
+                        sendToast(getString(R.string.alarm_set));
+                        }
 
                          /** Set alarm for every stop **/
                          if (mAlarmEveryStopCheckBox.isChecked()) {
@@ -176,7 +178,8 @@ public class AlarmPreferencesActivity extends AppCompatActivity implements View.
                      }
                  else
                      {
-//                        sendToast(getString(R.string.invalid_arrival_time));
+                        sendToast(getString(R.string.invalid_destination));
+                        break;
                  }
 
                  finish();
@@ -190,12 +193,18 @@ public class AlarmPreferencesActivity extends AppCompatActivity implements View.
     }
 
     private void setAlarm(long time, String notifTitle, String notifMsg) {
+        Log.v(notifTitle, notifMsg);
+        Bundle bundle = new Bundle();
+        bundle.putString("NOTIFICATION_TITLE", notifTitle);
+        bundle.putString("NOTIFICATION_TEXT", notifMsg);
 
         Intent intent = new Intent(AlarmPreferencesActivity.this, Alarm.class);
-        intent.putExtra("NOTIFICATION_TITLE", notifTitle);
-        intent.putExtra("NOTIFICATION_MESSAGE", notifMsg);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), mRequestCode, intent, 0);
+        intent.putExtras(bundle);
+
+        // intent.putExtra("NOTIFICATION_TITLE", notifTitle);
+       // intent.putExtra("NOTIFICATION_MESSAGE", notifMsg);
         mRequestCode++;
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), mRequestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
         alarmManager.set(AlarmManager.RTC_WAKEUP, time, pendingIntent);
 
@@ -216,6 +225,7 @@ public class AlarmPreferencesActivity extends AppCompatActivity implements View.
         switch (selectedTimeDeparture) {
             case 0:
                 mTimeSelectedDeparture = false;
+                break;
             case 1:
                 alarmDep = startTime - 120000;
                 mMessageDeparture = getString(R.string.alarm_departure_2min);

@@ -94,12 +94,11 @@ Blenda & Filip
 
         <Button
             android:id="@+id/button2"
-            android:layout_width="160dp"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="64dp"
             android:layout_marginLeft="12dp"
             android:text="@string/clear_alarms"
-            android:background="@color/metro_red"
            />
 
     </LinearLayout>
