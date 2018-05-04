@@ -934,7 +934,7 @@ public class RouteDetailActivity extends BaseListActivity {
         }
         mTabDetails[mTabLayout.getTabCount() - 1] = null;
         mTabLayout.removeTabAt(index);
-        changeTabDetails();
+        mTabLayout.setScrollPosition(mTabLayout.getSelectedTabPosition(),0,false);
     }
 
 

@@ -919,7 +919,7 @@ public class RoutesActivity extends BaseListActivity implements
         }
         mTabWraps[mTabLayout.getTabCount() - 1] = null;
         mTabLayout.removeTabAt(index);
-        updateTabs();
+        mTabLayout.setScrollPosition(mTabLayout.getSelectedTabPosition(),0,false);
     }
 
 
