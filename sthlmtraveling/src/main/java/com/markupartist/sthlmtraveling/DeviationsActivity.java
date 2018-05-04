@@ -447,12 +447,12 @@ public class DeviationsActivity extends BaseListActivity {
         if(words.length == 0)
             return;
         boolean check = false;
-        if(words[0].length() > mPrevSearch.length())
-            check = words[0].substring(0, mPrevSearch.length()).equals(mPrevSearch);
+        if(search.length() > mPrevSearch.length())
+            check = search.substring(0, mPrevSearch.length()).equals(mPrevSearch);
         if(!check || mFilteredResult == null)
             mFilteredResult = mAllDeviations;
 
-        mPrevSearch = words[0];
+        mPrevSearch = search;
 
 
         ArrayList<Deviation> filteredResult = mFilteredResult;
