@@ -20,21 +20,15 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.res.ColorStateList;
 import android.graphics.Color;
-import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextWatcher;
 import android.text.format.Time;
 import android.text.style.BackgroundColorSpan;
-import android.text.style.ForegroundColorSpan;
-import android.text.style.TextAppearanceSpan;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
@@ -56,6 +50,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class DeviationsActivity extends BaseListActivity {
     private static final String STATE_GET_DEVIATIONS_IN_PROGRESS =
@@ -71,6 +67,11 @@ public class DeviationsActivity extends BaseListActivity {
     private ArrayList<Deviation> mAllDeviations;
     private LinearLayout mProgress;
     private TextView mSearchEditText;
+    private Timer mFilterTimer;
+
+    private ArrayList<Deviation> mFilteredResult;
+    private String mPrevSearch = "";
+
 
 
     @Override
@@ -90,6 +91,7 @@ public class DeviationsActivity extends BaseListActivity {
         initActionBar();
         if(savedInstanceState != null){
             fillData(savedInstanceState.<Deviation>getParcelableArrayList("deviationsResult"));
+            mAllDeviations = savedInstanceState.<Deviation>getParcelableArrayList("allDeviations");
         }
         else{
             loadDeviations();
@@ -106,13 +108,32 @@ public class DeviationsActivity extends BaseListActivity {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                Log.d(TAG, "onTextChanged");
-                //unused
+                if (mFilterTimer != null) {
+                    mFilterTimer.cancel();
+                }
             }
 
             @Override
             public void afterTextChanged(Editable editable) {
-                filterResult(editable.toString());
+                if(mPrevSearch.length() == editable.length() -1)
+                    if(mPrevSearch.equals(editable.toString().substring(0,mPrevSearch.length())))
+                        mPrevSearch = editable.toString();
+
+                mFilterTimer = new Timer();
+                mFilterTimer.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        //No other thread except the one that created a view may modify it.
+                        //Thus, we pass the work to the main thread with runOnUiThread
+                        //to make the filter-updates on the listview be made there.
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                filterResult(mSearchEditText.getText().toString());
+                            }
+                        });
+                    }
+                }, 200);
             }
         });
         mSearchEditText.clearFocus();
@@ -151,15 +172,6 @@ public class DeviationsActivity extends BaseListActivity {
 
     private void fillData(ArrayList<Deviation> result) {
         TextView emptyResultView = (TextView) findViewById(R.id.deviations_empty_result);
-
-        // TODO: Needs to be moved later on...
-        if (DEVIATION_FILTER_ACTION.equals(getIntent().getAction())) {
-            SharedPreferences sharedPreferences =
-                PreferenceManager.getDefaultSharedPreferences(this);
-            String filterString = sharedPreferences.getString("notification_deviations_lines_csv", "");
-            ArrayList<Integer> triggerFor = DeviationStore.extractLineNumbers(filterString, null);
-            result = DeviationStore.filterByLineNumbers(result, triggerFor);
-        }
 
         if (result.isEmpty()) {
             Log.d(TAG, "is empty");
@@ -207,7 +219,7 @@ public class DeviationsActivity extends BaseListActivity {
             public boolean setViewValue(View view, Object data,
                     String textRepresentation) {
 
-                switch (view.getId()) {
+            switch (view.getId()) {
                 case R.id.deviation_details:
                 case R.id.deviation_header:
                 case R.id.deviation_created:
@@ -215,8 +227,8 @@ public class DeviationsActivity extends BaseListActivity {
                     String[] word = mSearchEditText.getText().toString().split(" ");
                     ((TextView)view).setText(highlight(textRepresentation, word));
                     return true;
-                }
-                return false;
+            }
+            return false;
             }
         });
 
@@ -251,6 +263,7 @@ public class DeviationsActivity extends BaseListActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         outState.putParcelableArrayList("deviationsResult", mDeviationsResult);
+        outState.putParcelableArrayList("allDeviations", mAllDeviations);
         super.onSaveInstanceState(outState);
         saveGetDeviationsTask(outState);
     }
@@ -408,46 +421,94 @@ public class DeviationsActivity extends BaseListActivity {
         startActivity(Intent.createChooser(intent, getText(R.string.share_label)));
     }
 
-    // Pretty ugly solution fix it NOW
+    /**
+     * @author Didrik Axelsson
+     * Checks if a String isnt null and only contains numbers between 0 to 9
+     */
+    private boolean isNumeric(String str){
+        if(str == null)
+            return false;
+
+        for(int i = 0; i < str.length(); i++) {
+            char c = str.charAt(i);
+            if (c < '0' || c  > '9')
+                return false;
+        }
+        return true;
+    }
+
+    /** @author Anton Ehlert
+     * @param search
+     * Filter the deviation so that the listview only displays deviations containing
+     * the search words written by the user in the editbox.
+     */
     private void filterResult(String search){
-        if (mAllDeviations == null) return;
+        if (mAllDeviations == null)
+            return;
         String[] words = search.toLowerCase().split(" ");
-        ArrayList<Deviation> filteredResult = new ArrayList<Deviation>();
-        boolean match = false;
-        for(Deviation deviation:mAllDeviations){
-            for(String word:words){
-                boolean checkA = deviation.getHeader().toLowerCase().contains(word);
-                boolean checkB = deviation.getDetails().toString().toLowerCase().contains(word);
-                boolean checkC = deviation.getScope().toLowerCase().contains(word);
-                if(!(checkA||checkB||checkC)){
-                    match = false;
-                    break;
-                }
-                else {
-                    match = true;
-                }
+        if(words.length == 0)
+            return;
+
+        boolean old_search_word_still_there = false;
+        for(int i = 0; i < words.length; i++) {
+            if (words[0].length() < words[i].length()) {
+                if(!old_search_word_still_there && words[i].equals(mPrevSearch))
+                    old_search_word_still_there = true;
+                String temp = words[0];
+                words[0] = words[i];
+                words[i] = temp;
             }
-            if (match) {
-                filteredResult.add(deviation);
+        }
+        mPrevSearch = words[0];
+        if(!old_search_word_still_there)
+            mFilteredResult = mAllDeviations;
+
+        ArrayList<Deviation> filteredResult = mFilteredResult;
+
+        ArrayList<Deviation> asd;
+        boolean first = false;
+        for(String word:words) {
+            if(word.length() > 0) {
+                boolean isNum = isNumeric(word);
+                asd = filteredResult;
+                filteredResult = new ArrayList<>();
+                for (Deviation deviation : asd) {
+                    boolean match = false;
+
+                    if (deviation.getScope().toLowerCase().contains(word)) {
+                        match = true;
+                    } else if (!isNum && deviation.getHeader().toLowerCase().contains(word)) {
+                        match = true;
+                    } else if (!isNum && deviation.getDetails().toLowerCase().contains(word)) {
+                        match = true;
+                    }
+
+                    if (match) {
+                        filteredResult.add(deviation);
+                    }
+                }
+                if (first) {
+                    first = false;
+                    mFilteredResult = filteredResult;
+                }
             }
         }
         fillData(filteredResult);
     }
 
     /***
-     * Writed by Team 8, highlight all words contained within a string
+     * @author Didirk Axelsson
+     * highlights all words in the String called "str" that matches words in the array "words"
      */
     private Spannable highlight(String str, String[] words){
         Spannable spn = new SpannableString(str);
+        str = str.toLowerCase();
         for(String word:words)
-        if(word.length() > 1) {
-            str = str.toLowerCase();
+        if(word.length() > 0) {
             word = word.toLowerCase();
             int index_start = str.indexOf(word);
             while (index_start > -1) {
-
-                BackgroundColorSpan hl = new BackgroundColorSpan(Color.YELLOW);//new TextAppearanceSpan(null, Typeface.BOLD, -1, highlightColor, null);
-
+                BackgroundColorSpan hl = new BackgroundColorSpan(Color.YELLOW);
                 spn.setSpan(hl, index_start, index_start + word.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                 index_start = str.indexOf(word, index_start + word.length());
             }
