@@ -291,13 +291,12 @@ public class RouteDetailActivity extends BaseListActivity {
             handleStarAction();
             supportInvalidateOptionsMenu();
             return true;
-        /** Blenda Fröjdh **/
+        // Send mRoute to AlarmPreferenceActivity
         case R.id.actionbar_item_alarm:
             Intent intent = new Intent(this, AlarmPreferencesActivity.class);
-            intent.putExtra("ParceableTest", mRoute);
+            intent.putExtra("ROUTE_TO_ALARM", mRoute);
             startActivity(intent);
             return true;
-        /***/
         }
         return super.onOptionsItemSelected(item);
     }

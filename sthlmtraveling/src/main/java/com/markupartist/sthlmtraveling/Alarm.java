@@ -42,36 +42,36 @@ public class Alarm extends BroadcastReceiver{
     @Override
     public void onReceive(Context context, Intent intent) {
         final long[] DEFAULT_VIBRATE_PATTERN = {0, 250, 250, 250};
-        PowerManager mPowerManager;
+        PowerManager powerManager;
         PowerManager.WakeLock mWakeLock;
 
-        mPowerManager = (PowerManager) context.getSystemService(POWER_SERVICE);
-        mWakeLock = mPowerManager.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP, "TAG");
+        powerManager = (PowerManager) context.getSystemService(POWER_SERVICE);
+        mWakeLock = powerManager.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP, "TAG");
            mWakeLock.acquire(120000);
 
         Bundle bundle = intent.getExtras();
-        String mTitle = bundle.getString("NOTIFICATION_TITLE");
-        String mMessage = bundle.getString("NOTIFICATION_TEXT");
+        String title = bundle.getString("NOTIFICATION_TITLE");
+        String message = bundle.getString("NOTIFICATION_TEXT");
 
-        Intent mDismissIntent = new Intent(context, AlarmFragment.class);
-        mDismissIntent.putExtra("intId", 1337);
-        PendingIntent pendingDismissIntent = PendingIntent.getBroadcast(context, 1, mDismissIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-
-
-        NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(context.NOTIFICATION_SERVICE);
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context);
-
-        mBuilder.addAction(R.drawable.ic_action_done, "Okay", pendingDismissIntent);
-        mBuilder.setContentTitle(mTitle);
-        mBuilder.setContentText(mMessage);
-        mBuilder.setSmallIcon(R.drawable.logo);
-        mBuilder.setDeleteIntent(pendingDismissIntent);
+        Intent dismissIntent = new Intent(context, AlarmFragment.class);
+        dismissIntent.putExtra("intId", 1337);
+        PendingIntent pendingDismissIntent = PendingIntent.getBroadcast(context, 1, dismissIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
 
-        mNotificationManager.notify(1337, mBuilder.build());
-        Vibrator mVibrator = (Vibrator) context.getSystemService(context.VIBRATOR_SERVICE);
-        mVibrator.vibrate(DEFAULT_VIBRATE_PATTERN, 0);
+
+        NotificationManager notificationManager = (NotificationManager) context.getSystemService(context.NOTIFICATION_SERVICE);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
+
+        builder.addAction(R.drawable.ic_action_done, "Okay", pendingDismissIntent);
+        builder.setContentTitle(title);
+        builder.setContentText(message);
+        builder.setSmallIcon(R.drawable.logo);
+        builder.setDeleteIntent(pendingDismissIntent);
+
+
+        notificationManager.notify(1337, builder.build());
+        Vibrator vibrator = (Vibrator) context.getSystemService(context.VIBRATOR_SERVICE);
+        vibrator.vibrate(DEFAULT_VIBRATE_PATTERN, 0);
 
 
     }
