@@ -935,6 +935,7 @@ public class RouteDetailActivity extends BaseListActivity {
         mTabDetails[mTabLayout.getTabCount() - 1] = null;
         mTabLayout.removeTabAt(index);
         mTabLayout.setScrollPosition(mTabLayout.getSelectedTabPosition(),0,false);
+        hideTabRemoveButton();
     }
 
 
@@ -966,6 +967,17 @@ public class RouteDetailActivity extends BaseListActivity {
         mRoute = mTabDetails[selectTab()].routeDetail;
         mSubTripAdapter = mTabDetails[selectTab()].subTA;
     }
+
+    /**
+     * @author Oskar Hahr
+     * Checks if tabcount is equal to one and hides the remove button if it is not
+     */
+    private void hideTabRemoveButton() {
+        if (mTabLayout.getTabCount() == 1) {
+            mTabLayout.getTabAt(0).getCustomView().findViewById(R.id.tabClose).setVisibility(View.GONE);
+        }
+    }
+
     private int selectTab(){
         return mTabLayout.getSelectedTabPosition();
     }
