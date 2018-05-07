@@ -246,4 +246,5 @@
     <string name="exit_and_name">Utgång <xliff:g id="entrance">%1$s</xliff:g></string>
     <string name="entrance">Entré</string>
     <string name="exit">Utgång</string>
+    <string name="choose_contact">Välj kontakt</string>
 </resources>

@@ -22,10 +22,12 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.provider.ContactsContract;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.LayoutRes;
 import android.support.design.widget.Snackbar;
@@ -79,6 +81,7 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements
     public static final String EXTRA_PLACE = "com.markupartist.sthlmtraveling.placesearch.stop";
 
     protected static final int REQUEST_CODE_POINT_ON_MAP = 0;
+    protected static final int REQUEST_CODE_CHOOSE_CONTACT = 1;
     private static final String STATE_SEARCH_FILTER = "STATE_SEARCH_FILTER";
 
     private static final int FILTER_TYPE_STHLM_TRAVELING = 2;
@@ -346,6 +349,7 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements
         List<SimpleItemBinder.Item> options = new ArrayList<>();
         options.add(new SimpleItemBinder.Item(R.drawable.ic_my_location_24dp, getText(R.string.my_location)));
         options.add(new SimpleItemBinder.Item(R.drawable.ic_map_24dp, getText(R.string.point_on_map)));
+        options.add(new SimpleItemBinder.Item(R.drawable.ic_account_box_24dp, getText(R.string.choose_contact)));
         mDefaultListAdapter.setOptions(options);
         mHistoryRecyclerView.setAdapter(mDefaultListAdapter);
 
@@ -372,6 +376,11 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements
                             i.putExtra(PointOnMapActivity.EXTRA_HELP_TEXT,
                                     getString(R.string.tap_your_start_point_on_map));
                             startActivityForResult(i, REQUEST_CODE_POINT_ON_MAP);
+                            break;
+                        case 2: // Added Case w. Intent to handle search w. contact - Johan Edman
+                            i = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
+                            i.setType(ContactsContract.CommonDataKinds.StructuredPostal.CONTENT_TYPE);
+                            startActivityForResult(i, REQUEST_CODE_CHOOSE_CONTACT);
                             break;
                     }
                 }
@@ -451,6 +460,26 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements
                     deliverResult(place);
                 }
                 break;
+            case REQUEST_CODE_CHOOSE_CONTACT: // Added Case to handle Intent for Search w. Contacts - Johan Edman
+                if (resultCode != Activity.RESULT_CANCELED) {
+                    if (resultCode == RESULT_OK) {
+                        Uri contactURI = data.getData();
+
+                        String contactField = ContactsContract.CommonDataKinds.StructuredPostal.FORMATTED_ADDRESS;
+                        String[] contactProjection = {contactField};
+
+                        // Not Null-Safe - Perhaps implement some type of assertion?
+                        Cursor c = getContentResolver()
+                                .query(contactURI, contactProjection, null, null, null);
+                        c.moveToFirst();
+
+                        int col = c.getColumnIndex(contactField);
+                        String address = c.getString(col);
+                        c.close();
+
+                        mSearchEdit.setText(address);
+                    }
+                }
         }
     }
 
