@@ -81,6 +81,8 @@ android {
 
 
 dependencies {
+    compile 'com.davemorrissey.labs:subsampling-scale-image-view:3.10.0'
+
     compile 'com.google.android.gms:play-services-base:11.2.2'
     compile 'com.google.android.gms:play-services-maps:11.2.2'
     compile 'com.google.android.gms:play-services-location:11.2.2'
