@@ -124,6 +124,35 @@
     <string name="nearby_stops">Närliggande hållplatser</string>
     <string name="nearby">Närliggande</string>
     <string name="time_to" formatted="false"><xliff:g id="duration">%1$s</xliff:g> till <xliff:g id="stop">%2$s</xliff:g></string>
+
+    <!--Blenda Fröjdh & Filip Appelgren  -->
+    <string name="departure_alarm">Alarm</string>
+    <string name="alarm_preferences">Alarminställningar</string>
+    <string name="enable_alarm_departure">Aktivera alarm för avresa</string>
+    <string name="enable_alarm_destination">Aktivera alarm för avstigning</string>
+    <string name="enable_alarm_everyStop">Aktivera alarm för byte av transportmedel</string>
+    <string name="alarm_set">Alarm satt!</string>
+    <string name="clear_alarms">Rensa alla alarm</string>
+    <string name="alarm_already_set">Du måste rensa alarm för att sätta nya</string>
+    <string name="time_to_go">Dags att gå!</string>
+    <string name="alarm_departure_2min">Du måste gå om 2 minuter!</string>
+    <string name="alarm_departure_5min">Du måste gå om 5 minuter!</string>
+    <string name="alarm_departure_10min">Du måste gå om 10 minuter!</string>
+    <string name="alarm_departure_15min">Du måste gå om 15 minuter!</string>
+    <string name="alarm_departure_30min">Du måste gå om 30 minuter!</string>
+    <string name="invalid_time">Den tiden har redan passerat!</string>
+    <string name="select_departure_alarm">Välj en tid för avresealarm</string>
+    <string name="select_destination_alarm">Välj en tid för avstingningsalarm</string>
+    <string name="you_are_arriving">Du kommer snart fram till</string>
+    <string name="alarms_cleared">Alarm har rensats!</string>
+    <!-- -->
+
+
+
+
+
+
+
     <!-- Phrase describing a time duration using seconds [CHAR LIMIT=16] -->
     <plurals name="duration_seconds">
         <item quantity="one">"1 sekund"</item>
