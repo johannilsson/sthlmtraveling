@@ -10,7 +10,6 @@ import android.preference.PreferenceManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
 
-import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.Logger;
 import com.google.android.gms.analytics.Tracker;
