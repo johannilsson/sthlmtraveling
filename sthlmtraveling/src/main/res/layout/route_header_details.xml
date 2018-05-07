@@ -87,4 +87,21 @@
         android:layout_toStartOf="@id/route_buy_ticket"
         tools:text="Time to staj ksdjsk djskd js jdksj dk jsk"
         />
+
+
+    <ImageButton
+        android:id="@+id/share_trip_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/background"
+        android:paddingLeft="12dp"
+        android:paddingStart="12dp"
+        android:paddingRight="6dp"
+        android:paddingEnd="6dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:padding="@dimen/list_horizontal_padding"
+        android:src="@drawable/ic_share_black_24dp"
+        />
 </RelativeLayout>
