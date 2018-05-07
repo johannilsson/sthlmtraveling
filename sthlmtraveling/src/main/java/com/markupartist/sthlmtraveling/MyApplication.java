@@ -37,7 +37,6 @@ public class MyApplication extends Application {
     public void onCreate() {
         super.onCreate();
         Fabric.with(this, new Crashlytics());
-
         reloadLocaleForApplication();
 
         DataMigrationService.startService(this);

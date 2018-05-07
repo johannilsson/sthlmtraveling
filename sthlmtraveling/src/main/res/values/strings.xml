@@ -3,16 +3,16 @@
 /*
 ** Copyright (C) 2009 Johan Nilsson <http://markupartist.com>
 **
-** Licensed under the Apache License, Version 2.0 (the "License"); 
-** you may not use this file except in compliance with the License. 
-** You may obtain a copy of the License at 
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
 **
-**     http://www.apache.org/licenses/LICENSE-2.0 
+**     http://www.apache.org/licenses/LICENSE-2.0
 **
-** Unless required by applicable law or agreed to in writing, software 
-** distributed under the License is distributed on an "AS IS" BASIS, 
-** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
-** See the License for the specific language governing permissions and 
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
 ** limitations under the License.
 */
 -->
@@ -66,7 +66,7 @@
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="retry">Retry</string>
-     <string name="point_on_map">Point on map</string>
+    <string name="point_on_map">Point on map</string>
     <string name="tap_to_select_this_point">Tap to select this point</string>
     <string name="point_selected">Point selected</string>
     <string name="tap_your_end_point_on_map">Tap your end point on the map</string>
@@ -127,6 +127,35 @@
     <string name="nearby_stops">Nearby stops</string>
     <string name="nearby">Nearby</string>
     <string name="time_to" formatted="false"><xliff:g id="duration">%1$s</xliff:g> to <xliff:g id="stop">%2$s</xliff:g></string>
+
+
+
+    <!--Blenda Fröjdh & Filip Appelgren  -->
+    <string name="departure_alarm">Alarm</string>
+    <string name="alarm_preferences">Alarm preferences</string>
+    <string name="enable_alarm_departure">Enable alarm for departure</string>
+    <string name="enable_alarm_destination">Enable alarm for destination</string>
+    <string name="enable_alarm_everyStop">Enable alarm for change of transport</string>
+    <string name="alarm_set">Alarm set!</string>
+    <string name="clear_alarms">Clear all alarms</string>
+    <string name="alarm_already_set">Clear current alarms to set new ones</string>
+    <string name="time_to_go">Time to go!</string>
+    <string name="alarm_departure_2min">You have to leave in 2 minutes!</string>
+    <string name="alarm_departure_5min">You have to leave in 5 minutes!</string>
+    <string name="alarm_departure_10min">You have to leave in 10 minutes!</string>
+    <string name="alarm_departure_15min">You have to leave in 15 minutes!</string>
+    <string name="alarm_departure_30min">You have to leave in 30 minutes!</string>
+    <string name="invalid_time">That time has already passed!</string>
+    <string name="select_departure_alarm">Select a time for departure alarm</string>
+    <string name="select_destination_alarm">Select a time for destination alarm</string>
+    <string name="you_are_arriving">You are soon arriving at</string>
+    <string name="alarms_cleared">Alarms have been cleared!</string>
+    <!-- -->
+
+
+
+
+
 
     <!-- Phrase describing a time duration using seconds [CHAR LIMIT=16] -->
     <plurals name="duration_seconds">
