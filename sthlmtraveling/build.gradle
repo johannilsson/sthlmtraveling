@@ -1,6 +1,14 @@
 apply plugin: 'com.android.application'
 apply plugin: 'io.fabric'
 
+
+repositories {
+    flatDir {
+        dirs 'libs'
+    }
+}
+
+
 // Load application build configuration.
 def buildProperties = new Properties()
 def buildProdFile = new File('build_prod.properties')
@@ -15,13 +23,14 @@ android {
     final BASE_PROVIDER_DEBUG = "com.markupartist.sthlmtraveling.debug"
     final BASE_PROVIDER_RELEASE = "com.markupartist.sthlmtraveling"
 
-    compileSdkVersion 26
-    buildToolsVersion '26.0.2'
+    compileSdkVersion 28
+//    buildToolsVersion '27.0.3'
     useLibrary 'org.apache.http.legacy'
+
 
     defaultConfig {
         minSdkVersion 14
-        targetSdkVersion 26
+        targetSdkVersion 27
         applicationId "com.markupartist.sthlmtraveling"
         versionName "2.19.1"
         versionCode 208
@@ -81,25 +90,24 @@ android {
 
 
 dependencies {
-    compile 'com.google.android.gms:play-services-base:11.2.2'
-    compile 'com.google.android.gms:play-services-maps:11.2.2'
-    compile 'com.google.android.gms:play-services-location:11.2.2'
-    compile 'com.google.android.gms:play-services-analytics:11.2.2'
-    compile 'com.google.android.gms:play-services-ads:11.2.2'
-    compile 'com.android.support:recyclerview-v7:26.1.0'
-    compile 'com.android.support:appcompat-v7:26.1.0'
-    compile 'com.android.support:support-v4:26.1.0'
-    compile 'com.android.support:percent:26.1.0'
-    compile 'com.android.support:design:26.1.0'
-    compile 'com.android.support:customtabs:26.1.0'
-    compile 'com.squareup.okhttp:okhttp:2.4.0'
-    compile 'com.google.code.gson:gson:2.8.0'
-    compile 'com.squareup.retrofit:retrofit:1.9.0'
-    compile 'com.yqritc:recyclerview-multiple-viewtypes-adapter:1.1.0'
-    compile 'org.slf4j:slf4j-android:1.7.10'
-    compile files('libs/widespace-sdk-4.9.1-98c1ae7.jar')
-    compile files('libs/wisper-java-1.0-rc8.jar')
-    compile('com.crashlytics.sdk.android:crashlytics:2.6.1@aar') {
-        transitive = true;
+    implementation 'com.google.android.gms:play-services-base:16.0.1'
+    implementation 'com.google.android.gms:play-services-maps:16.0.0'
+    implementation 'com.google.android.gms:play-services-location:16.0.0'
+    implementation 'com.google.android.gms:play-services-analytics:16.0.6'
+    implementation 'com.google.android.gms:play-services-ads:12.0.1'
+    implementation 'com.android.support:recyclerview-v7:28.0.0'
+    implementation 'com.android.support:appcompat-v7:28.0.0'
+    implementation 'com.android.support:support-v4:28.0.0'
+    implementation 'com.android.support:percent:28.0.0'
+    implementation 'com.android.support:design:28.0.0'
+    implementation 'com.android.support:customtabs:28.0.0'
+    implementation 'com.squareup.okhttp:okhttp:2.6.0'
+    implementation 'com.google.code.gson:gson:2.8.2'
+    implementation 'com.squareup.retrofit:retrofit:1.9.0'
+    implementation 'com.yqritc:recyclerview-multiple-viewtypes-adapter:1.1.0'
+    implementation 'org.slf4j:slf4j-android:1.7.10'
+    implementation 'com.widespace:widespace-sdk-4.10.3-c83b197@aar'
+    implementation('com.crashlytics.sdk.android:crashlytics:2.6.1@aar') {
+        transitive = true
     }
 }

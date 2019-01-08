@@ -167,6 +167,9 @@ public class AdProxy {
         }
 
         AdSpace adSpace = new AdSpace(mContext, id, true, false);
+        adSpace.setLayoutParams(new AdSpace.LayoutParams(
+            AdSpace.LayoutParams.MATCH_PARENT,
+            AdSpace.LayoutParams.WRAP_CONTENT));
 
         if (ContextCompat.checkSelfPermission(mContext,
                 Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
@@ -235,7 +238,7 @@ public class AdProxy {
         adSpace.setAdErrorEventListener(new AdErrorEventListener() {
             @Override
             public void onFailedWithError(Object o, ExceptionTypes exceptionTypes, String s, Exception e) {
-                Log.e(TAG, "Widespace: " + s);
+                Log.e(TAG, "Widespace: " + s, e);
             }
         });
 
