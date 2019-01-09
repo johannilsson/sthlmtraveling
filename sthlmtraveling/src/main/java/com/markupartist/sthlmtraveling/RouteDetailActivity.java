@@ -87,6 +87,8 @@ import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
+import static com.markupartist.sthlmtraveling.AppConfig.ADMOB_ROUTE_DETAILS_AD_UNIT_ID;
+
 public class RouteDetailActivity extends BaseListActivity {
     public static final String TAG = "RouteDetailActivity";
 
@@ -128,14 +130,13 @@ public class RouteDetailActivity extends BaseListActivity {
         View headerView = getLayoutInflater().inflate(R.layout.route_header_details, null);
 
         if (shouldShowAds(mJourneyQuery.hasPromotions)) {
-            Pair<AdProxy.Provider, String> adConf = AppConfig.getAdConfForRouteDetails(mJourneyQuery.promotionNetwork);
-            mAdProxy = new AdProxy(this, adConf.first, adConf.second);
+            mAdProxy = new AdProxy(this, ADMOB_ROUTE_DETAILS_AD_UNIT_ID);
         }
 
         ViewGroup adContainer = null;
-        if (mAdProxy != null && AdProxy.Provider.WIDESPACE == mAdProxy.getProvider()) {
-            mAdProxy.load();
+        if (mAdProxy != null) {
             adContainer = mAdProxy.getAdWithContainer(getListView(), false);
+            mAdProxy.load();
         }
 
         TextView timeView = (TextView) headerView.findViewById(R.id.route_date_time);

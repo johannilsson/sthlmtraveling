@@ -24,7 +24,6 @@ android {
     final BASE_PROVIDER_RELEASE = "com.markupartist.sthlmtraveling"
 
     compileSdkVersion 28
-//    buildToolsVersion '27.0.3'
     useLibrary 'org.apache.http.legacy'
 
 
@@ -33,15 +32,18 @@ android {
         targetSdkVersion 27
         applicationId "com.markupartist.sthlmtraveling"
         versionName "2.19.1"
-        versionCode 208
+        versionCode 209
 
         buildConfigField "boolean", "APP_IS_ADS_ENABLED", buildProperties['IS_ADS_ENABLED']
         buildConfigField "String", "APP_WIDESPACE_SID", buildProperties['WIDESPACE_SID']
         buildConfigField "String", "APP_WIDESPACE_DEBUG_SID", buildProperties['WIDESPACE_DEBUG_SID']
         buildConfigField "String", "APP_STHLMTRAVELING_API_KEY", buildProperties['STHLMTRAVELING_API_KEY']
         buildConfigField "String", "APP_ANALYTICS_PROPERTY_KEY", buildProperties['ANALYTICS_PROPERTY_KEY']
+        buildConfigField "String", "ADMOB_ROUTE_DETAILS_AD_UNIT_ID", buildProperties['ADMOB_ROUTE_DETAILS_AD_UNIT_ID']
+        buildConfigField "String", "ADMOB_TEST_DEVICES", buildProperties['ADMOB_TEST_DEVICES']
 
         resValue "string", "google_maps_api_key", buildProperties['GOOGLE_MAPS_API_KEY']
+        resValue "string", "admob_app_id", buildProperties['ADMOB_APP_ID']
     }
 
     compileOptions {
@@ -94,19 +96,16 @@ dependencies {
     implementation 'com.google.android.gms:play-services-maps:16.0.0'
     implementation 'com.google.android.gms:play-services-location:16.0.0'
     implementation 'com.google.android.gms:play-services-analytics:16.0.6'
-    implementation 'com.google.android.gms:play-services-ads:12.0.1'
+    implementation 'com.google.android.gms:play-services-ads:17.1.2'
     implementation 'com.android.support:recyclerview-v7:28.0.0'
     implementation 'com.android.support:appcompat-v7:28.0.0'
     implementation 'com.android.support:support-v4:28.0.0'
     implementation 'com.android.support:percent:28.0.0'
     implementation 'com.android.support:design:28.0.0'
-    implementation 'com.android.support:customtabs:28.0.0'
     implementation 'com.squareup.okhttp:okhttp:2.6.0'
     implementation 'com.google.code.gson:gson:2.8.2'
     implementation 'com.squareup.retrofit:retrofit:1.9.0'
     implementation 'com.yqritc:recyclerview-multiple-viewtypes-adapter:1.1.0'
-    implementation 'org.slf4j:slf4j-android:1.7.10'
-    implementation 'com.widespace:widespace-sdk-4.10.3-c83b197@aar'
     implementation('com.crashlytics.sdk.android:crashlytics:2.6.1@aar') {
         transitive = true
     }

@@ -289,5 +289,9 @@
             android:name="io.fabric.ApiKey"
             android:value="8e01e50d8310d281bb91a5129c8cf514d866cac8"/>
 
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="@string/admob_app_id"/>
+
     </application>
 </manifest>
