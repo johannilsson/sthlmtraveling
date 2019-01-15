@@ -23,10 +23,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="24dp"
-    android:paddingLeft="@dimen/list_horizontal_padding"
-    android:paddingRight="@dimen/list_horizontal_padding"
-    android:paddingTop="32dp"
+    android:paddingStart="@dimen/list_horizontal_padding"
+    android:paddingEnd="@dimen/list_horizontal_padding"
+    android:layout_marginTop="16dp"
     android:visibility="visible">
 
     <LinearLayout

@@ -26,6 +26,7 @@ import android.location.Location;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.ColorInt;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.text.BidiFormatter;
 import android.support.v4.util.Pair;
@@ -51,6 +52,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.MapsInitializer;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.UiSettings;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.markupartist.sthlmtraveling.data.api.ApiService;
 import com.markupartist.sthlmtraveling.data.models.Alert;
 import com.markupartist.sthlmtraveling.data.models.IntermediateResponse;
@@ -70,6 +82,7 @@ import com.markupartist.sthlmtraveling.utils.Analytics;
 import com.markupartist.sthlmtraveling.utils.DateTimeUtil;
 import com.markupartist.sthlmtraveling.utils.LegUtil;
 import com.markupartist.sthlmtraveling.utils.Monitor;
+import com.markupartist.sthlmtraveling.utils.PolyUtil;
 import com.markupartist.sthlmtraveling.utils.RtlUtils;
 import com.markupartist.sthlmtraveling.utils.ViewHelper;
 import com.markupartist.sthlmtraveling.utils.text.RoundedBackgroundSpan;
@@ -89,7 +102,7 @@ import retrofit.client.Response;
 
 import static com.markupartist.sthlmtraveling.AppConfig.ADMOB_ROUTE_DETAILS_AD_UNIT_ID;
 
-public class RouteDetailActivity extends BaseListActivity {
+public class RouteDetailActivity extends BaseListActivity implements OnMapReadyCallback {
     public static final String TAG = "RouteDetailActivity";
 
     public static final String EXTRA_ROUTE = "sthlmtraveling.intent.extra.ROUTE";
@@ -107,6 +120,17 @@ public class RouteDetailActivity extends BaseListActivity {
     private ApiService mApiService;
     private Monitor mMonitor;
     private View mFooterView;
+    private GoogleMap map;
+
+    void setupMapHeader() {
+        View layout = getLayoutInflater().inflate(R.layout.route_map_row, null);
+        getListView().addHeaderView(layout, null, false);
+        MapView mapView = layout.findViewById(R.id.lite_map);
+        if (mapView != null) {
+            mapView.onCreate(null);
+            mapView.getMapAsync(this);
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -170,6 +194,7 @@ public class RouteDetailActivity extends BaseListActivity {
         if (adContainer != null) {
             getListView().addHeaderView(adContainer, null, false);
         }
+        setupMapHeader();
         getListView().addHeaderView(headerView, null, false);
 
         mSubTripAdapter = new SubTripAdapter(this);
@@ -497,6 +522,90 @@ public class RouteDetailActivity extends BaseListActivity {
                         Journeys.CONTENT_URI, values);
             }
         }
+    }
+
+    @Override public void onMapReady(GoogleMap googleMap) {
+        MapsInitializer.initialize(getApplicationContext());
+        map = googleMap;
+        if (map == null) {
+            return;
+        }
+
+        List<LatLng> latLngs = showTransitRoute(mRoute);
+        zoomToFit(latLngs);
+
+        UiSettings settings = map.getUiSettings();
+        settings.setMapToolbarEnabled(false);
+
+        map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+        map.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+            @Override public void onMapClick(LatLng latLng) {
+                if (mRoute.fromStop().hasLocation()) {
+                    startActivity(ViewOnMapActivity.createIntent(RouteDetailActivity.this,
+                        mRoute, mJourneyQuery, null));
+                }
+            }
+        });
+    }
+
+    public List<LatLng> showTransitRoute(Route route) {
+        map.clear();
+
+        List<LatLng> all = new ArrayList<>();
+        for (Leg leg : route.getLegs()) {
+            if (!leg.isTransit()) {
+                continue;
+            }
+
+            int legColor = LegUtil.getColor(this, leg);
+
+            float[] hsv = new float[3];
+            Color.colorToHSV(legColor, hsv);
+            if (leg.getGeometry() != null) {
+                // If we have a geometry draw that.
+                List<LatLng> latLgns = PolyUtil.decode(leg.getGeometry());
+                drawPolyline(latLgns, legColor);
+                all.addAll(latLgns);
+            } else {
+                // One polyline per leg, different colors.
+                PolylineOptions options = new PolylineOptions();
+                for (IntermediateStop stop : leg.getIntermediateStops()) {
+                    LatLng intermediateStop = new LatLng(
+                        stop.getLocation().getLat(),
+                        stop.getLocation().getLon());
+                    options.add(intermediateStop);
+                    all.add(intermediateStop);
+                }
+                map.addPolyline(options
+                    .width(ViewHelper.dipsToPix(getResources(), 4))
+                    .color(legColor));
+            }
+        }
+        return all;
+    }
+
+    private void drawPolyline(List<LatLng> latLngs, @ColorInt int color) {
+        Polyline poly = map.addPolyline(new PolylineOptions()
+            .zIndex(1000)
+            .addAll(latLngs)
+            .width(ViewHelper.dipsToPix(getResources(), 3))
+            .color(color)
+            .geodesic(true));
+        poly.setZIndex(Float.MAX_VALUE);
+    }
+
+    private void zoomToFit(List<LatLng> latLngs) {
+        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+
+        for (LatLng latLng : latLngs) {
+            builder.include(latLng);
+        }
+
+        LatLngBounds bounds = builder.build();
+
+        CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, 0);
+        map.moveCamera(cu);
+        //mMap.animateCamera(cu);
     }
 
     /**

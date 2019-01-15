@@ -199,8 +199,9 @@ public class ViewOnMapActivity extends BaseFragmentActivity implements OnMapRead
         });
     }
 
-    public void showTransitRoute(Route route) {
+    public List<LatLng> showTransitRoute(Route route) {
         mMap.clear();
+        List<LatLng> all = new ArrayList<>();
 
         for (Leg leg : route.getLegs()) {
             int legColor = LegUtil.getColor(this, leg);
@@ -212,6 +213,7 @@ public class ViewOnMapActivity extends BaseFragmentActivity implements OnMapRead
             LatLng origin = new LatLng(
                     leg.getFrom().getLat(),
                     leg.getFrom().getLon());
+            all.add(origin);
 
             mMap.addMarker(new MarkerOptions()
                     .position(origin)
@@ -222,6 +224,7 @@ public class ViewOnMapActivity extends BaseFragmentActivity implements OnMapRead
             LatLng destination = new LatLng(
                     leg.getTo().getLat(),
                     leg.getTo().getLon());
+            all.add(destination);
             mMap.addMarker(new MarkerOptions()
                     .position(destination)
                     .title(getLocationName(leg.getTo()))
@@ -232,6 +235,7 @@ public class ViewOnMapActivity extends BaseFragmentActivity implements OnMapRead
                 // If we have a geometry draw that.
                 List<LatLng> latLgns = PolyUtil.decode(leg.getGeometry());
                 drawPolyline(latLgns, legColor);
+                all.addAll(latLgns);
             } else {
                 // One polyline per leg, different colors.
                 PolylineOptions options = new PolylineOptions();
@@ -242,6 +246,7 @@ public class ViewOnMapActivity extends BaseFragmentActivity implements OnMapRead
                         stop.getLocation().getLat(),
                         stop.getLocation().getLon());
                     options.add(intermediateStop);
+                    all.add(intermediateStop);
                 }
                 mMap.addPolyline(options
                         .width(ViewHelper.dipsToPix(getResources(), 8))
@@ -271,6 +276,7 @@ public class ViewOnMapActivity extends BaseFragmentActivity implements OnMapRead
                 showEntrances(leg.getTo().getEntrances(), true);
             }
         }
+        return all;
     }
 
     public String getRouteDescription(Leg leg) {
@@ -330,11 +336,15 @@ public class ViewOnMapActivity extends BaseFragmentActivity implements OnMapRead
 
     private void setUpMap() {
         if (mTransitRoute != null && mJourneyQuery != null) {
-            showTransitRoute(mTransitRoute);
+            List<LatLng> latLngs = showTransitRoute(mTransitRoute);
             loadIntermediateStops(mTransitRoute);
-            mMap.moveCamera(CameraUpdateFactory.newCameraPosition(
+            if (mFocusedLatLng != null) {
+                mMap.moveCamera(CameraUpdateFactory.newCameraPosition(
                     CameraPosition.fromLatLngZoom(mFocusedLatLng, 16)
-            ));
+                ));
+            } else {
+                zoomToFit(latLngs);
+            }
         } else if (mRoute != null) {
             List<LatLng> latLngs = showRoute(mRoute);
             zoomToFit(latLngs);
