@@ -34,10 +34,16 @@
     </PreferenceCategory>
     <PreferenceCategory
             android:title="@string/dialog_notification_preferences">
+        <Preference
+            android:key="notification_disabled"
+            android:title="@string/notifications_disabled_title"
+            android:summary="@string/notifications_disabled_summary"
+        />
         <CheckBoxPreference
             android:key="notification_deviations_enabled"
             android:title="@string/deviation_notification_preference"
-            android:summary="@string/deviation_notification_summary_preference" 
+            android:summary="@string/deviation_notification_summary_preference"
+            android:enabled="false"
             />
          <ListPreference
                 android:negativeButtonText="@string/cancel"
@@ -47,6 +53,7 @@
                 android:entries="@array/entries_deviations_preference"
                 android:entryValues="@array/entryvalues_deviations_preference"
                 android:dependency="notification_deviations_enabled"
+                android:enabled="false"
                 />
         <EditTextPreference
             android:key="notification_deviations_lines_csv"
@@ -55,6 +62,7 @@
             android:dialogMessage="@string/deviation_lines_dialog_message_preference"
             android:dependency="notification_deviations_enabled"
             android:hint="4,42"
+            android:enabled="false"
             />
     </PreferenceCategory>
     <PreferenceCategory

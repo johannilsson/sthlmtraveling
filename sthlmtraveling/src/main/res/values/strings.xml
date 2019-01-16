@@ -244,6 +244,9 @@
     <string name="pref_deviations_interval_4">45 min</string>
     <string name="pref_deviations_interval_5">1 h</string>
 
+    <string name="notifications_disabled_title">Notifications disabled</string>
+    <string name="notifications_disabled_summary">This feature is having a make over.</string>
+
     <!-- Ads -->
     <string name="ads">Ads</string>
     <string name="ads_title">Why Ads?</string>
@@ -260,4 +263,5 @@
     <string name="entrance">Entrance</string>
     <string name="exit">Exit</string>
     <string name="bike_rental">Rental bike</string>
+
 </resources>

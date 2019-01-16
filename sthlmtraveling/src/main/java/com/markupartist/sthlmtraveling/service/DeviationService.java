@@ -7,7 +7,6 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
@@ -93,50 +92,22 @@ public class DeviationService extends WakefulIntentService {
     }
 
     public static void startAsRepeating(Context context) {
-        SharedPreferences sharedPreferences =
-            PreferenceManager.getDefaultSharedPreferences(context);
-
-        boolean enabled =
-            sharedPreferences.getBoolean("notification_deviations_enabled", false);
-        Log.d(TAG, "notification_deviations_enabled: " + enabled);
-
-        AlarmManager mgr =
-            (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
-
-        Intent i = new Intent(context, OnAlarmReceiver.class);
-        PendingIntent pi = PendingIntent.getBroadcast(context, 0, i, 0);
-
-        if (enabled) {
-            Log.d(TAG, "Starting DeviationService in the background");
-            // Default one hour.
-            long updateInterval = Long.parseLong(
-                    sharedPreferences.getString("notification_deviations_update_interval", "3600000"));
-            mgr.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,
-                    SystemClock.elapsedRealtime() + 60000,
-                    updateInterval,
-                    pi);        
-        } else {
-            mgr.cancel(pi);
-        }
+        stopService(context);
     }
 
     public static void startService(Context context) {
+        stopService(context);
+    }
+
+    public static void stopService(Context context) {
         SharedPreferences sharedPreferences =
             PreferenceManager.getDefaultSharedPreferences(context);
-
-        boolean enabled =
-            sharedPreferences.getBoolean("notification_deviations_enabled", false);
-
-        if (enabled) {
-            WakefulIntentService.acquireStaticLock(context);
-            context.startService(new Intent(context, DeviationService.class));
-        } else {
-            Log.d(TAG, "Stopping DeviationService");
-            AlarmManager mgr =
-                (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
-            Intent i = new Intent(context, OnAlarmReceiver.class);
-            PendingIntent pi = PendingIntent.getBroadcast(context, 0, i, 0);
-            mgr.cancel(pi);
-        }
+        AlarmManager mgr =
+            (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
+        Intent i = new Intent(context, OnAlarmReceiver.class);
+        PendingIntent pi = PendingIntent.getBroadcast(context, 0, i, 0);
+        mgr.cancel(pi);
+        sharedPreferences.edit().putBoolean("notification_deviations_enabled", false).apply();
+        Log.d(TAG, "Deviation service stopped");
     }
 }
