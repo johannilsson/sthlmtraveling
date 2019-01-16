@@ -2,11 +2,8 @@ Changelog
 ---------
 * Next
     * Change to use AdMob for ads
-* Planned
-    * Fix issue that caused the wrong destination to show in details. (test to address near telefonplan)
     * Add map view to route details
     * Remove alert notifications
-    * Add support to change origin and destination from route suggestions
 * 2.19.1 (2018-02-27)
     * Fix crash in detailed view, ad related
     * Remove Google Places search
