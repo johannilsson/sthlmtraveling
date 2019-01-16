@@ -26,6 +26,7 @@ import android.location.Location;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.ColorInt;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.text.BidiFormatter;
@@ -531,9 +532,6 @@ public class RouteDetailActivity extends BaseListActivity implements OnMapReadyC
             return;
         }
 
-        List<LatLng> latLngs = showTransitRoute(mRoute);
-        zoomToFit(latLngs);
-
         UiSettings settings = map.getUiSettings();
         settings.setMapToolbarEnabled(false);
 
@@ -546,6 +544,15 @@ public class RouteDetailActivity extends BaseListActivity implements OnMapReadyC
                 }
             }
         });
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                List<LatLng> latLngs = showTransitRoute(mRoute);
+                zoomToFit(latLngs);
+
+            }
+        }, 100);
     }
 
     public List<LatLng> showTransitRoute(Route route) {
