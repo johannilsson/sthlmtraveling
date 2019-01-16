@@ -32,6 +32,7 @@
         android:supportsRtl="true"
         android:hardwareAccelerated="true"
         >
+        <uses-library android:name="org.apache.http.legacy" android:required="false"/>
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version"/>
@@ -261,7 +262,7 @@
 
         <service
             android:name=".service.DeviationService"
-            android:enabled="true"
+            android:enabled="false"
             android:exported="false"
             />
         <service
