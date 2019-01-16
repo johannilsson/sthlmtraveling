@@ -55,7 +55,9 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.maps.model.LatLng;
 import com.markupartist.sthlmtraveling.provider.HistoryDbAdapter;
 import com.markupartist.sthlmtraveling.provider.site.Site;
+import com.markupartist.sthlmtraveling.ui.adapter.PlaceFilterResultCallback;
 import com.markupartist.sthlmtraveling.ui.adapter.PlaceItem;
+import com.markupartist.sthlmtraveling.ui.adapter.PlaceItemResultCallback;
 import com.markupartist.sthlmtraveling.ui.adapter.PlaceSearchResultAdapter;
 import com.markupartist.sthlmtraveling.ui.adapter.SiteFilter;
 import com.markupartist.sthlmtraveling.ui.view.ItemClickSupport;
@@ -292,7 +294,7 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements
         mSearchResultRecyclerView.setAdapter(mSearchResultAdapter);
 
         // Search result filters.
-        AutocompleteResultCallback autocompleteResultCallback = new AutocompleteResultCallback();
+        AutocompleteResultCallbackPlace autocompleteResultCallback = new AutocompleteResultCallbackPlace();
         mSthlmTravelingSearchFilter = new SiteFilter(mSearchResultAdapter, this, mSearchOnlyStops);
         mSthlmTravelingSearchFilter.setFilterResultCallback(autocompleteResultCallback);
 
@@ -311,8 +313,7 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements
                     // hold by the adapter, this is a guard for these cases.
                     if (position >= 0 && position < mSearchResultAdapter.getContentItemCount()) {
                         PlaceItem item = mSearchResultAdapter.getItem(position);
-                        mSearchResultAdapter.getFilter().setResultCallback(item,
-                                new PlaceSearchResultAdapter.PlaceFilter.PlaceItemResultCallback() {
+                        mSearchResultAdapter.getFilter().setResultCallback(item, new PlaceItemResultCallback() {
                             @Override
                             public void onResult(Site site) {
                                 deliverResult(site);
@@ -513,7 +514,7 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements
         }
     }
 
-    private class AutocompleteResultCallback implements PlaceSearchResultAdapter.PlaceFilter.FilterResultCallback {
+    private class AutocompleteResultCallbackPlace implements PlaceFilterResultCallback {
 
         @Override
         public void onSuccess() {

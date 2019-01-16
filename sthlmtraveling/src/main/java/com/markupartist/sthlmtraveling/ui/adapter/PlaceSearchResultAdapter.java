@@ -205,14 +205,14 @@ public class PlaceSearchResultAdapter extends HeaderFooterRecyclerViewAdapter im
     public static abstract class PlaceFilter extends Filter {
         private final PlaceSearchResultAdapter mAdapter;
         private boolean mWasSuccess;
-        private FilterResultCallback mFilterResultCallback;
+        private PlaceFilterResultCallback mPlaceFilterResultCallback;
 
         public PlaceFilter(PlaceSearchResultAdapter adapter) {
             mAdapter = adapter;
         }
 
-        public void setFilterResultCallback(FilterResultCallback filterResultCallback) {
-            mFilterResultCallback = filterResultCallback;
+        public void setFilterResultCallback(PlaceFilterResultCallback placeFilterResultCallback) {
+            mPlaceFilterResultCallback = placeFilterResultCallback;
         }
 
         public void setStatus(boolean wasSuccess) {
@@ -222,11 +222,11 @@ public class PlaceSearchResultAdapter extends HeaderFooterRecyclerViewAdapter im
         @SuppressWarnings("unchecked")
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
-            if (mFilterResultCallback != null) {
+            if (mPlaceFilterResultCallback != null) {
                 if (mWasSuccess) {
-                    mFilterResultCallback.onSuccess();
+                    mPlaceFilterResultCallback.onSuccess();
                 } else {
-                    mFilterResultCallback.onError();
+                    mPlaceFilterResultCallback.onError();
                 }
             }
 
@@ -242,16 +242,5 @@ public class PlaceSearchResultAdapter extends HeaderFooterRecyclerViewAdapter im
 
         public abstract void setResultCallback(PlaceItem item, PlaceItemResultCallback resultCallback);
 
-        public interface FilterResultCallback {
-            void onSuccess();
-            void onError();
-        }
-
-        public interface PlaceItemResultCallback {
-            // TODO: Replace with Place.
-            void onResult(Site site);
-
-            void onError();
-        }
     }
 }
