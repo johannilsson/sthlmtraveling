@@ -1,19 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
     <!--
-  ~ Copyright (C) 2009-2016 Johan Nilsson <http://markupartist.com>
-  ~
-  ~ Licensed under the Apache License, Version 2.0 (the "License");
-  ~ you may not use this file except in compliance with the License.
-  ~ You may obtain a copy of the License at
-  ~
-  ~      http://www.apache.org/licenses/LICENSE-2.0
-  ~
-  ~ Unless required by applicable law or agreed to in writing, software
-  ~ distributed under the License is distributed on an "AS IS" BASIS,
-  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  ~ See the License for the specific language governing permissions and
-  ~ limitations under the License.
-  -->
+/*
+** Copyright (C) 2009 Johan Nilsson <http://markupartist.com>
+**
+** Licensed under the Apache License, Version 2.0 (the "License"); 
+** you may not use this file except in compliance with the License. 
+** You may obtain a copy of the License at 
+**
+**     http://www.apache.org/licenses/LICENSE-2.0 
+**
+** Unless required by applicable law or agreed to in writing, software 
+** distributed under the License is distributed on an "AS IS" BASIS, 
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+** See the License for the specific language governing permissions and 
+** limitations under the License.
+*/
+-->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- General strings -->
     <string name="ok">OK</string>
@@ -126,8 +128,8 @@
     <string name="time_to" formatted="false"><xliff:g id="duration">%1$s</xliff:g> nach <xliff:g id="stop">%2$s</xliff:g></string>
     <!-- Phrase describing a time duration using seconds [CHAR LIMIT=16] -->
     <plurals name="duration_seconds">
-        <item quantity="one">"1 Sekunde"</item>
-        <item quantity="other">"<xliff:g id="count">%d</xliff:g> Sekunden"</item>
+        <item quantity="one">1 Sekunde</item>
+        <item quantity="other"><xliff:g id="count">%d</xliff:g> Sekunden</item>
     </plurals>
     <!-- Phrase describing a time duration using minutes [CHAR LIMIT=16] -->
     <plurals name="duration_minutes">
@@ -232,6 +234,8 @@
     <string name="pref_deviations_interval_3">30 Min.</string>
     <string name="pref_deviations_interval_4">45 Min.</string>
     <string name="pref_deviations_interval_5">1 Std.</string>
+    <string name="notifications_disabled_title">Benachrichtigungen nicht aktiviert</string>
+    <string name="notifications_disabled_summary">Diese Funktion wird zur Zeit überarbeitet</string>
     <!-- Ads -->
     <string name="ads">Werbung</string>
     <string name="ads_title">Warum Werbung?</string>
@@ -242,4 +246,9 @@
     <string name="permission_location_needed_maps">Aktivieren Sie Standortdienste um Ihre Position auf der Karte zu sehen</string>
     <string name="allow">Zulassen</string>
     <string name="distance_in_meter"><xliff:g id="distance">%1$s</xliff:g>Min.</string>
+    <string name="entrance_and_name">Eingang <xliff:g id="entrance">%1$s</xliff:g></string>
+    <string name="exit_and_name">Ausgang <xliff:g id="entrance">%1$s</xliff:g></string>
+    <string name="entrance">Eingang</string>
+    <string name="exit">Ausgang</string>
+    <string name="bike_rental">Fahrrad Vermietung</string>
 </resources>

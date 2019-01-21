@@ -35,7 +35,7 @@
     <string name="bad_routes_parameters_message">Начало или конец маршрута не должны быть пустыми.</string>
     <string name="new_search">ИСКАТЬ</string>
     <string name="empty_value">Отсутствует или некорректно введено</string>
-    <string name="loading">Идет поиск. Пожалуйста, подождите...</string>
+    <string name="loading">Идет поиск. Пожалуйста, подождите…</string>
     <string name="my_location">Текущее местоположение</string>
     <string name="change_date_and_time">Изменить дату и время</string>
     <string name="reverse_start_end">Поменять местами начало и конец</string>
@@ -43,7 +43,7 @@
     <string name="about_this_app">"Приложение STHLM Traveling разработано Johan Nilsson. Пожалуйста, свяжитесь с ним, если у вас есть идеи о том как улучшить приложение или вы обнаружили проблемы\n\nВсе данные о расписании транспорта получены с разрешения Trafiklab и SL - Stockholm Public Transport.\n\nПриложение использует Crashlytics и Google Analytics для сбора анонимной статистики для последующего улучшения приложения.\n\n<b>Благодарности</b>\n\nМножество людей внесло свой вклад в развитие данного проекта, для просмотра полного списка этих героев обратитесь к http://www.sthlmtraveling.se\n\n//Johan Nilsson johan@markupartist.com http://markupartist.com \n\nИсходный код \nhttp://github.com/johannilsson/sthlmtraveling \n\nПолитика конфиденциальности \nhttp://sthlmtraveling.se/privacy.html "</string>
     <string name="donate_url">http://pledgie.com/campaigns/6527</string>
     <string name="feedback">Обратная связь</string>
-    <string name="send_email">Отправить email...</string>
+    <string name="send_email">Отправить email…</string>
     <string name="favorites_label">Избранное</string>
     <string name="no_favorites"><b>У вас пока нет избранных маршрутов...</b>\nВы можете добавить или удалить избранный маршрут нажимая на звездочку после поиска.</string>
     <string name="reverse_search">Поиск обратного маршрута</string>
@@ -128,10 +128,10 @@
     <string name="time_to" formatted="false"><xliff:g id="duration">%1$s</xliff:g> до <xliff:g id="stop">%2$s</xliff:g></string>
     <!-- Phrase describing a time duration using seconds [CHAR LIMIT=16] -->
     <plurals name="duration_seconds">
-        <item quantity="one">"<xliff:g id="count">%d</xliff:g> секунда"</item>
-        <item quantity="other">"<xliff:g id="count">%d</xliff:g> секунд"</item>
-        <item quantity="few">"<xliff:g id="count">%d</xliff:g> секунды"</item>
-        <item quantity="many">"<xliff:g id="count">%d</xliff:g> секунд"</item>
+        <item quantity="one"><xliff:g id="count">%d</xliff:g> секунда</item>
+        <item quantity="other"><xliff:g id="count">%d</xliff:g> секунд</item>
+        <item quantity="few"><xliff:g id="count">%d</xliff:g> секунды</item>
+        <item quantity="many"><xliff:g id="count">%d</xliff:g> секунд</item>
     </plurals>
     <!-- Phrase describing a time duration using minutes [CHAR LIMIT=16] -->
     <plurals name="duration_minutes">
@@ -246,6 +246,8 @@
     <string name="pref_deviations_interval_3">30 мин.</string>
     <string name="pref_deviations_interval_4">45 мин.</string>
     <string name="pref_deviations_interval_5">1 ч.</string>
+    <string name="notifications_disabled_title">Напоминания отключены</string>
+    <string name="notifications_disabled_summary">Данная функция не поддерживается</string>
     <!-- Ads -->
     <string name="ads">Реклама</string>
     <string name="ads_title">Зачем здесь реклама?</string>
@@ -260,4 +262,5 @@
     <string name="exit_and_name">Выход <xliff:g id="entrance">%1$s</xliff:g></string>
     <string name="entrance">Вход</string>
     <string name="exit">Выход</string>
+    <string name="bike_rental">Аренда велосипеда</string>
 </resources>
