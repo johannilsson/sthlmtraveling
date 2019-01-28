@@ -58,11 +58,12 @@ public class NearbyActivity extends BaseFragmentActivity implements
 
         setContentView(R.layout.nearby);
 
-        mRecyclerView = (RecyclerView) findViewById(R.id.nearby_recycler_view);
-        mProgressBar = (ProgressBar) findViewById(R.id.search_progress_bar);
+        mRecyclerView = findViewById(R.id.nearby_recycler_view);
+        mProgressBar = findViewById(R.id.search_progress_bar);
 
         setupRecyclerView();
         initActionBar();
+        verifyLocationPermission();
 
         if (savedInstanceState != null) {
             if (savedInstanceState.containsKey(STATE_NEARBY_STOPS)) {
@@ -71,10 +72,6 @@ public class NearbyActivity extends BaseFragmentActivity implements
                     mNearbyStopsAdapter.fill(nearbyStops);
                 }
             }
-        }
-
-        if (mNearbyStopsAdapter.getItemCount() == 0) {
-            requestUpdate();
         }
     }
 
@@ -198,6 +195,29 @@ public class NearbyActivity extends BaseFragmentActivity implements
         startActivity(i);
     }
 
+    @Override
+    public void onLocationPermissionGranted() {
+        if (mNearbyStopsAdapter.getItemCount() == 0) {
+            requestUpdate();
+        }
+    }
 
+    @Override
+    public void onLocationPermissionRationale() {
+        hideProgressBar();
+        Snackbar.make(mRecyclerView, R.string.permission_location_needed_search, Snackbar.LENGTH_INDEFINITE)
+                .setAction(R.string.allow, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        requestLocationPermission();
+                    }
+                })
+                .show();
+    }
+
+    @Override
+    public void onLocationPermissionDontShowAgain() {
+        hideProgressBar();
+    }
 
 }

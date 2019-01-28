@@ -202,26 +202,11 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements
 
     @Override
     public void onLocationPermissionRationale() {
-        Snackbar.make(mHistoryRecyclerView, R.string.permission_location_needed_search, Snackbar.LENGTH_INDEFINITE)
-                .setAction(R.string.allow, new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        requestLocationPermission();
-                    }
-                })
-                .show();
     }
 
     @Override
     public void onLocationPermissionDontShowAgain() {
-        Snackbar.make(mHistoryRecyclerView, R.string.permission_location_needed_search, Snackbar.LENGTH_INDEFINITE)
-                .setAction(R.string.allow, new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        IntentUtil.openSettings(PlaceSearchActivity.this);
-                    }
-                })
-                .show();
+
     }
 
     public void createSearchHandler() {

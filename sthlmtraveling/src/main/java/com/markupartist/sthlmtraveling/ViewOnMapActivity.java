@@ -323,15 +323,6 @@ public class ViewOnMapActivity extends BaseFragmentActivity implements OnMapRead
 
     @Override
     public void onLocationPermissionRationale() {
-        Snackbar.make(findViewById(R.id.map), R.string.permission_location_needed_maps,
-                Snackbar.LENGTH_INDEFINITE)
-                .setAction(R.string.allow, new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        requestLocationPermission();
-                    }
-                })
-                .show();
     }
 
     private void setUpMap() {
