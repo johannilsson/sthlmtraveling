@@ -49,6 +49,8 @@ public class NearbyActivity extends BaseFragmentActivity implements
             onCreateShortCut();
         }
 
+        registerScreen("Nearby Stops");
+
         initGoogleApiClient();
         mMyLocationManager = new LocationManager(this, getGoogleApiClient());
         mMyLocationManager.setLocationListener(this);
