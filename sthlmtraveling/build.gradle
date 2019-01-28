@@ -41,6 +41,7 @@ android {
         buildConfigField "String", "APP_ANALYTICS_PROPERTY_KEY", buildProperties['ANALYTICS_PROPERTY_KEY']
         buildConfigField "String", "ADMOB_ROUTE_DETAILS_AD_UNIT_ID", buildProperties['ADMOB_ROUTE_DETAILS_AD_UNIT_ID']
         buildConfigField "String", "ADMOB_TEST_DEVICES", buildProperties['ADMOB_TEST_DEVICES']
+        buildConfigField "String", "ADMOB_PUBLISHER", buildProperties['ADMOB_PUBLISHER']
 
         resValue "string", "google_maps_api_key", buildProperties['GOOGLE_MAPS_API_KEY']
         resValue "string", "admob_app_id", buildProperties['ADMOB_APP_ID']
@@ -92,11 +93,12 @@ android {
 
 
 dependencies {
-    implementation 'com.google.android.gms:play-services-base:16.0.1'
+    implementation 'com.google.android.gms:play-services-base:16.1.0'
     implementation 'com.google.android.gms:play-services-maps:16.0.0'
     implementation 'com.google.android.gms:play-services-location:16.0.0'
     implementation 'com.google.android.gms:play-services-analytics:16.0.6'
     implementation 'com.google.android.gms:play-services-ads:17.1.2'
+    implementation 'com.google.android.ads.consent:consent-library:1.0.7'
     implementation 'com.android.support:recyclerview-v7:28.0.0'
     implementation 'com.android.support:appcompat-v7:28.0.0'
     implementation 'com.android.support:support-v4:28.0.0'

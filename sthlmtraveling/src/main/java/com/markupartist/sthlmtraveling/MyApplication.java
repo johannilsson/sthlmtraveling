@@ -11,6 +11,9 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
+import com.google.ads.consent.ConsentInfoUpdateListener;
+import com.google.ads.consent.ConsentInformation;
+import com.google.ads.consent.ConsentStatus;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.Logger;
@@ -19,6 +22,7 @@ import com.markupartist.sthlmtraveling.data.api.ApiService;
 import com.markupartist.sthlmtraveling.data.misc.ApiServiceProvider;
 import com.markupartist.sthlmtraveling.data.misc.HttpHelper;
 import com.markupartist.sthlmtraveling.service.DataMigrationService;
+import com.markupartist.sthlmtraveling.utils.UserConsentForm;
 import com.squareup.okhttp.OkHttpClient;
 
 import java.util.Locale;
@@ -39,11 +43,30 @@ public class MyApplication extends Application {
         super.onCreate();
         Fabric.with(this, new Crashlytics());
 
+        updateUserConsent();
+
         MobileAds.initialize(this, getString(R.string.admob_app_id));
 
         reloadLocaleForApplication();
 
         DataMigrationService.startService(this);
+    }
+
+    private void updateUserConsent() {
+        ConsentInformation consentInformation = ConsentInformation.getInstance(this);
+        String[] publisherIds = {BuildConfig.ADMOB_PUBLISHER};
+        consentInformation.requestConsentInfoUpdate(publisherIds, new ConsentInfoUpdateListener() {
+            @Override
+            public void onConsentInfoUpdated(ConsentStatus consentStatus) {
+                // User's consent status successfully updated.
+                new UserConsentForm(MyApplication.this).updateUserConsent(consentStatus);
+            }
+
+            @Override
+            public void onFailedToUpdateConsentInfo(String errorDescription) {
+                // User's consent status failed to update.
+            }
+        });
     }
 
     public OkHttpClient getHttpClient() {

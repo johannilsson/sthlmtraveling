@@ -23,6 +23,7 @@ import com.markupartist.sthlmtraveling.provider.HistoryDbAdapter;
 import com.markupartist.sthlmtraveling.provider.JourneysProvider.Journey.Journeys;
 import com.markupartist.sthlmtraveling.service.DeviationService;
 import com.markupartist.sthlmtraveling.utils.Analytics;
+import com.markupartist.sthlmtraveling.utils.UserConsentForm;
 
 public class SettingsActivity extends AppCompatPreferenceActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
 
@@ -47,6 +48,11 @@ public class SettingsActivity extends AppCompatPreferenceActivity implements Sha
 
         Preference customPref = findPreference("about_version");
         customPref.setSummary("Version " + AppConfig.APP_VERSION);
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean hasConsent = sharedPreferences.getBoolean("has_consent_to_serve_personalized_ads", false);
+        findPreference("preference_see_relevant_ads")
+                .setTitle(hasConsent ? R.string.relevant_ads_enabled : R.string.relevant_ads_disabled);
     }
 
     @Override
@@ -83,6 +89,10 @@ public class SettingsActivity extends AppCompatPreferenceActivity implements Sha
                 Analytics.getInstance(this).event("Settings", "Deviation Service", "stop");
             }
             DeviationService.startAsRepeating(this);
+        } else if (key.equals("has_consent_to_serve_personalized_ads")) {
+            boolean hasConsent = sharedPreferences.getBoolean("has_consent_to_serve_personalized_ads", false);
+            findPreference("preference_see_relevant_ads")
+                    .setTitle(hasConsent ? R.string.relevant_ads_enabled : R.string.relevant_ads_disabled);
         }
 
         Toast.makeText(this, R.string.settings_saved, Toast.LENGTH_SHORT).show();
@@ -124,6 +134,9 @@ public class SettingsActivity extends AppCompatPreferenceActivity implements Sha
             }
         } else if (preference.getKey().equals("about_ads")) {
             onCreateDialog(DIALOG_WHY_ADS).show();
+        }  else if (preference.getKey().equals("preference_see_relevant_ads")) {
+            UserConsentForm form = new UserConsentForm(this);
+            form.show();
         }
         return super.onPreferenceTreeClick(preferenceScreen, preference);
     }

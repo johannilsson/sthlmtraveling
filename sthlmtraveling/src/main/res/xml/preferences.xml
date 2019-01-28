@@ -21,6 +21,15 @@
             android:title="@string/search_include_addresses_preference"
             android:summary="@string/search_include_addresses_summary_preference"
             />
+        <ListPreference
+            android:dependency="notification_deviations_enabled"
+            android:enabled="false"
+            android:entries="@array/entries_deviations_preference"
+            android:entryValues="@array/entryvalues_deviations_preference"
+            android:key="notification_deviations_update_interval"
+            android:negativeButtonText="@string/cancel"
+            android:summary="@string/deviation_update_interval_summary_preference"
+            android:title="@string/deviation_update_interval_preference" />
         <Preference
             android:key="clear_search_history"
             android:title="@string/search_clear_history_preference"
@@ -45,16 +54,6 @@
             android:summary="@string/deviation_notification_summary_preference"
             android:enabled="false"
             />
-         <ListPreference
-                android:negativeButtonText="@string/cancel"
-                android:key="notification_deviations_update_interval"
-                android:title="@string/deviation_update_interval_preference"
-                android:summary="@string/deviation_update_interval_summary_preference"
-                android:entries="@array/entries_deviations_preference"
-                android:entryValues="@array/entryvalues_deviations_preference"
-                android:dependency="notification_deviations_enabled"
-                android:enabled="false"
-                />
         <EditTextPreference
             android:key="notification_deviations_lines_csv"
             android:title="@string/deviation_lines_preference"
@@ -73,6 +72,20 @@
             />
     </PreferenceCategory>
     <PreferenceCategory
+        android:title="@string/ads">
+        <Preference
+            android:key="preference_see_relevant_ads"
+            android:title="@string/relevant_ads_disabled"
+            android:summary="@string/relevant_ads_summary"/>
+        <Preference
+            android:key="about_ads"
+            android:title="@string/ads_title"
+            android:enabled="true"
+            android:summary="@string/ads_summary"
+            />
+    </PreferenceCategory>
+
+    <PreferenceCategory
             android:title="@string/about">
         <Preference
             android:key="about_legal"
@@ -86,12 +99,6 @@
             <!--android:key="about_donate"-->
             <!--android:title="@string/donate"-->
             <!--/>-->
-        <Preference
-            android:key="about_ads"
-            android:title="@string/ads"
-            android:enabled="true"
-            android:summary="@string/ads_summary"
-            />
         <Preference
             android:key="about_version"
             android:title="Version"

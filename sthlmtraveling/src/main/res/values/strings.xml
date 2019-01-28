@@ -256,6 +256,9 @@
     <string name="permission_location_needed_search">Enable the Location permission to search with your location</string>
     <string name="permission_location_needed_maps">Enable the Location permission to see your location on the map</string>
     <string name="allow">Allow</string>
+    <string name="relevant_ads_enabled">Relevant ads is enabled</string>
+    <string name="relevant_ads_disabled">Relevant ads is disabled</string>
+    <string name="relevant_ads_summary">Change your preference on how you want your data to be used when showing ads for you.</string>
 
     <string name="distance_in_meter"><xliff:g id="distance">%1$s</xliff:g>m</string>
     <string name="entrance_and_name">Entrance <xliff:g id="entrance">%1$s</xliff:g></string>

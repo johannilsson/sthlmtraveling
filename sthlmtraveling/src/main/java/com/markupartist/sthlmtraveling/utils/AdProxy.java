@@ -17,6 +17,9 @@
 package com.markupartist.sthlmtraveling.utils;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -25,6 +28,7 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.crashlytics.android.Crashlytics;
+import com.google.ads.mediation.admob.AdMobAdapter;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
@@ -41,6 +45,8 @@ public class AdProxy {
   private final static String TAG = "AdProxy";
 
   private final Context mContext;
+  private final boolean hasConsent;
+  private final UserConsentForm userConsentForm;
   private AdView mAdView;
 
 
@@ -48,6 +54,12 @@ public class AdProxy {
     mContext = context;
 
     mAdView = createAdView(id);
+
+
+    final SharedPreferences sharedPreferences = PreferenceManager
+            .getDefaultSharedPreferences(context);
+    hasConsent = sharedPreferences.getBoolean("has_consent_to_serve_personalized_ads", false);
+    userConsentForm = new UserConsentForm(context);
   }
 
   public void onDestroy() {
@@ -75,6 +87,8 @@ public class AdProxy {
   }
 
   public void load() {
+    userConsentForm.showIfConsentIsUnknown();
+
     AdRequest.Builder builder = new AdRequest.Builder();
     if (BuildConfig.DEBUG) {
       String[] testDevices = AppConfig.ADMOB_TEST_DEVICES;
@@ -82,7 +96,15 @@ public class AdProxy {
         builder.addTestDevice(device);
       }
     }
+    // If we don't have user consent request non-personalized ads.
+    if (!hasConsent) {
+      Bundle extras = new Bundle();
+      extras.putString("npa", "1");
+      builder.addNetworkExtrasBundle(AdMobAdapter.class, extras);
+    }
+
     AdRequest adRequest = builder.build();
+
     mAdView.loadAd(adRequest);
   }
 
