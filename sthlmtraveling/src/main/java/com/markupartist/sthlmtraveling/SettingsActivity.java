@@ -137,6 +137,9 @@ public class SettingsActivity extends AppCompatPreferenceActivity implements Sha
         }  else if (preference.getKey().equals("preference_see_relevant_ads")) {
             UserConsentForm form = new UserConsentForm(this);
             form.show();
+        } else if (preference.getKey().equals("about_privacy_policy")) {
+            Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.sthlmtraveling.se/privacy.html"));
+            startActivity(i);
         }
         return super.onPreferenceTreeClick(preferenceScreen, preference);
     }

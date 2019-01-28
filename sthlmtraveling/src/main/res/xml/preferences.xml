@@ -92,13 +92,13 @@
             android:title="@string/about"
             />
         <Preference
+            android:key="about_privacy_policy"
+            android:title="Privacy Policy"
+            />
+        <Preference
             android:key="about_contact"
             android:title="Email"
             />
-        <!--<Preference-->
-            <!--android:key="about_donate"-->
-            <!--android:title="@string/donate"-->
-            <!--/>-->
         <Preference
             android:key="about_version"
             android:title="Version"
