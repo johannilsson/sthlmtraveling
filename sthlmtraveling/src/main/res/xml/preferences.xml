@@ -21,15 +21,6 @@
             android:title="@string/search_include_addresses_preference"
             android:summary="@string/search_include_addresses_summary_preference"
             />
-        <ListPreference
-            android:dependency="notification_deviations_enabled"
-            android:enabled="false"
-            android:entries="@array/entries_deviations_preference"
-            android:entryValues="@array/entryvalues_deviations_preference"
-            android:key="notification_deviations_update_interval"
-            android:negativeButtonText="@string/cancel"
-            android:summary="@string/deviation_update_interval_summary_preference"
-            android:title="@string/deviation_update_interval_preference" />
         <Preference
             android:key="clear_search_history"
             android:title="@string/search_clear_history_preference"
@@ -48,21 +39,30 @@
             android:title="@string/notifications_disabled_title"
             android:summary="@string/notifications_disabled_summary"
         />
-        <CheckBoxPreference
-            android:key="notification_deviations_enabled"
-            android:title="@string/deviation_notification_preference"
-            android:summary="@string/deviation_notification_summary_preference"
-            android:enabled="false"
-            />
-        <EditTextPreference
-            android:key="notification_deviations_lines_csv"
-            android:title="@string/deviation_lines_preference"
-            android:summary="@string/deviation_lines_summary_preference"
-            android:dialogMessage="@string/deviation_lines_dialog_message_preference"
-            android:dependency="notification_deviations_enabled"
-            android:hint="4,42"
-            android:enabled="false"
-            />
+        <!--<CheckBoxPreference-->
+            <!--android:key="notification_deviations_enabled"-->
+            <!--android:title="@string/deviation_notification_preference"-->
+            <!--android:summary="@string/deviation_notification_summary_preference"-->
+            <!--android:enabled="false"-->
+            <!--/>-->
+        <!--<ListPreference-->
+            <!--android:dependency="notification_deviations_enabled"-->
+            <!--android:enabled="false"-->
+            <!--android:entries="@array/entries_deviations_preference"-->
+            <!--android:entryValues="@array/entryvalues_deviations_preference"-->
+            <!--android:key="notification_deviations_update_interval"-->
+            <!--android:negativeButtonText="@string/cancel"-->
+            <!--android:summary="@string/deviation_update_interval_summary_preference"-->
+            <!--android:title="@string/deviation_update_interval_preference" />-->
+        <!--<EditTextPreference-->
+            <!--android:key="notification_deviations_lines_csv"-->
+            <!--android:title="@string/deviation_lines_preference"-->
+            <!--android:summary="@string/deviation_lines_summary_preference"-->
+            <!--android:dialogMessage="@string/deviation_lines_dialog_message_preference"-->
+            <!--android:dependency="notification_deviations_enabled"-->
+            <!--android:hint="4,42"-->
+            <!--android:enabled="false"-->
+            <!--/>-->
     </PreferenceCategory>
     <PreferenceCategory
             android:title="@string/help">
