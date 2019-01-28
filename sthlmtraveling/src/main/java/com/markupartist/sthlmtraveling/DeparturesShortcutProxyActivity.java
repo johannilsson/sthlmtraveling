@@ -23,16 +23,11 @@ public class DeparturesShortcutProxyActivity extends Activity {
         departuresIntent.putExtra(DeparturesActivity.EXTRA_SITE_NAME,
                 intent.getStringExtra(DeparturesActivity.EXTRA_SITE_NAME));
 
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
-            startActivity(departuresIntent);
-        } else {
-            Intent[] pendingIntents =
-                    TaskStackBuilder.create(this)
-                            .addNextIntentWithParentStack(startIntent)
-                            .addNextIntentWithParentStack(departuresIntent)
-                            .getIntents();
-            startActivities(pendingIntents);
-        }
-
+        Intent[] pendingIntents =
+                TaskStackBuilder.create(this)
+                        .addNextIntentWithParentStack(startIntent)
+                        .addNextIntentWithParentStack(departuresIntent)
+                        .getIntents();
+        startActivities(pendingIntents);
     }
 }
