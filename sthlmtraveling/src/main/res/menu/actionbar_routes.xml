@@ -28,14 +28,14 @@
         />
     <item
         android:id="@+id/actionbar_item_reverse"
-        android:icon="@drawable/ic_action_reverse"
+        android:icon="@drawable/ic_swap_vert_24dp"
         android:title="@string/reverse_start_end"
-        app:showAsAction="always"
+        app:showAsAction="ifRoom"
         />
     <item
         android:id="@+id/actionbar_item_star"
-        android:icon="@drawable/ic_action_star_off"
-        android:title="@string/reverse_start_end"
-        app:showAsAction="always"
+        android:icon="@drawable/ic_star_border_24dp"
+        android:title="@string/favorites_label"
+        app:showAsAction="ifRoom"
         />
 </menu>

@@ -51,8 +51,8 @@
             android:paddingRight="@dimen/list_horizontal_padding"
             android:textSize="14sp"
             android:gravity="start|center_vertical"
-            android:drawableLeft="@drawable/ic_settings"
-            android:drawableStart="@drawable/ic_settings"
+            android:drawableLeft="@drawable/ic_settings_24dp"
+            android:drawableStart="@drawable/ic_settings_24dp"
             android:drawablePadding="24dp"
             tools:text="Date"
             />

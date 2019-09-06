@@ -310,10 +310,10 @@ public class RoutesActivity extends BaseListActivity implements
     public boolean onPrepareOptionsMenu(Menu menu) {
         MenuItem starItem = menu.findItem(R.id.actionbar_item_star);
         if (isStarredJourney(mJourneyQuery)) {
-            starItem.setIcon(R.drawable.ic_action_star_on);
+            starItem.setIcon(R.drawable.ic_star_24dp);
             ViewHelper.tintIcon(getResources(), starItem.getIcon());
         } else {
-            starItem.setIcon(R.drawable.ic_action_star_off);
+            starItem.setIcon(R.drawable.ic_star_border_24dp);
             ViewHelper.tintIcon(getResources(), starItem.getIcon());
         }
 
