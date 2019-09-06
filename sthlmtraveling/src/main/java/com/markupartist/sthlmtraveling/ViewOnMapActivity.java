@@ -35,6 +35,7 @@ import android.text.TextUtils;
 import android.text.format.DateFormat;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageButton;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -74,6 +75,9 @@ import java.util.List;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+
+import static com.google.android.gms.maps.GoogleMap.MAP_TYPE_NORMAL;
+import static com.google.android.gms.maps.GoogleMap.MAP_TYPE_SATELLITE;
 
 public class ViewOnMapActivity extends BaseFragmentActivity implements OnMapReadyCallback {
 
@@ -165,6 +169,23 @@ public class ViewOnMapActivity extends BaseFragmentActivity implements OnMapRead
         mapFragment.getMapAsync(this);
 
         updateStartAndEndPointViews(mJourneyQuery);
+
+        ImageButton typeButton = findViewById(R.id.btn_map_type);
+        typeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toggleMapType();
+            }
+        });
+    }
+
+    public void toggleMapType(){
+        if(mMap.getMapType() == MAP_TYPE_SATELLITE){
+            mMap.setMapType(MAP_TYPE_NORMAL);
+        }
+        else{
+            mMap.setMapType(MAP_TYPE_SATELLITE);
+        }
     }
 
     public void loadIntermediateStops(final Route route) {
@@ -355,6 +376,7 @@ public class ViewOnMapActivity extends BaseFragmentActivity implements OnMapRead
         settings.setMapToolbarEnabled(false);
 
         verifyLocationPermission();
+
     }
 
     private List<LatLng> showRoute(Route route) {

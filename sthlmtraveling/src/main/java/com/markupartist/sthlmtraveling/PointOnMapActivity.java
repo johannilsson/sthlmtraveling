@@ -27,6 +27,7 @@ import android.support.v7.app.ActionBar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -47,6 +48,9 @@ import com.markupartist.sthlmtraveling.utils.LocationManager;
 
 import java.io.IOException;
 import java.util.List;
+
+import static com.google.android.gms.maps.GoogleMap.MAP_TYPE_NORMAL;
+import static com.google.android.gms.maps.GoogleMap.MAP_TYPE_SATELLITE;
 
 public class PointOnMapActivity extends BaseFragmentActivity
         implements OnMapClickListener, OnInfoWindowClickListener, OnMapReadyCallback, LocationManager.LocationFoundListener {
@@ -114,6 +118,25 @@ public class PointOnMapActivity extends BaseFragmentActivity
         mMyLocationManager.setLocationListener(this);
         mMyLocationManager.setAccuracy(false);
         registerPlayService(mMyLocationManager);
+
+        //Copied from ViewOnMapActivity
+        ImageButton typeButton = findViewById(R.id.btn_map_type);
+        typeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toggleMapType();
+            }
+        });
+    }
+
+    //Copied from ViewOnMapActivity
+    public void toggleMapType(){
+        if(mMap.getMapType() == MAP_TYPE_SATELLITE){
+            mMap.setMapType(MAP_TYPE_NORMAL);
+        }
+        else{
+            mMap.setMapType(MAP_TYPE_SATELLITE);
+        }
     }
 
     @Override
