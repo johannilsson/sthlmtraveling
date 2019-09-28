@@ -267,4 +267,6 @@
     <string name="exit">Exit</string>
     <string name="bike_rental">Rental bike</string>
 
+    <string name="track_bus">Track <xliff:g id="track">%1$s</xliff:g></string>
+    <string name="track_rail">Track <xliff:g id="track">%1$s</xliff:g></string>
 </resources>

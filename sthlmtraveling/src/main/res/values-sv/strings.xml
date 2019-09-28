@@ -254,4 +254,6 @@
     <string name="entrance">Entré</string>
     <string name="exit">Utgång</string>
     <string name="bike_rental">Hyrcykel</string>
+    <string name="track_bus">Läge <xliff:g id="track">%1$s</xliff:g></string>
+    <string name="track_rail">Spår <xliff:g id="track">%1$s</xliff:g></string>
 </resources>

@@ -18,6 +18,7 @@ package com.markupartist.sthlmtraveling.data.models;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.Nullable;
 
 import com.markupartist.sthlmtraveling.provider.site.Site;
 
@@ -33,16 +34,20 @@ public class Place implements Parcelable {
     private final double lat;
     private final double lon;
     private final int stopIndex;
+    @Nullable
+    private final String track;
+    @Nullable
     private final List<Entrance> entrances;
 
     public Place(String id, String name, String type, double lat, double lon,
-                 int stopIndex, List<Entrance> entrances) {
+                 int stopIndex, @Nullable String track, @Nullable List<Entrance> entrances) {
         this.id = id;
         this.name = name;
         this.type = type;
         this.lat = lat;
         this.lon = lon;
         this.stopIndex = stopIndex;
+        this.track = track;
         this.entrances = entrances;
     }
 
@@ -53,6 +58,7 @@ public class Place implements Parcelable {
         lat = in.readDouble();
         lon = in.readDouble();
         stopIndex = in.readInt();
+        track = in.readString();
         entrances = in.createTypedArrayList(Entrance.CREATOR);
     }
 
@@ -81,6 +87,7 @@ public class Place implements Parcelable {
         dest.writeDouble(lat);
         dest.writeDouble(lon);
         dest.writeInt(stopIndex);
+        dest.writeString(track);
         dest.writeTypedList(entrances);
     }
 
@@ -123,6 +130,11 @@ public class Place implements Parcelable {
 
     public List<Entrance> getEntrances() {
         return entrances;
+    }
+
+    @Nullable
+    public String getTrack() {
+        return track;
     }
 
     public boolean looksEquals(Place other) {

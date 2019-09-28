@@ -871,7 +871,7 @@ public class RouteDetailActivity extends BaseListActivity implements OnMapReadyC
             } else if (TravelMode.BOAT.equals(legViewModel.leg.getTravelMode())) {
                 description = getString(R.string.trip_description_normal,
                         legViewModel.leg.getRouteName(),
-                        legViewModel.leg.getHeadsing().getName());
+                        legViewModel.leg.getHeadsign().getName());
                 if (!TextUtils.isEmpty(legViewModel.leg.getRouteShortName())) {
                     RoundedBackgroundSpan roundedBackgroundSpan = new RoundedBackgroundSpan(
                             LegUtil.getColor(getContext(), legViewModel.leg),
@@ -886,13 +886,29 @@ public class RouteDetailActivity extends BaseListActivity implements OnMapReadyC
                 String routeName = LegUtil.getRouteName(legViewModel.leg, true);
                 description = getString(R.string.trip_description_normal,
                         routeName,
-                        legViewModel.leg.getHeadsing().getName());
-                RoundedBackgroundSpan roundedBackgroundSpan = new RoundedBackgroundSpan(
-                        LegUtil.getColor(getContext(), legViewModel.leg),
-                        Color.WHITE,
-                        ViewHelper.dipsToPix(getContext().getResources(), 4));
-                Pattern pattern = Pattern.compile(routeName);
-                description = SpanUtils.createSpannable(description, pattern, roundedBackgroundSpan);
+                        legViewModel.leg.getHeadsign().getName());
+
+                CharSequence routeShortName = legViewModel.leg.getRouteShortName();
+                if (!TextUtils.isEmpty(routeShortName)) {
+                    Pattern pattern = Pattern.compile(routeShortName.toString());
+                    routeShortName = SpanUtils.createSpannable(routeShortName, pattern, new RoundedBackgroundSpan(
+                            LegUtil.getColor(getContext(), legViewModel.leg),
+                            Color.WHITE,
+                            ViewHelper.dipsToPix(getContext().getResources(), 4)));
+                }
+                CharSequence track = legViewModel.leg.getFrom().getTrack();
+                boolean isBus = TravelMode.BUS.equals(legViewModel.leg.getTravelMode());
+                boolean isTrain = TravelMode.TRAIN.equals(legViewModel.leg.getTravelMode());
+                if (track != null && (isBus || isTrain)) {
+                    int trackRes = isBus ? R.string.track_bus : R.string.track_rail;
+                    CharSequence trackLabel = SpanUtils.createSpannable(getString(trackRes, track), new RoundedBackgroundSpan(
+                            ContextCompat.getColor(getContext(), R.color.body_text_3),
+                            Color.WHITE,
+                            ViewHelper.dipsToPix(getContext().getResources(), 4)));
+                    description = TextUtils.expandTemplate("^1 ^2 ^3", routeShortName, trackLabel, description);
+                } else {
+                    description = TextUtils.expandTemplate("^1 ^2", routeShortName, description);
+                }
             }
             return description;
         }

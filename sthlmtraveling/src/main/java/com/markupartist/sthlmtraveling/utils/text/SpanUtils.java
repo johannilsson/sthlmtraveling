@@ -17,6 +17,7 @@
 package com.markupartist.sthlmtraveling.utils.text;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.CharacterStyle;
@@ -27,6 +28,12 @@ import java.util.regex.Pattern;
 
 public final class SpanUtils {
     private SpanUtils() {
+    }
+
+    public static CharSequence createSpannable(@NonNull CharSequence source, @NonNull ReplacementSpan style) {
+        SpannableStringBuilder sb = new SpannableStringBuilder(source);
+        sb.setSpan(style, 0, source.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+        return sb;
     }
 
     public static CharSequence createSpannable(CharSequence source, Pattern pattern, ReplacementSpan style) {
