@@ -241,12 +241,8 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements
 
     public void setSearchFilter(int filterType) {
         PlaceSearchResultAdapter.SearchFooterItem footerItem = new PlaceSearchResultAdapter.SearchFooterItem();
-        switch (filterType) {
-            case FILTER_TYPE_STHLM_TRAVELING:
-                mSearchResultAdapter.setFilter(mSthlmTravelingSearchFilter);
-//                footerItem.text1 = getString(R.string.search_try_with_google);
-//                footerItem.iconResource = -1;
-                break;
+        if (filterType == FILTER_TYPE_STHLM_TRAVELING) {
+            mSearchResultAdapter.setFilter(mSthlmTravelingSearchFilter);
         }
 
         mCurrentSearchFilterType = filterType;
@@ -444,12 +440,6 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements
     public void onMyLocationFound(Location location) {
         mCurrentSearchFilterType = FILTER_TYPE_STHLM_TRAVELING;
         setSearchFilter(mCurrentSearchFilterType);
-        if (location != null) {
-            LatLng currentLatLng = new LatLng(location.getLatitude(), location.getLongitude());
-            if (!AppConfig.GREATER_STHLM_BOUNDS.contains(currentLatLng)) {
-                // Show something about the area?
-            }
-        }
     }
 
     private class AutoCompleter implements TextWatcher {
