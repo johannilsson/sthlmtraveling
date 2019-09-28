@@ -420,16 +420,16 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode) {
-            case REQUEST_CODE_POINT_ON_MAP:
-                if (resultCode != Activity.RESULT_CANCELED) {
-                    Site place = data.getParcelableExtra(PointOnMapActivity.EXTRA_STOP);
-                    if (!place.hasName()) {
-                        place.setName(getString(R.string.point_on_map));
-                    }
-                    deliverResult(place);
+        if (requestCode == REQUEST_CODE_POINT_ON_MAP) {
+            if (resultCode != Activity.RESULT_CANCELED) {
+                Site place = data.getParcelableExtra(PointOnMapActivity.EXTRA_STOP);
+                if (!place.hasName()) {
+                    place.setName(getString(R.string.point_on_map));
                 }
-                break;
+                deliverResult(place);
+            }
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
         }
     }
 
