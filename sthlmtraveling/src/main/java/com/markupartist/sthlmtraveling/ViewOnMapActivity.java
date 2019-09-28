@@ -28,13 +28,11 @@ import android.graphics.PorterDuffColorFilter;
 import android.os.Bundle;
 import android.support.annotation.ColorInt;
 import android.support.annotation.DrawableRes;
-import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
 import android.view.MenuItem;
-import android.view.View;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -289,7 +287,7 @@ public class ViewOnMapActivity extends BaseFragmentActivity implements OnMapRead
             description = getString(R.string.trip_map_description_normal,
                     DateFormat.getTimeFormat(this).format(leg.getStartTime()),
                     leg.getRouteName(),
-                    leg.getHeadsing().getName());
+                    leg.getHeadsign().getName());
         }
         return description;
     }

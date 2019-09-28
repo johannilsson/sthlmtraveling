@@ -260,7 +260,7 @@ public class Leg extends ParcelableBase {
         return notes;
     }
 
-    public Place getHeadsing() {
+    public Place getHeadsign() {
         return headsign;
     }
 
