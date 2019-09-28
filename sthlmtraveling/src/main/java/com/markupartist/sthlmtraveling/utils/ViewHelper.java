@@ -56,16 +56,6 @@ public class ViewHelper {
 
     @SuppressLint("NewApi")
     public static void crossfade(final View fromView, final View toView) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB_MR1) {
-            return;
-        }
-
-        if (true) {
-            toView.setVisibility(View.VISIBLE);
-            fromView.setVisibility(View.GONE);
-            return;
-        }
-
         // Set the content view to 0% opacity but visible, so that it is visible
         // (but fully transparent) during the animation.
 
