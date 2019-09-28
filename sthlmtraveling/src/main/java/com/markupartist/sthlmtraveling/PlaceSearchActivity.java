@@ -85,8 +85,6 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements
 
     private static final int LOADER_HISTORY = 1;
 
-    private static final boolean IS_GOOGLE_PLACE_SEARCH_ENABLED = false; //BuildConfig.DEBUG;
-
     private HistoryDbAdapter mHistoryDbAdapter;
     private RecyclerView mHistoryRecyclerView;
     private RecyclerView mSearchResultRecyclerView;
@@ -133,47 +131,34 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements
         ViewHelper.tint(backButton, ContextCompat.getColor(this, R.color.primary_dark));
         ViewHelper.flipIfRtl(backButton);
 
-        backButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
+        backButton.setOnClickListener(v -> onBackPressed());
+        mSearchEdit = findViewById(R.id.search_edit);
+        mSearchEdit.setOnEditorActionListener((v, actionId, event) -> {
+            if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER))
+                    || (actionId == EditorInfo.IME_ACTION_DONE)) {
+                mSearchResultAdapter.getFilter().filter(mSearchEdit.getText());
             }
-        });
-        mSearchEdit = (EditText) findViewById(R.id.search_edit);
-        mSearchEdit.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER))
-                        || (actionId == EditorInfo.IME_ACTION_DONE)) {
-                    mSearchResultAdapter.getFilter().filter(mSearchEdit.getText());
-                }
-                return false;
-            }
+            return false;
         });
         mSearchEdit.requestFocus();
 
-        mClearButton = (ImageButton) findViewById(R.id.search_clear);
+        mClearButton = findViewById(R.id.search_clear);
         ViewHelper.tintIcon(mClearButton.getDrawable(), Color.GRAY);
-        mClearButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mSearchEdit.setText("");
-                mSearchResultAdapter.clear();
-            }
+        mClearButton.setOnClickListener(v -> {
+            mSearchEdit.setText("");
+            mSearchResultAdapter.clear();
         });
 
         mSearchFailed = findViewById(R.id.search_result_error);
-        mProgressBar = (ContentLoadingProgressBar) findViewById(R.id.search_progress_bar);
+        mProgressBar = findViewById(R.id.search_progress_bar);
 
         setupHistoryViews();
         if (!mSearchOnlyStops) {
-            getSupportLoaderManager().initLoader(LOADER_HISTORY, null, this);
+            LoaderManager.getInstance(this).initLoader(LOADER_HISTORY, null, this);
         }
         setupSearchResultViews();
 
-        if (!shouldSearchGooglePlaces()) {
-            setSearchFilter(FILTER_TYPE_STHLM_TRAVELING);
-        }
+        setSearchFilter(FILTER_TYPE_STHLM_TRAVELING);
 
         mMyLocationManager = new LocationManager(this, getGoogleApiClient());
         mMyLocationManager.setLocationListener(this);
@@ -183,13 +168,6 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements
             verifyLocationPermission();
             mMyLocationManager.requestLocation();
         }
-    }
-
-    boolean shouldSearchGooglePlaces() {
-        if (mSearchOnlyStops) {
-            return false;
-        }
-        return IS_GOOGLE_PLACE_SEARCH_ENABLED;
     }
 
     @Override
@@ -207,18 +185,14 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements
     }
 
     public void createSearchHandler() {
-        mHandler = new Handler(Looper.getMainLooper(), new Handler.Callback() {
-            @Override
-            public boolean handleMessage(Message msg) {
-                switch (msg.what) {
-                    case MESSAGE_TEXT_CHANGED:
-                        if (mSearchResultAdapter.getFilter() != null) {
-                            mSearchResultAdapter.getFilter().filter((String) msg.obj);
-                        }
-                        return true;
+        mHandler = new Handler(Looper.getMainLooper(), msg -> {
+            if (msg.what == MESSAGE_TEXT_CHANGED) {
+                if (mSearchResultAdapter.getFilter() != null) {
+                    mSearchResultAdapter.getFilter().filter((String) msg.obj);
                 }
-                return false;
+                return true;
             }
+            return false;
         });
     }
 
@@ -237,11 +211,7 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements
     }
 
     public void setSearchFilter(int filterType) {
-        PlaceSearchResultAdapter.SearchFooterItem footerItem = new PlaceSearchResultAdapter.SearchFooterItem();
-        if (filterType == FILTER_TYPE_STHLM_TRAVELING) {
-            mSearchResultAdapter.setFilter(mSthlmTravelingSearchFilter);
-        }
-
+        mSearchResultAdapter.setFilter(mSthlmTravelingSearchFilter);
         mCurrentSearchFilterType = filterType;
         if (!TextUtils.isEmpty(mSearchEdit.getText())) {
             mSearchResultAdapter.getFilter().filter(mSearchEdit.getText());
@@ -249,24 +219,21 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements
     }
 
     void setupSearchResultViews() {
-        mSearchResultRecyclerView = (RecyclerView) findViewById(R.id.search_results);
+        mSearchResultRecyclerView = findViewById(R.id.search_results);
         mSearchResultRecyclerView.setHasFixedSize(true);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         mSearchResultRecyclerView.setLayoutManager(layoutManager);
         mSearchResultRecyclerView.addOnScrollListener(new HideKeyboardOnScroll(this, mSearchEdit));
 
         mSearchResultAdapter = new PlaceSearchResultAdapter(this);
-        mSearchResultAdapter.setOnEditItemClickListener(new PlaceSearchResultAdapter.OnEditItemClickListener() {
-            @Override
-            public void onEditItemClicked(int position) {
-                if (position >= 0 && position < mSearchResultAdapter.getContentItemCount()) {
-                    PlaceItem item = mSearchResultAdapter.getItem(position);
-                    String title = item.getTitle() + " ";
-                    mSearchEdit.setText(title);
-                    mSearchEdit.setSelection(title.length());
-                    mSearchEdit.requestFocus();
-                    mSearchResultRecyclerView.smoothScrollToPosition(0);
-                }
+        mSearchResultAdapter.setOnEditItemClickListener(position -> {
+            if (position >= 0 && position < mSearchResultAdapter.getContentItemCount()) {
+                PlaceItem item = mSearchResultAdapter.getItem(position);
+                String title = item.getTitle() + " ";
+                mSearchEdit.setText(title);
+                mSearchEdit.setSelection(title.length());
+                mSearchEdit.requestFocus();
+                mSearchResultRecyclerView.smoothScrollToPosition(0);
             }
         });
         mSearchResultRecyclerView.setAdapter(mSearchResultAdapter);
@@ -276,41 +243,38 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements
         mSthlmTravelingSearchFilter = new SiteFilter(mSearchResultAdapter, this, mSearchOnlyStops);
         mSthlmTravelingSearchFilter.setFilterResultCallback(autocompleteResultCallback);
 
-        ItemClickSupport.addTo(mSearchResultRecyclerView).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
-            @Override
-            public void onItemClicked(RecyclerView recyclerView, int position, View v) {
-                if (position >= mSearchResultAdapter.getContentItemCount()) {
-                    // We end up here if picking one of the footer views. Only supporting one for now.
+        ItemClickSupport.addTo(mSearchResultRecyclerView).setOnItemClickListener((recyclerView, position, v) -> {
+            if (position >= mSearchResultAdapter.getContentItemCount()) {
+                // We end up here if picking one of the footer views. Only supporting one for now.
 //                    if (mCurrentSearchFilterType == FILTER_TYPE_GOOGLE) {
 //                        setSearchFilter(FILTER_TYPE_STHLM_TRAVELING);
 //                    } else {
 //                        setSearchFilter(FILTER_TYPE_GOOGLE);
 //                    }
-                } else {
-                    // We seen some crashes where the provided position did not match the items
-                    // hold by the adapter, this is a guard for these cases.
-                    if (position >= 0 && position < mSearchResultAdapter.getContentItemCount()) {
-                        PlaceItem item = mSearchResultAdapter.getItem(position);
-                        mSearchResultAdapter.getFilter().setResultCallback(item, new PlaceItemResultCallback() {
-                            @Override
-                            public void onResult(Site site) {
-                                deliverResult(site);
-                            }
+            } else {
+                // We seen some crashes where the provided position did not match the items
+                // hold by the adapter, this is a guard for these cases.
+                if (position >= 0 && position < mSearchResultAdapter.getContentItemCount()) {
+                    PlaceItem item = mSearchResultAdapter.getItem(position);
+                    mSearchResultAdapter.getFilter().setResultCallback(item, new PlaceItemResultCallback() {
+                        @Override
+                        public void onResult(Site site) {
+                            deliverResult(site);
+                        }
 
-                            @Override
-                            public void onError() {
-                                Toast.makeText(PlaceSearchActivity.this,
-                                        R.string.planner_error_title, Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                    }
+                        @Override
+                        public void onError() {
+                            Toast.makeText(PlaceSearchActivity.this,
+                                    R.string.planner_error_title, Toast.LENGTH_SHORT).show();
+                        }
+                    });
                 }
             }
         });
     }
 
     void setupHistoryViews() {
-        mHistoryRecyclerView = (RecyclerView) findViewById(R.id.search_history_list);
+        mHistoryRecyclerView = findViewById(R.id.search_history_list);
         mHistoryRecyclerView.setHasFixedSize(true);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         mHistoryRecyclerView.setLayoutManager(layoutManager);
@@ -372,11 +336,10 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        switch (id) {
-            case LOADER_HISTORY:
-                return new HistoryLoader(this, mHistoryDbAdapter);
+        if (id == LOADER_HISTORY) {
+            return new HistoryLoader(this, mHistoryDbAdapter);
         }
-        return null;
+        throw new IllegalArgumentException("Unknown loader");
     }
 
     @Override
@@ -442,7 +405,7 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements
     private class AutoCompleter implements TextWatcher {
         private static final long AUTO_COMPLETE_DELAY = 600;
 
-        public AutoCompleter() {
+        AutoCompleter() {
         }
 
         @Override
@@ -520,7 +483,7 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements
         private final Context mContext;
         private final EditText mEditText;
 
-        public HideKeyboardOnScroll(Context context, EditText editText) {
+        HideKeyboardOnScroll(Context context, EditText editText) {
             mContext = context;
             mEditText = editText;
         }
@@ -544,14 +507,14 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements
 
     public class DefaultListAdapter extends ListBindAdapter {
 
-        public DefaultListAdapter(Context context) {
+        DefaultListAdapter(Context context) {
             addAllBinder(
                     new SimpleItemBinder(this, R.layout.row_icon_two_rows),
                     new SimpleItemBinder(this, R.layout.row_section),
                     new HistoryBinder(this, context));
         }
 
-        public void setHistoryData(Context context, List<Site> dataSet) {
+        void setHistoryData(Context context, List<Site> dataSet) {
             if (getDataBinder(1).getItemCount() == 0 && dataSet.size() > 0) {
                 ((SimpleItemBinder) getDataBinder(1)).addItem(new SimpleItemBinder.Item(
                         SimpleItemBinder.Item.NO_IMAGE,
@@ -561,7 +524,7 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements
             ((HistoryBinder) getDataBinder(2)).replaceAll(dataSet);
         }
 
-        public void setOptions(List<SimpleItemBinder.Item> options) {
+        void setOptions(List<SimpleItemBinder.Item> options) {
             ((SimpleItemBinder) getDataBinder(0)).addItems(options);
         }
     }
@@ -570,7 +533,7 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements
         private final int mLayoutRes;
         private List<Item> mData = new ArrayList<>();
 
-        public SimpleItemBinder(DataBindAdapter dataBindAdapter, @LayoutRes int layoutRes) {
+        SimpleItemBinder(DataBindAdapter dataBindAdapter, @LayoutRes int layoutRes) {
             super(dataBindAdapter);
             mLayoutRes = layoutRes;
         }
@@ -598,40 +561,40 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements
             return mData.size();
         }
 
-        public void addItems(List<Item> items) {
+        void addItems(List<Item> items) {
             mData.clear();
             mData.addAll(items);
             notifyDataSetChanged();
         }
 
-        public void addItem(Item item) {
+        void addItem(Item item) {
             mData.add(item);
             notifyDataSetChanged();
         }
 
-        public class ViewHolder extends RecyclerView.ViewHolder {
+        class ViewHolder extends RecyclerView.ViewHolder {
             TextView text1;
             TextView text2;
             TextView distance;
             ImageView icon;
 
-            public ViewHolder(View view) {
+            ViewHolder(View view) {
                 super(view);
-                text1 = (TextView) view.findViewById(R.id.text1);
-                text2 = (TextView) view.findViewById(R.id.text2);
-                distance = (TextView) view.findViewById(R.id.distance);
-                icon = (ImageView) view.findViewById(R.id.row_icon);
+                text1 = view.findViewById(R.id.text1);
+                text2 = view.findViewById(R.id.text2);
+                distance = view.findViewById(R.id.distance);
+                icon = view.findViewById(R.id.row_icon);
             }
         }
 
         public static class Item {
-            public static final int NO_IMAGE = -1;
+            static final int NO_IMAGE = -1;
 
             @DrawableRes
             public int icon;
             public CharSequence title;
 
-            public Item(@DrawableRes int icon, CharSequence title) {
+            Item(@DrawableRes int icon, CharSequence title) {
                 this.icon = icon;
                 this.title = title;
             }
@@ -642,7 +605,7 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements
         private final List<Site> mData = new ArrayList<>();
         private final Context mContext;
 
-        public HistoryBinder(DataBindAdapter dataBindAdapter, Context context) {
+        HistoryBinder(DataBindAdapter dataBindAdapter, Context context) {
             super(dataBindAdapter);
             mContext = context;
         }
@@ -693,29 +656,29 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements
             return mData.size();
         }
 
-        public void replaceAll(List<Site> all) {
+        void replaceAll(List<Site> all) {
             mData.clear();
             mData.addAll(all);
             notifyDataSetChanged();
         }
 
-        public Site getItem(int position) {
+        Site getItem(int position) {
             return mData.get(position);
         }
 
 
-        public static class ViewHolder extends RecyclerView.ViewHolder {
+        static class ViewHolder extends RecyclerView.ViewHolder {
             TextView text1;
             TextView text2;
             TextView distance;
             ImageView icon;
 
-            public ViewHolder(View view) {
+            ViewHolder(View view) {
                 super(view);
-                text1 = (TextView) view.findViewById(R.id.text1);
-                text2 = (TextView) view.findViewById(R.id.text2);
-                distance = (TextView) view.findViewById(R.id.distance);
-                icon = (ImageView) view.findViewById(R.id.row_icon);
+                text1 = view.findViewById(R.id.text1);
+                text2 = view.findViewById(R.id.text2);
+                distance = view.findViewById(R.id.distance);
+                icon = view.findViewById(R.id.row_icon);
             }
         }
     }
