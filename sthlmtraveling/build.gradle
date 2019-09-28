@@ -23,13 +23,13 @@ android {
     final BASE_PROVIDER_DEBUG = "com.markupartist.sthlmtraveling.debug"
     final BASE_PROVIDER_RELEASE = "com.markupartist.sthlmtraveling"
 
-    compileSdkVersion 28
+    compileSdkVersion 29
     useLibrary 'org.apache.http.legacy'
 
 
     defaultConfig {
-        minSdkVersion 14
-        targetSdkVersion 28
+        minSdkVersion 23
+        targetSdkVersion 29
         applicationId "com.markupartist.sthlmtraveling"
         versionName "2.20.1"
         versionCode 214
@@ -48,8 +48,8 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_7
-        targetCompatibility JavaVersion.VERSION_1_7
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 
     signingConfigs {
@@ -93,19 +93,18 @@ android {
 
 
 dependencies {
-    implementation 'com.google.android.gms:play-services-base:16.1.0'
-    implementation 'com.google.android.gms:play-services-maps:16.0.0'
-    implementation 'com.google.android.gms:play-services-location:16.0.0'
-    implementation 'com.google.android.gms:play-services-analytics:16.0.6'
-    implementation 'com.google.android.gms:play-services-ads:17.1.2'
+    implementation 'com.google.android.gms:play-services-base:17.1.0'
+    implementation 'com.google.android.gms:play-services-maps:17.0.0'
+    implementation 'com.google.android.gms:play-services-location:17.0.0'
+    implementation 'com.google.android.gms:play-services-analytics:17.0.0'
+    implementation 'com.google.android.gms:play-services-ads:18.2.0'
     implementation 'com.google.android.ads.consent:consent-library:1.0.7'
-    implementation 'com.android.support:recyclerview-v7:28.0.0'
-    implementation 'com.android.support:appcompat-v7:28.0.0'
-    implementation 'com.android.support:support-v4:28.0.0'
-    implementation 'com.android.support:percent:28.0.0'
-    implementation 'com.android.support:design:28.0.0'
-    implementation 'com.squareup.okhttp:okhttp:2.6.0'
-    implementation 'com.google.code.gson:gson:2.8.2'
+    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'androidx.percentlayout:percentlayout:1.0.0'
+    implementation 'com.google.android.material:material:1.0.0'
+    implementation 'com.squareup.okhttp:okhttp:2.7.5'
+    implementation 'com.google.code.gson:gson:2.8.5'
     implementation 'com.squareup.retrofit:retrofit:1.9.0'
     implementation 'com.yqritc:recyclerview-multiple-viewtypes-adapter:1.1.0'
     implementation('com.crashlytics.sdk.android:crashlytics:2.6.1@aar') {

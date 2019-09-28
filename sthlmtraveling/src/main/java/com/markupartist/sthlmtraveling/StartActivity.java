@@ -18,10 +18,10 @@ package com.markupartist.sthlmtraveling;
 
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.view.ViewCompat;
-import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBar;
+import androidx.core.content.ContextCompat;
+import androidx.core.view.ViewCompat;
+import androidx.viewpager.widget.ViewPager;
+import androidx.appcompat.app.ActionBar;
 
 import com.markupartist.sthlmtraveling.service.DeviationService;
 import com.markupartist.sthlmtraveling.ui.view.PageFragmentAdapter;

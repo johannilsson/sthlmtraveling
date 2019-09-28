@@ -1,7 +1,7 @@
 package com.markupartist.sthlmtraveling;
 
 import android.content.Intent;
-import android.support.v4.app.ListFragment;
+import androidx.fragment.app.ListFragment;
 
 import com.markupartist.sthlmtraveling.utils.Analytics;
 

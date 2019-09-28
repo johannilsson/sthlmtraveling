@@ -16,7 +16,7 @@
 
 package com.markupartist.sthlmtraveling.data.api;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.markupartist.sthlmtraveling.data.models.TravelMode;

@@ -18,7 +18,7 @@ package com.markupartist.sthlmtraveling.data.models;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.v4.util.Pair;
+import androidx.core.util.Pair;
 
 import java.util.ArrayList;
 import java.util.Date;

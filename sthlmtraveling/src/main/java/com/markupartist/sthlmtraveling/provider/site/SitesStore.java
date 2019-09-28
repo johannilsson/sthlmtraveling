@@ -2,7 +2,7 @@ package com.markupartist.sthlmtraveling.provider.site;
 
 import android.content.Context;
 import android.location.Location;
-import android.support.v4.util.Pair;
+import androidx.core.util.Pair;
 import android.text.TextUtils;
 import android.util.Log;
 

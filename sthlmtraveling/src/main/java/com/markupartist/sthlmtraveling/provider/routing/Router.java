@@ -16,7 +16,7 @@
 
 package com.markupartist.sthlmtraveling.provider.routing;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.util.Log;
 
 import com.markupartist.sthlmtraveling.data.api.ApiService;

@@ -16,7 +16,7 @@
 
 package com.markupartist.sthlmtraveling.ui.view;
 
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 
 import com.markupartist.sthlmtraveling.R;

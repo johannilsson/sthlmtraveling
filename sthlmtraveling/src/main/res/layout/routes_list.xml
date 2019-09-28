@@ -16,11 +16,11 @@
 ** limitations under the License.
 */
 -->
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:tools="http://schemas.android.com/tools"
-             android:orientation="vertical"
-             android:layout_width="fill_parent"
-             android:layout_height="fill_parent">
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                                     xmlns:tools="http://schemas.android.com/tools"
+                                                     android:orientation="vertical"
+                                                     android:layout_width="fill_parent"
+                                                     android:layout_height="fill_parent">
 
     <ListView
         style="@style/AppListView"
@@ -62,7 +62,7 @@
     <include
         layout="@layout/progress_bar"
         android:id="@+id/empty_view"/>
-</android.support.design.widget.CoordinatorLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 
 

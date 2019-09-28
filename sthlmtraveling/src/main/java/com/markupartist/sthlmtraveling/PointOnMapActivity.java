@@ -21,12 +21,10 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
-import android.support.annotation.RequiresPermission;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.ActionBar;
+import androidx.annotation.RequiresPermission;
+import androidx.appcompat.app.ActionBar;
 import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;

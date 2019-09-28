@@ -19,7 +19,7 @@ package com.markupartist.sthlmtraveling.utils.text;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.RectF;
-import android.support.annotation.ColorInt;
+import androidx.annotation.ColorInt;
 import android.text.style.ReplacementSpan;
 
 public class RoundedBackgroundSpan extends ReplacementSpan {

@@ -18,7 +18,7 @@ package com.markupartist.sthlmtraveling.data.models;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import com.markupartist.sthlmtraveling.provider.site.Site;
 

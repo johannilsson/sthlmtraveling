@@ -17,7 +17,7 @@
 package com.markupartist.sthlmtraveling.data.models;
 
 import android.os.Parcel;
-import android.support.v4.util.Pair;
+import androidx.core.util.Pair;
 
 import com.markupartist.sthlmtraveling.utils.DateTimeUtil;
 

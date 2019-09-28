@@ -17,7 +17,7 @@
 package com.markupartist.sthlmtraveling.data.models;
 
 import android.os.Parcel;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import java.util.ArrayList;
 import java.util.Date;

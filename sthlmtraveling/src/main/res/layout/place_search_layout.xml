@@ -15,12 +15,12 @@
   ~ limitations under the License.
   -->
 
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical"
-              android:background="@color/background"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                                     xmlns:tools="http://schemas.android.com/tools"
+                                                     android:layout_width="match_parent"
+                                                     android:layout_height="match_parent"
+                                                     android:orientation="vertical"
+                                                     android:background="@color/background"
     >
 
     <RelativeLayout
@@ -83,7 +83,7 @@
             android:background="#FFA19F97"/>
     </RelativeLayout>
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/search_history_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -99,7 +99,7 @@
         android:layout_marginTop="?attr/actionBarSize"
         tools:visibility="visible">
 
-        <android.support.v4.widget.ContentLoadingProgressBar
+        <androidx.core.widget.ContentLoadingProgressBar
             android:id="@+id/search_progress_bar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -123,7 +123,7 @@
             tools:visibility="visible"
             />
 
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/search_results"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -135,4 +135,4 @@
 
     </RelativeLayout>
 
-</android.support.design.widget.CoordinatorLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

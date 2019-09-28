@@ -19,7 +19,7 @@ package com.markupartist.sthlmtraveling.ui.view;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v7.widget.AppCompatAutoCompleteTextView;
+import androidx.appcompat.widget.AppCompatAutoCompleteTextView;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ProgressBar;
