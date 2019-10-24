@@ -38,7 +38,8 @@
                 android:id="@+id/trip_message_icon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_trip_deviation"
+                android:src="@drawable/ic_warning_black_24dp"
+                android:tint="@color/deviation"
                 android:layout_gravity="start" />
         </LinearLayout>
 

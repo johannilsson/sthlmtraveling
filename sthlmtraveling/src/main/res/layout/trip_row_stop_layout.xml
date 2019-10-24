@@ -68,16 +68,7 @@
                 android:layout_width="36dp"
                 android:layout_height="match_parent"
                 android:paddingEnd="8dp"
-                android:paddingLeft="12dp"
-                android:paddingRight="8dp"
                 android:paddingStart="12dp">
-
-                <ImageView
-                    android:id="@+id/trip_line_segment"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center_vertical|center_horizontal"
-                    android:src="@drawable/line_segment_walk"/>
 
                 <ImageView
                     android:id="@+id/trip_line_segment_start"
@@ -85,7 +76,7 @@
                     android:layout_height="25dp"
                     android:layout_gravity="center_horizontal|top"
                     android:src="@drawable/line_segment_white"
-                    android:visibility="gone"
+                    android:visibility="visible"
                     />
 
                 <ImageView
@@ -94,7 +85,7 @@
                     android:layout_height="25dp"
                     android:layout_gravity="center_horizontal|bottom"
                     android:src="@drawable/line_segment_white"
-                    android:visibility="gone"
+                    android:visibility="visible"
                     />
 
                 <ImageView

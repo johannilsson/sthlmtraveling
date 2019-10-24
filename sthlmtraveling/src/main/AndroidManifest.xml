@@ -41,7 +41,7 @@
             android:label="@string/app_name"
             android:configChanges="locale|orientation"
             android:windowSoftInputMode="adjustResize"
-            android:theme="@style/Theme.SthlmTraveling"
+            android:theme="@style/Theme.SthlmTraveling.DayNight"
             >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -52,7 +52,7 @@
             android:name=".SearchActivity"
             android:targetActivity=".StartActivity"
             android:configChanges="locale"
-            android:theme="@style/Theme.SthlmTraveling.NoActionBar"
+            android:theme="@style/Theme.SthlmTraveling.DayNight.NoActionBar"
             >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -63,7 +63,7 @@
             android:label="@string/search_label"
             android:configChanges="locale|orientation"
             android:windowSoftInputMode="adjustPan"
-            android:theme="@style/Theme.SthlmTraveling"
+            android:theme="@style/Theme.SthlmTraveling.DayNight"
             />
         <!-- Alias activity used to create shortcuts on Home. The alias is used
              simply to have a different label. -->
@@ -73,7 +73,7 @@
             android:label="@string/activity_create_shortcut"
             android:windowSoftInputMode="adjustResize"
             android:configChanges="locale|orientation"
-            android:theme="@style/Theme.SthlmTraveling"
+            android:theme="@style/Theme.SthlmTraveling.DayNight"
             >
             <intent-filter>
                 <action android:name="android.intent.action.CREATE_SHORTCUT"/>
@@ -84,7 +84,7 @@
             android:name=".RoutesActivity"
             android:label="@string/routes_label"
             android:configChanges="locale|orientation"
-            android:theme="@style/Theme.SthlmTraveling"
+            android:theme="@style/Theme.SthlmTraveling.DayNight"
             >
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
@@ -98,7 +98,7 @@
             android:name=".DeviationsActivity"
             android:label="@string/deviations_label"
             android:configChanges="locale|orientation"
-            android:theme="@style/Theme.SthlmTraveling">
+            android:theme="@style/Theme.SthlmTraveling.DayNight">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
                 <action android:name="com.markupartist.sthlmtraveling.action.DEVIATION_FILTER"/>
@@ -110,7 +110,7 @@
             android:name=".DeviationDetailActivity"
             android:label="@string/deviations_label"
             android:configChanges="locale"
-            android:theme="@style/Theme.SthlmTraveling">
+            android:theme="@style/Theme.SthlmTraveling.DayNight">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
                 <category android:name="android.intent.category.DEFAULT"/>
@@ -123,35 +123,35 @@
             android:name=".RouteDetailActivity"
             android:label="@string/route_details_label"
             android:configChanges="locale"
-            android:theme="@style/Theme.SthlmTraveling"
+            android:theme="@style/Theme.SthlmTraveling.DayNight"
             />
         <activity
             android:name=".ChangeRouteTimeActivity"
             android:label="@string/change_date_and_time"
             android:configChanges="locale"
-            android:theme="@style/Theme.SthlmTraveling"/>
+            android:theme="@style/Theme.SthlmTraveling.DayNight"/>
         <activity
             android:name=".PointOnMapActivity"
             android:label="@string/point_on_map"
-            android:theme="@style/Theme.SthlmTraveling"
+            android:theme="@style/Theme.SthlmTraveling.DayNight"
             android:configChanges="locale|orientation"/>
         <activity
             android:name=".ViewOnMapActivity"
             android:label="@string/stop_label"
             android:configChanges="locale|orientation"
-            android:theme="@style/Theme.SthlmTraveling"
+            android:theme="@style/Theme.SthlmTraveling.DayNight"
             />
         <activity
             android:name=".SearchDeparturesFragmentActivity"
             android:label="@string/departures"
             android:configChanges="locale|orientation"
-            android:theme="@style/Theme.SthlmTraveling"
+            android:theme="@style/Theme.SthlmTraveling.DayNight"
             />
         <activity
             android:name=".PlaceSearchActivity"
             android:label="@string/app_name"
             android:configChanges="locale|orientation"
-            android:theme="@style/Theme.SthlmTraveling.NoActionBar"
+            android:theme="@style/Theme.SthlmTraveling.DayNight.NoActionBar"
             android:windowSoftInputMode="adjustResize"
             />
         <activity-alias
@@ -159,7 +159,7 @@
             android:targetActivity="SearchDeparturesFragmentActivity"
             android:label="@string/activity_create_departure_shortcut"
             android:configChanges="locale"
-            android:theme="@style/Theme.SthlmTraveling"
+            android:theme="@style/Theme.SthlmTraveling.DayNight"
             >
             <intent-filter>
                 <action android:name="android.intent.action.CREATE_SHORTCUT"/>
@@ -171,7 +171,7 @@
             android:name=".DeparturesActivity"
             android:label="@string/departures"
             android:configChanges="locale|orientation|screenSize"
-            android:theme="@style/Theme.SthlmTraveling.NoActionBar">
+            android:theme="@style/Theme.SthlmTraveling.DayNight.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
                 <category android:name="android.intent.category.DEFAULT"/>
@@ -182,7 +182,7 @@
             android:name=".NearbyActivity"
             android:label="@string/nearby_stops"
             android:configChanges="locale|orientation"
-            android:theme="@style/Theme.SthlmTraveling">
+            android:theme="@style/Theme.SthlmTraveling.DayNight">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
                 <category android:name="android.intent.category.DEFAULT"/>
@@ -194,7 +194,7 @@
             android:targetActivity="NearbyActivity"
             android:label="@string/nearby"
             android:configChanges="locale"
-            android:theme="@style/Theme.SthlmTraveling"
+            android:theme="@style/Theme.SthlmTraveling.DayNight"
             >
             <intent-filter>
                 <action android:name="android.intent.action.CREATE_SHORTCUT"/>
@@ -206,7 +206,7 @@
             android:name=".SettingsActivity"
             android:label="@string/title_settings"
             android:configChanges="locale"
-            android:theme="@style/Theme.SthlmTraveling">
+            android:theme="@style/Theme.SthlmTraveling.DayNight">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".StartActivity" />
@@ -216,7 +216,7 @@
             android:name=".AboutActivity"
             android:label="@string/about"
             android:configChanges="locale"
-            android:theme="@style/Theme.SthlmTraveling"
+            android:theme="@style/Theme.SthlmTraveling.DayNight"
             />
 
         <activity

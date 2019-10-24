@@ -314,11 +314,11 @@ public class FavoritesFragment extends BaseListFragment {
                 journeyQuery.transportModes = new ArrayList<>();
             }
 
-            ImageView metroView = (ImageView) v.findViewById(R.id.favorite_transport_mode_metro);
-            ImageView busView = (ImageView) v.findViewById(R.id.favorite_transport_mode_bus);
-            ImageView trainView = (ImageView) v.findViewById(R.id.favorite_transport_mode_train);
-            ImageView tramView = (ImageView) v.findViewById(R.id.favorite_transport_mode_tram);
-            ImageView waxView = (ImageView) v.findViewById(R.id.favorite_transport_mode_wax);
+            ImageView metroView = v.findViewById(R.id.favorite_transport_mode_metro);
+            ImageView busView = v.findViewById(R.id.favorite_transport_mode_bus);
+            ImageView trainView = v.findViewById(R.id.favorite_transport_mode_train);
+            ImageView tramView = v.findViewById(R.id.favorite_transport_mode_tram);
+            ImageView waxView = v.findViewById(R.id.favorite_transport_mode_wax);
 
             int inactiveColor = ContextCompat.getColor(getActivity(), R.color.transport_icon_inactive);
             int activeColor = ContextCompat.getColor(getActivity(), R.color.icon_default);

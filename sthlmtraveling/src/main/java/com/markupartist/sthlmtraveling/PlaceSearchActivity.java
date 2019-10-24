@@ -127,8 +127,7 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements
 
         mHistoryDbAdapter = new HistoryDbAdapter(this).open();
 
-        ImageButton backButton = (ImageButton) findViewById(R.id.search_back);
-        ViewHelper.tint(backButton, ContextCompat.getColor(this, R.color.primary_dark));
+        ImageButton backButton = findViewById(R.id.search_back);
         ViewHelper.flipIfRtl(backButton);
 
         backButton.setOnClickListener(v -> onBackPressed());
@@ -143,7 +142,6 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements
         mSearchEdit.requestFocus();
 
         mClearButton = findViewById(R.id.search_clear);
-        ViewHelper.tintIcon(mClearButton.getDrawable(), Color.GRAY);
         mClearButton.setOnClickListener(v -> {
             mSearchEdit.setText("");
             mSearchResultAdapter.clear();

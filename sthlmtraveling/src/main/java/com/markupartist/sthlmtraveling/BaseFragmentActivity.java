@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import androidx.annotation.NonNull;
@@ -18,9 +19,12 @@ import android.view.MenuItem;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.material.elevation.ElevationOverlayProvider;
+import com.google.android.material.shape.MaterialShapeDrawable;
 import com.markupartist.sthlmtraveling.utils.Analytics;
 import com.markupartist.sthlmtraveling.utils.PlayService;
 import com.markupartist.sthlmtraveling.utils.PlayServicesUtils;
+import com.markupartist.sthlmtraveling.utils.ViewHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -97,6 +101,16 @@ public class BaseFragmentActivity extends AppCompatActivity implements GoogleApi
         actionBar.setHomeButtonEnabled(true);
         actionBar.setDisplayShowHomeEnabled(true);
         actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setElevation(12);
+
+        ElevationOverlayProvider elevationOverlayProvider = new ElevationOverlayProvider(this);
+        if (elevationOverlayProvider.isThemeElevationOverlayEnabled()) {
+            ColorDrawable colorDrawable = new ColorDrawable();
+            colorDrawable.setColor(elevationOverlayProvider.getThemeElevationOverlayColor());
+            colorDrawable.setAlpha(elevationOverlayProvider.calculateOverlayAlpha(12));
+            actionBar.setBackgroundDrawable(colorDrawable);
+        }
+
         return actionBar;
     }
 

@@ -34,7 +34,8 @@
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:scaleType="centerInside"
-        android:src="@drawable/ic_trip_deviation"
+        android:src="@drawable/ic_warning_black_24dp"
+        android:tint="@color/deviation"
         />
 
     <TextView
@@ -43,11 +44,10 @@
         android:layout_height="wrap_content"
         android:minHeight="40dp"
         android:gravity="center_vertical"
-        android:layout_marginLeft="72dp"
         android:layout_marginStart="72dp"
         android:textSize="14sp"
         android:textIsSelectable="true"
-        android:textColor="@color/body_text_2"
+        android:textColor="@color/body_text_1"
         tools:text="På grund av banarbeten stannar På grund"
         />
 </RelativeLayout>

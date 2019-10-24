@@ -31,6 +31,7 @@
         android:layout_marginRight="16dp"
         android:scaleType="center"
         tools:src="@drawable/ic_search_24dp"
+        android:tint="@color/icon_default"
         />
 
     <TextView
@@ -38,7 +39,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:paddingLeft="@dimen/list_horizontal_padding"
         android:paddingRight="@dimen/list_horizontal_padding"
@@ -52,7 +52,6 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_toEndOf="@id/row_icon"
-        android:layout_toRightOf="@id/row_icon"
         android:orientation="vertical"
         >
 
@@ -61,8 +60,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/list_horizontal_padding"
-            android:layout_marginLeft="0dp"
-            android:layout_marginRight="@dimen/list_horizontal_padding"
             android:layout_marginStart="0dp"
             android:gravity="center_vertical"
             android:singleLine="true"
@@ -75,8 +72,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/list_horizontal_padding"
-            android:layout_marginLeft="0dp"
-            android:layout_marginRight="@dimen/list_horizontal_padding"
             android:layout_marginStart="0dp"
             android:gravity="center_vertical"
             android:singleLine="true"

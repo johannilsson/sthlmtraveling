@@ -33,6 +33,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.loader.app.LoaderManager;
@@ -84,8 +85,9 @@ public class PlannerFragment extends BaseListFragment implements LoaderManager.L
      */
     static final String EXTRA_JOURNEY_QUERY = "sthlmtraveling.intent.action.JOURNEY_QUERY";
 
-    private TextView mStartPointAutoComplete;
-    private TextView mEndPointAutoComplete;
+    private Button mStartPointAutoComplete;
+    private Button mEndPointAutoComplete;
+    private ImageView mStartIcon;
     private Site mStartPoint = new Site();
     private Site mEndPoint = new Site();
     private HistoryDbAdapter mHistoryDbAdapter;
@@ -146,26 +148,31 @@ public class PlannerFragment extends BaseListFragment implements LoaderManager.L
             Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.planner_list_fragment, container, false);
 
-        ImageButton preferenceButton = (ImageButton) rootView.findViewById(R.id.btn_settings);
-
+        ImageButton preferenceButton = rootView.findViewById(R.id.btn_settings);
         ViewHelper.tintIcon(preferenceButton.getDrawable(), Color.GRAY);
-
-        preferenceButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent settingsIntent = new Intent().setClass(getActivity(), SettingsActivity.class);
-                startActivityWithDefaultTransition(settingsIntent);
-            }
+        preferenceButton.setOnClickListener(v -> {
+            Intent settingsIntent = new Intent().setClass(getActivity(), SettingsActivity.class);
+            startActivityWithDefaultTransition(settingsIntent);
         });
 
         return rootView;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        restoreState(savedInstanceState);
+        initViews();
     }
 
     public void initViews() {
         getListView().setVerticalFadingEdgeEnabled(false);
         getListView().setHorizontalFadingEdgeEnabled(false);
 
-        mSearchView = getActivity().getLayoutInflater().inflate(R.layout.search, getListView(), false);
+        mSearchView = LayoutInflater.from(requireContext()).inflate(R.layout.search, getListView(), false);
+
+        mStartIcon = mSearchView.findViewById(R.id.icon_from);
         getListView().addHeaderView(mSearchView, null, false);
 
         // Hide dividers on the header view.
@@ -173,22 +180,16 @@ public class PlannerFragment extends BaseListFragment implements LoaderManager.L
 
         if (!mStartPoint.hasName()) {
             mStartPoint.setName(Site.TYPE_MY_LOCATION);
+            mStartIcon.setImageResource(R.drawable.search_my_location);
+        } else {
+            mStartIcon.setImageResource(R.drawable.search_place);
         }
+
         mStartPointAutoComplete = createTextViewForStartEnd(R.id.from, mStartPoint);
-        mStartPointAutoComplete.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivityForResult(new Intent(getActivity(), PlaceSearchActivity.class), REQUEST_CODE_PICK_START);
-            }
-        });
+        mStartPointAutoComplete.setOnClickListener(v -> startActivityForResult(new Intent(getActivity(), PlaceSearchActivity.class), REQUEST_CODE_PICK_START));
 
         mEndPointAutoComplete = createTextViewForStartEnd(R.id.to, mEndPoint);
-        mEndPointAutoComplete.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivityForResult(new Intent(getActivity(), PlaceSearchActivity.class), REQUEST_CODE_PICK_END);
-            }
-        });
+        mEndPointAutoComplete.setOnClickListener(v -> startActivityForResult(new Intent(getActivity(), PlaceSearchActivity.class), REQUEST_CODE_PICK_END));
 
         try {
             mHistoryDbAdapter = new HistoryDbAdapter(getActivity()).open();
@@ -197,54 +198,43 @@ public class PlannerFragment extends BaseListFragment implements LoaderManager.L
             return;
         }
 
-        Button searchButton = (Button) mSearchView.findViewById(R.id.do_search);
+        Button searchButton = mSearchView.findViewById(R.id.do_search);
         if (mCreateShortcut) {
             searchButton.setText(getText(R.string.create_shortcut_label));
         }
         searchButton.setText(((String)searchButton.getText()).toUpperCase());
-        searchButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                handleSearchAction();
-            }
-        });
+        searchButton.setOnClickListener(v -> handleSearchAction());
 
-        Button optionsButton = (Button) mSearchView.findViewById(R.id.btn_options);
-        optionsButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mJourneyQuery == null) {
-                    mJourneyQuery = new JourneyQuery.Builder().create();
-                }
-
-                Intent i = new Intent(getActivity(), ChangeRouteTimeActivity.class);
-                i.putExtra(EXTRA_JOURNEY_QUERY, mJourneyQuery);
-                startActivityForResult(i, REQUEST_CODE_ROUTE_OPTIONS);
+        Button optionsButton = mSearchView.findViewById(R.id.btn_options);
+        optionsButton.setOnClickListener(v -> {
+            if (mJourneyQuery == null) {
+                mJourneyQuery = new JourneyQuery.Builder().create();
             }
+
+            Intent i = new Intent(getActivity(), ChangeRouteTimeActivity.class);
+            i.putExtra(EXTRA_JOURNEY_QUERY, mJourneyQuery);
+            startActivityForResult(i, REQUEST_CODE_ROUTE_OPTIONS);
         });
 
         mOptionsBarView = mSearchView.findViewById(R.id.options_active_container);
 
-        mSearchView.findViewById(R.id.reverse_start_end).setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Site newStart = new Site(mEndPoint);
-                Site newEnd = new Site(mStartPoint);
+        mSearchView.findViewById(R.id.reverse_start_end).setOnClickListener(v -> {
+            Site newStart = new Site(mEndPoint);
+            Site newEnd = new Site(mStartPoint);
 
-                mStartPoint = newStart;
-                mEndPoint = newEnd;
+            mStartPoint = newStart;
+            mEndPoint = newEnd;
 
-                if (mStartPoint.isMyLocation()) {
-                    mStartPointAutoComplete.setText(getText(R.string.my_location));
-                } else {
-                    mStartPointAutoComplete.setText(mStartPoint.getName());
-                }
+            if (mStartPoint.isMyLocation()) {
+                mStartPointAutoComplete.setText(getText(R.string.my_location));
+            } else {
+                mStartPointAutoComplete.setText(mStartPoint.getName());
+            }
 
-                if (mEndPoint.isMyLocation()) {
-                    mEndPointAutoComplete.setText(getText(R.string.my_location));
-                } else {
-                    mEndPointAutoComplete.setText(mEndPoint.getName());
-                }
+            if (mEndPoint.isMyLocation()) {
+                mEndPointAutoComplete.setText(getText(R.string.my_location));
+            } else {
+                mEndPointAutoComplete.setText(mEndPoint.getName());
             }
         });
 
@@ -283,20 +273,16 @@ public class PlannerFragment extends BaseListFragment implements LoaderManager.L
                 @Override
                 public void onClick(View v) {
                     mJourneyQuery = null;
-                    if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR1) {
-                        mOptionsBarView.animate()
-                                .alpha(0)
-                                .setDuration(200)
-                                .setInterpolator(new DecelerateInterpolator())
-                                .setListener(new AnimatorListenerAdapter() {
-                                    @Override
-                                    public void onAnimationEnd(Animator animation) {
-                                        mOptionsBarView.setVisibility(View.GONE);
-                                    }
-                                });
-                    } else {
-                        mOptionsBarView.setVisibility(View.GONE);
-                    }
+                    mOptionsBarView.animate()
+                            .alpha(0)
+                            .setDuration(200)
+                            .setInterpolator(new DecelerateInterpolator())
+                            .setListener(new AnimatorListenerAdapter() {
+                                @Override
+                                public void onAnimationEnd(Animator animation) {
+                                    mOptionsBarView.setVisibility(View.GONE);
+                                }
+                            });
                 }
             });
 
@@ -314,10 +300,6 @@ public class PlannerFragment extends BaseListFragment implements LoaderManager.L
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         Log.d(TAG, "PlannerFragment.onActivityCreated()");
-
-        restoreState(savedInstanceState);
-
-        initViews();
     }
 
     @Override
@@ -341,16 +323,16 @@ public class PlannerFragment extends BaseListFragment implements LoaderManager.L
     public void onResume() {
         super.onResume();
 
-        if (mStartPoint != null && !mStartPoint.hasName()) {
-            mStartPointAutoComplete.setText("");
-        }
-
-        if (mEndPoint != null && !mEndPoint.hasName()) {
-            mEndPointAutoComplete.setText("");
-        }
+//        if (mStartPoint != null && !mStartPoint.hasName()) {
+//            mStartPointAutoComplete.setText("");
+//        }
+//
+//        if (mEndPoint != null && !mEndPoint.hasName()) {
+//            mEndPointAutoComplete.setText("");
+//        }
     }
 
-    private Site buildStop(Site site, TextView textView) {
+    private Site buildStop(Site site, Button textView) {
         if (site.hasName()
                 && site.getName().equals(textView.getText().toString())) {
             return site;
@@ -399,8 +381,8 @@ public class PlannerFragment extends BaseListFragment implements LoaderManager.L
      *            If addresses should be included.
      * @return A AutoCompleteTextView
      */
-    private TextView createTextViewForStartEnd(int autoCompleteResId, final Site site) {
-        TextView autoCompleteTextView = (TextView) mSearchView.findViewById(autoCompleteResId);
+    private Button createTextViewForStartEnd(int autoCompleteResId, final Site site) {
+        Button autoCompleteTextView = mSearchView.findViewById(autoCompleteResId);
         String name = site.getName();
         if (site.isMyLocation()) {
             name = getString(R.string.my_location);
@@ -595,6 +577,7 @@ public class PlannerFragment extends BaseListFragment implements LoaderManager.L
                 } else {
                     mStartPoint = data.getParcelableExtra(PointOnMapActivity.EXTRA_STOP);
                     mStartPointAutoComplete.setText(getText(R.string.point_on_map));
+                    mStartIcon.setImageResource(R.drawable.search_place);
                     // mStartPointAutoComplete.setText(mStartPoint.getName());
                     Log.d(TAG, "Got Stop " + mStartPoint);
                 }
@@ -624,9 +607,11 @@ public class PlannerFragment extends BaseListFragment implements LoaderManager.L
                     mStartPoint = data.getParcelableExtra(PlaceSearchActivity.EXTRA_PLACE);
                     if (mStartPoint.isMyLocation()) {
                         mStartPointAutoComplete.setText(getText(R.string.my_location));
+                        mStartIcon.setImageResource(R.drawable.search_my_location);
                     } else {
                         Log.d(TAG, "Got startpoint: " + mStartPoint.toDump());
                         mStartPointAutoComplete.setText(mStartPoint.getName());
+                        mStartIcon.setImageResource(R.drawable.search_place);
                         mEndPointAutoComplete.requestLayout();
                     }
                 }

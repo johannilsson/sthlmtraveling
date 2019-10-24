@@ -94,10 +94,8 @@ public class TripView extends LinearLayout {
         timeStartEndText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
 
         ViewCompat.setPaddingRelative(timeStartEndText, 0, 0, 0, (int) (2 * scale));
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-            if (RtlUtils.isRtl(Locale.getDefault())) {
-                timeStartEndText.setTextDirection(View.TEXT_DIRECTION_RTL);
-            }
+        if (RtlUtils.isRtl(Locale.getDefault())) {
+            timeStartEndText.setTextDirection(View.TEXT_DIRECTION_RTL);
         }
 
         // Check if we have Realtime for start and or end.
@@ -136,10 +134,8 @@ public class TripView extends LinearLayout {
 
         startAndEndPoint.setTextColor(getResources().getColor(R.color.body_text_1)); // Dark gray
         startAndEndPoint.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-            if (RtlUtils.isRtl(Locale.getDefault())) {
-                startAndEndPoint.setTextDirection(View.TEXT_DIRECTION_RTL);
-            }
+        if (RtlUtils.isRtl(Locale.getDefault())) {
+            startAndEndPoint.setTextDirection(View.TEXT_DIRECTION_RTL);
         }
         ViewCompat.setPaddingRelative(startAndEndPoint, 0, (int) (4 * scale), 0, (int) (4 * scale));
         startAndEndPointLayout.addView(startAndEndPoint);
@@ -156,8 +152,9 @@ public class TripView extends LinearLayout {
 
         if (trip.hasAlertsOrNotes()) {
             ImageView warning = new ImageView(getContext());
-            warning.setImageResource(R.drawable.ic_trip_deviation);
-            ViewCompat.setPaddingRelative(warning, 0, (int) (2 * scale), (int) (4 * scale), 0);
+            warning.setImageResource(R.drawable.ic_warning_black_24dp);
+            ViewHelper.tint(warning, ContextCompat.getColor(getContext(), R.color.deviation));
+            ViewCompat.setPaddingRelative(warning, 0, (int) (4 * scale), (int) (4 * scale), 0);
             routeChanges.addView(warning);
         }
 
@@ -172,7 +169,8 @@ public class TripView extends LinearLayout {
             if (currentTransportCount > 1 && transportCount >= currentTransportCount) {
                 ImageView separator = new ImageView(getContext());
                 separator.setImageResource(R.drawable.transport_separator);
-                ViewCompat.setPaddingRelative(separator, 0, 0, (int) (2 * scale), 0);
+                ViewHelper.tint(separator, ContextCompat.getColor(getContext(), R.color.icon_default));
+                ViewCompat.setPaddingRelative(separator, 0, 0, (int) (4 * scale), 0);
                 separator.setLayoutParams(changesLayoutParams);
                 routeChanges.addView(separator);
                 if (RtlUtils.isRtl(Locale.getDefault())) {
@@ -206,7 +204,7 @@ public class TripView extends LinearLayout {
                     lineNumberView.setText(sb);
 
                     ViewCompat.setPaddingRelative(lineNumberView,
-                            (int) (5 * scale), (int) (1 * scale), (int) (2 * scale), 0);
+                            (int) (5 * scale), (int) (1 * scale), (int) (4 * scale), 0);
                     lineNumberView.setLayoutParams(changesLayoutParams);
                     routeChanges.addView(lineNumberView);
                 }
@@ -225,11 +223,7 @@ public class TripView extends LinearLayout {
         timeLayout.addView(durationText);
 
         RelativeLayout.LayoutParams durationTextParams = (RelativeLayout.LayoutParams) durationText.getLayoutParams();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-            durationTextParams.addRule(RelativeLayout.ALIGN_PARENT_END);
-        } else {
-            durationTextParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-        }
+        durationTextParams.addRule(RelativeLayout.ALIGN_PARENT_END);
         durationText.setLayoutParams(durationTextParams);
 
         View divider = new View(getContext());

@@ -48,6 +48,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.elevation.ElevationOverlayProvider;
 import com.markupartist.sthlmtraveling.provider.HistoryDbAdapter;
 import com.markupartist.sthlmtraveling.provider.PlacesProvider.Place.Places;
 import com.markupartist.sthlmtraveling.provider.TransportMode;
@@ -135,7 +137,8 @@ public class DeparturesActivity extends BaseFragmentActivity {
             finish();
         }
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        MaterialToolbar toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitle(R.string.departures);
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         actionBar.setHomeButtonEnabled(true);
@@ -178,7 +181,7 @@ public class DeparturesActivity extends BaseFragmentActivity {
                 }
         );
 
-        mSlidingTabLayout = (SlidingTabLayout) findViewById(R.id.sliding_tabs);
+        mSlidingTabLayout = findViewById(R.id.sliding_tabs);
         Resources res = getResources();
         mSlidingTabLayout.setSelectedIndicatorColors(res.getColor(R.color.tab_selected_strip));
         mSlidingTabLayout.setDistributeEvenly(true);
@@ -189,6 +192,10 @@ public class DeparturesActivity extends BaseFragmentActivity {
                 mPreferredTrafficMode = position;
             }
         });
+        ElevationOverlayProvider elevationOverlayProvider = new ElevationOverlayProvider(this);
+        if (elevationOverlayProvider.isThemeElevationOverlayEnabled()) {
+            mSlidingTabLayout.setBackgroundColor(elevationOverlayProvider.compositeOverlayWithThemeSurfaceColorIfNeeded(4f));
+        }
 
         // Not ideal.
         mHistoryDbAdapter = new HistoryDbAdapter(this).open();

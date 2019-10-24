@@ -8,6 +8,8 @@ import android.content.res.Resources;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+
+import androidx.annotation.AttrRes;
 import androidx.annotation.ColorInt;
 import androidx.annotation.ColorRes;
 import androidx.annotation.DrawableRes;
@@ -59,6 +61,12 @@ public class ViewHelper {
         // Set the content view to 0% opacity but visible, so that it is visible
         // (but fully transparent) during the animation.
 
+        toView.setVisibility(View.VISIBLE);
+        fromView.setVisibility(View.GONE);
+        if (true) {
+            return;
+        }
+
         toView.setAlpha(0f);
         toView.setVisibility(View.VISIBLE);
 
@@ -108,6 +116,12 @@ public class ViewHelper {
         return tintIcon(
                 ContextCompat.getDrawable(context, drawableRes),
                 ContextCompat.getColor(context, color));
+    }
+
+    public static int getColorFromAttr(Context context, @AttrRes int attrColor) {
+        TypedValue typedValue = new TypedValue();
+        context.getTheme().resolveAttribute(attrColor, typedValue, true);
+        return typedValue.data;
     }
 
     public static void setText(@NonNull TextView v, @NonNull CharSequence t) {

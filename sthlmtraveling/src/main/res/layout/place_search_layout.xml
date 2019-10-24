@@ -15,12 +15,12 @@
   ~ limitations under the License.
   -->
 
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                                                     xmlns:tools="http://schemas.android.com/tools"
-                                                     android:layout_width="match_parent"
-                                                     android:layout_height="match_parent"
-                                                     android:orientation="vertical"
-                                                     android:background="@color/background"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
     >
 
     <RelativeLayout
@@ -28,68 +28,64 @@
         android:layout_height="?attr/actionBarSize"
         android:descendantFocusability="beforeDescendants"
         android:focusableInTouchMode="true"
-        android:background="#fff"
-        android:elevation="2dp"
         >
 
         <ImageButton
             android:id="@+id/search_back"
-            android:background="?attr/selectableItemBackgroundBorderless"
             android:layout_width="64dp"
             android:layout_height="?attr/actionBarSize"
             android:layout_centerVertical="true"
+            android:background="?attr/selectableItemBackgroundBorderless"
             android:scaleType="center"
             android:src="@drawable/ic_arrow_back_24dp"
+            android:tint="@color/icon_default"
             android:visibility="visible"
-            tools:visibility="visible"/>
+            tools:visibility="visible" />
 
         <EditText
             android:id="@+id/search_edit"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_toEndOf="@id/search_back"
-            android:layout_toRightOf="@id/search_back"
             android:layout_centerHorizontal="true"
+            android:layout_marginEnd="?attr/actionBarSize"
+            android:layout_toEndOf="@id/search_back"
             android:background="@null"
             android:hint="@string/search_label"
             android:paddingLeft="8dp"
             android:paddingRight="8dp"
-            android:layout_marginEnd="?attr/actionBarSize"
-            android:layout_marginRight="?attr/actionBarSize"
             android:singleLine="true"
             android:textSize="16sp"
             />
 
         <ImageButton
             android:id="@+id/search_clear"
-            android:background="?attr/selectableItemBackgroundBorderless"
             android:layout_width="?attr/actionBarSize"
             android:layout_height="?attr/actionBarSize"
             android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
             android:layout_centerHorizontal="true"
+            android:background="?attr/selectableItemBackgroundBorderless"
             android:paddingLeft="0dp"
             android:paddingRight="0dp"
             android:src="@drawable/ic_close"
-            android:tint="#333"
+            android:tint="@color/icon_default"
             android:visibility="visible"
-            tools:visibility="visible"/>
+            tools:visibility="visible" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_alignParentBottom="true"
-            android:visibility="gone"
-            android:background="#FFA19F97"/>
+            android:background="#FFA19F97"
+            android:visibility="gone" />
     </RelativeLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/search_history_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="?attr/actionBarSize"
         android:clipToPadding="true"
         android:visibility="visible"
-        android:layout_marginTop="?attr/actionBarSize"
         tools:visibility="gone"
         />
 
@@ -104,16 +100,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="-6dp"
+            android:indeterminate="true"
             android:visibility="gone"
             style="?android:attr/progressBarStyleHorizontal"
-            android:indeterminate="true"
             />
 
         <TextView
             android:id="@+id/search_result_error"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:layout_marginLeft="72dp"
             android:layout_marginStart="72dp"
             android:gravity="center_vertical"
             android:text="@string/planner_error_title"

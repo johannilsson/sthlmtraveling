@@ -29,5 +29,6 @@
         android:id="@+id/earlier_later"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:tint="@color/body_text_1"
         />
 </LinearLayout>

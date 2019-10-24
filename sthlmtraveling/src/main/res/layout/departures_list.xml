@@ -29,7 +29,7 @@
 
         <ListView
             style="@style/AppListView"
-            android:id="@+id/android:list"
+            android:id="@android:id/list"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             />
@@ -38,6 +38,6 @@
 
     <include
         layout="@layout/progress_bar"
-        android:id="@id/android:empty"/>
+        android:id="@android:id/empty"/>
 
 </FrameLayout>

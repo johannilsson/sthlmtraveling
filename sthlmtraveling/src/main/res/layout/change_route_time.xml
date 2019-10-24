@@ -16,9 +16,11 @@
 ** limitations under the License.
 */
 -->
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <LinearLayout
         style="@style/Container"
@@ -53,16 +55,20 @@
             android:orientation="horizontal"
             >
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/change_route_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 />
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/change_route_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 />
 
             <ImageButton
@@ -71,6 +77,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_action_refresh"
+                android:tint="@color/icon_default"
                 />
         </LinearLayout>
 

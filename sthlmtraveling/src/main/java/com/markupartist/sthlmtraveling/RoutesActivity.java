@@ -28,6 +28,8 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
+
+import com.google.android.material.elevation.ElevationOverlayProvider;
 import com.google.android.material.snackbar.Snackbar;
 import androidx.core.content.ContextCompat;
 import android.text.TextUtils;
@@ -172,14 +174,16 @@ public class RoutesActivity extends BaseListActivity implements
         registerPlayService(mMyLocationManager);
 
         mHeaderbarView = findViewById(R.id.headerbar);
+        ElevationOverlayProvider elevationOverlayProvider = new ElevationOverlayProvider(this);
+        if (elevationOverlayProvider.isThemeElevationOverlayEnabled()) {
+            mHeaderbarView.setBackgroundColor(elevationOverlayProvider.compositeOverlayWithThemeSurfaceColorIfNeeded(4));
+        }
 
         mEmptyView = findViewById(R.id.empty_view);
 
-        mTimeAndDate = (Button) findViewById(R.id.date_time);
+        mTimeAndDate = findViewById(R.id.date_time);
         mTimeAndDate.setText(buildDateTimeString());
         mTimeAndDate.setOnClickListener(this);
-        ViewHelper.tintIcon(mTimeAndDate.getCompoundDrawables()[0],
-                getResources().getColor(R.color.primary_light));
 
         MyApplication app = MyApplication.get(this);
         mRouter = new Router(app.getApiService());
@@ -431,8 +435,8 @@ public class RoutesActivity extends BaseListActivity implements
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
+    protected void onPostResume() {
+        super.onPostResume();
         initRoutes(mJourneyQuery);
         mMonitor.onStart();
     }
@@ -658,6 +662,7 @@ public class RoutesActivity extends BaseListActivity implements
      */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case REQUEST_CODE_CHANGE_TIME:
                 if (resultCode == RESULT_CANCELED) {
@@ -873,25 +878,17 @@ public class RoutesActivity extends BaseListActivity implements
 
     protected void onActionBarAutoShowOrHide(boolean shown) {
         if (shown) {
-            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR1) {
-                mHeaderbarView.animate()
-                        .translationY(0)
-                        .alpha(1)
-                        .setDuration(HEADER_HIDE_ANIM_DURATION)
-                        .setInterpolator(new DecelerateInterpolator());
-            } else {
-                mHeaderbarView.setVisibility(View.VISIBLE);
-            }
+            mHeaderbarView.animate()
+                    .translationY(0)
+                    .alpha(1)
+                    .setDuration(HEADER_HIDE_ANIM_DURATION)
+                    .setInterpolator(new DecelerateInterpolator());
         } else {
-            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR1) {
-                mHeaderbarView.animate()
-                        .translationY(-mHeaderbarView.getBottom())
-                        .alpha(0)
-                        .setDuration(HEADER_HIDE_ANIM_DURATION)
-                        .setInterpolator(new DecelerateInterpolator());
-            } else {
-                mHeaderbarView.setVisibility(View.GONE);
-            }
+            mHeaderbarView.animate()
+                    .translationY(-mHeaderbarView.getBottom())
+                    .alpha(0)
+                    .setDuration(HEADER_HIDE_ANIM_DURATION)
+                    .setInterpolator(new DecelerateInterpolator());
         }
     }
 
@@ -1097,8 +1094,6 @@ public class RoutesActivity extends BaseListActivity implements
             int viewType = getItemViewType(position);
             switch (viewType) {
                 case TYPE_GET_EARLIER:
-                    convertView = createViewForEarlierLater(position, convertView, parent);
-                    break;
                 case TYPE_GET_LATER:
                     convertView = createViewForEarlierLater(position, convertView, parent);
                     break;

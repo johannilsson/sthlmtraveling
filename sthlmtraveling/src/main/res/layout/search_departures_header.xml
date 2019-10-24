@@ -40,6 +40,7 @@
             android:layout_marginRight="16dp"
             android:scaleType="center"
             android:src="@drawable/ic_search_24dp"
+            android:tint="@color/icon_default"
             />
 
         <TextView
@@ -73,6 +74,7 @@
             android:layout_marginRight="16dp"
             android:scaleType="center"
             android:src="@drawable/ic_my_location_24dp"
+            android:tint="@color/icon_default"
             />
 
         <TextView

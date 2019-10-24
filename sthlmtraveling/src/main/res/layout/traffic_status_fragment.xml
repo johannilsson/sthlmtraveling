@@ -16,9 +16,11 @@
 ** limitations under the License.
 */
 -->
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     >
 
     <include layout="@layout/progress_bar"/>
@@ -30,13 +32,15 @@
         android:layout_alignParentBottom="true"
         >
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/traffic_status_btn_all_deviations"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dip"
+            android:layout_height="56dp"
+            android:layout_margin="16dp"
             android:text="@string/show_all"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             />
+
     </RelativeLayout>
 
     <ScrollView

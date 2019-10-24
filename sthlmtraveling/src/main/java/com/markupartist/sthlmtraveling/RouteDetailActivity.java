@@ -433,12 +433,12 @@ public class RouteDetailActivity extends BaseListActivity implements OnMapReadyC
         });
 
         View endSegment = convertView.findViewById(R.id.trip_line_segment_end);
-        endSegment.setVisibility(View.VISIBLE);
+        endSegment.setVisibility(View.GONE);
 
         convertView.findViewById(R.id.trip_layout_intermediate_stop).setVisibility(View.GONE);
 
-        TextView departureTimeView = (TextView) convertView.findViewById(R.id.trip_departure_time);
-        TextView expectedDepartureTimeView = (TextView) convertView.findViewById(R.id.trip_expected_departure_time);
+        TextView departureTimeView = convertView.findViewById(R.id.trip_departure_time);
+        TextView expectedDepartureTimeView = convertView.findViewById(R.id.trip_expected_departure_time);
         departureTimeView.setText(DateFormat.getTimeFormat(this).format(legViewModel.leg.getEndTime()));
         if (legViewModel.leg.getEndTimeRt() != null && legViewModel.leg.hasDepartureDelay()) {
             departureTimeView.setPaintFlags(departureTimeView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
@@ -649,10 +649,9 @@ public class RouteDetailActivity extends BaseListActivity implements OnMapReadyC
             if (position > 0) {
                 final LegViewModel previousLeg = getItem(position - 1);
                 convertView.findViewById(R.id.trip_intermediate_departure_time).setVisibility(View.GONE);
-                TextView descView = (TextView) convertView.findViewById(R.id.trip_intermediate_stop_title);
-                descView.setTextSize(12);
+                TextView descView = convertView.findViewById(R.id.trip_intermediate_stop_title);
                 descView.setText(getLocationName(previousLeg.leg.getTo()));
-                TextView arrivalView = (TextView) convertView.findViewById(R.id.trip_intermediate_arrival_time);
+                TextView arrivalView = convertView.findViewById(R.id.trip_intermediate_arrival_time);
                 arrivalView.setText(DateFormat.getTimeFormat(getContext()).format(previousLeg.leg.getEndTime()));
                 TextView expectedArrivalView = (TextView) convertView.findViewById(R.id.trip_intermediate_expected_arrival_time);
 
@@ -668,7 +667,7 @@ public class RouteDetailActivity extends BaseListActivity implements OnMapReadyC
                 }
             } else {
                 convertView.findViewById(R.id.trip_layout_intermediate_stop).setVisibility(View.GONE);
-                convertView.findViewById(R.id.trip_line_segment_start).setVisibility(View.VISIBLE);
+                convertView.findViewById(R.id.trip_line_segment_start).setVisibility(View.GONE);
                 isFirst = true;
             }
 
@@ -676,15 +675,12 @@ public class RouteDetailActivity extends BaseListActivity implements OnMapReadyC
             boolean shouldUseOriginName = isFirst && TravelMode.FOOT.equals(legViewModel.leg.getTravelMode());
             nameView.setText(shouldUseOriginName ?
                     getLocationName(mJourneyQuery.origin.asPlace()) : getLocationName(legViewModel.leg.getFrom()));
-            nameView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (legViewModel.leg.getFrom().hasLocation()) {
-                        startActivity(ViewOnMapActivity.createIntent(getContext(),
-                                mRoute, mJourneyQuery, Site.toSite(legViewModel.leg.getFrom())));
-                    } else {
-                        Toast.makeText(getContext(), "Missing geo data", Toast.LENGTH_LONG).show();
-                    }
+            nameView.setOnClickListener(v -> {
+                if (legViewModel.leg.getFrom().hasLocation()) {
+                    startActivity(ViewOnMapActivity.createIntent(getContext(),
+                            mRoute, mJourneyQuery, Site.toSite(legViewModel.leg.getFrom())));
+                } else {
+                    Toast.makeText(getContext(), "Missing geo data", Toast.LENGTH_LONG).show();
                 }
             });
 
@@ -736,11 +732,7 @@ public class RouteDetailActivity extends BaseListActivity implements OnMapReadyC
             if (legViewModel.leg.getDetailRef() == null && legViewModel.leg.getIntermediateStops().isEmpty()) {
                 btnIntermediateStops.setCompoundDrawables(null, null, null, null);
             } else {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-                    btnIntermediateStops.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.expander_intermediate_stops, 0, 0, 0);
-                } else {
-                    btnIntermediateStops.setCompoundDrawablesWithIntrinsicBounds(R.drawable.expander_intermediate_stops, 0, 0, 0);
-                }
+                btnIntermediateStops.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.expander_intermediate_stops, 0, 0, 0);
             }
 
             final LinearLayout stopsLayout = (LinearLayout) convertView.findViewById(R.id.trip_intermediate_stops);

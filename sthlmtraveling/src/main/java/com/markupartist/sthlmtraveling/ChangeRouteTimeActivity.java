@@ -22,14 +22,10 @@ import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
-import androidx.annotation.DrawableRes;
-import androidx.core.content.ContextCompat;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.view.ContextThemeWrapper;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -47,10 +43,10 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
-import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TimePicker;
 
+import com.google.android.material.elevation.ElevationOverlayProvider;
 import com.markupartist.sthlmtraveling.provider.TransportMode;
 import com.markupartist.sthlmtraveling.provider.planner.JourneyQuery;
 import com.markupartist.sthlmtraveling.provider.site.Site;
@@ -61,6 +57,11 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+
+import androidx.annotation.DrawableRes;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.view.ContextThemeWrapper;
+import androidx.core.content.ContextCompat;
 
 public class ChangeRouteTimeActivity extends BaseActivity implements OnClickListener {
     static final String TAG = "ChangeRouteTimeActivity";
@@ -106,15 +107,10 @@ public class ChangeRouteTimeActivity extends BaseActivity implements OnClickList
             }
         });
 
-        ImageButton refreshTimeButton = (ImageButton) findViewById(R.id.btn_set_to_now);
-        ViewHelper.tintIcon(refreshTimeButton.getDrawable(), Color.GRAY);
-        refreshTimeButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mJourneyQuery.time != null) {
-                    mJourneyQuery.time.setTime(System.currentTimeMillis());
-                    updateTimeViews();
-                }
+        findViewById(R.id.btn_set_to_now).setOnClickListener(v -> {
+            if (mJourneyQuery.time != null) {
+                mJourneyQuery.time.setTime(System.currentTimeMillis());
+                updateTimeViews();
             }
         });
 
@@ -148,6 +144,13 @@ public class ChangeRouteTimeActivity extends BaseActivity implements OnClickList
 
         // Show the custom action bar view and hide the normal Home icon and title.
         final ActionBar actionBar = getSupportActionBar();
+        ElevationOverlayProvider elevationOverlayProvider = new ElevationOverlayProvider(this);
+        if (elevationOverlayProvider.isThemeElevationOverlayEnabled()) {
+            ColorDrawable colorDrawable = new ColorDrawable();
+            colorDrawable.setColor(elevationOverlayProvider.getThemeElevationOverlayColor());
+            colorDrawable.setAlpha(elevationOverlayProvider.calculateOverlayAlpha(12));
+            actionBar.setBackgroundDrawable(colorDrawable);
+        }
         actionBar.setDisplayOptions(
                 ActionBar.DISPLAY_SHOW_CUSTOM,
                 ActionBar.DISPLAY_SHOW_CUSTOM | ActionBar.DISPLAY_SHOW_HOME

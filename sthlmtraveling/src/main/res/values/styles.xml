@@ -1,30 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools" xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <style name="Theme.SthlmTraveling" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="colorPrimary">@color/primary</item>
-        <item name="colorPrimaryDark">@color/primary_dark</item>
-        <item name="colorAccent">@color/accent</item>
-        <item name="colorControlActivated">@color/primary_dark</item>
-        <item name="colorControlNormal">@color/primary_dark</item>
-
-        <item name="android:windowContentOverlay">@null</item>
-
-        <item name="android:windowBackground">@color/background</item>
-        <item name="android:colorBackground">@color/background</item>
+    <style name="Theme.SthlmTraveling.Light" parent="Theme.MaterialComponents.Light.DarkActionBar">
+        <!-- Light theme attributes -->
+<!--        <item name="colorControlActivated">@color/primary_dark</item>-->
+<!--        <item name="colorControlNormal">@color/primary_dark</item>-->
     </style>
 
-    <style name="Theme.SthlmTraveling.NoActionBar" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="Theme.SthlmTraveling.Dark" parent="Theme.MaterialComponents">
+        <!-- Dark theme attributes -->
+<!--        <item name="colorControlActivated">#000</item>-->
+<!--        <item name="colorControlNormal">?android:attr/textColorPrimary</item>-->
+    </style>
+
+<!--    <style name="ActionBarDark" parent="@style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">-->
+<!--    <style name="ActionBarDark" parent="Widget.AppCompat.ActionBar.Solid">-->
+<!--        <item name="background">@color/red</item>-->
+<!--        <item name="titleTextStyle">@style/MyActionBarTitle</item>-->
+<!--    </style>-->
+
+    <style name="Base.Theme.SthlmTraveling.DayNight" parent="Theme.SthlmTraveling.Light" />
+
+    <style name="Theme.SthlmTraveling.DayNight" parent="Base.Theme.SthlmTraveling.DayNight">
+<!--    <style name="Theme.SthlmTraveling.DayNight" parent="Theme.MaterialComponents.DayNight">-->
+        <!-- Light/dark theme independent attributes -->
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryDark">@color/primary_dark</item>
         <item name="colorAccent">@color/accent</item>
-        <item name="colorControlActivated">@color/primary_dark</item>
-        <item name="colorControlNormal">@color/primary_dark</item>
-
         <item name="android:windowContentOverlay">@null</item>
+    </style>
 
-        <item name="android:windowBackground">@color/background</item>
-        <item name="android:colorBackground">@color/background</item>
+    <style name="Theme.SthlmTraveling.DayNight.NoActionBar" parent="Theme.SthlmTraveling.DayNight">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
     </style>
 
     <!-- General styles -->

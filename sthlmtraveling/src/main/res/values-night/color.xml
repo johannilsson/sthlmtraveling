@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="primary">#94bdd6</color>
+    <color name="primary_dark">#121212</color>
+    <color name="primary_light">#E0F7FA</color>
+    <color name="accent">#94bdd6</color>
+
+    <color name="body_text_1">@color/body_text_1_inverse</color>
+    <color name="body_text_2">@color/body_text_2_inverse</color>
+
+    <color name="location_to">#EC5A6A</color>
+    <color name="location_current_background">#66E9E9E9</color>
+    <color name="icon_default">@color/body_text_1_inverse</color>
+    <color name="transport_icon_inactive">@color/body_text_2_inverse</color>
+
+    <color name="deviation">#FF9800</color>
+    <color name="schedule_late">#F44336</color>
+    <color name="schedule_ahead">#4CAF50</color>
+</resources>

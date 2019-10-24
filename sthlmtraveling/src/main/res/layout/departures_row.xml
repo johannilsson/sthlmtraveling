@@ -20,7 +20,6 @@
                 xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="match_parent"
                 android:layout_height="?android:attr/listPreferredItemHeight"
-                android:background="@color/background"
     >
 
     <TextView
@@ -28,8 +27,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_marginLeft="16dp"
         android:layout_marginStart="16dp"
+        android:textAppearance="?attr/textAppearanceListItem"
         tools:text="B422X"
         android:maxLength="7"
         android:ellipsize="end"
@@ -43,12 +42,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:paddingLeft="@dimen/list_horizontal_padding"
         android:paddingRight="@dimen/list_horizontal_padding"
-        android:textAppearance="?attr/textAppearanceListItemSmall"
-        android:textColor="@color/body_text_1"
+        android:textAppearance="?attr/textAppearanceListItem"
         android:visibility="visible"
         tools:text="1 min"/>
 
@@ -56,7 +53,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_marginLeft="72dp"
         android:layout_marginStart="72dp"
         android:orientation="vertical"
         >
@@ -67,8 +63,7 @@
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:singleLine="true"
-            android:textAppearance="?attr/textAppearanceListItemSmall"
-            android:textColor="@color/body_text_1"
+            android:textAppearance="?attr/textAppearanceListItem"
             tools:text="Telefonplan"/>
 
         <TextView
@@ -77,12 +72,11 @@
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:singleLine="true"
-            android:textAppearance="?attr/textAppearanceListItemSmall"
-            android:textColor="@color/body_text_2"
+            android:textAppearance="?attr/textAppearanceListItemSecondary"
             android:textSize="14sp"
             android:visibility="gone"
             tools:text="Sample sub title"
-            tools:visibility="gone"/>
+            tools:visibility="visible"/>
 
     </LinearLayout>
 

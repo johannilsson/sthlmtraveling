@@ -18,21 +18,11 @@
 <resources>
     <color name="background">#f9f9f9</color>
 
-    <!--<color name="primary">#277B8D</color>-->
     <color name="primary">#1d5771</color>
     <color name="primary_dark">#1A4D64</color>
     <color name="primary_light">#E0F7FA</color>
 
-    <color name="primary_light_alpha">#CCBBDEFB</color>
-
-    <!--<color name="primary">#3d3a51</color>-->
-    <!--<color name="primary_light">#857eac</color>-->
-    <!--<color name="primary_dark">#383549</color>-->
-    <!--<color name="primary_light_alpha">#337c7c7c</color>-->
-
     <color name="accent">#f8756b</color>
-    <color name="accent_light">#69F0AE</color>
-    <color name="accent_dark">#ef2138</color>
 
     <color name="tab_selected_strip">@color/accent</color>
 
@@ -42,7 +32,11 @@
 
     <color name="transparent">#00000000</color>
 
-    <color name="icon_default">#8C000000</color>
+<!--    <color name="icon_default">#8C000000</color>-->
+    <color name="location_to">#ef2138</color>
+    <color name="location_current_background">#66494949</color>
+
+    <color name="icon_default">@color/body_text_1</color>
     <color name="icon_dark">#FF444444</color>
     <color name="icon_default_inverse">#ffffff</color>
     <color name="transport_icon_inactive">#26000000</color>
@@ -54,6 +48,11 @@
 
     <color name="body_text_1_inverse">#deffffff</color>
     <color name="body_text_2_inverse">#8affffff</color>
+
+    <color name="secondary_text_default_dark">#b3ffffff</color>
+    <color name="secondary_text_default_light">#8a000000</color>
+    <color name="secondary_text_disabled_dark">#36ffffff</color>
+    <color name="secondary_text_disabled_light">#24000000</color>
 
 
     <color name="traffic_status_good">#0ba862</color>

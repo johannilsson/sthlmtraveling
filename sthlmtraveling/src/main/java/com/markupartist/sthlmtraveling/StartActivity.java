@@ -23,10 +23,12 @@ import androidx.core.view.ViewCompat;
 import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.ActionBar;
 
+import com.google.android.material.elevation.ElevationOverlayProvider;
 import com.markupartist.sthlmtraveling.service.DeviationService;
 import com.markupartist.sthlmtraveling.ui.view.PageFragmentAdapter;
 import com.markupartist.sthlmtraveling.ui.view.SlidingTabLayout;
 import com.markupartist.sthlmtraveling.utils.RtlUtils;
+import com.markupartist.sthlmtraveling.utils.ViewHelper;
 
 import java.util.Locale;
 
@@ -67,7 +69,6 @@ public class StartActivity extends BaseFragmentActivity {
         pageAdapter.setLayoutDirection(RtlUtils.isRtl(Locale.getDefault()));
 
         mPager = (ViewPager) findViewById(R.id.pager);
-        mPager.setPageMarginDrawable(R.color.light_grey);
         mPager.setPageMargin(25);  // TODO: Compensate with denisity to get it right on all screens
         mPager.setAdapter(pageAdapter);
         mPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
@@ -91,11 +92,15 @@ public class StartActivity extends BaseFragmentActivity {
             }
         });
 
-        mSlidingTabLayout = (SlidingTabLayout) findViewById(R.id.sliding_tabs);
-        Resources res = getResources();
+        mSlidingTabLayout = findViewById(R.id.sliding_tabs);
         mSlidingTabLayout.setSelectedIndicatorColors(ContextCompat.getColor(this, R.color.tab_selected_strip));
         mSlidingTabLayout.setDistributeEvenly(true);
         mSlidingTabLayout.setViewPager(mPager);
+
+        ElevationOverlayProvider elevationOverlayProvider = new ElevationOverlayProvider(this);
+        if (elevationOverlayProvider.isThemeElevationOverlayEnabled()) {
+            mSlidingTabLayout.setBackgroundColor(elevationOverlayProvider.compositeOverlayWithThemeSurfaceColorIfNeeded(12));
+        }
 
         // We force the tab layout to LTR and instead reverse the order for RTL languages.
         ViewCompat.setLayoutDirection(mSlidingTabLayout, ViewCompat.LAYOUT_DIRECTION_LTR);
