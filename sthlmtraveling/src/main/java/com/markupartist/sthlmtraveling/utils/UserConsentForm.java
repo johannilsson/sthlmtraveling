@@ -70,12 +70,21 @@ public class UserConsentForm {
     }
 
     public void updateUserConsent(ConsentStatus consentStatus) {
-        boolean hasConsent = consentStatus == ConsentStatus.PERSONALIZED;
-        sharedPreferences
-                .edit()
-                .putBoolean("has_consent_to_serve_personalized_ads", hasConsent)
-                .putBoolean("personalized_ads_consent_is_unknown", consentStatus == ConsentStatus.UNKNOWN)
-                .apply();
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        switch (consentStatus) {
+            case UNKNOWN:
+                editor.putBoolean("personalized_ads_consent_is_unknown", true);
+                break;
+            case NON_PERSONALIZED:
+                editor.putBoolean("has_consent_to_serve_personalized_ads", false);
+                editor.putBoolean("personalized_ads_consent_is_unknown", false);
+                break;
+            case PERSONALIZED:
+                editor.putBoolean("has_consent_to_serve_personalized_ads", true);
+                editor.putBoolean("personalized_ads_consent_is_unknown", false);
+                break;
+        }
+        editor.apply();
     }
 
     public void show() {
