@@ -20,21 +20,10 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.Message;
-import androidx.annotation.DrawableRes;
-import androidx.annotation.LayoutRes;
-import androidx.loader.app.LoaderManager;
-import androidx.core.content.ContextCompat;
-import androidx.loader.content.CursorLoader;
-import androidx.loader.content.Loader;
-import androidx.core.widget.ContentLoadingProgressBar;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -51,6 +40,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.material.elevation.ElevationOverlayProvider;
 import com.markupartist.sthlmtraveling.provider.HistoryDbAdapter;
 import com.markupartist.sthlmtraveling.provider.site.Site;
 import com.markupartist.sthlmtraveling.ui.adapter.PlaceFilterResultCallback;
@@ -67,6 +57,15 @@ import com.yqritc.recyclerviewmultipleviewtypesadapter.ListBindAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import androidx.annotation.DrawableRes;
+import androidx.annotation.LayoutRes;
+import androidx.core.widget.ContentLoadingProgressBar;
+import androidx.loader.app.LoaderManager;
+import androidx.loader.content.CursorLoader;
+import androidx.loader.content.Loader;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * Entry point for searching for address, transit stop and or places.
@@ -126,6 +125,14 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements
         }
 
         mHistoryDbAdapter = new HistoryDbAdapter(this).open();
+
+        View searchBar = findViewById(R.id.search_bar);
+        ElevationOverlayProvider elevationOverlayProvider = new ElevationOverlayProvider(this);
+        if (elevationOverlayProvider.isThemeElevationOverlayEnabled()) {
+            searchBar.setBackgroundColor(elevationOverlayProvider.compositeOverlayWithThemeSurfaceColorIfNeeded(4));
+        }
+
+
 
         ImageButton backButton = findViewById(R.id.search_back);
         ViewHelper.flipIfRtl(backButton);

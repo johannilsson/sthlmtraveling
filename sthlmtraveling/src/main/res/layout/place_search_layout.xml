@@ -24,6 +24,7 @@
     >
 
     <RelativeLayout
+        android:id="@+id/search_bar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:descendantFocusability="beforeDescendants"
@@ -71,12 +72,6 @@
             android:visibility="visible"
             tools:visibility="visible" />
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_alignParentBottom="true"
-            android:background="#FFA19F97"
-            android:visibility="gone" />
     </RelativeLayout>
 
     <androidx.recyclerview.widget.RecyclerView
