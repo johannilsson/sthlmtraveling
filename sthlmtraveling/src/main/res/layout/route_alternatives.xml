@@ -63,6 +63,7 @@
         app:layout_widthPercent="33%"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:visibility="gone"
+        tools:visibility="visible"
         >
 
         <ImageView
@@ -100,6 +101,7 @@
         app:layout_widthPercent="33%"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:visibility="gone"
+        tools:visibility="visible"
         >
 
         <ImageView
@@ -137,6 +139,7 @@
         app:layout_widthPercent="33%"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:visibility="gone"
+        tools:visibility="visible"
         >
 
         <ImageView
