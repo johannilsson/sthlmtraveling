@@ -18,13 +18,6 @@ package com.markupartist.sthlmtraveling.utils;
 
 import android.content.Context;
 
-import com.crashlytics.android.answers.Answers;
-import com.crashlytics.android.answers.ContentViewEvent;
-import com.crashlytics.android.answers.CustomEvent;
-import com.google.android.gms.analytics.HitBuilders;
-import com.google.android.gms.analytics.Tracker;
-import com.markupartist.sthlmtraveling.MyApplication;
-
 public class Analytics {
 
     private static String ACTION_CLICK = "Click";
@@ -44,11 +37,7 @@ public class Analytics {
     }
 
     public void registerScreen(final String screenName) {
-        Tracker tracker = ((MyApplication) mContext.getApplicationContext()).getTracker();
-        tracker.setScreenName(screenName);
-        tracker.send(new HitBuilders.AppViewBuilder().build());
-
-        Answers.getInstance().logContentView(new ContentViewEvent().putContentName(screenName));
+        // Noop
     }
 
     public void event(final String category, final String action) {
@@ -56,21 +45,7 @@ public class Analytics {
     }
 
     public void event(final String category, final String action, final String label) {
-        Tracker tracker = ((MyApplication) mContext.getApplicationContext()).getTracker();
-        tracker.send(new HitBuilders.EventBuilder()
-                .setCategory(category)
-                .setAction(action)
-                .setLabel(label)
-                .build());
-
-        CustomEvent answerEvent = new CustomEvent(category);
-        if (action != null) {
-            answerEvent.putCustomAttribute("action", action);
-        }
-        if (label != null) {
-            answerEvent.putCustomAttribute("label", label);
-        }
-        Answers.getInstance().logCustom(answerEvent);
+        // Noop
     }
 
 }

@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.os.Build;
 import android.preference.PreferenceManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -15,9 +14,6 @@ import com.google.ads.consent.ConsentInfoUpdateListener;
 import com.google.ads.consent.ConsentInformation;
 import com.google.ads.consent.ConsentStatus;
 import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.analytics.GoogleAnalytics;
-import com.google.android.gms.analytics.Logger;
-import com.google.android.gms.analytics.Tracker;
 import com.markupartist.sthlmtraveling.data.api.ApiService;
 import com.markupartist.sthlmtraveling.data.misc.ApiServiceProvider;
 import com.markupartist.sthlmtraveling.data.misc.HttpHelper;
@@ -151,28 +147,9 @@ public class MyApplication extends Application {
             Resources res = getResources();
             DisplayMetrics dm = res.getDisplayMetrics();
             Configuration conf = res.getConfiguration();
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-                conf.setLocale(locale);
-            } else {
-                conf.locale = locale;
-            }
+            conf.setLocale(locale);
             Locale.setDefault(locale);
             res.updateConfiguration(conf, dm);
         }
-    }
-
-    /**
-     * Get analytics tracker.
-     *
-     * @return A Tracker
-     */
-    public synchronized Tracker getTracker() {
-        GoogleAnalytics analytics = GoogleAnalytics.getInstance(this);
-        analytics.setDryRun(BuildConfig.DEBUG);
-        if (BuildConfig.DEBUG) {
-            analytics.getLogger().setLogLevel(Logger.LogLevel.VERBOSE);
-        }
-        // TODO, fix to reuse tracker if already initialised.
-        return analytics.newTracker(AppConfig.ANALYTICS_PROPERTY_KEY);
     }
 }

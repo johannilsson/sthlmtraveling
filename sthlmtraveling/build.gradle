@@ -96,7 +96,6 @@ dependencies {
     implementation 'com.google.android.gms:play-services-base:17.1.0'
     implementation 'com.google.android.gms:play-services-maps:17.0.0'
     implementation 'com.google.android.gms:play-services-location:17.0.0'
-    implementation 'com.google.android.gms:play-services-analytics:17.0.0'
     implementation 'com.google.android.gms:play-services-ads:18.2.0'
     implementation 'com.google.android.ads.consent:consent-library:1.0.7'
     implementation 'androidx.appcompat:appcompat:1.1.0'
