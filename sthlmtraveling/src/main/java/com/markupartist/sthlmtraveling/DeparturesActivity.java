@@ -168,9 +168,7 @@ public class DeparturesActivity extends BaseFragmentActivity {
         mPageAdapter.addPage(new PageFragmentAdapter.PageInfo(getString(R.string.deviations_label),
                 DepartureFragment.class, tramArg, R.drawable.ic_transport_light_train_20dp));
 
-        mPager = (ViewPager) findViewById(R.id.pager);
-        mPager.setPageMarginDrawable(R.color.light_grey);
-        mPager.setPageMargin(25);  // TODO: Compensate with denisity to get it right on all screens
+        mPager = findViewById(R.id.pager);
         mPager.setAdapter(mPageAdapter);
         mPager.addOnPageChangeListener(
                 new ViewPager.SimpleOnPageChangeListener() {
