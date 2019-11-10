@@ -11,8 +11,6 @@ import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
-import androidx.core.app.NavUtils;
-import androidx.appcompat.widget.SwitchCompat;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,6 +22,9 @@ import com.markupartist.sthlmtraveling.provider.JourneysProvider.Journey.Journey
 import com.markupartist.sthlmtraveling.service.DeviationService;
 import com.markupartist.sthlmtraveling.utils.Analytics;
 import com.markupartist.sthlmtraveling.utils.UserConsentForm;
+
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.appcompat.widget.SwitchCompat;
 
 public class SettingsActivity extends AppCompatPreferenceActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
 
@@ -38,6 +39,9 @@ public class SettingsActivity extends AppCompatPreferenceActivity implements Sha
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
         getSupportActionBar().setDefaultDisplayHomeAsUpEnabled(true);
 
         addPreferencesFromResource(R.xml.preferences);
@@ -49,7 +53,6 @@ public class SettingsActivity extends AppCompatPreferenceActivity implements Sha
         Preference customPref = findPreference("about_version");
         customPref.setSummary("Version " + AppConfig.APP_VERSION);
 
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         boolean hasConsent = sharedPreferences.getBoolean("has_consent_to_serve_personalized_ads", false);
         findPreference("preference_see_relevant_ads")
                 .setTitle(hasConsent ? R.string.relevant_ads_enabled : R.string.relevant_ads_disabled);
@@ -73,29 +76,46 @@ public class SettingsActivity extends AppCompatPreferenceActivity implements Sha
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if (key.equals("prefered_language_preference")) {
-            MyApplication application = (MyApplication) getApplication();
-            application.reloadLocaleForApplication();
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-                recreate();
-            }
-            Toast.makeText(this, R.string.restart_app_for_full_effect,
-                    Toast.LENGTH_LONG).show();
-        } else if (key.equals("notification_deviations_enabled")) {
-            boolean enabled = sharedPreferences.getBoolean("notification_deviations_enabled", false);
-            if (enabled) {
-                Analytics.getInstance(this).event("Settings", "Deviation Service", "start");
-            } else {
-                Analytics.getInstance(this).event("Settings", "Deviation Service", "stop");
-            }
-            DeviationService.startAsRepeating(this);
-        } else if (key.equals("has_consent_to_serve_personalized_ads")) {
-            boolean hasConsent = sharedPreferences.getBoolean("has_consent_to_serve_personalized_ads", false);
-            findPreference("preference_see_relevant_ads")
-                    .setTitle(hasConsent ? R.string.relevant_ads_enabled : R.string.relevant_ads_disabled);
+        switch (key) {
+            case "prefered_language_preference":
+                MyApplication application = (MyApplication) getApplication();
+                application.reloadLocaleForApplication();
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+                    recreate();
+                }
+                Toast.makeText(this, R.string.restart_app_for_full_effect,
+                        Toast.LENGTH_LONG).show();
+                break;
+            case "notification_deviations_enabled":
+                boolean enabled = sharedPreferences.getBoolean("notification_deviations_enabled", false);
+                if (enabled) {
+                    Analytics.getInstance(this).event("Settings", "Deviation Service", "start");
+                } else {
+                    Analytics.getInstance(this).event("Settings", "Deviation Service", "stop");
+                }
+                DeviationService.startAsRepeating(this);
+                break;
+            case "has_consent_to_serve_personalized_ads":
+                boolean hasConsent = sharedPreferences.getBoolean("has_consent_to_serve_personalized_ads", false);
+                findPreference("preference_see_relevant_ads")
+                        .setTitle(hasConsent ? R.string.relevant_ads_enabled : R.string.relevant_ads_disabled);
+                break;
+            case "night_mode_preference":
+                int mode = Integer.parseInt(sharedPreferences.getString(key, "-1"));
+                AppCompatDelegate.setDefaultNightMode(mode);
+                restartApp();
+                break;
         }
 
         Toast.makeText(this, R.string.settings_saved, Toast.LENGTH_SHORT).show();
+    }
+
+    private void restartApp() {
+        Intent i = getApplicationContext().getPackageManager()
+                .getLaunchIntentForPackage(getApplicationContext().getPackageName() );
+        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK );
+        finish();
+        startActivity(i);
     }
 
     @Override

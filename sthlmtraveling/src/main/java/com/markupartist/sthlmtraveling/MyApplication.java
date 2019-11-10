@@ -23,6 +23,7 @@ import com.squareup.okhttp.OkHttpClient;
 
 import java.util.Locale;
 
+import androidx.appcompat.app.AppCompatDelegate;
 import io.fabric.sdk.android.Fabric;
 
 public class MyApplication extends Application {
@@ -39,6 +40,7 @@ public class MyApplication extends Application {
         super.onCreate();
         Fabric.with(this, new Crashlytics());
 
+        setNightMode();
         updateUserConsent();
 
         MobileAds.initialize(this, getString(R.string.admob_app_id));
@@ -83,6 +85,13 @@ public class MyApplication extends Application {
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         reloadLocaleForApplication();
+    }
+
+    private void setNightMode() {
+        SharedPreferences sharedPreferences = PreferenceManager
+                .getDefaultSharedPreferences(getApplicationContext());
+        int mode = Integer.parseInt(sharedPreferences.getString("night_mode_preference", "-1"));
+        AppCompatDelegate.setDefaultNightMode(mode);
     }
 
     public void reloadLocaleForApplication() {
