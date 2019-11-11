@@ -16,6 +16,7 @@
   -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- General strings -->
+    <string name="ok">OK</string>
     <string name="done">Listo</string>
     <string name="discard">Cancelar</string>
     <string name="from">Desde</string>
@@ -108,7 +109,7 @@
     <string name="share_label">Compartir</string>
     <string name="sms_ticket_label">Comprar</string>
     <string name="sms_ticket_price_reduced">Tarifa reducida</string>
-    <string name="sms_ticket_price_full">Tarifa general (20–64 años)</string>
+    <string name="sms_ticket_price_full">Tarifa general (20-64 años)</string>
     <string name="sms_ticket_notice_message">Por favor, verificar los detalles antes de comprar su boleto. STHML Traveling no puede garantizar que el boleto es válido para su viaje.</string>
     <string name="sms_ticket_notice_disabled">No hay Boletos de Mensaje de Texto disponibles para esta ruta.</string>
     <string name="trip_description_walk" formatted="false">Caminar</string>
@@ -125,12 +126,12 @@
     <string name="time_to" formatted="false">%s a %s</string>
     <!-- Phrase describing a time duration using seconds [CHAR LIMIT=16] -->
     <plurals name="duration_seconds">
-        <item quantity="one">"1 segundo"</item>
-        <item quantity="other">"<xliff:g id="COUNT">%d</xliff:g> segundos"</item>
+        <item quantity="one">1 segundo</item>
+        <item quantity="other"><xliff:g id="COUNT">%d</xliff:g> segundos</item>
     </plurals>
     <!-- Phrase describing a time duration using minutes [CHAR LIMIT=16] -->
     <plurals name="duration_minutes">
-        <item quantity="one">1 min</item>
+        <item quantity="one">1 minuto</item>
         <item quantity="other"><xliff:g id="COUNT">%d</xliff:g> min</item>
     </plurals>
     <!-- Phrase describing a time duration using hours [CHAR LIMIT=16] -->
@@ -138,6 +139,20 @@
         <item quantity="one">1 hora</item>
         <item quantity="other"><xliff:g id="COUNT">%d</xliff:g> horas</item>
     </plurals>
+    <plurals name="duration_days">
+        <item quantity="one">1 dia</item>
+        <item quantity="other"><xliff:g id="count">%d</xliff:g> dias</item>
+    </plurals>
+    <plurals name="duration_short_minutes">
+        <item quantity="one">1 minuto</item>
+        <item quantity="other"><xliff:g id="count">%d</xliff:g> minutos</item>
+    </plurals>
+    <plurals name="duration_short_hours">
+        <item quantity="one">1 hora</item>
+        <item quantity="other"><xliff:g id="count">%d</xliff:g> horas</item>
+    </plurals>
+    <string name="duration_short_hours_minutes" formatted="false"><xliff:g id="hour">%1$s</xliff:g> horas <xliff:g id="minutes">%2$s</xliff:g> minutos</string>
+    <string name="trip_time_origin_destination"><xliff:g id="origin">%1$s</xliff:g> – <xliff:g id="destination">%2$s</xliff:g></string>
     <!-- Planner error message -->
     <string name="planner_error_title">La búsqueda falló</string>
     <!-- Planner error message -->
@@ -205,13 +220,42 @@
     <string name="search_clear_favorites_summary_preference">Borrar todos los favoritos.</string>
     <string name="search_clear_favorites_confirm">¿Está seguro que desea borrar todos los favoritos?</string>
     <string name="search_favorites_cleared">Favoritos borrados</string>
+    <string name="dark_mode_label">Modo oscuro</string>
+    <string name="light_mode_label">Modo claro</string>
+    <string name="system_default_label">Configuración predeterminada del sistema</string>
+    <string name="dark_mode_description">Elija entre el modo oscuro y claro.</string>
     <string name="help">Ayuda</string>
     <string name="support">Soporte</string>
     <string name="transport_type">Medio de transporte</string>
+    <string name="search_try_with_app_name">Intente buscar con STHLM Travelling</string>
+    <string name="search_try_with_google">Intenta buscar con Google</string>
+    <string name="search_attribution_note">Buscar lugar</string>
+    <string name="language_system_locale">Configuración regional del sistema</string>
+    <string name="pref_deviations_interval_1">10 minutos</string>
+    <string name="pref_deviations_interval_2">15 minutos</string>
+    <string name="pref_deviations_interval_3">30 minutos</string>
+    <string name="pref_deviations_interval_4">45 minutos</string>
+    <string name="pref_deviations_interval_5">1 hora</string>
+    <string name="notifications_disabled_title">Notificaciones desactivadas</string>
+    <string name="notifications_disabled_summary">Esta función está en reconstrucción.</string>
     <!-- Ads -->
     <string name="ads">Anuncios publicitarios</string>
     <string name="ads_title">Por qué anuncios publicitarios?</string>
     <string name="ads_turn_off">Apagar anuncios publicitarios</string>
     <string name="ads_message">Esta aplicación ha sido gratuita desde el 2009, con el paso de los años el costo de los servicios y mantenimiento se han incrementado.\n\nPara poder continuar con el desarrollo y brindar soporte, anuncios publicitarios necesarios se muestran a veces.\n\nSi tiene problemas con los anuncios publicitarios, es posible apagarlos. En el futuro, podría haber un costo relacionado a apagar los anuncios publicitarios.\n\nGracias por tu apoyo!\nJohan</string>
     <string name="ads_summary">Por qué esta aplicación tiene anuncios publicitarios?</string>
+    <string name="permission_location_needed_search">Active el permiso de ubicación para buscar con su ubicación</string>
+    <string name="permission_location_needed_maps">Active el permiso de ubicación para ver su ubicación en el mapa</string>
+    <string name="allow">Permitir</string>
+    <string name="relevant_ads_enabled">Los anuncios relevantes están activados</string>
+    <string name="relevant_ads_disabled">Los anuncios relevantes están desactivados</string>
+    <string name="relevant_ads_summary">Cambie su preferencia sobre cómo desea que se usen sus datos para mostrarle anuncios.</string>
+    <string name="distance_in_meter"><xliff:g id="distance">%1$s</xliff:g>metros</string>
+    <string name="entrance_and_name">Entrada desde <xliff:g id="entrance">%1$s</xliff:g></string>
+    <string name="exit_and_name">Salida al <xliff:g id="entrance">%1$s</xliff:g></string>
+    <string name="entrance">Entrada</string>
+    <string name="exit">Salida</string>
+    <string name="bike_rental">Bicicleta de alquiler</string>
+    <string name="track_bus">Ubicación <xliff:g id="track">%1$s</xliff:g></string>
+    <string name="track_rail">Plataforma <xliff:g id="track">%1$s</xliff:g></string>
 </resources>

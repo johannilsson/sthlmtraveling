@@ -222,6 +222,10 @@
     <string name="search_clear_favorites_summary_preference">Radera alla favoriter</string>
     <string name="search_clear_favorites_confirm">Är du säker på att du vill radera alla favoriter?</string>
     <string name="search_favorites_cleared">Favoriter raderade</string>
+    <string name="dark_mode_label">Mörkt läge</string>
+    <string name="light_mode_label">Ljust läge</string>
+    <string name="system_default_label">System default</string>
+    <string name="dark_mode_description">Välj mellan mörkt och ljust läge</string>
     <string name="help">Hjälp</string>
     <string name="support">Support och hjälpforum</string>
     <string name="transport_type">Färdmedel</string>

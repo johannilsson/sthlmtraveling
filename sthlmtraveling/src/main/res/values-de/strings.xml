@@ -57,7 +57,7 @@
     <string name="name_of_shortcut">Name des Shortcuts</string>
     <string name="create_shortcut_label">Shortcut erstellen</string>
     <string name="create_shortcut_for_departure_label">Shortcut für die Abfahrtszeit erstellen</string>
-    <string name="choose_start_point_label">Startort wählen</string>
+    <string name="choose_start_point_label">Startposition wählen</string>
     <string name="choose_end_point_label">Zielort wählen</string>
     <string name="send_feedback_email_title">STHLM Traveling Kommentar</string>
     <string name="send_feedback_email_emailaddress">sthlmtraveling@markupartist.com</string>
@@ -66,7 +66,7 @@
     <string name="no">Nein</string>
     <string name="retry">Wiederholen</string>
     <string name="point_on_map">Punkt auf der Karte</string>
-    <string name="tap_to_select_this_point">Tippen um den Punkt auszuwählen</string>
+    <string name="tap_to_select_this_point">Tippen um diesen Punkt auszuwählen</string>
     <string name="point_selected">Punkt ausgewählt</string>
     <string name="tap_your_end_point_on_map">Den Zielpunkt auf der Karte antippen.</string>
     <string name="tap_your_start_point_on_map">Den Startpunkt auf der Karte antippen.</string>
@@ -84,7 +84,7 @@
     <string name="metros">U-Bahnen</string>
     <string name="buses">Busse</string>
     <string name="trains">Züge</string>
-    <string name="trams">Lokalbahn</string>
+    <string name="trams">Regionalbahn</string>
     <string name="tram_cars">Straßenbahnen</string>
     <string name="boats">Schiffe</string>
     <string name="departure_metro">U-Bahn</string>
@@ -222,6 +222,10 @@
     <string name="search_clear_favorites_summary_preference">Alle Favoriten löschen</string>
     <string name="search_clear_favorites_confirm">Sind Sie sicher, daß Sie alle Favoriten löschen wollen?</string>
     <string name="search_favorites_cleared">Favoriten gelöscht.</string>
+    <string name="dark_mode_label">Dunkler Modus</string>
+    <string name="light_mode_label">Heller Modus</string>
+    <string name="system_default_label">Systemfehler</string>
+    <string name="dark_mode_description">Wählen Sie zwischen dunklem und hellem Modus</string>
     <string name="help">Hilfe</string>
     <string name="support">Unterstützung</string>
     <string name="transport_type">Transportmittel</string>
@@ -245,10 +249,15 @@
     <string name="permission_location_needed_search">Aktivieren Sie Standortdienste um Ihre Position zu ermitteln</string>
     <string name="permission_location_needed_maps">Aktivieren Sie Standortdienste um Ihre Position auf der Karte zu sehen</string>
     <string name="allow">Zulassen</string>
+    <string name="relevant_ads_enabled">Angemessene Werbung ist aktiviert</string>
+    <string name="relevant_ads_disabled">Angemessene Werbung ist deaktiviert</string>
+    <string name="relevant_ads_summary">Ändern Sie die Präferenz für das Verwenden Ihrer Daten für die Präsentation von Anzeigen.</string>
     <string name="distance_in_meter"><xliff:g id="distance">%1$s</xliff:g>Min.</string>
     <string name="entrance_and_name">Eingang <xliff:g id="entrance">%1$s</xliff:g></string>
     <string name="exit_and_name">Ausgang <xliff:g id="entrance">%1$s</xliff:g></string>
     <string name="entrance">Eingang</string>
     <string name="exit">Ausgang</string>
     <string name="bike_rental">Fahrrad Vermietung</string>
+    <string name="track_bus">Ort <xliff:g id="track">%1$s</xliff:g></string>
+    <string name="track_rail">Spur <xliff:g id="track">%1$s</xliff:g></string>
 </resources>

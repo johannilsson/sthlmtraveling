@@ -234,6 +234,10 @@
     <string name="search_clear_favorites_summary_preference">Удаляет все избранные маршруты.</string>
     <string name="search_clear_favorites_confirm">Вы уверены, что хотите удалить все избранные маршруты?</string>
     <string name="search_favorites_cleared">Избранные маршруты удалены.</string>
+    <string name="dark_mode_label">Темная тема</string>
+    <string name="light_mode_label">Светлая тема</string>
+    <string name="system_default_label">По умолчанию</string>
+    <string name="dark_mode_description">Выберите темную или светлую тему</string>
     <string name="help">Помощь</string>
     <string name="support">Поддержка</string>
     <string name="transport_type">Тип транспорта</string>
@@ -257,10 +261,15 @@
     <string name="permission_location_needed_search">Включите определение местоположения в настройках телефона для поиска по вашему местоположению</string>
     <string name="permission_location_needed_maps">Включите определение местоположения в настройках телефона для просмотра вашего местоположения на карте</string>
     <string name="allow">Разрешить</string>
+    <string name="relevant_ads_enabled">Актуальная реклама включена</string>
+    <string name="relevant_ads_disabled">Актуальная реклама включена</string>
+    <string name="relevant_ads_summary">Измените настройки того, как ваши данные должны использоваться для показа рекламы.</string>
     <string name="distance_in_meter"><xliff:g id="distance">%1$s</xliff:g> м</string>
     <string name="entrance_and_name">Вход <xliff:g id="entrance">%1$s</xliff:g></string>
     <string name="exit_and_name">Выход <xliff:g id="entrance">%1$s</xliff:g></string>
     <string name="entrance">Вход</string>
     <string name="exit">Выход</string>
     <string name="bike_rental">Аренда велосипеда</string>
+    <string name="track_bus">Местоположение <xliff:g id="track">%1$s</xliff:g></string>
+    <string name="track_rail">Путь <xliff:g id="track">%1$s</xliff:g></string>
 </resources>
