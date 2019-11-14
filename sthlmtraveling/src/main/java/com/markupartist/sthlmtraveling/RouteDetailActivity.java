@@ -28,6 +28,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import androidx.annotation.ColorInt;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.content.ContextCompat;
 import androidx.core.text.BidiFormatter;
 import androidx.core.util.Pair;
@@ -62,6 +63,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.markupartist.sthlmtraveling.data.api.ApiService;
@@ -532,16 +534,19 @@ public class RouteDetailActivity extends BaseListActivity implements OnMapReadyC
             return;
         }
 
+        if (getDelegate().getLocalNightMode() == AppCompatDelegate.MODE_NIGHT_YES
+            || getDelegate().getLocalNightMode() == AppCompatDelegate.MODE_NIGHT_UNSPECIFIED) {
+            map.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.style_json));
+        }
+
         UiSettings settings = map.getUiSettings();
         settings.setMapToolbarEnabled(false);
 
         map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-        map.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
-            @Override public void onMapClick(LatLng latLng) {
-                if (mRoute.fromStop().hasLocation()) {
-                    startActivity(ViewOnMapActivity.createIntent(RouteDetailActivity.this,
-                        mRoute, mJourneyQuery, null));
-                }
+        map.setOnMapClickListener(latLng -> {
+            if (mRoute.fromStop().hasLocation()) {
+                startActivity(ViewOnMapActivity.createIntent(RouteDetailActivity.this,
+                    mRoute, mJourneyQuery, null));
             }
         });
 

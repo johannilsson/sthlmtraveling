@@ -21,8 +21,6 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
-import androidx.annotation.RequiresPermission;
-import androidx.appcompat.app.ActionBar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -37,6 +35,7 @@ import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.markupartist.sthlmtraveling.provider.site.Site;
@@ -45,6 +44,9 @@ import com.markupartist.sthlmtraveling.utils.LocationManager;
 
 import java.io.IOException;
 import java.util.List;
+
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatDelegate;
 
 public class PointOnMapActivity extends BaseFragmentActivity
         implements OnMapClickListener, OnInfoWindowClickListener, OnMapReadyCallback, LocationManager.LocationFoundListener {
@@ -145,6 +147,10 @@ public class PointOnMapActivity extends BaseFragmentActivity
 
         mMap.setOnMapClickListener(this);
         mMap.setOnInfoWindowClickListener(this);
+        if (getDelegate().getLocalNightMode() == AppCompatDelegate.MODE_NIGHT_YES
+                || getDelegate().getLocalNightMode() == AppCompatDelegate.MODE_NIGHT_UNSPECIFIED) {
+            mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.style_json));
+        }
 
         UiSettings settings = mMap.getUiSettings();
         settings.setAllGesturesEnabled(true);

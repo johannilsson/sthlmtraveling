@@ -28,6 +28,7 @@ import android.graphics.PorterDuffColorFilter;
 import android.os.Bundle;
 import androidx.annotation.ColorInt;
 import androidx.annotation.DrawableRes;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.content.ContextCompat;
 import androidx.appcompat.app.ActionBar;
 import android.text.TextUtils;
@@ -45,6 +46,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
@@ -338,6 +340,12 @@ public class ViewOnMapActivity extends BaseFragmentActivity implements OnMapRead
             List<LatLng> latLngs = showRoute(mRoute);
             zoomToFit(latLngs);
         }
+
+        if (getDelegate().getLocalNightMode() == AppCompatDelegate.MODE_NIGHT_YES
+                || getDelegate().getLocalNightMode() == AppCompatDelegate.MODE_NIGHT_UNSPECIFIED) {
+            mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.style_json));
+        }
+
 
         UiSettings settings = mMap.getUiSettings();
         settings.setAllGesturesEnabled(true);
