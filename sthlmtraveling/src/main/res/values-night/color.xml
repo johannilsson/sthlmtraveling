@@ -7,6 +7,7 @@
 
     <color name="body_text_1">@color/body_text_1_inverse</color>
     <color name="body_text_2">@color/body_text_2_inverse</color>
+    <color name="body_text_3">@color/body_text_3_inverse</color>
 
     <color name="location_to">#EC5A6A</color>
     <color name="location_current_background">#66E9E9E9</color>

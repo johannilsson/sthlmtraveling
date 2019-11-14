@@ -48,6 +48,7 @@
 
     <color name="body_text_1_inverse">#deffffff</color>
     <color name="body_text_2_inverse">#8affffff</color>
+    <color name="body_text_3_inverse">#60ffffff</color>
 
     <color name="secondary_text_default_dark">#b3ffffff</color>
     <color name="secondary_text_default_light">#8a000000</color>
