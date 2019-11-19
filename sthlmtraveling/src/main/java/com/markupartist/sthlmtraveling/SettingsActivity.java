@@ -21,9 +21,9 @@ import com.markupartist.sthlmtraveling.provider.HistoryDbAdapter;
 import com.markupartist.sthlmtraveling.provider.JourneysProvider.Journey.Journeys;
 import com.markupartist.sthlmtraveling.service.DeviationService;
 import com.markupartist.sthlmtraveling.utils.Analytics;
+import com.markupartist.sthlmtraveling.utils.ThemeHelper;
 import com.markupartist.sthlmtraveling.utils.UserConsentForm;
 
-import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.SwitchCompat;
 
 public class SettingsActivity extends AppCompatPreferenceActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
@@ -100,9 +100,8 @@ public class SettingsActivity extends AppCompatPreferenceActivity implements Sha
                 findPreference("preference_see_relevant_ads")
                         .setTitle(hasConsent ? R.string.relevant_ads_enabled : R.string.relevant_ads_disabled);
                 break;
-            case "night_mode_preference":
-                int mode = Integer.parseInt(sharedPreferences.getString(key, "-1"));
-                AppCompatDelegate.setDefaultNightMode(mode);
+            case "dark_mode_preference":
+                ThemeHelper.applyDarkMode(sharedPreferences.getString(key, ThemeHelper.DEFAULT_DARK_MODE));
                 restartApp();
                 break;
         }

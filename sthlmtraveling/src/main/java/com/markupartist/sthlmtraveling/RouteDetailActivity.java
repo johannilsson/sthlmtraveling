@@ -534,10 +534,7 @@ public class RouteDetailActivity extends BaseListActivity implements OnMapReadyC
             return;
         }
 
-        if (getDelegate().getLocalNightMode() == AppCompatDelegate.MODE_NIGHT_YES
-            || getDelegate().getLocalNightMode() == AppCompatDelegate.MODE_NIGHT_UNSPECIFIED) {
-            map.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.style_json));
-        }
+        map.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.style_json));
 
         UiSettings settings = map.getUiSettings();
         settings.setMapToolbarEnabled(false);

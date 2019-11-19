@@ -230,6 +230,7 @@
     <string name="search_clear_favorites_summary_preference">Clears all favorites.</string>
     <string name="search_clear_favorites_confirm">Are you sure you want to clear all favorites?</string>
     <string name="search_favorites_cleared">Favorites cleared</string>
+    <string name="dialog_title_theme_preference">Theme</string>
     <string name="dark_mode_label">Dark mode</string>
     <string name="light_mode_label">Light mode</string>
     <string name="system_default_label">System default</string>

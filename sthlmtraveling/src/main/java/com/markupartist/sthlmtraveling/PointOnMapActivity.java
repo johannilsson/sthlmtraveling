@@ -147,10 +147,7 @@ public class PointOnMapActivity extends BaseFragmentActivity
 
         mMap.setOnMapClickListener(this);
         mMap.setOnInfoWindowClickListener(this);
-        if (getDelegate().getLocalNightMode() == AppCompatDelegate.MODE_NIGHT_YES
-                || getDelegate().getLocalNightMode() == AppCompatDelegate.MODE_NIGHT_UNSPECIFIED) {
-            mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.style_json));
-        }
+        mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.style_json));
 
         UiSettings settings = mMap.getUiSettings();
         settings.setAllGesturesEnabled(true);

@@ -71,15 +71,15 @@
         <item>3600000</item>
     </string-array>
 
-    <string-array name="preference_night_mode_entries">
+    <string-array name="preference_dark_mode_entries">
         <item>@string/dark_mode_label</item>
         <item>@string/light_mode_label</item>
         <item>@string/system_default_label</item>
     </string-array>
-    <string-array name="preference_night_mode_values" translatable="false">
-        <item>2</item>
-        <item>1</item>
-        <item>-1</item>
+    <string-array name="preference_dark_mode_values" translatable="false">
+        <item>dark</item>
+        <item>light</item>
+        <item>default</item>
     </string-array>
 
 </resources>

@@ -18,12 +18,12 @@ import com.markupartist.sthlmtraveling.data.api.ApiService;
 import com.markupartist.sthlmtraveling.data.misc.ApiServiceProvider;
 import com.markupartist.sthlmtraveling.data.misc.HttpHelper;
 import com.markupartist.sthlmtraveling.service.DataMigrationService;
+import com.markupartist.sthlmtraveling.utils.ThemeHelper;
 import com.markupartist.sthlmtraveling.utils.UserConsentForm;
 import com.squareup.okhttp.OkHttpClient;
 
 import java.util.Locale;
 
-import androidx.appcompat.app.AppCompatDelegate;
 import io.fabric.sdk.android.Fabric;
 
 public class MyApplication extends Application {
@@ -90,8 +90,8 @@ public class MyApplication extends Application {
     private void setNightMode() {
         SharedPreferences sharedPreferences = PreferenceManager
                 .getDefaultSharedPreferences(getApplicationContext());
-        int mode = Integer.parseInt(sharedPreferences.getString("night_mode_preference", "-1"));
-        AppCompatDelegate.setDefaultNightMode(mode);
+        String mode = sharedPreferences.getString("dark_mode_preference", ThemeHelper.DEFAULT_DARK_MODE);
+        ThemeHelper.applyDarkMode(mode);
     }
 
     public void reloadLocaleForApplication() {

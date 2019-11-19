@@ -341,11 +341,7 @@ public class ViewOnMapActivity extends BaseFragmentActivity implements OnMapRead
             zoomToFit(latLngs);
         }
 
-        if (getDelegate().getLocalNightMode() == AppCompatDelegate.MODE_NIGHT_YES
-                || getDelegate().getLocalNightMode() == AppCompatDelegate.MODE_NIGHT_UNSPECIFIED) {
-            mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.style_json));
-        }
-
+        mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.style_json));
 
         UiSettings settings = mMap.getUiSettings();
         settings.setAllGesturesEnabled(true);

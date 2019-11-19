@@ -14,12 +14,12 @@
                 android:dialogTitle="@string/dialog_title_language_preference" />
         <ListPreference
             android:negativeButtonText="@string/cancel"
-            android:key="night_mode_preference"
+            android:key="dark_mode_preference"
             android:title="@string/dark_mode_label"
             android:summary="@string/dark_mode_description"
-            android:entries="@array/preference_night_mode_entries"
-            android:entryValues="@array/preference_night_mode_values"
-            android:dialogTitle="Theme" />
+            android:entries="@array/preference_dark_mode_entries"
+            android:entryValues="@array/preference_dark_mode_values"
+            android:dialogTitle="@string/dialog_title_theme_preference" />
 
     </PreferenceCategory>
     <PreferenceCategory
