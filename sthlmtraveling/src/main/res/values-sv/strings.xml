@@ -240,7 +240,7 @@
     <string name="pref_deviations_interval_5">1 timme</string>
     <string name="notifications_disabled_title">Funktionen avstängd</string>
     <string name="notifications_disabled_summary">För tillfället stöds ej aviseringar.</string>
-    <string name="dialog_title_theme_preference">Temq</string>
+    <string name="dialog_title_theme_preference">Tema</string>
     <!-- Ads -->
     <string name="ads">Annonser</string>
     <string name="ads_title">Varför visas annonser?</string>
