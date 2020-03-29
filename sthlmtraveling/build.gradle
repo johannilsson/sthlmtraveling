@@ -35,8 +35,8 @@ android {
         versionCode 217
 
         buildConfigField "boolean", "APP_IS_ADS_ENABLED", buildProperties['IS_ADS_ENABLED']
-        buildConfigField "String", "APP_WIDESPACE_SID", buildProperties['WIDESPACE_SID']
-        buildConfigField "String", "APP_WIDESPACE_DEBUG_SID", buildProperties['WIDESPACE_DEBUG_SID']
+//        buildConfigField "String", "APP_WIDESPACE_SID", buildProperties['WIDESPACE_SID']
+//        buildConfigField "String", "APP_WIDESPACE_DEBUG_SID", buildProperties['WIDESPACE_DEBUG_SID']
         buildConfigField "String", "APP_STHLMTRAVELING_API_KEY", buildProperties['STHLMTRAVELING_API_KEY']
         buildConfigField "String", "APP_ANALYTICS_PROPERTY_KEY", buildProperties['ANALYTICS_PROPERTY_KEY']
         buildConfigField "String", "ADMOB_ROUTE_DETAILS_AD_UNIT_ID", buildProperties['ADMOB_ROUTE_DETAILS_AD_UNIT_ID']
@@ -66,6 +66,7 @@ android {
             ext.enableCrashlytics = buildProperties['IS_CRASHLYTICS_ENABLED'].toBoolean()
             debuggable true
             applicationIdSuffix ".debug"
+//            signingConfig signingConfigs.release
             buildConfigField "String", "BASE_PROVIDER_AUTHORITY", "\"" + BASE_PROVIDER_DEBUG + "\""
         }
 
@@ -93,10 +94,12 @@ android {
 
 
 dependencies {
-    implementation 'com.google.android.gms:play-services-base:17.1.0'
-    implementation 'com.google.android.gms:play-services-maps:17.0.0'
-    implementation 'com.google.android.gms:play-services-location:17.0.0'
-    implementation 'com.google.android.gms:play-services-ads:18.2.0'
+    implementation 'com.huawei.hms:base:4.0.1.300'
+    implementation 'com.huawei.hms:maps:4.0.0.301'
+    implementation 'com.google.android.material:material:1.0.0-rc01'
+    implementation 'com.huawei.hms:location:4.0.1.300'
+    implementation 'com.huawei.hms:ads-lite:13.4.28.305'
+//    implementation 'com.google.android.gms:play-services-ads:18.2.0'
     implementation 'com.google.android.ads.consent:consent-library:1.0.7'
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
@@ -110,3 +113,4 @@ dependencies {
         transitive = true
     }
 }
+apply plugin: 'com.huawei.agconnect'

@@ -39,7 +39,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.common.ConnectionResult;
+//import com.google.android.gms.common.ConnectionResult;
 import com.google.android.material.elevation.ElevationOverlayProvider;
 import com.markupartist.sthlmtraveling.provider.HistoryDbAdapter;
 import com.markupartist.sthlmtraveling.provider.site.Site;
@@ -114,7 +114,7 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements
             }
         }
 
-        initGoogleApiClient(false);
+//        initGoogleApiClient(false);
 
         createSearchHandler();
 
@@ -364,17 +364,17 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements
 
     }
 
-    @Override
-    public void onConnected(Bundle bundle) {
-        super.onConnected(bundle);
-
-        setSearchFilter(mCurrentSearchFilterType);
-    }
-
-    @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
-        setSearchFilter(FILTER_TYPE_STHLM_TRAVELING);
-    }
+//    @Override
+//    public void onConnected(Bundle bundle) {
+//        super.onConnected(bundle);
+//
+//        setSearchFilter(mCurrentSearchFilterType);
+//    }
+//
+//    @Override
+//    public void onConnectionFailed(ConnectionResult connectionResult) {
+//        setSearchFilter(FILTER_TYPE_STHLM_TRAVELING);
+//    }
 
     /**
      * Returns the selected place to the caller.

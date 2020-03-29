@@ -16,9 +16,9 @@ import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationServices;
+import com.huawei.hms.api.ConnectionResult;
+import com.huawei.hms.api.HuaweiApiClient;
+import com.huawei.hms.location.LocationServices;
 import com.google.android.material.elevation.ElevationOverlayProvider;
 import com.google.android.material.shape.MaterialShapeDrawable;
 import com.markupartist.sthlmtraveling.utils.Analytics;
@@ -30,13 +30,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class BaseFragmentActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+public class BaseFragmentActivity extends AppCompatActivity implements HuaweiApiClient.ConnectionCallbacks, HuaweiApiClient.OnConnectionFailedListener {
 
     public static final int PERMISSIONS_REQUEST_LOCATION = 100;
     private Toolbar mActionBarToolbar;
 
     private List<PlayService> mPlayServices;
-    private GoogleApiClient mGoogleApiClient;
+    private HuaweiApiClient mGoogleApiClient;
 
     public void registerPlayService(PlayService playService) {
         if (mPlayServices == null) {
@@ -51,29 +51,31 @@ public class BaseFragmentActivity extends AppCompatActivity implements GoogleApi
             looksGood = PlayServicesUtils.checkGooglePlaySevices(this);
         }
         if (looksGood) {
-            mGoogleApiClient = new GoogleApiClient.Builder(this)
-                    .addApi(LocationServices.API)
+            mGoogleApiClient = new HuaweiApiClient.Builder(this)
+//                    .addApi(LocationServices.API)
+//                    .addApi(LocationServices.getFusedLocationProviderClient())
                     .addConnectionCallbacks(this)
                     .addOnConnectionFailedListener(this)
                     .build();
         }
     }
-
+//
     public synchronized void initGoogleApiClient() {
         initGoogleApiClient(true);
     }
 
-    public GoogleApiClient getGoogleApiClient() {
+    public HuaweiApiClient getGoogleApiClient() {
         return mGoogleApiClient;
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-
-        if (mGoogleApiClient != null) {
-            mGoogleApiClient.connect();
-        }
+//        if (mPlayServices != null) {
+//            for (PlayService ps : mPlayServices) {
+//                ps.onConnected();
+//            }
+//        }
     }
 
     @Override
@@ -175,7 +177,7 @@ public class BaseFragmentActivity extends AppCompatActivity implements GoogleApi
     }
 
     @Override
-    public void onConnected(Bundle bundle) {
+    public void onConnected() {
         if (mPlayServices != null) {
             for (PlayService ps : mPlayServices) {
                 ps.onConnected();
@@ -185,9 +187,7 @@ public class BaseFragmentActivity extends AppCompatActivity implements GoogleApi
 
     @Override
     public void onConnectionSuspended(int i) {
-        if (mGoogleApiClient != null) {
-            mGoogleApiClient.connect();
-        }
+
     }
 
     @Override

@@ -12,7 +12,7 @@
                                        app:cardCornerRadius="5dp"
     >
 
-        <com.google.android.gms.maps.MapView
+        <com.huawei.hms.maps.MapView
             android:id="@+id/lite_map"
             android:layout_width="match_parent"
             android:layout_height="150dp"

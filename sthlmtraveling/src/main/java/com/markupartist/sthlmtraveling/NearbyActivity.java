@@ -51,7 +51,7 @@ public class NearbyActivity extends BaseFragmentActivity implements
 
         registerScreen("Nearby Stops");
 
-        initGoogleApiClient();
+//        initGoogleApiClient();
         mMyLocationManager = new LocationManager(this, getGoogleApiClient());
         mMyLocationManager.setLocationListener(this);
         registerPlayService(mMyLocationManager);
