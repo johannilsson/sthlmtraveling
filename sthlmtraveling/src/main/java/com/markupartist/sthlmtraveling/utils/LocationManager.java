@@ -67,7 +67,7 @@ public class LocationManager implements PlayService, LocationListener {
     private LocationFoundListener mLocationFoundListener;
     private boolean mLocationRequested;
     private boolean mHighAccuracy = true;
-    private LocationCallback mLocationCallback;
+    private LocationListener mLocationListener;
 
     public LocationManager(final Context context, HuaweiApiClient googleApiClient) {
         mContext = context;
@@ -118,31 +118,6 @@ public class LocationManager implements PlayService, LocationListener {
                 && location.getAccuracy() <= ACCEPTED_LOCATION_ACCURACY_METERS;
     }
 
-    public void onStart() {
-        mLocationCallback = new LocationCallback() {
-            @Override
-            public void onLocationResult(LocationResult locationResult) {
-                if (locationResult != null) {
-                    List<Location> locations = locationResult.getLocations();
-                    if (!locations.isEmpty()) {
-                        for (Location location : locations) {
-                            Log.i(TAG,
-                                    "onLocationResult location[Longitude,Latitude,Accuracy]:" + location.getLongitude()
-                                            + "," + location.getLatitude() + "," + location.getAccuracy());
-                        }
-                    }
-                }
-            }
-            @Override
-            public void onLocationAvailability(LocationAvailability locationAvailability) {
-                if (locationAvailability != null) {
-                    boolean flag = locationAvailability.isLocationAvailable();
-                    Log.i(TAG, "onLocationAvailability isLocationAvailable:" + flag);
-                }
-            }
-        };
-    }
-
     @Override
     public void onStop() {
         removeUpdates();
@@ -191,8 +166,10 @@ public class LocationManager implements PlayService, LocationListener {
         } else {
             mLocationRequestTimeOut.start();
 
+            mLocationListener = new LocationListener();
+
             LocationServices.getFusedLocationProviderClient(mContext).requestLocationUpdates(
-                    createLocationRequest(), mLocationCallback, Looper.getMainLooper());
+                    createLocationRequest(), mLocationListener, Looper.getMainLooper());
         }
     }
 
@@ -203,7 +180,8 @@ public class LocationManager implements PlayService, LocationListener {
 
         mLocationRequestTimeOut.cancel();
         if (mGoogleApiClient.isConnected()) {
-            LocationServices.getFusedLocationProviderClient(mContext).removeLocationUpdates(mLocationCallback);
+            LocationServices.getFusedLocationProviderClient(mContext).removeLocationUpdates(mLocationListener);
+            mLocationListener = null;
         }
     }
 
@@ -235,6 +213,13 @@ public class LocationManager implements PlayService, LocationListener {
         if (mLocationRequested) {
             mLocationRequested = false;
             requestLocationOrDeliverCurrent();
+        }
+    }
+
+    private class LocationListener extends LocationCallback {
+        @Override
+        public void onLocationResult(LocationResult locationResult) {
+            onLocationChanged(locationResult.getLastLocation());
         }
     }
 

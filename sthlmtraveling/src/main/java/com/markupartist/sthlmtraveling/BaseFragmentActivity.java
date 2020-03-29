@@ -71,11 +71,9 @@ public class BaseFragmentActivity extends AppCompatActivity implements HuaweiApi
     @Override
     protected void onStart() {
         super.onStart();
-//        if (mPlayServices != null) {
-//            for (PlayService ps : mPlayServices) {
-//                ps.onConnected();
-//            }
-//        }
+        if (mGoogleApiClient != null) {
+            mGoogleApiClient.connect(this);
+        }
     }
 
     @Override
