@@ -11,3 +11,4 @@ build
 com_crashlytics_export_strings.xml
 sthlmtraveling/crashlytics.properties
 sthlmtraveling/src/main/assets/crashlytics-build.properties
+agconnect-services.json
