@@ -52,14 +52,12 @@ public class BaseFragmentActivity extends AppCompatActivity implements HuaweiApi
         }
         if (looksGood) {
             mGoogleApiClient = new HuaweiApiClient.Builder(this)
-//                    .addApi(LocationServices.API)
-//                    .addApi(LocationServices.getFusedLocationProviderClient())
                     .addConnectionCallbacks(this)
                     .addOnConnectionFailedListener(this)
                     .build();
         }
     }
-//
+
     public synchronized void initGoogleApiClient() {
         initGoogleApiClient(true);
     }
