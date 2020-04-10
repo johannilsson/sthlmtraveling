@@ -38,12 +38,12 @@ public class MyApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-//        Fabric.with(this, new Crashlytics());
+        Fabric.with(this, new Crashlytics());
 
         setNightMode();
         updateUserConsent();
 
-        HwAds.init(this, getString(R.string.admob_app_id));
+        //HwAds.init(this, getString(R.string.admob_app_id));
 
         reloadLocaleForApplication();
 
