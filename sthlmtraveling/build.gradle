@@ -35,8 +35,6 @@ android {
         versionCode 218
 
         buildConfigField "boolean", "APP_IS_ADS_ENABLED", buildProperties['IS_ADS_ENABLED']
-//        buildConfigField "String", "APP_WIDESPACE_SID", buildProperties['WIDESPACE_SID']
-//        buildConfigField "String", "APP_WIDESPACE_DEBUG_SID", buildProperties['WIDESPACE_DEBUG_SID']
         buildConfigField "String", "APP_STHLMTRAVELING_API_KEY", buildProperties['STHLMTRAVELING_API_KEY']
         buildConfigField "String", "APP_ANALYTICS_PROPERTY_KEY", buildProperties['ANALYTICS_PROPERTY_KEY']
         buildConfigField "String", "ADMOB_ROUTE_DETAILS_AD_UNIT_ID", buildProperties['ADMOB_ROUTE_DETAILS_AD_UNIT_ID']
