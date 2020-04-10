@@ -156,7 +156,7 @@ public class RouteDetailActivity extends BaseListActivity implements OnMapReadyC
 
         View headerView = getLayoutInflater().inflate(R.layout.route_header_details, null);
 
-        if (shouldShowAds(mJourneyQuery.hasPromotions)) {
+        if (shouldShowAds(mJourneyQuery.hasPromotions) && BuildConfig.APP_IS_ADS_ENABLED) {
             mAdProxy = new AdProxy(this, ADMOB_ROUTE_DETAILS_AD_UNIT_ID);
         }
 

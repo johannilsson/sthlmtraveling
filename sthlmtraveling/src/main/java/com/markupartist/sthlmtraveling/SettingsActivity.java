@@ -56,6 +56,8 @@ public class SettingsActivity extends AppCompatPreferenceActivity implements Sha
         boolean hasConsent = sharedPreferences.getBoolean("has_consent_to_serve_personalized_ads", false);
         findPreference("preference_see_relevant_ads")
                 .setTitle(hasConsent ? R.string.relevant_ads_enabled : R.string.relevant_ads_disabled);
+
+        findPreference("ads_category").setEnabled(BuildConfig.APP_IS_ADS_ENABLED);
     }
 
     @Override
