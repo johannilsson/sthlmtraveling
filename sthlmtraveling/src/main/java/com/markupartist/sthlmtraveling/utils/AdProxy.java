@@ -28,7 +28,6 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.crashlytics.android.Crashlytics;
-//import com.google.ads.mediation.admob.AdMobAdapter;
 import com.huawei.hms.ads.AdListener;
 import com.huawei.hms.ads.AdParam;
 import com.huawei.hms.ads.BannerAdSize;
