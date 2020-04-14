@@ -35,21 +35,21 @@ import android.text.TextUtils;
 import android.text.format.DateFormat;
 import android.view.MenuItem;
 
-import com.google.android.gms.maps.CameraUpdate;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.UiSettings;
-import com.google.android.gms.maps.model.BitmapDescriptor;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.CameraPosition;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.gms.maps.model.MapStyleOptions;
-import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.Polyline;
-import com.google.android.gms.maps.model.PolylineOptions;
+import com.huawei.hms.maps.CameraUpdate;
+import com.huawei.hms.maps.CameraUpdateFactory;
+import com.huawei.hms.maps.HuaweiMap;
+import com.huawei.hms.maps.OnMapReadyCallback;
+import com.huawei.hms.maps.SupportMapFragment;
+import com.huawei.hms.maps.UiSettings;
+import com.huawei.hms.maps.model.BitmapDescriptor;
+import com.huawei.hms.maps.model.BitmapDescriptorFactory;
+import com.huawei.hms.maps.model.CameraPosition;
+import com.huawei.hms.maps.model.LatLng;
+import com.huawei.hms.maps.model.LatLngBounds;
+import com.huawei.hms.maps.model.MapStyleOptions;
+import com.huawei.hms.maps.model.MarkerOptions;
+import com.huawei.hms.maps.model.Polyline;
+import com.huawei.hms.maps.model.PolylineOptions;
 import com.markupartist.sthlmtraveling.data.api.ApiService;
 import com.markupartist.sthlmtraveling.data.models.Entrance;
 import com.markupartist.sthlmtraveling.data.models.IntermediateStop;
@@ -86,7 +86,7 @@ public class ViewOnMapActivity extends BaseFragmentActivity implements OnMapRead
     /**
      * Note that this may be null if the Google Play services APK is not available.
      */
-    private GoogleMap mMap;
+    private HuaweiMap mMap;
     private LatLng mFocusedLatLng;
     private Route mTransitRoute;
     private JourneyQuery mJourneyQuery;
@@ -478,7 +478,7 @@ public class ViewOnMapActivity extends BaseFragmentActivity implements OnMapRead
     }
 
     @Override
-    public void onMapReady(GoogleMap googleMap) {
+    public void onMapReady(HuaweiMap googleMap) {
         mMap = googleMap;
         setUpMap();
     }

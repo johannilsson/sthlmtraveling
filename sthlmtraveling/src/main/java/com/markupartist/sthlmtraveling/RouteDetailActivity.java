@@ -54,18 +54,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
-import com.google.android.gms.maps.CameraUpdate;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapView;
-import com.google.android.gms.maps.MapsInitializer;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.UiSettings;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.gms.maps.model.MapStyleOptions;
-import com.google.android.gms.maps.model.Polyline;
-import com.google.android.gms.maps.model.PolylineOptions;
+import com.huawei.hms.maps.CameraUpdate;
+import com.huawei.hms.maps.CameraUpdateFactory;
+import com.huawei.hms.maps.HuaweiMap;
+import com.huawei.hms.maps.MapView;
+import com.huawei.hms.maps.MapsInitializer;
+import com.huawei.hms.maps.OnMapReadyCallback;
+import com.huawei.hms.maps.UiSettings;
+import com.huawei.hms.maps.model.LatLng;
+import com.huawei.hms.maps.model.LatLngBounds;
+import com.huawei.hms.maps.model.MapStyleOptions;
+import com.huawei.hms.maps.model.Polyline;
+import com.huawei.hms.maps.model.PolylineOptions;
 import com.markupartist.sthlmtraveling.data.api.ApiService;
 import com.markupartist.sthlmtraveling.data.models.Alert;
 import com.markupartist.sthlmtraveling.data.models.IntermediateResponse;
@@ -123,7 +123,7 @@ public class RouteDetailActivity extends BaseListActivity implements OnMapReadyC
     private ApiService mApiService;
     private Monitor mMonitor;
     private View mFooterView;
-    private GoogleMap map;
+    private HuaweiMap map;
 
     void setupMapHeader() {
         View layout = getLayoutInflater().inflate(R.layout.route_map_row, null);
@@ -156,7 +156,7 @@ public class RouteDetailActivity extends BaseListActivity implements OnMapReadyC
 
         View headerView = getLayoutInflater().inflate(R.layout.route_header_details, null);
 
-        if (shouldShowAds(mJourneyQuery.hasPromotions)) {
+        if (shouldShowAds(mJourneyQuery.hasPromotions) && BuildConfig.APP_IS_ADS_ENABLED) {
             mAdProxy = new AdProxy(this, ADMOB_ROUTE_DETAILS_AD_UNIT_ID);
         }
 
@@ -527,7 +527,7 @@ public class RouteDetailActivity extends BaseListActivity implements OnMapReadyC
         }
     }
 
-    @Override public void onMapReady(GoogleMap googleMap) {
+    @Override public void onMapReady(HuaweiMap googleMap) {
         MapsInitializer.initialize(getApplicationContext());
         map = googleMap;
         if (map == null) {
@@ -539,7 +539,7 @@ public class RouteDetailActivity extends BaseListActivity implements OnMapReadyC
         UiSettings settings = map.getUiSettings();
         settings.setMapToolbarEnabled(false);
 
-        map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+        map.setMapType(HuaweiMap.MAP_TYPE_NORMAL);
         map.setOnMapClickListener(latLng -> {
             if (mRoute.fromStop().hasLocation()) {
                 startActivity(ViewOnMapActivity.createIntent(RouteDetailActivity.this,

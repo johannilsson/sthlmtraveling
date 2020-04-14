@@ -28,11 +28,10 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.crashlytics.android.Crashlytics;
-import com.google.ads.mediation.admob.AdMobAdapter;
-import com.google.android.gms.ads.AdListener;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdSize;
-import com.google.android.gms.ads.AdView;
+import com.huawei.hms.ads.AdListener;
+import com.huawei.hms.ads.AdParam;
+import com.huawei.hms.ads.BannerAdSize;
+import com.huawei.hms.ads.banner.BannerView;
 import com.markupartist.sthlmtraveling.AppConfig;
 import com.markupartist.sthlmtraveling.BuildConfig;
 import com.markupartist.sthlmtraveling.R;
@@ -47,7 +46,7 @@ public class AdProxy {
   private final Context mContext;
   private final boolean hasConsent;
   private final UserConsentForm userConsentForm;
-  private AdView mAdView;
+  private BannerView mAdView;
 
 
   public AdProxy(Context context, String id) {
@@ -89,21 +88,21 @@ public class AdProxy {
   public void load() {
     userConsentForm.showIfConsentIsUnknown();
 
-    AdRequest.Builder builder = new AdRequest.Builder();
+    AdParam.Builder builder = new AdParam.Builder();
     if (BuildConfig.DEBUG) {
       String[] testDevices = AppConfig.ADMOB_TEST_DEVICES;
-      for (String device : testDevices) {
-        builder.addTestDevice(device);
-      }
+//      for (String device : testDevices) {
+//        builder.addTestDevice(device);
+//      }
     }
     // If we don't have user consent request non-personalized ads.
     if (!hasConsent) {
       Bundle extras = new Bundle();
       extras.putString("npa", "1");
-      builder.addNetworkExtrasBundle(AdMobAdapter.class, extras);
+//      builder.addNetworkExtrasBundle(AdMobAdapter.class, extras);
     }
 
-    AdRequest adRequest = builder.build();
+    AdParam adRequest = builder.build();
 
     mAdView.loadAd(adRequest);
   }
@@ -124,7 +123,7 @@ public class AdProxy {
     return mAdContainer;
   }
 
-  @Nullable private AdView createAdView(String id) {
+  @Nullable private BannerView createAdView(String id) {
     try {
       return createAdMobAdView(id);
     } catch (Throwable t) {
@@ -135,10 +134,10 @@ public class AdProxy {
     }
   }
 
-  private AdView createAdMobAdView(String id) {
-    AdView adView = new AdView(mContext);
-    adView.setAdSize(AdSize.LARGE_BANNER);
-    adView.setAdUnitId(id);
+  private BannerView createAdMobAdView(String id) {
+    BannerView adView = new BannerView(mContext);
+    adView.setBannerAdSize(BannerAdSize.BANNER_SIZE_320_100);
+    adView.setAdId(id);
     adView.setAdListener(new AdListener() {
 
       @Override
@@ -147,7 +146,7 @@ public class AdProxy {
       }
 
       @Override
-      public void onAdFailedToLoad(int errorCode) {
+      public void onAdFailed(int errorCode) {
         // Code to be executed when an ad request fails.
         Log.w(TAG, "Ad failed to load");
       }
@@ -159,7 +158,7 @@ public class AdProxy {
       }
 
       @Override
-      public void onAdLeftApplication() {
+      public void onAdLeave() {
         // Code to be executed when the user has left the app.
       }
 

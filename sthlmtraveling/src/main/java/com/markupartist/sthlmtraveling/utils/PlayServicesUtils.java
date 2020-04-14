@@ -19,8 +19,8 @@ package com.markupartist.sthlmtraveling.utils;
 import android.app.Activity;
 import android.content.DialogInterface;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GoogleApiAvailability;
+import com.huawei.hms.api.ConnectionResult;
+import com.huawei.hms.api.HuaweiApiAvailability;
 
 /**
  * Helper for Google Play services-related operations.
@@ -28,8 +28,8 @@ import com.google.android.gms.common.GoogleApiAvailability;
 public class PlayServicesUtils {
 
     public static boolean checkGooglePlaySevices(final Activity activity) {
-        GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
-        final int googlePlayServicesCheck = apiAvailability.isGooglePlayServicesAvailable(activity);
+        HuaweiApiAvailability apiAvailability = HuaweiApiAvailability.getInstance();
+        final int googlePlayServicesCheck = apiAvailability.isHuaweiMobileServicesAvailable(activity);
         switch (googlePlayServicesCheck) {
             case ConnectionResult.SUCCESS:
                 return true;

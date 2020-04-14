@@ -81,6 +81,7 @@
             />
     </PreferenceCategory>
     <PreferenceCategory
+        android:key="ads_category"
         android:title="@string/ads">
         <Preference
             android:key="preference_see_relevant_ads"

@@ -25,19 +25,19 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
-import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.UiSettings;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.CameraPosition;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MapStyleOptions;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
+import com.huawei.hms.maps.CameraUpdateFactory;
+import com.huawei.hms.maps.HuaweiMap;
+import com.huawei.hms.maps.HuaweiMap.OnInfoWindowClickListener;
+import com.huawei.hms.maps.HuaweiMap.OnMapClickListener;
+import com.huawei.hms.maps.OnMapReadyCallback;
+import com.huawei.hms.maps.SupportMapFragment;
+import com.huawei.hms.maps.UiSettings;
+import com.huawei.hms.maps.model.BitmapDescriptorFactory;
+import com.huawei.hms.maps.model.CameraPosition;
+import com.huawei.hms.maps.model.LatLng;
+import com.huawei.hms.maps.model.MapStyleOptions;
+import com.huawei.hms.maps.model.Marker;
+import com.huawei.hms.maps.model.MarkerOptions;
 import com.markupartist.sthlmtraveling.provider.site.Site;
 import com.markupartist.sthlmtraveling.utils.Analytics;
 import com.markupartist.sthlmtraveling.utils.LocationManager;
@@ -58,7 +58,7 @@ public class PointOnMapActivity extends BaseFragmentActivity
     /**
      * Note that this may be null if the Google Play services APK is not available.
      */
-    private GoogleMap mMap;
+    private HuaweiMap mMap;
 
     private Site mStop;
     private Marker mMarker;
@@ -218,7 +218,7 @@ public class PointOnMapActivity extends BaseFragmentActivity
     }
 
     @Override
-    public void onMapReady(GoogleMap googleMap) {
+    public void onMapReady(HuaweiMap googleMap) {
         mMap = googleMap;
         setUpMap();
     }

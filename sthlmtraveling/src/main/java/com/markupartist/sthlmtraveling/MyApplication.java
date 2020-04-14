@@ -13,7 +13,7 @@ import com.crashlytics.android.Crashlytics;
 import com.google.ads.consent.ConsentInfoUpdateListener;
 import com.google.ads.consent.ConsentInformation;
 import com.google.ads.consent.ConsentStatus;
-import com.google.android.gms.ads.MobileAds;
+import com.huawei.hms.ads.HwAds;
 import com.markupartist.sthlmtraveling.data.api.ApiService;
 import com.markupartist.sthlmtraveling.data.misc.ApiServiceProvider;
 import com.markupartist.sthlmtraveling.data.misc.HttpHelper;
@@ -43,7 +43,7 @@ public class MyApplication extends Application {
         setNightMode();
         updateUserConsent();
 
-        MobileAds.initialize(this, getString(R.string.admob_app_id));
+        //HwAds.init(this, getString(R.string.admob_app_id));
 
         reloadLocaleForApplication();
 

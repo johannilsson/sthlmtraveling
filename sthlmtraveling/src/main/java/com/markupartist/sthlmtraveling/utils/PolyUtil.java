@@ -16,7 +16,7 @@
 
 package com.markupartist.sthlmtraveling.utils;
 
-import com.google.android.gms.maps.model.LatLng;
+import com.huawei.hms.maps.model.LatLng;
 
 import java.util.ArrayList;
 import java.util.List;
