@@ -32,7 +32,7 @@ android {
         targetSdkVersion 29
         applicationId "com.markupartist.sthlmtraveling"
         versionName "2.21.0-hms"
-        versionCode 218
+        versionCode 219
 
         buildConfigField "boolean", "APP_IS_ADS_ENABLED", buildProperties['IS_ADS_ENABLED']
         buildConfigField "String", "APP_STHLMTRAVELING_API_KEY", buildProperties['STHLMTRAVELING_API_KEY']
