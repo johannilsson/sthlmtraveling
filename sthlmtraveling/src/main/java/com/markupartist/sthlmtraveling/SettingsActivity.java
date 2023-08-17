@@ -22,7 +22,6 @@ import com.markupartist.sthlmtraveling.provider.JourneysProvider.Journey.Journey
 import com.markupartist.sthlmtraveling.service.DeviationService;
 import com.markupartist.sthlmtraveling.utils.Analytics;
 import com.markupartist.sthlmtraveling.utils.ThemeHelper;
-import com.markupartist.sthlmtraveling.utils.UserConsentForm;
 
 import androidx.appcompat.widget.SwitchCompat;
 
@@ -52,10 +51,6 @@ public class SettingsActivity extends AppCompatPreferenceActivity implements Sha
 
         Preference customPref = findPreference("about_version");
         customPref.setSummary("Version " + AppConfig.APP_VERSION);
-
-        boolean hasConsent = sharedPreferences.getBoolean("has_consent_to_serve_personalized_ads", false);
-        findPreference("preference_see_relevant_ads")
-                .setTitle(hasConsent ? R.string.relevant_ads_enabled : R.string.relevant_ads_disabled);
     }
 
     @Override
@@ -153,9 +148,6 @@ public class SettingsActivity extends AppCompatPreferenceActivity implements Sha
             }
         } else if (preference.getKey().equals("about_ads")) {
             onCreateDialog(DIALOG_WHY_ADS).show();
-        }  else if (preference.getKey().equals("preference_see_relevant_ads")) {
-            UserConsentForm form = new UserConsentForm(this);
-            form.show();
         } else if (preference.getKey().equals("about_privacy_policy")) {
             Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.sthlmtraveling.se/privacy.html"));
             startActivity(i);

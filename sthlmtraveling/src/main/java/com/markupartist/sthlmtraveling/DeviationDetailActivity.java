@@ -23,7 +23,6 @@ import android.text.format.Time;
 import android.util.Log;
 import android.widget.TextView;
 
-import com.crashlytics.android.Crashlytics;
 import com.markupartist.sthlmtraveling.provider.deviation.Deviation;
 
 
@@ -65,8 +64,7 @@ public class DeviationDetailActivity extends BaseActivity {
             NotificationManager mNotificationManager = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
             mNotificationManager.cancel(notificationId);
         } catch (Exception e) {
-            Crashlytics.log("URI: " + uri.toString());
-            Crashlytics.logException(e);
+            Log.wtf(TAG, e);
         }
 
     }

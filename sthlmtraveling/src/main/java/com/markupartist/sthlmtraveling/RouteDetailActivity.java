@@ -80,7 +80,6 @@ import com.markupartist.sthlmtraveling.provider.planner.JourneyQuery;
 import com.markupartist.sthlmtraveling.provider.site.Site;
 import com.markupartist.sthlmtraveling.ui.models.LegViewModel;
 import com.markupartist.sthlmtraveling.ui.view.TicketDialogFragment;
-import com.markupartist.sthlmtraveling.utils.AdProxy;
 import com.markupartist.sthlmtraveling.utils.Analytics;
 import com.markupartist.sthlmtraveling.utils.DateTimeUtil;
 import com.markupartist.sthlmtraveling.utils.LegUtil;
@@ -103,7 +102,6 @@ import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-import static com.markupartist.sthlmtraveling.AppConfig.ADMOB_ROUTE_DETAILS_AD_UNIT_ID;
 
 public class RouteDetailActivity extends BaseListActivity implements OnMapReadyCallback {
     public static final String TAG = "RouteDetailActivity";
@@ -119,7 +117,6 @@ public class RouteDetailActivity extends BaseListActivity implements OnMapReadyC
     private ImageButton mFavoriteButton;
 
     private ActionBar mActionBar;
-    private AdProxy mAdProxy;
     private ApiService mApiService;
     private Monitor mMonitor;
     private View mFooterView;
@@ -156,16 +153,6 @@ public class RouteDetailActivity extends BaseListActivity implements OnMapReadyC
 
         View headerView = getLayoutInflater().inflate(R.layout.route_header_details, null);
 
-        if (shouldShowAds(mJourneyQuery.hasPromotions)) {
-            mAdProxy = new AdProxy(this, ADMOB_ROUTE_DETAILS_AD_UNIT_ID);
-        }
-
-        ViewGroup adContainer = null;
-        if (mAdProxy != null) {
-            adContainer = mAdProxy.getAdWithContainer(getListView(), false);
-            mAdProxy.load();
-        }
-
         TextView timeView = (TextView) headerView.findViewById(R.id.route_date_time);
 
         BidiFormatter bidiFormatter = BidiFormatter.getInstance(Locale.getDefault());
@@ -194,9 +181,6 @@ public class RouteDetailActivity extends BaseListActivity implements OnMapReadyC
             zoneView.setText(mRoute.getFare().getZones());
         }
 
-        if (adContainer != null) {
-            getListView().addHeaderView(adContainer, null, false);
-        }
         setupMapHeader();
         getListView().addHeaderView(headerView, null, false);
 
@@ -266,20 +250,12 @@ public class RouteDetailActivity extends BaseListActivity implements OnMapReadyC
     protected void onResume() {
         super.onResume();
 
-        if (mAdProxy != null) {
-            mAdProxy.onResume();
-        }
-
         mMonitor.onStart();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-
-        if (mAdProxy != null) {
-            mAdProxy.onPause();
-        }
 
         mMonitor.onStop();
     }
@@ -362,9 +338,6 @@ public class RouteDetailActivity extends BaseListActivity implements OnMapReadyC
 
     @Override
     protected void onDestroy() {
-        if (mAdProxy != null) {
-            mAdProxy.onDestroy();
-        }
         super.onDestroy();
     }
 

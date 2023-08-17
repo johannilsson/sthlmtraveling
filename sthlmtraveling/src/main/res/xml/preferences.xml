@@ -80,19 +80,6 @@
             android:title="@string/support"
             />
     </PreferenceCategory>
-    <PreferenceCategory
-        android:title="@string/ads">
-        <Preference
-            android:key="preference_see_relevant_ads"
-            android:title="@string/relevant_ads_disabled"
-            android:summary="@string/relevant_ads_summary"/>
-        <Preference
-            android:key="about_ads"
-            android:title="@string/ads_title"
-            android:enabled="true"
-            android:summary="@string/ads_summary"
-            />
-    </PreferenceCategory>
 
     <PreferenceCategory
             android:title="@string/about">
