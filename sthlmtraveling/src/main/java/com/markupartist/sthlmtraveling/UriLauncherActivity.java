@@ -21,8 +21,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 
-import com.crashlytics.android.Crashlytics;
 import com.markupartist.sthlmtraveling.provider.planner.JourneyQuery;
 import com.markupartist.sthlmtraveling.provider.site.Site;
 import com.markupartist.sthlmtraveling.utils.Analytics;
@@ -72,8 +72,7 @@ public class UriLauncherActivity extends Activity {
                 return;
             }
         } catch (Exception e) {
-            Crashlytics.log("Uri: " + fullUrl);
-            Crashlytics.logException(e);
+            Log.wtf("UriLauncher", e);
         }
         Intent i = new Intent(this, StartActivity.class);
         startActivity(i);

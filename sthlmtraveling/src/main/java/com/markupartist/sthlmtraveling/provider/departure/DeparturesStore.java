@@ -20,7 +20,6 @@ import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.crashlytics.android.Crashlytics;
 import com.markupartist.sthlmtraveling.data.misc.HttpHelper;
 import com.markupartist.sthlmtraveling.data.models.RealTimeState;
 import com.markupartist.sthlmtraveling.provider.site.Site;
@@ -78,7 +77,6 @@ public class DeparturesStore {
         try {
             departures = Departures.fromJson(new JSONObject(rawContent));
         } catch (JSONException e) {
-            Crashlytics.logException(e);
             Log.d(TAG, "Could not parse the departure reponse.");
             throw new IOException("Could not parse the response.");
         }
