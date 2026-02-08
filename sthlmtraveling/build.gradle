@@ -19,16 +19,18 @@ if (buildProdFile.canRead()) {
 }
 
 android {
+    namespace 'com.markupartist.sthlmtraveling'
+
     final BASE_PROVIDER_DEBUG = "com.markupartist.sthlmtraveling.debug"
     final BASE_PROVIDER_RELEASE = "com.markupartist.sthlmtraveling"
 
-    compileSdkVersion 29
+    compileSdkVersion 33
     useLibrary 'org.apache.http.legacy'
 
 
     defaultConfig {
         minSdkVersion 23
-        targetSdkVersion 29
+        targetSdkVersion 33
         applicationId "com.markupartist.sthlmtraveling"
         versionName "2.21.0"
         versionCode 217
@@ -74,7 +76,7 @@ android {
         }
     }
 
-    lintOptions {
+    lint {
         checkReleaseBuilds false
         abortOnError false
     }
@@ -88,15 +90,15 @@ android {
 
 
 dependencies {
-    implementation 'com.google.android.gms:play-services-base:17.1.0'
-    implementation 'com.google.android.gms:play-services-maps:17.0.0'
-    implementation 'com.google.android.gms:play-services-location:17.0.0'
-    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'com.google.android.gms:play-services-base:18.2.0'
+    implementation 'com.google.android.gms:play-services-maps:18.1.0'
+    implementation 'com.google.android.gms:play-services-location:21.0.1'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.percentlayout:percentlayout:1.0.0'
-    implementation 'com.google.android.material:material:1.2.0-alpha01'
+    implementation 'com.google.android.material:material:1.9.0'
     implementation 'com.squareup.okhttp:okhttp:2.7.5'
-    implementation 'com.google.code.gson:gson:2.8.5'
+    implementation 'com.google.code.gson:gson:2.8.9'
     implementation 'com.squareup.retrofit:retrofit:1.9.0'
-    implementation 'com.yqritc:recyclerview-multiple-viewtypes-adapter:1.1.0'
+    implementation 'androidx.recyclerview:recyclerview:1.3.1'
 }

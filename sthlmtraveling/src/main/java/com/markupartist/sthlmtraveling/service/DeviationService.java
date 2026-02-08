@@ -76,7 +76,7 @@ public class DeviationService extends WakefulIntentService {
         // The PendingIntent to launch our activity if the user selects this notification
         Intent i = new Intent(this, DeviationsActivity.class);
         i.setAction(DeviationsActivity.DEVIATION_FILTER_ACTION);
-        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, i, 0);
+        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, i, PendingIntent.FLAG_IMMUTABLE);
 
         Notification notification = new NotificationCompat.Builder(this)
                 .setSmallIcon(android.R.drawable.stat_notify_error)
@@ -105,7 +105,7 @@ public class DeviationService extends WakefulIntentService {
         AlarmManager mgr =
             (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
         Intent i = new Intent(context, OnAlarmReceiver.class);
-        PendingIntent pi = PendingIntent.getBroadcast(context, 0, i, 0);
+        PendingIntent pi = PendingIntent.getBroadcast(context, 0, i, PendingIntent.FLAG_IMMUTABLE);
         mgr.cancel(pi);
         sharedPreferences.edit().putBoolean("notification_deviations_enabled", false).apply();
         Log.d(TAG, "Deviation service stopped");
