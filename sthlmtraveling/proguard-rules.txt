@@ -9,27 +9,9 @@
 
 # Add any project specific keep options here:
 
-# If your project uses WebView with JS, uncomment the following
-# and specify the fully qualified class name to the JavaScript interface
-# class:
-#-keepclassmembers class com.widespace.internal.views.** {
-#   public *;
-#}
-
 # App models
 -keep class com.markupartist.sthlmtraveling.data.api.** { *; }
 -keep class com.markupartist.sthlmtraveling.data.models.** { *; }
-
-# Widespace
-#-keep class com.widespace.**
--keep class com.widespace.** {
-   *;
-}
--dontwarn com.widespace.adspace.helpers.AttributesParseHelper
--dontwarn com.widespace.wisper.**
-
-# Libraries included
-#-libraryjars libs
 
 # Google Play Services
 
@@ -50,9 +32,9 @@
     public static final ** CREATOR;
 }
 
-# Support lib
--keep class android.support.v4.app.** { *; }
--keep interface android.support.v4.app.** { *; }
+# AndroidX
+-keep class androidx.core.app.** { *; }
+-keep interface androidx.core.app.** { *; }
 
 -keepattributes *Annotation*
 
@@ -80,15 +62,6 @@
 -dontwarn java.nio.file.OpenOption
 -dontwarn java.nio.file.Path
 
-# Facebook
--keep class com.facebook.** { *; }
--keepattributes Signature
-
-# Crashlytics
--keep class com.crashlytics.** { *; }
--keep class io.fabric.** { *; }
--keepattributes SourceFile,LineNumberTable
-
 # Remove logging
 -assumenosideeffects class android.util.Log {
     public static int v(...);
@@ -99,7 +72,6 @@
 }
 
 
--keep public class * extends android.app.
 -keep public class * extends android.app.Activity
 -keepclasseswithmembers class * {
     void onClick*(...);
@@ -109,4 +81,3 @@
 }
 
 -keep public class * extends android.app.Service
-
