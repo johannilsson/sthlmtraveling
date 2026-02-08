@@ -24,13 +24,17 @@ android {
     final BASE_PROVIDER_DEBUG = "com.markupartist.sthlmtraveling.debug"
     final BASE_PROVIDER_RELEASE = "com.markupartist.sthlmtraveling"
 
-    compileSdkVersion 33
+    compileSdk 33
     useLibrary 'org.apache.http.legacy'
+
+    buildFeatures {
+        buildConfig = true
+    }
 
 
     defaultConfig {
-        minSdkVersion 23
-        targetSdkVersion 33
+        minSdk 23
+        targetSdk 33
         applicationId "com.markupartist.sthlmtraveling"
         versionName "2.21.0"
         versionCode 217
@@ -82,9 +86,10 @@ android {
     }
 
 
-    packagingOptions {
-        exclude 'META-INF/pom.properties'
-        exclude 'META-INF/pom.xml'
+    packaging {
+        resources {
+            excludes += ['META-INF/pom.properties', 'META-INF/pom.xml']
+        }
     }
 }
 

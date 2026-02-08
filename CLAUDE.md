@@ -25,7 +25,7 @@ STHLM Traveling is an Android app for Stockholm public transport journey plannin
 ./gradlew clean
 ```
 
-**Build prerequisites:** Gradle 7.6.4 with AGP 7.4.2. Compatible with JDK 11–19. The `.java-version` file says 19.0.
+**Build prerequisites:** Gradle 8.10.2 with AGP 8.8.0. Compatible with JDK 17+. The `.java-version` file says 17.0.
 
 **Build configuration:** Uses `build_prod.properties` if available, otherwise falls back to `build_default.properties`. Keys configured there include API keys, analytics, and feature flags.
 
@@ -138,3 +138,9 @@ Don't create ADRs for:
 - Trivial implementation details
 - Reversible choices with no long-term impact
 - Bug fixes (unless they reveal a systemic issue)
+
+## Git & PR Conventions
+
+- Do NOT add `Co-Authored-By` trailers to commits
+- Do NOT add "Generated with Claude Code" or similar AI attribution to PR descriptions
+- Commit messages should be concise and focus on the "why"
