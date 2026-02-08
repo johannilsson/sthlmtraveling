@@ -1,0 +1,49 @@
+{
+  "sites": [
+    {
+      "site_id": 9001,
+      "name": "T-Centralen (Stockholm)",
+      "type": "S",
+      "location": {
+        "latitude": 59.331134,
+        "longitude": 18.059423
+      }
+    },
+    {
+      "site_id": 1002,
+      "name": "Stockholm Central (Stockholm)",
+      "type": "S",
+      "location": {
+        "latitude": 59.330136,
+        "longitude": 18.057794
+      }
+    },
+    {
+      "site_id": 1003,
+      "name": "Centralplan (Stockholm)",
+      "type": "A",
+      "location": {
+        "latitude": 59.330523,
+        "longitude": 18.058241
+      }
+    },
+    {
+      "site_id": 9204,
+      "name": "Kungsträdgården (Stockholm)",
+      "type": "S",
+      "location": {
+        "latitude": 59.330937,
+        "longitude": 18.071861
+      }
+    },
+    {
+      "site_id": 9304,
+      "name": "Östermalmstorg (Stockholm)",
+      "type": "S",
+      "location": {
+        "latitude": 59.335217,
+        "longitude": 18.075143
+      }
+    }
+  ]
+}
