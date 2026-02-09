@@ -1,0 +1,73 @@
+{
+  "result": [
+    {
+      "reference": "detail_metro_18_tcentralen_slussen",
+      "stops": [
+        {
+          "location": {
+            "id": "9001",
+            "name": "T-Centralen",
+            "type": "stop",
+            "lat": 59.331174,
+            "lon": 18.060467,
+            "stopIndex": 0,
+            "track": "3",
+            "entrances": null
+          },
+          "startTime": "2026-02-08T08:02:00",
+          "startTimeRt": "2026-02-08T08:02:00",
+          "endTime": null,
+          "endTimeRt": null
+        },
+        {
+          "location": {
+            "id": "9180",
+            "name": "Gamla stan",
+            "type": "stop",
+            "lat": 59.325003,
+            "lon": 18.068652,
+            "stopIndex": 1,
+            "track": null,
+            "entrances": null
+          },
+          "startTime": "2026-02-08T08:04:00",
+          "startTimeRt": "2026-02-08T08:04:00",
+          "endTime": "2026-02-08T08:04:30",
+          "endTimeRt": "2026-02-08T08:04:30"
+        },
+        {
+          "location": {
+            "id": "9192",
+            "name": "Slussen",
+            "type": "stop",
+            "lat": 59.320284,
+            "lon": 18.072914,
+            "stopIndex": 2,
+            "track": null,
+            "entrances": null
+          },
+          "startTime": "2026-02-08T08:06:00",
+          "startTimeRt": "2026-02-08T08:06:00",
+          "endTime": "2026-02-08T08:06:30",
+          "endTimeRt": "2026-02-08T08:06:30"
+        },
+        {
+          "location": {
+            "id": "9294",
+            "name": "Medborgarplatsen",
+            "type": "stop",
+            "lat": 59.314757,
+            "lon": 18.073642,
+            "stopIndex": 3,
+            "track": null,
+            "entrances": null
+          },
+          "startTime": "2026-02-08T08:08:00",
+          "startTimeRt": "2026-02-08T08:08:00",
+          "endTime": null,
+          "endTimeRt": null
+        }
+      ]
+    }
+  ]
+}

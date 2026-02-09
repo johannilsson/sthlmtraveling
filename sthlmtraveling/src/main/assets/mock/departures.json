@@ -1,0 +1,186 @@
+{
+  "serves_types": ["metro", "bus"],
+  "metros": {
+    "group_of_lines": [
+      {
+        "name": "Gröna linjen",
+        "direction1": [
+          {
+            "destination": "Hässelby strand",
+            "line_number": "17",
+            "line_name": "Gröna linjen",
+            "display_time": "3 min",
+            "time_tabled_date_time": "2026-02-08T08:03:00",
+            "expected_date_time": "2026-02-08T08:03:00",
+            "message": null
+          },
+          {
+            "destination": "Åkeshov",
+            "line_number": "19",
+            "line_name": "Gröna linjen",
+            "display_time": "8 min",
+            "time_tabled_date_time": "2026-02-08T08:08:00",
+            "expected_date_time": "2026-02-08T08:09:00",
+            "message": null
+          }
+        ],
+        "direction2": [
+          {
+            "destination": "Farsta strand",
+            "line_number": "18",
+            "line_name": "Gröna linjen",
+            "display_time": "2 min",
+            "time_tabled_date_time": "2026-02-08T08:02:00",
+            "expected_date_time": "2026-02-08T08:02:00",
+            "message": null
+          },
+          {
+            "destination": "Hagsätra",
+            "line_number": "19",
+            "line_name": "Gröna linjen",
+            "display_time": "10 min",
+            "time_tabled_date_time": "2026-02-08T08:10:00",
+            "expected_date_time": "2026-02-08T08:10:00",
+            "message": null
+          }
+        ]
+      },
+      {
+        "name": "Röda linjen",
+        "direction1": [
+          {
+            "destination": "Norsborg",
+            "line_number": "13",
+            "line_name": "Röda linjen",
+            "display_time": "4 min",
+            "time_tabled_date_time": "2026-02-08T08:04:00",
+            "expected_date_time": "2026-02-08T08:04:00",
+            "message": null
+          },
+          {
+            "destination": "Fruängen",
+            "line_number": "14",
+            "line_name": "Röda linjen",
+            "display_time": "12 min",
+            "time_tabled_date_time": "2026-02-08T08:12:00",
+            "expected_date_time": "2026-02-08T08:13:00",
+            "message": null
+          }
+        ],
+        "direction2": [
+          {
+            "destination": "Ropsten",
+            "line_number": "13",
+            "line_name": "Röda linjen",
+            "display_time": "5 min",
+            "time_tabled_date_time": "2026-02-08T08:05:00",
+            "expected_date_time": "2026-02-08T08:05:00",
+            "message": null
+          },
+          {
+            "destination": "Mörby centrum",
+            "line_number": "14",
+            "line_name": "Röda linjen",
+            "display_time": "9 min",
+            "time_tabled_date_time": "2026-02-08T08:09:00",
+            "expected_date_time": "2026-02-08T08:09:00",
+            "message": null
+          }
+        ]
+      },
+      {
+        "name": "Blå linjen",
+        "direction1": [
+          {
+            "destination": "Kungsträdgården",
+            "line_number": "10",
+            "line_name": "Blå linjen",
+            "display_time": "6 min",
+            "time_tabled_date_time": "2026-02-08T08:06:00",
+            "expected_date_time": "2026-02-08T08:06:00",
+            "message": null
+          }
+        ],
+        "direction2": [
+          {
+            "destination": "Hjulsta",
+            "line_number": "10",
+            "line_name": "Blå linjen",
+            "display_time": "7 min",
+            "time_tabled_date_time": "2026-02-08T08:07:00",
+            "expected_date_time": "2026-02-08T08:07:00",
+            "message": null
+          },
+          {
+            "destination": "Akalla",
+            "line_number": "11",
+            "line_name": "Blå linjen",
+            "display_time": "15 min",
+            "time_tabled_date_time": "2026-02-08T08:15:00",
+            "expected_date_time": "2026-02-08T08:15:00",
+            "message": null
+          }
+        ]
+      }
+    ]
+  },
+  "buses": [
+    {
+      "stop_area_name": "T-Centralen",
+      "stop_area_number": "10001",
+      "departures": [
+        {
+          "destination": "Södersjukhuset",
+          "line_number": "3",
+          "line_name": null,
+          "display_time": "Nu",
+          "time_tabled_date_time": "2026-02-08T08:00:00",
+          "expected_date_time": "2026-02-08T08:00:00",
+          "message": null
+        },
+        {
+          "destination": "Karolinska sjukhuset",
+          "line_number": "3",
+          "line_name": null,
+          "display_time": "11 min",
+          "time_tabled_date_time": "2026-02-08T08:11:00",
+          "expected_date_time": "2026-02-08T08:12:00",
+          "message": null
+        },
+        {
+          "destination": "Henriksdalsberget",
+          "line_number": "53",
+          "line_name": null,
+          "display_time": "4 min",
+          "time_tabled_date_time": "2026-02-08T08:04:00",
+          "expected_date_time": "2026-02-08T08:04:00",
+          "message": null
+        }
+      ]
+    },
+    {
+      "stop_area_name": "Sergels torg",
+      "stop_area_number": "10002",
+      "departures": [
+        {
+          "destination": "Blockhusudden",
+          "line_number": "69",
+          "line_name": null,
+          "display_time": "6 min",
+          "time_tabled_date_time": "2026-02-08T08:06:00",
+          "expected_date_time": "2026-02-08T08:06:00",
+          "message": null
+        },
+        {
+          "destination": "Reimersholme",
+          "line_number": "59",
+          "line_name": null,
+          "display_time": "14 min",
+          "time_tabled_date_time": "2026-02-08T08:14:00",
+          "expected_date_time": null,
+          "message": null
+        }
+      ]
+    }
+  ]
+}

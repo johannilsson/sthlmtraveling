@@ -20,6 +20,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.markupartist.sthlmtraveling.AppConfig;
+import com.markupartist.sthlmtraveling.BuildConfig;
 import com.markupartist.sthlmtraveling.provider.ApiConf;
 import com.squareup.okhttp.Cache;
 import com.squareup.okhttp.OkHttpClient;
@@ -38,6 +39,9 @@ public class HttpHelper {
         mClient = new OkHttpClient();
         mClient.setConnectTimeout(15, TimeUnit.SECONDS);
         mClient.setReadTimeout(15, TimeUnit.SECONDS);
+        if (BuildConfig.DEBUG) {
+            mClient.interceptors().add(new MockInterceptor(context));
+        }
         installHttpCache(context);
     }
 

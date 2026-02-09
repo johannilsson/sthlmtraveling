@@ -1,0 +1,324 @@
+{
+  "routes": [
+    {
+      "duration": 480,
+      "mode": "transit",
+      "legs": [
+        {
+          "from": {
+            "id": null,
+            "name": "T-Centralen",
+            "type": "place",
+            "lat": 59.331134,
+            "lon": 18.059423,
+            "stopIndex": -1,
+            "track": null,
+            "entrances": null
+          },
+          "to": {
+            "id": "9001",
+            "name": "T-Centralen",
+            "type": "stop",
+            "lat": 59.331174,
+            "lon": 18.060467,
+            "stopIndex": 0,
+            "track": null,
+            "entrances": null
+          },
+          "geometry": "o~rmJe`faC",
+          "distance": 80,
+          "duration": 60,
+          "steps": [],
+          "travelMode": "foot",
+          "headsign": null,
+          "routeName": null,
+          "routeShortName": null,
+          "routeColor": null,
+          "startTime": "2026-02-08T08:00:00",
+          "endTime": "2026-02-08T08:01:00",
+          "startTimeRt": null,
+          "endTimeRt": null,
+          "departureDelay": 0,
+          "arrivalDelay": 0,
+          "realTime": false,
+          "cancelled": false,
+          "unreachable": false,
+          "invalid": false,
+          "alternative": false,
+          "alerts": [],
+          "notes": [],
+          "geometryRef": null,
+          "detailRef": null
+        },
+        {
+          "from": {
+            "id": "9001",
+            "name": "T-Centralen",
+            "type": "stop",
+            "lat": 59.331174,
+            "lon": 18.060467,
+            "stopIndex": 0,
+            "track": "3",
+            "entrances": null
+          },
+          "to": {
+            "id": "9192",
+            "name": "Slussen",
+            "type": "stop",
+            "lat": 59.320284,
+            "lon": 18.072914,
+            "stopIndex": 3,
+            "track": null,
+            "entrances": null
+          },
+          "geometry": "o~rmJe`faCoAlBfAzC`BzEvBpGnCnI",
+          "distance": 2100,
+          "duration": 420,
+          "steps": [],
+          "travelMode": "metro",
+          "headsign": {
+            "id": null,
+            "name": "Farsta strand",
+            "type": "stop",
+            "lat": 0.0,
+            "lon": 0.0,
+            "stopIndex": -1,
+            "track": null,
+            "entrances": null
+          },
+          "routeName": "Tunnelbanans gröna linje 18",
+          "routeShortName": "18",
+          "routeColor": "00985F",
+          "startTime": "2026-02-08T08:02:00",
+          "endTime": "2026-02-08T08:08:00",
+          "startTimeRt": "2026-02-08T08:02:00",
+          "endTimeRt": "2026-02-08T08:08:00",
+          "departureDelay": 0,
+          "arrivalDelay": 0,
+          "realTime": true,
+          "cancelled": false,
+          "unreachable": false,
+          "invalid": false,
+          "alternative": false,
+          "alerts": [],
+          "notes": [],
+          "geometryRef": "ref_metro_18_tcentralen_slussen",
+          "detailRef": "detail_metro_18_tcentralen_slussen"
+        }
+      ],
+      "fare": {
+        "zones": "SL",
+        "attributes": [
+          {
+            "action": "buy_ticket",
+            "reduced": false,
+            "text": "Enkelbiljett"
+          }
+        ]
+      }
+    },
+    {
+      "duration": 780,
+      "mode": "transit",
+      "legs": [
+        {
+          "from": {
+            "id": null,
+            "name": "T-Centralen",
+            "type": "place",
+            "lat": 59.331134,
+            "lon": 18.059423,
+            "stopIndex": -1,
+            "track": null,
+            "entrances": null
+          },
+          "to": {
+            "id": "10001",
+            "name": "Sergels torg",
+            "type": "stop",
+            "lat": 59.332693,
+            "lon": 18.064819,
+            "stopIndex": 0,
+            "track": null,
+            "entrances": null
+          },
+          "geometry": "o~rmJe`faCaAcB",
+          "distance": 120,
+          "duration": 90,
+          "steps": [],
+          "travelMode": "foot",
+          "headsign": null,
+          "routeName": null,
+          "routeShortName": null,
+          "routeColor": null,
+          "startTime": "2026-02-08T08:05:00",
+          "endTime": "2026-02-08T08:06:30",
+          "startTimeRt": null,
+          "endTimeRt": null,
+          "departureDelay": 0,
+          "arrivalDelay": 0,
+          "realTime": false,
+          "cancelled": false,
+          "unreachable": false,
+          "invalid": false,
+          "alternative": false,
+          "alerts": [],
+          "notes": [],
+          "geometryRef": null,
+          "detailRef": null
+        },
+        {
+          "from": {
+            "id": "10001",
+            "name": "Sergels torg",
+            "type": "stop",
+            "lat": 59.332693,
+            "lon": 18.064819,
+            "stopIndex": 0,
+            "track": "A",
+            "entrances": null
+          },
+          "to": {
+            "id": "10192",
+            "name": "Slussen",
+            "type": "stop",
+            "lat": 59.320284,
+            "lon": 18.072914,
+            "stopIndex": 5,
+            "track": null,
+            "entrances": null
+          },
+          "geometry": "o~rmJe`faCpBfClDrFdFtH",
+          "distance": 3200,
+          "duration": 690,
+          "steps": [],
+          "travelMode": "bus",
+          "headsign": {
+            "id": null,
+            "name": "Södersjukhuset",
+            "type": "stop",
+            "lat": 0.0,
+            "lon": 0.0,
+            "stopIndex": -1,
+            "track": null,
+            "entrances": null
+          },
+          "routeName": "Buss 3",
+          "routeShortName": "3",
+          "routeColor": "ED1C24",
+          "startTime": "2026-02-08T08:08:00",
+          "endTime": "2026-02-08T08:18:00",
+          "startTimeRt": "2026-02-08T08:09:00",
+          "endTimeRt": "2026-02-08T08:19:00",
+          "departureDelay": 60,
+          "arrivalDelay": 60,
+          "realTime": true,
+          "cancelled": false,
+          "unreachable": false,
+          "invalid": false,
+          "alternative": false,
+          "alerts": [
+            {
+              "header": "Buss 3 trafikeras med bussersättning",
+              "description": "Tillfällig förändring av linjesträckning mellan Sergels torg och Slussen.",
+              "language": "sv"
+            }
+          ],
+          "notes": [],
+          "geometryRef": "ref_bus_3_sergels_slussen",
+          "detailRef": "detail_bus_3_sergels_slussen"
+        }
+      ],
+      "fare": {
+        "zones": "SL",
+        "attributes": [
+          {
+            "action": "buy_ticket",
+            "reduced": false,
+            "text": "Enkelbiljett"
+          }
+        ]
+      }
+    },
+    {
+      "duration": 1500,
+      "mode": "foot",
+      "legs": [
+        {
+          "from": {
+            "id": null,
+            "name": "T-Centralen",
+            "type": "place",
+            "lat": 59.331134,
+            "lon": 18.059423,
+            "stopIndex": -1,
+            "track": null,
+            "entrances": null
+          },
+          "to": {
+            "id": null,
+            "name": "Slussen",
+            "type": "place",
+            "lat": 59.320284,
+            "lon": 18.072914,
+            "stopIndex": -1,
+            "track": null,
+            "entrances": null
+          },
+          "geometry": "o~rmJe`faCnBjClDrFhFxH~GnKfJtN",
+          "distance": 1800,
+          "duration": 1500,
+          "steps": [
+            {
+              "code": "DEPART",
+              "distance": 200,
+              "direction": "South",
+              "wayName": "Vasagatan",
+              "duration": 150,
+              "position": 0
+            },
+            {
+              "code": "TURN_RIGHT",
+              "distance": 400,
+              "direction": "Southwest",
+              "wayName": "Munkbron",
+              "duration": 300,
+              "position": 1
+            },
+            {
+              "code": "CONTINUE",
+              "distance": 1200,
+              "direction": "South",
+              "wayName": "Skeppsbron",
+              "duration": 1050,
+              "position": 2
+            }
+          ],
+          "travelMode": "foot",
+          "headsign": null,
+          "routeName": null,
+          "routeShortName": null,
+          "routeColor": null,
+          "startTime": "2026-02-08T08:00:00",
+          "endTime": "2026-02-08T08:25:00",
+          "startTimeRt": null,
+          "endTimeRt": null,
+          "departureDelay": 0,
+          "arrivalDelay": 0,
+          "realTime": false,
+          "cancelled": false,
+          "unreachable": false,
+          "invalid": false,
+          "alternative": false,
+          "alerts": [],
+          "notes": [],
+          "geometryRef": null,
+          "detailRef": null
+        }
+      ],
+      "fare": null
+    }
+  ],
+  "paginateRef": "mock_paginate_ref_123",
+  "errors": []
+}

@@ -1,0 +1,34 @@
+{
+  "sites": [
+    {
+      "site_id": 9001,
+      "name": "T-Centralen (Stockholm)",
+      "distance": 50,
+      "location": "59.331134,18.059423"
+    },
+    {
+      "site_id": 1002,
+      "name": "Stockholm Central (Stockholm)",
+      "distance": 120,
+      "location": "59.330136,18.057794"
+    },
+    {
+      "site_id": 9204,
+      "name": "Kungsträdgården (Stockholm)",
+      "distance": 450,
+      "location": "59.330937,18.071861"
+    },
+    {
+      "site_id": 9304,
+      "name": "Östermalmstorg (Stockholm)",
+      "distance": 620,
+      "location": "59.335217,18.075143"
+    },
+    {
+      "site_id": 9180,
+      "name": "Gamla stan (Stockholm)",
+      "distance": 780,
+      "location": "59.325003,18.068652"
+    }
+  ]
+}
