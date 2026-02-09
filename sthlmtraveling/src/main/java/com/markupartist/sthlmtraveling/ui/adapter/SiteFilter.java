@@ -24,6 +24,9 @@ import com.markupartist.sthlmtraveling.provider.site.SitesStore;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Provides places through our own backend.
@@ -43,20 +46,44 @@ public class SiteFilter extends PlaceSearchResultAdapter.PlaceFilter {
         FilterResults filterResults = new FilterResults();
 
         if (constraint != null) {
-            List<SiteResult> results = new ArrayList<>();
-            try {
-                String query = constraint.toString();
-                if (Site.looksValid(query)) {
-                    List<Site> list = SitesStore.getInstance().getSiteV2(mContext, query, mSearchOnlyStops);
-                    for (Site s : list) {
-                        results.add(new SiteResult(s));
+            final List<SiteResult> results = new ArrayList<>();
+            final CountDownLatch latch = new CountDownLatch(1);
+            final AtomicBoolean success = new AtomicBoolean(false);
+
+            String query = constraint.toString();
+            if (Site.looksValid(query)) {
+                SitesStore.getInstance().getSiteV2Async(mContext, query, mSearchOnlyStops,
+                    new SitesStore.SiteCallback() {
+                        @Override
+                        public void onSuccess(ArrayList<Site> sites) {
+                            for (Site s : sites) {
+                                results.add(new SiteResult(s));
+                            }
+                            success.set(true);
+                            latch.countDown();
+                        }
+
+                        @Override
+                        public void onError(IOException error) {
+                            success.set(false);
+                            latch.countDown();
+                        }
+                    });
+
+                try {
+                    // Wait with timeout to prevent indefinite blocking
+                    if (!latch.await(20, TimeUnit.SECONDS)) {
+                        // Timeout occurred
+                        success.set(false);
                     }
+                } catch (InterruptedException e) {
+                    success.set(false);
                 }
-                setStatus(true);
-            } catch (IOException e) {
-                setStatus(false);
+            } else {
+                success.set(true); // Empty query is valid
             }
 
+            setStatus(success.get());
             filterResults.values = results;
             filterResults.count = results.size();
         }
