@@ -79,7 +79,15 @@ public class LegUtil {
             // Add color for foot or when color is missing/empty.
             return ContextCompat.getColor(context, R.color.train);
         }
-        return Color.parseColor(leg.routeColor);
+        try {
+            // Ensure color starts with # for hex format
+            String color = leg.routeColor.startsWith("#") ? leg.routeColor : "#" + leg.routeColor;
+            return Color.parseColor(color);
+        } catch (IllegalArgumentException e) {
+            // Invalid color format, use fallback
+            android.util.Log.w("LegUtil", "Invalid routeColor format: " + leg.routeColor, e);
+            return ContextCompat.getColor(context, R.color.train);
+        }
     }
 
     public static String getRouteName(Leg leg, boolean truncate) {
