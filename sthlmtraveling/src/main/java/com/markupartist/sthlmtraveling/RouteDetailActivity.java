@@ -813,13 +813,13 @@ public class RouteDetailActivity extends BaseListActivity implements OnMapReadyC
 
             if (legViewModel.leg.hasAlerts()) {
                 for (Alert alert : legViewModel.leg.getAlerts()) {
-                    String message = alert.getDescription() != null ? alert.getDescription() : alert.getHeader();
+                    String message = alert.description != null ? alert.description : alert.header;
                     messagesLayout.addView(inflateMessage("alert", message, messagesLayout));
                 }
             }
             if (legViewModel.leg.hasNotes()) {
                 for (Alert note : legViewModel.leg.getNotes()) {
-                    messagesLayout.addView(inflateMessage("rtu", note.getHeader(), messagesLayout));
+                    messagesLayout.addView(inflateMessage("rtu", note.header, messagesLayout));
                 }
             }
         }

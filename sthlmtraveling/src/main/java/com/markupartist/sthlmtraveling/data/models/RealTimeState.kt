@@ -13,13 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package com.markupartist.sthlmtraveling.data.models;
+package com.markupartist.sthlmtraveling.data.models
 
 /**
  *
  */
-public enum RealTimeState {
+enum class RealTimeState {
     BEHIND_SCHEDULE,
     AHEAD_OF_SCHEDULE,
     ON_TIME,

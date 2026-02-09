@@ -131,7 +131,7 @@ public class LegUtil {
     public static List<String> travelModesToTransportModes(List<TravelMode> travelModes) {
         List<String> transportModes = new ArrayList<>();
         for (TravelMode travelMode : travelModes) {
-            switch (travelMode.getMode()) {
+            switch (travelMode.mode) {
                 case TravelMode.BOAT:
                     transportModes.add(TransportMode.BOAT);
                     transportModes.add(TransportMode.WAX);

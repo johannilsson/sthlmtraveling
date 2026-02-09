@@ -363,11 +363,11 @@ public class ViewOnMapActivity extends BaseFragmentActivity implements OnMapRead
                     BitmapDescriptor icon = getColoredMarker(ContextCompat.getColor(
                             this, R.color.primary), R.drawable.ic_line_marker);
                     for (Step step : leg.getSteps()) {
-                        if ("arrive".equals(step.getCode())
-                                || "depart".equals(step.getCode())
-                                || "waypoint".equals(step.getCode())) {
+                        if ("arrive".equals(step.code)
+                                || "depart".equals(step.code)
+                                || "waypoint".equals(step.code)) {
                             mMap.addMarker(new MarkerOptions()
-                                    .position(latLgns.get(step.getPosition()))
+                                    .position(latLgns.get(step.position))
                                     .anchor(0.5f, 0.5f)
                                     .icon(icon));
                         }
@@ -457,14 +457,14 @@ public class ViewOnMapActivity extends BaseFragmentActivity implements OnMapRead
         BitmapDescriptor icon = getMarker(R.drawable.ic_entrance_exit_12dp);
         for (Entrance entrance : entrances) {
             MarkerOptions markerOptions = new MarkerOptions()
-                    .position(new LatLng(entrance.getLat(), entrance.getLon()))
+                    .position(new LatLng(entrance.lat, entrance.lon))
                     .anchor(0.5f, 0.5f)
                     .icon(icon);
-            if (!TextUtils.isEmpty(entrance.getName())) {
+            if (!TextUtils.isEmpty(entrance.name)) {
                 if (isExits) {
-                    markerOptions.title(getString(R.string.exit_and_name, entrance.getName()));
+                    markerOptions.title(getString(R.string.exit_and_name, entrance.name));
                 } else {
-                    markerOptions.title(getString(R.string.entrance_and_name, entrance.getName()));
+                    markerOptions.title(getString(R.string.entrance_and_name, entrance.name));
                 }
             } else {
                 if (isExits) {
