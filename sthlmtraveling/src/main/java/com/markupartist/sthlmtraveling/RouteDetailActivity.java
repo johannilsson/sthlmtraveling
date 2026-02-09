@@ -178,7 +178,7 @@ public class RouteDetailActivity extends BaseListActivity implements OnMapReadyC
             });
 
             TextView zoneView = (TextView) headerView.findViewById(R.id.route_zones);
-            zoneView.setText(mRoute.getFare().getZones());
+            zoneView.setText(mRoute.getFare().zones);
         }
 
         setupMapHeader();

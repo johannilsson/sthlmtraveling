@@ -69,15 +69,15 @@ public class TicketDialogFragment extends BottomSheetDialogFragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         final TicketAdapter adapter = new TicketAdapter(getContext());
-        for (FareAttribute fareAttribute : fare.getAttributes()) {
+        for (FareAttribute fareAttribute : fare.attributes) {
             CharSequence description = getText(fareAttribute.isReduced() ?
                     R.string.sms_ticket_price_reduced :
                     R.string.sms_ticket_price_full);
             adapter.addTicket(new TicketPrice(description,
-                    fare.getZones(),
-                    fareAttribute.getText(),
+                    fare.zones,
+                    fareAttribute.text,
                     fareAttribute.isReduced(),
-                    fareAttribute.getAction()));
+                    fareAttribute.action));
         }
 
         recyclerView.setAdapter(adapter);
