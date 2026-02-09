@@ -37,8 +37,9 @@ public class HttpHelper {
 
     private HttpHelper(final Context context) {
         mClient = new OkHttpClient();
-        mClient.setConnectTimeout(15, TimeUnit.SECONDS);
-        mClient.setReadTimeout(15, TimeUnit.SECONDS);
+        mClient.setConnectTimeout(10, TimeUnit.SECONDS);
+        mClient.setReadTimeout(10, TimeUnit.SECONDS);
+        mClient.setWriteTimeout(10, TimeUnit.SECONDS);
         if (BuildConfig.DEBUG) {
             mClient.interceptors().add(new MockInterceptor(context));
         }

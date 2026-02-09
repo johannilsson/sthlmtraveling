@@ -2,6 +2,8 @@ package com.markupartist.sthlmtraveling.provider.site;
 
 import android.content.Context;
 import android.location.Location;
+import android.os.Handler;
+import android.os.Looper;
 import androidx.core.util.Pair;
 import android.text.TextUtils;
 import android.util.Log;
@@ -23,6 +25,11 @@ import java.util.regex.Pattern;
 import static com.markupartist.sthlmtraveling.provider.ApiConf.apiEndpoint2;
 
 public class SitesStore {
+
+    public interface SiteCallback {
+        void onSuccess(ArrayList<Site> sites);
+        void onError(IOException error);
+    }
     private static Pattern SITE_NAME_PATTERN = Pattern.compile("([\\w\\s0-9-& ]+)");
 
     private static SitesStore sInstance;
@@ -63,24 +70,73 @@ public class SitesStore {
             throw new IOException("Server error while fetching sites");
         }
 
-        ArrayList<Site> sites = new ArrayList<Site>();
         try {
-            JSONObject jsonResponse = new JSONObject(response.body().string());
-            if (!jsonResponse.has("sites")) {
-                throw new IOException("Invalid input.");
-            }
-            JSONArray jsonSites = jsonResponse.getJSONArray("sites");
-            for (int i = 0; i < jsonSites.length(); i++) {
-                try {
-                    sites.add(Site.fromJson(jsonSites.getJSONObject(i)));
-                } catch (JSONException e) {
-                    // Ignore errors here.
-                }
-            }
+            return parseSitesFromResponse(response);
         } catch (JSONException e) {
             throw new IOException("Invalid input.");
         }
+    }
 
+    public void getSiteV2Async(final Context context, final String name,
+                              final boolean onlyStations, final SiteCallback callback) {
+        if (TextUtils.isEmpty(name)) {
+            new Handler(Looper.getMainLooper()).post(() ->
+                callback.onSuccess(new ArrayList<>()));
+            return;
+        }
+
+        HttpHelper httpHelper = HttpHelper.getInstance(context);
+        String onlyStationsParam = onlyStations ? "true" : "false";
+        String url;
+        try {
+            url = apiEndpoint2() + "v1/site/"
+                    + "?q=" + URLEncoder.encode(name, "UTF-8")
+                    + "&onlyStations=" + onlyStationsParam
+                    + "&addLocation=true";
+
+            com.squareup.okhttp.Request request = httpHelper.createRequest(url);
+            httpHelper.getClient().newCall(request).enqueue(new com.squareup.okhttp.Callback() {
+                @Override
+                public void onFailure(com.squareup.okhttp.Request request, IOException e) {
+                    new Handler(Looper.getMainLooper()).post(() -> callback.onError(e));
+                }
+
+                @Override
+                public void onResponse(com.squareup.okhttp.Response response) throws IOException {
+                    try {
+                        if (!response.isSuccessful()) {
+                            final IOException error = new IOException("Server error: " + response.code());
+                            new Handler(Looper.getMainLooper()).post(() -> callback.onError(error));
+                            return;
+                        }
+
+                        ArrayList<Site> sites = parseSitesFromResponse(response);
+                        new Handler(Looper.getMainLooper()).post(() -> callback.onSuccess(sites));
+                    } catch (JSONException e) {
+                        final IOException error = new IOException("Invalid JSON", e);
+                        new Handler(Looper.getMainLooper()).post(() -> callback.onError(error));
+                    }
+                }
+            });
+        } catch (IOException e) {
+            new Handler(Looper.getMainLooper()).post(() -> callback.onError(e));
+        }
+    }
+
+    private ArrayList<Site> parseSitesFromResponse(Response response) throws IOException, JSONException {
+        ArrayList<Site> sites = new ArrayList<>();
+        JSONObject jsonResponse = new JSONObject(response.body().string());
+        if (!jsonResponse.has("sites")) {
+            throw new IOException("Invalid input.");
+        }
+        JSONArray jsonSites = jsonResponse.getJSONArray("sites");
+        for (int i = 0; i < jsonSites.length(); i++) {
+            try {
+                sites.add(Site.fromJson(jsonSites.getJSONObject(i)));
+            } catch (JSONException e) {
+                // Ignore individual parse errors
+            }
+        }
         return sites;
     }
 
