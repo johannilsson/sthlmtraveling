@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -21,9 +22,11 @@ import com.markupartist.sthlmtraveling.provider.HistoryDbAdapter;
 import com.markupartist.sthlmtraveling.provider.JourneysProvider.Journey.Journeys;
 import com.markupartist.sthlmtraveling.service.DeviationService;
 import com.markupartist.sthlmtraveling.utils.Analytics;
+import com.markupartist.sthlmtraveling.utils.NotificationHelper;
 import com.markupartist.sthlmtraveling.utils.ThemeHelper;
 
 import androidx.appcompat.widget.SwitchCompat;
+import androidx.annotation.NonNull;
 
 public class SettingsActivity extends AppCompatPreferenceActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
 
@@ -84,11 +87,14 @@ public class SettingsActivity extends AppCompatPreferenceActivity implements Sha
             case "notification_deviations_enabled":
                 boolean enabled = sharedPreferences.getBoolean("notification_deviations_enabled", false);
                 if (enabled) {
-                    Analytics.getInstance(this).event("Settings", "Deviation Service", "start");
+                    if (NotificationHelper.hasNotificationPermission(this)) {
+                        enableDeviationNotifications();
+                    } else {
+                        NotificationHelper.requestNotificationPermission(this, NotificationHelper.REQUEST_POST_NOTIFICATIONS);
+                    }
                 } else {
-                    Analytics.getInstance(this).event("Settings", "Deviation Service", "stop");
+                    disableDeviationNotifications();
                 }
-                DeviationService.startAsRepeating(this);
                 break;
             case "has_consent_to_serve_personalized_ads":
                 boolean hasConsent = sharedPreferences.getBoolean("has_consent_to_serve_personalized_ads", false);
@@ -256,5 +262,32 @@ public class SettingsActivity extends AppCompatPreferenceActivity implements Sha
         }
 
         return null;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == NotificationHelper.REQUEST_POST_NOTIFICATIONS) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                enableDeviationNotifications();
+            } else {
+                // Revert preference and explain
+                PreferenceManager.getDefaultSharedPreferences(this)
+                        .edit()
+                        .putBoolean("notification_deviations_enabled", false)
+                        .apply();
+                Toast.makeText(this, R.string.notification_permission_required, Toast.LENGTH_LONG).show();
+            }
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
+    private void enableDeviationNotifications() {
+        Analytics.getInstance(this).event("Settings", "Deviation Service", "start");
+        DeviationService.startAsRepeating(this);
+    }
+
+    private void disableDeviationNotifications() {
+        Analytics.getInstance(this).event("Settings", "Deviation Service", "stop");
+        DeviationService.startAsRepeating(this);
     }
 }

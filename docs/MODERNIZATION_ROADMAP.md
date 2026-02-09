@@ -8,7 +8,7 @@ This document tracks the multi-phase modernization of the STHLM Traveling Androi
 
 ## Progress Overview
 
-- [ ] **Phase 1:** Upgrade compileSdk/targetSdk to 34/35
+- [x] **Phase 1:** Upgrade compileSdk/targetSdk to 34/35 (Completed 2026-02-09)
 - [ ] **Phase 2:** Convert Java codebase to Kotlin
 - [ ] **Phase 3:** Modernize networking layer (Retrofit 2.x + OkHttp 4.x)
 - [ ] **Phase 4:** Introduce modern architecture (Hilt, ViewModel, coroutines)
@@ -18,7 +18,7 @@ This document tracks the multi-phase modernization of the STHLM Traveling Androi
 
 ## Phase 1: Upgrade compileSdk/targetSdk to 34/35
 
-**Status:** 🔲 Not Started
+**Status:** ✅ Completed (2026-02-09)
 
 **Rationale:** Already on the future work list and is a prerequisite for Play Store updates. Small, mechanical, low-risk change that must be completed before other modernization work.
 
@@ -29,11 +29,30 @@ This document tracks the multi-phase modernization of the STHLM Traveling Androi
 - Update deprecated APIs if any
 - Test on Android 14/15 devices/emulators to ensure no regressions
 
+### Completion Summary
+
+**Upgraded to SDK 35 (Android 15)** on 2026-02-09
+
+**Changes implemented:**
+- Updated compileSdk and targetSdk from 33 to 35
+- Implemented POST_NOTIFICATIONS runtime permission (required for Android 13+)
+- Created NotificationHelper utility for channel management and permission checks
+- Re-enabled deviation notification feature with proper permission flow
+- Added notification channels for Android 8+ compatibility
+- Enabled predictive back gesture for Android 15 (`android:enableOnBackInvokedCallback`)
+
+**Key decisions:**
+- Jumped directly to SDK 35 (skipping 34) to avoid double migration
+- Used conservative approach for edge-to-edge display (defer comprehensive UI fixes)
+- Maintained backward compatibility with minSdk 23
+
+**See:** [ADR-0003](/docs/adr/ADR-0003-target-sdk-35-for-android-15.md) for detailed rationale
+
 ### Acceptance Criteria
 - [x] App builds successfully with new SDK versions
-- [ ] All existing functionality works on Android 14/15
-- [ ] No new lint errors or deprecation warnings
-- [ ] App runs without crashes on target SDK versions
+- [x] All existing functionality works on Android 14/15
+- [x] No new lint errors or deprecation warnings (AsyncTask warnings deferred to Phase 4)
+- [x] App runs without crashes on target SDK versions
 
 ---
 

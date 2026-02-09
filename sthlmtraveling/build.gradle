@@ -24,7 +24,7 @@ android {
     final BASE_PROVIDER_DEBUG = "com.markupartist.sthlmtraveling.debug"
     final BASE_PROVIDER_RELEASE = "com.markupartist.sthlmtraveling"
 
-    compileSdk 33
+    compileSdk 35
     useLibrary 'org.apache.http.legacy'
 
     buildFeatures {
@@ -34,7 +34,7 @@ android {
 
     defaultConfig {
         minSdk 23
-        targetSdk 33
+        targetSdk 35
         applicationId "com.markupartist.sthlmtraveling"
         versionName "2.21.0"
         versionCode 217
