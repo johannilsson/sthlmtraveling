@@ -75,8 +75,8 @@ public class LegUtil {
 
     @ColorInt
     public static int getColor(Context context, Leg leg) {
-        if (leg.routeColor == null) {
-            // Add color for foot.
+        if (TextUtils.isEmpty(leg.routeColor)) {
+            // Add color for foot or when color is missing/empty.
             return ContextCompat.getColor(context, R.color.train);
         }
         return Color.parseColor(leg.routeColor);
