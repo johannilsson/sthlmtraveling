@@ -112,7 +112,12 @@ public class FavoritesFragment extends BaseListFragment {
 	public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        getActivity().registerReceiver(mUpdateUIReceiver, new IntentFilter("sthlmtraveling.intent.action.UPDATE_UI"));
+        ContextCompat.registerReceiver(
+                getActivity(),
+                mUpdateUIReceiver,
+                new IntentFilter("sthlmtraveling.intent.action.UPDATE_UI"),
+                ContextCompat.RECEIVER_NOT_EXPORTED
+        );
     }
     
     @Override
