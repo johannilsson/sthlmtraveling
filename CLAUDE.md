@@ -8,22 +8,15 @@ STHLM Traveling is an Android app for Stockholm public transport journey plannin
 
 ## Build Commands
 
-```bash
-# Build debug APK
-./gradlew assembleDebug
+Use the `build-check` skill to run Gradle tasks:
 
-# Build release APK (requires STORE_FILE, STORE_PASSWORD, KEY_ALIAS, KEY_PASSWORD env vars)
-./gradlew assembleRelease
+- **Build debug APK**: `/build-check assembleDebug`
+- **Build release APK**: `/build-check assembleRelease` (requires STORE_FILE, STORE_PASSWORD, KEY_ALIAS, KEY_PASSWORD env vars)
+- **Run instrumented tests**: `/build-check connectedAndroidTest` (requires emulator or device)
+- **Run unit tests**: `/build-check testDebugUnitTest`
+- **Clean build**: `/build-check clean`
 
-# Run instrumented tests (requires emulator or device)
-./gradlew connectedAndroidTest
-
-# Run unit tests
-./gradlew testDebugUnitTest
-
-# Clean build
-./gradlew clean
-```
+Alternatively, run Gradle directly: `./gradlew <task>`
 
 **Build prerequisites:** Gradle 8.10.2 with AGP 8.8.0. Compatible with JDK 17+. The `.java-version` file says 17.0.
 
