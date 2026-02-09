@@ -211,8 +211,8 @@ public class ViewOnMapActivity extends BaseFragmentActivity implements OnMapRead
             float hueColor = hsv[0];
 
             LatLng origin = new LatLng(
-                    leg.getFrom().getLat(),
-                    leg.getFrom().getLon());
+                    leg.getFrom().lat,
+                    leg.getFrom().lon);
             all.add(origin);
 
             mMap.addMarker(new MarkerOptions()
@@ -222,8 +222,8 @@ public class ViewOnMapActivity extends BaseFragmentActivity implements OnMapRead
                     .icon(BitmapDescriptorFactory.defaultMarker(hueColor)));
 
             LatLng destination = new LatLng(
-                    leg.getTo().getLat(),
-                    leg.getTo().getLon());
+                    leg.getTo().lat,
+                    leg.getTo().lon);
             all.add(destination);
             mMap.addMarker(new MarkerOptions()
                     .position(destination)
@@ -243,8 +243,8 @@ public class ViewOnMapActivity extends BaseFragmentActivity implements OnMapRead
                 options.add(destination);
                 for (IntermediateStop stop : leg.getIntermediateStops()) {
                     LatLng intermediateStop = new LatLng(
-                        stop.getLocation().getLat(),
-                        stop.getLocation().getLon());
+                            stop.getLocation().lat,
+                            stop.getLocation().lon);
                     options.add(intermediateStop);
                     all.add(intermediateStop);
                 }
@@ -263,17 +263,17 @@ public class ViewOnMapActivity extends BaseFragmentActivity implements OnMapRead
                 String time = date != null ? DateFormat.getTimeFormat(this).format(date) : "";
                 mMap.addMarker(new MarkerOptions()
                     .anchor(0.5f, 0.5f)
-                    .position( new LatLng(stop.getLocation().getLat(), stop.getLocation().getLon()))
+                    .position( new LatLng(stop.getLocation().lat, stop.getLocation().lon))
                     .title(getLocationName(stop.getLocation()))
                     .snippet(time)
                     .icon(icon));
             }
 
             if (leg.getFrom().hasEntrances()) {
-                showEntrances(leg.getFrom().getEntrances(), false);
+                showEntrances(leg.getFrom().entrances, false);
             }
             if (leg.getTo().hasEntrances()) {
-                showEntrances(leg.getTo().getEntrances(), true);
+                showEntrances(leg.getTo().entrances, true);
             }
         }
         return all;
@@ -289,7 +289,7 @@ public class ViewOnMapActivity extends BaseFragmentActivity implements OnMapRead
             description = getString(R.string.trip_map_description_normal,
                     DateFormat.getTimeFormat(this).format(leg.getStartTime()),
                     leg.getRouteName(),
-                    leg.getHeadsign().getName());
+                    leg.getHeadsign().name);
         }
         return description;
     }
@@ -302,7 +302,7 @@ public class ViewOnMapActivity extends BaseFragmentActivity implements OnMapRead
         if (location.isMyLocation()) {
             return getString(R.string.my_location);
         }
-        return location.getName();
+        return location.name;
     }
 
     @Override

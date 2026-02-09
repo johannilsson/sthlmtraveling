@@ -96,12 +96,12 @@ public class NearbyAdapter extends RecyclerView.Adapter<NearbyAdapter.NearbyStop
         }
 
         public void bindTo(NearbyStop nearbyStop) {
-            Pair<String, String> nameAndLocality = SitesStore.nameAsNameAndLocality(nearbyStop.getName());
+            Pair<String, String> nameAndLocality = SitesStore.nameAsNameAndLocality(nearbyStop.name);
             mNameView.setText(nameAndLocality.first);
             mLocalityView.setText(nameAndLocality.second);
             mLocalityView.setVisibility(View.VISIBLE);
             mDistanceView.setText(mDistanceView.getResources()
-                    .getString(R.string.distance_in_meter, String.valueOf(nearbyStop.getDistance())));
+                    .getString(R.string.distance_in_meter, String.valueOf(nearbyStop.distance)));
             mDistanceView.setVisibility(View.VISIBLE);
         }
     }

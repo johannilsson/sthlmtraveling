@@ -13,22 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package com.markupartist.sthlmtraveling.data.models;
-
-import java.util.List;
+package com.markupartist.sthlmtraveling.data.models
 
 /**
  *
  */
-public class NearbyStopsResponse {
-    private final List<NearbyStop> sites;
-
-    public NearbyStopsResponse(List<NearbyStop> sites) {
-        this.sites = sites;
-    }
-
-    public List<NearbyStop> getSites() {
-        return sites;
-    }
-}
+class NearbyStopsResponse(@JvmField val sites: MutableList<NearbyStop?>?)

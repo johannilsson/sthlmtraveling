@@ -288,8 +288,8 @@ public class Leg extends ParcelableBase {
     }
 
     public boolean hasStopIndex(int stopIndex) {
-        return getFrom().getStopIndex() != stopIndex
-                && getTo().getStopIndex() != stopIndex;
+        return getFrom().stopIndex != stopIndex
+                && getTo().stopIndex != stopIndex;
     }
 
     @NonNull

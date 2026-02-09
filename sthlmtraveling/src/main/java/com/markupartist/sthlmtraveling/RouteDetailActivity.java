@@ -313,7 +313,7 @@ public class RouteDetailActivity extends BaseListActivity implements OnMapReadyC
         if (location.isMyLocation()) {
             return getText(R.string.my_location);
         }
-        return location.getName();
+        return location.name;
     }
 
     @Override
@@ -397,7 +397,7 @@ public class RouteDetailActivity extends BaseListActivity implements OnMapReadyC
         if (TravelMode.FOOT.equals(legViewModel.leg.getTravelMode())) {
             nameView.setText(getLocationName(mJourneyQuery.destination.asPlace()));
         } else {
-            nameView.setText(legViewModel.leg.getTo().getName());
+            nameView.setText(legViewModel.leg.getTo().name);
         }
         nameView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -553,8 +553,8 @@ public class RouteDetailActivity extends BaseListActivity implements OnMapReadyC
                 PolylineOptions options = new PolylineOptions();
                 for (IntermediateStop stop : leg.getIntermediateStops()) {
                     LatLng intermediateStop = new LatLng(
-                        stop.getLocation().getLat(),
-                        stop.getLocation().getLon());
+                            stop.getLocation().lat,
+                            stop.getLocation().lon);
                     options.add(intermediateStop);
                     all.add(intermediateStop);
                 }
@@ -737,7 +737,7 @@ public class RouteDetailActivity extends BaseListActivity implements OnMapReadyC
                                     } else {
                                         legViewModel.leg.setIntermediateStops(intermediateStops);
                                         for (IntermediateStop is : intermediateStops) {
-                                            if (legViewModel.leg.hasStopIndex(is.getLocation().getStopIndex())) {
+                                            if (legViewModel.leg.hasStopIndex(is.getLocation().stopIndex)) {
                                                 stopsLayout.addView(inflateIntermediateStop(is, stopsLayout));
                                             }
                                         }
@@ -753,7 +753,7 @@ public class RouteDetailActivity extends BaseListActivity implements OnMapReadyC
                         } else if (stopsLayout.getChildCount() == 0
                                 && !intermediateStops.isEmpty()) {
                             for (IntermediateStop is : intermediateStops) {
-                                if (legViewModel.leg.hasStopIndex(is.getLocation().getStopIndex())) {
+                                if (legViewModel.leg.hasStopIndex(is.getLocation().stopIndex)) {
                                     stopsLayout.addView(inflateIntermediateStop(is, stopsLayout));
                                 }
                             }
@@ -781,7 +781,7 @@ public class RouteDetailActivity extends BaseListActivity implements OnMapReadyC
             view.findViewById(R.id.trip_intermediate_departure_time).setVisibility(View.GONE);
             TextView descView = (TextView) view.findViewById(R.id.trip_intermediate_stop_title);
             descView.setTextSize(12);
-            descView.setText(stop.getLocation().getName());
+            descView.setText(stop.getLocation().name);
             TextView arrivalView = (TextView) view.findViewById(R.id.trip_intermediate_arrival_time);
             TextView expectedArrivalView = (TextView) view.findViewById(R.id.trip_intermediate_expected_arrival_time);
 
@@ -838,7 +838,7 @@ public class RouteDetailActivity extends BaseListActivity implements OnMapReadyC
             } else if (TravelMode.BOAT.equals(legViewModel.leg.getTravelMode())) {
                 description = getString(R.string.trip_description_normal,
                         legViewModel.leg.getRouteName(),
-                        legViewModel.leg.getHeadsign().getName());
+                        legViewModel.leg.getHeadsign().name);
                 if (!TextUtils.isEmpty(legViewModel.leg.getRouteShortName())) {
                     RoundedBackgroundSpan roundedBackgroundSpan = new RoundedBackgroundSpan(
                             LegUtil.getColor(getContext(), legViewModel.leg),
@@ -853,7 +853,7 @@ public class RouteDetailActivity extends BaseListActivity implements OnMapReadyC
                 String routeName = LegUtil.getRouteName(legViewModel.leg, true);
                 description = getString(R.string.trip_description_normal,
                         routeName,
-                        legViewModel.leg.getHeadsign().getName());
+                        legViewModel.leg.getHeadsign().name);
 
                 CharSequence routeShortName = legViewModel.leg.getRouteShortName();
                 if (!TextUtils.isEmpty(routeShortName)) {
@@ -863,7 +863,7 @@ public class RouteDetailActivity extends BaseListActivity implements OnMapReadyC
                             Color.WHITE,
                             ViewHelper.dipsToPix(getContext().getResources(), 4)));
                 }
-                CharSequence track = legViewModel.leg.getFrom().getTrack();
+                CharSequence track = legViewModel.leg.getFrom().track;
                 boolean isBus = TravelMode.BUS.equals(legViewModel.leg.getTravelMode());
                 boolean isTrain = TravelMode.TRAIN.equals(legViewModel.leg.getTravelMode());
                 if (track != null && (isBus || isTrain)) {
