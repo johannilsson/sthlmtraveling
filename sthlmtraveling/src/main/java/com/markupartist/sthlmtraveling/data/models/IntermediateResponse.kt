@@ -13,35 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package com.markupartist.sthlmtraveling.data.models;
-
-import java.util.Collections;
-import java.util.List;
+package com.markupartist.sthlmtraveling.data.models
 
 /**
  *
  */
-public class IntermediateResponse {
-    private final List<IntermediateStops> result;
-
-    public IntermediateResponse(List<IntermediateStops> result) {
-        this.result = result;
-    }
-
-    public List<IntermediateStops> getResult() {
-        return result;
-    }
-
-    public List<IntermediateStop> getStops(String reference) {
+class IntermediateResponse(val result: MutableList<IntermediateStops>?) {
+    fun getStops(reference: String): MutableList<IntermediateStop?>? {
         if (result == null || result.isEmpty()) {
-            return Collections.emptyList();
+            return mutableListOf<IntermediateStop?>()
         }
-        for (IntermediateStops is : result) {
-            if (reference.equals(is.getReference())) {
-                return is.getStops();
+        for (`is` in result) {
+            if (reference == `is`.reference) {
+                return `is`.stops
             }
         }
-        return Collections.emptyList();
+        return mutableListOf<IntermediateStop?>()
     }
 }

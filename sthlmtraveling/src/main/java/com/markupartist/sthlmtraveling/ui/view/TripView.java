@@ -162,7 +162,7 @@ public class TripView extends LinearLayout {
         int transportCount = trip.getLegs().size();
         for (Leg leg : trip.getLegs()) {
             if (!leg.isTransit() && transportCount > 3) {
-                if (leg.getDistance() < 150) {
+                if (leg.distance < 150) {
                     continue;
                 }
             }
@@ -189,7 +189,7 @@ public class TripView extends LinearLayout {
             routeChanges.addView(changeImageView);
 
             if (currentTransportCount <= 3) {
-                String lineName = leg.getRouteShortName();
+                String lineName = leg.routeShortName;
                 if (!TextUtils.isEmpty(lineName)) {
                     TextView lineNumberView = new TextView(getContext());
                     lineNumberView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 13);

@@ -55,7 +55,7 @@ class Route(
         return Pair.create(leg.arrivesAt(), leg.realtimeState(false))
     }
 
-    fun fromStop(): Place {
+    fun fromStop(): Place? {
         for (leg in legs) {
             if (leg.isTransit) {
                 return leg.from
@@ -65,7 +65,7 @@ class Route(
         return legs[0].from
     }
 
-    fun toStop(): Place {
+    fun toStop(): Place? {
         for (i in legs.size - 1 downTo 0) {
             val leg = legs[i]
             if (leg.isTransit) {

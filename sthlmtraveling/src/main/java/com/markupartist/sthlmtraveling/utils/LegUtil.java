@@ -40,7 +40,7 @@ public class LegUtil {
         int color = ContextCompat.getColor(context, R.color.icon_default);
         Drawable drawable;
 
-        switch (leg.getTravelMode()) {
+        switch (leg.travelMode) {
             case "bus":
                 drawable = ContextCompat.getDrawable(context, R.drawable.ic_transport_bus_20dp);
                 return ViewHelper.tintIcon(drawable, color);
@@ -75,19 +75,19 @@ public class LegUtil {
 
     @ColorInt
     public static int getColor(Context context, Leg leg) {
-        if (leg.getRouteColor() == null) {
+        if (leg.routeColor == null) {
             // Add color for foot.
             return ContextCompat.getColor(context, R.color.train);
         }
-        return Color.parseColor(leg.getRouteColor());
+        return Color.parseColor(leg.routeColor);
     }
 
     public static String getRouteName(Leg leg, boolean truncate) {
-        String routeName = leg.getRouteName();
+        String routeName = leg.routeName;
         if (!TextUtils.isEmpty(routeName)) {
             routeName = ViewHelper.uppercaseFirst(routeName, Locale.US);
         } else {
-            routeName = leg.getRouteShortName();
+            routeName = leg.routeShortName;
         }
         if (TextUtils.isEmpty(routeName)) {
             return "";

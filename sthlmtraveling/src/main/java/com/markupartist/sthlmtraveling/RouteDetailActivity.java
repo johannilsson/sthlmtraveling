@@ -198,7 +198,7 @@ public class RouteDetailActivity extends BaseListActivity implements OnMapReadyC
                 long nowMillis = System.currentTimeMillis();
                 for (Leg leg : mRoute.getLegs()) {
                     if (leg.shouldRefresh(nowMillis)) {
-                        references.add(leg.getDetailRef());
+                        references.add(leg.detailRef);
                     }
                 }
                 if (references.isEmpty()) {
@@ -230,9 +230,9 @@ public class RouteDetailActivity extends BaseListActivity implements OnMapReadyC
         }
 
         for (LegViewModel leg : legViewModels) {
-            String reference = leg.leg.getDetailRef();
+            String reference = leg.leg.detailRef;
             if (reference != null) {
-                List<IntermediateStop> stopTimes = intermediateResponse.getStops(leg.leg.getDetailRef());
+                List<IntermediateStop> stopTimes = intermediateResponse.getStops(leg.leg.detailRef);
                 boolean applied = leg.leg.updateTimes(stopTimes);
                 if (applied) {
                     updated = true;
@@ -375,7 +375,7 @@ public class RouteDetailActivity extends BaseListActivity implements OnMapReadyC
 
         TextView departureTimeView = (TextView) mFooterView.findViewById(R.id.trip_departure_time);
         TextView expectedDepartureTimeView = (TextView) mFooterView.findViewById(R.id.trip_expected_departure_time);
-        departureTimeView.setText(DateFormat.getTimeFormat(this).format(legViewModel.leg.getEndTime()));
+        departureTimeView.setText(DateFormat.getTimeFormat(this).format(legViewModel.leg.endTime));
         if (legViewModel.leg.getEndTimeRt() != null && legViewModel.leg.hasDepartureDelay()) {
             departureTimeView.setPaintFlags(departureTimeView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
             expectedDepartureTimeView.setVisibility(View.VISIBLE);
@@ -394,16 +394,16 @@ public class RouteDetailActivity extends BaseListActivity implements OnMapReadyC
 
         ViewGroup convertView = (ViewGroup) getLayoutInflater().inflate(R.layout.trip_row_stop_layout, null);
         Button nameView = (Button) convertView.findViewById(R.id.trip_stop_title);
-        if (TravelMode.FOOT.equals(legViewModel.leg.getTravelMode())) {
+        if (TravelMode.FOOT.equals(legViewModel.leg.travelMode)) {
             nameView.setText(getLocationName(mJourneyQuery.destination.asPlace()));
         } else {
-            nameView.setText(legViewModel.leg.getTo().name);
+            nameView.setText(legViewModel.leg.to.name);
         }
         nameView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(ViewOnMapActivity.createIntent(RouteDetailActivity.this,
-                        mRoute, mJourneyQuery, Site.toSite(legViewModel.leg.getTo())));
+                        mRoute, mJourneyQuery, Site.toSite(legViewModel.leg.to)));
             }
         });
 
@@ -414,7 +414,7 @@ public class RouteDetailActivity extends BaseListActivity implements OnMapReadyC
 
         TextView departureTimeView = convertView.findViewById(R.id.trip_departure_time);
         TextView expectedDepartureTimeView = convertView.findViewById(R.id.trip_expected_departure_time);
-        departureTimeView.setText(DateFormat.getTimeFormat(this).format(legViewModel.leg.getEndTime()));
+        departureTimeView.setText(DateFormat.getTimeFormat(this).format(legViewModel.leg.endTime));
         if (legViewModel.leg.getEndTimeRt() != null && legViewModel.leg.hasDepartureDelay()) {
             departureTimeView.setPaintFlags(departureTimeView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
             expectedDepartureTimeView.setVisibility(View.VISIBLE);
@@ -543,9 +543,9 @@ public class RouteDetailActivity extends BaseListActivity implements OnMapReadyC
 
             float[] hsv = new float[3];
             Color.colorToHSV(legColor, hsv);
-            if (leg.getGeometry() != null) {
+            if (leg.geometry != null) {
                 // If we have a geometry draw that.
-                List<LatLng> latLgns = PolyUtil.decode(leg.getGeometry());
+                List<LatLng> latLgns = PolyUtil.decode(leg.geometry);
                 drawPolyline(latLgns, legColor);
                 all.addAll(latLgns);
             } else {
@@ -553,8 +553,8 @@ public class RouteDetailActivity extends BaseListActivity implements OnMapReadyC
                 PolylineOptions options = new PolylineOptions();
                 for (IntermediateStop stop : leg.getIntermediateStops()) {
                     LatLng intermediateStop = new LatLng(
-                            stop.getLocation().lat,
-                            stop.getLocation().lon);
+                            stop.location.lat,
+                            stop.location.lon);
                     options.add(intermediateStop);
                     all.add(intermediateStop);
                 }
@@ -625,9 +625,9 @@ public class RouteDetailActivity extends BaseListActivity implements OnMapReadyC
                 final LegViewModel previousLeg = getItem(position - 1);
                 convertView.findViewById(R.id.trip_intermediate_departure_time).setVisibility(View.GONE);
                 TextView descView = convertView.findViewById(R.id.trip_intermediate_stop_title);
-                descView.setText(getLocationName(previousLeg.leg.getTo()));
+                descView.setText(getLocationName(previousLeg.leg.to));
                 TextView arrivalView = convertView.findViewById(R.id.trip_intermediate_arrival_time);
-                arrivalView.setText(DateFormat.getTimeFormat(getContext()).format(previousLeg.leg.getEndTime()));
+                arrivalView.setText(DateFormat.getTimeFormat(getContext()).format(previousLeg.leg.endTime));
                 TextView expectedArrivalView = (TextView) convertView.findViewById(R.id.trip_intermediate_expected_arrival_time);
 
                 if (previousLeg.leg.getEndTimeRt() != null && previousLeg.leg.hasArrivalDelay()) {
@@ -647,13 +647,13 @@ public class RouteDetailActivity extends BaseListActivity implements OnMapReadyC
             }
 
             Button nameView = (Button) convertView.findViewById(R.id.trip_stop_title);
-            boolean shouldUseOriginName = isFirst && TravelMode.FOOT.equals(legViewModel.leg.getTravelMode());
+            boolean shouldUseOriginName = isFirst && TravelMode.FOOT.equals(legViewModel.leg.travelMode);
             nameView.setText(shouldUseOriginName ?
-                    getLocationName(mJourneyQuery.origin.asPlace()) : getLocationName(legViewModel.leg.getFrom()));
+                    getLocationName(mJourneyQuery.origin.asPlace()) : getLocationName(legViewModel.leg.from));
             nameView.setOnClickListener(v -> {
-                if (legViewModel.leg.getFrom().hasLocation()) {
+                if (legViewModel.leg.from.hasLocation()) {
                     startActivity(ViewOnMapActivity.createIntent(getContext(),
-                            mRoute, mJourneyQuery, Site.toSite(legViewModel.leg.getFrom())));
+                            mRoute, mJourneyQuery, Site.toSite(legViewModel.leg.from)));
                 } else {
                     Toast.makeText(getContext(), "Missing geo data", Toast.LENGTH_LONG).show();
                 }
@@ -662,7 +662,7 @@ public class RouteDetailActivity extends BaseListActivity implements OnMapReadyC
             TextView departureTimeView = (TextView) convertView.findViewById(R.id.trip_departure_time);
             TextView expectedDepartureTimeView = (TextView) convertView.findViewById(R.id.trip_expected_departure_time);
 
-            departureTimeView.setText(DateFormat.getTimeFormat(getContext()).format(legViewModel.leg.getStartTime()));
+            departureTimeView.setText(DateFormat.getTimeFormat(getContext()).format(legViewModel.leg.startTime));
             if (legViewModel.leg.getStartTimeRt() != null && legViewModel.leg.hasDepartureDelay()) {
                 departureTimeView.setPaintFlags(departureTimeView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
                 expectedDepartureTimeView.setVisibility(View.VISIBLE);
@@ -694,17 +694,17 @@ public class RouteDetailActivity extends BaseListActivity implements OnMapReadyC
 
         private void inflateIntermediate(final LegViewModel legViewModel, final int position, final View convertView) {
             final ToggleButton btnIntermediateStops = (ToggleButton) convertView.findViewById(R.id.trip_btn_intermediate_stops);
-            if (TravelMode.FOOT.equals(legViewModel.leg.getTravelMode())) {
+            if (TravelMode.FOOT.equals(legViewModel.leg.travelMode)) {
                 btnIntermediateStops.setVisibility(View.GONE);
                 return;
             }
 
-            CharSequence durationText = DateTimeUtil.formatDetailedDuration(getResources(), legViewModel.leg.getDuration() * 1000);
+            CharSequence durationText = DateTimeUtil.formatDetailedDuration(getResources(), legViewModel.leg.duration * 1000);
             btnIntermediateStops.setText(durationText);
             btnIntermediateStops.setTextOn(durationText);
             btnIntermediateStops.setTextOff(durationText);
 
-            if (legViewModel.leg.getDetailRef() == null && legViewModel.leg.getIntermediateStops().isEmpty()) {
+            if (legViewModel.leg.detailRef == null && legViewModel.leg.getIntermediateStops().isEmpty()) {
                 btnIntermediateStops.setCompoundDrawables(null, null, null, null);
             } else {
                 btnIntermediateStops.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.expander_intermediate_stops, 0, 0, 0);
@@ -716,7 +716,7 @@ public class RouteDetailActivity extends BaseListActivity implements OnMapReadyC
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     legViewModel.isExpanded = isChecked;
-                    if (legViewModel.leg.getDetailRef() == null && legViewModel.leg.getIntermediateStops().isEmpty()) {
+                    if (legViewModel.leg.detailRef == null && legViewModel.leg.getIntermediateStops().isEmpty()) {
                         return;
                     }
 
@@ -727,17 +727,17 @@ public class RouteDetailActivity extends BaseListActivity implements OnMapReadyC
                             mIsFetchingSubTrips = true;
 
                             List<String> references = new ArrayList<>();
-                            references.add(legViewModel.leg.getDetailRef());
+                            references.add(legViewModel.leg.detailRef);
                             mApiService.getIntermediateStops(references, new Callback<IntermediateResponse>() {
                                 @Override
                                 public void success(IntermediateResponse intermediateResponse, Response response) {
-                                    List<IntermediateStop> intermediateStops = intermediateResponse.getStops(legViewModel.leg.getDetailRef());
+                                    List<IntermediateStop> intermediateStops = intermediateResponse.getStops(legViewModel.leg.detailRef);
                                     if (intermediateStops.isEmpty()) {
                                         stopsLayout.addView(inflateText(getText(R.string.no_intermediate_stops), stopsLayout));
                                     } else {
                                         legViewModel.leg.setIntermediateStops(intermediateStops);
                                         for (IntermediateStop is : intermediateStops) {
-                                            if (legViewModel.leg.hasStopIndex(is.getLocation().stopIndex)) {
+                                            if (legViewModel.leg.hasStopIndex(is.location.stopIndex)) {
                                                 stopsLayout.addView(inflateIntermediateStop(is, stopsLayout));
                                             }
                                         }
@@ -753,7 +753,7 @@ public class RouteDetailActivity extends BaseListActivity implements OnMapReadyC
                         } else if (stopsLayout.getChildCount() == 0
                                 && !intermediateStops.isEmpty()) {
                             for (IntermediateStop is : intermediateStops) {
-                                if (legViewModel.leg.hasStopIndex(is.getLocation().stopIndex)) {
+                                if (legViewModel.leg.hasStopIndex(is.location.stopIndex)) {
                                     stopsLayout.addView(inflateIntermediateStop(is, stopsLayout));
                                 }
                             }
@@ -781,7 +781,7 @@ public class RouteDetailActivity extends BaseListActivity implements OnMapReadyC
             view.findViewById(R.id.trip_intermediate_departure_time).setVisibility(View.GONE);
             TextView descView = (TextView) view.findViewById(R.id.trip_intermediate_stop_title);
             descView.setTextSize(12);
-            descView.setText(stop.getLocation().name);
+            descView.setText(stop.location.name);
             TextView arrivalView = (TextView) view.findViewById(R.id.trip_intermediate_arrival_time);
             TextView expectedArrivalView = (TextView) view.findViewById(R.id.trip_intermediate_expected_arrival_time);
 
@@ -812,13 +812,13 @@ public class RouteDetailActivity extends BaseListActivity implements OnMapReadyC
             LinearLayout messagesLayout = (LinearLayout) convertView.findViewById(R.id.trip_messages);
 
             if (legViewModel.leg.hasAlerts()) {
-                for (Alert alert : legViewModel.leg.getAlerts()) {
+                for (Alert alert : legViewModel.leg.alerts) {
                     String message = alert.description != null ? alert.description : alert.header;
                     messagesLayout.addView(inflateMessage("alert", message, messagesLayout));
                 }
             }
             if (legViewModel.leg.hasNotes()) {
-                for (Alert note : legViewModel.leg.getNotes()) {
+                for (Alert note : legViewModel.leg.notes) {
                     messagesLayout.addView(inflateMessage("rtu", note.header, messagesLayout));
                 }
             }
@@ -833,29 +833,29 @@ public class RouteDetailActivity extends BaseListActivity implements OnMapReadyC
 
         private CharSequence createDescription(final LegViewModel legViewModel) {
             CharSequence description;
-            if (TravelMode.FOOT.equals(legViewModel.leg.getTravelMode())) {
-                description = getString(R.string.distance_in_meter, legViewModel.leg.getDistance());
-            } else if (TravelMode.BOAT.equals(legViewModel.leg.getTravelMode())) {
+            if (TravelMode.FOOT.equals(legViewModel.leg.travelMode)) {
+                description = getString(R.string.distance_in_meter, legViewModel.leg.distance);
+            } else if (TravelMode.BOAT.equals(legViewModel.leg.travelMode)) {
                 description = getString(R.string.trip_description_normal,
-                        legViewModel.leg.getRouteName(),
-                        legViewModel.leg.getHeadsign().name);
-                if (!TextUtils.isEmpty(legViewModel.leg.getRouteShortName())) {
+                        legViewModel.leg.routeName,
+                        legViewModel.leg.headsign.name);
+                if (!TextUtils.isEmpty(legViewModel.leg.routeShortName)) {
                     RoundedBackgroundSpan roundedBackgroundSpan = new RoundedBackgroundSpan(
                             LegUtil.getColor(getContext(), legViewModel.leg),
                             Color.WHITE,
                             ViewHelper.dipsToPix(getContext().getResources(), 4));
-                    Pattern pattern = Pattern.compile(legViewModel.leg.getRouteShortName());
+                    Pattern pattern = Pattern.compile(legViewModel.leg.routeShortName);
                     description = SpanUtils.createSpannable(description, pattern, roundedBackgroundSpan);
                 }
-            } else if (TravelMode.BIKE.equals(legViewModel.leg.getTravelMode())) {
-                description = getString(R.string.distance_in_meter, legViewModel.leg.getDistance());
+            } else if (TravelMode.BIKE.equals(legViewModel.leg.travelMode)) {
+                description = getString(R.string.distance_in_meter, legViewModel.leg.distance);
             } else {
                 String routeName = LegUtil.getRouteName(legViewModel.leg, true);
                 description = getString(R.string.trip_description_normal,
                         routeName,
-                        legViewModel.leg.getHeadsign().name);
+                        legViewModel.leg.headsign.name);
 
-                CharSequence routeShortName = legViewModel.leg.getRouteShortName();
+                CharSequence routeShortName = legViewModel.leg.routeShortName;
                 if (!TextUtils.isEmpty(routeShortName)) {
                     Pattern pattern = Pattern.compile(routeShortName.toString());
                     routeShortName = SpanUtils.createSpannable(routeShortName, pattern, new RoundedBackgroundSpan(
@@ -863,9 +863,9 @@ public class RouteDetailActivity extends BaseListActivity implements OnMapReadyC
                             Color.WHITE,
                             ViewHelper.dipsToPix(getContext().getResources(), 4)));
                 }
-                CharSequence track = legViewModel.leg.getFrom().track;
-                boolean isBus = TravelMode.BUS.equals(legViewModel.leg.getTravelMode());
-                boolean isTrain = TravelMode.TRAIN.equals(legViewModel.leg.getTravelMode());
+                CharSequence track = legViewModel.leg.from.track;
+                boolean isBus = TravelMode.BUS.equals(legViewModel.leg.travelMode);
+                boolean isTrain = TravelMode.TRAIN.equals(legViewModel.leg.travelMode);
                 if (track != null && (isBus || isTrain)) {
                     int trackRes = isBus ? R.string.track_bus : R.string.track_rail;
                     CharSequence trackLabel = SpanUtils.createSpannable(getString(trackRes, track), new RoundedBackgroundSpan(
