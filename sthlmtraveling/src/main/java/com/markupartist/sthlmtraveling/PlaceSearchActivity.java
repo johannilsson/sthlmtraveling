@@ -99,6 +99,23 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements
     private boolean mSearchOnlyStops;
     private LocationManager mMyLocationManager;
 
+    private class InitDatabaseTask extends android.os.AsyncTask<Void, Void, HistoryDbAdapter> {
+        @Override
+        protected HistoryDbAdapter doInBackground(Void... params) {
+            return new HistoryDbAdapter(PlaceSearchActivity.this).open();
+        }
+
+        @Override
+        protected void onPostExecute(HistoryDbAdapter adapter) {
+            mHistoryDbAdapter = adapter;
+            // Initialize loader only after database is ready
+            if (!mSearchOnlyStops && adapter != null) {
+                LoaderManager.getInstance(PlaceSearchActivity.this)
+                    .initLoader(LOADER_HISTORY, null, PlaceSearchActivity.this);
+            }
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -124,7 +141,7 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements
             }
         }
 
-        mHistoryDbAdapter = new HistoryDbAdapter(this).open();
+        new InitDatabaseTask().execute();
 
         View searchBar = findViewById(R.id.search_bar);
         ElevationOverlayProvider elevationOverlayProvider = new ElevationOverlayProvider(this);
@@ -158,9 +175,6 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements
         mProgressBar = findViewById(R.id.search_progress_bar);
 
         setupHistoryViews();
-        if (!mSearchOnlyStops) {
-            LoaderManager.getInstance(this).initLoader(LOADER_HISTORY, null, this);
-        }
         setupSearchResultViews();
 
         setSearchFilter(FILTER_TYPE_STHLM_TRAVELING);
@@ -349,6 +363,9 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        if (data == null) {
+            return; // Database not ready yet
+        }
         ArrayList<Site> historyList = new ArrayList<Site>();
         data.moveToFirst();
         for (int i = 0; i < data.getCount(); i++) {
@@ -478,6 +495,9 @@ public class PlaceSearchActivity extends BaseFragmentActivity implements
 
         @Override
         public Cursor loadInBackground() {
+            if (mHistoryDbAdapter == null) {
+                return null; // Database not ready yet
+            }
             return mHistoryDbAdapter.fetchLatest();
         }
 
