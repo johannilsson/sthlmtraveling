@@ -39,7 +39,7 @@ data class Plan(
             return false
         }
         for (routeError in errors) {
-            if (mode == routeError.getMode()) {
+            if (mode == routeError.mode) {
                 return true
             }
         }
@@ -51,7 +51,7 @@ data class Plan(
             return null
         }
         for (routeError in errors) {
-            if (mode == routeError.getMode()) {
+            if (mode == routeError.mode) {
                 return routeError
             }
         }
