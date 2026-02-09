@@ -1,5 +1,6 @@
 package com.markupartist.sthlmtraveling.service;
 
+import android.Manifest;
 import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -7,8 +8,11 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.preference.PreferenceManager;
 import androidx.core.app.NotificationCompat;
+import androidx.core.content.ContextCompat;
 import android.util.Log;
 
 import com.markupartist.sthlmtraveling.DeviationsActivity;
@@ -17,6 +21,7 @@ import com.markupartist.sthlmtraveling.provider.deviation.Deviation;
 import com.markupartist.sthlmtraveling.provider.deviation.DeviationNotificationDbAdapter;
 import com.markupartist.sthlmtraveling.provider.deviation.DeviationStore;
 import com.markupartist.sthlmtraveling.receivers.OnAlarmReceiver;
+import com.markupartist.sthlmtraveling.utils.NotificationHelper;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -73,12 +78,24 @@ public class DeviationService extends WakefulIntentService {
      * Show a notification while this service is running.
      */
     private void showNotification(Deviation deviation) {
+        // Check for notification permission on Android 13+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
+                    != PackageManager.PERMISSION_GRANTED) {
+                Log.w(TAG, "Cannot send notification - permission not granted");
+                return;
+            }
+        }
+
+        // Ensure notification channels are created
+        NotificationHelper.createNotificationChannels(this);
+
         // The PendingIntent to launch our activity if the user selects this notification
         Intent i = new Intent(this, DeviationsActivity.class);
         i.setAction(DeviationsActivity.DEVIATION_FILTER_ACTION);
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0, i, PendingIntent.FLAG_IMMUTABLE);
 
-        Notification notification = new NotificationCompat.Builder(this)
+        Notification notification = new NotificationCompat.Builder(this, NotificationHelper.CHANNEL_ID_DEVIATIONS)
                 .setSmallIcon(android.R.drawable.stat_notify_error)
                 .setTicker(deviation.getDetails())
                 .setWhen(System.currentTimeMillis())

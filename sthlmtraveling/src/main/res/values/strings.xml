@@ -275,4 +275,9 @@
 
     <string name="track_bus">Location <xliff:g id="track">%1$s</xliff:g></string>
     <string name="track_rail">Track <xliff:g id="track">%1$s</xliff:g></string>
+
+    <!-- Notification permissions -->
+    <string name="notification_permission_required">Notification permission is required to receive deviation alerts</string>
+    <string name="notification_channel_deviations_name">Service Deviations</string>
+    <string name="notification_channel_deviations_description">Notifications about delays and service changes on your tracked lines</string>
 </resources>
