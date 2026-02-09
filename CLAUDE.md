@@ -132,6 +132,31 @@ Don't create ADRs for:
 - Reversible choices with no long-term impact
 - Bug fixes (unless they reveal a systemic issue)
 
+## Development Workflow
+
+### Creating Pull Requests
+
+Use the `create-pr` skill for an end-to-end PR workflow:
+
+```
+/create-pr [branch-name] [base-branch]
+```
+
+This skill will:
+1. Check current git state and handle uncommitted changes
+2. Create a new branch (or use existing)
+3. Stage and commit changes with proper commit messages
+4. Analyze changes and generate intelligent PR description
+5. Push to remote
+6. Create PR via `gh pr create`
+
+**Examples:**
+- `/create-pr` — Interactive mode, prompts for branch name
+- `/create-pr feature/offline-mode` — Create PR on specified branch
+- `/create-pr fix/crash-123 develop` — Target a different base branch
+
+The skill follows all repository conventions automatically (no AI attribution, proper commit style, etc.).
+
 ## Git & PR Conventions
 
 - Do NOT add `Co-Authored-By` trailers to commits
