@@ -15,47 +15,18 @@
  */
 package com.markupartist.sthlmtraveling.data.models
 
-import android.os.Parcel
 import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 
 /**
  *
  */
-class IntermediateStops : ParcelableBase {
-    @JvmField
-    val reference: String?
-    @JvmField
+@Parcelize
+data class IntermediateStops(
+    val reference: String?,
     val stops: MutableList<IntermediateStop?>?
-
-    constructor(reference: String?, stops: MutableList<IntermediateStop?>?) {
-        this.reference = reference
-        this.stops = stops
-    }
-
-    protected constructor(`in`: Parcel) {
-        reference = `in`.readString()
-        stops = `in`.createTypedArrayList<IntermediateStop?>(IntermediateStop.CREATOR)
-    }
-
-    override fun writeToParcel(dest: Parcel, flags: Int) {
-        dest.writeString(reference)
-        dest.writeTypedList<IntermediateStop?>(stops)
-    }
-
+) : Parcelable {
     fun hasStops(): Boolean {
         return stops != null && !stops.isEmpty()
-    }
-
-    companion object {
-        val CREATOR: Parcelable.Creator<IntermediateStops?> =
-            object : Parcelable.Creator<IntermediateStops?> {
-                override fun createFromParcel(`in`: Parcel): IntermediateStops {
-                    return IntermediateStops(`in`)
-                }
-
-                override fun newArray(size: Int): Array<IntermediateStops?> {
-                    return arrayOfNulls<IntermediateStops>(size)
-                }
-            }
     }
 }

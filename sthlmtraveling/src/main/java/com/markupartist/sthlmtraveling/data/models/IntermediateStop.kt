@@ -15,56 +15,23 @@
  */
 package com.markupartist.sthlmtraveling.data.models
 
-import android.os.Parcel
 import android.os.Parcelable
 import androidx.core.util.Pair
 import com.markupartist.sthlmtraveling.utils.DateTimeUtil
+import kotlinx.parcelize.Parcelize
 import java.util.Date
 
 /**
  *
  */
-class IntermediateStop : ParcelableBase {
-    @JvmField
-    val location: Place?
-    private val startTime: Date?
-    var startTimeRt: Date?
-    val endTime: Date?
+@Parcelize
+data class IntermediateStop(
+    @JvmField val location: Place?,
+    private val startTime: Date?,
+    var startTimeRt: Date?,
+    val endTime: Date?,
     var endTimeRt: Date?
-
-    constructor(
-        endTimeRt: Date?,
-        location: Place?,
-        startTime: Date?,
-        startTimeRt: Date?,
-        endTime: Date?
-    ) {
-        this.endTimeRt = endTimeRt
-        this.location = location
-        this.startTime = startTime
-        this.startTimeRt = startTimeRt
-        this.endTime = endTime
-    }
-
-    protected constructor(`in`: Parcel) {
-        location = `in`.readParcelable<Place?>(Place::class.java.getClassLoader())
-        startTime = readDate(`in`)
-        startTimeRt = readDate(`in`)
-        endTime = readDate(`in`)
-        endTimeRt = readDate(`in`)
-    }
-
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    override fun writeToParcel(dest: Parcel, flags: Int) {
-        dest.writeParcelable(location, flags)
-        writeDate(dest, startTime)
-        writeDate(dest, startTimeRt)
-        writeDate(dest, endTime)
-        writeDate(dest, endTimeRt)
-    }
+) : Parcelable {
 
     val time: Date?
         get() {
@@ -126,19 +93,5 @@ class IntermediateStop : ParcelableBase {
             )
         }
         return Pair.create<Int?, RealTimeState?>(0, RealTimeState.NOT_SET)
-    }
-
-    companion object {
-        @JvmField
-        val CREATOR: Parcelable.Creator<IntermediateStop?> =
-            object : Parcelable.Creator<IntermediateStop?> {
-                override fun createFromParcel(`in`: Parcel): IntermediateStop {
-                    return IntermediateStop(`in`)
-                }
-
-                override fun newArray(size: Int): Array<IntermediateStop?> {
-                    return arrayOfNulls<IntermediateStop>(size)
-                }
-            }
     }
 }
