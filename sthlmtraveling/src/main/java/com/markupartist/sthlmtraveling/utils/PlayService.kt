@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-package com.markupartist.sthlmtraveling.utils;
+package com.markupartist.sthlmtraveling.utils
 
 /**
  * Created by johan on 02/03/15.
  */
-public interface PlayService {
-    void onConnected();
-
-    void onStop();
+interface PlayService {
+    fun onConnected()
+    fun onStop()
 }

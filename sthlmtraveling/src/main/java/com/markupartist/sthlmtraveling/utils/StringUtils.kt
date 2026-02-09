@@ -14,32 +14,29 @@
  * limitations under the License.
  */
 
-package com.markupartist.sthlmtraveling.utils;
+package com.markupartist.sthlmtraveling.utils
 
-import android.content.Context;
-import android.text.SpannableStringBuilder;
-
-import com.markupartist.sthlmtraveling.R;
+import android.content.Context
+import android.text.SpannableStringBuilder
+import com.markupartist.sthlmtraveling.R
 
 /**
  * String and text utils related to this project.
  */
-public class StringUtils {
-
+object StringUtils {
     /**
      * Return a styled representation of the my location string.
      *
      * @return A span
      */
-    public static SpannableStringBuilder getStyledMyLocationString(final Context context) {
-        CharSequence string = context.getText(R.string.my_location);
-
-        SpannableStringBuilder sb = new SpannableStringBuilder(string);
+    @JvmStatic
+    fun getStyledMyLocationString(context: Context): SpannableStringBuilder {
+        val string = context.getText(R.string.my_location)
+        val sb = SpannableStringBuilder(string)
 //        ForegroundColorSpan color = new ForegroundColorSpan(0xFF008ED7); // Set color, failed to set through color.xml
 //        sb.setSpan(color, 0, sb.length(), SpannableStringBuilder.SPAN_INCLUSIVE_INCLUSIVE);
 
         //sb.append(string);
-
-        return sb;
+        return sb
     }
 }
