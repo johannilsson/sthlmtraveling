@@ -58,7 +58,7 @@ This document tracks the multi-phase modernization of the STHLM Traveling Androi
 
 ## Phase 2: Convert Java Codebase to Kotlin
 
-**Status:** 🔲 Not Started (blocked by Phase 1)
+**Status:** 🔄 In Progress
 
 **Rationale:** Kotlin conversion is mostly mechanical and easier to do before the architecture rewrite. It's better to write new architecture code in Kotlin from the start than to write it in Java and convert later.
 
@@ -69,7 +69,7 @@ This document tracks the multi-phase modernization of the STHLM Traveling Androi
 - Convert one logical group at a time
 
 ### Conversion Order
-1. [ ] `data/models/` - DTOs and data classes
+1. [x] `data/models/` - DTOs and data classes ✅ **Completed 2026-02-09**
 2. [ ] `utils/` - Helper classes
 3. [ ] `ui/adapter/` - RecyclerView adapters
 4. [ ] `ui/view/` - Custom views
