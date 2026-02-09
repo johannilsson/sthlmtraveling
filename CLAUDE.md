@@ -134,6 +134,31 @@ Don't create ADRs for:
 
 ## Development Workflow
 
+### Branching Strategy
+
+**CRITICAL: Never commit directly to the main branch.**
+
+When starting any new feature, bug fix, or change:
+
+1. **Ensure you're on main branch**: `git checkout master`
+2. **Pull latest changes**: `git pull origin master`
+3. **Create feature branch**: `git checkout -b <branch-name>`
+   - Use descriptive names: `feature/offline-mode`, `fix/crash-on-search`, `refactor/api-client`
+4. **Make changes and commit** on the feature branch
+5. **Create PR** when ready (see below)
+
+**Branch naming conventions:**
+- `feature/*` — New features or enhancements
+- `fix/*` — Bug fixes
+- `refactor/*` — Code improvements without behavior changes
+- `docs/*` — Documentation updates
+- `chore/*` — Build, tooling, or maintenance tasks
+
+**Important:**
+- Always branch from `master`, never from feature branches
+- This keeps the history clean and avoids cascading dependencies
+- See ADR-0004 for rationale
+
 ### Creating Pull Requests
 
 Use the `create-pr` skill for an end-to-end PR workflow:
