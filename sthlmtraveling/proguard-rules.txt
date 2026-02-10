@@ -81,3 +81,16 @@
 }
 
 -keep public class * extends android.app.Service
+
+# Kotlin
+-keep class kotlin.** { *; }
+-keep class kotlin.Metadata { *; }
+-dontwarn kotlin.**
+-keepclassmembers class **$WhenMappings {
+    <fields>;
+}
+
+# Parcelize
+-keepclassmembers class * implements android.os.Parcelable {
+    public static final ** CREATOR;
+}

@@ -329,11 +329,11 @@ public class Site implements Parcelable {
     public static Site toSite(Place place) {
         Site site = new Site();
         site.setSource(SOURCE_STHLM_TRAVELING);
-        site.setId(place.getId());
-        site.setName(place.getName());
-        site.setType("stop".equals(place.getType()) ? TYPE_TRANSIT_STOP : TYPE_ADDRESS);
+        site.setId(place.id);
+        site.setName(place.name);
+        site.setType("stop".equals(place.type) ? TYPE_TRANSIT_STOP : TYPE_ADDRESS);
         if (place.hasLocation()) {
-            site.setLocation(place.getLat(), place.getLon());
+            site.setLocation(place.lat, place.lon);
         }
         return site;
     }

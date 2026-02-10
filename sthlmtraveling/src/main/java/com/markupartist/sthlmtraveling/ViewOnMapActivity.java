@@ -171,8 +171,8 @@ public class ViewOnMapActivity extends BaseFragmentActivity implements OnMapRead
         List<String> references = new ArrayList<>();
 
         for (Leg leg : route.getLegs()) {
-            if (leg.getIntermediateStops().isEmpty() && leg.getDetailRef() != null) {
-                references.add(leg.getDetailRef());
+            if (leg.getIntermediateStops().isEmpty() && leg.detailRef != null) {
+                references.add(leg.detailRef);
             }
         }
 
@@ -186,7 +186,7 @@ public class ViewOnMapActivity extends BaseFragmentActivity implements OnMapRead
             public void success(IntermediateResponse intermediateResponse, Response response) {
                 for (Leg leg : route.getLegs()) {
                     if (leg.isTransit()) {
-                        leg.setIntermediateStops(intermediateResponse.getStops(leg.getDetailRef()));
+                        leg.setIntermediateStops(intermediateResponse.getStops(leg.detailRef));
                     }
                 }
                 showTransitRoute(route);
@@ -211,29 +211,29 @@ public class ViewOnMapActivity extends BaseFragmentActivity implements OnMapRead
             float hueColor = hsv[0];
 
             LatLng origin = new LatLng(
-                    leg.getFrom().getLat(),
-                    leg.getFrom().getLon());
+                    leg.from.lat,
+                    leg.from.lon);
             all.add(origin);
 
             mMap.addMarker(new MarkerOptions()
                     .position(origin)
-                    .title(getLocationName(leg.getFrom()))
+                    .title(getLocationName(leg.from))
                     .snippet(getRouteDescription(leg))
                     .icon(BitmapDescriptorFactory.defaultMarker(hueColor)));
 
             LatLng destination = new LatLng(
-                    leg.getTo().getLat(),
-                    leg.getTo().getLon());
+                    leg.to.lat,
+                    leg.to.lon);
             all.add(destination);
             mMap.addMarker(new MarkerOptions()
                     .position(destination)
-                    .title(getLocationName(leg.getTo()))
-                    .snippet(DateFormat.getTimeFormat(this).format(leg.getStartTime()))
+                    .title(getLocationName(leg.to))
+                    .snippet(DateFormat.getTimeFormat(this).format(leg.startTime))
                     .icon(BitmapDescriptorFactory.defaultMarker(hueColor)));
 
-            if (leg.getGeometry() != null) {
+            if (leg.geometry != null) {
                 // If we have a geometry draw that.
-                List<LatLng> latLgns = PolyUtil.decode(leg.getGeometry());
+                List<LatLng> latLgns = PolyUtil.decode(leg.geometry);
                 drawPolyline(latLgns, legColor);
                 all.addAll(latLgns);
             } else {
@@ -243,8 +243,8 @@ public class ViewOnMapActivity extends BaseFragmentActivity implements OnMapRead
                 options.add(destination);
                 for (IntermediateStop stop : leg.getIntermediateStops()) {
                     LatLng intermediateStop = new LatLng(
-                        stop.getLocation().getLat(),
-                        stop.getLocation().getLon());
+                            stop.location.lat,
+                            stop.location.lon);
                     options.add(intermediateStop);
                     all.add(intermediateStop);
                 }
@@ -263,17 +263,17 @@ public class ViewOnMapActivity extends BaseFragmentActivity implements OnMapRead
                 String time = date != null ? DateFormat.getTimeFormat(this).format(date) : "";
                 mMap.addMarker(new MarkerOptions()
                     .anchor(0.5f, 0.5f)
-                    .position( new LatLng(stop.getLocation().getLat(), stop.getLocation().getLon()))
-                    .title(getLocationName(stop.getLocation()))
+                    .position( new LatLng(stop.location.lat, stop.location.lon))
+                    .title(getLocationName(stop.location))
                     .snippet(time)
                     .icon(icon));
             }
 
-            if (leg.getFrom().hasEntrances()) {
-                showEntrances(leg.getFrom().getEntrances(), false);
+            if (leg.from.hasEntrances()) {
+                showEntrances(leg.from.entrances, false);
             }
-            if (leg.getTo().hasEntrances()) {
-                showEntrances(leg.getTo().getEntrances(), true);
+            if (leg.to.hasEntrances()) {
+                showEntrances(leg.to.entrances, true);
             }
         }
         return all;
@@ -281,15 +281,15 @@ public class ViewOnMapActivity extends BaseFragmentActivity implements OnMapRead
 
     public String getRouteDescription(Leg leg) {
         String description;
-        if (TravelMode.FOOT.equals(leg.getTravelMode())) {
+        if (TravelMode.FOOT.equals(leg.travelMode)) {
             description = getString(R.string.trip_map_description_walk,
-                    DateFormat.getTimeFormat(this).format(leg.getStartTime()),
-                    getLocationName(leg.getTo()));
+                    DateFormat.getTimeFormat(this).format(leg.startTime),
+                    getLocationName(leg.to));
         } else {
             description = getString(R.string.trip_map_description_normal,
-                    DateFormat.getTimeFormat(this).format(leg.getStartTime()),
-                    leg.getRouteName(),
-                    leg.getHeadsign().getName());
+                    DateFormat.getTimeFormat(this).format(leg.startTime),
+                    leg.routeName,
+                    leg.headsign.name);
         }
         return description;
     }
@@ -302,7 +302,7 @@ public class ViewOnMapActivity extends BaseFragmentActivity implements OnMapRead
         if (location.isMyLocation()) {
             return getString(R.string.my_location);
         }
-        return location.getName();
+        return location.name;
     }
 
     @Override
@@ -354,20 +354,20 @@ public class ViewOnMapActivity extends BaseFragmentActivity implements OnMapRead
         // If we have geometry parse and all.
         List<LatLng> all = new ArrayList<>();
         for (Leg leg : route.getLegs()) {
-            if (leg.getGeometry() != null) {
-                List<LatLng> latLgns = PolyUtil.decode(leg.getGeometry());
+            if (leg.geometry != null) {
+                List<LatLng> latLgns = PolyUtil.decode(leg.geometry);
                 drawPolyline(latLgns, ContextCompat.getColor(this, R.color.primary));
                 all.addAll(latLgns);
 
-                if (leg.getSteps() != null) {
+                if (leg.steps != null) {
                     BitmapDescriptor icon = getColoredMarker(ContextCompat.getColor(
                             this, R.color.primary), R.drawable.ic_line_marker);
-                    for (Step step : leg.getSteps()) {
-                        if ("arrive".equals(step.getCode())
-                                || "depart".equals(step.getCode())
-                                || "waypoint".equals(step.getCode())) {
+                    for (Step step : leg.steps) {
+                        if ("arrive".equals(step.code)
+                                || "depart".equals(step.code)
+                                || "waypoint".equals(step.code)) {
                             mMap.addMarker(new MarkerOptions()
-                                    .position(latLgns.get(step.getPosition()))
+                                    .position(latLgns.get(step.position))
                                     .anchor(0.5f, 0.5f)
                                     .icon(icon));
                         }
@@ -457,14 +457,14 @@ public class ViewOnMapActivity extends BaseFragmentActivity implements OnMapRead
         BitmapDescriptor icon = getMarker(R.drawable.ic_entrance_exit_12dp);
         for (Entrance entrance : entrances) {
             MarkerOptions markerOptions = new MarkerOptions()
-                    .position(new LatLng(entrance.getLat(), entrance.getLon()))
+                    .position(new LatLng(entrance.lat, entrance.lon))
                     .anchor(0.5f, 0.5f)
                     .icon(icon);
-            if (!TextUtils.isEmpty(entrance.getName())) {
+            if (!TextUtils.isEmpty(entrance.name)) {
                 if (isExits) {
-                    markerOptions.title(getString(R.string.exit_and_name, entrance.getName()));
+                    markerOptions.title(getString(R.string.exit_and_name, entrance.name));
                 } else {
-                    markerOptions.title(getString(R.string.entrance_and_name, entrance.getName()));
+                    markerOptions.title(getString(R.string.entrance_and_name, entrance.name));
                 }
             } else {
                 if (isExits) {

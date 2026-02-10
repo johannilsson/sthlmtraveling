@@ -168,7 +168,7 @@ public class NearbyActivity extends BaseFragmentActivity implements
             @Override
             public void success(NearbyStopsResponse nearbyStopsResponse, Response response) {
                 hideProgressBar();
-                showNearbyStops(nearbyStopsResponse.getSites());
+                showNearbyStops(nearbyStopsResponse.sites);
             }
 
             @Override
@@ -182,13 +182,13 @@ public class NearbyActivity extends BaseFragmentActivity implements
 
     @Override
     public void onNearbyStopClick(NearbyStop nearbyStop) {
-        Pair<String, String> nameAndLocality = SitesStore.nameAsNameAndLocality(nearbyStop.getName());
+        Pair<String, String> nameAndLocality = SitesStore.nameAsNameAndLocality(nearbyStop.name);
 
         Site stopPoint = new Site();
         stopPoint.setSource(Site.SOURCE_STHLM_TRAVELING);
         stopPoint.setType(Site.TYPE_TRANSIT_STOP);
-        stopPoint.setId(nearbyStop.getSiteId());
-        stopPoint.setLocation(LocationUtils.parseLocation(nearbyStop.getLocation()));
+        stopPoint.setId(nearbyStop.siteId);
+        stopPoint.setLocation(LocationUtils.parseLocation(nearbyStop.location));
         stopPoint.setName(nameAndLocality.first);
         stopPoint.setLocality(nameAndLocality.second);
 
