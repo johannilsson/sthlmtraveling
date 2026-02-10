@@ -59,6 +59,7 @@ class NearbyStop : Parcelable {
     }
 
     companion object {
+        @JvmField
         val CREATOR: Parcelable.Creator<NearbyStop?> = object : Parcelable.Creator<NearbyStop?> {
             override fun createFromParcel(`in`: Parcel): NearbyStop {
                 return NearbyStop(`in`)

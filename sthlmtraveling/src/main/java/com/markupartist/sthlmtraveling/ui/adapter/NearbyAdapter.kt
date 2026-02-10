@@ -76,7 +76,7 @@ class NearbyAdapter(
         }
 
         fun bindTo(nearbyStop: NearbyStop) {
-            val nameAndLocality = SitesStore.nameAsNameAndLocality(nearbyStop.name)
+            val nameAndLocality = SitesStore.nameAsNameAndLocality(nearbyStop.name ?: "")
             nameView.text = nameAndLocality.first
             localityView.text = nameAndLocality.second
             localityView.visibility = View.VISIBLE
