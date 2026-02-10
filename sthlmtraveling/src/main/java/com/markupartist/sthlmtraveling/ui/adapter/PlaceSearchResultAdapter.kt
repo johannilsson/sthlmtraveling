@@ -67,8 +67,8 @@ class PlaceSearchResultAdapter(
         return data.size
     }
 
-    override fun onCreateHeaderItemViewHolder(parent: ViewGroup, headerViewType: Int): RecyclerView.ViewHolder? {
-        return null
+    override fun onCreateHeaderItemViewHolder(parent: ViewGroup, headerViewType: Int): RecyclerView.ViewHolder {
+        throw IllegalStateException("No header items")
     }
 
     override fun onCreateFooterItemViewHolder(parent: ViewGroup, footerViewType: Int): RecyclerView.ViewHolder {
