@@ -14,15 +14,13 @@
  * limitations under the License.
  */
 
-package com.markupartist.sthlmtraveling.ui.adapter;
+package com.markupartist.sthlmtraveling.ui.adapter
 
 /**
  *
  */
-public interface PlaceItem {
-    String getTitle();
-
-    String getSubtitle();
-
-    boolean isTransitStop();
+interface PlaceItem {
+    val title: String
+    val subtitle: String
+    val isTransitStop: Boolean
 }
