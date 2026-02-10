@@ -69,13 +69,56 @@ This document tracks the multi-phase modernization of the STHLM Traveling Androi
 - Convert one logical group at a time
 
 ### Conversion Order
-1. [x] `data/models/` - DTOs and data classes ✅ **Completed 2026-02-09**
-2. [x] `utils/` - Helper classes ✅ **Completed 2026-02-09**
-3. [x] `ui/adapter/` - RecyclerView adapters ✅ **Completed 2026-02-09**
-4. [ ] `ui/view/` - Custom views
-5. [ ] `provider/` - Data access layer
-6. [ ] `service/` - Background services
-7. [ ] Activities and Fragments (largest files, most complex)
+1. [x] `data/models/` - DTOs and data classes ✅ **Phase 2.1 - Completed 2026-02-09**
+2. [x] `utils/` - Helper classes ✅ **Phase 2.2 - Completed 2026-02-09**
+3. [x] `ui/adapter/` - RecyclerView adapters ✅ **Phase 2.3 - Completed 2026-02-09**
+4. [x] `ui/view/` - Custom views ✅ **Phase 2.4 - Completed 2026-02-10**
+5. [x] `provider/` - Data access layer ✅ **Phase 2.5 - Completed 2026-02-10**
+6. [x] `service/` - Background services & receivers ✅ **Phase 2.6 - Completed 2026-02-10**
+7. [ ] Activities, Fragments, Application, and remaining files (42 Java files remain)
+
+### Remaining Work - Phase 2.7
+
+**42 Java files remaining** (as of 2026-02-10):
+
+**Core Application:**
+- `MyApplication.java` (1 file)
+
+**Base Classes:**
+- `BaseActivity.java`, `BaseFragmentActivity.java`, `BaseListActivity.java`, `BaseListFragmentActivity.java` (4 files)
+- `BaseFragment.java`, `BaseListFragment.java` (2 files)
+- `AppCompatPreferenceActivity.java` (1 file)
+
+**Activities** (17 files):
+- Main: `StartActivity`, `DeparturesActivity`, `RoutesActivity`, `RouteDetailActivity`
+- Map: `PointOnMapActivity`, `ViewOnMapActivity`, `NearbyActivity`
+- Settings: `SettingsActivity`, `AboutActivity`
+- Deviations: `DeviationsActivity`, `DeviationDetailActivity`
+- Planner: `PlannerFragmentActivity`, `SearchDeparturesFragmentActivity`, `ChangeRouteTimeActivity`, `PlaceSearchActivity`
+- Proxy: `UriLauncherActivity`, `DeparturesShortcutProxyActivity`
+
+**Fragments** (4 files):
+- `PlannerFragment`, `SearchDeparturesFragment`, `TrafficStatusFragment`, `FavoritesFragment`
+
+**Adapters & UI Models** (4 files):
+- `SectionedAdapter`, `DepartureAdapter`, `AutoCompleteStopAdapter`
+- `ui/models/LegViewModel`
+
+**Data/API Layer** (7 files):
+- `data/api/ApiService`, `data/api/PlaceQuery`, `data/api/TravelModeQuery`
+- `data/misc/ApiServiceProvider`, `data/misc/HttpHelper`, `data/misc/GsonProvider`, `data/misc/MockInterceptor`
+
+**Utilities** (2 files):
+- `DialogHelper`, `AppConfig`
+
+**Strategy for Phase 2.7:**
+1. Start with utilities and helpers (`DialogHelper`, `AppConfig`)
+2. Convert adapters and UI models
+3. Convert data/API layer (should be straightforward)
+4. Convert base classes (needed by Activities/Fragments)
+5. Convert simpler Activities (About, Proxy, etc.)
+6. Convert Fragments
+7. Finally convert main Activities and `MyApplication`
 
 ### Acceptance Criteria
 - [ ] No Java files remain in `com.markupartist.sthlmtraveling` package
@@ -199,4 +242,4 @@ By this phase, the app will have:
 
 ## Last Updated
 
-2026-02-09
+2026-02-10
