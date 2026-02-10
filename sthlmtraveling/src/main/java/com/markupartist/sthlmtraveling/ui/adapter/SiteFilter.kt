@@ -43,7 +43,7 @@ class SiteFilter(
 
             val query = constraint.toString()
             if (Site.looksValid(query)) {
-                SitesStore.getInstance().getSiteV2Async(context, query, searchOnlyStops,
+                SitesStore.instance.getSiteV2Async(context, query, searchOnlyStops,
                     object : SitesStore.SiteCallback {
                         override fun onSuccess(sites: ArrayList<Site>) {
                             for (s in sites) {
@@ -90,10 +90,10 @@ class SiteFilter(
 
     class SiteResult(val site: Site) : PlaceItem {
         override val title: String
-            get() = site.name
+            get() = site.name ?: ""
 
         override val subtitle: String
-            get() = site.locality
+            get() = site.locality ?: ""
 
         override val isTransitStop: Boolean
             get() = site.isTransitStop

@@ -13,23 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package com.markupartist.sthlmtraveling.provider.routing;
+package com.markupartist.sthlmtraveling.provider.routing
 
 /**
  *
  */
-public enum ScrollDir {
+enum class ScrollDir(val direction: String) {
     NEXT("next"),
-    PREVIOUS("previous");
-
-    private final String direction;
-
-    ScrollDir(String direction) {
-        this.direction = direction;
-    }
-
-    public String getDirection() {
-        return direction;
-    }
+    PREVIOUS("previous")
 }

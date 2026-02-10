@@ -51,6 +51,7 @@ class Fare : Parcelable {
     }
 
     companion object {
+        @JvmField
         val CREATOR: Parcelable.Creator<Fare?> = object : Parcelable.Creator<Fare?> {
             override fun createFromParcel(`in`: Parcel): Fare {
                 return Fare(`in`)

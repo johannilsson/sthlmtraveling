@@ -104,13 +104,14 @@ class Place : Parcelable {
     }
 
     companion object {
-        val CREATOR: Parcelable.Creator<Place?> = object : Parcelable.Creator<Place?> {
+        @JvmField
+        val CREATOR: Parcelable.Creator<Place> = object : Parcelable.Creator<Place> {
             override fun createFromParcel(`in`: Parcel): Place {
                 return Place(`in`)
             }
 
             override fun newArray(size: Int): Array<Place?> {
-                return arrayOfNulls<Place>(size)
+                return arrayOfNulls(size)
             }
         }
     }
